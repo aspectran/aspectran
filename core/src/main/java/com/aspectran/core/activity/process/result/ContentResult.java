@@ -20,6 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.ListIterator;
@@ -32,6 +33,7 @@ import java.util.Set;
  */
 public class ContentResult extends ArrayList<ActionResult> {
 
+    @Serial
     private static final long serialVersionUID = 7394299260107452305L;
 
     private final ProcessResult parent;
@@ -94,9 +96,8 @@ public class ContentResult extends ArrayList<ActionResult> {
     public void addActionResult(@NonNull ActionResult actionResult) {
         ActionResult existing = getActionResult(actionResult.getActionId());
         if (existing != null &&
-                existing.getResultValue() instanceof ResultValueMap &&
+                existing.getResultValue() instanceof ResultValueMap resultValueMap &&
                 actionResult.getResultValue() instanceof ResultValueMap) {
-            ResultValueMap resultValueMap = (ResultValueMap)existing.getResultValue();
             resultValueMap.putAll((ResultValueMap)actionResult.getResultValue());
         } else {
             add(actionResult);

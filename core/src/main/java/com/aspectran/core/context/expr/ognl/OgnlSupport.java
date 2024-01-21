@@ -18,6 +18,7 @@ package com.aspectran.core.context.expr.ognl;
 import com.aspectran.core.context.expr.ExpressionParserException;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -61,6 +62,7 @@ public class OgnlSupport {
         }
     }
 
+    @NonNull
     public static OgnlContext createDefaultContext() {
         return new OgnlContext(CLASS_RESOLVER, null, MEMBER_ACCESS);
     }

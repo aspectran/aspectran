@@ -17,13 +17,16 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ProcessException;
 
+import java.io.Serial;
+
 /**
  * Thrown when an error occurs while executing an action.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ActionExecutionException extends ProcessException {
 
+    @Serial
     private static final long serialVersionUID = 3568162614053964319L;
 
     private Executable action;

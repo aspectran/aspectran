@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.security;
 
+import java.io.Serial;
+
 /**
  * The Class InvalidPBTokenException.
  */
 public class InvalidPBTokenException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 3538105957787473922L;
 
     private final String token;

@@ -54,6 +54,7 @@ import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -394,7 +395,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return siblingsClassLoader;
     }
 
-    private ActivityEnvironment createActivityEnvironment(ActivityRuleAssistant assistant, ActivityContext activityContext) {
+    private ActivityEnvironment createActivityEnvironment(@NonNull ActivityRuleAssistant assistant,
+                                                          ActivityContext activityContext) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
         ActivityEnvironment environment = new ActivityEnvironment(environmentProfiles, activityContext);
         if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
@@ -418,7 +420,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      * Initialize the aspect rule registry.
      * @param assistant the activity rule assistant
      */
-    private void initAspectRuleRegistry(ActivityRuleAssistant assistant) {
+    private void initAspectRuleRegistry(@NonNull ActivityRuleAssistant assistant) {
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();

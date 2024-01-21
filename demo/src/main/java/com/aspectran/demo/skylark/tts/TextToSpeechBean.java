@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.sun.speech.freetts.Voice;
@@ -78,7 +79,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         this.pitchRange = pitchRange;
     }
 
-    public void setProperties(Properties properties) {
+    public void setProperties(@NonNull Properties properties) {
         Set<String> keys = properties.stringPropertyNames();
         for (String key : keys) {
             System.setProperty(key, properties.getProperty(key));
@@ -183,7 +184,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         return audioPlayer;
     }
 
-    public void speak(Translet translet) throws IOException {
+    public void speak(@NonNull Translet translet) throws IOException {
         String text = translet.getParameter("text");
         if (text == null) {
             return;
@@ -197,7 +198,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
         speak(text, out, bytes -> Base64.getEncoder().encode(bytes));
     }
 
-    public void download(Translet translet) throws IOException {
+    public void download(@NonNull Translet translet) throws IOException {
         String text = translet.getParameter("text");
         if (text == null) {
             return;

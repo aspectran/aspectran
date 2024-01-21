@@ -17,11 +17,14 @@ package com.aspectran.core.component.bean.scan;
 
 import com.aspectran.core.component.bean.BeanException;
 
+import java.io.Serial;
+
 /**
  * The Class BeanClassScanException.
  */
 public class BeanClassScanException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = -1301450076259511066L;
 
     /**

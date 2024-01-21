@@ -16,70 +16,21 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static com.aspectran.utils.MethodUtils.EMPTY_OBJECT_ARRAY;
+
 /**
  * Simple utility class for working with the reflection API.
  *
  * @since 2.0.0
  */
-public class ReflectionUtils {
-
-    /**
-     * Get the field represented by the supplied {@link Field field object} on the
-     * specified {@link Object target object}. In accordance with {@link Field#get(Object)}
-     * semantics, the returned value is automatically wrapped if the underlying field
-     * has a primitive type.
-     * @param field the field to get
-     * @param target the target object from which to get the field
-     * @return the field's current value
-     */
-    public static Object getField(@NonNull Field field, Object target) {
-        try {
-            return field.get(target);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Could not access field: " + field, e);
-        }
-    }
-
-    /**
-     * Set the field represented by the supplied {@link Field field object} on the
-     * specified {@link Object target object} to the specified {@code value}.
-     * In accordance with {@link Field#set(Object, Object)} semantics, the new value
-     * is automatically unwrapped if the underlying field has a primitive type.
-     * @param field the field to set
-     * @param target the target object on which to set the field
-     * @param value the value to set (may be {@code null})
-     */
-    public static void setField(@NonNull Field field, Object target, Object value) {
-        try {
-            field.set(target, value);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Could not access field: " + field, e);
-        }
-    }
-
-    /**
-     * Invoke the specified {@link Method} against the supplied target object with the
-     * supplied arguments. The target object can be {@code null} when invoking a
-     * static {@link Method}.
-     * @param method the method to invoke
-     * @param target the target object to invoke the method on
-     * @param args the invocation arguments (may be {@code null})
-     * @return the invocation result, if any
-     */
-    public static Object invokeMethod(@NonNull Method method, Object target, Object... args) {
-        try {
-            return method.invoke(target, args);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalStateException("Could not access method: " + method,
-                    ExceptionUtils.getRootCause(e));
-        }
-    }
+public abstract class ReflectionUtils {
 
     /**
      * Algorithm that judges the match between the declared parameter types of
@@ -276,6 +227,76 @@ public class ReflectionUtils {
             return arr;
         } else {
             return null;
+        }
+    }
+
+    // Field handling
+
+    /**
+     * Get the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object}. In accordance with {@link Field#get(Object)}
+     * semantics, the returned value is automatically wrapped if the underlying field
+     * has a primitive type.
+     * @param field the field to get
+     * @param target the target object from which to get the field
+     * @return the field's current value
+     */
+    public static Object getField(@NonNull Field field, Object target) {
+        try {
+            return field.get(target);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Could not access field: " + field, e);
+        }
+    }
+
+    /**
+     * Set the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object} to the specified {@code value}.
+     * In accordance with {@link Field#set(Object, Object)} semantics, the new value
+     * is automatically unwrapped if the underlying field has a primitive type.
+     * @param field the field to set
+     * @param target the target object on which to set the field
+     * @param value the value to set (may be {@code null})
+     */
+    public static void setField(@NonNull Field field, Object target, Object value) {
+        try {
+            field.set(target, value);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Could not access field: " + field, e);
+        }
+    }
+
+    // Method handling
+
+    /**
+     * Invoke the specified {@link Method} against the supplied target object with no arguments.
+     * The target object can be {@code null} when invoking a static {@link Method}.
+     * @param method the method to invoke
+     * @param target the target object to invoke the method on
+     * @return the invocation result, if any
+     * @see #invokeMethod(java.lang.reflect.Method, Object, Object[])
+     */
+    @Nullable
+    public static Object invokeMethod(Method method, @Nullable Object target) {
+        return invokeMethod(method, target, EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * Invoke the specified {@link Method} against the supplied target object with the
+     * supplied arguments. The target object can be {@code null} when invoking a
+     * static {@link Method}.
+     * @param method the method to invoke
+     * @param target the target object to invoke the method on
+     * @param args the invocation arguments (may be {@code null})
+     * @return the invocation result, if any
+     */
+    @Nullable
+    public static Object invokeMethod(@NonNull Method method, @Nullable Object target, Object... args) {
+        try {
+            return method.invoke(target, args);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalStateException("Could not access method: " + method,
+                ExceptionUtils.getRootCause(e));
         }
     }
 

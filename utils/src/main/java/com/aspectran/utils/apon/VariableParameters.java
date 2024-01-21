@@ -18,6 +18,7 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  */
 public class VariableParameters extends AbstractParameters implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 4492298345259110525L;
 
     public VariableParameters() {

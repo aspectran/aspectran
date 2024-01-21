@@ -23,6 +23,7 @@ import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
 
 import java.io.IOException;
+import java.io.Serial;
 
 /**
  * The {@code <escapeBody>} tag is used to escape its enclosed body content,
@@ -66,6 +67,7 @@ import java.io.IOException;
  */
 public class EscapeBodyTag extends HtmlEscapingAwareTag implements BodyTag {
 
+    @Serial
     private static final long serialVersionUID = -4704418839663089166L;
 
     private boolean javaScriptEscape;

@@ -17,6 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.utils.Assert;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Set;
  */
 public class ParameterMap extends LinkedHashMap<String, String[]> {
 
+    @Serial
     private static final long serialVersionUID = 1709146569240133920L;
 
     /**

@@ -20,6 +20,8 @@ import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * The Class CustomTransformResponseException.
  *
@@ -27,6 +29,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class CustomTransformResponseException extends ResponseException {
 
+    @Serial
     private static final long serialVersionUID = -5289305670156473011L;
 
     /**

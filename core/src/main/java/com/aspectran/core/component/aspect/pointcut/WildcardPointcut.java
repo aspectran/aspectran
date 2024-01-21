@@ -17,6 +17,7 @@ package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardPattern;
 
 import java.util.List;
@@ -88,7 +89,7 @@ public class WildcardPointcut extends AbstractPointcut {
         return wildcardPattern.matches(compareString);
     }
 
-    private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
+    private boolean wildcardPatternMatches(@NonNull String pattern, String compareString, char separator) {
         if (pattern.indexOf(separator) == -1 && !WildcardPattern.hasWildcards(pattern)) {
             return pattern.equals(compareString);
         }

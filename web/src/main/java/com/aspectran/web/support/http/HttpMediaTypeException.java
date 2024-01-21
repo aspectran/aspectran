@@ -17,6 +17,7 @@ package com.aspectran.web.support.http;
 
 import jakarta.servlet.ServletException;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import java.util.List;
  */
 public abstract class HttpMediaTypeException extends ServletException {
 
+    @Serial
     private static final long serialVersionUID = -1856244240815947664L;
 
     private final List<MediaType> supportedMediaTypes;

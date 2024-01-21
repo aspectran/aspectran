@@ -17,6 +17,8 @@ package com.aspectran.web.support.tags;
 
 import jakarta.servlet.jsp.JspException;
 
+import java.io.Serial;
+
 /**
  * The {@code <htmlEscape>} tag sets default HTML escape value for the current
  * page. The actual value  can be overridden by escaping-aware tags.
@@ -48,6 +50,7 @@ import jakarta.servlet.jsp.JspException;
  */
 public class HtmlEscapeTag extends CurrentActivityAwareTag {
 
+    @Serial
     private static final long serialVersionUID = -8222837265865482049L;
 
     /**

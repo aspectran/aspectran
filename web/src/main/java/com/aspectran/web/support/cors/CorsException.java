@@ -17,6 +17,8 @@ package com.aspectran.web.support.cors;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 /**
  * Process an incoming cross-origin (CORS) requests.
  * Encapsulates the CORS processing logic as specified by the
@@ -27,6 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class CorsException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -4522029461215151946L;
 
     /**

@@ -29,6 +29,7 @@ import jakarta.servlet.jsp.JspTagException;
 import jakarta.servlet.jsp.PageContext;
 
 import java.io.IOException;
+import java.io.Serial;
 
 /**
  * The {@code <token>} tag evaluates a Token expression and either prints
@@ -94,6 +95,7 @@ import java.io.IOException;
  */
 public class TokenTag extends HtmlEscapingAwareTag {
 
+    @Serial
     private static final long serialVersionUID = -3988228472260819648L;
 
     /**

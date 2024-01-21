@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.env;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.function.Predicate;
 
 /**
@@ -64,6 +66,7 @@ public interface Profiles {
      * @param profileExpression the expression for profiles to include or exclude
      * @return a new {@link Profiles} instance
      */
+    @NonNull
     static Profiles of(String profileExpression) {
         return ProfilesParser.parse(profileExpression);
     }

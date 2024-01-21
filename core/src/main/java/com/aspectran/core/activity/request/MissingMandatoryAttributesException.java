@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.Collection;
 
 /**
@@ -31,6 +32,7 @@ import java.util.Collection;
  */
 public class MissingMandatoryAttributesException extends RequestParseException {
 
+    @Serial
     private static final long serialVersionUID = 797995027591720096L;
 
     private final Collection<ItemRule> itemRules;

@@ -17,11 +17,14 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.context.rule.ItemRule;
 
+import java.io.Serial;
+
 /**
  * The Class ItemEvaluationException.
  */
 public class ItemEvaluationException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -139399791062499758L;
 
     private final ItemRule itemRule;

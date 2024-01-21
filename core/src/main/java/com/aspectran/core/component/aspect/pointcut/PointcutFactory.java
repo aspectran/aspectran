@@ -18,6 +18,7 @@ package com.aspectran.core.component.aspect.pointcut;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class PointcutFactory {
      * @param pointcutRule the pointcut rule
      * @return the pointcut
      */
-    public static Pointcut createPointcut(PointcutRule pointcutRule) {
+    public static Pointcut createPointcut(@NonNull PointcutRule pointcutRule) {
         if (pointcutRule.getPointcutType() == PointcutType.REGEXP) {
             return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
         } else {
@@ -44,6 +45,7 @@ public class PointcutFactory {
      * @param pointcutPatternRuleList the pointcut pattern rule list
      * @return the pointcut
      */
+    @NonNull
     private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         return new WildcardPointcut(pointcutPatternRuleList);
     }
@@ -53,6 +55,7 @@ public class PointcutFactory {
      * @param pointcutPatternRuleList the pointcut pattern rule list
      * @return the pointcut
      */
+    @NonNull
     private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         return new RegexpPointcut(pointcutPatternRuleList);
     }

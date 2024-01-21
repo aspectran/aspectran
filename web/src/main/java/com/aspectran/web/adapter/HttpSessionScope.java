@@ -21,6 +21,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.http.HttpSessionBindingEvent;
 import jakarta.servlet.http.HttpSessionBindingListener;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -28,6 +29,7 @@ import java.io.Serializable;
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 209145824535745248L;
 
     private static final Logger logger = LoggerFactory.getLogger(HttpSessionScope.class);

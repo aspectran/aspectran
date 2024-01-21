@@ -181,9 +181,8 @@ public class ClassScanner {
         String entryNamePrefix;
         boolean newJarFile = false;
 
-        if (conn instanceof JarURLConnection) {
+        if (conn instanceof JarURLConnection jarCon) {
             // Should usually be the case for traditional JAR files.
-            JarURLConnection jarCon = (JarURLConnection)conn;
             jarCon.setUseCaches(false);
             jarFile = jarCon.getJarFile();
             jarFileUrl = jarCon.getJarFileURL().toExternalForm();

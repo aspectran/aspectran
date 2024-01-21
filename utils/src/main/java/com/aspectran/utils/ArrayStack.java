@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
@@ -41,6 +42,7 @@ import java.util.EmptyStackException;
 public class ArrayStack<E> extends ArrayList<E> {
 
     /** Ensure serialization compatibility. */
+    @Serial
     private static final long serialVersionUID = 4952513157310856314L;
 
     /**

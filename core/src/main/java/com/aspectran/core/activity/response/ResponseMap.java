@@ -17,6 +17,7 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
  */
 public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {
 
+    @Serial
     private static final long serialVersionUID = 2093093144584776388L;
 
     public Response getFirst() {

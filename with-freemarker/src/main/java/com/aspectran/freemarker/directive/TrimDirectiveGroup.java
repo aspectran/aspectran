@@ -17,6 +17,7 @@ package com.aspectran.freemarker.directive;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirective>> {
 
+    @Serial
     private static final long serialVersionUID = 6709732757055800503L;
 
     public TrimDirectiveGroup(@NonNull TrimDirective[] trimDirectives) {

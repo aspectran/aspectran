@@ -15,11 +15,16 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
+import java.io.Serial;
+
 /**
  * Exception thrown when instantiation of a bean failed.
  */
 public class BeanInstantiationException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = 387409430536237392L;
 
     private final Class<?> beanClass;
@@ -39,7 +44,7 @@ public class BeanInstantiationException extends BeanException {
      * @param msg the detail message
      * @param cause the root cause
      */
-    public BeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
+    public BeanInstantiationException(@NonNull Class<?> beanClass, String msg, Throwable cause) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
         this.beanClass = beanClass;
     }
@@ -49,7 +54,7 @@ public class BeanInstantiationException extends BeanException {
      * @param beanClass the offending bean class
      * @param msg the detail message
      */
-    public BeanInstantiationException(Class<?> beanClass, String msg) {
+    public BeanInstantiationException(@NonNull Class<?> beanClass, String msg) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
         this.beanClass = beanClass;
     }

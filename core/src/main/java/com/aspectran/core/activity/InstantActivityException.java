@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Thrown when an error occurs while performing an instant activity.
  */
 public class InstantActivityException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 3431407337587193795L;
 
     /**

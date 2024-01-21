@@ -20,6 +20,8 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown when failing to bind the request parameter
  * to the action method parameter.
@@ -28,6 +30,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class ParameterBindingException extends ProcessException {
 
+    @Serial
     private static final long serialVersionUID = 1094222427227812288L;
 
     private final ParameterBindingRule parameterBindingRule;

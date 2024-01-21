@@ -17,14 +17,17 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.core.activity.ActivityException;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown if an error occurs while translet is
  * parsing the request.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class RequestException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -890371130094039206L;
 
     /**

@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.component.translet;
 
+import java.io.Serial;
+
 /**
  * The Class TransletException.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class TransletException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**

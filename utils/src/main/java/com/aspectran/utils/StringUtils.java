@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 /**
  * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
  */
-public class StringUtils {
+public abstract class StringUtils {
 
     /** Constant for an empty {@link String}. */
     public static final String EMPTY = "";
@@ -78,7 +78,7 @@ public class StringUtils {
      * @see #hasText(CharSequence)
      */
     public static boolean hasLength(CharSequence chars) {
-        return (chars != null && chars.length() > 0);
+        return (chars != null && !chars.isEmpty());
     }
 
     /**
@@ -114,7 +114,7 @@ public class StringUtils {
      * @see Character#isWhitespace
      */
     public static boolean hasText(CharSequence chars) {
-        return (chars != null && chars.length() > 0 && containsText(chars));
+        return (chars != null && !chars.isEmpty() && containsText(chars));
     }
 
     /**
@@ -185,10 +185,10 @@ public class StringUtils {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
+        while (!buf.isEmpty() && Character.isWhitespace(buf.charAt(0))) {
             buf.deleteCharAt(0);
         }
-        while (buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
+        while (!buf.isEmpty() && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
             buf.deleteCharAt(buf.length() - 1);
         }
         return buf.toString();
@@ -228,7 +228,7 @@ public class StringUtils {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
+        while (!buf.isEmpty() && Character.isWhitespace(buf.charAt(0))) {
             buf.deleteCharAt(0);
         }
         return buf.toString();
@@ -245,7 +245,7 @@ public class StringUtils {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
+        while (!buf.isEmpty() && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
             buf.deleteCharAt(buf.length() - 1);
         }
         return buf.toString();
@@ -262,7 +262,7 @@ public class StringUtils {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && buf.charAt(0) == leadingChar) {
+        while (!buf.isEmpty() && buf.charAt(0) == leadingChar) {
             buf.deleteCharAt(0);
         }
         return buf.toString();
@@ -279,7 +279,7 @@ public class StringUtils {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingChar) {
+        while (!buf.isEmpty() && buf.charAt(buf.length() - 1) == trailingChar) {
             buf.deleteCharAt(buf.length() - 1);
         }
         return buf.toString();
@@ -387,7 +387,7 @@ public class StringUtils {
             searchLen = searchList[i].length();
             replaceLen = replacementList[i].length();
             while (true) {
-                if (sb.length() == 0) {
+                if (sb.isEmpty()) {
                     break;
                 }
                 start = sb.indexOf(searchList[i], start + replaceLen);

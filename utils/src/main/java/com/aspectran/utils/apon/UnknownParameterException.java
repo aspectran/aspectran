@@ -15,11 +15,16 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
+import java.io.Serial;
+
 /**
  * The Class UnknownParameterException.
  */
 public class UnknownParameterException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 6446576507072773588L;
 
     /**
@@ -31,7 +36,7 @@ public class UnknownParameterException extends RuntimeException {
         super("No such parameter '" + parameterName + "' in " + describe(parameters));
     }
 
-    private static String describe(Parameters parameters) {
+    private static String describe(@NonNull Parameters parameters) {
         return parameters.describe();
     }
 

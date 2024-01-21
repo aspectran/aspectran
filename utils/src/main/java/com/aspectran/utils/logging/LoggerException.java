@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.logging;
 
+import java.io.Serial;
+
 /**
  * The Class LogException.
  */
 public class LoggerException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1007835506486086212L;
 
     public LoggerException() {

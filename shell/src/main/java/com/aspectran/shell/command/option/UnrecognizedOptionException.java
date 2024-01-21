@@ -15,12 +15,15 @@
  */
 package com.aspectran.shell.command.option;
 
+import java.io.Serial;
+
 /**
  * Exception thrown during parsing signalling an unrecognized
  * option was seen.
  */
 public class UnrecognizedOptionException extends OptionParserException {
 
+    @Serial
     private static final long serialVersionUID = 4662457863100554595L;
 
     /** The unrecognized option */

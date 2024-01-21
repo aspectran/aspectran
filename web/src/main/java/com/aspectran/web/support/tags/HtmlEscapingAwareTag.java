@@ -19,6 +19,8 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.HtmlUtils;
 
+import java.io.Serial;
+
 import static com.aspectran.web.support.tags.HtmlEscapeTag.DEFAULT_HTML_ESCAPE_SETTING_NAME;
 
 /**
@@ -31,6 +33,7 @@ import static com.aspectran.web.support.tags.HtmlEscapeTag.DEFAULT_HTML_ESCAPE_S
  */
 public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
 
+    @Serial
     private static final long serialVersionUID = 1853699535371633474L;
 
     @Nullable

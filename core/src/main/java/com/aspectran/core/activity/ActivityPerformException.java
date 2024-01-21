@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when an error occurs while performing an activity.
  *
@@ -22,6 +24,7 @@ package com.aspectran.core.activity;
  */
 public class ActivityPerformException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = 2728451652587414622L;
 
     /**

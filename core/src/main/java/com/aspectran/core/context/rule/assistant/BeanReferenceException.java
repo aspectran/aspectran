@@ -18,17 +18,19 @@ package com.aspectran.core.context.rule.assistant;
 import com.aspectran.core.context.rule.parser.ActivityContextParserException;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
  * This exception will be thrown when cannot resolve reference to bean.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class BeanReferenceException extends ActivityContextParserException {
 
+    @Serial
     private static final long serialVersionUID = -244633940486989865L;
 
     /**

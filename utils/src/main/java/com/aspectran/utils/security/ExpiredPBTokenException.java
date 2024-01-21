@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.security;
 
+import java.io.Serial;
+
 /**
  * The Class ExpiredPBTokenException.
  */
 public class ExpiredPBTokenException extends InvalidPBTokenException {
 
+    @Serial
     private static final long serialVersionUID = -3377771930951220888L;
 
     public ExpiredPBTokenException(String token) {

@@ -18,6 +18,7 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -221,7 +222,7 @@ public class XmlToApon {
         }
 
         @Override
-        @NonNull
+        @Nullable
         public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
             if (entityResolver != null) {
                 return entityResolver.resolveEntity(publicId, systemId);
@@ -259,7 +260,7 @@ public class XmlToApon {
                 leaf = true;
             }
             open = true;
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 buffer.delete(0, buffer.length());
             }
         }
@@ -268,7 +269,7 @@ public class XmlToApon {
         public void endElement(String uri, String localName, String qName) throws SAXException {
             if (open) {
                 String text = null;
-                if (buffer.length() > 0) {
+                if (!buffer.isEmpty()) {
                     text = buffer.toString();
                     buffer.delete(0, buffer.length());
                 }

@@ -19,6 +19,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
+import java.io.Serial;
+
 /**
  * The {@code <argument>} tag is based on the JSTL {@code fmt:param} tag.
  * The purpose is to support arguments inside the message tags.
@@ -47,6 +49,7 @@ import jakarta.servlet.jsp.tagext.BodyTagSupport;
  */
 public class ArgumentTag extends BodyTagSupport {
 
+    @Serial
     private static final long serialVersionUID = 6978546222061654320L;
 
     @Nullable

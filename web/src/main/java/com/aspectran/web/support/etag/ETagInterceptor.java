@@ -129,6 +129,7 @@ public class ETagInterceptor {
         return false;
     }
 
+    @NonNull
     private String padETagTokenIfNecessary(@NonNull String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;

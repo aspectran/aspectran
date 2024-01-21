@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
+import java.io.Serial;
+
 /**
  * Exception raised when session data can not be read.
  *
@@ -22,6 +24,7 @@ package com.aspectran.core.component.session;
  */
 public class UnreadableSessionDataException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 799147544009142489L;
 
     private final String id;

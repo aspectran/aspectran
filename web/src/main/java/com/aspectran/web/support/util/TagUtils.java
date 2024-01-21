@@ -61,16 +61,12 @@ public abstract class TagUtils {
      */
     public static int getScope(String scope) {
         Assert.notNull(scope, "Scope to search for cannot be null");
-        switch (scope) {
-            case SCOPE_REQUEST:
-                return PageContext.REQUEST_SCOPE;
-            case SCOPE_SESSION:
-                return PageContext.SESSION_SCOPE;
-            case SCOPE_APPLICATION:
-                return PageContext.APPLICATION_SCOPE;
-            default:
-                return PageContext.PAGE_SCOPE;
-        }
+        return switch (scope) {
+            case SCOPE_REQUEST -> PageContext.REQUEST_SCOPE;
+            case SCOPE_SESSION -> PageContext.SESSION_SCOPE;
+            case SCOPE_APPLICATION -> PageContext.APPLICATION_SCOPE;
+            default -> PageContext.PAGE_SCOPE;
+        };
     }
 
     /**

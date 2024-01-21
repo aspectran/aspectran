@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when an activity fails.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ActivityException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -4400747654771758521L;
 
     /**

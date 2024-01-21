@@ -211,12 +211,11 @@ public class WildcardPattern {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof WildcardPattern)) {
+        if (!(other instanceof WildcardPattern that)) {
             return false;
         }
-        WildcardPattern wp = (WildcardPattern)other;
-        return (Objects.equals(wp.toString(), patternString) &&
-                Objects.equals(wp.getSeparator(), getSeparator()));
+        return (Objects.equals(that.toString(), patternString) &&
+                Objects.equals(that.getSeparator(), getSeparator()));
     }
 
     @Override

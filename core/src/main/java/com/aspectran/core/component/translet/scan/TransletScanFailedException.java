@@ -17,6 +17,8 @@ package com.aspectran.core.component.translet.scan;
 
 import com.aspectran.core.component.translet.TransletException;
 
+import java.io.Serial;
+
 /**
  * The Class TransletScanFailedException.
  *
@@ -24,6 +26,7 @@ import com.aspectran.core.component.translet.TransletException;
  */
 public class TransletScanFailedException extends TransletException {
 
+    @Serial
     private static final long serialVersionUID = -7694783910759443211L;
 
     /**

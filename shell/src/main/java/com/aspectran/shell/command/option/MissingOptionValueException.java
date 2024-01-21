@@ -17,11 +17,14 @@ package com.aspectran.shell.command.option;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * Thrown when an option requiring a value is not provided with a value.
  */
 public class MissingOptionValueException extends OptionParserException {
 
+    @Serial
     private static final long serialVersionUID = 3097819241980741135L;
 
     /** The option requiring additional values */

@@ -22,6 +22,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import java.util.TreeSet;
  */
 public class MediaType implements Comparable<MediaType>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6574317082451901361L;
 
     /**
@@ -736,10 +738,9 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof MediaType)) {
+        if (!(other instanceof MediaType otherType)) {
             return false;
         }
-        MediaType otherType = (MediaType)other;
         return (this.type.equalsIgnoreCase(otherType.type) &&
             this.subtype.equalsIgnoreCase(otherType.subtype) &&
             parametersAreEqual(otherType));

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -25,6 +26,7 @@ import java.util.Collection;
  */
 public class ItemRuleList extends ArrayList<ItemRule> {
 
+    @Serial
     private static final long serialVersionUID = -7578440777195693622L;
 
     public ItemRuleList() {

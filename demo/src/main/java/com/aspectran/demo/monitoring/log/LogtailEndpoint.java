@@ -19,6 +19,7 @@ import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
@@ -91,7 +92,7 @@ public class LogtailEndpoint extends InstantActivitySupport {
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
+    public void onError(@NonNull Session session, Throwable error) {
         logger.error("Error in websocket session: " + session.getId(), error);
         try {
             removeSession(session);

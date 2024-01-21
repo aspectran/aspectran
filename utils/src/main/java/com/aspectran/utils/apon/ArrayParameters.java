@@ -19,6 +19,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import java.util.List;
 public class ArrayParameters extends AbstractParameters
         implements Iterable<Parameters>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2058392199376865356L;
 
     public static final String NONAME = "<noname>";

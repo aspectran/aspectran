@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.context.rule.parser;
 
+import java.io.Serial;
+
 /**
  * This exception is thrown when ActivityContext parsing fails.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ActivityContextParserException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 5702282474852901391L;
 
     /**

@@ -17,6 +17,8 @@ package com.aspectran.web.support.http;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * Exception thrown from {@link MediaTypeUtils#parseMediaType(String)} in case of
  * encountering an invalid content type specification String.
@@ -25,6 +27,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class InvalidMediaTypeException extends IllegalArgumentException {
 
+    @Serial
     private static final long serialVersionUID = 3663041808275315715L;
 
     private final String mediaType;

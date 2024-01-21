@@ -15,11 +15,14 @@
  */
 package com.aspectran.shell.command.option;
 
+import java.io.Serial;
+
 /**
  * Base for Exceptions thrown during parsing of a command-line.
  */
 public class OptionParserException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -8387597753242192122L;
 
     /**

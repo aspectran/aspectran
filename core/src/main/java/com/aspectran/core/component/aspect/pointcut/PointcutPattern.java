@@ -65,14 +65,13 @@ public class PointcutPattern {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof PointcutPattern)) {
+        if (!(other instanceof PointcutPattern that)) {
             return false;
         }
-        PointcutPattern pp = (PointcutPattern)other;
-        return (Objects.equals(transletNamePattern, pp.getTransletNamePattern()) &&
-                Objects.equals(beanIdPattern, pp.getBeanIdPattern()) &&
-                Objects.equals(classNamePattern, pp.getClassNamePattern()) &&
-                Objects.equals(methodNamePattern, pp.getMethodNamePattern()));
+        return (Objects.equals(transletNamePattern, that.getTransletNamePattern()) &&
+                Objects.equals(beanIdPattern, that.getBeanIdPattern()) &&
+                Objects.equals(classNamePattern, that.getClassNamePattern()) &&
+                Objects.equals(methodNamePattern, that.getMethodNamePattern()));
     }
 
     @Override
@@ -95,11 +94,13 @@ public class PointcutPattern {
         return combinePattern(this);
     }
 
+    @NonNull
     public static String combinePattern(@NonNull PointcutPattern pointcutPattern) {
         return combinePattern(pointcutPattern.getTransletNamePattern(), pointcutPattern.getBeanIdPattern(),
                 pointcutPattern.getClassNamePattern(), pointcutPattern.getMethodNamePattern());
     }
 
+    @NonNull
     public static String combinePattern(String transletName, String beanId, String className, String methodName) {
         int len = 0;
         if (transletName != null && !transletName.isEmpty()) {
@@ -133,7 +134,8 @@ public class PointcutPattern {
         return sb.toString();
     }
 
-    public static PointcutPattern parsePattern(String patternString) {
+    @NonNull
+    public static PointcutPattern parsePattern(@NonNull String patternString) {
         String transletNamePattern = null;
         String beanNamePattern = null;
         String methodNamePattern = null;

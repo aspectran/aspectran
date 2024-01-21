@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown if an illegal rule is found.
- * 
+ *
  * <p>Created: 2017. 11. 10.</p>
  */
 public class IllegalRuleException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 4725758105730046172L;
 
     /**

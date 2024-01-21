@@ -61,14 +61,14 @@ public class Namespace {
         StringBuilder sb = new StringBuilder();
         for (String name : nameArray) {
             if (name != null && !name.isEmpty()) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(ID_SEPARATOR);
                 }
                 sb.append(name);
             }
         }
         if (lastName != null && !lastName.isEmpty()) {
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 sb.append(ID_SEPARATOR);
             }
             sb.append(lastName);
@@ -83,14 +83,14 @@ public class Namespace {
         StringBuilder sb = new StringBuilder();
         for (String name : nameArray) {
             if (name != null && !name.isEmpty()) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(NAME_SEPARATOR);
                 }
                 sb.append(name);
             }
         }
         if (lastName != null && !lastName.isEmpty()) {
-            if (sb.length() > 0 && !lastName.startsWith(NAME_SEPARATOR)) {
+            if (!sb.isEmpty() && !lastName.startsWith(NAME_SEPARATOR)) {
                 sb.append(NAME_SEPARATOR);
             }
             sb.append(lastName);
@@ -120,7 +120,8 @@ public class Namespace {
      * @param absolutely whether to allow absolutely name for translet
      * @return the new translet name
      */
-    public static String applyTransletNamePattern(DefaultSettings defaultSettings, String transletName, boolean absolutely) {
+    public static String applyTransletNamePattern(DefaultSettings defaultSettings, String transletName,
+                                                  boolean absolutely) {
         String prefix = null;
         String suffix = null;
         if (defaultSettings != null) {
@@ -130,7 +131,8 @@ public class Namespace {
         return applyTransletNamePattern(prefix, transletName, suffix, absolutely);
     }
 
-    public static String applyTransletNamePattern(String prefix, String transletName, String suffix, boolean absolutely) {
+    public static String applyTransletNamePattern(String prefix, String transletName, String suffix,
+                                                  boolean absolutely) {
         if (prefix == null && suffix == null) {
             return transletName;
         }

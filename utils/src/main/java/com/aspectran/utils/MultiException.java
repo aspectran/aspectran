@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 public class MultiException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 2675035125716434028L;
 
     private List<Throwable> nested;
@@ -44,8 +46,7 @@ public class MultiException extends Exception {
         } else {
             addSuppressed(e);
         }
-        if (e instanceof MultiException) {
-            MultiException me = (MultiException)e;
+        if (e instanceof MultiException me) {
             nested.addAll(me.nested);
         } else {
             nested.add(e);

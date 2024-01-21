@@ -444,7 +444,7 @@ public class TransletRuleRegistry extends AbstractComponent {
     static class WeightComparator implements Comparator<TransletRule> {
 
         @Override
-        public int compare(TransletRule tr1, TransletRule tr2) {
+        public int compare(@NonNull TransletRule tr1, TransletRule tr2) {
             if (tr1.getNamePattern() != null && tr2.getNamePattern() != null) {
                 float weight1 = tr1.getNamePattern().getWeight();
                 float weight2 = tr2.getNamePattern().getWeight();

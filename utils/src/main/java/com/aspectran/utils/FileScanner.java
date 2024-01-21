@@ -68,7 +68,7 @@ public class FileScanner {
             String term = matcher.next();
             if (!term.isEmpty()) {
                 if (!WildcardPattern.hasWildcards(term)) {
-                    if (sb.length() > 0)
+                    if (!sb.isEmpty())
                         sb.append(REGULAR_FILE_SEPARATOR_CHAR);
                     sb.append(term);
                 } else {

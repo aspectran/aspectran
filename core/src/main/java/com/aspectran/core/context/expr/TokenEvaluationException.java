@@ -17,11 +17,14 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.context.expr.token.Token;
 
+import java.io.Serial;
+
 /**
  * The Class TokenEvaluationException.
  */
 public class TokenEvaluationException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 2303202652519466514L;
 
     private final Token token;

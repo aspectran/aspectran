@@ -19,6 +19,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
+import java.io.Serial;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -35,6 +36,7 @@ import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {
 
+    @Serial
     private static final long serialVersionUID = -6936820061673430782L;
 
     public ResourceEntries() {

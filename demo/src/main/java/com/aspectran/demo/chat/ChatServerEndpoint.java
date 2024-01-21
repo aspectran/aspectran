@@ -27,6 +27,8 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
@@ -69,7 +71,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     }
 
     @OnMessage
-    public void onMessage(Session session, ChatMessage chatMessage) {
+    public void onMessage(Session session, @NonNull ChatMessage chatMessage) {
         SendTextMessagePayload payload = chatMessage.getSendTextMessagePayload();
         if (payload != null) {
             String username = getUsername(session);
@@ -114,7 +116,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
+    public void onError(@NonNull Session session, Throwable error) {
         logger.error("Error in websocket session: " + session.getId(), error);
         try {
             session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
@@ -123,7 +125,8 @@ public class ChatServerEndpoint extends InstantActivitySupport {
         }
     }
 
-    private String getUsername(Session session) {
+    @Nullable
+    private String getUsername(@NonNull Session session) {
         if (session.getUserProperties().get("username") != null) {
             return session.getUserProperties().get("username").toString();
         } else {
@@ -131,17 +134,17 @@ public class ChatServerEndpoint extends InstantActivitySupport {
         }
     }
 
-    private void setUsername(Session session, String username) {
+    private void setUsername(@NonNull Session session, String username) {
         session.getUserProperties().put("username", username);
     }
 
-    private void welcomeUser(Session session, String username) {
+    private void welcomeUser(@NonNull Session session, String username) {
         WelcomeUserPayload payload = new WelcomeUserPayload();
         payload.setUsername(username);
         session.getAsyncRemote().sendObject(new ChatMessage(payload));
     }
 
-    private void duplicatedUser(Session session, String username) {
+    private void duplicatedUser(@NonNull Session session, String username) {
         DuplicatedUserPayload payload = new DuplicatedUserPayload();
         payload.setUsername(username);
         session.getAsyncRemote().sendObject(new ChatMessage(payload));

@@ -17,6 +17,7 @@ package com.aspectran.web.support.http;
 
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
+    @Serial
     private static final long serialVersionUID = 1965178958479451769L;
 
     @Nullable

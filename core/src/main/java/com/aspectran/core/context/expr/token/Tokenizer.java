@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class Tokenizer {
      * @param textTrim whether to trim text
      * @return a list of tokens
      */
+    @NonNull
     public static List<Token> tokenize(CharSequence input, boolean textTrim) {
         if (input == null) {
             throw new IllegalArgumentException("input must not be null");
@@ -107,7 +109,7 @@ public class Tokenizer {
                         }
                     }
                     if (c == Token.BRACKET_CLOSE) {
-                        if (nameBuf.length() > 0 || valueBuf.length() > 0) {
+                        if (!nameBuf.isEmpty() || !valueBuf.isEmpty()) {
                             // save previous non-token string
                             if (tokenStartOffset > 0) {
                                 String text = trimBuffer(textBuf, tokenStartOffset, textTrim);
@@ -136,7 +138,7 @@ public class Tokenizer {
                     break;
                 }
         }
-        if (textBuf.length() > 0) {
+        if (!textBuf.isEmpty()) {
             String text = trimBuffer(textBuf, textBuf.length(), textTrim);
             Token token = new Token(text);
             tokens.add(token);
@@ -151,14 +153,15 @@ public class Tokenizer {
      * @param valueBuf the value buffer
      * @return the token
      */
-    private static Token createToken(char symbol, StringBuilder nameBuf, StringBuilder valueBuf) {
+    @NonNull
+    private static Token createToken(char symbol, StringBuilder nameBuf, @NonNull StringBuilder valueBuf) {
         String value = null;
-        if (valueBuf.length() > 0) {
+        if (!valueBuf.isEmpty()) {
             value = valueBuf.toString();
             valueBuf.setLength(0); // empty the value buffer
         }
 
-        if (nameBuf.length() > 0) {
+        if (!nameBuf.isEmpty()) {
             TokenType type = Token.resolveTypeAsSymbol(symbol);
             String name = nameBuf.toString();
             nameBuf.setLength(0); // empty the name buffer
@@ -319,48 +322,49 @@ public class Tokenizer {
     /**
      * Returns a string that contains a copy of a specified string
      * without leading whitespaces.
-     * @param string the string to trim leading whitespaces
+     * @param str the string to trim leading whitespaces
      * @return a string with leading whitespaces trimmed
      */
-    private static String trimLeadingWhitespace(String string) {
-        if (string.isEmpty()) {
-            return string;
+    @NonNull
+    private static String trimLeadingWhitespace(@NonNull String str) {
+        if (str.isEmpty()) {
+            return str;
         }
         int start = 0;
         char c;
-        for (int i = 0; i < string.length(); i++) {
-            c = string.charAt(i);
+        for (int i = 0; i < str.length(); i++) {
+            c = str.charAt(i);
             if (!Character.isWhitespace(c)) {
                 start = i;
                 break;
             }
         }
         if (start == 0) {
-            return string;
+            return str;
         }
-        return string.substring(start);
+        return str.substring(start);
     }
 
     /**
      * Returns a string that contains a copy of a specified string
      * without trailing whitespaces.
-     * @param string the string to trim trailing whitespaces
+     * @param str the string to trim trailing whitespaces
      * @return a string with trailing whitespaces trimmed
      */
-    private static String trimTrailingWhitespace(String string) {
+    private static String trimTrailingWhitespace(@NonNull String str) {
         int end = 0;
         char c;
-        for (int i = string.length() - 1; i >= 0; i--) {
-            c = string.charAt(i);
+        for (int i = str.length() - 1; i >= 0; i--) {
+            c = str.charAt(i);
             if (!Character.isWhitespace(c)) {
                 end = i;
                 break;
             }
         }
         if (end == 0) {
-            return string;
+            return str;
         }
-        return string.substring(0, end + 1);
+        return str.substring(0, end + 1);
     }
 
 }

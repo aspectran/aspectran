@@ -17,11 +17,14 @@ package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.context.rule.AspectRule;
 
+import java.io.Serial;
+
 /**
  * The Class InvalidPointcutPatternException.
  */
 public class InvalidPointcutPatternException extends AspectException {
 
+    @Serial
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**

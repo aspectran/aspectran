@@ -73,7 +73,7 @@ public class TextStyler {
         if (start > 0 && start < text.length()) {
             sb.append(text, start, text.length());
         }
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
             return sb.toString();
         }
         for (start = 0; start < text.length(); start++) {

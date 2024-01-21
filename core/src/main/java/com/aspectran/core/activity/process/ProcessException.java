@@ -17,13 +17,16 @@ package com.aspectran.core.activity.process;
 
 import com.aspectran.core.activity.ActivityException;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown if the translet processing fails.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ProcessException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = 7290974002627109441L;
 
     /**

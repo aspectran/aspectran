@@ -18,6 +18,8 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown when the value type of the parameter does not match.
  *
@@ -25,6 +27,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class ValueTypeMismatchException extends InvalidParameterValueException {
 
+    @Serial
     private static final long serialVersionUID = 3022910656886563259L;
 
     public ValueTypeMismatchException(@NonNull Class<?> valueType,

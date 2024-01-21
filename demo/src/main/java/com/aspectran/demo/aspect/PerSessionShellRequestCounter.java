@@ -23,10 +23,12 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,6 +44,7 @@ import java.util.concurrent.atomic.AtomicLong;
 )
 public class PerSessionShellRequestCounter implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7254733724811233759L;
 
     private static final Logger logger = LoggerFactory.getLogger(PerSessionShellRequestCounter.class);
@@ -63,7 +66,7 @@ public class PerSessionShellRequestCounter implements Serializable {
         stopTime.set(System.currentTimeMillis());
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
+            ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
             tsb.append("requests", counter.getRequests());
             tsb.append("start", counter.getStartTime());
             tsb.append("stop", counter.getStopTime());

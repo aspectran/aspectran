@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import java.io.Serial;
 import java.util.Locale;
 
 /**
@@ -24,6 +25,7 @@ import java.util.Locale;
  */
 public class NoSuchMessageException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -2677086951169637323L;
 
     /**

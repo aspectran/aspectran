@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.activity.request;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when request could not be parsed.
  */
 public class RequestParseException extends RequestException {
 
+    @Serial
     private static final long serialVersionUID = -2918986957102012812L;
 
     /**

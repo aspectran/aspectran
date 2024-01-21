@@ -26,20 +26,20 @@ import java.util.Map;
 
 /**
  * Offline entity resolver for the Aspectran DTDs.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
 public class AspectranDtdResolver implements EntityResolver {
 
-    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-7.dtd";
+    private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/rule/parser/xml/dtd/aspectran-8.dtd";
 
     private static final Map<String, String> doctypeMap = new HashMap<>();
 
     private final boolean validating;
 
     static {
-        doctypeMap.put("-//ASPECTRAN//DTD Aspectran 7.0//EN".toUpperCase(), ASPECTRAN_DTD);
-        doctypeMap.put("aspectran-7.dtd".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("-//ASPECTRAN//DTD Aspectran 8.0//EN".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("aspectran-8.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 
     public AspectranDtdResolver() {

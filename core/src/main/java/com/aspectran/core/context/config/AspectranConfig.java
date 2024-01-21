@@ -16,6 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
@@ -206,6 +207,7 @@ public class AspectranConfig extends AbstractParameters {
         return basePath;
     }
 
+    @NonNull
     public static File determineAspectranConfigFile(@Nullable String[] args) {
         File file;
         if (args == null || args.length == 0) {

@@ -15,14 +15,17 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when an error occurs while attaching
  * each adapter required for the activity.
- * 
+ *
  * <p>Created: 2016. 2. 14.</p>
  */
 public class AdapterException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -4222246026009174749L;
 
     /**

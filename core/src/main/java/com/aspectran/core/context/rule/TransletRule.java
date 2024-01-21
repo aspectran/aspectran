@@ -600,8 +600,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         ResponseRule rr = responseRule.replicate();
         if (rr.getResponse() != null) {
             // assign dispatch name if the dispatch response exists
-            if (rr.getResponse() instanceof DispatchResponse) {
-                DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
+            if (rr.getResponse() instanceof DispatchResponse dispatchResponse) {
                 DispatchRule dispatchRule = dispatchResponse.getDispatchRule();
                 String dispatchName = dispatchRule.getName();
 

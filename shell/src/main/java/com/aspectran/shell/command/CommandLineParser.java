@@ -22,6 +22,7 @@ import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -138,7 +139,7 @@ public class CommandLineParser {
         return list.toArray(new String[0]);
     }
 
-    @NonNull
+    @Nullable
     private String parseOutputRedirection(String line) {
         if (!StringUtils.hasLength(line)) {
             return null;

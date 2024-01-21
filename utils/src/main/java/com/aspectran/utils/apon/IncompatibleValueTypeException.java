@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.apon;
 
+import java.io.Serial;
+
 /**
  * The Class IncompatibleValueTypeException.
  */
 public class IncompatibleValueTypeException extends InvalidParameterValueException {
 
+    @Serial
     private static final long serialVersionUID = 1557599183505068164L;
 
     public IncompatibleValueTypeException(ParameterValue parameterValue,

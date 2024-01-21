@@ -19,6 +19,8 @@ import com.aspectran.core.activity.process.ProcessException;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown when failing to bind the request parameter
  * to the action method parameter.
@@ -27,6 +29,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class MethodArgumentTypeMismatchException extends ProcessException {
 
+    @Serial
     private static final long serialVersionUID = 6873343194941720116L;
 
     private final Throwable cause;

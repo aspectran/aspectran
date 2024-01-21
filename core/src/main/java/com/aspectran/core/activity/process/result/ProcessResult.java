@@ -19,6 +19,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Objects;
  */
 public class ProcessResult extends ArrayList<ContentResult> {
 
+    @Serial
     private static final long serialVersionUID = 4734650376929217378L;
 
     private String name;

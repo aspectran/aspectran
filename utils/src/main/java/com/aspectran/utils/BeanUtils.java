@@ -183,8 +183,8 @@ public class BeanUtils {
             Object value;
             if (name.contains("[")) {
                 value = getIndexedProperty(bean, name);
-            } else if (bean instanceof Map<?, ?>) {
-                value = ((Map<?, ?>)bean).get(name);
+            } else if (bean instanceof Map<?, ?> map) {
+                value = map.get(name);
             } else {
                 BeanDescriptor bd = getBeanDescriptor(bean.getClass());
                 Method method = bd.getGetter(name);
@@ -298,34 +298,32 @@ public class BeanUtils {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-            Object list = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
+            Object obj = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
             Object value;
-
-            if (list instanceof List<?>) {
-                value = ((List<?>)list).get(index);
-            } else if (list instanceof Object[]) {
-                value = ((Object[])list)[index];
-            } else if (list instanceof char[]) {
-                value = ((char[])list)[index];
-            } else if (list instanceof boolean[]) {
-                value = ((boolean[])list)[index];
-            } else if (list instanceof byte[]) {
-                value = ((byte[])list)[index];
-            } else if (list instanceof double[]) {
-                value = ((double[])list)[index];
-            } else if (list instanceof float[]) {
-                value = ((float[]) list)[index];
-            } else if (list instanceof int[]) {
-                value = ((int[])list)[index];
-            } else if (list instanceof long[]) {
-                value = ((long[])list)[index];
-            } else if (list instanceof short[]) {
-                value = ((short[])list)[index];
+            if (obj instanceof List<?> list) {
+                value = list.get(index);
+            } else if (obj instanceof Object[] arr) {
+                value = arr[index];
+            } else if (obj instanceof char[] arr) {
+                value = arr[index];
+            } else if (obj instanceof boolean[] arr) {
+                value = arr[index];
+            } else if (obj instanceof byte[] arr) {
+                value = arr[index];
+            } else if (obj instanceof double[] arr) {
+                value = arr[index];
+            } else if (obj instanceof float[] arr) {
+                value = arr[index];
+            } else if (obj instanceof int[] arr) {
+                value = arr[index];
+            } else if (obj instanceof long[] arr) {
+                value = arr[index];
+            } else if (obj instanceof short[] arr) {
+                value = arr[index];
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
                         bean.getClass().getName() + " class is not a List or Array");
             }
-
             return value;
         } catch (InvocationTargetException e) {
             throw e;
@@ -338,34 +336,32 @@ public class BeanUtils {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-            Object list = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
+            Object obj = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
             Class<?> value;
-
-            if (list instanceof List<?>) {
-                value = ((List<?>)list).get(i).getClass();
-            } else if (list instanceof Object[]) {
-                value = ((Object[])list)[i].getClass();
-            } else if (list instanceof char[]) {
+            if (obj instanceof List<?> list) {
+                value = list.get(i).getClass();
+            } else if (obj instanceof Object[] arr) {
+                value = arr[i].getClass();
+            } else if (obj instanceof char[]) {
                 value = Character.class;
-            } else if (list instanceof boolean[]) {
+            } else if (obj instanceof boolean[]) {
                 value = Boolean.class;
-            } else if (list instanceof byte[]) {
+            } else if (obj instanceof byte[]) {
                 value = Byte.class;
-            } else if (list instanceof double[]) {
+            } else if (obj instanceof double[]) {
                 value = Double.class;
-            } else if (list instanceof float[]) {
+            } else if (obj instanceof float[]) {
                 value = Float.class;
-            } else if (list instanceof int[]) {
+            } else if (obj instanceof int[]) {
                 value = Integer.class;
-            } else if (list instanceof long[]) {
+            } else if (obj instanceof long[]) {
                 value = Long.class;
-            } else if (list instanceof short[]) {
+            } else if (obj instanceof short[]) {
                 value = Short.class;
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
                         bean.getClass().getName() + " class is not a List or Array");
             }
-
             return value;
         } catch (InvocationTargetException e) {
             throw e;
@@ -379,30 +375,29 @@ public class BeanUtils {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-            Object list = getSimpleProperty(bean, name);
-
-            if (list instanceof List<?>) {
+            Object obj = getSimpleProperty(bean, name);
+            if (obj instanceof List<?>) {
                 @SuppressWarnings("unchecked")
-                List<Object> l = (List<Object>)list;
-                l.set(index, value);
-            } else if (list instanceof Object[]) {
-                ((Object[])list)[index] = value;
-            } else if (list instanceof char[]) {
-                ((char[])list)[index] = (Character)value;
-            } else if (list instanceof boolean[]) {
-                ((boolean[])list)[index] = (Boolean)value;
-            } else if (list instanceof byte[]) {
-                ((byte[])list)[index] = (Byte)value;
-            } else if (list instanceof double[]) {
-                ((double[])list)[index] = (Double)value;
-            } else if (list instanceof float[]) {
-                ((float[])list)[index] = (Float)value;
-            } else if (list instanceof int[]) {
-                ((int[])list)[index] = (Integer)value;
-            } else if (list instanceof long[]) {
-                ((long[])list)[index] = (Long)value;
-            } else if (list instanceof short[]) {
-                ((short[])list)[index] = (Short)value;
+                List<Object> llist = (List<Object>)obj;
+                llist.set(index, value);
+            } else if (obj instanceof Object[] arr) {
+                arr[index] = value;
+            } else if (obj instanceof char[] arr) {
+                arr[index] = (Character)value;
+            } else if (obj instanceof boolean[] arr) {
+                arr[index] = (Boolean)value;
+            } else if (obj instanceof byte[] arr) {
+                arr[index] = (Byte)value;
+            } else if (obj instanceof double[] arr) {
+                arr[index] = (Double)value;
+            } else if (obj instanceof float[] arr) {
+                arr[index] = (Float)value;
+            } else if (obj instanceof int[] arr) {
+                arr[index] = (Integer)value;
+            } else if (obj instanceof long[] arr) {
+                arr[index] = (Long)value;
+            } else if (obj instanceof short[] arr) {
+                arr[index] = (Short)value;
             } else {
                 throw new IllegalArgumentException("The '" + name + "' property of the " +
                         bean.getClass().getName() + " class is not a List or Array");
@@ -476,10 +471,10 @@ public class BeanUtils {
     private static Throwable unwrapThrowable(Throwable t) {
         Throwable t2 = t;
         while (true) {
-            if (t2 instanceof InvocationTargetException) {
-                t2 = ((InvocationTargetException)t2).getTargetException();
-            } else if (t2 instanceof UndeclaredThrowableException) {
-                t2 = ((UndeclaredThrowableException)t2).getUndeclaredThrowable();
+            if (t2 instanceof InvocationTargetException e) {
+                t2 = e.getTargetException();
+            } else if (t2 instanceof UndeclaredThrowableException e) {
+                t2 = e.getUndeclaredThrowable();
             } else {
                 return t2;
             }
@@ -498,8 +493,7 @@ public class BeanUtils {
         Class<?> type = bean.getClass();
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForSetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?>) {
-            Map<?, ?> map = (Map<?, ?>)bean;
+        } else if (bean instanceof Map<?, ?> map) {
             Object value = map.get(name);
             if (value == null) {
                 type = Object.class;
@@ -531,8 +525,7 @@ public class BeanUtils {
         Class<?> type = bean.getClass();
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForGetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?>) {
-            Map<?, ?> map = (Map<?, ?>)bean;
+        } else if (bean instanceof Map<?, ?> map) {
             Object value = map.get(name);
             if (value == null) {
                 type = Object.class;

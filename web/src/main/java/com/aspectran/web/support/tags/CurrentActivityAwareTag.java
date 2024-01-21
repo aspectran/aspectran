@@ -28,6 +28,8 @@ import jakarta.servlet.jsp.JspTagException;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
+import java.io.Serial;
+
 /**
  * Superclass for all tags that require an {@link Activity}.
  *
@@ -35,6 +37,7 @@ import jakarta.servlet.jsp.tagext.TryCatchFinally;
  */
 public abstract class CurrentActivityAwareTag extends TagSupport implements TryCatchFinally {
 
+    @Serial
     private static final long serialVersionUID = 2941680793598183983L;
 
     /** Logger available to subclasses. */

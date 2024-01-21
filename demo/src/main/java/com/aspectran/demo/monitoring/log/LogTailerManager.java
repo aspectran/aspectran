@@ -15,6 +15,7 @@
  */
 package com.aspectran.demo.monitoring.log;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.websocket.Session;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class LogTailerManager {
 
     private final LogtailEndpoint endpoint;
 
-    public LogTailerManager(LogtailEndpoint endpoint, LogTailer[] tailers) {
+    public LogTailerManager(@NonNull LogtailEndpoint endpoint, LogTailer[] tailers) {
         this.endpoint = endpoint;
         this.tailers = new HashMap<>();
         endpoint.setLogTailerManager(this);
@@ -47,7 +48,7 @@ public class LogTailerManager {
         }
     }
 
-    void join(Session session, String[] names) {
+    void join(@NonNull Session session, String[] names) {
         List<String> list = new ArrayList<>();
         String[] existingNames = (String[])session.getUserProperties().get(TAILERS_PROPERTY);
         if (existingNames != null) {
@@ -70,7 +71,7 @@ public class LogTailerManager {
         session.getUserProperties().put(TAILERS_PROPERTY, list.toArray(new String[0]));
     }
 
-    void release(Session session) {
+    void release(@NonNull Session session) {
         String[] names = (String[])session.getUserProperties().get(TAILERS_PROPERTY);
         if (names != null) {
             for (String name : names) {

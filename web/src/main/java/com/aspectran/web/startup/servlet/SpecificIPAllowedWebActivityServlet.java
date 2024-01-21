@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -32,6 +33,7 @@ import java.util.StringTokenizer;
  */
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
+    @Serial
     private static final long serialVersionUID = -2369788867122156319L;
 
     private static final Logger logger = LoggerFactory.getLogger(SpecificIPAllowedWebActivityServlet.class);

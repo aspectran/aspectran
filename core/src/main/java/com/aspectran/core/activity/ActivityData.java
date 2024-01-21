@@ -21,6 +21,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import java.util.Set;
  */
 public class ActivityData extends HashMap<String, Object> {
 
+    @Serial
     private static final long serialVersionUID = -4557424414862800204L;
 
     private static final Object PREEMPTED = new Object();

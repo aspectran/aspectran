@@ -19,6 +19,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.utils.ExceptionUtils;
 
+import java.io.Serial;
+
 /**
  * Thrown if an error occurs while transforming the data needed for a response.
  *
@@ -26,6 +28,7 @@ import com.aspectran.utils.ExceptionUtils;
  */
 public class TransformResponseException extends ResponseException {
 
+    @Serial
     private static final long serialVersionUID = -2902489274291058715L;
 
     private final TransformRule transformRule;

@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Collection;
@@ -549,11 +550,12 @@ public abstract class Assert {
         throw new IllegalArgumentException(result);
     }
 
-    private static boolean endsWithSeparator(String msg) {
+    private static boolean endsWithSeparator(@NonNull String msg) {
         return (msg.endsWith(":") || msg.endsWith(";") || msg.endsWith(",") || msg.endsWith("."));
     }
 
-    private static String messageWithTypeName(String msg, @Nullable Object typeName) {
+    @NonNull
+    private static String messageWithTypeName(@NonNull String msg, @Nullable Object typeName) {
         return msg + (msg.endsWith(" ") ? "" : ": ") + typeName;
     }
 

@@ -291,7 +291,9 @@ public class HelpFormatter {
         // if the Option has a value and a non blank arg name
         if (option.hasValue() && (option.getValueName() == null || !option.getValueName().isEmpty())) {
             sb.append(option.isWithEqualSign() ? '=' : LONG_OPTION_SEPARATOR);
-            sb.append(ARG_BRACKET_OPEN).append(option.getValueName() != null ? option.getValueName() : getArgName()).append(ARG_BRACKET_CLOSE);
+            sb.append(ARG_BRACKET_OPEN);
+            sb.append(option.getValueName() != null ? option.getValueName() : getArgName());
+            sb.append(ARG_BRACKET_CLOSE);
         }
         if (!required) {
             sb.append(OPTIONAL_BRACKET_CLOSE);
@@ -331,7 +333,7 @@ public class HelpFormatter {
         int leftWidth = 0;
         if (!options.isEmpty()) {
             leftWidth = renderOptions(sb, optList);
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 if (StringUtils.hasLength(options.getTitle())) {
                     console.writeLine(options.getTitle());
                 }
@@ -345,7 +347,7 @@ public class HelpFormatter {
         StringBuilder sb = new StringBuilder();
         for (Arguments arguments : argumentsList) {
             renderArguments(sb, arguments, leftWidth);
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 if (StringUtils.hasLength(arguments.getTitle())) {
                     console.writeLine(arguments.getTitle());
                 }
@@ -414,7 +416,9 @@ public class HelpFormatter {
                     lineBuf.append(' ');
                 } else {
                     lineBuf.append(option.isWithEqualSign() ? '=' : LONG_OPTION_SEPARATOR);
-                    lineBuf.append(ARG_BRACKET_OPEN).append(argName != null ? argName : getArgName()).append(ARG_BRACKET_CLOSE);
+                    lineBuf.append(ARG_BRACKET_OPEN);
+                    lineBuf.append(argName != null ? argName : getArgName());
+                    lineBuf.append(ARG_BRACKET_CLOSE);
                 }
             }
             lineBufList.add(lineBuf);

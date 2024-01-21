@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.context.expr.token;
 
+import java.io.Serial;
+
 /**
  * The Class InvalidTokenException.
  */
 public class InvalidTokenException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -3013940354563756601L;
 
     private final Token token;

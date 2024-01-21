@@ -167,13 +167,13 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (!precommitDone) {
             precommitDone = true;
             Response response = activity.getDeclaredResponse();
-            if (response instanceof TransformResponse) {
-                FormatType formatType = ((TransformResponse)response).getFormatType();
+            if (response instanceof TransformResponse transformResponse) {
+                FormatType formatType = transformResponse.getFormatType();
                 if (formatType == null) {
                     try {
                         response.commit(activity);
                     } catch (ResponseException e) {
-                        throw new IOException("Error during precommit", e);
+                        throw new IOException("Error during pre-commit", e);
                     }
                 }
             }

@@ -111,10 +111,9 @@ public class SessionStatsPayload {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof SessionStatsPayload)) {
+        if (!(other instanceof SessionStatsPayload stats)) {
             return false;
         }
-        SessionStatsPayload stats = (SessionStatsPayload)other;
         if (stats.createdSessionCount != createdSessionCount ||
                 stats.expiredSessionCount != expiredSessionCount ||
                 stats.evictedSessionCount != evictedSessionCount ||

@@ -18,7 +18,9 @@ package com.aspectran.core.activity.process;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -29,10 +31,12 @@ import java.util.Objects;
  */
 public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {
 
+    @Serial
     private static final long serialVersionUID = 2567969961069441527L;
 
     private final boolean explicit;
 
+    @Nullable
     private String name;
 
     public ContentList(boolean explicit) {
@@ -49,11 +53,12 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         return explicit;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 

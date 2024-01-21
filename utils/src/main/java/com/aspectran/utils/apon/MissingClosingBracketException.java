@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.apon;
 
+import java.io.Serial;
+
 /**
  * This exception will be thrown when missing closing brackets.
  */
 public class MissingClosingBracketException extends MalformedAponException {
 
+    @Serial
     private static final long serialVersionUID = -6294265620028959255L;
 
     /**

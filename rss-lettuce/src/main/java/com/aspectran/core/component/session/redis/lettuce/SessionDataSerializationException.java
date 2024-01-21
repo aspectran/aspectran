@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session.redis.lettuce;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when an error occurs during serialization or
  * deserialization of session data.
@@ -23,6 +25,7 @@ package com.aspectran.core.component.session.redis.lettuce;
  */
 public class SessionDataSerializationException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -4113369748730396646L;
 
     public SessionDataSerializationException(String msg, Throwable cause) {

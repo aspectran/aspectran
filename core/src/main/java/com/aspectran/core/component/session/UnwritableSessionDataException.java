@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
+import java.io.Serial;
+
 /**
  * Exception raised when session data can not be written.
  *
@@ -22,6 +24,7 @@ package com.aspectran.core.component.session;
  */
 public class UnwritableSessionDataException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -8936664134645201545L;
 
     private final String id;
@@ -30,7 +33,7 @@ public class UnwritableSessionDataException extends Exception {
         super("Unwritable session " + id, t);
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }

@@ -255,6 +255,20 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a method whose parameter type matches exactly the object type.</p>
+     * @param object invoke method on this object
+     * @param methodName get method with this name
+     * @return the value returned by the invoked method
+     * @throws NoSuchMethodException if there is no such accessible method
+     * @throws InvocationTargetException wraps an exception thrown by the method invoked
+     * @throws IllegalAccessException if the requested method is not accessible via reflection
+     */
+    public static Object invokeExactMethod(Object object, String methodName)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return invokeExactMethod(object, methodName, EMPTY_OBJECT_ARRAY, EMPTY_CLASS_PARAMETERS);
+    }
+
+    /**
+     * <p>Invoke a method whose parameter type matches exactly the object type.</p>
      * <p> This is a convenient wrapper for
      * {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * </p>
@@ -297,8 +311,9 @@ public class MethodUtils {
             } else {
                 paramTypes = new Class<?>[arguments];
                 for (int i = 0; i < arguments; i++) {
-                    if (args[i] != null)
+                    if (args[i] != null) {
                         paramTypes[i] = args[i].getClass();
+                    }
                 }
             }
         }
@@ -913,12 +928,14 @@ public class MethodUtils {
             if (this == other) {
                 return true;
             }
-            MethodDescriptor md = (MethodDescriptor)other;
+            if (!(other instanceof MethodDescriptor that)) {
+                return false;
+            }
             return (
-                    exact == md.exact &&
-                    methodName.equals(md.methodName) &&
-                    cls.equals(md.cls) &&
-                    Arrays.equals(paramTypes, md.paramTypes)
+                    exact == that.exact &&
+                    methodName.equals(that.methodName) &&
+                    cls.equals(that.cls) &&
+                    Arrays.equals(paramTypes, that.paramTypes)
                 );
         }
 

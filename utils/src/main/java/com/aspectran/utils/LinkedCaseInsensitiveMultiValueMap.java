@@ -18,6 +18,7 @@ package com.aspectran.utils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import java.util.function.BiConsumer;
  */
 public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2505523262093891621L;
 
     private final Map<String, List<V>> targetMap;
@@ -82,7 +84,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
-    public void addAll(MultiValueMap<String, V> values) {
+    public void addAll(@NonNull MultiValueMap<String, V> values) {
         for (Entry<String, List<V>> entry : values.entrySet()) {
             addAll(entry.getKey(), entry.getValue());
         }
@@ -195,10 +197,9 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
         if (this == other) {
             return true;
         }
-        if (!(other instanceof LinkedCaseInsensitiveMultiValueMap)) {
+        if (!(other instanceof LinkedCaseInsensitiveMultiValueMap<?> otherValues)) {
             return false;
         }
-        LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;
         return this.targetMap.equals(otherValues.targetMap);
     }
 

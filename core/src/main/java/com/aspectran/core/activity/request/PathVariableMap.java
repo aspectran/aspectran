@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import java.util.Map;
  */
 public class PathVariableMap extends HashMap<Token, String> {
 
+    @Serial
     private static final long serialVersionUID = -3327966082696522044L;
 
     public void applyTo(Translet translet) {

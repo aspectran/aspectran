@@ -18,6 +18,7 @@ package com.aspectran.utils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
@@ -50,6 +51,7 @@ import java.util.function.Function;
  */
 public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable, Cloneable {
 
+    @Serial
     private static final long serialVersionUID = 4431694618621892446L;
 
     private final LinkedHashMap<String, V> targetMap;
@@ -150,7 +152,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
 
     @Override
     public boolean containsKey(Object key) {
-        return (key instanceof String && this.caseInsensitiveKeys.containsKey(convertKey((String) key)));
+        return (key instanceof String str && this.caseInsensitiveKeys.containsKey(convertKey(str)));
     }
 
     @Override
@@ -161,8 +163,8 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     @Nullable
     public V get(Object key) {
-        if (key instanceof String) {
-            String caseInsensitiveKey = this.caseInsensitiveKeys.get(convertKey((String) key));
+        if (key instanceof String str) {
+            String caseInsensitiveKey = this.caseInsensitiveKeys.get(convertKey(str));
             if (caseInsensitiveKey != null) {
                 return this.targetMap.get(caseInsensitiveKey);
             }
@@ -173,8 +175,8 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     @Nullable
     public V getOrDefault(Object key, V defaultValue) {
-        if (key instanceof String) {
-            String caseInsensitiveKey = this.caseInsensitiveKeys.get(convertKey((String) key));
+        if (key instanceof String str) {
+            String caseInsensitiveKey = this.caseInsensitiveKeys.get(convertKey(str));
             if (caseInsensitiveKey != null) {
                 return this.targetMap.get(caseInsensitiveKey);
             }
@@ -219,7 +221,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
 
     @Override
     @Nullable
-    public V computeIfAbsent(String key, Function<? super String, ? extends V> mappingFunction) {
+    public V computeIfAbsent(String key, @NonNull Function<? super String, ? extends V> mappingFunction) {
         String oldKey = this.caseInsensitiveKeys.putIfAbsent(convertKey(key), key);
         if (oldKey != null) {
             V oldKeyValue = this.targetMap.get(oldKey);
@@ -235,8 +237,8 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     @Nullable
     public V remove(Object key) {
-        if (key instanceof String) {
-            String caseInsensitiveKey = removeCaseInsensitiveKey((String) key);
+        if (key instanceof String str) {
+            String caseInsensitiveKey = removeCaseInsensitiveKey(str);
             if (caseInsensitiveKey != null) {
                 return this.targetMap.remove(caseInsensitiveKey);
             }

@@ -22,7 +22,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * @author Juho Jeong
  */
-public class BooleanUtils {
+public abstract class BooleanUtils {
 
     @NonNull
     public static Boolean toBooleanObject(String booleanString) {

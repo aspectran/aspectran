@@ -18,11 +18,14 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
 
+import java.io.Serial;
+
 /**
  * The Class UnsupportedBeanScopeException.
  */
 public class UnsupportedBeanScopeException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = -5350555208208267662L;
 
     /**

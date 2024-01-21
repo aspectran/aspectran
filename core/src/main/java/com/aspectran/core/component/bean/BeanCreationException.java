@@ -17,11 +17,14 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 
+import java.io.Serial;
+
 /**
  * The Class BeanCreationException.
  */
 public class BeanCreationException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = -4711272699122321571L;
 
     private final BeanRule beanRule;

@@ -15,11 +15,14 @@
  */
 package com.aspectran.utils.apon;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when an invalid parameter value is encountered.
  */
 public class InvalidParameterValueException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -459157992330424751L;
 
     /**

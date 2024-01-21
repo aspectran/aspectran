@@ -17,13 +17,16 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.ActivityException;
 
+import java.io.Serial;
+
 /**
  * The Class ResponseException.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class ResponseException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -7446545758142913255L;
 
     /**

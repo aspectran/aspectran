@@ -81,12 +81,11 @@ public class WebActivityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
-            HttpServletRequest httpRequest = (HttpServletRequest)request;
+        if (request instanceof HttpServletRequest httpRequest && response instanceof HttpServletResponse httpResponse) {
             if (bypassPatterns != null) {
                 for (WildcardPattern pattern : bypassPatterns) {
                     if (pattern.matches(httpRequest.getRequestURI())) {
-                        if (defaultServletHttpRequestHandler.handleRequest(httpRequest, (HttpServletResponse)response)) {
+                        if (defaultServletHttpRequestHandler.handleRequest(httpRequest, httpResponse)) {
                             return;
                         }
                     }

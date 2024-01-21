@@ -17,11 +17,14 @@ package com.aspectran.web.activity.request;
 
 import com.aspectran.core.activity.request.RequestParseException;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when multipart request parse fails.
  */
 public class MultipartRequestParseException extends RequestParseException {
 
+    @Serial
     private static final long serialVersionUID = -3261897166973264629L;
 
     /**

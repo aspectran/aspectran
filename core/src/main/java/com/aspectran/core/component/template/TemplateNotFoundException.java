@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.component.template;
 
+import java.io.Serial;
+
 /**
  * The Class TemplateNotFoundException.
  */
 public class TemplateNotFoundException extends TemplateException {
 
+    @Serial
     private static final long serialVersionUID = 7022297599581677022L;
 
     private final String templateId;

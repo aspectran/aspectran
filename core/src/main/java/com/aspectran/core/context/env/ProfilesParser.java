@@ -16,6 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ final class ProfilesParser {
     private ProfilesParser() {
     }
 
+    @NonNull
     static Profiles parse(String expression) {
         Profiles parsed = parseExpression(expression);
         return new ParsedProfiles(expression, parsed);
@@ -51,7 +53,7 @@ final class ProfilesParser {
         return parseTokens(expression, tokens, Operator.NONE);
     }
 
-    private static Profiles parseTokens(String expression, StringTokenizer tokens, Operator operator) {
+    private static Profiles parseTokens(String expression, @NonNull StringTokenizer tokens, Operator operator) {
         List<Profiles> elements = new ArrayList<>();
         String token = null;
         int count = 0;
@@ -96,7 +98,7 @@ final class ProfilesParser {
         return merge(expression, elements, Operator.OR);
     }
 
-    private static Profiles merge(String expression, List<Profiles> elements, Operator operator) {
+    private static Profiles merge(String expression, @NonNull List<Profiles> elements, Operator operator) {
         assertWellFormed(expression, !elements.isEmpty(), "");
         if (elements.size() == 1) {
             return elements.get(0);
@@ -122,7 +124,7 @@ final class ProfilesParser {
         });
     }
 
-    private static void assertWellFormed(String expression, List<Profiles> elements, int size) {
+    private static void assertWellFormed(String expression, @NonNull List<Profiles> elements, int size) {
         assertWellFormed(expression, elements.size() == size,
             "each profile or set of them must be separated by commas (',')");
     }
@@ -131,22 +133,27 @@ final class ProfilesParser {
         Assert.isTrue(wellFormed, () -> "Malformed profile expression \"" + expression + "\": " + message);
     }
 
+    @NonNull
     private static Profiles or(Profiles... profiles) {
         return activeProfile -> Arrays.stream(profiles).anyMatch(isMatch(activeProfile));
     }
 
+    @NonNull
     private static Profiles and(Profiles... profiles) {
         return activeProfile -> Arrays.stream(profiles).allMatch(isMatch(activeProfile));
     }
 
+    @NonNull
     private static Profiles not(Profiles profiles) {
         return activeProfile -> !profiles.matches(activeProfile);
     }
 
+    @NonNull
     private static Profiles equals(String profile) {
         return activeProfile -> activeProfile.test(profile);
     }
 
+    @NonNull
     private static Predicate<Profiles> isMatch(Predicate<String> activeProfiles) {
         return profiles -> profiles.matches(activeProfiles);
     }
@@ -172,8 +179,7 @@ final class ProfilesParser {
             if (this == other) {
                 return true;
             }
-            if (other instanceof ParsedProfiles) {
-                ParsedProfiles that = (ParsedProfiles)other;
+            if (other instanceof ParsedProfiles that) {
                 return expression.equals(that.expression);
             }
             return false;

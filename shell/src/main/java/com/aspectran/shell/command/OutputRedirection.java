@@ -65,8 +65,7 @@ public class OutputRedirection {
         if (this == other) {
             return true;
         }
-        if (other instanceof OutputRedirection) {
-            OutputRedirection redirection = (OutputRedirection)other;
+        if (other instanceof OutputRedirection redirection) {
             return redirection.getOperand().equals(operand) &&
                     redirection.getOperator().equals(operator);
         }
@@ -95,7 +94,7 @@ public class OutputRedirection {
         StringBuilder sb = new StringBuilder();
         if (redirectionList != null) {
             for (OutputRedirection redirection : redirectionList) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(" ");
                 }
                 sb.append(redirection.getOperator()).append(" ");

@@ -17,13 +17,16 @@ package com.aspectran.core.component.template;
 
 import com.aspectran.core.context.rule.TemplateRule;
 
+import java.io.Serial;
+
 /**
  * Thrown when an error occurs during template rendering.
- * 
+ *
  * <p>Created: 2016. 01. 15.</p>
  */
 public class TemplateRenderingException extends TemplateException {
 
+    @Serial
     private static final long serialVersionUID = -1495281620922964138L;
 
     private final TemplateRule templateRule;

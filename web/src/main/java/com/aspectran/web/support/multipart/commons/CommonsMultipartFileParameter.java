@@ -50,8 +50,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
 
     @Override
     public File getFile() {
-        if (fileItem instanceof DiskFileItem) {
-            return ((DiskFileItem)fileItem).getStoreLocation();
+        if (fileItem instanceof DiskFileItem diskFileItem) {
+            return diskFileItem.getStoreLocation();
         } else {
             return null;
         }

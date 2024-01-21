@@ -79,7 +79,7 @@ public class BeanRuleAnalyzer {
     }
 
     @NonNull
-    static Class<?> determineFactoryMethodTargetBeanClass(@NonNull Class<?> beanClass, BeanRule beanRule)
+    static Class<?> determineFactoryMethodTargetBeanClass(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
             throws BeanRuleException {
         if (beanRule.getFactoryMethod() != null) {
             Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
@@ -130,7 +130,8 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void determineDestroyMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
+    static void determineDestroyMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
+        throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);

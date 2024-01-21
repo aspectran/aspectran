@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
+import java.io.Serial;
+
 /**
  * This exception occurs when the maximum number of sessions in the session cache is exceeded.
  *
@@ -22,6 +24,7 @@ package com.aspectran.core.component.session;
  */
 public class MaxSessionsExceededException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 7481714758313822060L;
 
     public static final String MAX_SESSIONS_EXCEEDED = "Max Sessions Exceeded";

@@ -18,11 +18,14 @@ package com.aspectran.core.activity.aspect;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown if an error occurs while executing the advice.
  */
 public class AspectAdviceException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = 6813516429436576091L;
 
     private final AspectAdviceRule aspectAdviceRule;

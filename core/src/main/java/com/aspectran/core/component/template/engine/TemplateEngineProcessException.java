@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.component.template.engine;
 
+import java.io.Serial;
+
 /**
  * The Class TemplateEngineProcessException.
- * 
+ *
  * <p>Created: 2016. 01. 23.</p>
  */
 public class TemplateEngineProcessException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 3136366504332981036L;
 
     /**

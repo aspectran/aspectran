@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SessionData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6253355753257200708L;
 
     private String id;

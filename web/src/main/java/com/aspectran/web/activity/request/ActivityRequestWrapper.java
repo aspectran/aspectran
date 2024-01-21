@@ -43,9 +43,9 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public void setRequest(@NonNull ServletRequest request) {
         super.setRequest(request);
-        Map<String, Object> requestAttributeMap = requestAdapter.getAttributeMap();
-        if (requestAttributeMap instanceof RequestAttributeMap) {
-            ((RequestAttributeMap)requestAttributeMap).setRequest(request);
+        Map<String, Object> attributeMap = requestAdapter.getAttributeMap();
+        if (attributeMap instanceof RequestAttributeMap requestAttributeMap) {
+            requestAttributeMap.setRequest(request);
         }
     }
 
@@ -128,16 +128,18 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
     public Locale getLocale() {
         if (requestAdapter.getLocale() == null) {
             return super.getLocale();
+        } else {
+            return requestAdapter.getLocale();
         }
-        return requestAdapter.getLocale();
     }
 
     @Override
     public Enumeration<Locale> getLocales() {
         if (requestAdapter.getLocale() == null) {
             return super.getLocales();
+        } else {
+            return Collections.enumeration(Collections.singleton(requestAdapter.getLocale()));
         }
-        return Collections.enumeration(Collections.singleton(requestAdapter.getLocale()));
     }
 
 }

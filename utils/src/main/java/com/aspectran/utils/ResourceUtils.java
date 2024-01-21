@@ -34,7 +34,7 @@ import java.net.URLConnection;
 /**
  * A class to simplify access to ResourceUtils through the classloader.
  */
-public class ResourceUtils {
+public abstract class ResourceUtils {
 
     /** Pseudo URL prefix for loading from the class path: "classpath:". */
     public static final String CLASSPATH_URL_PREFIX = "classpath:";

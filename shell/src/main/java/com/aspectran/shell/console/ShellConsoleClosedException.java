@@ -15,11 +15,14 @@
  */
 package com.aspectran.shell.console;
 
+import java.io.Serial;
+
 /**
  * This exception raised if a console is closed.
  */
 public class ShellConsoleClosedException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -8812494142589655857L;
 
     /**

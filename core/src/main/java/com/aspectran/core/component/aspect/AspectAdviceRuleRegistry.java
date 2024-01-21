@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -58,7 +59,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         }
     }
 
-    public void merge(AspectAdviceRuleRegistry aarr) {
+    public void merge(@NonNull AspectAdviceRuleRegistry aarr) {
         if (aarr.getSettingsAdviceRuleList() != null) {
             for (SettingsAdviceRule sar : aarr.getSettingsAdviceRuleList()) {
                 addAspectAdviceRule(sar);
@@ -146,7 +147,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         settingsAdviceRuleList.add(0, settingsAdviceRule);
     }
 
-    public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+    public void addAspectAdviceRule(@NonNull AspectAdviceRule aspectAdviceRule) {
         if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
             addBeforeAdviceRule(aspectAdviceRule);
         } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
@@ -207,7 +208,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         exceptionRuleList.add(0, exceptionRule);
     }
 
-    private int findLessThanIndex(List<AspectAdviceRule> adviceRuleList, int leftInt) {
+    private int findLessThanIndex(@NonNull List<AspectAdviceRule> adviceRuleList, int leftInt) {
         for (int i = 0; i < adviceRuleList.size(); i++) {
             int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
             if (leftInt < rightInt) {
@@ -217,7 +218,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         return adviceRuleList.size();
     }
 
-    private int findGreaterThanOrEqualIndex(List<AspectAdviceRule> adviceRuleList, int leftInt) {
+    private int findGreaterThanOrEqualIndex(@NonNull List<AspectAdviceRule> adviceRuleList, int leftInt) {
         for (int i = 0; i < adviceRuleList.size(); i++) {
             int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
             if (leftInt >= rightInt) {

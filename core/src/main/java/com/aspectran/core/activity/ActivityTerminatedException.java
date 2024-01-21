@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when activity is terminated while preparing or performing.
  */
 public class ActivityTerminatedException extends ActivityPerformException {
 
+    @Serial
     private static final long serialVersionUID = 6615572357964634821L;
 
     /**

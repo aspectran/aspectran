@@ -45,7 +45,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private boolean debugMode;
 
-    AbstractAppendHandler(ActivityRuleAssistant assistant) {
+    AbstractAppendHandler(@NonNull ActivityRuleAssistant assistant) {
         this.assistant = assistant;
         this.environmentProfiles = assistant.getEnvironmentProfiles();
     }

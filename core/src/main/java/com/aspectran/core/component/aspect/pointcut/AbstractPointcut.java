@@ -17,6 +17,7 @@ package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public abstract class AbstractPointcut implements Pointcut {
     }
 
     @Override
-    public boolean matches(PointcutPattern pointcutPattern) {
+    public boolean matches(@NonNull PointcutPattern pointcutPattern) {
         return matches(pointcutPattern.getTransletNamePattern(), pointcutPattern.getBeanIdPattern(),
                 pointcutPattern.getClassNamePattern(), pointcutPattern.getMethodNamePattern());
     }
@@ -116,13 +117,13 @@ public abstract class AbstractPointcut implements Pointcut {
     }
 
     @Override
-    public boolean exists(PointcutPattern pointcutPattern) {
+    public boolean exists(@NonNull PointcutPattern pointcutPattern) {
         return exists(pointcutPattern.getTransletNamePattern(), pointcutPattern.getBeanIdPattern(),
                 pointcutPattern.getClassNamePattern(), pointcutPattern.getMethodNamePattern());
     }
 
     /**
-     * Returns whether or not corresponding to the point cut pattern rules.
+     * Returns whether corresponding to the point cut pattern rules.
      * It is recognized to {@code true} if the operands are {@code null}.
      * @param pointcutPatternRule the pointcut pattern
      * @param transletName the translet name
@@ -131,7 +132,7 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param methodName the name of the method that is executed in the bean
      * @return true if exists matched; false otherwise
      */
-    protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName,
+    protected boolean exists(@NonNull PointcutPatternRule pointcutPatternRule, String transletName,
                              String beanId, String className, String methodName) {
         boolean matched = true;
         PointcutPattern pp = pointcutPatternRule.getPointcutPattern();

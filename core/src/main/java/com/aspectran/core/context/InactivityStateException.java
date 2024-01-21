@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.context;
 
+import java.io.Serial;
+
 /**
  * Exception occurs when there is no current activity.
  */
 public class InactivityStateException extends IllegalStateException {
 
+    @Serial
     private static final long serialVersionUID = 8373382682956966522L;
 
     /**

@@ -18,6 +18,7 @@ package com.aspectran.core.component.template;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
 
+import java.io.Serial;
 import java.util.Locale;
 
 /**
@@ -25,6 +26,7 @@ import java.util.Locale;
  */
 public class TemplateModel extends ActivityData {
 
+    @Serial
     private static final long serialVersionUID = -1414688689441309354L;
 
     public TemplateModel(Activity activity) {

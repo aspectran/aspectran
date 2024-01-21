@@ -456,8 +456,8 @@ public class DefaultSession implements Session {
      * @param value the bound value
      */
     protected void unbindValue(String name, Object value) {
-        if (value instanceof SessionBindingListener) {
-            ((SessionBindingListener)value).valueUnbound(this, name, value);
+        if (value instanceof SessionBindingListener listener) {
+            listener.valueUnbound(this, name, value);
         }
     }
 
@@ -468,8 +468,8 @@ public class DefaultSession implements Session {
      * @param value the bound value
      */
     protected void bindValue(String name, Object value) {
-        if (value instanceof SessionBindingListener) {
-            ((SessionBindingListener)value).valueBound(this, name, value);
+        if (value instanceof SessionBindingListener listener) {
+            listener.valueBound(this, name, value);
         }
     }
 

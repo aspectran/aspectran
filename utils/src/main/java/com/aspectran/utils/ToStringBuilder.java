@@ -123,14 +123,14 @@ public class ToStringBuilder {
     public void appendSize(String name, Object object) {
         if (object != null) {
             appendName(name);
-            if (object instanceof Map<?, ?>) {
-                buffer.append(((Map<?, ?>)object).size());
-            } else if (object instanceof Collection<?>) {
-                buffer.append(((Collection<?>)object).size());
+            if (object instanceof Map<?, ?> map) {
+                buffer.append(map.size());
+            } else if (object instanceof Collection<?> collection) {
+                buffer.append(collection.size());
             } else if (object.getClass().isArray()) {
                 buffer.append(Array.getLength(object));
-            } else if (object instanceof CharSequence) {
-                buffer.append(((CharSequence)object).length());
+            } else if (object instanceof CharSequence charSequence) {
+                buffer.append(charSequence.length());
             }
         }
     }
@@ -153,14 +153,14 @@ public class ToStringBuilder {
     private void append(Object object) {
         if (object == null) {
             buffer.append((Object)null);
-        } else if (object instanceof CharSequence) {
-            buffer.append(((CharSequence)object));
-        } else if (object instanceof Map<?, ?>) {
-            append((Map<?, ?>)object);
-        } else if (object instanceof Collection<?>) {
-            append((Collection<?>)object);
-        } else if (object instanceof Enumeration<?>) {
-            append((Enumeration<?>)object);
+        } else if (object instanceof CharSequence charSequence) {
+            buffer.append(charSequence);
+        } else if (object instanceof Map<?, ?> map) {
+            append(map);
+        } else if (object instanceof Collection<?> collection) {
+            append(collection);
+        } else if (object instanceof Enumeration<?> enumeration) {
+            append(enumeration);
         } else if (object.getClass().isArray()) {
             buffer.append("[");
             int len = Array.getLength(object);
@@ -173,12 +173,12 @@ public class ToStringBuilder {
                 append(value);
             }
             buffer.append("]");
-        } else if (object instanceof Parameters) {
+        } else if (object instanceof Parameters parameters) {
             buffer.append("{");
-            append((Parameters)object);
+            append(parameters);
             buffer.append("}");
-        } else if (object instanceof ToStringBuilder) {
-            buffer.append(((ToStringBuilder)object).getBuffer());
+        } else if (object instanceof ToStringBuilder toStringBuilder) {
+            buffer.append(toStringBuilder.getBuffer());
         } else {
             buffer.append(object);
         }

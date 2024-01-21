@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command.option;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import java.util.Map;
  */
 public class OptionGroup implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 5281255012541670780L;
 
     /** Hold the options */
@@ -77,8 +79,8 @@ public class OptionGroup implements Serializable {
             selected = null;
             return;
         }
-        
-        // if no option has already been selected or the 
+
+        // if no option has already been selected or the
         // same option is being reselected then set the
         // selected member variable
         if (selected == null || selected.equals(option.getKey())) {

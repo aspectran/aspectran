@@ -27,6 +27,7 @@ import jakarta.servlet.jsp.JspTagException;
 import jakarta.servlet.jsp.PageContext;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import static com.aspectran.web.support.tags.TokenTag.TOKEN_EVALUATOR_PAGE_ATTRIBUTE;
 
@@ -89,6 +90,7 @@ import static com.aspectran.web.support.tags.TokenTag.TOKEN_EVALUATOR_PAGE_ATTRI
  */
 public class EvalTag extends HtmlEscapingAwareTag {
 
+    @Serial
     private static final long serialVersionUID = -7537957372386484506L;
 
     @Nullable

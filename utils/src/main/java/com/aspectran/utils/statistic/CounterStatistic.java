@@ -32,6 +32,7 @@
 //
 package com.aspectran.utils.statistic;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -107,7 +108,7 @@ public class CounterStatistic {
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
+        ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
         tsb.append("current", current.get());
         tsb.append("max", max.get());
         tsb.append("total", total.sum());

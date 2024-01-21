@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.logging.stdout;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 
 /**
@@ -40,7 +41,9 @@ public class StdOutLogger implements Logger {
     @Override
     public void error(String s, Throwable e) {
         System.err.println(s);
-        e.printStackTrace(System.err);
+        if (e != null) {
+            e.printStackTrace(System.err);
+        }
     }
 
     @Override
@@ -56,7 +59,9 @@ public class StdOutLogger implements Logger {
     @Override
     public void debug(String s, Throwable e) {
         System.out.println(s);
-        e.printStackTrace(System.out);
+        if (e != null) {
+            e.printStackTrace(System.out);
+        }
     }
 
     @Override
@@ -77,7 +82,9 @@ public class StdOutLogger implements Logger {
     @Override
     public void warn(String s, Throwable e) {
         System.out.println(s);
-        e.printStackTrace(System.out);
+        if (e != null) {
+            e.printStackTrace(System.out);
+        }
     }
 
 }

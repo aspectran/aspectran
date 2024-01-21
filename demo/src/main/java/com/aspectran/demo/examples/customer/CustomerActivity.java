@@ -25,6 +25,7 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.response.DefaultRestResponse;
 import com.aspectran.web.activity.response.RestResponse;
 
@@ -63,7 +64,7 @@ public class CustomerActivity {
 
     @RequestToPost
     @Description("Add a new customer to the repository.")
-    public RestResponse addCustomer(Translet translet, @Required Customer customer) {
+    public RestResponse addCustomer(@NonNull Translet translet, @Required Customer customer) {
         int id = repository.insertCustomer(customer);
         String resourceUri = translet.getRequestName() + "/" + id;
         return new DefaultRestResponse(customer)

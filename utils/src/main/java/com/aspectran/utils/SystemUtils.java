@@ -22,7 +22,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * Helpers for java.lang.System.
  */
-public class SystemUtils {
+public abstract class SystemUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemUtils.class);
 

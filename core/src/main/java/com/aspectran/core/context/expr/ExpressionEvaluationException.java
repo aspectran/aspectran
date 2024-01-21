@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.context.expr;
 
+import java.io.Serial;
+
 /**
  * Error during evaluation of expression.
  */
 public class ExpressionEvaluationException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 4909566791419959020L;
 
     private final String expression;

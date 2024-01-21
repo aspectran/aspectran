@@ -34,11 +34,17 @@ import java.util.StringJoiner;
 public abstract class ObjectUtils {
 
     private static final String EMPTY_STRING = "";
+
     private static final String NULL_STRING = "null";
+
     private static final String ARRAY_START = "[";
+
     private static final String ARRAY_END = "]";
+
     private static final String EMPTY_ARRAY = ARRAY_START + ARRAY_END;
+
     private static final String ARRAY_ELEMENT_SEPARATOR = ", ";
+
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /**
@@ -83,20 +89,20 @@ public abstract class ObjectUtils {
         if (obj == null) {
             return true;
         }
-        if (obj instanceof Optional) {
-            return ((Optional) obj).isEmpty();
+        if (obj instanceof Optional optional) {
+            return optional.isEmpty();
         }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).length() == 0;
+        if (obj instanceof CharSequence charSequence) {
+            return charSequence.isEmpty();
         }
         if (obj.getClass().isArray()) {
             return Array.getLength(obj) == 0;
         }
-        if (obj instanceof Collection) {
-            return ((Collection) obj).isEmpty();
+        if (obj instanceof Collection collection) {
+            return collection.isEmpty();
         }
-        if (obj instanceof Map) {
-            return ((Map) obj).isEmpty();
+        if (obj instanceof Map map) {
+            return map.isEmpty();
         }
         // else
         return false;
@@ -113,7 +119,7 @@ public abstract class ObjectUtils {
      */
     public static Object[] toObjectArray(@Nullable Object source) {
         if (source instanceof Object[]) {
-            return (Object[]) source;
+            return (Object[])source;
         }
         if (source == null) {
             return EMPTY_OBJECT_ARRAY;
@@ -166,32 +172,32 @@ public abstract class ObjectUtils {
      * @return whether the given objects are equal
      */
     private static boolean arrayEquals(Object o1, Object o2) {
-        if (o1 instanceof Object[] && o2 instanceof Object[]) {
-            return Arrays.equals((Object[])o1, (Object[])o2);
+        if (o1 instanceof Object[] a1 && o2 instanceof Object[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof boolean[] && o2 instanceof boolean[]) {
-            return Arrays.equals((boolean[])o1, (boolean[])o2);
+        if (o1 instanceof boolean[] a1 && o2 instanceof boolean[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof byte[] && o2 instanceof byte[]) {
-            return Arrays.equals((byte[])o1, (byte[])o2);
+        if (o1 instanceof byte[] a1 && o2 instanceof byte[] a2) {
+            return Arrays.equals(a1, a2);
         }
         if (o1 instanceof char[] && o2 instanceof char[]) {
             return Arrays.equals((char[])o1, (char[])o2);
         }
-        if (o1 instanceof double[] && o2 instanceof double[]) {
-            return Arrays.equals((double[])o1, (double[])o2);
+        if (o1 instanceof double[] a1 && o2 instanceof double[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof float[] && o2 instanceof float[]) {
-            return Arrays.equals((float[])o1, (float[])o2);
+        if (o1 instanceof float[] a1 && o2 instanceof float[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof int[] && o2 instanceof int[]) {
-            return Arrays.equals((int[])o1, (int[])o2);
+        if (o1 instanceof int[] a1 && o2 instanceof int[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof long[] && o2 instanceof long[]) {
-            return Arrays.equals((long[])o1, (long[])o2);
+        if (o1 instanceof long[] a1 && o2 instanceof long[] a2) {
+            return Arrays.equals(a1, a2);
         }
-        if (o1 instanceof short[] && o2 instanceof short[]) {
-            return Arrays.equals((short[])o1, (short[])o2);
+        if (o1 instanceof short[] a1 && o2 instanceof short[] a2) {
+            return Arrays.equals(a1, a2);
         }
         return false;
     }
@@ -228,32 +234,32 @@ public abstract class ObjectUtils {
             return 0;
         }
         if (obj.getClass().isArray()) {
-            if (obj instanceof Object[]) {
-                return Arrays.hashCode((Object[])obj);
+            if (obj instanceof Object[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof boolean[]) {
-                return Arrays.hashCode((boolean[])obj);
+            if (obj instanceof boolean[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof byte[]) {
-                return Arrays.hashCode((byte[])obj);
+            if (obj instanceof byte[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof char[]) {
-                return Arrays.hashCode((char[])obj);
+            if (obj instanceof char[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof double[]) {
-                return Arrays.hashCode((double[])obj);
+            if (obj instanceof double[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof float[]) {
-                return Arrays.hashCode((float[])obj);
+            if (obj instanceof float[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof int[]) {
-                return Arrays.hashCode((int[])obj);
+            if (obj instanceof int[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof long[]) {
-                return Arrays.hashCode((long[])obj);
+            if (obj instanceof long[] arr) {
+                return Arrays.hashCode(arr);
             }
-            if (obj instanceof short[]) {
-                return Arrays.hashCode((short[])obj);
+            if (obj instanceof short[] arr) {
+                return Arrays.hashCode(arr);
             }
         }
         return obj.hashCode();
@@ -347,32 +353,32 @@ public abstract class ObjectUtils {
         if (obj instanceof String) {
             return (String)obj;
         }
-        if (obj instanceof Object[]) {
-            return nullSafeToString((Object[])obj);
+        if (obj instanceof Object[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof boolean[]) {
-            return nullSafeToString((boolean[])obj);
+        if (obj instanceof boolean[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof byte[]) {
-            return nullSafeToString((byte[])obj);
+        if (obj instanceof byte[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof char[]) {
-            return nullSafeToString((char[])obj);
+        if (obj instanceof char[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof double[]) {
-            return nullSafeToString((double[])obj);
+        if (obj instanceof double[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof float[]) {
-            return nullSafeToString((float[])obj);
+        if (obj instanceof float[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof int[]) {
-            return nullSafeToString((int[])obj);
+        if (obj instanceof int[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof long[]) {
-            return nullSafeToString((long[])obj);
+        if (obj instanceof long[] arr) {
+            return nullSafeToString(arr);
         }
-        if (obj instanceof short[]) {
-            return nullSafeToString((short[])obj);
+        if (obj instanceof short[] arr) {
+            return nullSafeToString(arr);
         }
         String str = obj.toString();
         return (str != null ? str : EMPTY_STRING);

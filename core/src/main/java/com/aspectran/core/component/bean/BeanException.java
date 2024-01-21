@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.component.bean;
 
+import java.io.Serial;
+
 /**
  * This class is the basic exception that gets thrown from the bean package.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class BeanException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 2598750999734896601L;
 
     /**

@@ -16,12 +16,13 @@
 package com.aspectran.demo.examples;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.net.URL;
 
 public class SampleResource {
 
-    public String getResourceFile(Translet translet) {
+    public String getResourceFile(@NonNull Translet translet) {
         String resourceName = translet.getParameter("resourceName");
         ClassLoader classLoader = translet.getApplicationAdapter().getClassLoader();
         URL url = classLoader.getResource(resourceName);

@@ -18,11 +18,14 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 
+import java.io.Serial;
+
 /**
  * The Class BeanRuleException.
  */
 public class BeanRuleException extends IllegalRuleException {
 
+    @Serial
     private static final long serialVersionUID = -8362121026201328444L;
 
     private final BeanRule beanRule;

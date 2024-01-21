@@ -32,6 +32,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 /**
@@ -41,6 +42,7 @@ import java.util.ArrayList;
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
 
+    @Serial
     private static final long serialVersionUID = 4636431127789162551L;
 
     private final boolean explicit;

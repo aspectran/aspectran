@@ -71,7 +71,7 @@ class XmlTransformResponseTest {
 
         XmlTransformResponse.transform(processResult, writer, null, formattingContext);
 
-        System.out.println(writer.toString());
+        System.out.println(writer);
     }
 
 }

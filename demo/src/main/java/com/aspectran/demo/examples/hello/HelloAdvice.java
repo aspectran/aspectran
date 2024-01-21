@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class HelloAdvice {
         return msg;
     }
 
-    public String goodbye(Translet translet) {
+    public String goodbye(@NonNull Translet translet) {
         logger.info("activityData " + translet.getActivityData());
 
         String msg = "Goodbye!";

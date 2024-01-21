@@ -32,6 +32,7 @@
 //
 package com.aspectran.utils.statistic;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -133,7 +134,7 @@ public class SampleStatistic {
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
+        ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
         tsb.append("count", getCount());
         tsb.append("max", getMax());
         tsb.append("total", getTotal());

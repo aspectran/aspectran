@@ -15,6 +15,7 @@
  */
 package com.aspectran.demo.monitoring.log;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.commons.io.input.Tailer;
@@ -72,6 +73,7 @@ public class LogTailer extends AbstractLifeCycle {
         }
     }
 
+    @NonNull
     private String[] readLastLines(File file, int lastLines) {
         List<String> list = new ArrayList<>();
         try (ReversedLinesFileReader reversedLinesFileReader = ReversedLinesFileReader.builder()

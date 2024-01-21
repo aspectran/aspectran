@@ -17,6 +17,7 @@ package com.aspectran.shell.command.option;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import java.util.Map;
  */
 public class Options implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6416293453155205092L;
 
     /** A map of the options with the character key */

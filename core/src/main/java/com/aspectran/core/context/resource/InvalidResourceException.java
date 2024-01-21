@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.resource;
 
+import java.io.Serial;
+
 /**
  * This exception is thrown when a resource load fails.
  *
@@ -22,6 +24,7 @@ package com.aspectran.core.context.resource;
  */
 public class InvalidResourceException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -8749285705396087498L;
 
     /**

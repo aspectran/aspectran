@@ -15,8 +15,11 @@
  */
 package com.aspectran.utils.nodelet;
 
+import java.io.Serial;
+
 public class NodeletException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -2205829969856783728L;
 
     public NodeletException() {

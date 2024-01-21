@@ -46,7 +46,7 @@ public class PointcutRule {
         return pointcutPatternRuleList;
     }
 
-    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
+    public void addPointcutPatternRule(@NonNull PointcutPatternRule pointcutPatternRule) {
         pointcutPatternRule.setPointcutType(pointcutType);
         touchPointcutPatternRuleList().add(pointcutPatternRule);
     }

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -48,11 +49,11 @@ class ProfilesTest {
         assertMalformed(() -> Profiles.of("((a, b), c]"));
     }
 
-    private static void assertMalformed(Supplier<Profiles> supplier) {
+    private static void assertMalformed(@NonNull Supplier<Profiles> supplier) {
         try {
             supplier.get();
         } catch (IllegalArgumentException e) {
-            System.out.println(e);
+            //System.out.println(e);
             assertTrue(e.getMessage().startsWith("Malformed profile expression"));
         }
     }
@@ -238,7 +239,7 @@ class ProfilesTest {
         assertOfNotOrExpression(profiles);
     }
 
-    private void assertOfNotOrExpression(Profiles profiles) {
+    private void assertOfNotOrExpression(@NonNull Profiles profiles) {
         assertFalse(profiles.matches(activeProfiles("aspectran")));
         assertFalse(profiles.matches(activeProfiles("framework")));
         assertFalse(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -263,7 +264,7 @@ class ProfilesTest {
         assertComplexExpression(profiles);
     }
 
-    private void assertComplexExpression(Profiles profiles) {
+    private void assertComplexExpression(@NonNull Profiles profiles) {
         assertFalse(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "framework")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "java")));

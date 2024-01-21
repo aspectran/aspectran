@@ -26,6 +26,7 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -120,6 +121,7 @@ import java.util.List;
  */
 public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
 
+    @Serial
     private static final long serialVersionUID = -1411894383022986406L;
 
     /**
@@ -235,18 +237,15 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
         try {
             // Resolve the unescaped message.
             String msg = resolveMessage();
-
             // HTML and/or JavaScript escape, if demanded.
             msg = htmlEscape(msg);
             msg = this.javaScriptEscape ? JavaScriptUtils.javaScriptEscape(msg) : msg;
-
             // Expose as variable, if demanded, else write to the page.
             if (this.var != null) {
                 this.pageContext.setAttribute(this.var, msg, TagUtils.getScope(this.scope));
             } else {
                 writeMessage(msg);
             }
-
             return EVAL_PAGE;
         } catch (IOException ex) {
             throw new JspTagException(ex.getMessage(), ex);
@@ -302,25 +301,25 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
      */
     @Nullable
     protected Object[] resolveArguments(@Nullable Object arguments) {
-        if (arguments instanceof String) {
-            String[] stringArray = StringUtils.split((String)arguments, this.argumentSeparator);
+        if (arguments instanceof String str) {
+            String[] stringArray = StringUtils.split(str, this.argumentSeparator);
             if (stringArray.length == 1) {
                 Object argument = stringArray[0];
                 if (argument != null && argument.getClass().isArray()) {
                     return ObjectUtils.toObjectArray(argument);
                 } else {
-                    return new Object[] {argument};
+                    return new Object[] { argument };
                 }
             } else {
                 return stringArray;
             }
-        } else if (arguments instanceof Object[]) {
-            return (Object[]) arguments;
-        } else if (arguments instanceof Collection) {
-            return ((Collection<?>) arguments).toArray();
+        } else if (arguments instanceof Object[] arr) {
+            return arr;
+        } else if (arguments instanceof Collection<?> collection) {
+            return collection.toArray();
         } else if (arguments != null) {
             // Assume a single argument object.
-            return new Object[] {arguments};
+            return new Object[] { arguments };
         } else {
             return null;
         }

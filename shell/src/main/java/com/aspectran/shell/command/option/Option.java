@@ -17,6 +17,7 @@ package com.aspectran.shell.command.option;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.Objects;
  */
 public class Option implements Cloneable, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7707766888283034409L;
 
     /** Constant that specifies the number of argument values has not been specified */

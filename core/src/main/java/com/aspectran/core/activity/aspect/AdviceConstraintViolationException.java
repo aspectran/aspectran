@@ -19,6 +19,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.utils.StringUtils;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.Set;
  */
 public class AdviceConstraintViolationException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -5175491727350661063L;
 
     private final Set<AspectRule> relevantAspectRules = new LinkedHashSet<>();

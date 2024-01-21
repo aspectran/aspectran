@@ -15,6 +15,9 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +26,7 @@ import java.util.List;
  */
 public class MissingOptionException extends OptionParserException {
 
+    @Serial
     private static final long serialVersionUID = -3648528884089184961L;
 
     /** The list of missing options and groups */
@@ -60,7 +64,7 @@ public class MissingOptionException extends OptionParserException {
      * Build the exception message from the specified list of options.
      * @param missingOptions the list of missing options and groups
      */
-    private static String createMessage(final List<?> missingOptions) {
+    @NonNull private static String createMessage(@NonNull List<?> missingOptions) {
         StringBuilder buf = new StringBuilder("Missing required option");
         buf.append(missingOptions.size() == 1 ? "" : "s");
         buf.append(": ");

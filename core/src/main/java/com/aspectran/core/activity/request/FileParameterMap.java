@@ -15,15 +15,17 @@
  */
 package com.aspectran.core.activity.request;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 
 /**
  * The Class FileParameterMap.
- * 
+ *
  * <p>Created: 2008. 03. 29 PM 6:23:00</p>
  */
 public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
 
+    @Serial
     private static final long serialVersionUID = -2589963778315184242L;
 
     public FileParameter getFileParameter(String name) {

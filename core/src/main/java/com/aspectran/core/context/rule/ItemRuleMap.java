@@ -16,7 +16,9 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
+    @Serial
     private static final long serialVersionUID = 192817512158305803L;
 
     private String profile;
@@ -61,7 +64,7 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
      * Auto-naming if did not specify the name of the item.
      * @param itemRule the item rule
      */
-    private void autoNaming(ItemRule itemRule) {
+    private void autoNaming(@NonNull ItemRule itemRule) {
         itemRule.setName("item#" + size());
     }
 

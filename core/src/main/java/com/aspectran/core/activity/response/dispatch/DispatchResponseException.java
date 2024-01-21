@@ -18,13 +18,16 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchRule;
 
+import java.io.Serial;
+
 /**
  * The Class DispatchResponseException.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class DispatchResponseException extends ResponseException {
 
+    @Serial
     private static final long serialVersionUID = 6318844460136930428L;
 
     private final DispatchRule dispatchRule;

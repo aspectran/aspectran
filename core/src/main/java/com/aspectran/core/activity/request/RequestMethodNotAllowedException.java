@@ -17,11 +17,14 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.type.MethodType;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when a request handler does not allow a specific request method.
  */
 public class RequestMethodNotAllowedException extends RequestException {
 
+    @Serial
     private static final long serialVersionUID = 4068498460127610368L;
 
     private MethodType requestMethod;

@@ -18,11 +18,14 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * This exception is raised when attempting to read (or write) a malformed APON element.
  */
 public class MalformedAponException extends AponParseException {
 
+    @Serial
     private static final long serialVersionUID = -2012813522496665651L;
 
     /**

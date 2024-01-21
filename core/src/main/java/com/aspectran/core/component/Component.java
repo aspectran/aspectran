@@ -40,7 +40,7 @@ public interface Component {
     boolean isAvailable();
 
     /**
-     * Returns whether or not the component has been initialized.
+     * Returns whether the component has been initialized.
      * @return true if the component has been initialized
      */
     boolean isInitialized();
@@ -52,7 +52,7 @@ public interface Component {
     boolean isDestroying();
 
     /**
-     * Returns whether or not the component has been destroyed.
+     * Returns whether the component has been destroyed.
      * @return true if the component has been destroyed
      */
     boolean isDestroyed();

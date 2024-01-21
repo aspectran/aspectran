@@ -17,6 +17,8 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 
+import java.io.Serial;
+
 /**
  * Exception to be thrown from a FactoryBean's getObject() method
  * if the bean is not fully initialized yet,
@@ -24,6 +26,7 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class FactoryBeanNotInitializedException extends BeanCreationException {
 
+    @Serial
     private static final long serialVersionUID = 5961471681939634699L;
 
     /**

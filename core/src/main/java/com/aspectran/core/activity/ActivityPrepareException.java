@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when an error occurs while preparing an activity.
- * 
+ *
  * <p>Created: 2019. 03. 25.</p>
  */
 public class ActivityPrepareException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -6964737280809517019L;
 
     /**

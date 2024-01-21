@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 
 public class ResultValueMap extends LinkedHashMap<String, Object> {
 
+    @Serial
     private static final long serialVersionUID = 1904311925549971136L;
 
     protected ResultValueMap() {

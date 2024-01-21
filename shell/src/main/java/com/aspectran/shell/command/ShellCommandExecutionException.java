@@ -15,12 +15,15 @@
  */
 package com.aspectran.shell.command;
 
+import java.io.Serial;
+
 /**
  * Holds an exception that occurred during command execution
  * and a message to be printed after.
  */
 public class ShellCommandExecutionException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -5340974047528806025L;
 
     /**

@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
@@ -37,6 +38,7 @@ import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
  */
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
+    @Serial
     private static final long serialVersionUID = 6659683668233267847L;
 
     private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
@@ -56,14 +58,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     public void init() throws ServletException {
         try {
             ServletContext servletContext = getServletContext();
-            Object obj = servletContext.getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
+            Object attr = servletContext.getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
             DefaultWebService rootWebService = null;
-            if (obj != null) {
-                if (!(obj instanceof DefaultWebService)) {
-                    throw new IllegalStateException("Context attribute [" + obj + "] is not of type [" +
+            if (attr != null) {
+                if (!(attr instanceof DefaultWebService)) {
+                    throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
                             DefaultWebService.class.getName() + "]");
                 }
-                rootWebService = (DefaultWebService)obj;
+                rootWebService = (DefaultWebService)attr;
                 webService = DefaultWebService.create(this, rootWebService);
             } else {
                 webService = DefaultWebService.create(this);

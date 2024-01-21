@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.support.tags;
 
+import java.io.Serial;
+
 /**
  * The {@code <profile>} tag useful to display a piece of content in a JSP file,
  * based on a specific environment profile.
@@ -42,6 +44,7 @@ package com.aspectran.web.support.tags;
  */
 public class ProfileTag extends CurrentActivityAwareTag {
 
+    @Serial
     private static final long serialVersionUID = -3879817095317245267L;
 
     private String expression;

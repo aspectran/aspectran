@@ -15,11 +15,14 @@
  */
 package com.aspectran.shell.console;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when a command fails to read.
  */
 public class CommandReadFailedException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -6982213056770858079L;
 
     /**

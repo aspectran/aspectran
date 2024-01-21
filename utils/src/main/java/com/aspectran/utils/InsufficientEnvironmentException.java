@@ -15,12 +15,15 @@
  */
 package com.aspectran.utils;
 
+import java.io.Serial;
+
 /**
  * An exception is thrown when Aspectran fails to run properly due to
  * insufficient environment settings.
  */
 public class InsufficientEnvironmentException extends IllegalStateException {
 
+    @Serial
     private static final long serialVersionUID = -8963344360314936952L;
 
     /**

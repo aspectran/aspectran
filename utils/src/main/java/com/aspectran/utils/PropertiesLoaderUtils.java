@@ -119,8 +119,7 @@ public class PropertiesLoaderUtils {
             for (Map.Entry<?, ?> entry: props.entrySet()) {
                 Object key = entry.getKey();
                 Object val = entry.getValue();
-                if (val instanceof String) {
-                    String value = (String)val;
+                if (val instanceof String value) {
                     if (PropertyValueEncryptionUtils.isEncryptedValue(value)) {
                         value = PropertyValueEncryptionUtils.decrypt(value, getDefaultEncryptor());
                         props.put(key, value);

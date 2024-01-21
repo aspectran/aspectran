@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.component.bean;
 
+import java.io.Serial;
+
 /**
  * The Class NoSuchBeanException.
  */
 public class NoSuchBeanException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = 1866105813455720749L;
 
     private final String id;

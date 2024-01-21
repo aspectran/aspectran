@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.component.aspect;
 
+import java.io.Serial;
+
 /**
  * This class is the basic exception that gets thrown from the aspect package.
  */
 public class AspectException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 3778865608683444815L;
 
     /**

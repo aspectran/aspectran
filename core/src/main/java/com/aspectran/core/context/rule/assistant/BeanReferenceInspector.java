@@ -214,10 +214,9 @@ public class BeanReferenceInspector {
             if (this == other) {
                 return true;
             }
-            if (!(other instanceof RefererKey)) {
+            if (!(other instanceof RefererKey key)) {
                 return false;
             }
-            RefererKey key = (RefererKey)other;
             return (Objects.equals(type, key.type) &&
                     Objects.equals(qualifier, key.qualifier));
         }

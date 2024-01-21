@@ -15,7 +15,6 @@
  */
 package com.aspectran.jetty;
 
-import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
@@ -27,10 +26,10 @@ import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import jakarta.websocket.server.ServerContainer;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
-import org.eclipse.jetty.websocket.jakarta.server.internal.JakartaWebSocketServerContainer;
+import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.websocket.jakarta.server.JakartaWebSocketServerContainer;
+import org.eclipse.jetty.ee10.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +41,7 @@ import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
  *
  * <p>Created: 2017. 1. 27.</p>
  */
-public class JettyWebAppContext extends WebAppContext implements ActivityContextAware, InitializableBean {
+public class JettyWebAppContext extends WebAppContext implements ActivityContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(JettyWebAppContext.class);
 
@@ -75,8 +74,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
-    @Override
-    public void initialize() throws Exception {
+    void deferredInitialize() {
         Assert.state(context != null, "No ActivityContext injected");
 
         // Create a root web service

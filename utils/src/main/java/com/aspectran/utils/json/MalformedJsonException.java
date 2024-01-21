@@ -16,6 +16,7 @@
 package com.aspectran.utils.json;
 
 import java.io.IOException;
+import java.io.Serial;
 
 /**
  * <p>This class is a clone of com.google.gson.stream.MalformedJsonException</p>
@@ -25,6 +26,7 @@ import java.io.IOException;
  */
 public final class MalformedJsonException extends IOException {
 
+    @Serial
     private static final long serialVersionUID = 7310479345877902705L;
 
     public MalformedJsonException(String msg) {

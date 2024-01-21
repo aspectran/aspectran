@@ -18,11 +18,14 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.context.rule.BeanRule;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when instantiation of a proxy bean failed.
  */
 public class BeanProxyException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = -3560168431550039638L;
 
     private final BeanRule beanRule;

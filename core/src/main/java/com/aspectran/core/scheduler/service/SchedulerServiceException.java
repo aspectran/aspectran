@@ -17,13 +17,16 @@ package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.service.AspectranServiceException;
 
+import java.io.Serial;
+
 /**
  * The Class SchedulerServiceException.
- * 
+ *
  * @since 2.0.0
  */
 public class SchedulerServiceException extends AspectranServiceException {
 
+    @Serial
     private static final long serialVersionUID = -6814416137683710109L;
 
     /**

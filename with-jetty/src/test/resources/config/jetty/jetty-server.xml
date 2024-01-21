@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-8.dtd">
 <aspectran>
 
     <description>
@@ -10,6 +10,7 @@
     <environment>
         <properties>
             <item name="jetty.startup" value="false" valueType="boolean"/>
+            <item name="jetty.shutdownGracefully" value="true" valueType="boolean"/>
             <item name="jetty.server.port" value="8099" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
@@ -34,6 +35,7 @@
         </arguments>
         <properties>
             <item name="autoStart">%{jetty.startup}</item>
+            <item name="shutdownGracefully">%{jetty.shutdownGracefully}</item>
             <item name="connectors" type="array">
                 <bean class="org.eclipse.jetty.server.ServerConnector">
                     <arguments>
@@ -48,14 +50,7 @@
                 </bean>
             </item>
             <item name="handler">
-                <bean class="org.eclipse.jetty.server.handler.HandlerCollection">
-                    <properties>
-                        <item name="handlers" type="array">
-                            <value>#{jetty.gzipHandler}</value>
-                            <value>#{jetty.requestLogHandler}</value>
-                        </item>
-                    </properties>
-                </bean>
+                <value>#{jetty.gzipHandler}</value>
             </item>
         </properties>
     </bean>
@@ -75,51 +70,48 @@
     </bean>
 
     <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
+        <arguments>
+            <item>
+                <value>#{jetty.handlerCollection}</value>
+            </item>
+        </arguments>
         <properties>
             <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
             <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
             <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
             <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
-            <item name="handler">#{jetty.handlerCollection}</item>
         </properties>
     </bean>
 
-    <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
-        <properties>
-            <item name="handlers" type="array">
-                <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+
+    <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.ContextHandlerCollection" scope="prototype">
+        <arguments>
+            <item valueType="boolean">false</item>
+            <item type="array">
+                <bean class="com.aspectran.jetty.JettyWebAppContext">
                     <properties>
-                        <item name="handlers" type="array">
-                            <value>#{jetty.rootContext}</value>
+                        <item name="contextPath">/</item>
+                        <item name="war">#{basePath}/webroot</item>
+                        <item name="tempDirectoryPersistent" valueType="boolean">false</item>
+                        <item name="defaultsDescriptor">config/jetty/webdefault-ee10.xml</item>
+                        <item name="sessionHandler">#{jetty.sessionHandler}</item>
+                        <item name="webSocketInitializer">
+                            <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
+                                <properties>
+                                    <item name="idleTimeout" valueType="long">60000</item>
+                                </properties>
+                            </bean>
                         </item>
                     </properties>
                 </bean>
-                <bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
             </item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.rootContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
-        <properties>
-            <item name="contextPath">/</item>
-            <item name="war">#{basePath}/webroot</item>
-            <item name="persistTempDirectory" valueType="boolean">false</item>
-            <item name="defaultsDescriptor">config/jetty/webdefault.xml</item>
-            <item name="sessionHandler">#{jetty.sessionHandler}</item>
-            <item name="webSocketInitializer">
-                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
-                    <properties>
-                        <item name="idleTimeout" valueType="long">60000</item>
-                    </properties>
-                </bean>
-            </item>
-        </properties>
+        </arguments>
     </bean>
 
     <bean id="jetty.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
         <properties>
             <item name="sessionDataStore">
-                <bean class="org.eclipse.jetty.server.session.FileSessionDataStoreFactory">
+                <bean class="org.eclipse.jetty.session.FileSessionDataStoreFactory">
                     <properties>
                         <item name="storeDir" valueType="file">%{jetty.session.dataStoreDir}</item>
                         <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
@@ -129,29 +121,29 @@
         </properties>
     </bean>
 
-    <bean id="jetty.requestLogHandler" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">
-        <properties>
-            <item name="requestLog">
-                <bean class="org.eclipse.jetty.server.CustomRequestLog">
-                    <arguments>
-                        <item>
-                            <bean class="org.eclipse.jetty.server.AsyncRequestLogWriter">
-                                <arguments>
-                                    <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
-                                </arguments>
-                                <properties>
-                                    <item name="filenameDateFormat">yyyy_MM_dd</item>
-                                    <item name="retainDays" valueType="int">90</item>
-                                    <item name="append" valueType="boolean">true</item>
-                                    <item name="timeZone">GMT+9</item>
-                                </properties>
-                            </bean>
-                        </item>
-                        <item tokenize="false">%{client}a - %u %{yyyy-MM-dd HH:mm:ss ZZZ|GMT+9}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
-                    </arguments>
-                </bean>
-            </item>
-        </properties>
-    </bean>
+<!--    <bean id="jetty.requestLogHandler" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">-->
+<!--        <properties>-->
+<!--            <item name="requestLog">-->
+<!--                <bean class="org.eclipse.jetty.server.CustomRequestLog">-->
+<!--                    <arguments>-->
+<!--                        <item>-->
+<!--                            <bean class="org.eclipse.jetty.server.AsyncRequestLogWriter">-->
+<!--                                <arguments>-->
+<!--                                    <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>-->
+<!--                                </arguments>-->
+<!--                                <properties>-->
+<!--                                    <item name="filenameDateFormat">yyyy_MM_dd</item>-->
+<!--                                    <item name="retainDays" valueType="int">90</item>-->
+<!--                                    <item name="append" valueType="boolean">true</item>-->
+<!--                                    <item name="timeZone">GMT+9</item>-->
+<!--                                </properties>-->
+<!--                            </bean>-->
+<!--                        </item>-->
+<!--                        <item tokenize="false">%{client}a - %u %{yyyy-MM-dd HH:mm:ss ZZZ|GMT+9}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>-->
+<!--                    </arguments>-->
+<!--                </bean>-->
+<!--            </item>-->
+<!--        </properties>-->
+<!--    </bean>-->
 
 </aspectran>

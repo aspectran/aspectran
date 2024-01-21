@@ -22,13 +22,13 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HandlerContainer;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -40,22 +40,35 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
+    private GracefulShutdown gracefulShutdown;
+
     private boolean autoStart;
 
     public JettyServer() {
         super();
+        setStopAtShutdown(false);
     }
 
     public JettyServer(int port) {
         super(port);
+        setStopAtShutdown(false);
     }
 
     public JettyServer(ThreadPool pool) {
         super(pool);
+        setStopAtShutdown(false);
     }
 
     public boolean isAutoStart() {
         return autoStart;
+    }
+
+    public void setShutdownGracefully(boolean shutdownGracefully) {
+        if (shutdownGracefully) {
+            gracefulShutdown = new GracefulShutdown(this);
+        } else {
+            gracefulShutdown = null;
+        }
     }
 
     public void setAutoStart(boolean autoStart) {
@@ -75,16 +88,29 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void destroy() {
-        try {
-            stop();
-        } catch (Exception e) {
-            logger.error("Error while stopping jetty server: " + e.getMessage(), e);
+        if (gracefulShutdown != null) {
+            gracefulShutdown.shutDownGracefully(result -> {
+                try {
+                    stop();
+                } catch (Exception e) {
+                    logger.error("Error while stopping jetty server: " + e.getMessage(), e);
+                }
+            });
+        } else {
+            try {
+                stop();
+            } catch (Exception e) {
+                logger.error("Error while stopping jetty server: " + e.getMessage(), e);
+            }
         }
     }
 
     @Override
     public void doStart() throws Exception {
         logger.info("Starting embedded Jetty server");
+        for (Handler handler : getHandlers()) {
+            handleDeferredInitialize(handler);
+        }
         super.doStart();
         logger.info("Jetty started on port(s) " + getActualPortsDescription()
                 + " with context path '" + getContextPath() + "'");
@@ -102,9 +128,27 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    private void handleDeferredInitialize(@NonNull List<Handler> handlers) throws Exception {
+        for (Handler handler : handlers) {
+            handleDeferredInitialize(handler);
+        }
+    }
+
+    private void handleDeferredInitialize(Handler handler) throws Exception {
+        if (handler instanceof JettyWebAppContext jettyWebAppContext) {
+            jettyWebAppContext.deferredInitialize();
+        }
+        else if (handler instanceof Handler.Wrapper handlerWrapper) {
+            handleDeferredInitialize(handlerWrapper.getHandler());
+        }
+        else if (handler instanceof Handler.Collection handlerCollection) {
+            handleDeferredInitialize(handlerCollection.getHandlers());
+        }
+    }
+
     private String getContextPath() {
-        HandlerContainer handlerContainer = (HandlerContainer)getHandler();
-        return Arrays.stream(handlerContainer.getChildHandlers())
+        Container handlerContainer = (Container)getHandler();
+        return handlerContainer.getHandlers().stream()
                 .filter(ContextHandler.class::isInstance).map(ContextHandler.class::cast)
                 .map(ContextHandler::getContextPath).collect(Collectors.joining("', '"));
     }
@@ -114,7 +158,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         StringBuilder ports = new StringBuilder();
         for (Connector connector : getConnectors()) {
             NetworkConnector connector1 = (NetworkConnector)connector;
-            if (ports.length() != 0) {
+            if (!ports.isEmpty()) {
                 ports.append(", ");
             }
             ports.append(connector1.getLocalPort());

@@ -15,6 +15,9 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -23,6 +26,7 @@ import java.util.Iterator;
  */
 public class AmbiguousOptionException extends UnrecognizedOptionException {
 
+    @Serial
     private static final long serialVersionUID = 7582734904376616120L;
 
     /** The list of options matching the partial name specified */
@@ -48,12 +52,13 @@ public class AmbiguousOptionException extends UnrecognizedOptionException {
 
     /**
      * Build the exception message from the specified list of options.
-     * 
+     *
      * @param option the option name
      * @param matchingOptions the options matching the name
      * @return the exception message
      */
-    private static String createMessage(String option, Collection<String> matchingOptions) {
+    @NonNull
+    private static String createMessage(String option, @NonNull Collection<String> matchingOptions) {
         StringBuilder buf = new StringBuilder("Ambiguous option: '");
         buf.append(option);
         buf.append("'  (could be: ");

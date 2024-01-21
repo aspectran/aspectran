@@ -17,14 +17,17 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.context.rule.type.MethodType;
 
+import java.io.Serial;
+
 /**
  * Checked exception thrown when an attempt is made to access a translet
  * that does not exist.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class TransletNotFoundException extends ActivityException {
 
+    @Serial
     private static final long serialVersionUID = -5619283297296999361L;
 
     private final String transletName;

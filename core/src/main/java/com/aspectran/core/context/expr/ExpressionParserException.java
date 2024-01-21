@@ -17,11 +17,14 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
 
+import java.io.Serial;
+
 /**
  * Exception for all errors occurring during expression parsing.
  */
 public class ExpressionParserException extends IllegalRuleException {
 
+    @Serial
     private static final long serialVersionUID = -2232633791981628212L;
 
     private final String expression;

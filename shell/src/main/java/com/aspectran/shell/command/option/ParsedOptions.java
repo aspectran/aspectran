@@ -19,6 +19,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import java.util.Properties;
  */
 public class ParsedOptions implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -875791688751934582L;
 
     /** The processed options */

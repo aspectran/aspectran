@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.service;
 
+import java.io.Serial;
+
 /**
  * The Class AspectranServiceException.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class AspectranServiceException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -7460804495296696284L;
 
     /**

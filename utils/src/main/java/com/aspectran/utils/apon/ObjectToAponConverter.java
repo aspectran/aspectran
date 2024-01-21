@@ -16,6 +16,7 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -76,19 +77,19 @@ public class ObjectToAponConverter {
     public void putValue(Parameters container, String name, Object value) {
         if (name == null) {
             Object o = valuelize(value);
-            if (o instanceof Parameters) {
-                container.putAll((Parameters)o);
+            if (o instanceof Parameters parameters) {
+                container.putAll(parameters);
             }
         } else if (value == null) {
             if (container.hasParameter(name)) {
                 container.removeValue(name);
             }
             container.putValue(name, null);
-        } else if (value instanceof Collection<?>) {
+        } else if (value instanceof Collection<?> collection) {
             if (container.hasParameter(name)) {
                 container.removeValue(name);
             }
-            for (Object o : ((Collection<?>)value)) {
+            for (Object o : collection) {
                 if (o != null) {
                     putValue(container, name, o);
                 }
@@ -126,36 +127,36 @@ public class ObjectToAponConverter {
             return object;
         } else if (object instanceof Character) {
            return String.valueOf(((char)object));
-        } else if (object instanceof Map<?, ?>) {
+        } else if (object instanceof Map<?, ?> map) {
             Parameters ps = new VariableParameters();
-            for (Map.Entry<?, ?> entry : ((Map<?, ?>)object).entrySet()) {
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
-                checkCircularReference(object, value);
+                checkCircularReference(map, value);
                 putValue(ps, name, value);
             }
             return ps;
         } else if (object instanceof Collection<?> ||
                 object.getClass().isArray()) {
             return object.toString();
-        } else if (object instanceof Date) {
+        } else if (object instanceof Date date) {
             if (dateTimeFormat != null) {
                 SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
-                return dt.format((Date)object);
+                return dt.format(date);
             } else {
                 return object.toString();
             }
-        } else if (object instanceof LocalDate) {
+        } else if (object instanceof LocalDate localDate) {
             if (dateFormat != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                return ((LocalDate)object).format(formatter);
+                return localDate.format(formatter);
             } else {
                 return object.toString();
             }
-        } else if (object instanceof LocalDateTime) {
+        } else if (object instanceof LocalDateTime localDateTime) {
             if (dateTimeFormat != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-                return ((LocalDateTime)object).format(formatter);
+                return localDateTime.format(formatter);
             } else {
                 return object.toString();
             }
@@ -180,7 +181,7 @@ public class ObjectToAponConverter {
         }
     }
 
-    private void checkCircularReference(Object wrapper, Object member) {
+    private void checkCircularReference(@NonNull Object wrapper, Object member) {
         if (wrapper.equals(member)) {
             throw new InvalidParameterValueException("APON Serialization Failure: A circular reference was detected " +
                     "while converting a member object [" + member + "] in [" + wrapper + "]");

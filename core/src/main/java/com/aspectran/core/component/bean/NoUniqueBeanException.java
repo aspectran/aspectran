@@ -19,11 +19,14 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.Serial;
+
 /**
  * The Class NoUniqueBeanException.
  */
 public class NoUniqueBeanException extends BeanException {
 
+    @Serial
     private static final long serialVersionUID = 8350428939010030065L;
 
     private final Class<?> type;
