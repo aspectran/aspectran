@@ -66,7 +66,8 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     public void setShutdownGracefully(boolean shutdownGracefully) {
         if (shutdownGracefully) {
             gracefulShutdown = new GracefulShutdown(this);
-        } else {
+        } else if (gracefulShutdown != null) {
+            gracefulShutdown.abort();
             gracefulShutdown = null;
         }
     }
