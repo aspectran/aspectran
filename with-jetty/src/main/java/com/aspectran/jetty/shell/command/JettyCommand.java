@@ -108,28 +108,28 @@ public class JettyCommand extends AbstractCommand {
     }
 
     private void startJettyServer(String serverName, ShellConsole console) throws Exception {
-        JettyServer towServer = null;
+        JettyServer jettyServer = null;
         try {
             if (hasJettyServer(serverName)) {
-                towServer = getJettyServer(serverName);
-                if (towServer.isRunning()) {
+                jettyServer = getJettyServer(serverName);
+                if (jettyServer.isRunning()) {
                     console.writeError("Jetty server is already running");
                 } else {
-                    towServer.start();
-                    printStatus(towServer.getState(), console);
+                    jettyServer.start();
+                    printStatus(jettyServer.getState(), console);
                 }
             } else {
-                towServer = getJettyServer(serverName);
-                if (!towServer.isRunning()) {
-                    towServer.start();
+                jettyServer = getJettyServer(serverName);
+                if (!jettyServer.isRunning()) {
+                    jettyServer.start();
                 }
-                printStatus(towServer.getState(), console);
+                printStatus(jettyServer.getState(), console);
             }
         } catch (BeanException e) {
             console.writeError("Jetty server is not available. Cause: " + e);
         } catch (Exception e) {
-            if (towServer != null) {
-                destroyJettyServer(towServer);
+            if (jettyServer != null) {
+                destroyJettyServer(jettyServer);
             }
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof BindException) {
@@ -144,8 +144,8 @@ public class JettyCommand extends AbstractCommand {
         boolean success = false;
         try {
             if (hasJettyServer(serverName)) {
-                JettyServer towServer = getJettyServer(serverName);
-                destroyJettyServer(towServer);
+                JettyServer jettyServer = getJettyServer(serverName);
+                destroyJettyServer(jettyServer);
                 printStatus(LifeCycle.STOPPED, console);
                 success = true;
             } else {
@@ -162,11 +162,11 @@ public class JettyCommand extends AbstractCommand {
     private void printServerStatus(String serverName, ShellConsole console) {
         try {
             if (hasJettyServer(serverName)) {
-                JettyServer towServer = getJettyServer(serverName);
-                if (towServer.isStarted()) {
+                JettyServer jettyServer = getJettyServer(serverName);
+                if (jettyServer.isStarted()) {
                     printStatus(LifeCycle.RUNNING, console);
                 } else {
-                    printStatus(towServer.getState(), console);
+                    printStatus(jettyServer.getState(), console);
                 }
             } else {
                 printStatus(LifeCycle.STOPPED, console);
@@ -197,9 +197,9 @@ public class JettyCommand extends AbstractCommand {
         return beanRegistry.hasSingleton(JettyServer.class, serverName);
     }
 
-    private void destroyJettyServer(JettyServer towServer) throws Exception {
+    private void destroyJettyServer(JettyServer jettyServer) throws Exception {
         BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
-        beanRegistry.destroySingleton(towServer);
+        beanRegistry.destroySingleton(jettyServer);
     }
 
     @Override

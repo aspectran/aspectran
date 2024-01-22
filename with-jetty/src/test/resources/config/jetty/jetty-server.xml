@@ -9,11 +9,12 @@
 
     <environment>
         <properties>
-            <item name="jetty.startup" value="false" valueType="boolean"/>
-            <item name="jetty.shutdownGracefully" value="true" valueType="boolean"/>
+            <item name="jetty.server.startup" value="false" valueType="boolean"/>
+            <item name="jetty.server.shutdownGracefully" value="true" valueType="boolean"/>
             <item name="jetty.server.port" value="8099" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
+            <item name="jetty.server.maxConnections" value="9999" valueType="int"/>
             <item name="jetty.session.dataStoreDir" value="#{basePath}/work/_sessions/jetty"/>
             <item name="jetty.gzip.minGzipSize" value="20000" valueType="int"/>
             <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
@@ -34,8 +35,9 @@
             </item>
         </arguments>
         <properties>
-            <item name="autoStart">%{jetty.startup}</item>
-            <item name="shutdownGracefully">%{jetty.shutdownGracefully}</item>
+            <item name="autoStart">%{jetty.server.startup}</item>
+            <item name="shutdownGracefully">%{jetty.server.shutdownGracefully}</item>
+            <item name="maxConnections">%{jetty.server.maxConnections}</item>
             <item name="connectors" type="array">
                 <bean class="org.eclipse.jetty.server.ServerConnector">
                     <arguments>
@@ -50,7 +52,10 @@
                 </bean>
             </item>
             <item name="handler">
-                <value>#{jetty.gzipHandler}</value>
+                <value>#{jetty.mainHandler}</value>
+            </item>
+            <item name="requestLog">
+                <value>#{jetty.requestLog}</value>
             </item>
         </properties>
     </bean>
@@ -69,20 +74,25 @@
         </arguments>
     </bean>
 
-    <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
+    <bean id="jetty.mainHandler" class="org.eclipse.jetty.server.handler.StatisticsHandler" scope="prototype">
         <arguments>
             <item>
-                <value>#{jetty.handlerCollection}</value>
+                <bean class="org.eclipse.jetty.server.handler.gzip.GzipHandler">
+                    <arguments>
+                        <item>
+                            <value>#{jetty.handlerCollection}</value>
+                        </item>
+                    </arguments>
+                    <properties>
+                        <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
+                        <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
+                        <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
+                        <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
+                    </properties>
+                </bean>
             </item>
         </arguments>
-        <properties>
-            <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
-            <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
-            <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
-            <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
-        </properties>
     </bean>
-
 
     <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.ContextHandlerCollection" scope="prototype">
         <arguments>
@@ -119,6 +129,19 @@
                 </bean>
             </item>
         </properties>
+    </bean>
+
+    <bean id="jetty.requestLog" class="org.eclipse.jetty.server.CustomRequestLog" scope="prototype">
+        <arguments>
+            <item>
+                <bean class="org.eclipse.jetty.server.Slf4jRequestLogWriter">
+                    <properties>
+                        <item name="loggerName">org.eclipse.jetty.server.RequestLog</item>
+                    </properties>
+                </bean>
+            </item>
+            <item>%{client}a - %u %t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
+        </arguments>
     </bean>
 
 <!--    <bean id="jetty.requestLogHandler" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">-->

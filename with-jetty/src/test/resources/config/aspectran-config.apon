@@ -2,6 +2,9 @@ context: {
     rules: classpath:config/root-context.xml
     resources: [
     ]
+    scan: [
+        com.aspectran.jetty
+    ]
     profiles: {
     }
     autoReload: {

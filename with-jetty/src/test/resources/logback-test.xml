@@ -12,6 +12,8 @@
     </root>
 
     <logger name="com.aspectran" level="debug"/>
-    <logger name="org.eclipse.jetty" level="debug"/>
+    <logger name="com.aspectran.jetty" level="debug"/>
+    <logger name="org.eclipse.jetty" level="info"/>
+    <logger name="org.eclipse.jetty.ee10.webapp.WebAppClassLoader" level="info"/>
 
 </configuration>

@@ -11,6 +11,11 @@
         <description>
             Each translet's activity data can be referenced as a "data" attribute.
         </description>
+        <joinpoint>
+            pointcut: {
+                +: /**
+            }
+        </joinpoint>
         <advice>
             <before>
                 <echo>
@@ -67,7 +72,7 @@
     <append resource="config/jetty/jetty-server.xml"/>
     <append resource="config/jetty/jetty-controller.xml"/>
 
-    <translet name="/hello">
+    <translet name="hello">
         <transform format="text">
             <template style="apon">
                 |world

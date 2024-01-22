@@ -21,11 +21,16 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NetworkConnector;
+import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Slf4jRequestLogWriter;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 import java.util.List;
@@ -40,48 +45,68 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
+    private boolean shutdownGracefully;
+
     private GracefulShutdown gracefulShutdown;
 
     private boolean autoStart;
 
     public JettyServer() {
         super();
-        setStopAtShutdown(false);
     }
 
     public JettyServer(int port) {
         super(port);
-        setStopAtShutdown(false);
     }
 
     public JettyServer(ThreadPool pool) {
         super(pool);
-        setStopAtShutdown(false);
     }
 
     public boolean isAutoStart() {
         return autoStart;
     }
 
-    public void setShutdownGracefully(boolean shutdownGracefully) {
-        if (shutdownGracefully) {
-            gracefulShutdown = new GracefulShutdown(this);
-        } else if (gracefulShutdown != null) {
-            gracefulShutdown.abort();
-            gracefulShutdown = null;
-        }
-    }
-
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
     }
 
+    public void setShutdownGracefully(boolean shutdownGracefully) {
+        this.shutdownGracefully = shutdownGracefully;
+    }
+
+    public void setMaxConnections(int maxConnections) {
+        if (maxConnections > -1) {
+            addBean(new ConnectionLimit(maxConnections, this));
+        }
+    }
+
     public void setSystemProperty(String key, String value) {
         System.setProperty(key, value);
+
+        Slf4jRequestLogWriter requestLogWriter = new Slf4jRequestLogWriter();
+        RequestLogWriter requestLogWriter1 = new RequestLogWriter();
+        CustomRequestLog requestLog = new CustomRequestLog();
+        setRequestLog(requestLog);
+    }
+
+    public StatisticsHandler getStatisticsHandler() {
+        return findStatisticsHandler(getHandler());
+    }
+
+    private StatisticsHandler findStatisticsHandler(Handler handler) {
+        if (handler instanceof StatisticsHandler statisticsHandler) {
+            return statisticsHandler;
+        }
+        if (handler instanceof Handler.Wrapper handlerWrapper) {
+            return findStatisticsHandler(handlerWrapper.getHandler());
+        }
+        return null;
     }
 
     @Override
     public void initialize() throws Exception {
+        setStopAtShutdown(false);
         if (autoStart) {
             start();
         }
@@ -89,26 +114,22 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void destroy() {
-        if (gracefulShutdown != null) {
-            gracefulShutdown.shutDownGracefully(result -> {
-                try {
-                    stop();
-                } catch (Exception e) {
-                    logger.error("Error while stopping jetty server: " + e.getMessage(), e);
-                }
-            });
-        } else {
-            try {
-                stop();
-            } catch (Exception e) {
-                logger.error("Error while stopping jetty server: " + e.getMessage(), e);
-            }
+        try {
+            stop();
+        } catch (Exception e) {
+            logger.error("Error while stopping jetty server", e);
         }
     }
 
     @Override
     public void doStart() throws Exception {
         logger.info("Starting embedded Jetty server");
+        if (shutdownGracefully && getStatisticsHandler() != null) {
+            gracefulShutdown = new GracefulShutdown(this);
+        } else if (gracefulShutdown != null) {
+            gracefulShutdown.abort();
+            gracefulShutdown = null;
+        }
         for (Handler handler : getHandlers()) {
             handleDeferredInitialize(handler);
         }
@@ -120,12 +141,24 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     @Override
     public void doStop() {
         logger.info("Stopping embedded Jetty server");
-        try {
-            super.doStop();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            logger.error("Unable to stop embedded Jetty server", e);
+        if (gracefulShutdown != null) {
+            gracefulShutdown.shutDownGracefully(result -> {
+                try {
+                    super.doStop();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (Exception e) {
+                    logger.error("Unable to stop embedded Jetty server", e);
+                }
+            });
+        } else {
+            try {
+                super.doStop();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                logger.error("Unable to stop embedded Jetty server", e);
+            }
         }
     }
 

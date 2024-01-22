@@ -108,7 +108,7 @@ public class JettyCommand extends AbstractCommand {
             }
         } catch (Exception e) {
             if (jettyServer != null) {
-                destroyTowServer(jettyServer);
+                destroyJettyServer(jettyServer);
             }
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof BindException) {
@@ -123,7 +123,7 @@ public class JettyCommand extends AbstractCommand {
         try {
             if (hasJettyServer(serverName)) {
                 JettyServer jettyServer = getJettyServer(serverName);
-                destroyTowServer(jettyServer);
+                destroyJettyServer(jettyServer);
                 return success(info(getStatus(LifeCycle.STOPPED)));
             } else {
                 return failed(warn("Jetty server is not running"));
@@ -167,7 +167,7 @@ public class JettyCommand extends AbstractCommand {
         return beanRegistry.hasSingleton(JettyServer.class, serverName);
     }
 
-    private void destroyTowServer(JettyServer jettyServer) throws Exception {
+    private void destroyJettyServer(JettyServer jettyServer) throws Exception {
         BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
         beanRegistry.destroySingleton(jettyServer);
     }
