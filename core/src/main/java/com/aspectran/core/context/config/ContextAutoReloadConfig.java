@@ -17,7 +17,6 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;

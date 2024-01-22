@@ -15,7 +15,6 @@
  */
 package com.aspectran.utils.logging.stdout;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 
 /**

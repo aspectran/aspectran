@@ -140,7 +140,7 @@
                     </properties>
                 </bean>
             </item>
-            <item>%{client}a - %u %t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
+            <item tokenize="false">%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|GMT+9}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
         </arguments>
     </bean>
 

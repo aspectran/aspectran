@@ -16,4 +16,23 @@
     <logger name="org.eclipse.jetty" level="info"/>
     <logger name="org.eclipse.jetty.ee10.webapp.WebAppClassLoader" level="info"/>
 
+    <!-- Jetty Access Logging -->
+    <appender name="JETTY-ACCESS-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${aspectran.basePath:-app}/logs/jetty-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/jetty-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.eclipse.jetty.server.RequestLog" level="info" additivity="false">
+        <appender-ref ref="JETTY-ACCESS-FILE"/>
+    </logger>
+
 </configuration>
