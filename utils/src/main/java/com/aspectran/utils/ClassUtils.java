@@ -37,26 +37,26 @@ public abstract class ClassUtils {
      * specified type. Instantiation is done using default no-argument
      * constructor.
      * @param <T> the generic type
-     * @param cls the class to check
+     * @param clazz the class to check
      * @return an instantiated object
      * @throws IllegalArgumentException if instantiation fails for any reason;
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
     @NonNull
-    public static <T> T createInstance(Class<T> cls) {
+    public static <T> T createInstance(Class<T> clazz) {
         Constructor<T> ctor;
         try {
-            ctor = findConstructor(cls);
+            ctor = findConstructor(clazz);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Class " + cls.getName() +
+            throw new IllegalArgumentException("Class " + clazz.getName() +
                     " has no default (no arg) constructor");
         }
         try {
             return ctor.newInstance();
         } catch (Exception e) {
             throw ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
-                    cls.getName() + ": " + e.getMessage());
+                    clazz.getName() + ": " + e.getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public abstract class ClassUtils {
      * Method that can be called to try to create an instantiate of
      * specified type.
      * @param <T> the generic type
-     * @param cls the class to check
+     * @param clazz the class to check
      * @param args the arguments
      * @return an instantiated object
      * @throws IllegalArgumentException if instantiation fails for any reason;
@@ -72,19 +72,19 @@ public abstract class ClassUtils {
      *      (which will be passed as is)
      */
     @NonNull
-    public static <T> T createInstance(Class<T> cls, @NonNull Object... args) {
+    public static <T> T createInstance(Class<T> clazz, @NonNull Object... args) {
         Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();
         }
-        return createInstance(cls, args, argTypes);
+        return createInstance(clazz, args, argTypes);
     }
 
     /**
      * Method that can be called to try to create an instance of
      * specified type.
      * @param <T> the generic type
-     * @param cls the class to check
+     * @param clazz the class to check
      * @param args the arguments
      * @param argTypes the argument types of the desired constructor
      * @return an instantiated object
@@ -93,46 +93,46 @@ public abstract class ClassUtils {
      *      (which will be passed as is)
      */
     @NonNull
-    public static <T> T createInstance(Class<T> cls, Object[] args, Class<?>[] argTypes) {
+    public static <T> T createInstance(Class<T> clazz, Object[] args, Class<?>[] argTypes) {
         Constructor<T> ctor;
         try {
-            ctor = findConstructor(cls, argTypes);
+            ctor = findConstructor(clazz, argTypes);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Class " + cls.getName() +
+            throw new IllegalArgumentException("Class " + clazz.getName() +
                     " has no constructor which can accept the given arguments");
         }
         try {
             return ctor.newInstance(args);
         } catch (Exception e) {
-            throw ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName()
+            throw ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + clazz.getName()
                     + ", problem: " + e.getMessage());
         }
     }
 
     /**
      * Obtain an accessible constructor for the given class and parameters.
-     * @param cls the class to check
+     * @param clazz the class to check
      * @param argTypes the argument types of the desired constructor
      * @param <T> the generic type
      * @return the constructor reference
      * @throws NoSuchMethodException if no such constructor exists
      */
     @NonNull
-    public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... argTypes)
+    public static <T> Constructor<T> findConstructor(Class<T> clazz, Class<?>... argTypes)
             throws NoSuchMethodException {
-        Assert.notNull(cls, "cls must not be null");
+        Assert.notNull(clazz, "cls must not be null");
         Constructor<T> ctor;
         try {
-            ctor = cls.getDeclaredConstructor(argTypes);
+            ctor = clazz.getDeclaredConstructor(argTypes);
         } catch (NoSuchMethodException e) {
             throw e;
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to find constructor of class " + cls.getName() +
+            throw new IllegalArgumentException("Unable to find constructor of class " + clazz.getName() +
                     ", problem: " + e.getMessage(), ExceptionUtils.getRootCause(e));
         }
         // must be public
         if (!Modifier.isPublic(ctor.getModifiers())) {
-            throw new IllegalArgumentException("Constructor for " + cls.getName() +
+            throw new IllegalArgumentException("Constructor for " + clazz.getName() +
                     " is not accessible (non-public?): not allowed to try modify access via Reflection: can not instantiate type");
         }
         return ctor;

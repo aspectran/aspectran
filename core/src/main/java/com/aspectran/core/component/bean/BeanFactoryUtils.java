@@ -17,11 +17,14 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ReflectionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * <p>Created: 2024. 1. 12.</p>
@@ -53,7 +56,34 @@ public abstract class BeanFactoryUtils {
     @NonNull
     private static Object newInstance(@NonNull Constructor<?> ctor, Object[] args) {
         try {
-            return ctor.newInstance(args);
+            if (ObjectUtils.isEmpty(args)) {
+                return ctor.newInstance(args);
+            } else {
+                Class<?>[] parameterTypes = ctor.getParameterTypes();
+                boolean casting = false;
+                for (Class<?> paramType : parameterTypes) {
+                    if (paramType.isArray()) {
+                        casting = true;
+                        break;
+                    }
+                }
+                if (casting) {
+                    Object[] newArgs = Arrays.copyOf(args, args.length);
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        if (newArgs[i] instanceof Object[] arr) {
+                            Class<?> paramType = parameterTypes[i];
+                            Class<?> componentType = paramType.getComponentType();
+                            int len = arr.length;
+                            Object[] newArr = (Object[])Array.newInstance(componentType, len);
+                            System.arraycopy(arr, 0, newArr, 0, len);
+                            newArgs[i] = newArr;
+                        }
+                    }
+                    return ctor.newInstance(newArgs);
+                } else {
+                    return ctor.newInstance(args);
+                }
+            }
         } catch (InstantiationException e) {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
                     "Is it an abstract class?", e);
@@ -62,10 +92,13 @@ public abstract class BeanFactoryUtils {
                     "Has the class definition changed? Is the constructor accessible?", e);
         } catch (IllegalArgumentException e) {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Illegal arguments for constructor", e);
+                    "Illegal arguments for constructor " + ctor, e);
         } catch (InvocationTargetException e) {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
                     "Constructor threw exception", e.getTargetException());
+        } catch (Exception e) {
+            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+                    "Constructor threw exception", e);
         }
     }
 

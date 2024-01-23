@@ -80,7 +80,14 @@
                 <bean class="org.eclipse.jetty.server.handler.gzip.GzipHandler">
                     <arguments>
                         <item>
-                            <value>#{jetty.handlerCollection}</value>
+                            <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+                                <arguments>
+                                    <item valueType="boolean">false</item>
+                                    <item type="array">
+                                        <value>#{jetty.rootContext}</value>
+                                    </item>
+                                </arguments>
+                            </bean>
                         </item>
                     </arguments>
                     <properties>
@@ -94,28 +101,21 @@
         </arguments>
     </bean>
 
-    <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.ContextHandlerCollection" scope="prototype">
-        <arguments>
-            <item valueType="boolean">false</item>
-            <item type="array">
-                <bean class="com.aspectran.jetty.JettyWebAppContext">
+    <bean id="jetty.rootContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
+        <properties>
+            <item name="contextPath">/</item>
+            <item name="war">#{basePath}/webroot</item>
+            <item name="tempDirectoryPersistent" valueType="boolean">false</item>
+            <item name="defaultsDescriptor">config/jetty/webdefault-ee10.xml</item>
+            <item name="sessionHandler">#{jetty.sessionHandler}</item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
                     <properties>
-                        <item name="contextPath">/</item>
-                        <item name="war">#{basePath}/webroot</item>
-                        <item name="tempDirectoryPersistent" valueType="boolean">false</item>
-                        <item name="defaultsDescriptor">config/jetty/webdefault-ee10.xml</item>
-                        <item name="sessionHandler">#{jetty.sessionHandler}</item>
-                        <item name="webSocketInitializer">
-                            <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
-                                <properties>
-                                    <item name="idleTimeout" valueType="long">60000</item>
-                                </properties>
-                            </bean>
-                        </item>
+                        <item name="idleTimeout" valueType="long">60000</item>
                     </properties>
                 </bean>
             </item>
-        </arguments>
+        </properties>
     </bean>
 
     <bean id="jetty.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
