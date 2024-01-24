@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
@@ -28,11 +29,16 @@ import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.webapp.WebXmlConfiguration;
 import org.eclipse.jetty.ee10.websocket.jakarta.server.JakartaWebSocketServerContainer;
 import org.eclipse.jetty.ee10.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.Resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
@@ -71,6 +77,36 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             super.setTempDirectory(tempDir);
         } catch (Exception e) {
             logger.error("Failed to establish Scratch directory: " + tempDir, e);
+        }
+    }
+
+    @Override
+    public void setDefaultsDescriptor(String defaultsDescriptor) {
+        if (StringUtils.hasLength(defaultsDescriptor)) {
+            Resource dftResource;
+            try {
+                dftResource = getResourceFactory().newClassLoaderResource(defaultsDescriptor);
+                if (Resources.missing(dftResource)) {
+                    String pkg = WebXmlConfiguration.class.getPackageName().replace(".", "/") + "/";
+                    if (defaultsDescriptor.startsWith(pkg)) {
+                        URL url = WebXmlConfiguration.class.getResource(defaultsDescriptor.substring(pkg.length()));
+                        if (url != null) {
+                            URI uri = url.toURI();
+                            dftResource = getResourceFactory().newResource(uri);
+                        }
+                    }
+                    if (Resources.missing(dftResource)) {
+                        dftResource = newResource(defaultsDescriptor);
+                    }
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Invalid default descriptor: " + defaultsDescriptor, e);
+            }
+            if (Resources.isReadableFile(dftResource)) {
+                super.setDefaultsDescriptor(defaultsDescriptor);
+            } else {
+                throw new IllegalArgumentException("Unable to locate default descriptor: " + defaultsDescriptor);
+            }
         }
     }
 

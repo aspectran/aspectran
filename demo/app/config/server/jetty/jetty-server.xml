@@ -42,7 +42,7 @@
                     <properties>
                         <item name="port">%{jetty.server.port}</item>
                         <item name="connectionFactories" type="list">
-                            <value>#{jetty.connectionFactory}</value>
+                            <value>#{jetty.server.connectionFactory}</value>
                         </item>
                     </properties>
                 </bean>
@@ -60,7 +60,7 @@
         </properties>
     </bean>
 
-    <bean id="jetty.connectionFactory" class="org.eclipse.jetty.server.HttpConnectionFactory" scope="prototype">
+    <bean id="jetty.server.connectionFactory" class="org.eclipse.jetty.server.HttpConnectionFactory" scope="prototype">
         <arguments>
             <item>
                 <bean class="org.eclipse.jetty.server.HttpConfiguration">

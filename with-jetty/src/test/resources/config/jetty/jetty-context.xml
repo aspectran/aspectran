@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-8.dtd">
+<aspectran>
+
+    <description>
+        Aspectran configuration for setting servlet context and root web application.
+    </description>
+
+    <bean id="jetty.context.root.webAppContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
+        <properties>
+            <item name="contextPath">/</item>
+            <item name="war">#{basePath}/webroot</item>
+            <item name="tempDirectory">#{basePath}/work/_webroot</item>
+            <item name="tempDirectoryPersistent" valueType="boolean">true</item>
+            <item name="defaultsDescriptor">config/jetty/webdefault-ee10.xml</item>
+            <item name="sessionHandler">#{jetty.context.root.sessionHandler}</item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
+                    <properties>
+                        <item name="idleTimeout" valueType="long">60000</item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.context.root.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
+        <properties>
+            <item name="sessionDataStore">
+                <bean class="org.eclipse.jetty.session.FileSessionDataStoreFactory">
+                    <properties>
+                        <item name="storeDir" valueType="file">#{basePath}/work/_sessions/jetty</item>
+                        <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+</aspectran>

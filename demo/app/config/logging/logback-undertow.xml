@@ -2,7 +2,7 @@
 <included>
 
     <!-- Undertow Access Logging -->
-    <appender name="UNDERTOW-ACCESS-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE-UNDERTOW-ACCESSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${aspectran.basePath:-app}/logs/undertow-access.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${aspectran.basePath:-app}/logs/archived/undertow-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -17,7 +17,7 @@
     </appender>
 
     <logger name="io.undertow.accesslog" level="info" additivity="false">
-        <appender-ref ref="UNDERTOW-ACCESS-FILE"/>
+        <appender-ref ref="FILE-UNDERTOW-ACCESSLOG"/>
     </logger>
 
 </included>

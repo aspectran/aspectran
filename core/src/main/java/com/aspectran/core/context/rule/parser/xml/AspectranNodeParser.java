@@ -101,12 +101,14 @@ public class AspectranNodeParser {
         this.itemNodeParsers = new ItemNodeParser[] {
                 new ItemNodeParser(0),
                 new ItemNodeParser(1),
-                new ItemNodeParser(2)
+                new ItemNodeParser(2),
+                new ItemNodeParser(3)
         };
         this.innerBeanNodeParsers = new InnerBeanNodeParser[] {
                 null,
                 new InnerBeanNodeParser(1),
-                new InnerBeanNodeParser(2)
+                new InnerBeanNodeParser(2),
+                new InnerBeanNodeParser(3)
         };
 
         this.parser = new NodeletParser(this);
