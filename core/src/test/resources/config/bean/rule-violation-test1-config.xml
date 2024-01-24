@@ -14,7 +14,13 @@
                                     <item>
                                         <bean class="java.lang.String">
                                             <arguments>
-                                                <item>Nested Inner String Bean</item>
+                                                <item>
+                                                    <bean class="java.lang.String">
+                                                        <arguments>
+                                                            <item>Nested Inner String Bean</item>
+                                                        </arguments>
+                                                    </bean>
+                                                </item>
                                             </arguments>
                                         </bean>
                                     </item>

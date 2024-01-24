@@ -45,7 +45,7 @@ class RuleViolationTest {
                 throw new Exception("No errors");
             } catch (Exception e) {
                 Throwable cause = ExceptionUtils.getRootCause(e);
-                assertEquals("Inner beans can be nested up to 2 times", cause.getMessage());
+                assertEquals("Inner beans can be nested up to 3 times", cause.getMessage());
                 throw cause;
             }
         });
