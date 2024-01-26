@@ -11,9 +11,13 @@
         |   {{CYAN}}echo1{{reset}}      It accepts parameters and print as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
-        |Use the command '{{GREEN}}undertow{{reset}}' to control the Undertow Server.
-        |Since Undertow Server is running, have your web browser point to:
+        |Use the command '{{GREEN}}undertow{{reset}}' to control the built-in Undertow Server.
+        |Use the command '{{GREEN}}jetty{{reset}}' to control the built-in Jetty Server.
+        |
+        |Now that the built-in Undertow Server is running, point your web browser to:
         |   {{81}}http://localhost:8080/{{reset}}
+        |Now that the built-in Jetty Server is running, point your web browser to:
+        |   {{81}}http://localhost:8081/{{reset}}
         |
     </description>
     <description profile="!demo" style="apon">

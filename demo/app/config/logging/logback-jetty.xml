@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+
+    <!-- Jetty Access Logging -->
+    <appender name="FILE-JETTY-ACCESSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${aspectran.basePath:-app}/logs/jetty-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/jetty-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.eclipse.jetty.server.RequestLog" level="info" additivity="false">
+        <appender-ref ref="FILE-JETTY-ACCESSLOG"/>
+    </logger>
+
+</included>

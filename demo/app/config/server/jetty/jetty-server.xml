@@ -9,15 +9,16 @@
 
     <environment>
         <properties>
-            <item name="jetty.startup" value="true" valueType="boolean"/>
-            <item name="jetty.server.port" value="8080" valueType="int"/>
+            <item name="jetty.server.startup" value="true" valueType="boolean"/>
+            <item name="jetty.server.shutdownGracefully" value="true" valueType="boolean"/>
+            <item name="jetty.server.port" value="8081" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
-            <item name="jetty.session.dataStoreDir" value="#{basePath}/work/_sessions/jetty"/>
-            <item name="jetty.gzip.minGzipSize" value="20000" valueType="int"/>
-            <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
-            <item name="jetty.gzip.includedMethodList" value="GET"/>
-            <item name="jetty.gzip.excludedMethodList" value=""/>
+            <item name="jetty.server.maxConnections" value="9999" valueType="int"/>
+            <item name="jetty.server.gzip.minGzipSize" value="20000" valueType="int"/>
+            <item name="jetty.server.gzip.syncFlush" value="false" valueType="boolean"/>
+            <item name="jetty.server.gzip.includedMethodList" value="GET"/>
+            <item name="jetty.server.gzip.excludedMethodList" value=""/>
         </properties>
     </environment>
 
@@ -33,126 +34,83 @@
             </item>
         </arguments>
         <properties>
-            <item name="autoStart">%{jetty.startup}</item>
+            <item name="autoStart">%{jetty.server.startup}</item>
+            <item name="shutdownGracefully">%{jetty.server.shutdownGracefully}</item>
+            <item name="maxConnections">%{jetty.server.maxConnections}</item>
             <item name="connectors" type="array">
-                <bean class="org.eclipse.jetty.server.ServerConnector">
-                    <arguments>
-                        <item>#{jetty.server}</item>
-                    </arguments>
-                    <properties>
-                        <item name="port">%{jetty.server.port}</item>
-                        <item name="connectionFactories" type="list">
-                            <value>#{jetty.server.connectionFactory}</value>
-                        </item>
-                    </properties>
-                </bean>
+                <value>#{jetty.server.serverConnector}</value>
             </item>
             <item name="handler">
-                <bean class="org.eclipse.jetty.server.handler.HandlerCollection">
-                    <properties>
-                        <item name="handlers" type="array">
-                            <value>#{jetty.gzipHandler}</value>
-                            <value>#{jetty.requestLogHandler}</value>
-                        </item>
-                    </properties>
-                </bean>
+                <value>#{jetty.server.mainHandler}</value>
+            </item>
+            <item name="requestLog">
+                <value>#{jetty.server.requestLog}</value>
             </item>
         </properties>
     </bean>
 
-    <bean id="jetty.server.connectionFactory" class="org.eclipse.jetty.server.HttpConnectionFactory" scope="prototype">
+    <bean id="jetty.server.serverConnector" class="org.eclipse.jetty.server.ServerConnector" scope="prototype">
+        <arguments>
+            <item>#{jetty.server}</item>
+            <item type="array">
+                <bean class="org.eclipse.jetty.server.HttpConnectionFactory">
+                    <arguments>
+                        <item>
+                            <bean class="org.eclipse.jetty.server.HttpConfiguration">
+                                <properties>
+                                    <item name="customizers" type="list">
+                                        <bean class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/>
+                                    </item>
+                                </properties>
+                            </bean>
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </arguments>
+        <properties>
+            <item name="port">%{jetty.server.port}</item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.server.mainHandler" class="org.eclipse.jetty.server.handler.StatisticsHandler" scope="prototype">
         <arguments>
             <item>
-                <bean class="org.eclipse.jetty.server.HttpConfiguration">
-                    <properties>
-                        <item name="customizers" type="list">
-                            <bean class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/>
+                <bean class="org.eclipse.jetty.server.handler.gzip.GzipHandler">
+                    <arguments>
+                        <item>
+                            <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+                                <arguments>
+                                    <item valueType="boolean">false</item>
+                                    <item type="array">
+                                        <value>#{jetty.context.root.webAppContext}</value>
+                                    </item>
+                                </arguments>
+                            </bean>
                         </item>
+                    </arguments>
+                    <properties>
+                        <item name="minGzipSize" valueType="int">%{jetty.server.gzip.minGzipSize}</item>
+                        <item name="syncFlush" valueType="boolean">%{jetty.server.gzip.syncFlush}</item>
+                        <item name="includedMethodList">%{jetty.server.gzip.includedMethodList}</item>
+                        <item name="excludedMethodList">%{jetty.server.gzip.excludedMethodList}</item>
                     </properties>
                 </bean>
             </item>
         </arguments>
     </bean>
 
-    <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
-        <properties>
-            <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
-            <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
-            <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
-            <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
-            <item name="handler">#{jetty.handlerCollection}</item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
-        <properties>
-            <item name="handlers" type="array">
-                <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
+    <bean id="jetty.server.requestLog" class="org.eclipse.jetty.server.CustomRequestLog" scope="prototype">
+        <arguments>
+            <item>
+                <bean class="org.eclipse.jetty.server.Slf4jRequestLogWriter">
                     <properties>
-                        <item name="handlers" type="array">
-                            <value>#{jetty.rootContext}</value>
-                        </item>
-                    </properties>
-                </bean>
-                <bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.rootContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
-        <properties>
-            <item name="contextPath">/</item>
-            <item name="war">#{basePath}/webroot</item>
-            <item name="tempDirectory">#{basePath}/work/_webroot</item>
-            <item name="persistTempDirectory" valueType="boolean">false</item>
-            <item name="defaultsDescriptor">#{basePath}/config/server/jetty/webdefault.xml</item>
-            <item name="sessionHandler">#{jetty.sessionHandler}</item>
-            <item name="webSocketInitializer">
-                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
-                    <properties>
-                        <item name="idleTimeout" valueType="long">60000</item>
+                        <item name="loggerName">org.eclipse.jetty.server.RequestLog</item>
                     </properties>
                 </bean>
             </item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
-        <properties>
-            <item name="sessionDataStore">
-                <bean class="org.eclipse.jetty.server.session.FileSessionDataStoreFactory">
-                    <properties>
-                        <item name="storeDir" valueType="file">%{jetty.session.dataStoreDir}</item>
-                        <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
-                    </properties>
-                </bean>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="jetty.requestLogHandler" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">
-        <properties>
-            <item name="requestLog">
-                <bean class="org.eclipse.jetty.server.CustomRequestLog">
-                    <arguments>
-                        <item>
-                            <bean class="org.eclipse.jetty.server.AsyncRequestLogWriter">
-                                <arguments>
-                                    <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
-                                </arguments>
-                                <properties>
-                                    <item name="filenameDateFormat">yyyy_MM_dd</item>
-                                    <item name="retainDays" valueType="int">90</item>
-                                    <item name="append" valueType="boolean">true</item>
-                                    <item name="timeZone">GMT+9</item>
-                                </properties>
-                            </bean>
-                        </item>
-                        <item tokenize="false">%{client}a - %u %{yyyy-MM-dd HH:mm:ss ZZZ|GMT+9}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
-                    </arguments>
-                </bean>
-            </item>
-        </properties>
+            <item tokenize="false">%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|GMT+9}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</item>
+        </arguments>
     </bean>
 
 </aspectran>

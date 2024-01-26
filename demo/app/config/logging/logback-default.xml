@@ -3,6 +3,7 @@
 
     <include file="${aspectran.basePath:-app}/config/logging/logback-scheduler.xml"/>
     <include file="${aspectran.basePath:-app}/config/logging/logback-undertow.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/logback-jetty.xml"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${aspectran.basePath:-app}/logs/app.log</file>

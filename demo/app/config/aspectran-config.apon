@@ -18,8 +18,6 @@ context: {
     profiles: {
         default: [
             demo
-            # If you want to use Jetty as your embedded servlet container, uncomment the line below.
-            #jetty
         ]
     }
     autoReload: {
@@ -62,8 +60,7 @@ shell: {
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.undertow.shell.command.UndertowCommand
-        # To use Jetty as the embedded servlet container, comment out the line above and uncomment the line below.
-        #com.aspectran.jetty.shell.command.JettyCommand
+        com.aspectran.jetty.shell.command.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.AspectCommand
         com.aspectran.shell.command.builtins.JobCommand
@@ -105,8 +102,7 @@ daemon: {
     }
     commands: [
         com.aspectran.undertow.daemon.command.UndertowCommand
-        # To use Jetty as the embedded servlet container, comment out the line above and uncomment the line below.
-        #com.aspectran.jetty.daemon.command.JettyCommand
+        com.aspectran.jetty.daemon.command.JettyCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.ComponentCommand

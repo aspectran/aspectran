@@ -1,46 +1,36 @@
 body {
-	background-color: #FFFFFF;
-	margin: 10px;
-	padding: 5px;
-	font-family: sans-serif;
+    background-color: #eee;
+    color: #555;
+    margin: 10px;
+    padding: 5px;
+    font-family: sans-serif;
 }
-
 h1.title {
-	text-shadow: #000000 -1px -1px 1px;
-	color: #FC390E;
-	font-weight: bold;
+    font-weight: bold;
 }
-
 table.listing {
-	border: 0px;
+    border: 0;
 }
-
 thead a {
-	color: blue;
+    color: #555;
 }
-
 thead th {
-	border-bottom: black 1px solid;
+    border-bottom: #777 1px solid;
 }
-
 .name, .lastmodified {
-	text-align: left;
-	padding-right: 15px;
+    text-align: left;
+    padding-right: 15px;
 }
-
 .size {
-	text-align: right;
+    text-align: right;
 }
-
 a {
-	color: #7036be;
-	font-weight: bold;
-	font-style: normal;
-	text-decoration: none;
-	font-size:inherit;
+    color: #555;
+    font-style: normal;
+    text-decoration: none;
+    font-size: inherit;
 }
-
 td {
-	font-style: italic;
-	padding: 2px;
+    font-style: italic;
+    padding: 2px;
 }
