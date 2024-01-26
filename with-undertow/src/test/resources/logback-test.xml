@@ -12,15 +12,12 @@
     </root>
 
     <logger name="com.aspectran" level="debug"/>
-    <logger name="com.aspectran.jetty" level="debug"/>
-    <logger name="org.eclipse.jetty" level="info"/>
-    <logger name="org.eclipse.jetty.ee10.webapp.WebAppClassLoader" level="info"/>
 
-    <!-- Jetty Access Logging -->
-    <appender name="FILE-JETTY-ACCESSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${aspectran.basePath:-target/app}/logs/jetty-access.log</file>
+    <!-- Undertow Access Logging -->
+    <appender name="FILE-UNDERTOW-ACCESSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${aspectran.basePath:-target/app}/logs/undertow-access.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/jetty-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/undertow-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
@@ -31,8 +28,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.eclipse.jetty.server.RequestLog" level="info" additivity="false">
-        <appender-ref ref="FILE-JETTY-ACCESSLOG"/>
+    <logger name="io.undertow.accesslog" level="info" additivity="false">
+        <appender-ref ref="FILE-UNDERTOW-ACCESSLOG"/>
     </logger>
 
 </configuration>

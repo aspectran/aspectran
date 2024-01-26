@@ -32,6 +32,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.io.File;
 import java.io.IOException;
 
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -41,9 +42,10 @@ class DefaultTowServerTest {
 
     @BeforeAll
     void ready() throws Exception {
-        String basePath = new File("target").getCanonicalPath();
-        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(basePath, "webroot"));
-        new File(basePath, "logs").mkdir();
+        File root = new File("target/app");
+        String basePath = root.getCanonicalPath();
+        System.setProperty(BASE_PATH_PROPERTY_NAME, basePath); // for logback
+        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(root, "webroot"));
 
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
