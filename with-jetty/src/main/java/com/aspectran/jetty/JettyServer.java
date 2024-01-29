@@ -23,12 +23,9 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NetworkConnector;
-import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.Slf4jRequestLogWriter;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
@@ -83,11 +80,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     public void setSystemProperty(String key, String value) {
         System.setProperty(key, value);
-
-        Slf4jRequestLogWriter requestLogWriter = new Slf4jRequestLogWriter();
-        RequestLogWriter requestLogWriter1 = new RequestLogWriter();
-        CustomRequestLog requestLog = new CustomRequestLog();
-        setRequestLog(requestLog);
     }
 
     public StatisticsHandler getStatisticsHandler() {
