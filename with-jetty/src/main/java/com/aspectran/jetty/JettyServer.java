@@ -21,6 +21,8 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import org.eclipse.jetty.ee10.servlet.SessionHandler;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -31,6 +33,7 @@ import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -94,6 +97,36 @@ public class JettyServer extends Server implements InitializableBean, Disposable
             return findStatisticsHandler(handlerWrapper.getHandler());
         }
         return null;
+    }
+
+    public ContextHandler getContextHandler(String contextPath) {
+        return findContextHandler(contextPath, getHandler());
+    }
+
+    private ContextHandler findContextHandler(String contextPath, Handler handler) {
+        if (handler instanceof ContextHandler contextHandler) {
+            if (Objects.equals(contextPath, contextHandler.getContextPath())) {
+                return contextHandler;
+            }
+        }
+        if (handler instanceof Handler.Wrapper handlerWrapper) {
+            return findContextHandler(contextPath, handlerWrapper.getHandler());
+        }
+        if (handler instanceof Handler.Sequence handlerSequence) {
+            for (Handler child : handlerSequence.getHandlers()) {
+                return findContextHandler(contextPath, child);
+            }
+        }
+        return null;
+    }
+
+    public SessionHandler getSessionHandler(String contextPath) {
+        ContextHandler contextHandler = getContextHandler(contextPath);
+        if (contextHandler instanceof WebAppContext webAppContext) {
+            return webAppContext.getSessionHandler();
+        } else {
+            return null;
+        }
     }
 
     @Override

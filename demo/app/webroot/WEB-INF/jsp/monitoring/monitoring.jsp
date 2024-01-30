@@ -57,7 +57,8 @@
 </div>
 <script>
     $(function() {
-        let sessionStats = new SessionStats("/monitoring/stats", 5);
+        let serverType = "<%= request.getServerPort() == 8081 ? "jetty" : "undertow" %>";
+        let sessionStats = new SessionStats("/monitoring/stats/" + serverType, 5);
         try {
             sessionStats.openSocket();
             $(".stats-wrap").fadeIn();

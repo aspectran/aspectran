@@ -65,6 +65,22 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.webSocketInitializer = webSocketInitializer;
     }
 
+    @Override
+    public void setWar(String war) {
+        File warFile = null;
+        try {
+            warFile = new File(war);
+            if (warFile.isDirectory() && !warFile.exists()) {
+                if (!warFile.mkdirs()) {
+                    throw new IOException("Unable to create war directory: " + warFile);
+                }
+            }
+            super.setWar(warFile.getCanonicalPath());
+        } catch (Exception e) {
+            logger.error("Failed to establish Scratch directory: " + warFile, e);
+        }
+    }
+
     public void setTempDirectory(String tempDirectory) {
         File tempDir = null;
         try {
@@ -74,7 +90,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                     throw new IOException("Unable to create scratch directory: " + tempDir);
                 }
             }
-            super.setTempDirectory(tempDir);
+            super.setTempDirectory(tempDir.getCanonicalFile());
         } catch (Exception e) {
             logger.error("Failed to establish Scratch directory: " + tempDir, e);
         }

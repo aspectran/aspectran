@@ -18,10 +18,7 @@ package com.aspectran.demo.monitoring.stats;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.session.DefaultSession;
-import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.component.session.SessionStatistics;
-import com.aspectran.undertow.server.TowServer;
+import com.aspectran.jetty.JettyServer;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -33,29 +30,25 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import org.eclipse.jetty.session.DefaultSessionCache;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Component
 @ServerEndpoint(
-        value = "/monitoring/stats",
+        value = "/monitoring/stats/jetty",
         configurator = AspectranConfigurator.class
 )
 @AvoidAdvice
-public class SessionStatsEndpoint extends InstantActivitySupport {
+public class JettySessionStatsEndpoint extends InstantActivitySupport {
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionStatsEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(JettySessionStatsEndpoint.class);
 
     private static final String COMMAND_JOIN = "JOIN:";
 
@@ -78,6 +71,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         if (logger.isDebugEnabled()) {
             logger.debug("WebSocket connection established with session: " + session.getId());
         }
+
     }
 
     @OnMessage
@@ -137,7 +131,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
 
                     @Override
                     public void run() {
-                        SessionStatsPayload newStats = getSessionStatsPayload();
+                        SessionStatsPayload newStats = getJettySessionStatsPayload();
                         if (first || !newStats.equals(oldStats)) {
                             try {
                                 broadcast(newStats.toJson());
@@ -162,39 +156,19 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         }
     }
 
-    @NonNull
-    private SessionStatsPayload getSessionStatsPayload() {
-        TowServer towServer = getBeanRegistry().getBean("tow.server");
-        SessionHandler sessionHandler = towServer.getSessionHandler("root.war");
-        SessionStatistics statistics = sessionHandler.getStatistics();
-
-        SessionStatsPayload stats = new SessionStatsPayload();
-        stats.setCreatedSessionCount(statistics.getCreatedSessions());
-        stats.setExpiredSessionCount(statistics.getExpiredSessions());
-        stats.setActiveSessionCount(statistics.getActiveSessions());
-        stats.setHighestActiveSessionCount(statistics.getHighestActiveSessions());
-        stats.setEvictedSessionCount(statistics.getEvictedSessions());
-        stats.setRejectedSessionCount(statistics.getRejectedSessions());
-        stats.setStartTime(formatTime(statistics.getStartTime()));
-
-        // Current Users
-        List<String> currentSessions = new ArrayList<>();
-        Set<String> sessionIds = sessionHandler.getActiveSessions();
-        for (String sessionId : sessionIds) {
-            DefaultSession session = sessionHandler.getSession(sessionId);
-            if (session != null) {
-                currentSessions.add("1:Session " + session.getId() + " created at " +
-                        formatTime(session.getCreationTime()));
-            }
+    public SessionStatsPayload getJettySessionStatsPayload() {
+        JettyServer jettyServer = getBeanRegistry().getBean("jetty.server");
+        org.eclipse.jetty.ee10.servlet.SessionHandler sessionHandler = jettyServer.getSessionHandler("/");
+        if (sessionHandler != null && sessionHandler.getSessionCache() instanceof DefaultSessionCache sessionCache) {
+            SessionStatsPayload stats = new SessionStatsPayload();
+            stats.setActiveSessionCount(sessionCache.getSessionsCurrent());
+            stats.setHighestActiveSessionCount(sessionCache.getSessionsMax());
+            stats.setCreatedSessionCount(sessionCache.getSessionsTotal());
+            stats.setExpiredSessionCount(sessionCache.getSessionsTotal() - sessionCache.getSessionsCurrent());
+            stats.setStartTime(jettyServer.getStatisticsHandler().getStatisticsDuration().toString());
+            return stats;
         }
-        stats.setCurrentSessions(currentSessions.toArray(new String[0]));
-        return stats;
-    }
-
-    @NonNull
-    private String formatTime(long time) {
-        LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
-        return date.toString();
+        return null;
     }
 
 }
