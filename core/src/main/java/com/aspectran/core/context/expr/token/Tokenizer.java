@@ -63,84 +63,91 @@ public class Tokenizer {
             return tokens;
         }
 
-        int status = AT_TEXT;
-        int tokenStartOffset = 0; // start position of token in the stringBuffer
-        char symbol = Token.PARAMETER_SYMBOL; // PARAMETER_SYMBOL or ATTRIBUTE_SYMBOL
-        char c;
-
         StringBuilder nameBuf = new StringBuilder();
         StringBuilder valueBuf = new StringBuilder();
         StringBuilder textBuf = new StringBuilder();
+        int status = AT_TEXT;
+        int start = 0; // start position of token in the stringBuffer
+        char symbol = Token.PARAMETER_SYMBOL;
+        char c;
 
         List<Token> tokens = new ArrayList<>();
         for (int i = 0; i < inputLen; i++) {
             c = input.charAt(i);
+            textBuf.append(c);
             switch (status) {
                 case AT_TEXT:
-                    textBuf.append(c);
                     if (Token.isTokenSymbol(c)) {
                         symbol = c;
                         status = AT_TOKEN_SYMBOL;
                         // abc$ --> tokenStartOffset: 3
-                        tokenStartOffset = textBuf.length() - 1;
+                        start = textBuf.length() - 1;
                     }
                     break;
                 case AT_TOKEN_SYMBOL:
-                    textBuf.append(c);
                     if (c == Token.BRACKET_OPEN) {
+                        nameBuf.setLength(0);
                         status = AT_TOKEN_NAME;
                     } else {
                         if (Token.isTokenSymbol(c)) {
                             symbol = c;
                             // abc$ --> tokenStartOffset: 3
-                            tokenStartOffset = textBuf.length() - 1;
+                            start = textBuf.length() - 1;
                         } else {
                             status = AT_TEXT;
                         }
                     }
                     break;
                 case AT_TOKEN_NAME:
-                case AT_TOKEN_VALUE:
-                    textBuf.append(c);
-                    if (status == AT_TOKEN_NAME) {
-                        if (c == Token.VALUE_SEPARATOR) {
-                            status = AT_TOKEN_VALUE;
-                            break;
-                        }
+                    if (c == Token.VALUE_DELIMITER) {
+                        valueBuf.setLength(0);
+                        status = AT_TOKEN_VALUE;
+                        break;
                     }
                     if (c == Token.BRACKET_CLOSE) {
-                        if (!nameBuf.isEmpty() || !valueBuf.isEmpty()) {
+                        if (!nameBuf.isEmpty()) {
                             // save previous non-token string
-                            if (tokenStartOffset > 0) {
-                                String text = trimBuffer(textBuf, tokenStartOffset, textTrim);
-                                Token token = new Token(text);
+                            if (start > 0) {
+                                Token token = createToken(textBuf, start, textTrim);
+                                tokens.add(token);
+                            }
+                            // save token name and default value
+                            Token token = createToken(symbol, nameBuf, null);
+                            tokens.add(token);
+                            textBuf.setLength(0);
+                        }
+                        status = AT_TEXT;
+                        break;
+                    }
+                    // if the name is too long, it is treated as a text token
+                    if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
+                        status = AT_TEXT;
+                        nameBuf.setLength(0);
+                    }
+                    nameBuf.append(c);
+                    break;
+                case AT_TOKEN_VALUE:
+                    if (c == Token.BRACKET_CLOSE) {
+                        if (!valueBuf.isEmpty()) {
+                            // save previous non-token string
+                            if (start > 0) {
+                                Token token = createToken(textBuf, start, textTrim);
                                 tokens.add(token);
                             }
                             // save token name and default value
                             Token token = createToken(symbol, nameBuf, valueBuf);
                             tokens.add(token);
-                            status = AT_TEXT;
                             textBuf.setLength(0);
-                            break;
                         }
                         status = AT_TEXT;
                         break;
                     }
-                    if (status == AT_TOKEN_NAME) {
-                        if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
-                            status = AT_TEXT;
-                            nameBuf.setLength(0);
-                        }
-                        nameBuf.append(c);
-                    } else {
-                        valueBuf.append(c);
-                    }
+                    valueBuf.append(c);
                     break;
                 }
         }
         if (!textBuf.isEmpty()) {
-            String text = trimBuffer(textBuf, textBuf.length(), textTrim);
-            Token token = new Token(text);
+            Token token = createToken(textBuf, textBuf.length(), textTrim);
             tokens.add(token);
         }
         return tokens;
@@ -154,19 +161,17 @@ public class Tokenizer {
      * @return the token
      */
     @NonNull
-    private static Token createToken(char symbol, StringBuilder nameBuf, @NonNull StringBuilder valueBuf) {
+    private static Token createToken(char symbol, StringBuilder nameBuf, StringBuilder valueBuf) {
         String value = null;
-        if (!valueBuf.isEmpty()) {
+        if (valueBuf != null && !valueBuf.isEmpty()) {
             value = valueBuf.toString();
-            valueBuf.setLength(0); // empty the value buffer
         }
 
         if (!nameBuf.isEmpty()) {
             TokenType type = Token.resolveTypeAsSymbol(symbol);
             String name = nameBuf.toString();
-            nameBuf.setLength(0); // empty the name buffer
 
-            int offset = name.indexOf(Token.GETTER_SEPARATOR);
+            int offset = name.indexOf(Token.GETTER_DELIMITER);
             if (offset > -1) {
                 String name2 = name.substring(0, offset);
                 String getter = name.substring(offset + 1);
@@ -181,12 +186,12 @@ public class Tokenizer {
                 if (directiveType != null) {
                     String getter = null;
                     String defaultValue = null;
-                    offset = value.indexOf(Token.GETTER_SEPARATOR);
+                    offset = value.indexOf(Token.GETTER_DELIMITER);
                     if (offset > -1) {
                         String value2 = value.substring(0, offset);
                         String getter2 = value.substring(offset + 1);
                         value = value2;
-                        offset = getter2.indexOf(Token.VALUE_SEPARATOR);
+                        offset = getter2.indexOf(Token.VALUE_DELIMITER);
                         if (offset > -1) {
                             String getter3 = getter2.substring(0, offset);
                             String value3 = getter2.substring(offset + 1);
@@ -218,6 +223,12 @@ public class Tokenizer {
             // when not exists tokenName then tokenType must be TEXT type
             return new Token(value);
         }
+    }
+
+    @NonNull
+    private static Token createToken(StringBuilder textBuf, int end, boolean trim) {
+        String text = trimBuffer(textBuf, end, trim);
+        return new Token(text);
     }
 
     /**

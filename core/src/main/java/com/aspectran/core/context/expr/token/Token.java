@@ -100,9 +100,9 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     public static final char BRACKET_CLOSE = '}';
 
-    public static final char VALUE_SEPARATOR = ':';
+    public static final char VALUE_DELIMITER = ':';
 
-    public static final char GETTER_SEPARATOR = '^';
+    public static final char GETTER_DELIMITER = '^';
 
     private final TokenType type;
 
@@ -293,11 +293,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 sb.append(name);
             }
             if (value != null) {
-                sb.append(VALUE_SEPARATOR);
+                sb.append(VALUE_DELIMITER);
                 sb.append(value);
             }
             if (getterName != null) {
-                sb.append(GETTER_SEPARATOR);
+                sb.append(GETTER_DELIMITER);
                 sb.append(getterName);
             }
         } else if (type == TokenType.TEMPLATE) {
@@ -319,7 +319,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 sb.append(name);
             }
             if (getterName != null) {
-                sb.append(GETTER_SEPARATOR);
+                sb.append(GETTER_DELIMITER);
                 sb.append(getterName);
             }
         } else if (type == TokenType.PROPERTY) {
@@ -329,18 +329,18 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 sb.append(name);
             }
             if (value != null) {
-                sb.append(VALUE_SEPARATOR);
+                sb.append(VALUE_DELIMITER);
                 sb.append(value);
             }
             if (getterName != null) {
-                sb.append(GETTER_SEPARATOR);
+                sb.append(GETTER_DELIMITER);
                 sb.append(getterName);
             }
         } else {
             throw new InvalidTokenException("Unknown token type: " + type, this);
         }
         if (defaultValue != null) {
-            sb.append(VALUE_SEPARATOR);
+            sb.append(VALUE_DELIMITER);
             sb.append(defaultValue);
         }
         sb.append(BRACKET_CLOSE);

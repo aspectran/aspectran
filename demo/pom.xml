@@ -93,6 +93,15 @@
                             </excludes>
                         </fileset>
                         <fileset>
+                            <directory>app/temp</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>.gitignore</exclude>
+                            </excludes>
+                        </fileset>
+                        <fileset>
                             <directory>app/work</directory>
                             <includes>
                                 <include>_resource_*/</include>
