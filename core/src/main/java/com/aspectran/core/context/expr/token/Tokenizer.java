@@ -80,7 +80,6 @@ public class Tokenizer {
                     if (Token.isTokenSymbol(c)) {
                         symbol = c;
                         status = AT_TOKEN_SYMBOL;
-                        // abc$ --> tokenStartOffset: 3
                         start = textBuf.length() - 1;
                     }
                     break;
@@ -88,14 +87,11 @@ public class Tokenizer {
                     if (c == Token.BRACKET_OPEN) {
                         nameBuf.setLength(0);
                         status = AT_TOKEN_NAME;
+                    } else if (Token.isTokenSymbol(c)) {
+                        symbol = c;
+                        start = textBuf.length() - 1;
                     } else {
-                        if (Token.isTokenSymbol(c)) {
-                            symbol = c;
-                            // abc$ --> tokenStartOffset: 3
-                            start = textBuf.length() - 1;
-                        } else {
-                            status = AT_TEXT;
-                        }
+                        status = AT_TEXT;
                     }
                     break;
                 case AT_TOKEN_NAME:
@@ -114,17 +110,17 @@ public class Tokenizer {
                             // save token name and default value
                             Token token = createToken(symbol, nameBuf, null);
                             tokens.add(token);
-                            textBuf.setLength(0);
+                            textBuf.setLength(0); // just discard textBuf because it was treated as a token
                         }
                         status = AT_TEXT;
-                        break;
+                    } else {
+                        nameBuf.append(c);
+                        // if the name is too long, it is treated as a text token
+                        if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
+                            nameBuf.setLength(0);
+                            status = AT_TEXT;
+                        }
                     }
-                    // if the name is too long, it is treated as a text token
-                    if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
-                        status = AT_TEXT;
-                        nameBuf.setLength(0);
-                    }
-                    nameBuf.append(c);
                     break;
                 case AT_TOKEN_VALUE:
                     if (c == Token.BRACKET_CLOSE) {
@@ -137,15 +133,16 @@ public class Tokenizer {
                             // save token name and default value
                             Token token = createToken(symbol, nameBuf, valueBuf);
                             tokens.add(token);
-                            textBuf.setLength(0);
+                            textBuf.setLength(0); // just discard textBuf because it was treated as a token
                         }
                         status = AT_TEXT;
-                        break;
+                    } else {
+                        valueBuf.append(c);
                     }
-                    valueBuf.append(c);
                     break;
                 }
         }
+        // if textBuf is not empty, it is treated as a text token
         if (!textBuf.isEmpty()) {
             Token token = createToken(textBuf, textBuf.length(), textTrim);
             tokens.add(token);
