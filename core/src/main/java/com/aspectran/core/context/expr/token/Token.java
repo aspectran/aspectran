@@ -349,7 +349,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     @Override
     public boolean equals(Object token) {
-        return (this == token || (token instanceof Token && deepEquals((Token)token)));
+        return (this == token || (token instanceof Token that && deepEquals(that)));
     }
 
     private boolean deepEquals(@NonNull Token token) {
@@ -377,14 +377,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         } else if (token.getGetterName() != null) {
             return false;
         }
-        if (defaultValue != null) {
-            if (!defaultValue.equals(token.getDefaultValue())) {
-                return false;
-            }
-        } else if (token.getDefaultValue() != null) {
-            return false;
+        if (defaultValue == null) {
+            return (token.getDefaultValue() == null);
+        } else {
+            return defaultValue.equals(token.getDefaultValue());
         }
-        return true;
     }
 
     @Override

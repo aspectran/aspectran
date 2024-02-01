@@ -34,11 +34,11 @@ public class Tokenizer {
 
     private static final int AT_TEXT = 1;
 
-    private static final int AT_TOKEN_SYMBOL = 2;
+    private static final int AT_SYMBOL = 2;
 
-    private static final int AT_TOKEN_NAME = 3;
+    private static final int AT_NAME = 3;
 
-    private static final int AT_TOKEN_VALUE = 4;
+    private static final int AT_VALUE = 4;
 
     private static final char CR = '\r';
 
@@ -63,11 +63,11 @@ public class Tokenizer {
             return tokens;
         }
 
+        StringBuilder textBuf = new StringBuilder();
         StringBuilder nameBuf = new StringBuilder();
         StringBuilder valueBuf = new StringBuilder();
-        StringBuilder textBuf = new StringBuilder();
-        int status = AT_TEXT;
         int start = 0; // start position of token in the stringBuffer
+        int state = AT_TEXT;
         char symbol = Token.PARAMETER_SYMBOL;
         char c;
 
@@ -75,29 +75,29 @@ public class Tokenizer {
         for (int i = 0; i < inputLen; i++) {
             c = input.charAt(i);
             textBuf.append(c);
-            switch (status) {
+            switch (state) {
                 case AT_TEXT:
                     if (Token.isTokenSymbol(c)) {
                         symbol = c;
-                        status = AT_TOKEN_SYMBOL;
+                        state = AT_SYMBOL;
                         start = textBuf.length() - 1;
                     }
                     break;
-                case AT_TOKEN_SYMBOL:
+                case AT_SYMBOL:
                     if (c == Token.BRACKET_OPEN) {
                         nameBuf.setLength(0);
-                        status = AT_TOKEN_NAME;
+                        state = AT_NAME;
                     } else if (Token.isTokenSymbol(c)) {
                         symbol = c;
                         start = textBuf.length() - 1;
                     } else {
-                        status = AT_TEXT;
+                        state = AT_TEXT;
                     }
                     break;
-                case AT_TOKEN_NAME:
+                case AT_NAME:
                     if (c == Token.VALUE_DELIMITER) {
                         valueBuf.setLength(0);
-                        status = AT_TOKEN_VALUE;
+                        state = AT_VALUE;
                         break;
                     }
                     if (c == Token.BRACKET_CLOSE) {
@@ -112,17 +112,17 @@ public class Tokenizer {
                             tokens.add(token);
                             textBuf.setLength(0); // just discard textBuf because it was treated as a token
                         }
-                        status = AT_TEXT;
+                        state = AT_TEXT;
                     } else {
                         nameBuf.append(c);
                         // if the name is too long, it is treated as a text token
                         if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
                             nameBuf.setLength(0);
-                            status = AT_TEXT;
+                            state = AT_TEXT;
                         }
                     }
                     break;
-                case AT_TOKEN_VALUE:
+                case AT_VALUE:
                     if (c == Token.BRACKET_CLOSE) {
                         if (!valueBuf.isEmpty()) {
                             // save previous non-token string
@@ -135,7 +135,7 @@ public class Tokenizer {
                             tokens.add(token);
                             textBuf.setLength(0); // just discard textBuf because it was treated as a token
                         }
-                        status = AT_TEXT;
+                        state = AT_TEXT;
                     } else {
                         valueBuf.append(c);
                     }
