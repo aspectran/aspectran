@@ -29,7 +29,7 @@ import java.util.Map;
 public class TokenParser {
 
     /**
-     * Returns an array of tokens that contains tokenized string.
+     * Returns an array of {@code Token} objects separated by token expression.
      * @param expression the expression to parse
      * @return an array of tokens
      */
@@ -38,8 +38,8 @@ public class TokenParser {
     }
 
     /**
-     * Returns an array of tokens that contains tokenized string.
-     * @param expression the expression to parse
+     * Returns an array of {@code Token} objects separated by token expression.
+     * @param expression the token expression to parse
      * @param optimize whether to optimize tokens
      * @return an array of tokens
      */

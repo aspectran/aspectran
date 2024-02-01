@@ -33,10 +33,10 @@ class TokenParserTest {
         Token[] tokens = TokenParser.parse(text);
 
         assertEquals(4, tokens.length);
-        assertEquals(tokens[0].stringify(), "${emailId}");
-        assertEquals(tokens[1].stringify(), "@");
-        assertEquals(tokens[2].stringify(), "${emailDomain}");
-        assertEquals(tokens[3].stringify(), "#{aaaa");
+        assertEquals("${emailId}", tokens[0].stringify());
+        assertEquals("@", tokens[1].stringify());
+        assertEquals("${emailDomain}", tokens[2].stringify());
+        assertEquals("#{aaaa", tokens[3].stringify());
     }
 
     @Test
@@ -78,6 +78,20 @@ class TokenParserTest {
         assertEquals(2, tokens.length);
         assertEquals(tokens[0].toString(), "{type=text, defaultValue=${ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ}}");
         assertEquals(tokens[1].toString(), "{type=parameter, name=ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEF}");
+    }
+
+    @Test
+    void withWhitespaces() {
+        String text = " \n\r ${emailId}@${emailDomain}\n\n";
+
+        Token[] tokens = TokenParser.parse(text, true);
+
+        assertEquals(5, tokens.length);
+        assertEquals("\n", tokens[0].stringify());
+        assertEquals("${emailId}", tokens[1].stringify());
+        assertEquals("@", tokens[2].stringify());
+        assertEquals("${emailDomain}", tokens[3].stringify());
+        assertEquals("\n", tokens[4].stringify());
     }
 
 }

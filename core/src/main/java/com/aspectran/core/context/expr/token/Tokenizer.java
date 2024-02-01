@@ -45,42 +45,43 @@ public class Tokenizer {
     private static final char LF = '\n';
 
     /**
-     * Returns a list of tokens that contains tokenized string.
-     * @param input the string to tokenize
+     * Returns a list of {@code Token} objects separated by token expression.
+     * @param chars the char values to tokenize
      * @param textTrim whether to trim text
      * @return a list of tokens
      */
     @NonNull
-    public static List<Token> tokenize(CharSequence input, boolean textTrim) {
-        if (input == null) {
-            throw new IllegalArgumentException("input must not be null");
+    public static List<Token> tokenize(CharSequence chars, boolean textTrim) {
+        if (chars == null) {
+            throw new IllegalArgumentException("chars must not be null");
         }
 
-        int inputLen = input.length();
+        int inputLen = chars.length();
         if (inputLen == 0) {
             List<Token> tokens = new ArrayList<>(1);
             tokens.add(new Token(""));
             return tokens;
         }
 
-        StringBuilder textBuf = new StringBuilder();
         StringBuilder nameBuf = new StringBuilder();
         StringBuilder valueBuf = new StringBuilder();
-        int start = 0; // start position of token in the stringBuffer
-        int state = AT_TEXT;
+        int start = 0; // start index of chars considered a text token
+        int end = 0; // end index of chars considered a text token
+        int symbolStart = -1; // start index of the symbol character
         char symbol = Token.PARAMETER_SYMBOL;
+        int state = AT_TEXT;
         char c;
 
         List<Token> tokens = new ArrayList<>();
         for (int i = 0; i < inputLen; i++) {
-            c = input.charAt(i);
-            textBuf.append(c);
+            c = chars.charAt(i);
+            end++;
             switch (state) {
                 case AT_TEXT:
                     if (Token.isTokenSymbol(c)) {
                         symbol = c;
                         state = AT_SYMBOL;
-                        start = textBuf.length() - 1;
+                        symbolStart = end - 1;
                     }
                     break;
                 case AT_SYMBOL:
@@ -89,7 +90,7 @@ public class Tokenizer {
                         state = AT_NAME;
                     } else if (Token.isTokenSymbol(c)) {
                         symbol = c;
-                        start = textBuf.length() - 1;
+                        symbolStart = end - 1;
                     } else {
                         state = AT_TEXT;
                     }
@@ -102,15 +103,13 @@ public class Tokenizer {
                     }
                     if (c == Token.BRACKET_CLOSE) {
                         if (!nameBuf.isEmpty()) {
-                            // save previous non-token string
-                            if (start > 0) {
-                                Token token = createToken(textBuf, start, textTrim);
+                            if (symbolStart > start) {
+                                Token token = createToken(chars, start, symbolStart, textTrim);
                                 tokens.add(token);
                             }
-                            // save token name and default value
                             Token token = createToken(symbol, nameBuf, null);
                             tokens.add(token);
-                            textBuf.setLength(0); // just discard textBuf because it was treated as a token
+                            start = end;
                         }
                         state = AT_TEXT;
                     } else {
@@ -125,15 +124,13 @@ public class Tokenizer {
                 case AT_VALUE:
                     if (c == Token.BRACKET_CLOSE) {
                         if (!valueBuf.isEmpty()) {
-                            // save previous non-token string
-                            if (start > 0) {
-                                Token token = createToken(textBuf, start, textTrim);
+                            if (symbolStart > start) {
+                                Token token = createToken(chars, start, symbolStart, textTrim);
                                 tokens.add(token);
                             }
-                            // save token name and default value
                             Token token = createToken(symbol, nameBuf, valueBuf);
                             tokens.add(token);
-                            textBuf.setLength(0); // just discard textBuf because it was treated as a token
+                            start = end;
                         }
                         state = AT_TEXT;
                     } else {
@@ -142,9 +139,9 @@ public class Tokenizer {
                     break;
                 }
         }
-        // if textBuf is not empty, it is treated as a text token
-        if (!textBuf.isEmpty()) {
-            Token token = createToken(textBuf, textBuf.length(), textTrim);
+        // any remaining text that is not tokenized is created as a text token
+        if (start < end) {
+            Token token = createToken(chars, start, end, textTrim);
             tokens.add(token);
         }
         return tokens;
@@ -223,69 +220,69 @@ public class Tokenizer {
     }
 
     @NonNull
-    private static Token createToken(StringBuilder textBuf, int end, boolean trim) {
-        String text = trimBuffer(textBuf, end, trim);
+    private static Token createToken(CharSequence chars, int start, int end, boolean trim) {
+        String text = extract(chars, start, end, trim);
         return new Token(text);
     }
 
     /**
-     * Returns a copy of the string, with leading and trailing whitespaces stripped.
+     * Extracts text from a sequence of char values.
      * <pre>
      * "   \r\n   aaa  \r\n  bbb  "   ==&gt;   "\naaa  \n  bbb"
      * "  aaa    \r\n   bbb   \r\n  "   ==&gt;   "aaa\nbbb\n"
      * </pre>
-     * @param textBuf the string builder object
-     * @param end the ending index, exclusive.
-     * @param trim whether to trim
-     * @return the trimmed string
+     * @param chars the char values
+     * @param start the start index of a sequence of char values
+     * @param end the end index of a sequence of char values
+     * @param trim whether to trim white space characters
+     * @return the extracted string
      */
-    private static String trimBuffer(StringBuilder textBuf, int end, boolean trim) {
+    private static String extract(CharSequence chars, int start, int end, boolean trim) {
         if (!trim) {
-            return textBuf.substring(0, end);
+            return chars.subSequence(start, end).toString();
         }
 
-        int start = 0;
         boolean leadingLF = false;
         boolean tailingLF = false;
-        char c;
+        int subStart = start;
+        int subEnd = end;
 
         // leading whitespace
-        for (int i = 0; i < end; i++) {
-            c = textBuf.charAt(i);
+        for (int i = start; i < end; i++) {
+            char c = chars.charAt(i);
             if (c == LF || c == CR) {
                 leadingLF = true;
             } else if (!Character.isWhitespace(c)) {
-                start = i;
+                subStart = i;
                 break;
             }
         }
 
-        if (leadingLF && start == 0) {
+        if (leadingLF && start == subStart) {
             return String.valueOf(LF);
         }
 
         // trailing whitespace
         for (int i = end - 1; i > start; i--) {
-            c = textBuf.charAt(i);
+            char c = chars.charAt(i);
             if (c == LF || c == CR) {
                 tailingLF = true;
             } else if (!Character.isWhitespace(c)) {
-                end = i + 1;
+                subEnd = i + 1;
                 break;
             }
         }
 
-        // restore a new line character which is leading whitespace
-        if (leadingLF) {
-            textBuf.setCharAt(--start, LF);
+        String str = chars.subSequence(subStart, subEnd).toString();
+        if (leadingLF && tailingLF) {
+            return LF + str + LF; // restore a new line character which is leading and tailing whitespace
+        } else if (leadingLF) {
+            return LF + str; // restore a new line character which is leading whitespace
+        } else if (tailingLF) {
+            return str + LF; // restore a new line character which is tailing whitespace
+        } else {
+            return str;
         }
-
-        // restore a new line character which is tailing whitespace
-        if (tailingLF) {
-            textBuf.setCharAt(end++, LF);
-        }
-
-        return textBuf.substring(start, end);
     }
 
     /**
