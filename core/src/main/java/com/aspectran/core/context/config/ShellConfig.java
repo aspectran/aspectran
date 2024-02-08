@@ -93,8 +93,7 @@ public class ShellConfig extends AbstractParameters {
     }
 
     public ShellConfig setCommands(String[] commands) {
-        removeValue(ShellConfig.commands);
-        putValue(ShellConfig.commands, commands);
+        setValue(ShellConfig.commands, commands);
         return this;
     }
 

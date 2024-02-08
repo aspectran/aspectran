@@ -124,6 +124,9 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public ParameterValue getParameterValue(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         ParameterValue pv = parameterValueMap.get(name);
         if (pv != null) {
             return pv;
@@ -230,7 +233,22 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public void setValue(String name, Object value) {
+        removeValue(name);
+        putValue(name, value);
+    }
+
+    @Override
+    public void setValue(ParameterKey key, Object value) {
+        removeValue(key);
+        putValue(key, value);
+    }
+
+    @Override
     public void putAll(Parameters parameters) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("parameters must not be null");
+        }
         if (structureFixed) {
             throw new IllegalStateException();
         }
@@ -255,8 +273,8 @@ public abstract class AbstractParameters implements Parameters {
                 Object obj = Array.get(value, i);
                 putValue(p, name, obj);
             }
-        } else if (value instanceof Collection<?>) {
-            for (Object obj : (Collection<?>)value) {
+        } else if (value instanceof Collection<?> collection) {
+            for (Object obj : collection) {
                 putValue(p, name, obj);
             }
         } else {
@@ -266,9 +284,9 @@ public abstract class AbstractParameters implements Parameters {
 
     private void putValue(@NonNull Parameter p, String name, Object value) {
         p.putValue(value);
-        if (value instanceof Parameters) {
-            ((Parameters)value).setActualName(name);
-            ((Parameters)value).updateContainer(this);
+        if (value instanceof Parameters parameters) {
+            parameters.setActualName(name);
+            parameters.updateContainer(this);
         }
     }
 
@@ -299,6 +317,9 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public void removeValue(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
         if (structureFixed) {
             Parameter p = getParameter(name);
             if (p != null) {

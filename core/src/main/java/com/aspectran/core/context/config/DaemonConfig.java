@@ -81,8 +81,7 @@ public class DaemonConfig extends AbstractParameters {
     }
 
     public DaemonConfig setCommands(String[] commands) {
-        removeValue(DaemonConfig.commands);
-        putValue(DaemonConfig.commands, commands);
+        setValue(DaemonConfig.commands, commands);
         return this;
     }
 

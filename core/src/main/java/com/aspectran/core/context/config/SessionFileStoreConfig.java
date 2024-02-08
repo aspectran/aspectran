@@ -101,8 +101,7 @@ public class SessionFileStoreConfig extends AbstractParameters {
     }
 
     public SessionFileStoreConfig setNonPersistentAttributes(String[] nonPersistentAttributes) {
-        removeValue(SessionFileStoreConfig.nonPersistentAttributes);
-        putValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttributes);
+        setValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttributes);
         return this;
     }
 
