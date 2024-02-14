@@ -51,7 +51,7 @@ public class UrlRuleAppender extends AbstractRuleAppender {
             setLastModified(conn.getLastModified());
             return conn.getInputStream();
         } catch (IOException e) {
-            throw new IOException("Failed to create input stream from rule url: " + ruleUrl, e);
+            throw new IOException("Failed to get rules from url: " + ruleUrl, e);
         }
     }
 

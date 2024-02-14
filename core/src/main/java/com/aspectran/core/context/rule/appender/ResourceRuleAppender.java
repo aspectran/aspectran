@@ -57,13 +57,12 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
             } else {
                 inputStream = getClass().getResourceAsStream(resource);
             }
-
             if (inputStream == null) {
-                throw new IllegalArgumentException("No resource found");
+                throw new IOException("Resource not found: " + resource);
             }
             return inputStream;
         } catch (Exception e) {
-            throw new IOException("Failed to create input stream from rule resource: " + resource, e);
+            throw new IOException("Failed to get rules from resource " + resource, e);
         }
     }
 

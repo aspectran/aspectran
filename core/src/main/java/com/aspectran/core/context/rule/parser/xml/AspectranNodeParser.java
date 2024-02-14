@@ -153,7 +153,7 @@ public class AspectranNodeParser {
             if (cause instanceof IllegalRuleException) {
                 parsingFailed(cause.getMessage(), cause);
             } else {
-                parsingFailed("Error parsing aspectran configuration", cause);
+                parsingFailed("Error parsing aspectran configuration", e);
             }
         } finally {
             if (inputStream != null) {

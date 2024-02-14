@@ -36,20 +36,20 @@ public class TransletNotFoundException extends ActivityException {
 
     /**
      * Constructor to create exception with a message.
-     * @param transletName the translet name
+     * @param requestName the request name
      */
-    public TransletNotFoundException(String transletName) {
-        this(transletName, null);
+    public TransletNotFoundException(String requestName) {
+        this(requestName, null);
     }
 
     /**
      * Constructor to create exception with a message.
-     * @param transletName the translet name
+     * @param requestName the request name
      * @param requestMethod the request method
      */
-    public TransletNotFoundException(String transletName, MethodType requestMethod) {
-        super("No such translet map to " + makeTransletName(transletName, requestMethod));
-        this.transletName = transletName;
+    public TransletNotFoundException(String requestName, MethodType requestMethod) {
+        super("No such translet map to " + makeRequestName(requestName, requestMethod));
+        this.transletName = requestName;
         this.requestMethod = requestMethod;
     }
 
@@ -69,11 +69,11 @@ public class TransletNotFoundException extends ActivityException {
         return (requestMethod != null ? requestMethod : defaultRequestMethod);
     }
 
-    private static String makeTransletName(String transletName, MethodType requestMethod) {
+    private static String makeRequestName(String requestName, MethodType requestMethod) {
         if (requestMethod != null) {
-            return requestMethod + " " + transletName;
+            return requestMethod + " " + requestName;
         } else {
-            return transletName;
+            return requestName;
         }
     }
 

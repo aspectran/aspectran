@@ -15,6 +15,7 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
@@ -149,8 +150,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 throwable = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(throwable);
-            throw new AspectranServiceException("Error while processing translet: " + name +
-                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
+            throw new AspectranServiceException("Error occurred while processing request: " +
+                Activity.makeRequestName(method, name) + "; Cause: " +
+                ExceptionUtils.getSimpleMessage(cause), throwable);
         }
         return translet;
     }

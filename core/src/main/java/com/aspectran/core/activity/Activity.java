@@ -31,6 +31,9 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.List;
 
@@ -76,6 +79,8 @@ public interface Activity {
      * @return the response adapter
      */
     ResponseAdapter getResponseAdapter();
+
+    String getContextPath();
 
     /**
      * Performs the prepared activity.
@@ -286,5 +291,13 @@ public interface Activity {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> type, String id);
+
+    static String makeRequestName(@Nullable MethodType requestMethod, @NonNull String requestName) {
+        if (requestMethod != null) {
+            return requestMethod + " " + requestName;
+        } else {
+            return requestName;
+        }
+    }
 
 }

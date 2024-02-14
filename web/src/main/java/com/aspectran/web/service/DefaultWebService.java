@@ -286,6 +286,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             } else {
                 cause = ExceptionUtils.getRootCause(e);
             }
+            logger.error("Error occurred while processing request: " + requestMethod + " " + requestName, cause);
             if (!response.isCommitted()) {
                 if (cause instanceof RequestMethodNotAllowedException) {
                     sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
@@ -347,15 +348,13 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         if (aspectranConfigParam == null) {
             logger.warn("No specified servlet context initialization parameter for instantiating WebService");
         }
-
-        DefaultWebService webService = create(servletContext, aspectranConfigParam);
+        AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+        DefaultWebService webService = create(servletContext, aspectranConfig);
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
-
         if (logger.isDebugEnabled()) {
             logger.debug("The Root WebService attribute in ServletContext has been created; " +
                     ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
         }
-
         WebServiceHolder.putWebService(webService);
         return webService;
     }
@@ -378,9 +377,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 applyWebConfig(webService, webConfig);
             }
         }
-
         setServiceStateListener(webService);
-
         if (webService.isLateStart()) {
             try {
                 webService.getServiceController().start();
@@ -388,7 +385,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 throw new AspectranServiceException("Failed to start DefaultWebService");
             }
         }
-
         WebServiceHolder.putWebService(webService);
         return webService;
     }
@@ -408,7 +404,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             if (aspectranConfigParam == null) {
                 logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
             }
-            DefaultWebService webService = create(servletContext, aspectranConfigParam);
+            AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+            DefaultWebService webService = create(servletContext, aspectranConfig);
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, webService);
             if (logger.isDebugEnabled()) {
@@ -426,11 +423,30 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servletContext the servlet context
-     * @param aspectranConfigParam the parameter for aspectran configuration
+     * @param aspectranConfig the aspectran configuration
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    private static DefaultWebService create(@NonNull ServletContext servletContext, String aspectranConfigParam) {
+    private static DefaultWebService create(ServletContext servletContext, @NonNull AspectranConfig aspectranConfig) {
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
+        String[] contextRules = contextConfig.getContextRules();
+        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
+            contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
+        }
+
+        DefaultWebService webService = new DefaultWebService(servletContext);
+        webService.prepare(aspectranConfig);
+
+        WebConfig webConfig = aspectranConfig.getWebConfig();
+        if (webConfig != null) {
+            applyWebConfig(webService, webConfig);
+        }
+
+        setServiceStateListener(webService);
+        return webService;
+    }
+
+    private static AspectranConfig makeAspectranConfig(ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
             if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_FILE_FROM)) {
@@ -448,36 +464,20 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     aspectranConfig = new AspectranConfig(configFile);
                 } catch (IOException e) {
                     throw new AspectranServiceException("Error parsing Aspectran configuration from resource: " +
-                            resourcePath, e);
+                        resourcePath, e);
                 }
             } else {
                 try {
                     aspectranConfig = new AspectranConfig(aspectranConfigParam);
                 } catch (AponParseException e) {
                     throw new AspectranServiceException("Error parsing Aspectran configuration from '" +
-                            ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
+                        ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
                 }
             }
         } else {
             aspectranConfig = new AspectranConfig();
         }
-
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
-        }
-
-        DefaultWebService webService = new DefaultWebService(servletContext);
-        webService.prepare(aspectranConfig);
-
-        WebConfig webConfig = aspectranConfig.getWebConfig();
-        if (webConfig != null) {
-            applyWebConfig(webService, webConfig);
-        }
-
-        setServiceStateListener(webService);
-        return webService;
+        return aspectranConfig;
     }
 
     private static void applyWebConfig(@NonNull DefaultWebService webService, @NonNull WebConfig webConfig) {

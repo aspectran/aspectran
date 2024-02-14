@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
@@ -151,7 +152,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
     /**
      * Set the value of the URL.
      */
-    public void setValue(String value) {
+    public void setValue(@NonNull String value) {
         if (value.contains(URL_TYPE_ABSOLUTE)) {
             this.type = UrlType.ABSOLUTE;
             this.value = value;
@@ -168,7 +169,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * Set the context path for the URL.
      * Defaults to the current context.
      */
-    public void setContext(String context) {
+    public void setContext(@NonNull String context) {
         if (context.startsWith("/")) {
             this.context = context;
         } else {
@@ -235,8 +236,8 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      */
     String createUrl() throws JspException {
         Assert.state(this.value != null, "No value set");
-        HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
-        HttpServletResponse response = (HttpServletResponse) this.pageContext.getResponse();
+        HttpServletRequest request = (HttpServletRequest)this.pageContext.getRequest();
+        HttpServletResponse response = (HttpServletResponse)this.pageContext.getResponse();
 
         StringBuilder url = new StringBuilder();
         if (this.type == UrlType.CONTEXT_RELATIVE) {
@@ -282,7 +283,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * with a '?' instead of '&amp;'
      * @return the query string
      */
-    protected String createQueryString(List<Param> params, Set<String> usedParams, boolean includeQueryStringDelimiter)
+    protected String createQueryString(@NonNull List<Param> params, Set<String> usedParams, boolean includeQueryStringDelimiter)
             throws JspException {
         String encoding = this.pageContext.getResponse().getCharacterEncoding();
         StringBuilder qs = new StringBuilder();
@@ -316,7 +317,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * @param usedParams set of template parameter names that have been replaced
      * @return the URL with template parameters replaced
      */
-    protected String replaceUriTemplateParams(String uri, List<Param> params, Set<String> usedParams)
+    protected String replaceUriTemplateParams(@NonNull String uri, @NonNull List<Param> params, Set<String> usedParams)
             throws JspException {
         String encoding = this.pageContext.getResponse().getCharacterEncoding();
         for (Param param : params) {
@@ -327,8 +328,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
                 try {
                     uri = StringUtils.replace(uri, template,
                             (value != null ? UriUtils.encodePath(value, encoding) : ""));
-                }
-                catch (UnsupportedCharsetException ex) {
+                } catch (UnsupportedCharsetException ex) {
                     throw new JspException(ex);
                 }
             } else {

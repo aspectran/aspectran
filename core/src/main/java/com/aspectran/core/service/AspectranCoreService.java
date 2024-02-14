@@ -77,11 +77,9 @@ public class AspectranCoreService extends AbstractCoreService {
                 if (basePath != null) {
                     setBasePath(basePath);
                 }
-                if (contextConfig.isSingleton()) {
-                    if (!acquireSingletonLock()) {
-                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
-                            "running; Only one instance is allowed (context.singleton is set to true)");
-                    }
+                if (contextConfig.isSingleton() && !acquireSingletonLock()) {
+                    throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
+                        "running; Only one instance is allowed (context.singleton is set to true)");
                 }
             }
 

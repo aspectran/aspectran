@@ -4,6 +4,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -222,7 +223,8 @@ public abstract class UriUtils {
      * @param params the parameters to encode
      * @return a new {@code MultiValueMap} with the encoded names and values
      */
-    public static MultiValueMap<String, String> encodeQueryParams(MultiValueMap<String, String> params) {
+    @NonNull
+    public static MultiValueMap<String, String> encodeQueryParams(@NonNull MultiValueMap<String, String> params) {
         Charset charset = StandardCharsets.UTF_8;
         MultiValueMap<String, String> result = new LinkedMultiValueMap<>(params.size());
         for (Map.Entry<String, List<String>> entry : params.entrySet()) {
@@ -284,7 +286,8 @@ public abstract class UriUtils {
      * @param uriVariables the URI variable values to be encoded
      * @return the encoded String
      */
-    public static Map<String, String> encodeUriVariables(Map<String, ?> uriVariables) {
+    @NonNull
+    public static Map<String, String> encodeUriVariables(@NonNull Map<String, ?> uriVariables) {
         Map<String, String> result = new LinkedHashMap<>((int) Math.ceil(uriVariables.size() / (double)0.75f));
         uriVariables.forEach((key, value) -> {
             String stringValue = (value != null ? value.toString() : "");
@@ -299,6 +302,7 @@ public abstract class UriUtils {
      * @param uriVariables the URI variable values to be encoded
      * @return the encoded String
      */
+    @NonNull
     public static Object[] encodeUriVariables(Object... uriVariables) {
         return Arrays.stream(uriVariables)
                 .map(value -> {
@@ -361,8 +365,7 @@ public abstract class UriUtils {
         for (byte b : bytes) {
             if (type.isAllowed(b)) {
                 baos.write(b);
-            }
-            else {
+            } else {
                 baos.write('%');
                 char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, 16));
                 char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, 16));
@@ -399,7 +402,7 @@ public abstract class UriUtils {
      * @throws IllegalArgumentException when the given source contains invalid encoded sequences
      * @see java.net.URLDecoder#decode(String, String)
      */
-    public static String decode(String source, Charset charset) {
+    public static String decode(@NonNull String source, Charset charset) {
         int length = source.length();
         if (length == 0) {
             return source;
@@ -422,12 +425,10 @@ public abstract class UriUtils {
                     baos.write((char) ((u << 4) + l));
                     i += 2;
                     changed = true;
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Invalid encoded sequence \"" + source.substring(i) + "\"");
                 }
-            }
-            else {
+            } else {
                 baos.write(ch);
             }
         }
@@ -440,7 +441,7 @@ public abstract class UriUtils {
      * @return the extracted file extension (e.g. "html")
      */
     @Nullable
-    public static String extractFileExtension(String path) {
+    public static String extractFileExtension(@NonNull String path) {
         int end = path.indexOf('?');
         int fragmentIndex = path.indexOf('#');
         if (fragmentIndex != -1 && (end == -1 || fragmentIndex < end)) {
@@ -527,8 +528,7 @@ public abstract class UriUtils {
             public boolean isAllowed(int c) {
                 if ('=' == c || '&' == c) {
                     return false;
-                }
-                else {
+                } else {
                     return isPchar(c) || '/' == c || '?' == c;
                 }
             }

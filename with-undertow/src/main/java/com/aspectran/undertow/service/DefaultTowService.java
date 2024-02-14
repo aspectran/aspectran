@@ -154,6 +154,7 @@ public class DefaultTowService extends AbstractTowService {
             } else {
                 cause = ExceptionUtils.getRootCause(e);
             }
+            logger.error("Error occurred while processing request: " + requestMethod + " " + requestPath, cause);
             if (cause instanceof RequestMethodNotAllowedException) {
                 sendError(exchange, HttpStatus.METHOD_NOT_ALLOWED.value(), null);
             } else if (cause instanceof SizeLimitExceededException) {

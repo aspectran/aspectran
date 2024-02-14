@@ -44,6 +44,11 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public String getContextPath() {
+        return null;
+    }
+
+    @Override
     public void perform() {
         throw new UnsupportedOperationException();
     }

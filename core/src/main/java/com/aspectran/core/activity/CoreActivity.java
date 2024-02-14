@@ -52,6 +52,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
@@ -102,9 +103,10 @@ public class CoreActivity extends AdviceActivity {
      */
     protected CoreActivity(ActivityContext context, String contextPath) {
         super(context);
-        this.contextPath = contextPath;
+        this.contextPath = StringUtils.emptyToNull(contextPath);
     }
 
+    @Override
     public String getContextPath() {
         return contextPath;
     }

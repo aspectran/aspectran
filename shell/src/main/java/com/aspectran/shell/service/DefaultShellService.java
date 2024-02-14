@@ -75,19 +75,19 @@ public class DefaultShellService extends AbstractShellService {
             return null;
         }
 
-        String transletName = transletCommandLine.getRequestName();
+        String requestName = transletCommandLine.getRequestName();
         MethodType requestMethod = transletCommandLine.getRequestMethod();
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
         }
         TransletRule transletRule = getActivityContext()
                 .getTransletRuleRegistry()
-                .getTransletRule(transletName, requestMethod);
+                .getTransletRule(requestName, requestMethod);
         if (transletRule == null) {
             if (logger.isTraceEnabled()) {
-                logger.trace("No translet mapped for " + requestMethod + " " + transletName);
+                logger.trace("No translet mapped for " + requestMethod + " " + requestName);
             }
-            throw new TransletNotFoundException(transletName, requestMethod);
+            throw new TransletNotFoundException(requestName, requestMethod);
         }
 
         PrintWriter outputWriter = null;
@@ -107,17 +107,17 @@ public class DefaultShellService extends AbstractShellService {
 
         if (transletRule.isAsync()) {
             asyncPerform(outputWriter, procedural, verbose, parameterMap,
-                    transletName, requestMethod, transletRule);
+                    requestName, requestMethod, transletRule);
             return null;
         } else {
             return perform(outputWriter, procedural, verbose, parameterMap,
-                    transletName, requestMethod, transletRule, null);
+                    requestName, requestMethod, transletRule, null);
         }
     }
 
     private void asyncPerform(@Nullable PrintWriter outputWriter,
                               boolean procedural, boolean verbose,
-                              @Nullable ParameterMap parameterMap, String transletName,
+                              @Nullable ParameterMap parameterMap, String requestName,
                               MethodType requestMethod, TransletRule transletRule) {
         final ParameterMap finalParameterMap;
         if (parameterMap != null) {
@@ -138,7 +138,7 @@ public class DefaultShellService extends AbstractShellService {
         final AtomicReference<Activity> activityReference = new AtomicReference<>();
         Runnable performable = () ->
                 perform(outputWriter, procedural, verbose, finalParameterMap,
-                        transletName, requestMethod, transletRule, activityReference);
+                        requestName, requestMethod, transletRule, activityReference);
 
         CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(performable);
         if (transletRule.getTimeout() != null) {
@@ -157,7 +157,7 @@ public class DefaultShellService extends AbstractShellService {
 
     private Translet perform(@Nullable PrintWriter outputWriter,
                              boolean procedural, boolean verbose,
-                             @Nullable ParameterMap parameterMap, String transletName,
+                             @Nullable ParameterMap parameterMap, String requestName,
                              MethodType requestMethod, TransletRule transletRule,
                              AtomicReference<Activity> activityReference) {
         ShellActivity activity = null;
@@ -171,7 +171,7 @@ public class DefaultShellService extends AbstractShellService {
             activity.setVerbose(verbose);
             activity.setParameterMap(parameterMap);
             activity.setOutputWriter(outputWriter);
-            activity.prepare(transletName, requestMethod, transletRule);
+            activity.prepare(requestName, requestMethod, transletRule);
             activity.perform();
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
@@ -189,8 +189,9 @@ public class DefaultShellService extends AbstractShellService {
                 throwable = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(throwable);
-            throw new AspectranServiceException("Error while processing translet: " + transletName +
-                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
+            throw new AspectranServiceException("Error occurred while processing request: " +
+                Activity.makeRequestName(requestMethod, requestName) + "; Cause: " +
+                ExceptionUtils.getSimpleMessage(cause), throwable);
         } finally {
             if (outputWriter != null) {
                 outputWriter.close();
