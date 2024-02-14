@@ -53,9 +53,27 @@
             <item name="handler">
                 <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
-                        <item>#{tow.context.root.hybridServletHandler}</item>
+                        <item>#{tow.context.hybridServletHandler}</item>
                     </arguments>
                 </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.context.hybridServletHandler" class="com.aspectran.undertow.server.servlet.HybridServletHandlerFactoryBean"
+          scope="prototype">
+        <properties>
+            <item name="servletContainer">#{tow.server^servletContainer}</item>
+        </properties>
+        <properties profile="prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.server.encodingHandlerWrapper}</value>
+                <value>#{tow.server.accessLogHandlerWrapper}</value>
+            </item>
+        </properties>
+        <properties profile="!prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.server.encodingHandlerWrapper}</value>
             </item>
         </properties>
     </bean>
