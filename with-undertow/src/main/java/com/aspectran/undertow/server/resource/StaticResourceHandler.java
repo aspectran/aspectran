@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.resource;
 
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -40,35 +41,37 @@ public class StaticResourceHandler extends ResourceHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
 
+    private final HttpHandler next;
+
     private volatile PluralWildcardPattern resourcePathPatterns;
 
     public StaticResourceHandler(ResourceManager resourceManager) {
-        super(resourceManager);
+        this(resourceManager, null);
     }
 
     public StaticResourceHandler(ResourceManager resourceManager, HttpHandler next) {
-        super(resourceManager, next);
+        super(resourceManager);
+        this.next = next;
     }
 
     public StaticResourceHandler(ResourceSupplier resourceSupplier) {
-        super(resourceSupplier);
+        this(resourceSupplier, null);
     }
 
     public StaticResourceHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
-        super(resourceSupplier, next);
+        super(resourceSupplier);
+        this.next = next;
     }
 
-    public void setResourcePathPatterns(@NonNull ResourcePathPatterns resourcePathPatterns) {
+    public synchronized void setResourcePathPatterns(@NonNull ResourcePathPatterns resourcePathPatterns) {
         String[] includePatterns = resourcePathPatterns.getIncludePatterns();
         String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
         this.resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
     }
 
-    public void autoDetect() throws IOException {
-        if (getResourceManager() instanceof PathResourceManager) {
-            Path base = ((PathResourceManager)getResourceManager()).getBasePath();
-            Set<String> staticResources = findStaticResources(base);
-
+    public void autoDetect(String pathPrefix) throws IOException {
+        if (getResourceManager() instanceof PathResourceManager pathResourceManager) {
+            Set<String> staticResources = findStaticResources(pathResourceManager.getBasePath());
             Set<WildcardPattern> patterns = new LinkedHashSet<>();
             if (resourcePathPatterns != null && resourcePathPatterns.hasIncludePatterns()) {
                 for (WildcardPattern pattern : resourcePathPatterns.getIncludePatterns()) {
@@ -85,6 +88,9 @@ public class StaticResourceHandler extends ResourceHandler {
                 }
             }
             for (String resource : staticResources) {
+                if (StringUtils.hasLength(pathPrefix)) {
+                    resource = pathPrefix + resource;
+                }
                 if (resource.endsWith("/")) {
                     patterns.add(WildcardPattern.compile(resource + "**", '/'));
                 } else {
@@ -156,10 +162,10 @@ public class StaticResourceHandler extends ResourceHandler {
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         String requestPath = exchange.getRequestPath();
-        if (resourcePathPatterns != null) {
-            if (resourcePathPatterns.matches(requestPath)) {
-                super.handleRequest(exchange);
-            }
+        if (next == null || (resourcePathPatterns != null && resourcePathPatterns.matches(requestPath))) {
+            super.handleRequest(exchange);
+        } else {
+            next.handleRequest(exchange);
         }
     }
 

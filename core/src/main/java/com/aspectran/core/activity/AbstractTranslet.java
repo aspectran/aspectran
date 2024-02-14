@@ -27,15 +27,20 @@ public abstract class AbstractTranslet implements Translet {
 
     private String requestName;
 
+    private String relativeName;
+
     private MethodType requestMethod;
 
     protected AbstractTranslet(@NonNull TransletRule transletRule) {
         this.transletRule = transletRule;
     }
 
-    @Override
-    public String getTransletName() {
-        return transletRule.getName();
+    public String getRelativeName() {
+        return relativeName;
+    }
+
+    protected void setRelativeName(String relativeName) {
+        this.relativeName = relativeName;
     }
 
     @Override
@@ -54,6 +59,11 @@ public abstract class AbstractTranslet implements Translet {
 
     protected void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
+    }
+
+    @Override
+    public String getTransletName() {
+        return transletRule.getName();
     }
 
     protected TransletRule getTransletRule() {

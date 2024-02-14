@@ -28,6 +28,7 @@ import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
+import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
@@ -41,13 +42,13 @@ import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class ServletHybridHandlerFactory implements ActivityContextAware {
+public class HybridServletHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
     private ServletContainer servletContainer;
 
-    private StaticResourceHandler staticResourceHandler;
+//    private StaticResourceHandler staticResourceHandler;
 
     private List<HandlerWrapper> outerHandlerChainWrappers;
 
@@ -66,17 +67,6 @@ public class ServletHybridHandlerFactory implements ActivityContextAware {
             throw new IllegalArgumentException("servletContainer must not be null");
         }
         this.servletContainer = servletContainer;
-    }
-
-    public StaticResourceHandler getStaticResourceHandler() {
-        return staticResourceHandler;
-    }
-
-    public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
-        if (staticResourceHandler == null) {
-            throw new IllegalArgumentException("staticResourceHandler must not be null");
-        }
-        this.staticResourceHandler = staticResourceHandler;
     }
 
     public void setOuterHandlerChainWrappers(HandlerWrapper[] handlerWrappers) {
@@ -110,14 +100,25 @@ public class ServletHybridHandlerFactory implements ActivityContextAware {
 
                 HttpHandler handler = manager.start();
                 String contextPath = deployment.getDeploymentInfo().getContextPath();
+
+                ResourceManager resourceManager = deployment.getDeploymentInfo().getResourceManager();
+                if (resourceManager != null) {
+                    StaticResourceHandler staticResourceHandler = new StaticResourceHandler(resourceManager, handler);
+                    String pathPrefix = contextPath;
+                    if (pathPrefix != null && pathPrefix.endsWith("/")) {
+                        pathPrefix = pathPrefix.substring(0, pathPrefix.length() - 1);
+                    }
+                    staticResourceHandler.autoDetect(pathPrefix);
+                    if (staticResourceHandler.hasPatterns()) {
+                        handler = staticResourceHandler;
+                    }
+                }
+
                 pathHandler.addPrefixPath(contextPath, handler);
             }
             rootHandler = pathHandler;
         } else {
             rootHandler = ResponseCodeHandler.HANDLE_404;
-        }
-        if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-            rootHandler = new ServletHybridHandler(rootHandler, staticResourceHandler);
         }
         if (outerHandlerChainWrappers != null) {
             rootHandler = wrapHandlers(rootHandler, outerHandlerChainWrappers);

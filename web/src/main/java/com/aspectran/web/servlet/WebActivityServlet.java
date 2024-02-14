@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.startup.servlet;
+package com.aspectran.web.servlet;
 
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
+import com.aspectran.web.service.WebService;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -59,21 +60,27 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         try {
             ServletContext servletContext = getServletContext();
             Object attr = servletContext.getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
-            DefaultWebService rootWebService = null;
+            DefaultWebService newWebService;
             if (attr != null) {
-                if (!(attr instanceof DefaultWebService)) {
+                if (!(attr instanceof DefaultWebService rootWebService)) {
                     throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
-                            DefaultWebService.class.getName() + "]");
+                            WebService.class.getName() + "]");
                 }
-                rootWebService = (DefaultWebService)attr;
-                webService = DefaultWebService.create(this, rootWebService);
+                newWebService = DefaultWebService.create(this, rootWebService);
+                if (newWebService == null) {
+                    this.webService = rootWebService;
+                    this.standalone = false;
+                } else {
+                    this.standalone = true;
+                }
             } else {
-                webService = DefaultWebService.create(this);
+                newWebService = DefaultWebService.create(this, null);
+                this.standalone = true;
             }
-            standalone = (rootWebService != webService);
-            if (standalone) {
-                webService.start();
-                logger.info(webService.getServiceName() + " is running in standalone mode inside " + getMyName());
+            if (newWebService != null) {
+                logger.info(newWebService.getServiceName() + " is running in standalone mode inside " + getMyName());
+                newWebService.start();
+                this.webService = newWebService;
             }
         } catch (Exception e) {
             logger.error("Unable to initialize WebActivityServlet", e);

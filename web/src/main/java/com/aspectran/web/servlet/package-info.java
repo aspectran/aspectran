@@ -16,4 +16,4 @@
 /**
  * Provides servlets and listeners for integration with web application.
  */
-package com.aspectran.web.startup;
+package com.aspectran.web.servlet;

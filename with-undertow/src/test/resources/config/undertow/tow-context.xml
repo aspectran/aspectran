@@ -54,7 +54,7 @@
                 <bean class="com.aspectran.undertow.server.servlet.TowServlet">
                     <arguments>
                         <item>web-activity-servlet</item>
-                        <item>com.aspectran.web.startup.servlet.WebActivityServlet</item>
+                        <item>com.aspectran.web.servlet.WebActivityServlet</item>
                     </arguments>
                     <properties>
                         <item name="mappings" type="array">
@@ -85,7 +85,7 @@
         </properties>
     </bean>
 
-    <bean id="tow.context.root.servletHybridHandler" class="com.aspectran.undertow.server.servlet.ServletHybridHandlerFactoryBean"
+    <bean id="tow.context.root.hybridServletHandler" class="com.aspectran.undertow.server.servlet.HybridServletHandlerFactoryBean"
           scope="prototype">
         <properties>
             <item name="servletContainer">#{tow.server^servletContainer}</item>

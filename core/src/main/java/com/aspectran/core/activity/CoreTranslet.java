@@ -75,6 +75,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public String getContextPath() {
+        return activity.getContextPath();
+    }
+
+    @Override
     public String getDescription() {
         DescriptionRule descriptionRule = activity.getTransletRule().getDescriptionRule();
         if (descriptionRule != null) {

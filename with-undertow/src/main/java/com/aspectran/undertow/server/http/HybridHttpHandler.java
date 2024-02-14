@@ -15,70 +15,44 @@
  */
 package com.aspectran.undertow.server.http;
 
-import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.resource.ResourceHandler;
-import io.undertow.server.handlers.resource.ResourceManager;
-import io.undertow.server.handlers.resource.ResourceSupplier;
+import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
+import io.undertow.server.session.SessionCookieConfig;
 import io.undertow.server.session.SessionManager;
 
 /**
  * <p>Created: 2019-07-31</p>
  */
-public class HttpHybridHandler extends ResourceHandler {
+public class HybridHttpHandler implements HttpHandler {
 
-    private volatile StaticResourceHandler staticResourceHandler;
+    private final TowService towService;
 
-    private volatile SessionManager sessionManager;
+    private final SessionManager sessionManager;
 
-    private volatile SessionConfig sessionConfig;
+    private final SessionConfig sessionConfig;
 
-    private volatile TowService towService;
-
-    public HttpHybridHandler(ResourceManager resourceManager) {
-        super(resourceManager);
+    public HybridHttpHandler(TowService towService) {
+        this(towService, null);
     }
 
-    public HttpHybridHandler(ResourceManager resourceManager, HttpHandler next) {
-        super(resourceManager, next);
+    public HybridHttpHandler(TowService towService, SessionManager sessionManager) {
+        this(towService, sessionManager, null);
     }
 
-    public HttpHybridHandler(ResourceSupplier resourceSupplier) {
-        super(resourceSupplier);
-    }
-
-    public HttpHybridHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
-        super(resourceSupplier, next);
-    }
-
-    public StaticResourceHandler getStaticResourceHandler() {
-        return staticResourceHandler;
-    }
-
-    public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
-        if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-            this.staticResourceHandler = staticResourceHandler;
-        } else {
-            this.staticResourceHandler = null;
-        }
-    }
-
-    public void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
-    }
-
-    public void setSessionConfig(SessionConfig sessionConfig) {
-        this.sessionConfig = sessionConfig;
-    }
-
-    public void setTowService(TowService towService) {
+    public HybridHttpHandler(TowService towService, SessionManager sessionManager, SessionConfig sessionConfig) {
         this.towService = towService;
+        this.sessionManager = sessionManager;
+        if (sessionManager != null) {
+            this.sessionConfig = (sessionConfig != null ? sessionConfig : new SessionCookieConfig());
+        } else {
+            this.sessionConfig = null;
+        }
     }
 
     @Override
@@ -86,13 +60,6 @@ public class HttpHybridHandler extends ResourceHandler {
         if (exchange.isInIoThread()) {
             exchange.dispatch(this);
         } else {
-            if (staticResourceHandler != null) {
-                staticResourceHandler.handleRequest(exchange);
-                if (exchange.isDispatched() || exchange.isComplete()) {
-                    return;
-                }
-            }
-
             if (sessionManager != null) {
                 exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
                 exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
@@ -102,7 +69,7 @@ public class HttpHybridHandler extends ResourceHandler {
 
             boolean processed = towService.service(exchange);
             if (!processed) {
-                super.handleRequest(exchange);
+                ResponseCodeHandler.HANDLE_404.handleRequest(exchange);
             }
         }
     }

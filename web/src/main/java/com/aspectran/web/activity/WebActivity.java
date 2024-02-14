@@ -63,14 +63,15 @@ public class WebActivity extends CoreActivity {
      * @param request the HTTP request
      * @param response the HTTP response
      */
-    public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
-        super(context);
+    public WebActivity(ActivityContext context, String contextPath,
+                       HttpServletRequest request, HttpServletResponse response) {
+        super(context, contextPath);
         this.request = request;
         this.response = response;
     }
 
     @Override
-    public void prepare(String transletName, MethodType requestMethod, TransletRule transletRule)
+    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
@@ -85,7 +86,7 @@ public class WebActivity extends CoreActivity {
             }
         }
 
-        super.prepare(transletName, requestMethod, transletRule);
+        super.prepare(requestName, requestMethod, transletRule);
     }
 
     @Override

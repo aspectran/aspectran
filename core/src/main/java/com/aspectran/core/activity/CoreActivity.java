@@ -72,6 +72,8 @@ public class CoreActivity extends AdviceActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
 
+    private final String contextPath;
+
     private CoreTranslet translet;
 
     private Response reservedResponse;
@@ -91,7 +93,20 @@ public class CoreActivity extends AdviceActivity {
      * @param context the activity context
      */
     protected CoreActivity(ActivityContext context) {
+        this(context, null);
+    }
+
+    /**
+     * Instantiates a new CoreActivity.
+     * @param context the activity context
+     */
+    protected CoreActivity(ActivityContext context, String contextPath) {
         super(context);
+        this.contextPath = contextPath;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 
     /**
@@ -184,6 +199,11 @@ public class CoreActivity extends AdviceActivity {
             translet = new CoreTranslet(transletRule, this);
             translet.setRequestName(requestName); // original request name
             translet.setRequestMethod(requestMethod);
+            if (contextPath != null && requestName.startsWith(contextPath)) {
+                translet.setRelativeName(requestName.substring(contextPath.length()));
+            } else {
+                translet.setRelativeName(requestName);
+            }
             if (prevTranslet != null) {
                 translet.setProcessResult(prevTranslet.getProcessResult());
             }
@@ -193,7 +213,7 @@ public class CoreActivity extends AdviceActivity {
                 throw new RequestMethodNotAllowedException(allowedMethod);
             }
 
-            prepareAspectAdviceRule(transletRule, requestName);
+            prepareAspectAdviceRule(transletRule, transletRule.getName());
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
@@ -669,7 +689,7 @@ public class CoreActivity extends AdviceActivity {
     private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
-            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRequestName());
+            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRelativeName());
             if (pathVariables != null) {
                 pathVariables.applyTo(translet);
             }

@@ -41,7 +41,7 @@ daemon: {
 }
 web: {
     uriDecoding: utf-8
-    defaultServletName: default
+    defaultServletName: none
     exposals: {
         +: /**
     }

@@ -57,7 +57,6 @@ public class DefaultServletHttpRequestHandler {
 
     public DefaultServletHttpRequestHandler(ServletContext servletContext) {
         this.servletContext = servletContext;
-        lookupDefaultServletName(servletContext);
     }
 
     /**
@@ -78,9 +77,8 @@ public class DefaultServletHttpRequestHandler {
 
     /**
      * Lookup default servlet name.
-     * @param servletContext the servlet context
      */
-    private void lookupDefaultServletName(@NonNull ServletContext servletContext) {
+    public void lookupDefaultServletName() {
         if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
         } else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {

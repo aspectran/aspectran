@@ -44,11 +44,9 @@ import java.util.Map;
  */
 public interface Translet {
 
-    /**
-     * Returns the translet name.
-     * @return the translet name
-     */
-    String getTransletName();
+    String getContextPath();
+
+    String getRelativeName();
 
     /**
      * Returns the request name for this {@code Translet}.
@@ -61,6 +59,12 @@ public interface Translet {
      * @return the request method
      */
     MethodType getRequestMethod();
+
+    /**
+     * Returns the translet name.
+     * @return the translet name
+     */
+    String getTransletName();
 
     /**
      * Returns a description of this {@code Translet}.

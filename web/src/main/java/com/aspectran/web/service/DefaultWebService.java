@@ -39,11 +39,12 @@ import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
-import com.aspectran.web.startup.servlet.WebActivityServlet;
+import com.aspectran.web.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
@@ -78,6 +79,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private final ServletContext servletContext;
 
+    private final String contextPath;
+
     private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     private String uriDecoding;
@@ -86,16 +89,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private volatile long pauseTimeout = -2L;
 
-    private DefaultWebService(ServletContext servletContext) {
-        super();
-        this.servletContext = servletContext;
-        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
+    private DefaultWebService(@NonNull ServletContext servletContext) {
+        this(servletContext, null);
         setBasePath(servletContext.getRealPath("/"));
     }
 
-    private DefaultWebService(ServletContext servletContext, CoreService rootService) {
+    private DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
         super(rootService);
         this.servletContext = servletContext;
+        this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
     }
 
@@ -120,7 +122,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         } else {
             requestUri = request.getRequestURI();
         }
-        if (!isExposable(requestUri)) {
+
+        final String transletName;
+        if (contextPath != null && requestUri.startsWith(contextPath)) {
+            transletName = requestUri.substring(contextPath.length());
+        } else {
+            transletName = requestUri;
+        }
+
+        if (!isExposable(transletName)) {
             try {
                 if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -154,20 +164,21 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
         TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        TransletRule transletRule = transletRuleRegistry.getTransletRule(requestUri, requestMethod);
+        TransletRule transletRule = transletRuleRegistry.getTransletRule(transletName, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
             if (trailingSlashRedirect &&
                     requestMethod == MethodType.GET &&
-                    StringUtils.startsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletNameWithSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (transletRuleRegistry.contains(transletNameWithSlash, requestMethod)) {
+                    StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletNameWithTrailingSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
+                if (transletRuleRegistry.contains(transletNameWithTrailingSlash, requestMethod)) {
+                    String requestUriWithTrailingSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
                     response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                    response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
+                    response.setHeader(HttpHeaders.LOCATION, requestUriWithTrailingSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Redirect URL with a Trailing Slash: " + requestUri);
+                        logger.trace("Redirect URL with a Trailing Slash: " + requestUriWithTrailingSlash);
                     }
                     return;
                 }
@@ -194,7 +205,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     }
 
     private void asyncPerform(@NonNull HttpServletRequest request, HttpServletResponse response,
-                              String requestUri, MethodType requestMethod, TransletRule transletRule) {
+                              String requestName, MethodType requestMethod, TransletRule transletRule) {
         final AsyncContext asyncContext;
         if (request.isAsyncStarted()) {
             asyncContext = request.getAsyncContext();
@@ -248,21 +259,21 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         });
         asyncContext.start(() -> {
-            perform(request, response, requestUri, requestMethod, transletRule, activityReference);
+            perform(request, response, requestName, requestMethod, transletRule, activityReference);
             asyncContext.complete();
         });
     }
 
     private void perform(HttpServletRequest request, HttpServletResponse response,
-                         String requestUri, MethodType requestMethod, TransletRule transletRule,
+                         String requestName, MethodType requestMethod, TransletRule transletRule,
                          AtomicReference<Activity> activityReference) {
         WebActivity activity = null;
         try {
-            activity = new WebActivity(getActivityContext(), request, response);
+            activity = new WebActivity(getActivityContext(), contextPath, request, response);
             if (activityReference != null) {
                 activityReference.set(activity);
             }
-            activity.prepare(requestUri, requestMethod, transletRule);
+            activity.prepare(requestName, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
@@ -387,56 +398,28 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param servlet the web activity servlet
      * @return the instance of {@code DefaultWebService}
      */
-    @NonNull
-    public static DefaultWebService create(WebActivityServlet servlet) {
+    @Nullable
+    public static DefaultWebService create(WebActivityServlet servlet, WebService rootWebService) {
         Assert.notNull(servlet, "servlet must not be null");
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (aspectranConfigParam == null) {
-            logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
-        }
-
-        DefaultWebService webService = create(servletContext, aspectranConfigParam);
-        String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-        servletContext.setAttribute(attrName, webService);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
-                    attrName + ": " + webService);
-        }
-
-        WebServiceHolder.putWebService(webService);
-        return webService;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultWebService}.
-     * @param servlet the web activity servlet
-     * @param rootWebService the root web service
-     * @return the instance of {@code DefaultWebService}
-     */
-    public static DefaultWebService create(WebActivityServlet servlet, DefaultWebService rootWebService) {
-        Assert.notNull(servlet, "servlet must not be null");
-        Assert.notNull(rootWebService, "rootWebService must not be null");
-        ServletContext servletContext = servlet.getServletContext();
-        ServletConfig servletConfig = servlet.getServletConfig();
-        String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (aspectranConfigParam != null) {
+        if (rootWebService == null || aspectranConfigParam != null) {
+            if (aspectranConfigParam == null) {
+                logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
+            }
             DefaultWebService webService = create(servletContext, aspectranConfigParam);
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, webService);
-
             if (logger.isDebugEnabled()) {
                 logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
                     attrName + ": " + webService);
             }
-
             WebServiceHolder.putWebService(webService);
             return webService;
         } else {
             WebServiceHolder.putWebService(rootWebService);
-            return rootWebService;
+            return null;
         }
     }
 
@@ -502,7 +485,11 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
         String defaultServletName = webConfig.getDefaultServletName();
         if (defaultServletName != null) {
-            webService.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
+            if (!"none".equals(defaultServletName)) {
+                webService.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
+            }
+        } else {
+            webService.getDefaultServletHttpRequestHandler().lookupDefaultServletName();
         }
 
         webService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());

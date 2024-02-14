@@ -32,24 +32,22 @@ import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
-import io.undertow.server.session.SessionCookieConfig;
 import io.undertow.server.session.SessionManager;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class HttpHybridHandlerFactory implements ActivityContextAware, DisposableBean {
+public class HybridHttpHandlerFactory implements ActivityContextAware, DisposableBean {
 
     private ActivityContext context;
 
     private TowServer towServer;
 
     private ResourceManager resourceManager;
-
-    private StaticResourceHandler staticResourceHandler;
 
     private SessionManager sessionManager;
 
@@ -75,10 +73,6 @@ public class HttpHybridHandlerFactory implements ActivityContextAware, Disposabl
         this.resourceManager = resourceManager;
     }
 
-    public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
-        this.staticResourceHandler = staticResourceHandler;
-    }
-
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
@@ -99,26 +93,28 @@ public class HttpHybridHandlerFactory implements ActivityContextAware, Disposabl
         this.aspectranConfig = aspectranConfig;
     }
 
-    public HttpHandler createHandler() {
+    public HttpHandler createHandler() throws IOException {
         TowService towService = createTowService();
 
         if (sessionManager != null) {
-            if (sessionConfig == null) {
-                setSessionConfig(new SessionCookieConfig());
-            }
             sessionManager.start();
         }
 
-        HttpHybridHandler httpHybridHandler = new HttpHybridHandler(resourceManager);
-        httpHybridHandler.setStaticResourceHandler(staticResourceHandler);
-        httpHybridHandler.setSessionManager(sessionManager);
-        httpHybridHandler.setSessionConfig(sessionConfig);
-        httpHybridHandler.setTowService(towService);
+        HybridHttpHandler hybridHttpHandler = new HybridHttpHandler(towService, sessionManager, sessionConfig);
+
+        HttpHandler rootHandler = hybridHttpHandler;
+        if (resourceManager != null) {
+            StaticResourceHandler staticResourceHandler = new StaticResourceHandler(resourceManager, hybridHttpHandler);
+            staticResourceHandler.autoDetect(null);
+            if (staticResourceHandler.hasPatterns()) {
+                rootHandler = staticResourceHandler;
+            }
+        }
 
         if (outerHandlerChainWrappers != null) {
-            return wrapHandlers(httpHybridHandler, outerHandlerChainWrappers);
+            return wrapHandlers(rootHandler, outerHandlerChainWrappers);
         } else {
-            return httpHybridHandler;
+            return rootHandler;
         }
     }
 

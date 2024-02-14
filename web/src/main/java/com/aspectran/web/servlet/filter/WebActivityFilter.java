@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.startup.filter;
+package com.aspectran.web.servlet.filter;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ObjectUtils;

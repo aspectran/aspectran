@@ -53,7 +53,7 @@
             <item name="handler">
                 <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
-                        <item>#{tow.context.root.servletHybridHandler}</item>
+                        <item>#{tow.context.root.hybridServletHandler}</item>
                     </arguments>
                 </bean>
             </item>

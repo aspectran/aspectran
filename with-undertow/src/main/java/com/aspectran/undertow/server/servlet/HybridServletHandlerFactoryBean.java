@@ -22,7 +22,7 @@ import io.undertow.server.HttpHandler;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class ServletHybridHandlerFactoryBean extends ServletHybridHandlerFactory
+public class HybridServletHandlerFactoryBean extends HybridServletHandlerFactory
         implements InitializableBean, FactoryBean<HttpHandler> {
 
     private volatile HttpHandler handler;

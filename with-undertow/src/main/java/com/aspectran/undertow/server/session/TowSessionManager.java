@@ -113,6 +113,12 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session createSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
+        if (exchange == null) {
+            throw new IllegalArgumentException("exchange must not be null");
+        }
+        if (sessionConfig == null) {
+            throw new IllegalArgumentException("sessionConfig must not be null");
+        }
         String sessionId;
         try {
             sessionId = sessionConfig.findSessionId(exchange);
@@ -132,11 +138,15 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session getSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
-        if (exchange != null) {
-            TowSessionBridge bridged = exchange.getAttachment(SESSION_BRIDGE);
-            if (bridged != null) {
-                return bridged;
-            }
+        if (exchange == null) {
+            throw new IllegalArgumentException("exchange must not be null");
+        }
+        if (sessionConfig == null) {
+            throw new IllegalArgumentException("sessionConfig must not be null");
+        }
+        TowSessionBridge bridged = exchange.getAttachment(SESSION_BRIDGE);
+        if (bridged != null) {
+            return bridged;
         }
         String sessionId;
         try {
@@ -146,7 +156,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             return null;
         }
         TowSessionBridge sessionBridge = (TowSessionBridge)getSession(sessionId);
-        if (sessionBridge != null && exchange != null) {
+        if (sessionBridge != null) {
             exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
             sessionBridge.requestStarted(exchange);
         }
