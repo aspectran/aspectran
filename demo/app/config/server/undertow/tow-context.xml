@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        Aspectran configuration for setting servlet context and root web application.
+        Aspectran configuration for setting up the servlet context.
     </description>
 
     <environment>
@@ -16,13 +16,14 @@
         </properties>
     </environment>
 
-    <bean id="tow.context.root.servletContext" class="com.aspectran.undertow.server.servlet.TowServletContext"
+    <bean id="tow.context.root.servletContext"
+          class="com.aspectran.undertow.server.servlet.TowServletContext"
           scope="prototype">
         <properties>
             <item name="deploymentName">%{tow.context.root.name}.war</item>
             <item name="contextPath">%{tow.context.root.path}</item>
             <item name="resourceManager">
-                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                <bean class="com.aspectran.undertow.server.handler.resource.TowResourceManager">
                     <properties>
                         <item name="base">%{tow.context.root.baseDir}</item>
                     </properties>
@@ -88,7 +89,8 @@
         </properties>
     </bean>
 
-    <bean id="tow.context.root.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager"
+    <bean id="tow.context.root.sessionManager"
+          class="com.aspectran.undertow.server.session.TowSessionManager"
           scope="prototype">
         <properties>
             <item name="sessionManagerConfig">

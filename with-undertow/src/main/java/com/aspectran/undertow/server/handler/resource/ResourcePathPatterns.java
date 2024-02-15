@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.resource;
+package com.aspectran.undertow.server.handler.resource;
 
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;

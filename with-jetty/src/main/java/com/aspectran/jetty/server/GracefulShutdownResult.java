@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty;
+package com.aspectran.jetty.server;
 
 /**
- * A callback for the result of a graceful shutdown request.
+ * The result of a graceful shutdown request.
  *
  * <p>Created: 1/21/24</p>
  */
-@FunctionalInterface
-public interface GracefulShutdownCallback {
+public enum GracefulShutdownResult {
 
     /**
-     * Graceful shutdown has completed with the given {@code result}.
-     * @param result the result of the shutdown
+     * Requests remained active at the end of the grace period.
      */
-    void shutdownComplete(GracefulShutdownResult result);
+    REQUESTS_ACTIVE,
+
+    /**
+     * The server was idle with no active requests at the end of the grace period.
+     */
+    IDLE,
+
+    /**
+     * The server was shutdown immediately, ignoring any active requests.
+     */
+    IMMEDIATE;
 
 }

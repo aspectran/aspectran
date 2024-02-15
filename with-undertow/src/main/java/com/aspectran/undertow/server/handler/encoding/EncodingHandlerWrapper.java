@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.encoding;
+package com.aspectran.undertow.server.handler.encoding;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;

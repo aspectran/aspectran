@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        Aspectran configuration to set up undertow server.
+        Aspectran configuration for setting up an Undertow server.
     </description>
 
     <environment>
@@ -53,14 +53,34 @@
             <item name="handler">
                 <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
-                        <item>#{tow.context.root.hybridServletHandler}</item>
+                        <item>#{tow.server.handler.requestHandler}</item>
                     </arguments>
                 </bean>
             </item>
         </properties>
     </bean>
 
-    <bean id="tow.server.encodingHandlerWrapper" class="com.aspectran.undertow.server.encoding.EncodingHandlerWrapper"
+    <bean id="tow.server.handler.requestHandler"
+          class="com.aspectran.undertow.server.handler.DefaultRequestHandlerFactoryBean"
+          scope="prototype">
+        <properties>
+            <item name="servletContainer">#{tow.server^servletContainer}</item>
+        </properties>
+        <properties profile="prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
+                <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
+            </item>
+        </properties>
+        <properties profile="!prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.server.handler.encodingHandlerWrapper"
+          class="com.aspectran.undertow.server.handler.encoding.EncodingHandlerWrapper"
           scope="prototype">
         <properties>
             <item name="contentEncodingProviders" type="array">
@@ -82,7 +102,8 @@
         </properties>
     </bean>
 
-    <bean id="tow.server.accessLogHandlerWrapper" class="com.aspectran.undertow.server.accesslog.AccessLogHandlerWrapper"
+    <bean id="tow.server.handler.accessLogHandlerWrapper"
+          class="com.aspectran.undertow.server.handler.accesslog.AccessLogHandlerWrapper"
           scope="prototype">
         <properties>
             <item name="formatString">combined</item>

@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.servlet;
+package com.aspectran.undertow.server.handler;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.undertow.server.resource.StaticResourceHandler;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.websocket.jsr356.ServerEndpointExporter;
-import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
@@ -34,29 +29,14 @@ import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import jakarta.servlet.ServletContext;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class HybridServletHandlerFactory implements ActivityContextAware {
-
-    private ActivityContext context;
+public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory {
 
     private ServletContainer servletContainer;
-
-//    private StaticResourceHandler staticResourceHandler;
-
-    private List<HandlerWrapper> outerHandlerChainWrappers;
-
-    @Override
-    @AvoidAdvice
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
-    }
 
     public ServletContainer getServletContainer() {
         return servletContainer;
@@ -67,13 +47,6 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
             throw new IllegalArgumentException("servletContainer must not be null");
         }
         this.servletContainer = servletContainer;
-    }
-
-    public void setOuterHandlerChainWrappers(HandlerWrapper[] handlerWrappers) {
-        if (handlerWrappers == null || handlerWrappers.length == 0) {
-            throw new IllegalArgumentException("handlerWrappers must not be null or empty");
-        }
-        this.outerHandlerChainWrappers = Arrays.asList(handlerWrappers);
     }
 
     public HttpHandler createHandler() throws Exception {
@@ -87,12 +60,12 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
                 ServletContext servletContext = deployment.getServletContext();
 
                 // Create a root web service
-                CoreService rootService = context.getRootService();
+                CoreService rootService = getActivityContext().getRootService();
                 WebService rootWebService = DefaultWebService.create(servletContext, rootService);
                 servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
 
                 // Required for any websocket support in undertow
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(getActivityContext());
                 serverEndpointExporter.setServerContainer(servletContext);
                 if (serverEndpointExporter.hasServerContainer()) {
                     serverEndpointExporter.registerEndpoints();
@@ -103,14 +76,14 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
 
                 ResourceManager resourceManager = deployment.getDeploymentInfo().getResourceManager();
                 if (resourceManager != null) {
-                    StaticResourceHandler staticResourceHandler = new StaticResourceHandler(resourceManager, handler);
+                    TowResourceHandler towResourceHandler = new TowResourceHandler(resourceManager, handler);
                     String pathPrefix = contextPath;
                     if (pathPrefix != null && pathPrefix.endsWith("/")) {
                         pathPrefix = pathPrefix.substring(0, pathPrefix.length() - 1);
                     }
-                    staticResourceHandler.autoDetect(pathPrefix);
-                    if (staticResourceHandler.hasPatterns()) {
-                        handler = staticResourceHandler;
+                    towResourceHandler.autoDetect(pathPrefix);
+                    if (towResourceHandler.hasPatterns()) {
+                        handler = towResourceHandler;
                     }
                 }
 
@@ -120,18 +93,7 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
         } else {
             rootHandler = ResponseCodeHandler.HANDLE_404;
         }
-        if (outerHandlerChainWrappers != null) {
-            rootHandler = wrapHandlers(rootHandler, outerHandlerChainWrappers);
-        }
-        return rootHandler;
-    }
-
-    private static HttpHandler wrapHandlers(HttpHandler wrapee, @NonNull List<HandlerWrapper> wrappers) {
-        HttpHandler current = wrapee;
-        for (HandlerWrapper wrapper : wrappers) {
-            current = wrapper.wrap(current);
-        }
-        return current;
+        return wrapHandler(rootHandler);
     }
 
 }

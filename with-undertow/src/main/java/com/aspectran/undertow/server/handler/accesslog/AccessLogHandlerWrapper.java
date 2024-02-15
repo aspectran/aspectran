@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.accesslog;
+package com.aspectran.undertow.server.handler.accesslog;
 
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.utils.StringUtils;
@@ -51,7 +51,7 @@ public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper
         if (handler == null) {
             throw new IllegalArgumentException("handler must not be null");
         }
-        AccessLogReceiver accessLogReceiver = new AspectranAccessLogReceiver(category);
+        AccessLogReceiver accessLogReceiver = new TowAccessLogReceiver(category);
         String formatString = (StringUtils.hasText(this.formatString) ? this.formatString : "combined");
         return new AccessLogHandler(handler, accessLogReceiver, formatString, classLoader);
     }

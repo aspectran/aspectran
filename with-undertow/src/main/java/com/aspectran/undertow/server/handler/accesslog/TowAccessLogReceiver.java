@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.accesslog;
+package com.aspectran.undertow.server.handler.accesslog;
 
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
@@ -25,17 +25,17 @@ import io.undertow.server.handlers.accesslog.AccessLogReceiver;
  *
  * <p>Created: 2019-08-18</p>
  */
-public class AspectranAccessLogReceiver implements AccessLogReceiver {
+public class TowAccessLogReceiver implements AccessLogReceiver {
 
     private static final String DEFAULT_CATEGORY = "io.undertow.accesslog";
 
     private final Logger logger;
 
-    public AspectranAccessLogReceiver() {
+    public TowAccessLogReceiver() {
         this.logger = LoggerFactory.getLogger(DEFAULT_CATEGORY);
     }
 
-    public AspectranAccessLogReceiver(String category) {
+    public TowAccessLogReceiver(String category) {
         if (StringUtils.hasText(category)) {
             this.logger = LoggerFactory.getLogger(category);
         } else {

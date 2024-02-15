@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty;
+package com.aspectran.jetty.server;
 
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;

@@ -25,7 +25,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.jetty.JettyServer;
+import com.aspectran.jetty.server.JettyServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;

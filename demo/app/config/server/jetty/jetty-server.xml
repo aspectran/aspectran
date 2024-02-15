@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for Embedded Jetty Server.
+        Aspectran configuration for setting up a Jetty server.
     </description>
 
     <environment>
@@ -22,7 +22,7 @@
         </properties>
     </environment>
 
-    <bean id="jetty.server" class="com.aspectran.jetty.JettyServer">
+    <bean id="jetty.server" class="com.aspectran.jetty.server.JettyServer">
         <arguments>
             <item name="threadPool">
                 <bean class="org.eclipse.jetty.util.thread.QueuedThreadPool">

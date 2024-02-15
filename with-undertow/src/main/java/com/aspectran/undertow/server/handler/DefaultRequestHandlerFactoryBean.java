@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.servlet;
+package com.aspectran.undertow.server.handler;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -22,7 +22,7 @@ import io.undertow.server.HttpHandler;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class HybridServletHandlerFactoryBean extends HybridServletHandlerFactory
+public class DefaultRequestHandlerFactoryBean extends DefaultRequestHandlerFactory
         implements InitializableBean, FactoryBean<HttpHandler> {
 
     private volatile HttpHandler handler;

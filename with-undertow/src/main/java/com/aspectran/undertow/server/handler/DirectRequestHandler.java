@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.http;
+package com.aspectran.undertow.server.handler;
 
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -29,7 +29,7 @@ import io.undertow.server.session.SessionManager;
 /**
  * <p>Created: 2019-07-31</p>
  */
-public class HybridHttpHandler implements HttpHandler {
+public class DirectRequestHandler implements HttpHandler {
 
     private final TowService towService;
 
@@ -37,15 +37,15 @@ public class HybridHttpHandler implements HttpHandler {
 
     private final SessionConfig sessionConfig;
 
-    public HybridHttpHandler(TowService towService) {
+    public DirectRequestHandler(TowService towService) {
         this(towService, null);
     }
 
-    public HybridHttpHandler(TowService towService, SessionManager sessionManager) {
+    public DirectRequestHandler(TowService towService, SessionManager sessionManager) {
         this(towService, sessionManager, null);
     }
 
-    public HybridHttpHandler(TowService towService, SessionManager sessionManager, SessionConfig sessionConfig) {
+    public DirectRequestHandler(TowService towService, SessionManager sessionManager, SessionConfig sessionConfig) {
         this.towService = towService;
         this.sessionManager = sessionManager;
         if (sessionManager != null) {
@@ -77,6 +77,7 @@ public class HybridHttpHandler implements HttpHandler {
     private static class UpdateLastAccessTimeListener implements ExchangeCompletionListener {
 
         private final SessionManager sessionManager;
+
         private final SessionConfig sessionConfig;
 
         private UpdateLastAccessTimeListener(SessionManager sessionManager, SessionConfig sessionConfig) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.resource;
+package com.aspectran.undertow.server.handler.resource;
 
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -37,28 +37,28 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class StaticResourceHandler extends ResourceHandler {
+public class TowResourceHandler extends ResourceHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TowResourceHandler.class);
 
     private final HttpHandler next;
 
     private volatile PluralWildcardPattern resourcePathPatterns;
 
-    public StaticResourceHandler(ResourceManager resourceManager) {
+    public TowResourceHandler(ResourceManager resourceManager) {
         this(resourceManager, null);
     }
 
-    public StaticResourceHandler(ResourceManager resourceManager, HttpHandler next) {
+    public TowResourceHandler(ResourceManager resourceManager, HttpHandler next) {
         super(resourceManager);
         this.next = next;
     }
 
-    public StaticResourceHandler(ResourceSupplier resourceSupplier) {
+    public TowResourceHandler(ResourceSupplier resourceSupplier) {
         this(resourceSupplier, null);
     }
 
-    public StaticResourceHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+    public TowResourceHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
         super(resourceSupplier);
         this.next = next;
     }
@@ -104,9 +104,9 @@ public class StaticResourceHandler extends ResourceHandler {
                 WildcardPattern[] excludePatterns = (resourcePathPatterns != null ? resourcePathPatterns.getExcludePatterns() : null);
                 resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns);
 
-                logger.info("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
+                logger.info("TowResourceHandler includePatterns=" + Arrays.toString(includePatterns));
                 if (excludePatterns != null) {
-                    logger.info("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                    logger.info("TowResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
                 }
             }
         }

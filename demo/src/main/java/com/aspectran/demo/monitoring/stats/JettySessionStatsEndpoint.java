@@ -18,7 +18,7 @@ package com.aspectran.demo.monitoring.stats;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jetty.JettyServer;
+import com.aspectran.jetty.server.JettyServer;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;

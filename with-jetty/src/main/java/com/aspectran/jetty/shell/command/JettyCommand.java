@@ -17,7 +17,7 @@ package com.aspectran.jetty.shell.command;
 
 import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.jetty.JettyServer;
+import com.aspectran.jetty.server.JettyServer;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
