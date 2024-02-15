@@ -132,7 +132,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             if (greetingsTokens != null) {
                 try {
                     for (Token token : greetingsTokens) {
-                        Token.resolveAlternativeValue(token, getSiblingsClassLoader());
+                        Token.resolveAlternativeValue(token, getClassLoader());
                     }
                 } catch (Exception e) {
                     greetingsTokens = null;

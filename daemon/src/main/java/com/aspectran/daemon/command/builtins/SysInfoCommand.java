@@ -98,9 +98,8 @@ public class SysInfoCommand extends AbstractCommand {
             printWriter.println(line);
         }
         if (isServiceAvailable()) {
-            ClassLoader classLoader = getDaemonService().getActivityContext().getApplicationAdapter().getClassLoader();
-            if (classLoader instanceof SiblingsClassLoader) {
-                SiblingsClassLoader scl = (SiblingsClassLoader)classLoader;
+            ClassLoader classLoader = getDaemonService().getClassLoader();
+            if (classLoader instanceof SiblingsClassLoader scl) {
                 Enumeration<URL> urls = scl.getAllResources();
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();

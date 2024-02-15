@@ -131,7 +131,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 // ActivityContext will be initialized in that service
                 activityContext.setRootService(getServiceController().getRootService());
             } else {
-                ((Component) activityContext).initialize();
+                ((Component)activityContext).initialize();
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;

@@ -16,6 +16,7 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -42,11 +43,11 @@ public class WebServiceHolder {
     static void putWebService(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
         Assert.notNull(webService.getActivityContext(), "No ActivityContext");
-        ClassLoader ccl = webService.getActivityContext().getApplicationAdapter().getClassLoader();
-        if (ccl == WebServiceHolder.class.getClassLoader()) {
+        ClassLoader classLoader = webService.getClassLoader();
+        if (classLoader == WebServiceHolder.class.getClassLoader()) {
             currentWebService = webService;
-        } else if (ccl != null) {
-            webServicePerThread.put(ccl, webService);
+        } else if (classLoader != null) {
+            webServicePerThread.put(classLoader, webService);
         }
     }
 
@@ -59,9 +60,12 @@ public class WebServiceHolder {
     }
 
     public static WebService getCurrentWebService() {
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-        if (ccl != null) {
-            WebService webService = webServicePerThread.get(ccl);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader != null) {
+            WebService webService = webServicePerThread.get(classLoader);
+            if (webService == null && !(classLoader instanceof SiblingsClassLoader)) {
+                webService = webServicePerThread.get(classLoader.getParent());
+            }
             if (webService != null) {
                 return webService;
             }

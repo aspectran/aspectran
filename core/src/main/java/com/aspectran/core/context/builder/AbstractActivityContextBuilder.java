@@ -52,7 +52,6 @@ import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.service.ServiceController;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -234,7 +233,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public SiblingsClassLoader getSiblingsClassLoader() {
+    public ClassLoader getClassLoader() {
         return siblingsClassLoader;
     }
 
@@ -335,7 +334,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(ActivityRuleAssistant assistant)
+    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
         DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getApplicationAdapter());
         activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
@@ -388,7 +387,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
         if (siblingsClassLoader == null || hardReload) {
             siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
-            ClassUtils.overrideThreadContextClassLoader(siblingsClassLoader);
         } else {
             siblingsClassLoader.reload();
         }

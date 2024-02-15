@@ -33,7 +33,6 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
@@ -268,7 +267,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private void perform(HttpServletRequest request, HttpServletResponse response,
                          String requestName, MethodType requestMethod, TransletRule transletRule,
                          AtomicReference<Activity> activityReference) {
-        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getSiblingsClassLoader());
         WebActivity activity = null;
         try {
             activity = new WebActivity(getActivityContext(), contextPath, request, response);
@@ -300,8 +298,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
                 }
             }
-        } finally {
-            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         }
     }
 

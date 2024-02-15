@@ -33,6 +33,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -108,6 +109,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     @Override
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return applicationAdapter.getClassLoader();
     }
 
     @Override
@@ -242,23 +248,28 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     protected void doInitialize() throws Exception {
-        if (aspectRuleRegistry != null) {
-            aspectRuleRegistry.initialize();
-        }
-        if (defaultBeanRegistry != null) {
-            defaultBeanRegistry.initialize();
-        }
-        if (defaultTemplateRenderer != null) {
-            defaultTemplateRenderer.initialize();
-        }
-        if (scheduleRuleRegistry != null) {
-            scheduleRuleRegistry.initialize();
-        }
-        if (transletRuleRegistry != null) {
-            transletRuleRegistry.initialize();
-        }
-        if (defaultBeanRegistry != null) {
-            initMessageSource();
+        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        try {
+            if (aspectRuleRegistry != null) {
+                aspectRuleRegistry.initialize();
+            }
+            if (defaultBeanRegistry != null) {
+                defaultBeanRegistry.initialize();
+            }
+            if (defaultTemplateRenderer != null) {
+                defaultTemplateRenderer.initialize();
+            }
+            if (scheduleRuleRegistry != null) {
+                scheduleRuleRegistry.initialize();
+            }
+            if (transletRuleRegistry != null) {
+                transletRuleRegistry.initialize();
+            }
+            if (defaultBeanRegistry != null) {
+                initMessageSource();
+            }
+        } finally {
+            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         }
     }
 

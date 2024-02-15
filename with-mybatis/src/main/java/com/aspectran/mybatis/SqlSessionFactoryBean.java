@@ -21,7 +21,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ResourceUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -71,16 +70,12 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     }
 
     protected SqlSessionFactory buildSqlSessionFactory(InputStream inputStream) {
-        ClassLoader originalClassLoader = null;
         try {
-            originalClassLoader = ClassUtils.overrideThreadContextClassLoader(applicationAdapter.getClassLoader());
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
             return sqlSessionFactoryBuilder.build(inputStream, environment, properties);
         } catch (Exception ex) {
             throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
                     configLocation, ex);
-        } finally {
-            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         }
     }
 

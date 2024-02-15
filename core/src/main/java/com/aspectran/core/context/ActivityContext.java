@@ -72,6 +72,8 @@ public interface ActivityContext {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    ClassLoader getClassLoader();
+
     /**
      * Gets the environment.
      * @return the environment
