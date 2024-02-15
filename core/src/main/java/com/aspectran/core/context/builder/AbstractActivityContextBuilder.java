@@ -395,6 +395,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return siblingsClassLoader;
     }
 
+    @NonNull
     private ActivityEnvironment createActivityEnvironment(@NonNull ActivityRuleAssistant assistant,
                                                           ActivityContext activityContext) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();

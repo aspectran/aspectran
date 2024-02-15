@@ -35,13 +35,14 @@ import static com.aspectran.web.service.WebService.STANDALONE_WEB_SERVICE_ATTR_P
 public class WebServiceHolder {
 
     private static final Map<ClassLoader, WebService> webServicePerThread =
-            new ConcurrentHashMap<>(1);
+            new ConcurrentHashMap<>(4);
 
     private static volatile WebService currentWebService;
 
     static void putWebService(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        Assert.notNull(webService.getActivityContext(), "No ActivityContext");
+        ClassLoader ccl = webService.getActivityContext().getApplicationAdapter().getClassLoader();
         if (ccl == WebServiceHolder.class.getClassLoader()) {
             currentWebService = webService;
         } else if (ccl != null) {
