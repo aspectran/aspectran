@@ -51,8 +51,6 @@ Aspectran consists of the following major packages:
   Miscellaneous utility classes used across multiple packages
 * **com.aspectran.web**  
   Package for building web applications using Jakarta EE
-* **com.aspectran.websocket**  
-  Package required to configure websockets in Aspectran-based web applications
 * **com.aspectran.rss-lettuce**  
   Package containing a Redis session store implementation using Lettuce as a client
 * **com.aspectran.jetty**  
