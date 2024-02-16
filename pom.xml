@@ -105,7 +105,6 @@
         <module>shell-jline</module>
         <module>utils</module>
         <module>web</module>
-        <module>websocket</module>
         <module>with-freemarker</module>
         <module>with-jetty</module>
         <module>with-mybatis</module>

@@ -262,7 +262,7 @@
                         </group>
                         <group>
                             <title>Add-ons</title>
-                            <packages>com.aspectran.websocket*:com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.undertow*</packages>
+                            <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.undertow*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
