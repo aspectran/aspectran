@@ -38,17 +38,26 @@ public class WebServiceHolder {
     private static final Map<ClassLoader, WebService> webServicePerThread =
             new ConcurrentHashMap<>(4);
 
+    private static final Map<Class<?>, WebService> webServicePerClass =
+            new ConcurrentHashMap<>(8);
+
     private static volatile WebService currentWebService;
 
     static void putWebService(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
         Assert.notNull(webService.getActivityContext(), "No ActivityContext");
-        ClassLoader classLoader = webService.getClassLoader();
+        ClassLoader classLoader = webService.getServiceClassLoader();
         if (classLoader == WebServiceHolder.class.getClassLoader()) {
             currentWebService = webService;
         } else if (classLoader != null) {
             webServicePerThread.put(classLoader, webService);
         }
+    }
+
+    static void putWebService(Class<?> clazz, WebService webService) {
+        Assert.notNull(webService, "webService must not be null");
+        Assert.notNull(clazz, "clazz must not be null");
+        webServicePerClass.put(clazz, webService);
     }
 
     static void removeWebService(WebService webService) {
@@ -73,9 +82,23 @@ public class WebServiceHolder {
         return currentWebService;
     }
 
+    public static WebService getCurrentWebService(Class<?> clazz) {
+        WebService webService = webServicePerClass.get(clazz);
+        if (webService == null) {
+            webService = getCurrentWebService();
+        }
+        return webService;
+    }
+
     @Nullable
     public static ActivityContext getCurrentActivityContext() {
         WebService webService = getCurrentWebService();
+        return (webService != null ? webService.getActivityContext() : null);
+    }
+
+    @Nullable
+    public static ActivityContext getCurrentActivityContext(Class<?> clazz) {
+        WebService webService = getCurrentWebService(clazz);
         return (webService != null ? webService.getActivityContext() : null);
     }
 

@@ -22,7 +22,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -36,8 +35,6 @@ public abstract class AbstractActivity implements Activity {
     private final ActivityContext context;
 
     private Activity parentActivity;
-
-    private ClassLoader originalClassLoader;
 
     private SessionAdapter sessionAdapter;
 
@@ -81,14 +78,12 @@ public abstract class AbstractActivity implements Activity {
             parentActivity = context.getCurrentActivity();
         }
         context.setCurrentActivity(this);
-        originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getActivityContext().getClassLoader());
     }
 
     /**
      * Removes the current activity.
      */
     protected void removeCurrentActivity() {
-        ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         if (parentActivity != null) {
             context.setCurrentActivity(parentActivity);
         } else {

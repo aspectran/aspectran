@@ -64,7 +64,7 @@ public class InvokeActionCommand extends AbstractCommand {
 
             if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                Class<?> beanClass = daemonService.getClassLoader().loadClass(className);
+                Class<?> beanClass = daemonService.getServiceClassLoader().loadClass(className);
                 invokeActionRule.setBeanClass(beanClass);
             }
 

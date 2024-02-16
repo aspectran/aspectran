@@ -127,7 +127,7 @@ public class SysInfoCommand extends AbstractCommand {
             console.writeLine(line);
         }
         if (isServiceAvailable()) {
-            ClassLoader classLoader = getShellService().getClassLoader();
+            ClassLoader classLoader = getShellService().getServiceClassLoader();
             if (classLoader instanceof SiblingsClassLoader scl) {
                 Enumeration<URL> urls = scl.getAllResources();
                 while (urls.hasMoreElements()) {

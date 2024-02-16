@@ -84,7 +84,7 @@ public interface CoreService {
     /**
      * @return the ClassLoader used within the service.
      */
-    ClassLoader getClassLoader();
+    ClassLoader getServiceClassLoader();
 
     /**
      * @return the default activity

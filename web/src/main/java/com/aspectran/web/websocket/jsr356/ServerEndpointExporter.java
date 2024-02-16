@@ -15,18 +15,19 @@
  */
 package com.aspectran.web.websocket.jsr356;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import jakarta.servlet.ServletContext;
+import com.aspectran.web.service.WebService;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.websocket.server.ServerEndpointConfig;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,16 +44,16 @@ public class ServerEndpointExporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerEndpointExporter.class);
 
-    private final ActivityContext context;
+    private final WebService webService;
 
-    @Nullable
-    private ServerContainer serverContainer;
+    private final ServerContainer serverContainer;
 
     @Nullable
     private List<Class<?>> annotatedEndpointClasses;
 
-    public ServerEndpointExporter(ActivityContext context) {
-        this.context = context;
+    public ServerEndpointExporter(@NonNull WebService webService) {
+        this.webService = webService;
+        this.serverContainer = (ServerContainer)webService.getServletContext().getAttribute(ServerContainer.class.getName());
     }
 
     /**
@@ -68,19 +69,6 @@ public class ServerEndpointExporter {
     }
 
     /**
-     * Set the JSR-356 {@link ServerContainer} to use for endpoint registration.
-     * If not set, the container is going to be retrieved via the {@code ServletContext}.
-     */
-    public void setServerContainer(@Nullable ServerContainer serverContainer) {
-        this.serverContainer = serverContainer;
-    }
-
-    public void setServerContainer(ServletContext servletContext) {
-        Assert.notNull(servletContext, "servletContext must not be null");
-        this.serverContainer = (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
-    }
-
-    /**
      * Explicitly list annotated endpoint types that should be registered on startup. This
      * can be done if you wish to turn off a Servlet container's scan for endpoints, which
      * goes through all 3rd party jars in the, and rely on Spring configuration instead.
@@ -93,7 +81,7 @@ public class ServerEndpointExporter {
     /**
      * Actually register the endpoints.
      */
-    public void registerEndpoints() {
+    public Set<Class<?>> registerEndpoints() {
         Assert.state(getServerContainer() != null,
             "jakarta.websocket.server.ServerContainer not available");
 
@@ -101,17 +89,19 @@ public class ServerEndpointExporter {
         if (this.annotatedEndpointClasses != null) {
             endpointClasses.addAll(this.annotatedEndpointClasses);
         }
-        endpointClasses.addAll(context.getBeanRegistry().findConfigBeanClassesWithAnnotation(ServerEndpoint.class));
+        endpointClasses.addAll(findServerEndpointClasses());
         for (Class<?> endpointClass : endpointClasses) {
             registerEndpoint(endpointClass);
         }
 
-        ServerEndpointConfig[] endpointConfigs = context.getBeanRegistry().getBeansOfType(ServerEndpointConfig.class);
+        ServerEndpointConfig[] endpointConfigs = findServerEndpointConfigs();
         if (endpointConfigs != null) {
             for (ServerEndpointConfig endpointConfig : endpointConfigs) {
                 registerEndpoint(endpointConfig);
+                endpointClasses.add(endpointConfig.getEndpointClass());
             }
         }
+        return endpointClasses;
     }
 
     private void registerEndpoint(Class<?> endpointClass) {
@@ -140,6 +130,14 @@ public class ServerEndpointExporter {
         } catch (DeploymentException ex) {
             throw new IllegalStateException("Failed to register ServerEndpointConfig: " + endpointConfig, ex);
         }
+    }
+
+    private Collection<Class<?>> findServerEndpointClasses() {
+        return webService.getActivityContext().getBeanRegistry().findConfigBeanClassesWithAnnotation(ServerEndpoint.class);
+    }
+
+    private ServerEndpointConfig[] findServerEndpointConfigs() {
+        return webService.getActivityContext().getBeanRegistry().getBeansOfType(ServerEndpointConfig.class);
     }
 
 }

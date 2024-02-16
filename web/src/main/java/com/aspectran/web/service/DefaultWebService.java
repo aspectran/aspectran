@@ -33,6 +33,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
@@ -58,6 +59,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
@@ -78,13 +80,11 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
 
-    private final ServletContext servletContext;
-
     private final String contextPath;
 
-    private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
+    private final ServletContext servletContext;
 
-    private ClassLoader classLoader;
+    private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     private String uriDecoding;
 
@@ -99,9 +99,18 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
         super(rootService);
-        this.servletContext = servletContext;
         this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
+        this.servletContext = servletContext;
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
+        if (rootService != null) {
+            setServiceClassLoader(new WebServiceClassLoader(rootService.getActivityContext().getClassLoader()));
+        }
+    }
+
+    @Override
+    protected void afterContextLoaded() throws Exception {
+        super.afterContextLoaded();
+        setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
     }
 
     @Override
@@ -270,6 +279,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private void perform(HttpServletRequest request, HttpServletResponse response,
                          String requestName, MethodType requestMethod, TransletRule transletRule,
                          AtomicReference<Activity> activityReference) {
+        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getServiceClassLoader());
         WebActivity activity = null;
         try {
             activity = new WebActivity(getActivityContext(), contextPath, request, response);
@@ -301,6 +311,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
                 }
             }
+        } finally {
+            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         }
     }
 
@@ -406,6 +418,12 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
             }
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+            if (rootWebService != null) {
+                ContextConfig contextConfig = aspectranConfig.getContextConfig();
+                if (contextConfig != null) {
+                    contextConfig.setBasePath(rootWebService.getBasePath());
+                }
+            }
             DefaultWebService webService = create(servletContext, aspectranConfig);
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, webService);
@@ -502,14 +520,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                webService.setAltClassLoader(new WebServiceClassLoader(webService.getActivityContext().getClassLoader()));
                 WebServiceHolder.putWebService(webService);
 
                 // Required for any websocket support
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService.getActivityContext());
-                serverEndpointExporter.setServerContainer(webService.getServletContext());
+                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
                 if (serverEndpointExporter.hasServerContainer()) {
-                    serverEndpointExporter.registerEndpoints();
+                    Set<Class<?>> endpointClasses = serverEndpointExporter.registerEndpoints();
+                    for (Class<?> endpointClass : endpointClasses) {
+                        WebServiceHolder.putWebService(endpointClass, webService);
+                    }
                 }
 
                 webService.pauseTimeout = 0L;

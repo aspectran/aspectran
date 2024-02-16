@@ -69,7 +69,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     @Override
     public ActivityContext build(String contextRuleFile) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setContextRules(new String[] {contextRuleFile});
+            setContextRules(new String[] { contextRuleFile });
             return doBuild();
         }
     }

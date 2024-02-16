@@ -310,7 +310,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected ApplicationAdapter createApplicationAdapter() throws InvalidResourceException {
-        SiblingsClassLoader classLoader = newSiblingsClassLoader();
+        ClassLoader classLoader = newSiblingsClassLoader();
         return new DefaultApplicationAdapter(basePath, classLoader);
     }
 
