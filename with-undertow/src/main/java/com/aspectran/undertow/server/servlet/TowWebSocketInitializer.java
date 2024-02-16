@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionListener;
@@ -61,9 +62,9 @@ public class TowWebSocketInitializer  {
 
     public void initialize(@NonNull DeploymentInfo deploymentInfo) {
         if (!deploymentInfo.getServletContextAttributes().containsKey(WebSocketDeploymentInfo.ATTRIBUTE_NAME)) {
-            deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
-                    new WebSocketDeploymentInfo().setBuffers(
-                            new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize)));
+            ByteBufferPool byteBufferPool = new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize);
+            WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo().setBuffers(byteBufferPool);
+            deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, webSocketDeploymentInfo);
             deploymentInfo.addSessionListener(new WebSocketGracefulUndeployListener());
         }
     }

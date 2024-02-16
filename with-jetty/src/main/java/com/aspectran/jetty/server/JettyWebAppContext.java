@@ -25,7 +25,6 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
-import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
@@ -143,9 +142,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                     (servletContext, jettyWebSocketServerContainer) -> {
                 ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
                 webSocketInitializer.customize(serverContainer);
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
-                serverEndpointExporter.setServerContainer(serverContainer);
-                serverEndpointExporter.registerEndpoints();
             });
         }
     }

@@ -22,7 +22,7 @@ import io.undertow.server.HttpHandler;
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class DirectRequestHandlerFactoryBean extends DirectRequestHandlerFactory
+public class LightRequestHandlerFactoryBean extends LightRequestHandlerFactory
         implements InitializableBean, FactoryBean<HttpHandler> {
 
     private volatile HttpHandler handler;

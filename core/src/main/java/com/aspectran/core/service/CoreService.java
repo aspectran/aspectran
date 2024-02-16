@@ -82,14 +82,14 @@ public interface CoreService {
     ActivityContext getActivityContext();
 
     /**
-     * @return the default activity
-     */
-    Activity getDefaultActivity();
-
-    /**
      * @return the ClassLoader used within the service.
      */
     ClassLoader getClassLoader();
+
+    /**
+     * @return the default activity
+     */
+    Activity getDefaultActivity();
 
     /**
      * @return the scheduler service

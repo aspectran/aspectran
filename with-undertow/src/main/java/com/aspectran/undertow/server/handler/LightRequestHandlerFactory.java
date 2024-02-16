@@ -34,7 +34,7 @@ import java.io.IOException;
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class DirectRequestHandlerFactory extends AbstractRequestHandlerFactory implements DisposableBean {
+public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory implements DisposableBean {
 
     private TowServer towServer;
 
@@ -75,7 +75,7 @@ public class DirectRequestHandlerFactory extends AbstractRequestHandlerFactory i
             sessionManager.start();
         }
 
-        DirectRequestHandler requestHandler = new DirectRequestHandler(towService, sessionManager, sessionConfig);
+        LightRequestHandler requestHandler = new LightRequestHandler(towService, sessionManager, sessionConfig);
         HttpHandler rootHandler = requestHandler;
 
         if (resourceManager != null) {

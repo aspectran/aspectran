@@ -46,6 +46,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.websocket.jsr356.ServerEndpointExporter;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.AsyncListener;
@@ -82,6 +83,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private final String contextPath;
 
     private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
+
+    private ClassLoader classLoader;
 
     private String uriDecoding;
 
@@ -355,7 +358,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             logger.debug("The Root WebService attribute in ServletContext has been created; " +
                     ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
         }
-        //WebServiceHolder.putWebService(webService);
         return webService;
     }
 
@@ -385,7 +387,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 throw new AspectranServiceException("Failed to start DefaultWebService");
             }
         }
-        //WebServiceHolder.putWebService(webService);
         return webService;
     }
 
@@ -412,10 +413,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
                     attrName + ": " + webService);
             }
-            //WebServiceHolder.putWebService(webService);
             return webService;
         } else {
-            //WebServiceHolder.putWebService(rootWebService);
             return null;
         }
     }
@@ -503,7 +502,16 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                webService.setAltClassLoader(new WebServiceClassLoader(webService.getActivityContext().getClassLoader()));
                 WebServiceHolder.putWebService(webService);
+
+                // Required for any websocket support
+                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService.getActivityContext());
+                serverEndpointExporter.setServerContainer(webService.getServletContext());
+                if (serverEndpointExporter.hasServerContainer()) {
+                    serverEndpointExporter.registerEndpoints();
+                }
+
                 webService.pauseTimeout = 0L;
             }
 

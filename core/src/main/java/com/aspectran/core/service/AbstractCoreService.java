@@ -55,6 +55,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private ActivityContext activityContext;
 
+    private ClassLoader altClassLoader;
+
     private SchedulerService schedulerService;
 
     public AbstractCoreService() {
@@ -174,11 +176,17 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public ClassLoader getClassLoader() {
-        if (activityContext != null) {
+        if (altClassLoader != null) {
+            return altClassLoader;
+        } else if (activityContext != null) {
             return activityContext.getClassLoader();
         } else {
             return getActivityContextBuilder().getClassLoader();
         }
+    }
+
+    protected void setAltClassLoader(ClassLoader classLoader) {
+        this.altClassLoader = classLoader;
     }
 
     @Override

@@ -72,6 +72,10 @@ public interface ActivityContext {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    /**
+     * Returns the ClassLoader for this service.
+     * @return the ClassLoader for this service
+     */
     ClassLoader getClassLoader();
 
     /**

@@ -29,7 +29,7 @@ import io.undertow.server.session.SessionManager;
 /**
  * <p>Created: 2019-07-31</p>
  */
-public class DirectRequestHandler implements HttpHandler {
+public class LightRequestHandler implements HttpHandler {
 
     private final TowService towService;
 
@@ -37,15 +37,15 @@ public class DirectRequestHandler implements HttpHandler {
 
     private final SessionConfig sessionConfig;
 
-    public DirectRequestHandler(TowService towService) {
+    public LightRequestHandler(TowService towService) {
         this(towService, null);
     }
 
-    public DirectRequestHandler(TowService towService, SessionManager sessionManager) {
+    public LightRequestHandler(TowService towService, SessionManager sessionManager) {
         this(towService, sessionManager, null);
     }
 
-    public DirectRequestHandler(TowService towService, SessionManager sessionManager, SessionConfig sessionConfig) {
+    public LightRequestHandler(TowService towService, SessionManager sessionManager, SessionConfig sessionConfig) {
         this.towService = towService;
         this.sessionManager = sessionManager;
         if (sessionManager != null) {

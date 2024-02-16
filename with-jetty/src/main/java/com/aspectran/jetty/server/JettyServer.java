@@ -196,11 +196,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     private void handleDeferredInitialize(Handler handler) throws Exception {
         if (handler instanceof JettyWebAppContext jettyWebAppContext) {
             jettyWebAppContext.deferredInitialize();
-        }
-        else if (handler instanceof Handler.Wrapper handlerWrapper) {
+        } else if (handler instanceof Handler.Wrapper handlerWrapper) {
             handleDeferredInitialize(handlerWrapper.getHandler());
-        }
-        else if (handler instanceof Handler.Collection handlerCollection) {
+        } else if (handler instanceof Handler.Collection handlerCollection) {
             handleDeferredInitialize(handlerCollection.getHandlers());
         }
     }

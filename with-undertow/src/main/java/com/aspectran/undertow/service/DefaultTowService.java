@@ -232,12 +232,10 @@ public class DefaultTowService extends AbstractTowService {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService();
         towService.prepare(aspectranConfig);
-
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
             applyWebConfig(towService, webConfig);
         }
-
         setServiceStateListener(towService);
         return towService;
     }

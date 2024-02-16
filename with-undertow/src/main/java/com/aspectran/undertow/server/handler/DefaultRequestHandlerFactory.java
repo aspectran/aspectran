@@ -19,7 +19,6 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
-import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
@@ -63,13 +62,6 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 CoreService rootService = getActivityContext().getRootService();
                 WebService rootWebService = DefaultWebService.create(servletContext, rootService);
                 servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
-
-                // Required for any websocket support in undertow
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(getActivityContext());
-                serverEndpointExporter.setServerContainer(servletContext);
-                if (serverEndpointExporter.hasServerContainer()) {
-                    serverEndpointExporter.registerEndpoints();
-                }
 
                 HttpHandler handler = manager.start();
                 String contextPath = deployment.getDeploymentInfo().getContextPath();
