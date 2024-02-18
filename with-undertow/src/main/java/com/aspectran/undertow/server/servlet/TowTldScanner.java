@@ -26,6 +26,7 @@ import org.apache.tomcat.util.descriptor.tld.TldResourcePath;
 import org.apache.tomcat.util.scan.JarFactory;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -59,10 +60,10 @@ public class TowTldScanner extends TldScanner {
 
     @Override
     public void scan() throws IOException, SAXException {
+        scanPlatform();
+        scanJspConfig();
+        scanResourcePaths("/WEB-INF/");
         if (tldResources != null) {
-            scanPlatform();
-            scanJspConfig();
-            scanResourcePaths("/WEB-INF/");
             for (URL url : tldResources) {
                 if (url != null) {
                     if (url.getPath().endsWith(".tld")) {
@@ -70,18 +71,38 @@ public class TowTldScanner extends TldScanner {
                     } else if (ResourceUtils.isJarURL(url) || ResourceUtils.isJarFileURL(url)) {
                         Jar jar = JarFactory.newInstance(url);
                         scanJar(jar);
+                    } else if (ResourceUtils.isFileURL(url)) {
+                        File dir = ResourceUtils.getFile(url);
+                        if (dir.isDirectory()) {
+                            scanDir(dir);
+                        }
                     } else {
                         logger.warn("Unrecognized TLD Resource: " + url);
                     }
                 }
             }
-        } else {
-            super.scan();
         }
         Map<String, TldResourcePath> result = getUriTldResourcePathMap();
         for (Map.Entry<String, TldResourcePath> entry : result.entrySet()) {
             logger.debug("Found TLD: " + entry.getKey() + " [" + entry.getValue().getUrl() + "]");
         }
+    }
+
+    private void scanDir(@NonNull File dir) {
+        dir.listFiles(file -> {
+            if (file.isFile()) {
+                String filePath = file.getAbsolutePath();
+                if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
+                    try {
+                        Jar jar = JarFactory.newInstance(file.toURI().toURL());
+                        scanJar(jar);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            return false;
+        });
     }
 
     private void parseTld(URL url) throws IOException {
