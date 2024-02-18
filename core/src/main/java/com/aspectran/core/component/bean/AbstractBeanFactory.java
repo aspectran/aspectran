@@ -23,7 +23,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
-import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.proxy.ProxyBeanFactory;
@@ -346,22 +345,19 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
     private void invokeAwareMethods(Object bean) {
         if (bean instanceof Aware) {
-            if (bean instanceof CurrentActivityAware) {
+            if (bean instanceof CurrentActivityAware currentActivityAware) {
                 if (context.hasCurrentActivity()) {
-                    ((CurrentActivityAware)bean).setCurrentActivity(context.getCurrentActivity());
+                    currentActivityAware.setCurrentActivity(context.getCurrentActivity());
                 }
             }
-            if (bean instanceof ActivityContextAware) {
-                ((ActivityContextAware)bean).setActivityContext(context);
+            if (bean instanceof ActivityContextAware activityContextAware) {
+                activityContextAware.setActivityContext(context);
             }
-            if (bean instanceof ApplicationAdapterAware) {
-                ((ApplicationAdapterAware)bean).setApplicationAdapter(context.getApplicationAdapter());
+            if (bean instanceof ApplicationAdapterAware applicationAdapterAware) {
+                applicationAdapterAware.setApplicationAdapter(context.getApplicationAdapter());
             }
-            if (bean instanceof ClassLoaderAware) {
-                ((ClassLoaderAware)bean).setClassLoader(context.getClassLoader());
-            }
-            if (bean instanceof EnvironmentAware) {
-                ((EnvironmentAware)bean).setEnvironment(context.getEnvironment());
+            if (bean instanceof EnvironmentAware environmentAware) {
+                environmentAware.setEnvironment(context.getEnvironment());
             }
         }
     }

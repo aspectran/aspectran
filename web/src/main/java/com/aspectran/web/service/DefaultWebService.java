@@ -22,44 +22,28 @@ import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
-import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
-import com.aspectran.web.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
-import com.aspectran.web.websocket.jsr356.ServerEndpointExporter;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.AsyncListener;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
@@ -68,83 +52,39 @@ import static com.aspectran.core.component.session.MaxSessionsExceededException.
  * Provides overall functionality for building web applications within a web
  * application container.
  */
-public class DefaultWebService extends AspectranCoreService implements WebService {
+public class DefaultWebService extends AbstractWebService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultWebService.class);
 
-    private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
+    protected volatile long pauseTimeout = -2L;
 
-    private static final String ASPECTRAN_CONFIG_FILE_FROM = "file:";
-
-    private static final String ASPECTRAN_CONFIG_RESOURCE_FROM = "resource:";
-
-    private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
-
-    private final String contextPath;
-
-    private final ServletContext servletContext;
-
-    private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
-
-    private String uriDecoding;
-
-    private boolean trailingSlashRedirect;
-
-    private volatile long pauseTimeout = -2L;
-
-    private DefaultWebService(@NonNull ServletContext servletContext) {
-        this(servletContext, null);
-        setBasePath(servletContext.getRealPath("/"));
+    DefaultWebService(@NonNull ServletContext servletContext) {
+        super(servletContext);
     }
 
-    private DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
-        super(rootService);
-        this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
-        this.servletContext = servletContext;
-        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
-        if (rootService != null) {
-            setServiceClassLoader(new WebServiceClassLoader(rootService.getActivityContext().getClassLoader()));
-        }
-    }
-
-    @Override
-    protected void afterContextLoaded() throws Exception {
-        super.afterContextLoaded();
-        setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-        return servletContext;
-    }
-
-    protected void setUriDecoding(String uriDecoding) {
-        this.uriDecoding = uriDecoding;
-    }
-
-    public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
-        this.trailingSlashRedirect = trailingSlashRedirect;
+    protected DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
+        super(servletContext, rootService);
     }
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String requestUri;
-        if (uriDecoding != null) {
-            requestUri = URLDecoder.decode(request.getRequestURI(), uriDecoding);
+        if (getUriDecoding() != null) {
+            requestUri = URLDecoder.decode(request.getRequestURI(), getUriDecoding());
         } else {
             requestUri = request.getRequestURI();
         }
 
         final String transletName;
-        if (contextPath != null && requestUri.startsWith(contextPath)) {
-            transletName = requestUri.substring(contextPath.length());
+        if (getContextPath() != null && requestUri.startsWith(getContextPath())) {
+            transletName = requestUri.substring(getContextPath().length());
         } else {
             transletName = requestUri;
         }
 
         if (!isExposable(transletName)) {
             try {
-                if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
+                if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e) {
@@ -179,7 +119,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         TransletRule transletRule = transletRuleRegistry.getTransletRule(transletName, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
-            if (trailingSlashRedirect &&
+            if (isTrailingSlashRedirect() &&
                     requestMethod == MethodType.GET &&
                     StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
@@ -196,7 +136,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 }
             }
             try {
-                if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
+                if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("No translet mapped for " + requestMethod + " " + requestUri);
                     }
@@ -282,7 +222,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getServiceClassLoader());
         WebActivity activity = null;
         try {
-            activity = new WebActivity(getActivityContext(), contextPath, request, response);
+            activity = new WebActivity(getActivityContext(), getContextPath(), request, response);
             if (activityReference != null) {
                 activityReference.set(activity);
             }
@@ -345,226 +285,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             sb.append(request.getRemoteAddr());
         }
         return sb.toString();
-    }
-
-    private DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {
-        return defaultServletHttpRequestHandler;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultWebService}.
-     * @param servletContext the servlet context
-     * @return the instance of {@code DefaultWebService}
-     */
-    @NonNull
-    public static DefaultWebService create(ServletContext servletContext) {
-        Assert.notNull(servletContext, "servletContext must not be null");
-        String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (aspectranConfigParam == null) {
-            logger.warn("No specified servlet context initialization parameter for instantiating DefaultWebService");
-        }
-        AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-        DefaultWebService webService = create(servletContext, aspectranConfig);
-        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
-        if (logger.isDebugEnabled()) {
-            logger.debug("The Root WebService attribute in ServletContext has been created; " +
-                    ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
-        }
-        return webService;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultWebService}.
-     * @param servletContext the servlet context
-     * @param rootService the root service
-     * @return the instance of {@code DefaultWebService}
-     */
-    @NonNull
-    public static DefaultWebService create(ServletContext servletContext, CoreService rootService) {
-        Assert.notNull(servletContext, "servletContext must not be null");
-        Assert.notNull(rootService, "rootService must not be null");
-        DefaultWebService webService = new DefaultWebService(servletContext, rootService);
-        AspectranConfig aspectranConfig = rootService.getAspectranConfig();
-        if (aspectranConfig != null) {
-            WebConfig webConfig = aspectranConfig.getWebConfig();
-            if (webConfig != null) {
-                applyWebConfig(webService, webConfig);
-            }
-        }
-        setServiceStateListener(webService);
-        if (webService.isLateStart()) {
-            try {
-                webService.getServiceController().start();
-            } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start DefaultWebService");
-            }
-        }
-        return webService;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultWebService}.
-     * @param servlet the web activity servlet
-     * @return the instance of {@code DefaultWebService}
-     */
-    @Nullable
-    public static DefaultWebService create(WebActivityServlet servlet, WebService rootWebService) {
-        Assert.notNull(servlet, "servlet must not be null");
-        ServletContext servletContext = servlet.getServletContext();
-        ServletConfig servletConfig = servlet.getServletConfig();
-        String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (rootWebService == null || aspectranConfigParam != null) {
-            if (aspectranConfigParam == null) {
-                logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
-            }
-            AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            if (rootWebService != null) {
-                ContextConfig contextConfig = aspectranConfig.getContextConfig();
-                if (contextConfig != null) {
-                    contextConfig.setBasePath(rootWebService.getBasePath());
-                }
-            }
-            DefaultWebService webService = create(servletContext, aspectranConfig);
-            String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-            servletContext.setAttribute(attrName, webService);
-            if (logger.isDebugEnabled()) {
-                logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
-                    attrName + ": " + webService);
-            }
-            return webService;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultWebService}.
-     * @param servletContext the servlet context
-     * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code DefaultWebService}
-     */
-    @NonNull
-    private static DefaultWebService create(ServletContext servletContext, @NonNull AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
-        }
-        DefaultWebService webService = new DefaultWebService(servletContext);
-        webService.prepare(aspectranConfig);
-        WebConfig webConfig = aspectranConfig.getWebConfig();
-        if (webConfig != null) {
-            applyWebConfig(webService, webConfig);
-        }
-        setServiceStateListener(webService);
-        return webService;
-    }
-
-    private static AspectranConfig makeAspectranConfig(ServletContext servletContext, String aspectranConfigParam) {
-        AspectranConfig aspectranConfig;
-        if (aspectranConfigParam != null) {
-            if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_FILE_FROM)) {
-                String filePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_FILE_FROM.length()).stripLeading();
-                try {
-                    File configFile = new File(servletContext.getRealPath(filePath));
-                    aspectranConfig = new AspectranConfig(configFile);
-                } catch (IOException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
-                }
-            } else if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_RESOURCE_FROM)) {
-                String resourcePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_RESOURCE_FROM.length()).stripLeading();
-                try {
-                    File configFile = ResourceUtils.getResourceAsFile(resourcePath);
-                    aspectranConfig = new AspectranConfig(configFile);
-                } catch (IOException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from resource: " +
-                        resourcePath, e);
-                }
-            } else {
-                try {
-                    aspectranConfig = new AspectranConfig(aspectranConfigParam);
-                } catch (AponParseException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from '" +
-                        ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
-                }
-            }
-        } else {
-            aspectranConfig = new AspectranConfig();
-        }
-        return aspectranConfig;
-    }
-
-    private static void applyWebConfig(@NonNull DefaultWebService webService, @NonNull WebConfig webConfig) {
-        webService.setUriDecoding(webConfig.getUriDecoding());
-
-        String defaultServletName = webConfig.getDefaultServletName();
-        if (defaultServletName != null) {
-            if (!"none".equals(defaultServletName)) {
-                webService.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
-            }
-        } else {
-            webService.getDefaultServletHttpRequestHandler().lookupDefaultServletName();
-        }
-
-        webService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
-
-        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            webService.setExposals(includePatterns, excludePatterns);
-        }
-    }
-
-    private static void setServiceStateListener(@NonNull final DefaultWebService webService) {
-        webService.setServiceStateListener(new ServiceStateListener() {
-            @Override
-            public void started() {
-                WebServiceHolder.putWebService(webService);
-
-                // Required for any websocket support
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
-                if (serverEndpointExporter.hasServerContainer()) {
-                    Set<Class<?>> endpointClasses = serverEndpointExporter.registerEndpoints();
-                    for (Class<?> endpointClass : endpointClasses) {
-                        WebServiceHolder.putWebService(endpointClass, webService);
-                    }
-                }
-
-                webService.pauseTimeout = 0L;
-            }
-
-            @Override
-            public void restarted() {
-                started();
-            }
-
-            @Override
-            public void paused(long millis) {
-                if (millis > 0L) {
-                    webService.pauseTimeout = System.currentTimeMillis() + millis;
-                } else {
-                    logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
-                }
-            }
-
-            @Override
-            public void paused() {
-                webService.pauseTimeout = -1L;
-            }
-
-            @Override
-            public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                WebServiceHolder.removeWebService(webService);
-            }
-        });
     }
 
 }

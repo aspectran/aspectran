@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
@@ -58,7 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>Created: 2016. 2. 8.</p>
  */
-public class ResourceBundleMessageSource extends AbstractMessageSource implements ClassLoaderAware {
+public class ResourceBundleMessageSource extends AbstractMessageSource implements ActivityContextAware {
 
     private String defaultEncoding = ActivityContext.DEFAULT_ENCODING;
 
@@ -89,6 +89,19 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      */
     private final Map<ResourceBundle, Map<String, Map<Locale, MessageFormat>>> cachedBundleMessageFormats =
             new ConcurrentHashMap<>();
+
+    @Override
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.classLoader = context.getAvailableActivity().getClassLoader();
+    }
+
+    public ClassLoader getClassLoader() {
+        if (classLoader == null) {
+            return ClassUtils.getDefaultClassLoader();
+        } else {
+            return classLoader;
+        }
+    }
 
     /**
      * Set the default charset to use for parsing resource bundle files.
@@ -132,19 +145,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      */
     public void setCacheSeconds(int cacheSeconds) {
         this.cacheMillis = (cacheSeconds * 1000L);
-    }
-
-    public ClassLoader getClassLoader() {
-        if (classLoader == null) {
-            return ClassUtils.getDefaultClassLoader();
-        } else {
-            return classLoader;
-        }
-    }
-
-    @Override
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
     }
 
     /**

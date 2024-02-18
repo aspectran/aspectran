@@ -18,6 +18,7 @@ package com.aspectran.web.servlet.listener;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
+import com.aspectran.web.service.DefaultWebServiceFactory;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
@@ -32,13 +33,13 @@ public class WebServiceListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        logger.info("Initializing WebServiceListener...");
+        logger.info("Creating Root WebService...");
 
         try {
-            webService = DefaultWebService.create(event.getServletContext());
+            webService = DefaultWebServiceFactory.create(event.getServletContext());
             webService.start();
         } catch (Exception e) {
-            logger.error("WebServiceListener initialization failed", e);
+            logger.error("Failed to create root web service", e);
         }
     }
 
@@ -50,7 +51,7 @@ public class WebServiceListener implements ServletContextListener {
             webService.stop();
             webService = null;
 
-            logger.info("Successfully destroyed WebServiceListener: " + this);
+            logger.info("Successfully destroyed WebService: " + this);
         }
     }
 

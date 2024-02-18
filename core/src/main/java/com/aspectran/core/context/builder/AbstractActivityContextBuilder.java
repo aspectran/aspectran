@@ -309,9 +309,17 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.debugMode = debugMode;
     }
 
-    protected ApplicationAdapter createApplicationAdapter() throws InvalidResourceException {
-        ClassLoader classLoader = newSiblingsClassLoader();
-        return new DefaultApplicationAdapter(basePath, classLoader);
+    protected SiblingsClassLoader createSiblingsClassLoader() throws InvalidResourceException {
+        if (siblingsClassLoader == null || hardReload) {
+            siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
+        } else {
+            siblingsClassLoader.reload();
+        }
+        return siblingsClassLoader;
+    }
+
+    protected ApplicationAdapter createApplicationAdapter() {
+        return new DefaultApplicationAdapter(basePath);
     }
 
     protected EnvironmentProfiles createEnvironmentProfiles() {
@@ -336,7 +344,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      */
     protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
-        DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getApplicationAdapter());
+        DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getClassLoader(), assistant.getApplicationAdapter());
         activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
         ActivityEnvironment activityEnvironment = createActivityEnvironment(assistant, activityContext);
@@ -382,15 +390,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             contextReloadingTimer.stop();
             contextReloadingTimer = null;
         }
-    }
-
-    private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
-        if (siblingsClassLoader == null || hardReload) {
-            siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
-        } else {
-            siblingsClassLoader.reload();
-        }
-        return siblingsClassLoader;
     }
 
     @NonNull

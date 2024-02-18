@@ -143,7 +143,7 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
 
         Token[] contentTokens = TokenParser.makeTokens(content, true);
         for (Token token : contentTokens) {
-            Token.resolveAlternativeValue(token, activity.getApplicationAdapter().getClassLoader());
+            Token.resolveAlternativeValue(token, activity.getClassLoader());
         }
         TokenEvaluator evaluator = new TokenEvaluation(activity);
         return evaluator.evaluateAsString(contentTokens);

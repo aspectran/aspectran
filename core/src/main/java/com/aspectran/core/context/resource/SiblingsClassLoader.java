@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.resource;
 
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -63,11 +64,11 @@ public class SiblingsClassLoader extends ClassLoader {
     private int reloadedCount;
 
     public SiblingsClassLoader() throws InvalidResourceException {
-        this(SiblingsClassLoader.class.getClassLoader());
+        this((ClassLoader) null);
     }
 
     public SiblingsClassLoader(ClassLoader parent) throws InvalidResourceException {
-        super(parent);
+        super(parent != null ? parent : ClassUtils.getDefaultClassLoader());
 
         this.id = 1000;
         this.root = this;
@@ -77,11 +78,11 @@ public class SiblingsClassLoader extends ClassLoader {
     }
 
     public SiblingsClassLoader(String resourceLocation) throws InvalidResourceException {
-        this(resourceLocation, SiblingsClassLoader.class.getClassLoader());
+        this(resourceLocation, (ClassLoader) null);
     }
 
     public SiblingsClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
-        super(parent);
+        super(parent != null ? parent : ClassUtils.getDefaultClassLoader());
 
         this.id = 1000;
         this.root = this;
@@ -91,11 +92,11 @@ public class SiblingsClassLoader extends ClassLoader {
     }
 
     public SiblingsClassLoader(String[] resourceLocations) throws InvalidResourceException {
-        this(resourceLocations, SiblingsClassLoader.class.getClassLoader());
+        this(resourceLocations, null);
     }
 
     public SiblingsClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
-        this(parent);
+        this(parent != null ? parent : ClassUtils.getDefaultClassLoader());
 
         SiblingsClassLoader scl = this;
         if (resourceLocations != null) {
@@ -107,12 +108,9 @@ public class SiblingsClassLoader extends ClassLoader {
         }
     }
 
-    protected SiblingsClassLoader(String resourceLocation, SiblingsClassLoader parent) throws InvalidResourceException {
+    protected SiblingsClassLoader(String resourceLocation, @NonNull SiblingsClassLoader parent)
+        throws InvalidResourceException {
         super(parent);
-
-        if (parent == null) {
-            throw new IllegalArgumentException("parent must not be null");
-        }
 
         int numOfChildren = parent.addChild(this);
 

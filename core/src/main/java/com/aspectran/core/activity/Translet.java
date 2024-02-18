@@ -142,7 +142,7 @@ public interface Translet {
     ProcessResult getProcessResult();
 
     /**
-     * Returns a action result for the specified action id from the process result,
+     * Returns an action result for the specified action id from the process result,
      * or {@code null} if the action does not exist.
      * @param actionId the specified action id
      * @return the action result

@@ -15,8 +15,8 @@
  */
 package com.aspectran.freemarker;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.freemarker.directive.CustomTrimDirective;
 import com.aspectran.freemarker.directive.TrimDirective;
 import com.aspectran.freemarker.directive.TrimDirectiveGroup;
@@ -47,13 +47,13 @@ import java.util.Properties;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
+public class FreeMarkerConfigurationFactory implements ActivityContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(FreeMarkerConfigurationFactory.class);
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 
-    private ApplicationAdapter applicationAdapter;
+    private ActivityContext context;
 
     private String configLocation;
 
@@ -70,8 +70,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     private TrimDirective[] trimDirectives;
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.context = context;
     }
 
     /**
@@ -328,7 +328,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                 logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to class path [" + basePackagePath + "]");
             }
-            return new ClassTemplateLoader(applicationAdapter.getClassLoader(), basePackagePath);
+            return new ClassTemplateLoader(context.getAvailableActivity().getClassLoader(), basePackagePath);
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             if (logger.isDebugEnabled()) {
@@ -337,7 +337,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             }
             return new FileTemplateLoader(file);
         } else {
-            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
+            File file = new File(context.getApplicationAdapter().getBasePath(), templateLoaderPath);
             if (logger.isDebugEnabled()) {
                 logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to file path [" + file.getAbsolutePath() + "]");

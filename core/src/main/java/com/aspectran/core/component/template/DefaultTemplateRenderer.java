@@ -152,7 +152,7 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                     Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
                     engine.process(templateName, model, writer, locale);
                 } else {
-                    String templateSource = templateRule.getTemplateSource(context.getApplicationAdapter());
+                    String templateSource = templateRule.getTemplateSource(context);
                     if (templateSource != null) {
                         String templateName = templateRule.getId();
                         if (templateName == null) {
@@ -162,12 +162,12 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                     }
                 }
             } else {
-                Token[] templateTokens = templateRule.getTemplateTokens(context.getApplicationAdapter());
+                Token[] templateTokens = templateRule.getTemplateTokens(context);
                 if (templateTokens != null) {
                     TokenEvaluator evaluator = new TokenEvaluation(activity);
                     evaluator.evaluate(templateTokens, writer);
                 } else {
-                    writer.write(templateRule.getTemplateSource(context.getApplicationAdapter()));
+                    writer.write(templateRule.getTemplateSource(context));
                 }
             }
         } catch (Exception e) {

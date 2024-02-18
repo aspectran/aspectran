@@ -50,6 +50,8 @@ public interface Activity {
      */
     ActivityContext getActivityContext();
 
+    ClassLoader getClassLoader();
+
     /**
      * Returns the environment of the current activity context.
      * @return the environment

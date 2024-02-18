@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.resource.InvalidResourceException;
@@ -88,6 +89,8 @@ public interface ActivityContextBuilder {
     void setServiceController(ServiceController serviceController);
 
     ClassLoader getClassLoader();
+
+    void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
     void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException;
 

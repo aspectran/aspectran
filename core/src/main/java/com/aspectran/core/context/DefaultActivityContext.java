@@ -48,6 +48,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
+    private final ClassLoader classLoader;
+
     private final ApplicationAdapter applicationAdapter;
 
     private final Activity defaultActivity;
@@ -72,9 +74,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Instantiates a new DefaultActivityContext.
+     * @param classLoader the class loader
      * @param applicationAdapter the application adapter
      */
-    public DefaultActivityContext(ApplicationAdapter applicationAdapter) {
+    public DefaultActivityContext(ClassLoader classLoader, ApplicationAdapter applicationAdapter) {
+        this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.defaultActivity = new DefaultActivity(this);
     }
@@ -113,7 +117,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public ClassLoader getClassLoader() {
-        return applicationAdapter.getClassLoader();
+        return classLoader;
     }
 
     @Override

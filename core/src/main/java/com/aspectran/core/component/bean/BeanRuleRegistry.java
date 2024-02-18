@@ -21,7 +21,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.scan.BeanClassFilter;
@@ -85,7 +84,6 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(InitializableBean.class);
         ignoreDependencyInterface(ActivityContextAware.class);
         ignoreDependencyInterface(ApplicationAdapterAware.class);
-        ignoreDependencyInterface(ClassLoaderAware.class);
         ignoreDependencyInterface(CurrentActivityAware.class);
         ignoreDependencyInterface(EnvironmentAware.class);
         ignoreDependencyInterface(java.lang.Cloneable.class);

@@ -58,6 +58,20 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public ClassLoader getClassLoader() {
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        } catch (Throwable ex) {
+            // ignore
+        }
+        if (cl == null) {
+            cl = context.getClassLoader();
+        }
+        return cl;
+    }
+
+    @Override
     public Environment getEnvironment() {
         return context.getEnvironment();
     }

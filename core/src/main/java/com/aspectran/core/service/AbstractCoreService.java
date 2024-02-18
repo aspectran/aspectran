@@ -180,8 +180,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             return serviceClassLoader;
         } else if (activityContext != null) {
             return activityContext.getClassLoader();
-        } else {
+        } else if (getActivityContextBuilder() != null) {
             return getActivityContextBuilder().getClassLoader();
+        } else {
+            return null;
         }
     }
 

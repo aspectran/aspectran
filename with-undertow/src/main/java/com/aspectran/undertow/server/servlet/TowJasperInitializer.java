@@ -15,8 +15,9 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -38,11 +39,11 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 /**
  * Initializer for the Jasper JSP Engine.
  */
-public class TowJasperInitializer extends JasperInitializer implements ApplicationAdapterAware {
+public class TowJasperInitializer extends JasperInitializer implements ActivityContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(TowJasperInitializer.class);
 
-    private ApplicationAdapter applicationAdapter;
+    private ActivityContext context;
 
     private URL[] tldResources;
 
@@ -50,8 +51,9 @@ public class TowJasperInitializer extends JasperInitializer implements Applicati
     }
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public void setActivityContext(ActivityContext context) {
+        Assert.notNull(context, "context must not be null");
+        this.context = context;
     }
 
     public void setTldResources(String[] resourcesToTldScan) throws IOException {
@@ -77,7 +79,7 @@ public class TowJasperInitializer extends JasperInitializer implements Applicati
     protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware,
                                        boolean validate, boolean blockExternal) {
         TowTldScanner tldScanner = new TowTldScanner(context, namespaceAware, validate, blockExternal);
-        tldScanner.setClassLoader(applicationAdapter.getClassLoader());
+        tldScanner.setClassLoader(context.getClassLoader());
         tldScanner.setTldResources(tldResources);
         return tldScanner;
     }
@@ -85,9 +87,9 @@ public class TowJasperInitializer extends JasperInitializer implements Applicati
     private URL getURL(@NonNull String resourceLocation) throws FileNotFoundException {
         try {
             if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
-                return ResourceUtils.getURL(resourceLocation, applicationAdapter.getClassLoader());
+                return ResourceUtils.getURL(resourceLocation, context.getClassLoader());
             } else {
-                File file = applicationAdapter.toRealPathAsFile(resourceLocation);
+                File file = context.getApplicationAdapter().toRealPathAsFile(resourceLocation);
                 return file.toURI().toURL();
             }
         } catch (IOException ex) {

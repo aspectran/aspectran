@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ class BeanClassScannerTest {
         }
     }
 
-    private BeanClassScanner createBeanClassScanner(BeanRule beanRule) throws IllegalRuleException {
+    @NonNull
+    private BeanClassScanner createBeanClassScanner(@NonNull BeanRule beanRule) throws IllegalRuleException {
         ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {

@@ -70,7 +70,7 @@ class TransletScannerTest {
             if (transletScanFilterClassName != null) {
                 TransletScanFilter transletScanFilter;
                 try {
-                    Class<?> filterClass = ClassUtils.getDefaultClassLoader().loadClass(transletScanFilterClassName);
+                    Class<?> filterClass = ClassUtils.loadClass(transletScanFilterClassName);
                     transletScanFilter = (TransletScanFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
                     throw new IllegalRuleException("Failed to instantiate TransletScanFilter [" +

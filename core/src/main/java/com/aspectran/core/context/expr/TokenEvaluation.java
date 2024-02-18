@@ -392,7 +392,7 @@ public class TokenEvaluation implements TokenEvaluator {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             try {
                 Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
-                        activity.getApplicationAdapter().getClassLoader());
+                        activity.getClassLoader());
                 Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
                 return (value != null ? value : token.getDefaultValue());
             } catch (Exception e) {

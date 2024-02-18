@@ -21,7 +21,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -83,7 +82,7 @@ public class XslTransformResponse extends TransformResponse {
     protected void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-        loadTemplate(activity.getApplicationAdapter());
+        loadTemplate(activity);
 
         if (outputEncoding != null) {
             responseAdapter.setEncoding(outputEncoding);
@@ -116,7 +115,7 @@ public class XslTransformResponse extends TransformResponse {
         return new XslTransformResponse(getTransformRule().replicate());
     }
 
-    private void loadTemplate(ApplicationAdapter applicationAdapter)
+    private void loadTemplate(Activity activity)
             throws TransformerConfigurationException, IOException {
         String templateFile = templateRule.getFile();
         String templateResource = templateRule.getResource();
@@ -124,7 +123,7 @@ public class XslTransformResponse extends TransformResponse {
         boolean noCache = templateRule.isNoCache();
 
         if (templateFile != null) {
-            File file = applicationAdapter.toRealPathAsFile(templateFile);
+            File file = activity.getApplicationAdapter().toRealPathAsFile(templateFile);
             if (noCache) {
                 this.templates = createTemplates(file);
                 determineOutputStyle();
@@ -143,18 +142,16 @@ public class XslTransformResponse extends TransformResponse {
             }
         } else if (templateResource != null) {
             if (noCache) {
-                ClassLoader classLoader = applicationAdapter.getClassLoader();
+                ClassLoader classLoader = activity.getClassLoader();
                 this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
                 determineOutputStyle();
-            } else {
-                if (!this.templateLoaded) {
-                    synchronized (this) {
-                        if (!this.templateLoaded) {
-                            ClassLoader classLoader = applicationAdapter.getClassLoader();
-                            this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
-                            determineOutputStyle();
-                            this.templateLoaded = true;
-                        }
+            } else if (!this.templateLoaded) {
+                synchronized (this) {
+                    if (!this.templateLoaded) {
+                        ClassLoader classLoader = activity.getClassLoader();
+                        this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
+                        determineOutputStyle();
+                        this.templateLoaded = true;
                     }
                 }
             }

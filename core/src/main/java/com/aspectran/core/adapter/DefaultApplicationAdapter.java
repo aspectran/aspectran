@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Class DefaultApplicationAdapter.
- * 
+ *
  * @since 2016. 3. 26.
  */
 public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
@@ -32,8 +32,8 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
     /**
      * Instantiates a new DefaultApplicationAdapter.
      */
-    public DefaultApplicationAdapter(String basePath, ClassLoader classLoader) {
-        super(basePath, classLoader);
+    public DefaultApplicationAdapter(String basePath) {
+        super(basePath);
     }
 
     @Override

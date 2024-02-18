@@ -27,12 +27,6 @@ import java.util.Enumeration;
 public interface ApplicationAdapter {
 
     /**
-     * Returns the class loader used by the current application.
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
-
-    /**
      * Returns the base path that the current application is mapped to.
      * @return the base path for this application
      */

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -54,7 +55,14 @@ public class AspectranCoreService extends AbstractCoreService {
         super(rootService);
     }
 
-    protected void prepare(@NonNull AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected void prepare(@NonNull AspectranConfig aspectranConfig) {
+        prepare(aspectranConfig, null);
+    }
+
+    protected void prepare(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
+        throws AspectranServiceException {
+        Assert.state(!isDerived(),
+            "Must not be called for derived services");
         Assert.state(!hasActivityContextBuilder(),
             "prepare() method can be called only once");
 
@@ -72,7 +80,7 @@ public class AspectranCoreService extends AbstractCoreService {
             }
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
-            if (contextConfig != null) {
+            if (applicationAdapter == null && contextConfig != null) {
                 String basePath = contextConfig.getBasePath();
                 if (basePath != null) {
                     setBasePath(basePath);
@@ -82,9 +90,13 @@ public class AspectranCoreService extends AbstractCoreService {
                         "running; Only one instance is allowed (context.singleton is set to true)");
                 }
             }
-
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder();
-            activityContextBuilder.setBasePath(getBasePath());
+            if (applicationAdapter != null) {
+                activityContextBuilder.setApplicationAdapter(applicationAdapter);
+                activityContextBuilder.setBasePath(applicationAdapter.getBasePath());
+            } else {
+                activityContextBuilder.setBasePath(getBasePath());
+            }
             activityContextBuilder.setContextConfig(contextConfig);
             activityContextBuilder.setServiceController(getServiceController());
             setActivityContextBuilder(activityContextBuilder);

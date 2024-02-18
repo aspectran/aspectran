@@ -15,8 +15,11 @@
  */
 package com.aspectran.undertow.server.handler.accesslog;
 
-import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.accesslog.AccessLogHandler;
@@ -25,7 +28,7 @@ import io.undertow.server.handlers.accesslog.AccessLogReceiver;
 /**
  * <p>Created: 2019-08-18</p>
  */
-public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper {
+public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWrapper {
 
     private ClassLoader classLoader;
 
@@ -34,8 +37,16 @@ public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper
     private String category;
 
     @Override
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.classLoader = context.getAvailableActivity().getClassLoader();
+    }
+
+    public ClassLoader getClassLoader() {
+        if (classLoader == null) {
+            return ClassUtils.getDefaultClassLoader();
+        } else {
+            return classLoader;
+        }
     }
 
     public void setFormatString(String formatString) {
@@ -53,7 +64,7 @@ public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper
         }
         AccessLogReceiver accessLogReceiver = new TowAccessLogReceiver(category);
         String formatString = (StringUtils.hasText(this.formatString) ? this.formatString : "combined");
-        return new AccessLogHandler(handler, accessLogReceiver, formatString, classLoader);
+        return new AccessLogHandler(handler, accessLogReceiver, formatString, getClassLoader());
     }
 
 }

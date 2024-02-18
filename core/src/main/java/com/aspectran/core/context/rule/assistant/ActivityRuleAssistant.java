@@ -47,6 +47,7 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.Namespace;
 import com.aspectran.core.util.TextStyler;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -70,11 +71,9 @@ import java.util.Set;
  */
 public class ActivityRuleAssistant {
 
-    private final ApplicationAdapter applicationAdapter;
-
-    private final String basePath;
-
     private final ClassLoader classLoader;
+
+    private final ApplicationAdapter applicationAdapter;
 
     private final EnvironmentProfiles environmentProfiles;
 
@@ -101,21 +100,17 @@ public class ActivityRuleAssistant {
     private RuleAppendHandler ruleAppendHandler;
 
     protected ActivityRuleAssistant() {
-        this(null, null);
+        this.classLoader = null;
+        this.applicationAdapter = null;
+        this.environmentProfiles = null;
     }
 
-    public ActivityRuleAssistant(ApplicationAdapter applicationAdapter, EnvironmentProfiles environmentProfiles) {
-        if (applicationAdapter != null) {
-            this.applicationAdapter = applicationAdapter;
-            this.basePath = applicationAdapter.getBasePath();
-            this.classLoader = applicationAdapter.getClassLoader();
-            this.environmentProfiles = environmentProfiles;
-        } else {
-            this.applicationAdapter = null;
-            this.basePath = null;
-            this.classLoader = null;
-            this.environmentProfiles = null;
-        }
+    public ActivityRuleAssistant(ClassLoader classLoader,
+                                 ApplicationAdapter applicationAdapter,
+                                 EnvironmentProfiles environmentProfiles) {
+        this.classLoader = classLoader;
+        this.applicationAdapter = applicationAdapter;
+        this.environmentProfiles = environmentProfiles;
     }
 
     public void ready() {
@@ -129,7 +124,7 @@ public class ActivityRuleAssistant {
 
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
 
-            transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
+            transletRuleRegistry = new TransletRuleRegistry(getBasePath(), classLoader);
             transletRuleRegistry.setAssistantLocal(assistantLocal);
 
             scheduleRuleRegistry = new ScheduleRuleRegistry();
@@ -168,10 +163,15 @@ public class ActivityRuleAssistant {
     }
 
     public String getBasePath() {
-        return basePath;
+        if (applicationAdapter != null) {
+            return applicationAdapter.getBasePath();
+        } else {
+            return null;
+        }
     }
 
     public ClassLoader getClassLoader() {
+        Assert.notNull(classLoader, "ClassLoader is not set");
         return classLoader;
     }
 
@@ -611,7 +611,7 @@ public class ActivityRuleAssistant {
 
     private Class<?> loadClass(String className, Object referer) throws IllegalRuleException {
         try {
-            return classLoader.loadClass(className);
+            return getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new IllegalRuleException("Unable to load class: " + className +
                     " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + referer, e);

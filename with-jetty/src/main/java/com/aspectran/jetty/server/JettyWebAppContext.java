@@ -23,7 +23,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.web.service.DefaultWebService;
+import com.aspectran.web.service.DefaultWebServiceFactory;
 import com.aspectran.web.service.WebService;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
@@ -130,7 +130,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         // Create a root web service
         CoreService rootService = context.getRootService();
-        WebService rootWebService = DefaultWebService.create(getServletContext(), rootService);
+        WebService rootWebService = DefaultWebServiceFactory.create(getServletContext(), rootService);
         setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
 
         ClassLoader parent = context.getClassLoader();

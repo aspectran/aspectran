@@ -204,6 +204,10 @@ public abstract class ClassUtils {
         return Class.forName(name, true, classLoader);
     }
 
+    public static Class<?> loadClass(String name) throws ClassNotFoundException {
+        return getDefaultClassLoader().loadClass(name);
+    }
+
     /**
      * Returns the default class loader within the current context.
      * If there is a context classloader it is returned, otherwise the classloader

@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.utils.ClassUtils;
 import io.undertow.servlet.api.FilterInfo;
 import jakarta.servlet.Filter;
 
@@ -27,7 +28,7 @@ public class TowFilter extends FilterInfo {
 
     @SuppressWarnings("unchecked")
     public TowFilter(String name, String filterClass) throws ClassNotFoundException {
-        this(name, (Class<? extends Filter>)TowFilter.class.getClassLoader().loadClass(filterClass));
+        this(name, (Class<? extends Filter>) ClassUtils.loadClass(filterClass));
     }
 
     public TowFilter(String name, Class<? extends Filter> filterClass) {

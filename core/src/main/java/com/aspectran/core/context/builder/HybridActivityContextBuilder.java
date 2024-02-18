@@ -36,6 +36,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     private static final Logger logger = LoggerFactory.getLogger(HybridActivityContextBuilder.class);
 
+    private ApplicationAdapter applicationAdapter;
+
     private volatile ActivityContext activityContext;
 
     /** Flag that indicates whether an ActivityContext is activated */
@@ -48,6 +50,11 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     public HybridActivityContextBuilder() {
         super();
+    }
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     @Override
@@ -99,9 +106,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
-            ApplicationAdapter applicationAdapter = createApplicationAdapter();
+            ClassLoader classLoader = createSiblingsClassLoader();
+            ApplicationAdapter applicationAdapter = this.applicationAdapter;
+            if (applicationAdapter == null) {
+                applicationAdapter = createApplicationAdapter();
+            }
             EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
-            ActivityRuleAssistant assistant = new ActivityRuleAssistant(applicationAdapter, environmentProfiles);
+            ActivityRuleAssistant assistant = new ActivityRuleAssistant(classLoader, applicationAdapter, environmentProfiles);
             assistant.ready();
 
             if (getBasePackages() != null) {

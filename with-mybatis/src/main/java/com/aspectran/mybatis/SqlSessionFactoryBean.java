@@ -22,6 +22,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
@@ -80,7 +81,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     }
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+    public void setApplicationAdapter(@NonNull ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
     }
 
@@ -93,8 +94,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             }
             InputStream is;
             if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
-                is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()),
-                        applicationAdapter.getClassLoader());
+                is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()));
             } else {
                 is = new FileInputStream(applicationAdapter.toRealPathAsFile(configLocation));
             }

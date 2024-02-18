@@ -20,6 +20,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
+import com.aspectran.web.service.DefaultWebServiceFactory;
 import com.aspectran.web.service.WebService;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
@@ -66,7 +67,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                     throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
                             WebService.class.getName() + "]");
                 }
-                newWebService = DefaultWebService.create(this, rootWebService);
+                newWebService = DefaultWebServiceFactory.create(this, rootWebService);
                 if (newWebService == null) {
                     this.webService = rootWebService;
                     this.standalone = false;
@@ -74,7 +75,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                     this.standalone = true;
                 }
             } else {
-                newWebService = DefaultWebService.create(this, null);
+                newWebService = DefaultWebServiceFactory.create(this, null);
                 this.standalone = true;
             }
             if (newWebService != null) {

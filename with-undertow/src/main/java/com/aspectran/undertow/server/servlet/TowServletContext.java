@@ -16,7 +16,8 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HandlerWrapper;
@@ -38,7 +39,7 @@ import java.util.Set;
 /**
  * <p>Created: 2019-08-05</p>
  */
-public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
+public class TowServletContext extends DeploymentInfo implements ActivityContextAware {
 
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
@@ -47,10 +48,10 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     private SessionManager sessionManager;
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
-        this.applicationAdapter = applicationAdapter;
-        setClassLoader(applicationAdapter.getClassLoader());
+    public void setActivityContext(ActivityContext context) {
+        Assert.notNull(context, "context must not be null");
+        this.applicationAdapter = context.getApplicationAdapter();
+        setClassLoader(context.getClassLoader());
     }
 
     public void setScratchDir(String scratchDir) throws IOException {

@@ -53,7 +53,7 @@ public class ServerEndpointExporter {
 
     public ServerEndpointExporter(@NonNull WebService webService) {
         this.webService = webService;
-        this.serverContainer = (ServerContainer)webService.getServletContext().getAttribute(ServerContainer.class.getName());
+        this.serverContainer = (ServerContainer) webService.getServletContext().getAttribute(ServerContainer.class.getName());
     }
 
     /**
