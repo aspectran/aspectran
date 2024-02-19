@@ -391,8 +391,7 @@ public class TokenEvaluation implements TokenEvaluator {
     protected Object getProperty(@NonNull Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             try {
-                Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
-                        activity.getClassLoader());
+                Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
                 Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
                 return (value != null ? value : token.getDefaultValue());
             } catch (Exception e) {

@@ -111,13 +111,13 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return applicationAdapter;
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     @Override
-    public ClassLoader getClassLoader() {
-        return classLoader;
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
     }
 
     @Override
@@ -279,25 +279,30 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     protected void doDestroy() {
-        if (transletRuleRegistry != null) {
-            transletRuleRegistry.destroy();
-            transletRuleRegistry = null;
-        }
-        if (scheduleRuleRegistry != null) {
-            scheduleRuleRegistry.destroy();
-            scheduleRuleRegistry = null;
-        }
-        if (defaultTemplateRenderer != null) {
-            defaultTemplateRenderer.destroy();
-            defaultTemplateRenderer = null;
-        }
-        if (defaultBeanRegistry != null) {
-            defaultBeanRegistry.destroy();
-            defaultBeanRegistry = null;
-        }
-        if (aspectRuleRegistry != null) {
-            aspectRuleRegistry.destroy();
-            aspectRuleRegistry = null;
+        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        try {
+            if (transletRuleRegistry != null) {
+                transletRuleRegistry.destroy();
+                transletRuleRegistry = null;
+            }
+            if (scheduleRuleRegistry != null) {
+                scheduleRuleRegistry.destroy();
+                scheduleRuleRegistry = null;
+            }
+            if (defaultTemplateRenderer != null) {
+                defaultTemplateRenderer.destroy();
+                defaultTemplateRenderer = null;
+            }
+            if (defaultBeanRegistry != null) {
+                defaultBeanRegistry.destroy();
+                defaultBeanRegistry = null;
+            }
+            if (aspectRuleRegistry != null) {
+                aspectRuleRegistry.destroy();
+                aspectRuleRegistry = null;
+            }
+        } finally {
+            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
         }
     }
 

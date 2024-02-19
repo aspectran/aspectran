@@ -142,14 +142,14 @@ public class XslTransformResponse extends TransformResponse {
             }
         } else if (templateResource != null) {
             if (noCache) {
-                ClassLoader classLoader = activity.getClassLoader();
-                this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
+                URL url = activity.getClassLoader().getResource(templateResource);
+                this.templates = createTemplates(Objects.requireNonNull(url));
                 determineOutputStyle();
             } else if (!this.templateLoaded) {
                 synchronized (this) {
                     if (!this.templateLoaded) {
-                        ClassLoader classLoader = activity.getClassLoader();
-                        this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
+                        URL url = activity.getClassLoader().getResource(templateResource);
+                        this.templates = createTemplates(Objects.requireNonNull(url));
                         determineOutputStyle();
                         this.templateLoaded = true;
                     }
