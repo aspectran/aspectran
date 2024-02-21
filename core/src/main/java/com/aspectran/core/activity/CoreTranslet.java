@@ -76,7 +76,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public String getContextPath() {
-        return activity.getContextPath();
+        return StringUtils.nullToEmpty(activity.getContextPath());
     }
 
     @Override
