@@ -251,7 +251,7 @@ public class DefaultShellService extends AbstractShellService {
         if (shellConfig != null) {
             applyShellConfig(shellService, shellConfig);
         }
-        shellService.prepare(aspectranConfig);
+        shellService.configure(aspectranConfig);
         setServiceStateListener(shellService);
         return shellService;
     }

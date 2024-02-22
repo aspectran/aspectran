@@ -55,11 +55,11 @@ public class AspectranCoreService extends AbstractCoreService {
         super(rootService);
     }
 
-    protected void prepare(@NonNull AspectranConfig aspectranConfig) {
-        prepare(aspectranConfig, null);
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
+        configure(aspectranConfig, null);
     }
 
-    protected void prepare(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
         throws AspectranServiceException {
         Assert.state(!isDerived(),
             "Must not be called for derived services");

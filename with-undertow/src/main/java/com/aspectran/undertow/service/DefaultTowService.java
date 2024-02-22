@@ -208,7 +208,7 @@ public class DefaultTowService extends AbstractTowService {
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
             if (webConfig != null) {
-                applyWebConfig(towService, webConfig);
+                configure(towService, webConfig);
             }
         }
         setServiceStateListener(towService);
@@ -231,16 +231,16 @@ public class DefaultTowService extends AbstractTowService {
     public static DefaultTowService create(AspectranConfig aspectranConfig) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService();
-        towService.prepare(aspectranConfig);
+        towService.configure(aspectranConfig);
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
-            applyWebConfig(towService, webConfig);
+            configure(towService, webConfig);
         }
         setServiceStateListener(towService);
         return towService;
     }
 
-    private static void applyWebConfig(@NonNull DefaultTowService towService, @NonNull WebConfig webConfig) {
+    private static void configure(@NonNull DefaultTowService towService, @NonNull WebConfig webConfig) {
         towService.setUriDecoding(webConfig.getUriDecoding());
         towService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();

@@ -3,10 +3,6 @@
         "http://aspectran.github.io/dtd/aspectran-8.dtd">
 <aspectran>
 
-    <description>
-        A collection of Translets for the main page.
-    </description>
-
     <translet name="/">
         <echo id="page">
             <item name="headline">Welcome to the Aspectran Demo Site</item>

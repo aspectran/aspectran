@@ -85,7 +85,7 @@ public class DefaultWebServiceFactory {
         Assert.notNull(servletContext, "servletContext must not be null");
         Assert.notNull(rootService, "rootService must not be null");
         DefaultWebService webService = new DefaultWebService(servletContext, rootService);
-        webService.prepare(rootService.getAspectranConfig());
+        webService.configure(rootService.getAspectranConfig());
         setServiceStateListener(webService);
         if (webService.isLateStart()) {
             try {
@@ -94,6 +94,7 @@ public class DefaultWebServiceFactory {
                 throw new AspectranServiceException("Failed to start DefaultWebService");
             }
         }
+        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
         return webService;
     }
 
@@ -137,7 +138,8 @@ public class DefaultWebServiceFactory {
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    private static DefaultWebService create(ServletContext servletContext, @NonNull AspectranConfig aspectranConfig,
+    private static DefaultWebService create(ServletContext servletContext,
+                                            @NonNull AspectranConfig aspectranConfig,
                                             @Nullable ApplicationAdapter applicationAdapter) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String[] contextRules = contextConfig.getContextRules();
@@ -145,7 +147,7 @@ public class DefaultWebServiceFactory {
             contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
         }
         DefaultWebService webService = new DefaultWebService(servletContext);
-        webService.prepare(aspectranConfig, applicationAdapter);
+        webService.configure(aspectranConfig, applicationAdapter);
         setServiceStateListener(webService);
         return webService;
     }

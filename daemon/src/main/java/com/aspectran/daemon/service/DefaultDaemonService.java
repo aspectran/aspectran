@@ -120,7 +120,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
     @NonNull
     public static DefaultDaemonService create(@NonNull AspectranConfig aspectranConfig) {
         DefaultDaemonService daemonService = new DefaultDaemonService();
-        daemonService.prepare(aspectranConfig);
+        daemonService.configure(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
         if (daemonConfig != null) {
             applyDaemonConfig(daemonService, daemonConfig);

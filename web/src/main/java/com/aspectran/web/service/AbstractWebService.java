@@ -33,6 +33,8 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     private final ServletContext servletContext;
 
+
+
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     private String uriDecoding;
@@ -43,12 +45,13 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         this(servletContext, null);
     }
 
-    protected AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
+    AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
         super(rootService);
         this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
         this.servletContext = servletContext;
     }
 
+    @Nullable
     public String getContextPath() {
         return contextPath;
     }
@@ -71,18 +74,18 @@ public abstract class AbstractWebService extends AspectranCoreService implements
     }
 
     @Override
-    protected void prepare(@NonNull AspectranConfig aspectranConfig) throws AspectranServiceException {
-        prepare(aspectranConfig, null);
+    protected void configure(@NonNull AspectranConfig aspectranConfig) throws AspectranServiceException {
+        configure(aspectranConfig, null);
     }
 
     @Override
-    protected void prepare(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
         throws AspectranServiceException {
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
-            applyWebConfig(webConfig);
+            configure(webConfig);
         }
 
         if (isDerived()) {
@@ -90,7 +93,7 @@ public abstract class AbstractWebService extends AspectranCoreService implements
             setServiceClassLoader(new WebServiceClassLoader(getRootService().getActivityContext().getClassLoader()));
         } else {
             setBasePath(servletContext.getRealPath("/"));
-            super.prepare(aspectranConfig, applicationAdapter);
+            super.configure(aspectranConfig, applicationAdapter);
         }
     }
 
@@ -100,7 +103,7 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
     }
 
-    private void applyWebConfig(@NonNull WebConfig webConfig) {
+    private void configure(@NonNull WebConfig webConfig) {
         this.uriDecoding = webConfig.getUriDecoding();
 
         String defaultServletName = webConfig.getDefaultServletName();

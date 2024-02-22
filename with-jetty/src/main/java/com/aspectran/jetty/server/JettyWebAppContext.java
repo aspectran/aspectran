@@ -18,13 +18,11 @@ package com.aspectran.jetty.server;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebServiceFactory;
-import com.aspectran.web.service.WebService;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
@@ -38,8 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
+import java.util.Map;
 
 /**
  * The Class JettyWebAppContext.
@@ -60,8 +57,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.context = context;
     }
 
-    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
-        this.webSocketInitializer = webSocketInitializer;
+    public void setInitParams(Map<String, String> initParams) {
+        if (initParams != null) {
+            for (Map.Entry<String, String> entry : initParams.entrySet()) {
+                setInitParameter(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -74,6 +75,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                     throw new IOException("Unable to create war directory: " + warFile);
                 }
             }
+            setExtractWAR(true);
             super.setWar(warFile.getCanonicalPath());
         } catch (Exception e) {
             logger.error("Failed to establish Scratch directory: " + warFile, e);
@@ -125,13 +127,15 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
+        this.webSocketInitializer = webSocketInitializer;
+    }
+
     void deferredInitialize() {
         Assert.state(context != null, "No ActivityContext injected");
 
         // Create a root web service
-        CoreService rootService = context.getRootService();
-        WebService rootWebService = DefaultWebServiceFactory.create(getServletContext(), rootService);
-        setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
+        DefaultWebServiceFactory.create(getServletContext(), context.getRootService());
 
         ClassLoader parent = context.getClassLoader();
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);

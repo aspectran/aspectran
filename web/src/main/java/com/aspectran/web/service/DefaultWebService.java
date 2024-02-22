@@ -62,7 +62,7 @@ public class DefaultWebService extends AbstractWebService {
         super(servletContext);
     }
 
-    protected DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
+    DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
         super(servletContext, rootService);
     }
 

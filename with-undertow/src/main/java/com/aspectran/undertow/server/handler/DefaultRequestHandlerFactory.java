@@ -15,10 +15,8 @@
  */
 package com.aspectran.undertow.server.handler;
 
-import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.web.service.DefaultWebServiceFactory;
-import com.aspectran.web.service.WebService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
@@ -27,8 +25,6 @@ import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import jakarta.servlet.ServletContext;
-
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * <p>Created: 2019-08-04</p>
@@ -59,9 +55,7 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 ServletContext servletContext = deployment.getServletContext();
 
                 // Create a root web service
-                CoreService rootService = getActivityContext().getRootService();
-                WebService rootWebService = DefaultWebServiceFactory.create(servletContext, rootService);
-                servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
+                DefaultWebServiceFactory.create(servletContext, getActivityContext().getRootService());
 
                 HttpHandler handler = manager.start();
                 String contextPath = deployment.getDeploymentInfo().getContextPath();

@@ -205,7 +205,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     @NonNull
     static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
         DefaultEmbeddedAspectran aspectran = new DefaultEmbeddedAspectran();
-        aspectran.prepare(aspectranConfig);
+        aspectran.configure(aspectranConfig);
         setServiceStateListener(aspectran);
         return aspectran;
     }
