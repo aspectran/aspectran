@@ -175,6 +175,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
+    public boolean hasServiceClassLoader() {
+        return (serviceClassLoader != null);
+    }
+
+    @Override
     public ClassLoader getServiceClassLoader() {
         if (serviceClassLoader != null) {
             return serviceClassLoader;

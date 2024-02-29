@@ -81,6 +81,8 @@ public interface CoreService {
      */
     ActivityContext getActivityContext();
 
+    boolean hasServiceClassLoader();
+
     /**
      * @return the ClassLoader used within the service.
      */

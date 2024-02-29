@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.servlet;
 
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -93,7 +94,16 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        webService.service(req, res);
+        if (webService.hasServiceClassLoader()) {
+            ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(webService.getServiceClassLoader());
+            try {
+                webService.service(req, res);
+            } finally {
+                ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
+            }
+        } else {
+            webService.service(req, res);
+        }
     }
 
     @Override
