@@ -16,15 +16,13 @@
 package com.aspectran.undertow.server.handler;
 
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
-import com.aspectran.web.service.DefaultWebServiceFactory;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
-import io.undertow.servlet.api.Deployment;
+import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
-import jakarta.servlet.ServletContext;
 
 /**
  * <p>Created: 2019-08-04</p>
@@ -50,17 +48,12 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
             PathHandler pathHandler = new PathHandler();
             for (String deploymentName : servletContainer.listDeployments()) {
                 DeploymentManager manager = servletContainer.getDeployment(deploymentName);
-                manager.deploy();
-                Deployment deployment = manager.getDeployment();
-                ServletContext servletContext = deployment.getServletContext();
-
-                // Create a root web service
-                DefaultWebServiceFactory.create(servletContext, getActivityContext().getRootService());
+                DeploymentInfo deploymentInfo = manager.getDeployment().getDeploymentInfo();
 
                 HttpHandler handler = manager.start();
-                String contextPath = deployment.getDeploymentInfo().getContextPath();
+                String contextPath = deploymentInfo.getContextPath();
 
-                ResourceManager resourceManager = deployment.getDeploymentInfo().getResourceManager();
+                ResourceManager resourceManager = deploymentInfo.getResourceManager();
                 if (resourceManager != null) {
                     TowResourceHandler towResourceHandler = new TowResourceHandler(resourceManager, handler);
                     String pathPrefix = contextPath;

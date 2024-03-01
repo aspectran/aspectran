@@ -25,7 +25,6 @@ import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.undertow.activity.TowActivity;
@@ -212,13 +211,6 @@ public class DefaultTowService extends AbstractTowService {
             }
         }
         setServiceStateListener(towService);
-        if (towService.isLateStart()) {
-            try {
-                towService.getServiceController().start();
-            } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start DefaultTowService");
-            }
-        }
         return towService;
     }
 

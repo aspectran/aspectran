@@ -56,21 +56,20 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
 
     @Override
     public void doStop() {
-        try {
-            if (server != null) {
-                if (getHandler() instanceof GracefulShutdownHandler) {
-                    ((GracefulShutdownHandler)getHandler()).shutdown();
+        if (server != null) {
+            try {
+                if (getHandler() instanceof GracefulShutdownHandler shutdownHandler) {
+                    shutdownHandler.shutdown();
                     try {
                         if (getShutdownTimeoutSecs() > 0) {
                             // Wait "30" seconds before make a force shutdown
-                            GracefulShutdownHandler shutdownHandler = ((GracefulShutdownHandler)getHandler());
                             boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
                             if (!result) {
                                 logger.warn("Undertow server did not shut down gracefully within " +
                                     getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
                             }
                         } else {
-                            ((GracefulShutdownHandler)getHandler()).awaitShutdown();
+                            shutdownHandler.awaitShutdown();
                         }
                     } catch (Exception ex) {
                         logger.error("Unable to gracefully stop Undertow server");
@@ -88,9 +87,9 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
                 server.stop();
                 server = null;
                 logger.info("Undertow " + TowServer.getVersion() + " stopped");
+            } catch (Exception e) {
+                logger.error("Unable to stop Undertow server", e);
             }
-        } catch (Exception e) {
-            logger.error("Unable to stop Undertow server", e);
         }
     }
 

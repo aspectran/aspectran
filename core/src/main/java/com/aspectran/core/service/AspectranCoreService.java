@@ -59,8 +59,7 @@ public class AspectranCoreService extends AbstractCoreService {
         configure(aspectranConfig, null);
     }
 
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
-        throws AspectranServiceException {
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         Assert.state(!isDerived(),
             "Must not be called for derived services");
         Assert.state(!hasActivityContextBuilder(),
@@ -90,6 +89,7 @@ public class AspectranCoreService extends AbstractCoreService {
                         "running; Only one instance is allowed (context.singleton is set to true)");
                 }
             }
+
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder();
             if (applicationAdapter != null) {
                 activityContextBuilder.setApplicationAdapter(applicationAdapter);

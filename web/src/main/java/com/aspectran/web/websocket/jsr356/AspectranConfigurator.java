@@ -34,7 +34,7 @@ public class AspectranConfigurator extends Configurator {
 
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
-        ActivityContext context = WebServiceHolder.getCurrentActivityContext(endpointClass);
+        ActivityContext context = WebServiceHolder.getActivityContext(endpointClass);
         if (context == null) {
             String message = "Failed to find WebService";
             logger.error(message);

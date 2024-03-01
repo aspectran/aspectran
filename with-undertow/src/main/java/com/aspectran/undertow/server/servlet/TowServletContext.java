@@ -16,10 +16,14 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.utils.Assert;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.web.service.DefaultWebService;
+import com.aspectran.web.service.DefaultWebServiceFactory;
+import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -29,6 +33,7 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,23 +48,41 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
-    private ApplicationAdapter applicationAdapter;
+    private ActivityContext context;
+
+    private ClassLoader altClassLoader;
 
     private SessionManager sessionManager;
 
+    @NonNull
+    public ActivityContext getActivityContext() {
+        return context;
+    }
+
     @Override
-    public void setActivityContext(ActivityContext context) {
-        Assert.notNull(context, "context must not be null");
-        this.applicationAdapter = context.getApplicationAdapter();
-        setClassLoader(context.getClassLoader());
+    @AvoidAdvice
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.context = context;
+        this.altClassLoader = new WebServiceClassLoader(context.getClassLoader());
+        setClassLoader(this.altClassLoader);
+    }
+
+    @NonNull
+    public ApplicationAdapter getApplicationAdapter() {
+        return getActivityContext().getApplicationAdapter();
+    }
+
+    @NonNull
+    public ClassLoader getAltClassLoader() {
+        return this.altClassLoader;
     }
 
     public void setScratchDir(String scratchDir) throws IOException {
-        File dir = applicationAdapter.toRealPathAsFile(scratchDir);
+        File dir = getApplicationAdapter().toRealPathAsFile(scratchDir);
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        setTempDir(applicationAdapter.toRealPathAsFile(scratchDir));
+        setTempDir(getApplicationAdapter().toRealPathAsFile(scratchDir));
     }
 
     public SessionManager getSessionManager() {
@@ -169,6 +192,14 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
         if (webSocketInitializer != null) {
             webSocketInitializer.initialize(this);
+        }
+    }
+
+    void createRootWebService(ServletContext servletContext) throws Exception {
+        CoreService rootService = getActivityContext().getRootService();
+        DefaultWebService rootWebService = DefaultWebServiceFactory.create(servletContext, rootService, getAltClassLoader());
+        if (rootWebService.isLateStart()) {
+            rootWebService.getServiceController().start();
         }
     }
 

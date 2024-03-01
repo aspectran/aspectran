@@ -53,7 +53,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
     @Override
     public final int doStartTag() throws JspException {
         try {
-            ActivityContext context = WebServiceHolder.getCurrentActivityContext();
+            ActivityContext context = WebServiceHolder.getActivityContext();
             Assert.state(context != null,
                 "No current activity context found; WebService held in WebServiceHolder?");
             this.currentActivity = context.getCurrentActivity();

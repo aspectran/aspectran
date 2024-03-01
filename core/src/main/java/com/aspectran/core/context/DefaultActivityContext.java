@@ -252,7 +252,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     protected void doInitialize() throws Exception {
-        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
         try {
             if (aspectRuleRegistry != null) {
                 aspectRuleRegistry.initialize();
@@ -273,13 +273,13 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 initMessageSource();
             }
         } finally {
-            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
+            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 
     @Override
     protected void doDestroy() {
-        ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
         try {
             if (transletRuleRegistry != null) {
                 transletRuleRegistry.destroy();
@@ -302,7 +302,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 aspectRuleRegistry = null;
             }
         } finally {
-            ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
+            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 

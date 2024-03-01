@@ -81,20 +81,25 @@ public class DefaultWebServiceFactory {
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    public static DefaultWebService create(ServletContext servletContext, CoreService rootService) {
+    public static DefaultWebService create(ServletContext servletContext, CoreService rootService, ClassLoader altClassLoader) {
         Assert.notNull(servletContext, "servletContext must not be null");
         Assert.notNull(rootService, "rootService must not be null");
-        DefaultWebService webService = new DefaultWebService(servletContext, rootService);
-        webService.configure(rootService.getAspectranConfig());
-        setServiceStateListener(webService);
-        if (webService.isLateStart()) {
-            try {
-                webService.getServiceController().start();
-            } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start DefaultWebService");
-            }
+        String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+        DefaultWebService webService;
+        if (aspectranConfigParam != null) {
+            AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+            webService = create(servletContext, aspectranConfig, rootService.getActivityContext().getApplicationAdapter());
+        } else {
+            webService = new DefaultWebService(servletContext, rootService);
+            webService.configure(rootService.getAspectranConfig());
+            setServiceStateListener(webService);
         }
+        webService.setAltClassLoader(altClassLoader);
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
+        if (logger.isDebugEnabled()) {
+            logger.debug("The Root WebService attribute in ServletContext has been created; " +
+                ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
+        }
         return webService;
     }
 
@@ -190,13 +195,13 @@ public class DefaultWebServiceFactory {
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                WebServiceHolder.putWebService(webService);
+                WebServiceHolder.put(webService);
 
                 // Required for any websocket support
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
                 if (serverEndpointExporter.hasServerContainer()) {
                     for (Class<?> endpointClass : serverEndpointExporter.registerEndpoints()) {
-                        WebServiceHolder.putWebService(endpointClass, webService);
+                        WebServiceHolder.hold(webService, endpointClass);
                     }
                 }
 
@@ -231,7 +236,7 @@ public class DefaultWebServiceFactory {
             @Override
             public void stopped() {
                 paused();
-                WebServiceHolder.removeWebService(webService);
+                WebServiceHolder.remove(webService);
             }
         });
     }

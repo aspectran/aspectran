@@ -15,12 +15,15 @@
  */
 package com.aspectran.web.servlet.listener;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceFactory;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
+
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * The Class WebServiceListener.
@@ -32,12 +35,18 @@ public class WebServiceListener implements ServletContextListener {
     private DefaultWebService webService;
 
     @Override
-    public void contextInitialized(ServletContextEvent event) {
+    public void contextInitialized(@NonNull ServletContextEvent event) {
+        Object attr = event.getServletContext().getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
+        if ((attr instanceof DefaultWebService)) {
+            logger.warn("Root WebService already exists; Remove WebServiceListener as it is unnecessary");
+            return;
+        }
+
         logger.info("Creating Root WebService...");
 
         try {
             webService = DefaultWebServiceFactory.create(event.getServletContext());
-            webService.start();
+            webService.getServiceController().start();
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);
         }

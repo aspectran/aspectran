@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.servlet;
 
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -81,7 +80,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             }
             if (newWebService != null) {
                 logger.info(newWebService.getServiceName() + " is running in standalone mode inside " + getMyName());
-                newWebService.start();
+                newWebService.getServiceController().start();
                 this.webService = newWebService;
             }
         } catch (Exception e) {
@@ -94,16 +93,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        if (webService.hasServiceClassLoader()) {
-            ClassLoader originalClassLoader = ClassUtils.overrideThreadContextClassLoader(webService.getServiceClassLoader());
-            try {
-                webService.service(req, res);
-            } finally {
-                ClassUtils.restoreThreadContextClassLoader(originalClassLoader);
-            }
-        } else {
-            webService.service(req, res);
-        }
+        webService.service(req, res);
     }
 
     @Override

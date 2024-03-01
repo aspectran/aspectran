@@ -15,18 +15,24 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.Deployment;
+import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.core.ServletContainerImpl;
+import jakarta.servlet.ServletContext;
 
 /**
  * <p>Created: 2019-08-05</p>
  */
 public class TowServletContainer extends ServletContainerImpl {
 
-    public void setServletContexts(TowServletContext... towServletContexts) {
+    public void setServletContexts(TowServletContext... towServletContexts) throws Exception {
         if (towServletContexts != null) {
-            for (DeploymentInfo deploymentInfo : towServletContexts) {
-                addDeployment(deploymentInfo);
+            for (TowServletContext towServletContext : towServletContexts) {
+                DeploymentManager manager = addDeployment(towServletContext);
+                manager.deploy();
+                Deployment deployment = manager.getDeployment();
+                ServletContext servletContext = deployment.getServletContext();
+                towServletContext.createRootWebService(servletContext);
             }
         }
     }

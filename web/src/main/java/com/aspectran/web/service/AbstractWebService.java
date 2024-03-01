@@ -20,7 +20,6 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -33,13 +32,13 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     private final ServletContext servletContext;
 
-
-
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     private String uriDecoding;
 
     private boolean trailingSlashRedirect;
+
+    private ClassLoader altClassLoader;
 
     AbstractWebService(@NonNull ServletContext servletContext) {
         this(servletContext, null);
@@ -74,13 +73,12 @@ public abstract class AbstractWebService extends AspectranCoreService implements
     }
 
     @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
         configure(aspectranConfig, null);
     }
 
     @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter)
-        throws AspectranServiceException {
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -123,6 +121,15 @@ public abstract class AbstractWebService extends AspectranCoreService implements
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
             setExposals(includePatterns, excludePatterns);
         }
+    }
+
+    @Override
+    public ClassLoader getAltClassLoader() {
+        return altClassLoader;
+    }
+
+    public void setAltClassLoader(ClassLoader altClassLoader) {
+        this.altClassLoader = altClassLoader;
     }
 
 }

@@ -26,6 +26,7 @@ import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -44,8 +45,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CoreService rootService;
-
-    private final boolean lateStart;
 
     private String basePath;
 
@@ -74,14 +73,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             this.rootService = rootService;
             this.activityContext = rootService.getActivityContext();
             this.aspectranConfig = rootService.getAspectranConfig();
-            this.lateStart = rootService.getServiceController().isActive();
 
             setBasePath(rootService.getBasePath());
             rootService.joinDerivedService(this);
         } else {
             super.setRootService(this);
             this.rootService = null;
-            this.lateStart = false;
         }
     }
 
@@ -96,7 +93,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public boolean isLateStart() {
-        return lateStart;
+        return (rootService == null || rootService.getServiceController().isActive());
     }
 
     @Override
@@ -148,13 +145,13 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     protected ActivityContextBuilder getActivityContextBuilder() {
         Assert.state(hasActivityContextBuilder(),
-            "No ActivityContextLoader configured; First, call the prepare() method");
+            "No ActivityContextLoader configured");
         return activityContextBuilder;
     }
 
     protected void setActivityContextBuilder(ActivityContextBuilder activityContextBuilder) {
         Assert.state(!hasActivityContextBuilder(),
-            "ActivityContextBuilder is already configured; prepare() method can be called only once");
+            "ActivityContextBuilder is already configured");
         this.activityContextBuilder = activityContextBuilder;
     }
 
@@ -180,6 +177,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
+    @Nullable
     public ClassLoader getServiceClassLoader() {
         if (serviceClassLoader != null) {
             return serviceClassLoader;

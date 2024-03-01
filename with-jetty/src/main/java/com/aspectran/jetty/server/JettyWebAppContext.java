@@ -18,11 +18,13 @@ package com.aspectran.jetty.server;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebServiceFactory;
+import com.aspectran.web.service.WebService;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
@@ -131,15 +133,18 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.webSocketInitializer = webSocketInitializer;
     }
 
-    void deferredInitialize() {
+    void deferredInitialize() throws Exception {
         Assert.state(context != null, "No ActivityContext injected");
 
-        // Create a root web service
-        DefaultWebServiceFactory.create(getServletContext(), context.getRootService());
-
-        ClassLoader parent = context.getClassLoader();
-        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);
+        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(context.getClassLoader(), this);
         setClassLoader(webAppClassLoader);
+
+        // Create a root web service
+        CoreService rootService = context.getRootService();
+        WebService rootWebService = DefaultWebServiceFactory.create(getServletContext(), rootService, webAppClassLoader);
+        if (rootWebService.isLateStart()) {
+            rootWebService.getServiceController().start();
+        }
 
         if (webSocketInitializer != null) {
             JakartaWebSocketServletContainerInitializer.configure(this,

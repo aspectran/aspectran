@@ -46,6 +46,8 @@ public interface WebService extends CoreService {
      */
     ServletContext getServletContext();
 
+    ClassLoader getAltClassLoader();
+
     /**
      * Executes web activity.
      * @param request current HTTP servlet request

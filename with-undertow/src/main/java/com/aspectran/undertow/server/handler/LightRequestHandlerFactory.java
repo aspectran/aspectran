@@ -18,6 +18,7 @@ package com.aspectran.undertow.server.handler;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.service.DefaultTowService;
@@ -28,8 +29,6 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
-
-import java.io.IOException;
 
 /**
  * <p>Created: 06/10/2019</p>
@@ -68,7 +67,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         this.aspectranConfig = aspectranConfig;
     }
 
-    public HttpHandler createHandler() throws IOException {
+    public HttpHandler createHandler() throws Exception {
         TowService towService = createTowService();
 
         if (sessionManager != null) {
@@ -89,10 +88,11 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         return wrapHandler(rootHandler);
     }
 
-    private TowService createTowService() {
+    private TowService createTowService() throws Exception {
         Assert.state(towService == null, "TowService is already configured");
+        CoreService rootService = getActivityContext().getRootService();
         if (aspectranConfig == null) {
-            towService = DefaultTowService.create(getActivityContext().getRootService());
+            towService = DefaultTowService.create(rootService);
         } else {
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
@@ -102,6 +102,9 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
                 }
             }
             towService = DefaultTowService.create(aspectranConfig);
+        }
+        if (towService.isLateStart()) {
+            towService.getServiceController().start();
         }
         if (towServer != null) {
             towServer.addLifeCycleListener(new LifeCycle.Listener() {

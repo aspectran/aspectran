@@ -25,6 +25,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -218,6 +219,7 @@ public class DefaultWebService extends AbstractWebService {
     private void perform(HttpServletRequest request, HttpServletResponse response,
                          String requestName, MethodType requestMethod, TransletRule transletRule,
                          AtomicReference<Activity> activityReference) {
+        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getServiceClassLoader());
         WebActivity activity = null;
         try {
             activity = new WebActivity(getActivityContext(), getContextPath(), request, response);
@@ -249,6 +251,8 @@ public class DefaultWebService extends AbstractWebService {
                     sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
                 }
             }
+        } finally {
+            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 

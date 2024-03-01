@@ -17,7 +17,6 @@ package com.aspectran.web.service;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.resource.SiblingsClassLoader;
-import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -36,39 +35,53 @@ import static com.aspectran.web.service.WebService.STANDALONE_WEB_SERVICE_ATTR_P
 public class WebServiceHolder {
 
     private static final Map<ClassLoader, WebService> webServicePerThread =
-            new ConcurrentHashMap<>(4);
+            new ConcurrentHashMap<>();
 
     private static final Map<Class<?>, WebService> webServicePerClass =
-            new ConcurrentHashMap<>(8);
+            new ConcurrentHashMap<>();
 
     private static volatile WebService currentWebService;
 
-    static void putWebService(WebService webService) {
+    static void put(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
         Assert.notNull(webService.getActivityContext(), "No ActivityContext");
         ClassLoader classLoader = webService.getServiceClassLoader();
-        if (classLoader == WebServiceHolder.class.getClassLoader()) {
-            currentWebService = webService;
-        } else if (classLoader != null) {
-            webServicePerThread.put(classLoader, webService);
+        if (classLoader != null) {
+            if (classLoader == WebServiceHolder.class.getClassLoader()) {
+                currentWebService = webService;
+            } else {
+                webServicePerThread.put(classLoader, webService);
+            }
+            if (webService.getAltClassLoader() != null) {
+                hold(webService, webService.getAltClassLoader());
+            }
         }
     }
 
-    static void putWebService(Class<?> clazz, WebService webService) {
+    public static void hold(WebService webService, ClassLoader classLoader) {
+        Assert.notNull(webService, "classLoader must not be null");
+        Assert.notNull(webService.getActivityContext(), "No ActivityContext");
+        Assert.state(webServicePerThread.containsValue(webService), "Unregistered web service: " + webService);
+        webServicePerThread.put(classLoader, webService);
+    }
+
+    public static void hold(WebService webService, Class<?> clazz) {
         Assert.notNull(webService, "webService must not be null");
         Assert.notNull(clazz, "clazz must not be null");
+        Assert.state(webServicePerThread.containsValue(webService), "Unregistered web service: " + webService);
         webServicePerClass.put(clazz, webService);
     }
 
-    static void removeWebService(WebService webService) {
+    static void remove(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
         webServicePerThread.entrySet().removeIf(entry -> (webService.equals(entry.getValue())));
+        webServicePerClass.entrySet().removeIf(entry -> (webService.equals(entry.getValue())));
         if (currentWebService != null && currentWebService == webService) {
             currentWebService = null;
         }
     }
 
-    public static WebService getCurrentWebService() {
+    public static WebService get() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
             WebService webService = webServicePerThread.get(classLoader);
@@ -82,23 +95,23 @@ public class WebServiceHolder {
         return currentWebService;
     }
 
-    public static WebService getCurrentWebService(Class<?> clazz) {
+    public static WebService get(Class<?> clazz) {
         WebService webService = webServicePerClass.get(clazz);
         if (webService == null) {
-            webService = getCurrentWebService();
+            webService = get();
         }
         return webService;
     }
 
     @Nullable
-    public static ActivityContext getCurrentActivityContext() {
-        WebService webService = getCurrentWebService();
+    public static ActivityContext getActivityContext() {
+        WebService webService = get();
         return (webService != null ? webService.getActivityContext() : null);
     }
 
     @Nullable
-    public static ActivityContext getCurrentActivityContext(Class<?> clazz) {
-        WebService webService = getCurrentWebService(clazz);
+    public static ActivityContext getActivityContext(Class<?> clazz) {
+        WebService webService = get(clazz);
         return (webService != null ? webService.getActivityContext() : null);
     }
 
@@ -147,11 +160,11 @@ public class WebServiceHolder {
         if (attr == null) {
             return null;
         }
-        if (!(attr instanceof DefaultWebService)) {
+        if (!(attr instanceof DefaultWebService defaultWebService)) {
             throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
                     DefaultWebService.class.getName() + "]");
         }
-        return ((CoreService)attr).getActivityContext();
+        return defaultWebService.getActivityContext();
     }
 
 }
