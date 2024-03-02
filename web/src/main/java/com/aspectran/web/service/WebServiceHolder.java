@@ -42,9 +42,9 @@ public class WebServiceHolder {
 
     private static volatile WebService currentWebService;
 
-    static void put(WebService webService) {
+    static void hold(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
-        Assert.notNull(webService.getActivityContext(), "No ActivityContext");
+        Assert.state(webService.getActivityContext() != null, "No ActivityContext");
         ClassLoader classLoader = webService.getServiceClassLoader();
         if (classLoader != null) {
             if (classLoader == WebServiceHolder.class.getClassLoader()) {
@@ -59,20 +59,22 @@ public class WebServiceHolder {
     }
 
     public static void hold(WebService webService, ClassLoader classLoader) {
-        Assert.notNull(webService, "classLoader must not be null");
-        Assert.notNull(webService.getActivityContext(), "No ActivityContext");
-        Assert.state(webServicePerThread.containsValue(webService), "Unregistered web service: " + webService);
+        Assert.notNull(webService, "webService must not be null");
+        Assert.notNull(classLoader, "classLoader must not be null");
+        Assert.state(currentWebService == webService || webServicePerThread.containsValue(webService),
+            "Unregistered web service: " + webService);
         webServicePerThread.put(classLoader, webService);
     }
 
     public static void hold(WebService webService, Class<?> clazz) {
         Assert.notNull(webService, "webService must not be null");
         Assert.notNull(clazz, "clazz must not be null");
-        Assert.state(webServicePerThread.containsValue(webService), "Unregistered web service: " + webService);
+        Assert.state(currentWebService == webService || webServicePerThread.containsValue(webService),
+            "Unregistered web service: " + webService);
         webServicePerClass.put(clazz, webService);
     }
 
-    static void remove(WebService webService) {
+    static void release(WebService webService) {
         Assert.notNull(webService, "webService must not be null");
         webServicePerThread.entrySet().removeIf(entry -> (webService.equals(entry.getValue())));
         webServicePerClass.entrySet().removeIf(entry -> (webService.equals(entry.getValue())));
@@ -81,7 +83,7 @@ public class WebServiceHolder {
         }
     }
 
-    public static WebService get() {
+    public static WebService acquire() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
             WebService webService = webServicePerThread.get(classLoader);
@@ -95,23 +97,23 @@ public class WebServiceHolder {
         return currentWebService;
     }
 
-    public static WebService get(Class<?> clazz) {
+    public static WebService acquire(Class<?> clazz) {
         WebService webService = webServicePerClass.get(clazz);
         if (webService == null) {
-            webService = get();
+            webService = acquire();
         }
         return webService;
     }
 
     @Nullable
     public static ActivityContext getActivityContext() {
-        WebService webService = get();
+        WebService webService = acquire();
         return (webService != null ? webService.getActivityContext() : null);
     }
 
     @Nullable
     public static ActivityContext getActivityContext(Class<?> clazz) {
-        WebService webService = get(clazz);
+        WebService webService = acquire(clazz);
         return (webService != null ? webService.getActivityContext() : null);
     }
 

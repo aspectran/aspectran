@@ -195,7 +195,7 @@ public class DefaultWebServiceFactory {
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                WebServiceHolder.put(webService);
+                WebServiceHolder.hold(webService);
 
                 // Required for any websocket support
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
@@ -236,7 +236,7 @@ public class DefaultWebServiceFactory {
             @Override
             public void stopped() {
                 paused();
-                WebServiceHolder.remove(webService);
+                WebServiceHolder.release(webService);
             }
         });
     }
