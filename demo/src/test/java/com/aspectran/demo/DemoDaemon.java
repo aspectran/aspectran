@@ -26,7 +26,7 @@ import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPER
 /**
  * Application server for Aspectran Demo.
  */
-public class AspectranDemoDaemon {
+public class DemoDaemon {
 
     public static void main(String[] args) {
         try {

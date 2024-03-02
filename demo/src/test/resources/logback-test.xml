@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <include file="${aspectran.basePath:-app}/config/logging/logback-default.xml"/>
-    <include file="${aspectran.basePath:-app}/config/logging/logback-console.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/included/logback-default.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/included/logback-scheduler.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/included/logback-undertow.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/included/logback-jetty.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/included/logback-console.xml"/>
 
     <logger name="com.aspectran.daemon.command.polling.DefaultFileCommander" level="trace"/>
 

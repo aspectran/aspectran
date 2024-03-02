@@ -26,7 +26,7 @@ import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPER
 /**
  * Main entry point for the application.
  */
-public class AspectranDemoDumbShell {
+public class DemoPlainShell {
 
     public static void main(String[] args) {
         try {
