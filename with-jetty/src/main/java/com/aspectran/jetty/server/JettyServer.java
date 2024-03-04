@@ -187,19 +187,19 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
-    private void handleDeferredInitialize(@NonNull List<Handler> handlers) throws Exception {
-        for (Handler handler : handlers) {
-            handleDeferredInitialize(handler);
-        }
-    }
-
     private void handleDeferredInitialize(Handler handler) throws Exception {
         if (handler instanceof JettyWebAppContext jettyWebAppContext) {
-            jettyWebAppContext.deferredInitialize();
+            jettyWebAppContext.deferredInitialize(this);
         } else if (handler instanceof Handler.Wrapper handlerWrapper) {
             handleDeferredInitialize(handlerWrapper.getHandler());
         } else if (handler instanceof Handler.Collection handlerCollection) {
             handleDeferredInitialize(handlerCollection.getHandlers());
+        }
+    }
+
+    private void handleDeferredInitialize(@NonNull List<Handler> handlers) throws Exception {
+        for (Handler handler : handlers) {
+            handleDeferredInitialize(handler);
         }
     }
 

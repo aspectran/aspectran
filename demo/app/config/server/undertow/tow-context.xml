@@ -72,7 +72,7 @@
                 <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                     <properties>
                         <item name="tldResources" type="array">
-                            <value>/webroot/WEB-INF/taglibs/</value>
+                            <value>/webroot/WEB-INF/lib/</value>
                             <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
                         </item>
                     </properties>

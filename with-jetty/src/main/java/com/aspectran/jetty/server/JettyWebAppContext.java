@@ -31,6 +31,8 @@ import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.ee10.webapp.WebXmlConfiguration;
 import org.eclipse.jetty.ee10.websocket.jakarta.server.JakartaWebSocketServerContainer;
 import org.eclipse.jetty.ee10.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.Resources;
 
@@ -72,12 +74,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         File warFile = null;
         try {
             warFile = new File(war);
-            if (warFile.isDirectory() && !warFile.exists()) {
-                if (!warFile.mkdirs()) {
+            if (warFile.isDirectory()) {
+                if (!warFile.exists() && !warFile.mkdirs()) {
                     throw new IOException("Unable to create war directory: " + warFile);
                 }
+                setExtractWAR(true);
             }
-            setExtractWAR(true);
             super.setWar(warFile.getCanonicalPath());
         } catch (Exception e) {
             logger.error("Failed to establish Scratch directory: " + warFile, e);
@@ -133,24 +135,33 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.webSocketInitializer = webSocketInitializer;
     }
 
-    void deferredInitialize() throws Exception {
+    void deferredInitialize(Server server) throws Exception {
         Assert.state(context != null, "No ActivityContext injected");
 
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(context.getClassLoader(), this);
         setClassLoader(webAppClassLoader);
 
+        if (webSocketInitializer != null) {
+            JakartaWebSocketServletContainerInitializer.configure(this,
+                    (servletContext, jettyWebSocketServerContainer) -> {
+                        ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
+                        webSocketInitializer.customize(serverContainer);
+                    });
+        }
+
         // Create a root web service
         CoreService rootService = context.getRootService();
         WebService rootWebService = DefaultWebServiceFactory.create(getServletContext(), rootService, webAppClassLoader);
         if (rootWebService.isLateStart()) {
-            rootWebService.getServiceController().start();
-        }
-
-        if (webSocketInitializer != null) {
-            JakartaWebSocketServletContainerInitializer.configure(this,
-                    (servletContext, jettyWebSocketServerContainer) -> {
-                ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
-                webSocketInitializer.customize(serverContainer);
+            server.addEventListener(new LifeCycle.Listener() {
+                public void lifeCycleStarted(LifeCycle event) {
+                    try {
+                        rootWebService.getServiceController().start();
+                    } catch (Exception e) {
+                        logger.error("Failed to start root web service", e);
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         }
     }

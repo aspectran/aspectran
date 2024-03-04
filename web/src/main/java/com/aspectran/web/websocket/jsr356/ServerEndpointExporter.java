@@ -53,7 +53,7 @@ public class ServerEndpointExporter {
 
     public ServerEndpointExporter(@NonNull WebService webService) {
         this.webService = webService;
-        this.serverContainer = (ServerContainer) webService.getServletContext().getAttribute(ServerContainer.class.getName());
+        this.serverContainer = (ServerContainer)webService.getServletContext().getAttribute(ServerContainer.class.getName());
     }
 
     /**
@@ -71,7 +71,7 @@ public class ServerEndpointExporter {
     /**
      * Explicitly list annotated endpoint types that should be registered on startup. This
      * can be done if you wish to turn off a Servlet container's scan for endpoints, which
-     * goes through all 3rd party jars in the, and rely on Spring configuration instead.
+     * goes through all 3rd party jars in the classpath, and rely on Aspectran configuration instead.
      * @param annotatedEndpointClasses {@link ServerEndpoint}-annotated types
      */
     public void setAnnotatedEndpointClasses(Class<?>... annotatedEndpointClasses) {
@@ -88,8 +88,9 @@ public class ServerEndpointExporter {
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
         if (this.annotatedEndpointClasses != null) {
             endpointClasses.addAll(this.annotatedEndpointClasses);
+        } else {
+            endpointClasses.addAll(findServerEndpointClasses());
         }
-        endpointClasses.addAll(findServerEndpointClasses());
         for (Class<?> endpointClass : endpointClasses) {
             registerEndpoint(endpointClass);
         }
@@ -107,7 +108,7 @@ public class ServerEndpointExporter {
     private void registerEndpoint(Class<?> endpointClass) {
         ServerContainer serverContainer = getServerContainer();
         Assert.state(serverContainer != null,
-                "No ServerContainer set. Most likely the server's own WebSocket ServletContainerInitializer " +
+                "No ServerContainer found. Most likely the server's own WebSocket ServletContainerInitializer " +
                         "has not run yet.");
         try {
             if (logger.isDebugEnabled()) {
@@ -121,7 +122,7 @@ public class ServerEndpointExporter {
 
     private void registerEndpoint(ServerEndpointConfig endpointConfig) {
         ServerContainer serverContainer = getServerContainer();
-        Assert.state(serverContainer != null, "No ServerContainer set");
+        Assert.state(serverContainer != null, "No ServerContainer found");
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Registering ServerEndpointConfig: " + endpointConfig);

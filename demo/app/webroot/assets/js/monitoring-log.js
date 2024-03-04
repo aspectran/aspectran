@@ -128,24 +128,24 @@ const LogTailer = function(endpoint, tailers) {
         }
     };
 
-    const pattern1 = /^DEBUG (.+) \[(.+)] Create new session id=([^\s;]+)/;
-    const pattern2 = /^DEBUG (.+) \[(.+)] Session ([^\s;]+) accessed, stopping timer, active requests=(\d+)/;
-    const pattern3 = /^DEBUG (.+) \[(.+)] Session ([^\s;]+) complete, active requests=(\d+)/;
+    const pattern1 = /^DEBUG (.+) \[(.+)] Session ([^\s;]+) (accessed|in use), stopping timer, active requests=(\d+)/;
+    const pattern2 = /^DEBUG (.+) \[(.+)] Session ([^\s;]+) complete, active requests=(\d+)/;
+    const pattern3 = /^DEBUG (.+) \[(.+)] Create new session id=([^\s;]+)/;
     const pattern4 = /^DEBUG (.+) \[(.+)] Invalidate session id=([^\s;]+)/;
     const pattern5 = /^DEBUG (.+) \[(.+)] Reject session id=([^\s;]+)/;
 
     const launchMissile = function(text) {
         let matches1 = pattern1.exec(text);
-        let matches2 = pattern2.exec(text);
-        let matches3 = pattern3.exec(text);
-        let matches4 = pattern4.exec(text);
-        let matches5 = pattern5.exec(text);
+        let matches2 = (matches1 ? null : pattern2.exec(text));
+        let matches3 = (matches1 || matches2 ? null : pattern3.exec(text));
+        let matches4 = (matches1 || matches2 || matches3 ? null : pattern4.exec(text));
+        let matches5 = (matches1 || matches2 || matches3 || matches4 ? null : pattern5.exec(text));
 
         // if (matches1 || matches2 || matches3 || matches4 || matches5) {
         //     console.log(text);
+        //     console.log('matches3', matches3);
         //     console.log('matches1', matches1);
         //     console.log('matches2', matches2);
-        //     console.log('matches3', matches3);
         //     console.log('matches4', matches4);
         //     console.log('matches5', matches5);
         // }
@@ -154,10 +154,10 @@ const LogTailer = function(endpoint, tailers) {
         let sessionId = "";
         let requests = 0;
         let delay = 0;
-        if (matches3 || matches4 || matches5) {
-            if (matches3) {
-                sessionId = matches3[3];
-                requests = parseInt(matches3[4]) + 1;
+        if (matches2 || matches4 || matches5) {
+            if (matches2) {
+                sessionId = matches2[3];
+                requests = parseInt(matches2[4]) + 1;
             } else if (matches4) {
                 sessionId = matches4[3];
                 requests = 1
@@ -182,15 +182,15 @@ const LogTailer = function(endpoint, tailers) {
             }
             return;
         }
-        if (matches1 || matches2) {
+        if (matches1 || matches3) {
             if (matches1) {
                 dateTime = matches1[1];
                 sessionId = matches1[3];
+                requests = matches1[5];
+            } else if (matches3) {
+                dateTime = matches3[1];
+                sessionId = matches3[3];
                 requests = 1;
-            } else if (matches2) {
-                dateTime = matches2[1];
-                sessionId = matches2[3];
-                requests = matches2[4];
             }
             if (requests > 3) {
                 requests = 3;

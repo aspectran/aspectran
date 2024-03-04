@@ -20,4 +20,6 @@
         <appender-ref ref="FILE-JETTY-ACCESSLOG"/>
     </logger>
 
+    <logger name="org.eclipse.jetty.session.ManagedSession" level="debug"/>
+
 </included>
