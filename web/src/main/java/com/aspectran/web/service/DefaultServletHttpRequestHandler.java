@@ -77,7 +77,18 @@ public class DefaultServletHttpRequestHandler {
     /**
      * Lookup default servlet name.
      */
-    public void lookupDefaultServletName() {
+    void lookupDefaultServletName() {
+        // To avoid default servlet lookup
+        if ("none".equals(defaultServletName)) {
+            defaultServletName = null;
+            return;
+        }
+        if (defaultServletName != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Default servlet name: " + defaultServletName);
+            }
+            return;
+        }
         if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
         } else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
@@ -93,7 +104,7 @@ public class DefaultServletHttpRequestHandler {
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Unable to locate the default servlet for serving static content. " +
-                        "Please set the 'web.defaultServletName' property explicitly.");
+                    "Please set the 'web.defaultServletName' property explicitly.");
             }
         }
     }

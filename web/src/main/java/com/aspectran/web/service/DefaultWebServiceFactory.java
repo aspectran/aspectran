@@ -205,6 +205,8 @@ public class DefaultWebServiceFactory {
                     }
                 }
 
+                webService.getDefaultServletHttpRequestHandler().lookupDefaultServletName();
+
                 webService.pauseTimeout = 0L;
             }
 
