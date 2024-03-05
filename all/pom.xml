@@ -114,8 +114,8 @@
         </dependency>
         <!-- Optional dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
