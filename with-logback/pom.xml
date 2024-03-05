@@ -23,55 +23,53 @@
         <version>8.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aspectran-core</artifactId>
+    <artifactId>aspectran-with-logback</artifactId>
     <version>8.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <name>Aspectran Core</name>
-    <description>Aspectran Core APIs and Implementation</description>
+    <name>Aspectran with Logback</name>
+    <description>Add-on package for logging with logback</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <logback.version>1.5.3</logback.version>
+        <slf4j.version>2.0.12</slf4j.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-utils</artifactId>
-            <version>${project.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.30.2-GA</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.3.2</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <version>3.4.2</version>
-        </dependency>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-with-logback</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <scope>test</scope>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.23.0</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

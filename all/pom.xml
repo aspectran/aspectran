@@ -98,6 +98,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-logback</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-pebble</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -109,42 +115,12 @@
         <!-- Optional dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
             <optional>true</optional>
         </dependency>
         <!-- Test dependencies -->
@@ -190,6 +166,7 @@
                             <includeScope>runtime</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
                             <includes>com/aspectran/**</includes>
+                            <excludeTypes>pom</excludeTypes>
                             <outputDirectory>${generatedSourceDir}</outputDirectory>
                         </configuration>
                     </execution>
@@ -205,6 +182,7 @@
                             <includeScope>runtime</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
                             <includes>com/aspectran/**</includes>
+                            <excludeTypes>pom</excludeTypes>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>

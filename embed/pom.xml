@@ -42,13 +42,10 @@
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-logback</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>
