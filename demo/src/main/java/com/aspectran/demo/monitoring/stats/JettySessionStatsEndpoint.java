@@ -34,6 +34,7 @@ import org.eclipse.jetty.session.DefaultSessionCache;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -165,10 +166,19 @@ public class JettySessionStatsEndpoint extends InstantActivitySupport {
             stats.setHighestActiveSessionCount(sessionCache.getSessionsMax());
             stats.setCreatedSessionCount(sessionCache.getSessionsTotal());
             stats.setExpiredSessionCount(sessionCache.getSessionsTotal() - sessionCache.getSessionsCurrent());
-            stats.setStartTime(jettyServer.getStatisticsHandler().getStatisticsDuration().toString());
+            stats.setElapsedTime(formatDuration(jettyServer.getStatisticsHandler().getStatisticsDuration()));
             return stats;
         }
         return null;
+    }
+
+    private static String formatDuration(@NonNull Duration duration) {
+        long seconds = duration.getSeconds();
+        return String.format(
+            "%02d:%02d:%02d",
+            seconds / 3600,
+            (seconds % 3600) / 60,
+            seconds % 60);
     }
 
 }

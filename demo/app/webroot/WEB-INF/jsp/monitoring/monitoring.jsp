@@ -1,9 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/assets/css/monitoring.css?20231125">
+<link rel="stylesheet" href="/assets/css/monitoring.css?20240307">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"></script>
-<script src="/assets/js/monitoring-log.js?20240304"></script>
-<script src="/assets/js/monitoring-session.js?20231125"></script>
+<script src="/assets/js/monitoring-log.js?20240307"></script>
+<script src="/assets/js/monitoring-session.js?20240307"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
         <h3>Server Logs
@@ -24,7 +24,7 @@
         </div>
     </div>
 </div>
-<div class="grid-x grid-padding-x stats-wrap" style="display: none">
+<div class="grid-x grid-padding-x stats-box" style="display: none">
     <div class="cell small-12 large-5 t20">
         <h3>Session Statistics
             <a id="anchor3" href="#anchor3" class="float-right hide-for-large"><span class="icon fi-anchor"></span></a></h3>
@@ -43,13 +43,13 @@
                 <dt>Rejected Sessions</dt>
                 <dd><span class="number rejectedSessionCount">0</span></dd>
             </dl>
+            <p class="text-right"><i>Elapsed <span class="elapsed"></span></i></p>
         </div>
-        <p class="text-right"><i>Since <span class="startTime"></span></i></p>
     </div>
     <div class="cell small-12 large-7 t20">
         <h3>Current Sessions
             <a id="anchor2" href="#anchor2" class="float-right show-for-large"><span class="icon fi-anchor"></span></a></h3>
-        <div class="panel sessions-wrap">
+        <div class="panel sessions-box">
             <ul class="sessions">
             </ul>
         </div>
@@ -61,7 +61,7 @@
         let sessionStats = new SessionStats("/monitoring/stats/" + serverType, 5);
         try {
             sessionStats.openSocket();
-            $(".stats-wrap").fadeIn();
+            $(".stats-box").fadeIn();
         } catch (e) {
             console.error("Socket connection failed to [" + sessionStats.endpoint + "]");
         }

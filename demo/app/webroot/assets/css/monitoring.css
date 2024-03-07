@@ -6,19 +6,18 @@
     clear: left;
     padding: 0;
     margin: 0;
-    height: 40px;
-    font-size: 1.1em;
+    height: 30px;
+    font-size: 1em;
 }
 .stats dd {
     text-align: right;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 0;
     margin: 0;
-    height: 40px;
+    height: 30px;
 }
-
-.sessions-wrap {
+.sessions-box {
     height: 260px;
     overflow-y: auto;
     list-style-type: none;

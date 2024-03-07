@@ -36,6 +36,7 @@ import jakarta.websocket.server.ServerEndpoint;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -176,7 +177,7 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
         stats.setHighestActiveSessionCount(statistics.getHighestActiveSessions());
         stats.setEvictedSessionCount(statistics.getEvictedSessions());
         stats.setRejectedSessionCount(statistics.getRejectedSessions());
-        stats.setStartTime(formatTime(statistics.getStartTime()));
+        stats.setElapsedTime(formatDuration(statistics.getStartTime()));
 
         // Current Users
         List<String> currentSessions = new ArrayList<>();
@@ -196,6 +197,18 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
     private String formatTime(long time) {
         LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
         return date.toString();
+    }
+
+    private static String formatDuration(long startTime) {
+        Instant start = Instant.ofEpochMilli(startTime);
+        Instant end = Instant.now();
+        Duration duration = Duration.between(start, end);
+        long seconds = duration.getSeconds();
+        return String.format(
+            "%02d:%02d:%02d",
+            seconds / 3600,
+            (seconds % 3600) / 60,
+            seconds % 60);
     }
 
 }
