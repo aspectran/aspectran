@@ -175,8 +175,12 @@
         }
         $("select[name=customerList] option:selected").css("color", "blue");
       },
-      error: function(request, status, error) {
-        alert("An error has occurred making the request: " + error);
+      error: function(xhr, status, error) {
+        if (xhr.status === 403) {
+          alert("Maximum number of customers exceeded");
+        } else {
+          alert("An error has occurred making the request: " + error);
+        }
       }
     });
   }

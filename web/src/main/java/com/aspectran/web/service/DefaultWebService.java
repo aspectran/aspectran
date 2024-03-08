@@ -233,13 +233,14 @@ public class DefaultWebService extends AbstractWebService {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable cause;
+            Throwable t;
             if (activity != null && activity.getRaisedException() != null) {
-                cause = ExceptionUtils.getRootCause(activity.getRaisedException());
+                t = activity.getRaisedException();
             } else {
-                cause = ExceptionUtils.getRootCause(e);
+                t = e;
             }
-            logger.error("Error occurred while processing request: " + requestMethod + " " + requestName, cause);
+            Throwable cause = ExceptionUtils.getRootCause(t);
+            logger.error("Error occurred while processing request: " + requestMethod + " " + requestName, t);
             if (!response.isCommitted()) {
                 if (cause instanceof RequestMethodNotAllowedException) {
                     sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);

@@ -46,7 +46,7 @@ public class CustomerRepository {
         for (int i = 1; i <= 10; i++) {
             Customer customer = new Customer();
             customer.putValue(Customer.id, i);
-            customer.putValue(Customer.name, "Guest - " + i);
+            customer.putValue(Customer.name, "Guest " + i);
             customer.putValue(Customer.age, i + 20);
             customer.putValue(Customer.approved, true);
             customerMap.put(i, customer);

@@ -143,16 +143,16 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable throwable;
+            Throwable t;
             if (activity != null && activity.getRaisedException() != null) {
-                throwable = activity.getRaisedException();
+                t = activity.getRaisedException();
             } else {
-                throwable = e;
+                t = e;
             }
-            Throwable cause = ExceptionUtils.getRootCause(throwable);
+            Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
                 Activity.makeRequestName(method, name) + "; Cause: " +
-                ExceptionUtils.getSimpleMessage(cause), throwable);
+                ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
     }
