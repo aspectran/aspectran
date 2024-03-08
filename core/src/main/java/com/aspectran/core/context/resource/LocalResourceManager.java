@@ -86,7 +86,18 @@ public class LocalResourceManager extends ResourceManager {
         }
 
         if (owner.isRoot()) {
-            sweepWorkResourceFiles();
+            boolean sweepable = true;
+            ClassLoader parent = owner.getParent();
+            while (parent != null) {
+                if (parent instanceof SiblingsClassLoader) {
+                    sweepable = false;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+            if (sweepable) {
+                sweepWorkResourceFiles();
+            }
         }
     }
 
