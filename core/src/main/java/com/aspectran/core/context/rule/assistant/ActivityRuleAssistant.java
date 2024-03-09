@@ -45,8 +45,8 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.Namespace;
-import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.context.rule.util.Namespace;
+import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -113,7 +113,7 @@ public class ActivityRuleAssistant {
         this.environmentProfiles = environmentProfiles;
     }
 
-    public void ready() {
+    public void prepare() {
         settings = new HashMap<>();
         environmentRules = new LinkedList<>();
         typeAliases = new HashMap<>();
@@ -158,6 +158,11 @@ public class ActivityRuleAssistant {
         }
     }
 
+    public ClassLoader getClassLoader() {
+        Assert.notNull(classLoader, "ClassLoader is not set");
+        return classLoader;
+    }
+
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
@@ -168,11 +173,6 @@ public class ActivityRuleAssistant {
         } else {
             return null;
         }
-    }
-
-    public ClassLoader getClassLoader() {
-        Assert.notNull(classLoader, "ClassLoader is not set");
-        return classLoader;
     }
 
     public EnvironmentProfiles getEnvironmentProfiles() {

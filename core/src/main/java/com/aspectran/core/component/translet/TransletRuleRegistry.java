@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.Namespace;
+import com.aspectran.core.context.rule.util.Namespace;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.annotation.jsr305.NonNull;

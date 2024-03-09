@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TextStyleType;
-import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.ToStringBuilder;

@@ -38,8 +38,6 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     private boolean trailingSlashRedirect;
 
-    private ClassLoader altClassLoader;
-
     AbstractWebService(@NonNull ServletContext servletContext) {
         this(servletContext, null);
     }
@@ -72,15 +70,6 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     public boolean isTrailingSlashRedirect() {
         return trailingSlashRedirect;
-    }
-
-    @Override
-    public ClassLoader getAltClassLoader() {
-        return altClassLoader;
-    }
-
-    public void setAltClassLoader(ClassLoader altClassLoader) {
-        this.altClassLoader = altClassLoader;
     }
 
     @Override

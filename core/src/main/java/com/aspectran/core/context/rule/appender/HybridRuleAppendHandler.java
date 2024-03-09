@@ -127,7 +127,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         RootParameters rootParameters;
         try {
             assistant = new ShallowContextRuleAssistant();
-            assistant.ready();
+            assistant.prepare();
 
             AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
             parser.parse(fileRuleAppender);

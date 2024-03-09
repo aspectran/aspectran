@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * The Class ShallowContextRuleAssistant.
- * 
+ *
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
 public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
@@ -55,8 +55,8 @@ public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
     }
 
     @Override
-    public void ready() {
-        super.ready();
+    public void prepare() {
+        super.prepare();
 
         aspectRules = new ArrayList<>();
         beanRules = new ArrayList<>();

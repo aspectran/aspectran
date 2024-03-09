@@ -88,6 +88,8 @@ public interface CoreService {
      */
     ClassLoader getServiceClassLoader();
 
+    ClassLoader getAltClassLoader();
+
     /**
      * @return the default activity
      */

@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.type.TextStyleType;
-import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;

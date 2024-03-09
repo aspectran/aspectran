@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.context.rule.util.Namespace;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

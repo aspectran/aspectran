@@ -56,6 +56,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private ClassLoader serviceClassLoader;
 
+    private ClassLoader altClassLoader;
+
     private SchedulerService schedulerService;
 
     public AbstractCoreService() {
@@ -192,6 +194,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     protected void setServiceClassLoader(ClassLoader serviceClassLoader) {
         this.serviceClassLoader = serviceClassLoader;
+    }
+
+    @Override
+    public ClassLoader getAltClassLoader() {
+        return altClassLoader;
+    }
+
+    public void setAltClassLoader(ClassLoader altClassLoader) {
+        this.altClassLoader = altClassLoader;
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
@@ -45,10 +46,6 @@ public class DefaultWebServiceFactory {
     private static final Logger logger = LoggerFactory.getLogger(DefaultWebServiceFactory.class);
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
-
-    private static final String ASPECTRAN_CONFIG_FILE_FROM = "file:";
-
-    private static final String ASPECTRAN_CONFIG_RESOURCE_FROM = "resource:";
 
     private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
 
@@ -160,19 +157,18 @@ public class DefaultWebServiceFactory {
     private static AspectranConfig makeAspectranConfig(ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
-            if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_FILE_FROM)) {
-                String filePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_FILE_FROM.length()).stripLeading();
+            if (aspectranConfigParam.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+                String filePath = aspectranConfigParam.substring(ResourceUtils.FILE_URL_PREFIX.length()).stripLeading();
                 try {
                     File configFile = new File(servletContext.getRealPath(filePath));
                     aspectranConfig = new AspectranConfig(configFile);
                 } catch (IOException e) {
                     throw new AspectranServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
                 }
-            } else if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_RESOURCE_FROM)) {
-                String resourcePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_RESOURCE_FROM.length()).stripLeading();
+            } else if (aspectranConfigParam.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+                String resourcePath = aspectranConfigParam.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length()).stripLeading();
                 try {
-                    File configFile = ResourceUtils.getResourceAsFile(resourcePath);
-                    aspectranConfig = new AspectranConfig(configFile);
+                    aspectranConfig = new AspectranConfig(ResourceUtils.getResourceAsReader(resourcePath));
                 } catch (IOException e) {
                     throw new AspectranServiceException("Error parsing Aspectran configuration from resource: " +
                         resourcePath, e);
@@ -195,13 +191,13 @@ public class DefaultWebServiceFactory {
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                WebServiceHolder.hold(webService);
+                CoreServiceHolder.hold(webService);
 
                 // Required for any websocket support
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
                 if (serverEndpointExporter.hasServerContainer()) {
                     for (Class<?> endpointClass : serverEndpointExporter.registerEndpoints()) {
-                        WebServiceHolder.hold(webService, endpointClass);
+                        CoreServiceHolder.hold(webService, endpointClass);
                     }
                 }
 
@@ -238,7 +234,7 @@ public class DefaultWebServiceFactory {
             @Override
             public void stopped() {
                 paused();
-                WebServiceHolder.release(webService);
+                CoreServiceHolder.release(webService);
             }
         });
     }

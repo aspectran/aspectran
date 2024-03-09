@@ -238,7 +238,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException {
+    public void configure(ContextConfig contextConfig) throws InvalidResourceException {
         if (contextConfig == null) {
             throw new IllegalArgumentException("contextConfig must not be null");
         }
@@ -345,6 +345,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
         DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getClassLoader(), assistant.getApplicationAdapter());
+        if (getContextConfig() != null) {
+            activityContext.setName(getContextConfig().getName());
+        }
         activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
         ActivityEnvironment activityEnvironment = createActivityEnvironment(assistant, activityContext);

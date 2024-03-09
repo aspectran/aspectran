@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.type.AppenderType;
+import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.io.IOException;
@@ -51,16 +52,7 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
     @Override
     public InputStream getInputStream() throws IOException {
         try {
-            InputStream inputStream;
-            if (classLoader != null) {
-                inputStream = classLoader.getResourceAsStream(resource);
-            } else {
-                inputStream = getClass().getResourceAsStream(resource);
-            }
-            if (inputStream == null) {
-                throw new IOException("Resource not found: " + resource);
-            }
-            return inputStream;
+            return ResourceUtils.getResourceAsStream(resource, classLoader);
         } catch (Exception e) {
             throw new IOException("Failed to get rules from resource " + resource, e);
         }

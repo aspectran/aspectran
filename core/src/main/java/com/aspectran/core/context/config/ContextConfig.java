@@ -22,6 +22,7 @@ import com.aspectran.utils.apon.ValueType;
 
 public class ContextConfig extends AbstractParameters {
 
+    private static final ParameterKey name;
     private static final ParameterKey base;
     private static final ParameterKey rules;
     private static final ParameterKey encoding;
@@ -35,6 +36,7 @@ public class ContextConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
+        name = new ParameterKey("name", ValueType.STRING);
         base = new ParameterKey("base", ValueType.STRING);
         rules = new ParameterKey("rules", ValueType.STRING, true);
         encoding = new ParameterKey("encoding", ValueType.STRING);
@@ -46,6 +48,7 @@ public class ContextConfig extends AbstractParameters {
         parameters = new ParameterKey("parameters", AspectranParameters.class);
 
         parameterKeys = new ParameterKey[] {
+                name,
                 base,
                 rules,
                 encoding,
@@ -60,6 +63,15 @@ public class ContextConfig extends AbstractParameters {
 
     public ContextConfig() {
         super(parameterKeys);
+    }
+
+    public String getName() {
+        return getString(name);
+    }
+
+    public ContextConfig setName(String name) {
+        putValue(name, ContextConfig.name);
+        return this;
     }
 
     public String getBasePath() {

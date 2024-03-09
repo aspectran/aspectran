@@ -97,7 +97,7 @@ public class AspectranCoreService extends AbstractCoreService {
             } else {
                 activityContextBuilder.setBasePath(getBasePath());
             }
-            activityContextBuilder.setContextConfig(contextConfig);
+            activityContextBuilder.configure(contextConfig);
             activityContextBuilder.setServiceController(getServiceController());
             setActivityContextBuilder(activityContextBuilder);
 

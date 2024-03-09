@@ -112,8 +112,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 applicationAdapter = createApplicationAdapter();
             }
             EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
-            ActivityRuleAssistant assistant = new ActivityRuleAssistant(classLoader, applicationAdapter, environmentProfiles);
-            assistant.ready();
+            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
+            ActivityRuleAssistant assistant = new ActivityRuleAssistant(
+                classLoader, applicationAdapter, environmentProfiles);
+            assistant.prepare();
 
             if (getBasePackages() != null) {
                 BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();

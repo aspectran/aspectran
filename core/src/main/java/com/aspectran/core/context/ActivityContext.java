@@ -47,6 +47,8 @@ public interface ActivityContext {
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
+    String getName();
+
     /**
      * Gets the description of this ActivityContext.
      * @return the description of this ActivityContext

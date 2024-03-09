@@ -403,31 +403,28 @@ public abstract class ResourceUtils {
     /**
      * Returns the URL of the resource on the classpath.
      * @param resource the resource to find
-     * @return {@code URL} object for reading the resource;
-     *      {@code null} if the resource could not be found
+     * @return {@code URL} object for reading the resource
      * @throws IOException if the resource cannot be found or read
      */
     @NonNull
     public static URL getResource(String resource) throws IOException {
-        return getResource(resource, ClassUtils.getDefaultClassLoader());
+        return getResource(resource, null);
     }
 
     /**
      * Returns the URL of the resource on the classpath.
      * @param classLoader the class loader used to load the resource
      * @param resource the resource to find
-     * @return {@code URL} object for reading the resource;
-     *      {@code null} if the resource could not be found
+     * @return {@code URL} object for reading the resource
      * @throws IOException if the resource cannot be found or read
      */
     @NonNull
     public static URL getResource(String resource, ClassLoader classLoader) throws IOException {
-        URL url = null;
+        URL url;
         if (classLoader != null) {
             url = classLoader.getResource(resource);
-        }
-        if (url == null) {
-            url = ClassLoader.getSystemResource(resource);
+        } else {
+            url = ClassUtils.getDefaultClassLoader().getResource(resource);
         }
         if (url == null) {
             throw new IOException("Could not find resource '" + resource + "'");
@@ -454,30 +451,51 @@ public abstract class ResourceUtils {
      */
     @NonNull
     public static InputStream getResourceAsStream(String resource) throws IOException {
-        return getResourceAsStream(resource, ClassUtils.getDefaultClassLoader());
+        return getResourceAsStream(resource, null);
     }
 
     /**
      * Returns a resource on the classpath as a Stream object.
      * @param resource the resource to find
-     * @param classLoader the class loader
-     * @return an input stream for reading the resource;
-     *      {@code null} if the resource could not be found
+     * @param classLoader the class loader used to load the resource
+     * @return an input stream for reading the resource
      * @throws IOException if the resource cannot be found or read
      */
     @NonNull
     public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
-        InputStream stream = null;
+        InputStream stream;
         if (classLoader != null) {
             stream = classLoader.getResourceAsStream(resource);
-        }
-        if (stream == null) {
-            stream = ClassLoader.getSystemResourceAsStream(resource);
+        } else {
+            stream = ClassUtils.getDefaultClassLoader().getResourceAsStream(resource);
         }
         if (stream == null) {
             throw new IOException("Could not find resource " + resource);
         }
         return stream;
+    }
+
+    /**
+     * Returns a resource on the classpath as a Stream object.
+     * @param resource the resource to find
+     * @return a stream reader for reading the resource
+     * @throws IOException if the resource cannot be found or read
+     */
+    @NonNull
+    public static Reader getResourceAsReader(String resource) throws IOException {
+        return new InputStreamReader(getResourceAsStream(resource, null));
+    }
+
+    /**
+     * Returns a resource on the classpath as a Stream object.
+     * @param resource the resource to find
+     * @param classLoader the class loader used to load the resource
+     * @return a stream reader for reading the resource
+     * @throws IOException if the resource cannot be found or read
+     */
+    @NonNull
+    public static Reader getResourceAsReader(String resource, ClassLoader classLoader) throws IOException {
+        return new InputStreamReader(getResourceAsStream(resource, classLoader));
     }
 
     /**

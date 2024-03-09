@@ -92,7 +92,7 @@ public interface ActivityContextBuilder {
 
     void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
-    void setContextConfig(ContextConfig contextConfig) throws InvalidResourceException;
+    void configure(ContextConfig contextConfig) throws InvalidResourceException;
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 

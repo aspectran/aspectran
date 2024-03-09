@@ -54,6 +54,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private final Activity defaultActivity;
 
+    private String name;
+
     private DescriptionRule descriptionRule;
 
     private CoreService rootService;
@@ -81,6 +83,15 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.defaultActivity = new DefaultActivity(this);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public DescriptionRule getDescriptionRule() {

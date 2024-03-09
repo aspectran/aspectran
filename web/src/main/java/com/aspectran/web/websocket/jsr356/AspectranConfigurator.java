@@ -16,9 +16,9 @@
 package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.web.service.WebServiceHolder;
 import jakarta.websocket.server.ServerEndpointConfig;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;
 
@@ -34,7 +34,7 @@ public class AspectranConfigurator extends Configurator {
 
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
-        ActivityContext context = WebServiceHolder.getActivityContext(endpointClass);
+        ActivityContext context = CoreServiceHolder.getActivityContext(endpointClass);
         if (context == null) {
             String message = "No WebService found for " + endpointClass;
             logger.error(message);
