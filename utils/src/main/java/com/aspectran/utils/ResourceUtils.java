@@ -427,6 +427,9 @@ public abstract class ResourceUtils {
             url = ClassUtils.getDefaultClassLoader().getResource(resource);
         }
         if (url == null) {
+            url = ClassUtils.class.getResource(resource);
+        }
+        if (url == null) {
             throw new IOException("Could not find resource '" + resource + "'");
         }
         return url;
@@ -468,6 +471,9 @@ public abstract class ResourceUtils {
             stream = classLoader.getResourceAsStream(resource);
         } else {
             stream = ClassUtils.getDefaultClassLoader().getResourceAsStream(resource);
+        }
+        if (stream == null) {
+            stream = ClassUtils.class.getResourceAsStream(resource);
         }
         if (stream == null) {
             throw new IOException("Could not find resource " + resource);
