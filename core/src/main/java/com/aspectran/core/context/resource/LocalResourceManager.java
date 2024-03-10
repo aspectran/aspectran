@@ -68,7 +68,7 @@ public class LocalResourceManager extends ResourceManager {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
                 if (logger.isDebugEnabled()) {
-                    logger.warn("Non-existent or inaccessible resource location: " + resourceLocation);
+                    logger.debug("Non-existent or inaccessible resource location: " + resourceLocation);
                 }
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
