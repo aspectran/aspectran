@@ -24,6 +24,7 @@ import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.utils.ExceptionUtils;
@@ -143,6 +144,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         daemonService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                CoreServiceHolder.hold(daemonService);
                 daemonService.createSessionManager();
                 daemonService.pauseTimeout = 0L;
             }
@@ -176,6 +178,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             public void stopped() {
                 paused();
                 daemonService.destroySessionManager();
+                CoreServiceHolder.release(daemonService);
             }
         });
     }

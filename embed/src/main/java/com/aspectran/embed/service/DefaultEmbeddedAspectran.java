@@ -25,6 +25,7 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
 import com.aspectran.utils.Assert;
@@ -214,6 +215,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                CoreServiceHolder.hold(aspectran);
                 aspectran.createSessionManager();
                 aspectran.pauseTimeout = 0L;
             }
@@ -247,6 +249,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             public void stopped() {
                 aspectran.destroySessionManager();
                 paused();
+                CoreServiceHolder.release(aspectran);
             }
         });
     }

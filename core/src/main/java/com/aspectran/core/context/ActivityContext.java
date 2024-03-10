@@ -47,11 +47,19 @@ public interface ActivityContext {
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
+    /**
+     * Returns the name of this ActivityContext or {@code null} if
+     * this ActivityContext is not named.
+     * @return name of this ActivityContext; or {@code null} if
+     * this ActivityContext is not named.
+     */
     String getName();
 
     /**
-     * Gets the description of this ActivityContext.
-     * @return the description of this ActivityContext
+     * Returns the description of this ActivityContext or {@code null} if
+     * this ActivityContext has no description.
+     * @return description of this ActivityContext or {@code null} if
+     * this ActivityContext has no description.
      */
     String getDescription();
 

@@ -53,13 +53,13 @@ public class LocalResourceManager extends ResourceManager {
 
     private final int resourceNameStart;
 
-    private final SiblingsClassLoader owner;
+    private final SiblingClassLoader owner;
 
-    public LocalResourceManager(SiblingsClassLoader owner) throws InvalidResourceException {
+    LocalResourceManager(SiblingClassLoader owner) throws InvalidResourceException {
         this(owner, null);
     }
 
-    public LocalResourceManager(SiblingsClassLoader owner, String resourceLocation) throws InvalidResourceException {
+    LocalResourceManager(SiblingClassLoader owner, String resourceLocation) throws InvalidResourceException {
         super();
 
         this.owner = owner;
@@ -67,7 +67,9 @@ public class LocalResourceManager extends ResourceManager {
         if (resourceLocation != null && !resourceLocation.isEmpty()) {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
-                logger.warn("Non-existent or inaccessible resource location: " + resourceLocation);
+                if (logger.isDebugEnabled()) {
+                    logger.warn("Non-existent or inaccessible resource location: " + resourceLocation);
+                }
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
                 return;
@@ -89,7 +91,7 @@ public class LocalResourceManager extends ResourceManager {
             boolean sweepable = true;
             ClassLoader parent = owner.getParent();
             while (parent != null) {
-                if (parent instanceof SiblingsClassLoader) {
+                if (parent instanceof SiblingClassLoader) {
                     sweepable = false;
                     break;
                 }

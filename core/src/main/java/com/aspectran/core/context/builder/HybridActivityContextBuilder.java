@@ -106,13 +106,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
-            ClassLoader classLoader = createSiblingsClassLoader();
+            ClassLoader classLoader = createSiblingClassLoader();
             ApplicationAdapter applicationAdapter = this.applicationAdapter;
             if (applicationAdapter == null) {
                 applicationAdapter = createApplicationAdapter();
             }
             EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
-            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
             ActivityRuleAssistant assistant = new ActivityRuleAssistant(
                 classLoader, applicationAdapter, environmentProfiles);
             assistant.prepare();

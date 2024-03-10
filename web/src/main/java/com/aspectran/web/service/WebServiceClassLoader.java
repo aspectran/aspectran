@@ -23,7 +23,8 @@ import java.net.URLClassLoader;
 public class WebServiceClassLoader extends URLClassLoader {
 
     public WebServiceClassLoader(ClassLoader parent) {
-        super(new URL[] {}, (parent != null ? parent : ClassUtils.getDefaultClassLoader()));
+        super((parent != null ? parent.getName() : null),
+            new URL[] {}, (parent != null ? parent : ClassUtils.getDefaultClassLoader()));
     }
 
 }

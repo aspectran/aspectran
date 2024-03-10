@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.context.resource.SiblingsClassLoader;
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -99,7 +99,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
         if (isServiceAvailable()) {
             ClassLoader classLoader = getDaemonService().getServiceClassLoader();
-            if (classLoader instanceof SiblingsClassLoader scl) {
+            if (classLoader instanceof SiblingClassLoader scl) {
                 Enumeration<URL> urls = scl.getAllResources();
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();

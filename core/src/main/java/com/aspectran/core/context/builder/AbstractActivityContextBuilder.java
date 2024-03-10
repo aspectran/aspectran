@@ -39,7 +39,7 @@ import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.resource.ResourceManager;
-import com.aspectran.core.context.resource.SiblingsClassLoader;
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -93,7 +93,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ServiceController serviceController;
 
-    private SiblingsClassLoader siblingsClassLoader;
+    private SiblingClassLoader siblingClassLoader;
 
     private boolean useAponToLoadXml;
 
@@ -234,7 +234,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @Override
     public ClassLoader getClassLoader() {
-        return siblingsClassLoader;
+        return siblingClassLoader;
     }
 
     @Override
@@ -309,13 +309,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.debugMode = debugMode;
     }
 
-    protected SiblingsClassLoader createSiblingsClassLoader() throws InvalidResourceException {
-        if (siblingsClassLoader == null || hardReload) {
-            siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
+    protected SiblingClassLoader createSiblingClassLoader() throws InvalidResourceException {
+        if (siblingClassLoader == null || hardReload) {
+            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
+            siblingClassLoader = new SiblingClassLoader(contextName, resourceLocations);
         } else {
-            siblingsClassLoader.reload();
+            siblingClassLoader.reload();
         }
-        return siblingsClassLoader;
+        return siblingClassLoader;
     }
 
     protected ApplicationAdapter createApplicationAdapter() {
@@ -381,9 +382,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected void startContextReloadingTimer() {
-        if (autoReloadEnabled && siblingsClassLoader != null) {
+        if (autoReloadEnabled && siblingClassLoader != null) {
             contextReloadingTimer = new ContextReloadingTimer(serviceController);
-            contextReloadingTimer.setResources(siblingsClassLoader.getAllResources());
+            contextReloadingTimer.setResources(siblingClassLoader.getAllResources());
             contextReloadingTimer.start(scanIntervalSeconds);
         }
     }

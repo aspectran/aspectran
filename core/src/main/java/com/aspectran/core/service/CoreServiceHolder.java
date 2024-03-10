@@ -16,7 +16,7 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.resource.SiblingsClassLoader;
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
@@ -79,7 +79,7 @@ public class CoreServiceHolder {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
             CoreService service = servicePerThread.get(classLoader);
-            if (service == null && !(classLoader instanceof SiblingsClassLoader)) {
+            if (service == null && !(classLoader instanceof SiblingClassLoader)) {
                 service = servicePerThread.get(classLoader.getParent());
             }
             if (service != null) {

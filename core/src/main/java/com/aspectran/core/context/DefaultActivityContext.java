@@ -104,10 +104,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public String getDescription() {
-        if (descriptionRule == null) {
+        if (descriptionRule != null) {
+            return DescriptionRule.render(descriptionRule, defaultActivity);
+        } else {
             return null;
         }
-        return DescriptionRule.render(descriptionRule, defaultActivity);
     }
 
     @Override

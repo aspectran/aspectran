@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.builtins;
 
-import com.aspectran.core.context.resource.SiblingsClassLoader;
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
@@ -128,7 +128,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
         if (isServiceAvailable()) {
             ClassLoader classLoader = getShellService().getServiceClassLoader();
-            if (classLoader instanceof SiblingsClassLoader scl) {
+            if (classLoader instanceof SiblingClassLoader scl) {
                 Enumeration<URL> urls = scl.getAllResources();
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();

@@ -39,7 +39,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
     @Serial
     private static final long serialVersionUID = -6936820061673430782L;
 
-    public ResourceEntries() {
+    ResourceEntries() {
         super();
     }
 

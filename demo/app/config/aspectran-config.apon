@@ -6,6 +6,7 @@ system: {
     }
 }
 context: {
+    name: demo
     rules: [
         /config/app-context.xml
     ]

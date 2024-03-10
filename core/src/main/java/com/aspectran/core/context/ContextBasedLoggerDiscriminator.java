@@ -2,7 +2,6 @@ package com.aspectran.core.context;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.sift.AbstractDiscriminator;
-import ch.qos.logback.core.util.OptionHelper;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.utils.StringUtils;

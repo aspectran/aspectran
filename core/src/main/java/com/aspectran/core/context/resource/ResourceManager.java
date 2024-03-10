@@ -47,7 +47,7 @@ public class ResourceManager {
 
     private final ResourceEntries resourceEntries = new ResourceEntries();
 
-    public ResourceManager() {
+    ResourceManager() {
     }
 
     public URL getResource(String name) {
@@ -55,7 +55,7 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners) {
+    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners) {
         return new Enumeration<>() {
             private Iterator<URL> values;
             private URL next;
@@ -96,12 +96,12 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name) {
+    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners, String name) {
         return getResources(owners, name, null);
     }
 
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name,
+    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners, String name,
                                                 final Enumeration<URL> inherited) {
         if (owners == null || name == null) {
             return Collections.emptyEnumeration();
@@ -160,12 +160,12 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name) {
+    public static Enumeration<URL> searchResources(final Iterator<SiblingClassLoader> owners, String name) {
         return searchResources(owners, name, null);
     }
 
     @NonNull
-    public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name,
+    public static Enumeration<URL> searchResources(final Iterator<SiblingClassLoader> owners, String name,
                                                    final Enumeration<URL> inherited) {
         if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);

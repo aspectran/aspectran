@@ -27,6 +27,7 @@ import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
@@ -271,6 +272,7 @@ public class DefaultShellService extends AbstractShellService {
         shellService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                CoreServiceHolder.hold(shellService);
                 shellService.createSessionManager();
                 shellService.pauseTimeout = 0L;
                 shellService.printGreetings();
@@ -306,6 +308,7 @@ public class DefaultShellService extends AbstractShellService {
             public void stopped() {
                 paused();
                 shellService.destroySessionManager();
+                CoreServiceHolder.release(shellService);
             }
         });
     }
