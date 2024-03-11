@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 This web.xml is only needed when using the Jetty server.
-The Undertow server does not use web.xml separately, instead it is set directly in tow-web-root.xml.
+The Undertow server does not use web.xml separately, instead it is set directly in tow-context.xml.
 -->
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
