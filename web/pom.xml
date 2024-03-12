@@ -36,6 +36,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-logback</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -73,14 +80,7 @@
             <version>2.1.1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-with-logback</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
+        <!-- Additional testing dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

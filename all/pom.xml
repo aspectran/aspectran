@@ -123,7 +123,7 @@
             <artifactId>log4j-api</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- Test dependencies -->
+        <!-- Additional testing dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

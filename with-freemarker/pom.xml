@@ -38,6 +38,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-logback</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -47,18 +54,11 @@
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
         </dependency>
-        <!-- Test dependencies -->
+        <!-- Additional testing dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-embed</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-with-logback</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>
