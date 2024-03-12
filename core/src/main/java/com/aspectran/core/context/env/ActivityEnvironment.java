@@ -27,15 +27,15 @@ import com.aspectran.core.context.rule.ItemRuleMap;
  */
 public class ActivityEnvironment implements Environment {
 
-    private final EnvironmentProfiles environmentProfiles;
+    private final ActivityContext context;
 
-    private final ActivityContext activityContext;
+    private final EnvironmentProfiles environmentProfiles;
 
     private ItemRuleMap propertyItemRuleMap;
 
-    public ActivityEnvironment(EnvironmentProfiles environmentProfiles, ActivityContext activityContext) {
+    public ActivityEnvironment(ActivityContext context, EnvironmentProfiles environmentProfiles) {
+        this.context = context;
         this.environmentProfiles = environmentProfiles;
-        this.activityContext = activityContext;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ActivityEnvironment implements Environment {
 
     @Override
     public <T> T getProperty(String name) {
-        return getProperty(name, activityContext.getAvailableActivity());
+        return getProperty(name, context.getAvailableActivity());
     }
 
     @Override

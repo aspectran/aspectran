@@ -345,14 +345,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      */
     protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
-        DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getClassLoader(), assistant.getApplicationAdapter());
+        DefaultActivityContext context = new DefaultActivityContext(
+                assistant.getClassLoader(), assistant.getApplicationAdapter());
         if (getContextConfig() != null) {
-            activityContext.setName(getContextConfig().getName());
+            context.setName(getContextConfig().getName());
         }
-        activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
+        context.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
-        ActivityEnvironment activityEnvironment = createActivityEnvironment(assistant, activityContext);
-        activityContext.setActivityEnvironment(activityEnvironment);
+        ActivityEnvironment activityEnvironment = createActivityEnvironment(context, assistant);
+        context.setActivityEnvironment(activityEnvironment);
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
@@ -364,21 +365,21 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         initAspectRuleRegistry(assistant);
 
-        DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(activityContext, beanRuleRegistry);
+        DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(context, beanRuleRegistry);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
         DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(
-                activityContext, templateRuleRegistry);
+                context, templateRuleRegistry);
 
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
-        activityContext.setAspectRuleRegistry(aspectRuleRegistry);
-        activityContext.setDefaultBeanRegistry(defaultBeanRegistry);
-        activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-        activityContext.setDefaultTemplateRenderer(defaultTemplateRenderer);
-        activityContext.setTransletRuleRegistry(transletRuleRegistry);
-        return activityContext;
+        context.setAspectRuleRegistry(aspectRuleRegistry);
+        context.setDefaultBeanRegistry(defaultBeanRegistry);
+        context.setScheduleRuleRegistry(scheduleRuleRegistry);
+        context.setDefaultTemplateRenderer(defaultTemplateRenderer);
+        context.setTransletRuleRegistry(transletRuleRegistry);
+        return context;
     }
 
     protected void startContextReloadingTimer() {
@@ -397,10 +398,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @NonNull
-    private ActivityEnvironment createActivityEnvironment(@NonNull ActivityRuleAssistant assistant,
-                                                          ActivityContext activityContext) {
+    private ActivityEnvironment createActivityEnvironment(ActivityContext context,
+                                                          @NonNull ActivityRuleAssistant assistant) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
-        ActivityEnvironment environment = new ActivityEnvironment(environmentProfiles, activityContext);
+        ActivityEnvironment environment = new ActivityEnvironment(context, environmentProfiles);
         if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
             environment.setPropertyItemRuleMap(propertyItemRuleMap);
         }
