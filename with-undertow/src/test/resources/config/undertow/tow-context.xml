@@ -32,7 +32,13 @@
             <item name="scratchDir">%{tow.context.root.scratchDir}</item>
             <item name="sessionManager">#{tow.context.root.sessionManager}</item>
             <item name="servletSessionConfig">
-                <bean class="io.undertow.servlet.api.ServletSessionConfig"/>
+                <bean class="io.undertow.servlet.api.ServletSessionConfig">
+                    <properties>
+                        <item name="sessionTrackingModes" type="set">
+                            <value>#{class:jakarta.servlet.SessionTrackingMode^COOKIE}</value>
+                        </item>
+                    </properties>
+                </bean>
             </item>
             <item name="servlets" type="array">
                 <bean class="com.aspectran.undertow.server.servlet.TowServlet">

@@ -159,19 +159,20 @@ public class BeanReferenceInspector {
 
     private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
-            Token t = (Token)refererInfo.getReferenceable();
-            if (t.getAlternativeValue() != null && t.getGetterName() != null) {
-                Class<?> beanClass = (Class<?>)t.getAlternativeValue();
+            Token token = (Token)refererInfo.getReferenceable();
+            if (token.getAlternativeValue() != null && token.getGetterName() != null) {
+                Class<?> beanClass = (Class<?>)token.getAlternativeValue();
                 if (beanClass.isEnum()) {
-                    Object[] enumConstants = beanClass.getEnumConstants();
-                    for (Object en : enumConstants) {
-                        if (t.getGetterName().equals(en.toString())) {
-                            return true;
+                    Object[] enums = beanClass.getEnumConstants();
+                    if (enums != null) {
+                        for (Object en : enums) {
+                            if (token.getGetterName().equals(en.toString())) {
+                                return true;
+                            }
                         }
                     }
-                } else {
-                    return BeanUtils.hasReadableProperty((Class<?>) t.getAlternativeValue(), t.getGetterName());
                 }
+                return BeanUtils.hasReadableProperty((Class<?>)token.getAlternativeValue(), token.getGetterName());
             }
         }
         return false;

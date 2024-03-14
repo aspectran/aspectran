@@ -330,20 +330,23 @@ public class TokenEvaluation implements TokenEvaluator {
                 }
             } else {
                 Class<?> beanClass = (Class<?>)token.getAlternativeValue();
+                String getterName = token.getGetterName();
+                if (getterName != null && beanClass.isEnum()) {
+                    Object[] enums = beanClass.getEnumConstants();
+                    if (enums != null) {
+                        for (Object en : enums) {
+                            if (getterName.equals(en.toString())) {
+                                return en;
+                            }
+                        }
+                    }
+                }
                 try {
                     value = activity.getBean(beanClass);
                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                    if (token.getGetterName() != null) {
-                        if (beanClass.isEnum()) {
-                            Object[] enumConstants = beanClass.getEnumConstants();
-                            for (Object en : enumConstants) {
-                                if (token.getGetterName().equals(en.toString())) {
-                                    return en;
-                                }
-                            }
-                        }
+                    if (getterName != null) {
                         try {
-                            value = BeanUtils.getProperty(beanClass, token.getGetterName());
+                            value = BeanUtils.getProperty(beanClass, getterName);
                             if (value == null) {
                                 value = token.getDefaultValue();
                             }
@@ -354,8 +357,8 @@ public class TokenEvaluation implements TokenEvaluator {
                     }
                     throw e;
                 }
-                if (value != null && token.getGetterName() != null) {
-                    value = getBeanProperty(value, token.getGetterName());
+                if (value != null && getterName != null) {
+                    value = getBeanProperty(value, getterName);
                 }
             }
         } else {
