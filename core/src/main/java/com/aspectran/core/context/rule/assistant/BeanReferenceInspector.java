@@ -132,7 +132,7 @@ public class BeanReferenceInspector {
                 } else {
                     int count = 0;
                     for (RefererInfo refererInfo : refererInfoSet) {
-                        if (!isStaticMethodReference(refererInfo)) {
+                        if (!isStaticReference(refererInfo)) {
                             count++;
                             logger.error("Cannot resolve reference to bean " + refererKey +
                                     "; Referer: " + refererInfo);
@@ -157,11 +157,21 @@ public class BeanReferenceInspector {
         }
     }
 
-    private boolean isStaticMethodReference(@NonNull RefererInfo refererInfo) {
+    private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token t = (Token)refererInfo.getReferenceable();
             if (t.getAlternativeValue() != null && t.getGetterName() != null) {
-                return BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName());
+                Class<?> beanClass = (Class<?>)t.getAlternativeValue();
+                if (beanClass.isEnum()) {
+                    Object[] enumConstants = beanClass.getEnumConstants();
+                    for (Object en : enumConstants) {
+                        if (t.getGetterName().equals(en.toString())) {
+                            return true;
+                        }
+                    }
+                } else {
+                    return BeanUtils.hasReadableProperty((Class<?>) t.getAlternativeValue(), t.getGetterName());
+                }
             }
         }
         return false;

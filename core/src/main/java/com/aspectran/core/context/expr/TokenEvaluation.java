@@ -334,6 +334,14 @@ public class TokenEvaluation implements TokenEvaluator {
                     value = activity.getBean(beanClass);
                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                     if (token.getGetterName() != null) {
+                        if (beanClass.isEnum()) {
+                            Object[] enumConstants = beanClass.getEnumConstants();
+                            for (Object en : enumConstants) {
+                                if (token.getGetterName().equals(en.toString())) {
+                                    return en;
+                                }
+                            }
+                        }
                         try {
                             value = BeanUtils.getProperty(beanClass, token.getGetterName());
                             if (value == null) {

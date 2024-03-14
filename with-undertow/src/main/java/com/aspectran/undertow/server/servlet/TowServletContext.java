@@ -31,9 +31,11 @@ import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
+import io.undertow.servlet.api.ServletSessionConfig;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.SessionTrackingMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +94,15 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
         setSessionManagerFactory(deployment -> sessionManager);
+    }
+
+    @Override
+    public DeploymentInfo setServletSessionConfig(ServletSessionConfig servletSessionConfig) {
+        if (servletSessionConfig != null) {
+            // Disable URL-based session tracking (no more 'jsessionid' in the URL)
+            servletSessionConfig.setSessionTrackingModes(Collections.singleton(SessionTrackingMode.COOKIE));
+        }
+        return super.setServletSessionConfig(servletSessionConfig);
     }
 
     public void setInitParams(Map<String, String> initParams) {
