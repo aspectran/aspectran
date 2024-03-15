@@ -44,6 +44,7 @@ public class JsvcDaemon implements Daemon {
                 defaultDaemon.prepare(basePath, aspectranConfigFile);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
+                destroy();
                 throw e;
             }
         }

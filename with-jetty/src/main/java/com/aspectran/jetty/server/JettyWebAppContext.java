@@ -21,6 +21,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebServiceFactory;
@@ -57,7 +58,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     @AvoidAdvice
-    public void setActivityContext(ActivityContext context) {
+    public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }
 

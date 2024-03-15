@@ -31,11 +31,10 @@ import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
-import io.undertow.servlet.api.ServletSessionConfig;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.SessionTrackingMode;
+import org.apache.hc.core5.util.Asserts;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,15 +95,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         setSessionManagerFactory(deployment -> sessionManager);
     }
 
-    @Override
-    public DeploymentInfo setServletSessionConfig(ServletSessionConfig servletSessionConfig) {
-        if (servletSessionConfig != null) {
-            // Disable URL-based session tracking (no more 'jsessionid' in the URL)
-            servletSessionConfig.setSessionTrackingModes(Collections.singleton(SessionTrackingMode.COOKIE));
-        }
-        return super.setServletSessionConfig(servletSessionConfig);
-    }
-
     public void setInitParams(Map<String, String> initParams) {
         if (initParams != null) {
             for (Map.Entry<String, String> entry : initParams.entrySet()) {
@@ -162,7 +152,8 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
-    public void setServletContainerInitializers(@NonNull ServletContainerInitializer[] servletContainerInitializers) {
+    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+        Asserts.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
             Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
             InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);

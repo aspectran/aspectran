@@ -27,8 +27,13 @@ public class TestDaemon extends AbstractDaemon {
     public void run(String[] args) throws Exception {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
-        prepare(basePath, aspectranConfigFile);
-        start(false);
+        try {
+            prepare(basePath, aspectranConfigFile);
+            start(false);
+        } catch (Exception e) {
+            destroy();
+            throw e;
+        }
     }
 
     public void release() {

@@ -38,7 +38,7 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
 
     @Override
     @AvoidAdvice
-    public void setActivityContext(ActivityContext context) {
+    public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }
 

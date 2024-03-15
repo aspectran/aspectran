@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
@@ -51,8 +52,8 @@ public class TowJasperInitializer extends JasperInitializer implements ActivityC
     }
 
     @Override
-    public void setActivityContext(ActivityContext context) {
-        Assert.notNull(context, "context must not be null");
+    @AvoidAdvice
+    public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }
 

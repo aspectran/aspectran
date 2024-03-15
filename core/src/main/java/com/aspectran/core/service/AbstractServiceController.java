@@ -29,7 +29,7 @@ import java.util.List;
  */
 public abstract class AbstractServiceController implements ServiceController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(AbstractServiceController.class);
 
     private final Object lock = new Object();
 
@@ -289,7 +289,7 @@ public abstract class AbstractServiceController implements ServiceController {
         synchronized (lock) {
             if (!active) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is already stopped");
+                    logger.debug(getServiceName() + " is not running, will do nothing");
                 }
                 return;
             }

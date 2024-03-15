@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
+import com.aspectran.core.context.rule.assistant.BeanReferenceInspector.RefererInfo;
+import com.aspectran.core.context.rule.assistant.BeanReferenceInspector.RefererKey;
 import com.aspectran.core.context.rule.parser.ActivityContextParserException;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Map;
 
 /**
  * This exception will be thrown when cannot resolve reference to bean.
@@ -35,9 +35,9 @@ public class BeanReferenceException extends ActivityContextParserException {
 
     /**
      * Constructor to create exception with a message.
-     * @param brokenReferences the list of beans that can not find
+     * @param brokenReferences the map of beans that can not find
      */
-    BeanReferenceException(Collection<BeanReferenceInspector.RefererKey> brokenReferences) {
+    BeanReferenceException(Map<RefererInfo, RefererKey> brokenReferences) {
         super(getMessage(brokenReferences));
     }
 
@@ -47,11 +47,25 @@ public class BeanReferenceException extends ActivityContextParserException {
      * @return the message
      */
     @NonNull
-    private static String getMessage(@NonNull Collection<BeanReferenceInspector.RefererKey> brokenReferences) {
-        if (brokenReferences.size() == 1) {
-            return "Unable to resolve reference to bean " + new ArrayList<>(brokenReferences).get(0);
+    private static String getMessage(@NonNull Map<RefererInfo, RefererKey> brokenReferences) {
+        Map.Entry<RefererInfo, RefererKey> first = brokenReferences.entrySet().iterator().next();
+        return getDetailMessage(first.getValue(), first.getKey()) +
+                (brokenReferences.size() > 1 ? " (and " + (brokenReferences.size() - 1) + " more)" : "");
+    }
+
+    @NonNull
+    private static String getDetailMessage(RefererKey refererKey, RefererInfo refererInfo) {
+        if (refererKey != null) {
+            String beanId = refererKey.getQualifier();
+            Class<?> beanClass = refererKey.getType();
+            if (beanId != null) {
+                return "Cannot resolve reference to bean " + refererKey +
+                        "; Referer: " + refererInfo;
+            } else {
+                return "No unique bean of type [" + beanClass + "] is defined; Referer: " + refererInfo;
+            }
         } else {
-            return "Unable to resolve reference to bean " + Arrays.toString(new ArrayList<>(brokenReferences).toArray());
+            return "Cannot resolve reference: " + refererInfo;
         }
     }
 

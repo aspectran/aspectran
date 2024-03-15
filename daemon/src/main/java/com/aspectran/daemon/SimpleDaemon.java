@@ -37,7 +37,12 @@ public class SimpleDaemon extends AbstractDaemon {
     public void prepare(@Nullable String basePath, @NonNull DaemonConfig daemonConfig) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.setDaemonConfig(daemonConfig);
-        prepare(basePath, aspectranConfig);
+        try {
+            prepare(basePath, aspectranConfig);
+        } catch (Exception e) {
+            destroy();
+            throw e;
+        }
     }
 
     @Override

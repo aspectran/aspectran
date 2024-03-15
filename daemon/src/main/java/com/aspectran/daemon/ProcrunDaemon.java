@@ -59,8 +59,8 @@ public class ProcrunDaemon {
                 defaultDaemon.prepare(basePath, aspectranConfigFile);
                 defaultDaemon.start(waitTimeoutMillis);
             } catch (Exception e) {
-                defaultDaemon = null;
                 e.printStackTrace(System.err);
+                stop();
             }
         }
     }

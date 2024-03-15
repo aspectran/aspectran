@@ -15,6 +15,7 @@
  */
 package com.aspectran.freemarker;
 
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.freemarker.directive.CustomTrimDirective;
@@ -70,6 +71,7 @@ public class FreeMarkerConfigurationFactory implements ActivityContextAware {
     private TrimDirective[] trimDirectives;
 
     @Override
+    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }

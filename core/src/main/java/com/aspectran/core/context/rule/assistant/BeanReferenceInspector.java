@@ -76,7 +76,7 @@ public class BeanReferenceInspector {
      * @throws BeanRuleException if an illegal bean rule is found
      */
     public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException, BeanRuleException {
-        Set<RefererKey> brokenReferences = new LinkedHashSet<>();
+        Map<RefererInfo, RefererKey> brokenReferences = new LinkedHashMap<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
             RefererKey refererKey = entry.getKey();
@@ -127,19 +127,14 @@ public class BeanReferenceInspector {
                                     "expected single matching bean but found " + beanRules.length + ": [" +
                                     NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo);
                         }
+                        brokenReferences.put(refererInfo, refererKey);
                     }
-                    brokenReferences.add(refererKey);
                 } else {
-                    int count = 0;
                     for (RefererInfo refererInfo : refererInfoSet) {
-                        if (!isStaticReference(refererInfo)) {
-                            count++;
-                            logger.error("Cannot resolve reference to bean " + refererKey +
-                                    "; Referer: " + refererInfo);
+                        if (!isValidStaticReference(refererInfo)) {
+                            logger.error("Cannot resolve reference: " + refererInfo);
+                            brokenReferences.put(refererInfo, null);
                         }
-                    }
-                    if (count > 0) {
-                        brokenReferences.add(refererKey);
                     }
                 }
             } else {
@@ -157,7 +152,7 @@ public class BeanReferenceInspector {
         }
     }
 
-    private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
+    private boolean isValidStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token token = (Token)refererInfo.getReferenceable();
             if (token.getAlternativeValue() != null && token.getGetterName() != null) {
@@ -302,17 +297,14 @@ public class BeanReferenceInspector {
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            if (ruleAppender != null) {
-                sb.append(ruleAppender.getQualifiedName());
-                if (nodeTracker != null) {
-                    sb.append(" ");
-                    sb.append(nodeTracker);
-                }
-                sb.append(" ");
-            }
             sb.append(referenceable.getBeanRefererType());
-            sb.append(" ");
-            sb.append(referenceable);
+            sb.append(" ").append(referenceable);
+            if (ruleAppender != null) {
+                sb.append(" in ").append(ruleAppender.getQualifiedName());
+                if (nodeTracker != null) {
+                    sb.append(" ").append(nodeTracker);
+                }
+            }
             return sb.toString();
         }
 

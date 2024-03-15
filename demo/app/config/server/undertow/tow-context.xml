@@ -34,6 +34,7 @@
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig">
                     <properties>
+                        <!-- Disable URL-based session tracking (no more 'jsessionid' in the URL) -->
                         <item name="sessionTrackingModes" type="set">
                             <value>#{class:jakarta.servlet.SessionTrackingMode^COOKIE}</value>
                         </item>

@@ -35,6 +35,10 @@
                     </properties>
                 </bean>
             </item>
+            <!-- Disable URL-based session tracking (no more 'jsessionid' in the URL) -->
+            <item name="sessionTrackingModes" type="set">
+                <value>#{class:jakarta.servlet.SessionTrackingMode^COOKIE}</value>
+            </item>
         </properties>
     </bean>
 
