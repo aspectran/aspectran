@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>8.0.0-SNAPSHOT</version>
+        <version>8.0.0</version>
     </parent>
 
     <artifactId>aspectran-bom</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>8.0.0</version>
     <packaging>pom</packaging>
 
     <name>Aspectran BOM</name>
@@ -41,73 +41,73 @@
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-core</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-daemon</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-embed</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-rss-lettuce</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell-jline</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-utils</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-web</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-freemarker</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-jetty</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-mybatis</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-logback</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-pebble</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-undertow</artifactId>
-                <version>8.0.0-SNAPSHOT</version>
+                <version>8.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
