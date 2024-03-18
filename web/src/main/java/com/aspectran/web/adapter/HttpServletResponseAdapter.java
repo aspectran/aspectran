@@ -192,7 +192,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         int questionPos = -1;
         StringBuilder sb = new StringBuilder(256);
         if (path != null) {
-            if (activity.getContextPath() != null && path.startsWith("/")) {
+            if (path.startsWith("/") && activity.isRequestWithContextPath()) {
                 sb.append(activity.getContextPath());
             }
             sb.append(path);

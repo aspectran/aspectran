@@ -70,8 +70,9 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
     /**
      * Return the current Activity.
      */
+    @NonNull
     protected final Activity getCurrentActivity() {
-        Assert.state(this.currentActivity != null, "No current activity found");
+        Assert.state(this.currentActivity != null, "No current activity set");
         return this.currentActivity;
     }
 

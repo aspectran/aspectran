@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.tags;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -22,7 +23,6 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 import com.aspectran.web.support.util.UriUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.PageContext;
@@ -195,7 +195,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * Set the variable name to expose the URL under. Defaults to rendering the
      * URL to the current JspWriter
      */
-    public void setVar(String var) {
+    public void setVar(@Nullable String var) {
         this.var = var;
     }
 
@@ -248,22 +248,21 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * Build the URL for the tag from the tag attributes and parameters.
      * @return the URL value as a String
      */
-    String createUrl() throws JspException {
+    private String createUrl() throws JspException {
         Assert.state(this.value != null, "No value set");
-        HttpServletRequest request = (HttpServletRequest)this.pageContext.getRequest();
-        HttpServletResponse response = (HttpServletResponse)this.pageContext.getResponse();
 
         StringBuilder url = new StringBuilder();
         if (this.type == UrlType.CONTEXT_RELATIVE) {
             // add application context to url
             if (this.context == null) {
-                url.append(request.getContextPath());
-            } else {
-                if (this.context.endsWith("/")) {
-                    url.append(this.context, 0, this.context.length() - 1);
-                } else {
-                    url.append(this.context);
+                Activity activity = getCurrentActivity();
+                if (activity.isRequestWithContextPath()) {
+                    url.append(activity.getContextPath());
                 }
+            } else if (this.context.endsWith("/")) {
+                url.append(this.context, 0, this.context.length() - 1);
+            } else {
+                url.append(this.context);
             }
         }
         if (this.type != UrlType.RELATIVE && this.type != UrlType.ABSOLUTE && !this.value.startsWith("/")) {
@@ -276,6 +275,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
         if (this.type != UrlType.ABSOLUTE) {
             // Add the session identifier if needed
             // (Do not embed the session identifier in a remote link!)
+            HttpServletResponse response = (HttpServletResponse)this.pageContext.getResponse();
             urlStr = response.encodeURL(urlStr);
         }
 
@@ -297,8 +297,9 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * with a '?' instead of '&amp;'
      * @return the query string
      */
-    protected String createQueryString(@NonNull List<Param> params, Set<String> usedParams, boolean includeQueryStringDelimiter)
-            throws JspException {
+    @NonNull
+    private String createQueryString(@NonNull List<Param> params, Set<String> usedParams,
+                                     boolean includeQueryStringDelimiter) throws JspException {
         String encoding = this.pageContext.getResponse().getCharacterEncoding();
         StringBuilder qs = new StringBuilder();
         for (Param param : params) {
@@ -331,7 +332,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * @param usedParams set of template parameter names that have been replaced
      * @return the URL with template parameters replaced
      */
-    protected String replaceUriTemplateParams(@NonNull String uri, @NonNull List<Param> params, Set<String> usedParams)
+    private String replaceUriTemplateParams(@NonNull String uri, @NonNull List<Param> params, Set<String> usedParams)
             throws JspException {
         String encoding = this.pageContext.getResponse().getCharacterEncoding();
         for (Param param : params) {

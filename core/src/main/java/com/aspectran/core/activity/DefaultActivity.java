@@ -49,6 +49,11 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public boolean isRequestWithContextPath() {
+        return false;
+    }
+
+    @Override
     public void perform() {
         throw new UnsupportedOperationException();
     }

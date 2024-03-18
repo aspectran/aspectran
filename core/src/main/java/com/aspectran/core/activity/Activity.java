@@ -84,6 +84,8 @@ public interface Activity {
 
     String getContextPath();
 
+    boolean isRequestWithContextPath();
+
     /**
      * Performs the prepared activity.
      * @throws ActivityPerformException thrown when an exception occurs while performing an activity

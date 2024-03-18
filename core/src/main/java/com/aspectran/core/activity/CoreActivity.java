@@ -111,6 +111,11 @@ public class CoreActivity extends AdviceActivity {
         return contextPath;
     }
 
+    @Override
+    public boolean isRequestWithContextPath() {
+        return (contextPath != null && translet != null && translet.getRequestName().startsWith(contextPath));
+    }
+
     /**
      * Prepare for the activity.
      * @param requestName the request name
