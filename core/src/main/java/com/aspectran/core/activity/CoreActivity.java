@@ -113,7 +113,8 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public boolean isRequestWithContextPath() {
-        return (contextPath != null && translet != null && translet.getRequestName().startsWith(contextPath));
+        Assert.state(adapted, "Not yet adapted");
+        return (contextPath != null && translet.getRequestName().startsWith(contextPath));
     }
 
     /**
@@ -224,6 +225,10 @@ public class CoreActivity extends AdviceActivity {
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
+    }
+
+    protected boolean isAdapted() {
+        return adapted;
     }
 
     protected void adapt() throws AdapterException {

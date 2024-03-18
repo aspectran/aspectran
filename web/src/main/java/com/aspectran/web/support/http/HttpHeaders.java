@@ -414,4 +414,9 @@ public interface HttpHeaders {
      */
     String X_FORWARDED_PROTO = "X-Forwarded-Proto";
 
+    /**
+     * Contains the original path that the client requested.
+     */
+    String X_FORWARDED_PATH = "X-Forwarded-Path";
+
 }

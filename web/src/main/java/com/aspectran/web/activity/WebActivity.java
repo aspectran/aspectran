@@ -28,6 +28,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
@@ -68,6 +69,18 @@ public class WebActivity extends CoreActivity {
         super(context, contextPath);
         this.request = request;
         this.response = response;
+    }
+
+    @Override
+    public boolean isRequestWithContextPath() {
+        Assert.state(isAdapted(), "Not yet adapted");
+        if (getContextPath() != null) {
+            String forwardedPath = getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PATH);
+            if (forwardedPath != null) {
+                return (getContextPath().equals(forwardedPath) || forwardedPath.startsWith(getContextPath() + "/"));
+            }
+        }
+        return super.isRequestWithContextPath();
     }
 
     @Override
