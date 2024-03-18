@@ -76,9 +76,8 @@ public class WebActivity extends CoreActivity {
         Assert.state(isAdapted(), "Not yet adapted");
         if (getContextPath() != null) {
             String forwardedPath = getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PATH);
-            if (forwardedPath != null) {
-                return (getContextPath().equals(forwardedPath) || forwardedPath.startsWith(getContextPath() + "/"));
-            }
+            return (forwardedPath == null ||
+                !(getContextPath().equals(forwardedPath) || forwardedPath.startsWith(getContextPath() + "/")));
         }
         return super.isRequestWithContextPath();
     }
