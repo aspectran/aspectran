@@ -124,14 +124,14 @@ public class DefaultDaemonService extends AbstractDaemonService {
         daemonService.configure(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
         if (daemonConfig != null) {
-            applyDaemonConfig(daemonService, daemonConfig);
+            configure(daemonService, daemonConfig);
         }
         setServiceStateListener(daemonService);
         return daemonService;
     }
 
-    private static void applyDaemonConfig(@NonNull DefaultDaemonService daemonService,
-                                          @NonNull DaemonConfig daemonConfig) {
+    private static void configure(@NonNull DefaultDaemonService daemonService,
+                                  @NonNull DaemonConfig daemonConfig) {
         ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();

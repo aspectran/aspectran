@@ -250,14 +250,14 @@ public class DefaultShellService extends AbstractShellService {
         DefaultShellService shellService = new DefaultShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
-            applyShellConfig(shellService, shellConfig);
+            configure(shellService, shellConfig);
         }
         shellService.configure(aspectranConfig);
         setServiceStateListener(shellService);
         return shellService;
     }
 
-    private static void applyShellConfig(@NonNull DefaultShellService shellService, @NonNull ShellConfig shellConfig) {
+    private static void configure(@NonNull DefaultShellService shellService, @NonNull ShellConfig shellConfig) {
         shellService.setVerbose(shellConfig.isVerbose());
         shellService.setGreetings(shellConfig.getGreetings());
         ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
