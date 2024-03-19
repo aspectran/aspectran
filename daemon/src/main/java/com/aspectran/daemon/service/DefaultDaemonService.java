@@ -107,7 +107,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeRequestName(method, name) + "; Cause: " +
+                Activity.makeFullRequestName(method, name) + "; Cause: " +
                 ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;

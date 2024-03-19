@@ -82,8 +82,17 @@ public interface Activity {
      */
     ResponseAdapter getResponseAdapter();
 
+    /**
+     * Returns the context path. If the context path is not specified,
+     * {@code null} is returned rather than an empty string.
+     * @return the context path
+     */
     String getContextPath();
 
+    /**
+     * Returns whether the request name has a context path.
+     * @return true if request name with context path, false otherwise.
+     */
     boolean isRequestWithContextPath();
 
     /**
@@ -296,7 +305,7 @@ public interface Activity {
      */
     boolean containsBean(Class<?> type, String id);
 
-    static String makeRequestName(@Nullable MethodType requestMethod, @NonNull String requestName) {
+    static String makeFullRequestName(@Nullable MethodType requestMethod, @NonNull String requestName) {
         if (requestMethod != null) {
             return requestMethod + " " + requestName;
         } else {

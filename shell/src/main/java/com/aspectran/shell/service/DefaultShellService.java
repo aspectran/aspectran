@@ -191,7 +191,7 @@ public class DefaultShellService extends AbstractShellService {
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeRequestName(requestMethod, requestName) + "; Cause: " +
+                Activity.makeFullRequestName(requestMethod, requestName) + "; Cause: " +
                 ExceptionUtils.getSimpleMessage(cause), t);
         } finally {
             if (outputWriter != null) {

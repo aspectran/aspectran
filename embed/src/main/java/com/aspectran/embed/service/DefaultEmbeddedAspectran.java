@@ -152,7 +152,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeRequestName(method, name) + "; Cause: " +
+                Activity.makeFullRequestName(method, name) + "; Cause: " +
                 ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
