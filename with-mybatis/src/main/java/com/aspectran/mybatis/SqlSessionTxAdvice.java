@@ -15,6 +15,7 @@
  */
 package com.aspectran.mybatis;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -46,13 +47,31 @@ public class SqlSessionTxAdvice {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    public boolean isAutoCommit() {
+        return autoCommit;
+    }
+
     /**
      * Specifies whether to auto-commit.
      * @param autoCommit true to automatically commit each time updates/deletes/inserts
      *                  is called, false to commit manually
      */
     public void setAutoCommit(boolean autoCommit) {
+        Assert.state(sqlSession == null, "Sql Session is already open");
         this.autoCommit = autoCommit;
+    }
+
+    public ExecutorType getExecutorType() {
+        return executorType;
+    }
+
+    /**
+     * Sets the mode for using PreparedStatements effectively.
+     * @param executorType executor types include SIMPLE, REUSE, and BATCH
+     */
+    public void setExecutorType(ExecutorType executorType) {
+        Assert.state(sqlSession == null, "Sql Session is already open");
+        this.executorType = executorType;
     }
 
     /**
@@ -61,7 +80,7 @@ public class SqlSessionTxAdvice {
      *                     specified as a string value
      */
     public void setExecutorType(String executorType) {
-        this.executorType = ExecutorType.valueOf(executorType);
+        setExecutorType(ExecutorType.valueOf(executorType));
     }
 
     /**
@@ -107,6 +126,12 @@ public class SqlSessionTxAdvice {
 
     public void open(String executorType) {
         setExecutorType(executorType);
+        open();
+    }
+
+    public void open(ExecutorType executorType, boolean autoCommit) {
+        setExecutorType(executorType);
+        setAutoCommit(autoCommit);
         open();
     }
 
