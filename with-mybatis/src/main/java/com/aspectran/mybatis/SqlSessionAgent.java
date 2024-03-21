@@ -252,15 +252,15 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @AvoidAdvice
     @NonNull
     private SqlSessionTxAdvice getSqlSessionTxAdvice() {
-        SqlSessionTxAdvice advice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
-        if (advice == null) {
+        SqlSessionTxAdvice txAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
+        if (txAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
                         "' handling SqlSessionTxAdvice is undefined");
             }
             throw new IllegalArgumentException("SqlSessionTxAdvice is not defined");
         }
-        return advice;
+        return txAdvice;
     }
 
     @Nullable
