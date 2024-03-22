@@ -15,28 +15,28 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.PathUtils;
+import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 
 import static com.aspectran.utils.ClassUtils.CLASS_FILE_SUFFIX;
 import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
-import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceManager.
@@ -278,81 +278,73 @@ public class ResourceManager {
 
     public static String[] checkResourceLocations(String[] resourceLocations, String basePath)
             throws InvalidResourceException {
-        if (resourceLocations == null) {
+        if (resourceLocations == null || resourceLocations.length == 0) {
             return null;
         }
 
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-        for (int i = 0; i < resourceLocations.length; i++) {
-            if (resourceLocations[i].startsWith(CLASSPATH_URL_PREFIX)) {
-                String path = resourceLocations[i].substring(CLASSPATH_URL_PREFIX.length());
-                URL url = classLoader.getResource(path);
-                if (url == null) {
-                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] +
-                            "] cannot be resolved to URL because it does not exist");
+        String[] resourceLocationsToUse = resourceLocations.clone();
+        for (int i = 0; i < resourceLocationsToUse.length; i++) {
+            String tempLocation = resourceLocationsToUse[i];
+            if (tempLocation != null) {
+                tempLocation = PathUtils.cleanPath(tempLocation);
+                if (StringUtils.endsWith(tempLocation, REGULAR_FILE_SEPARATOR_CHAR)) {
+                    tempLocation = tempLocation.substring(0, tempLocation.length() - 1);
                 }
-                resourceLocations[i] = url.getFile();
-            } else if (resourceLocations[i].startsWith(FILE_URL_PREFIX)) {
-                try {
-                    URL url = new URL(resourceLocations[i]);
-                    resourceLocations[i] = url.getFile();
-                } catch (MalformedURLException e) {
-                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] +
-                            "] is neither a URL not a well-formed file path");
-                }
-            } else {
-                if (basePath != null) {
+                if (tempLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+                    String path = tempLocation.substring(CLASSPATH_URL_PREFIX.length());
                     try {
-                        File f = new File(basePath, resourceLocations[i]);
-                        resourceLocations[i] = f.getCanonicalPath();
+                        URL url = ResourceUtils.getResource(path);
+                        tempLocation = url.getPath();
                     } catch (IOException e) {
-                        throw new InvalidResourceException("Invalid resource location: " + resourceLocations[i], e);
+                        throw new InvalidResourceException("Class path resource [" + tempLocation +
+                                "] cannot be resolved to URL", e);
+                    }
+                } else if (tempLocation.startsWith(FILE_URL_PREFIX)) {
+                    try {
+                        URL url = ResourceUtils.toURL(tempLocation);
+                        tempLocation = url.getFile();
+                    } catch (Exception e) {
+                        throw new InvalidResourceException("Resource location [" + tempLocation +
+                                "] is neither a URL not a well-formed file path", e);
+                    }
+                } else {
+                    try {
+                        File f;
+                        if (basePath != null) {
+                            f = new File(basePath, tempLocation);
+                            if (!f.exists()) {
+                                File f2 = new File(tempLocation);
+                                if (f2.exists()) {
+                                    f = f2;
+                                }
+                            }
+                        } else {
+                            f = new File(tempLocation);
+                        }
+                        tempLocation = f.getCanonicalPath();
+                    } catch (IOException e) {
+                        throw new InvalidResourceException("Invalid resource location: " + tempLocation, e);
                     }
                 }
-            }
-            resourceLocations[i] = resourceLocations[i].replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
-            if (StringUtils.endsWith(resourceLocations[i], REGULAR_FILE_SEPARATOR_CHAR)) {
-                resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
+                resourceLocationsToUse[i] = tempLocation;
             }
         }
 
-        String resourceLocation = null;
-        int cleared = 0;
-
-        try {
-            for (int i = 0; i < resourceLocations.length - 1; i++) {
-                if (resourceLocations[i] != null) {
-                    resourceLocation = resourceLocations[i];
-                    File f1 = new File(resourceLocations[i]);
-                    String l1 = f1.getCanonicalPath();
-                    for (int j = i + 1; j < resourceLocations.length; j++) {
-                        if (resourceLocations[j] != null) {
-                            resourceLocation = resourceLocations[j];
-                            File f2 = new File(resourceLocations[j]);
-                            String l2 = f2.getCanonicalPath();
-                            if (l1.equals(l2)) {
-                                resourceLocations[j] = null;
-                                cleared++;
-                            }
+        for (int i = 0; i < resourceLocationsToUse.length - 1; i++) {
+            String tempLocation1 = resourceLocationsToUse[i];
+            if (tempLocation1 != null) {
+                for (int j = i + 1; j < resourceLocationsToUse.length; j++) {
+                    String tempLocation2 = resourceLocationsToUse[j];
+                    if (tempLocation2 != null) {
+                        if (tempLocation1.equals(tempLocation2)) {
+                            resourceLocationsToUse[j] = null;
                         }
                     }
                 }
             }
-        } catch (IOException e) {
-            throw new InvalidResourceException("Invalid resource location: " + resourceLocation, e);
         }
 
-        if (cleared > 0) {
-            List<String> list = new ArrayList<>(resourceLocations.length);
-            for (String r : resourceLocations) {
-                if (r != null) {
-                    list.add(r);
-                }
-            }
-            return list.toArray(new String[0]);
-        } else {
-            return resourceLocations;
-        }
+        return Arrays.stream(resourceLocationsToUse).filter(Objects::nonNull).toArray(String[]::new);
     }
 
 }

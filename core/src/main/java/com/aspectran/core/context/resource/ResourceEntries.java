@@ -25,9 +25,9 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
 
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
-import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceEntries.

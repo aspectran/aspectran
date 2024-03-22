@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * A utility class that finds files corresponding to a given pattern.

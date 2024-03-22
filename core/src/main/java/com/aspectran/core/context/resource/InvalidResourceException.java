@@ -28,12 +28,6 @@ public class InvalidResourceException extends Exception {
     private static final long serialVersionUID = -8749285705396087498L;
 
     /**
-     * Simple constructor
-     */
-    public InvalidResourceException() {
-    }
-
-    /**
      * Constructor to create exception with a message
      * @param msg a message to associate with the exception
      */

@@ -35,7 +35,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
-import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ClassScanner.
@@ -146,12 +147,12 @@ public class ClassScanner {
             if (file.isDirectory()) {
                 String subPackageName;
                 if (relativePackageName != null) {
-                    subPackageName = relativePackageName + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                    subPackageName = relativePackageName + fileName + REGULAR_FILE_SEPARATOR;
                 } else {
-                    subPackageName = fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                    subPackageName = fileName + REGULAR_FILE_SEPARATOR;
                 }
 
-                String basePath2 = targetPath + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                String basePath2 = targetPath + fileName + REGULAR_FILE_SEPARATOR;
                 scan(basePath2, basePackageName, subPackageName, matcher, saveHandler);
             } else if (fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
                 String fn = fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
@@ -209,10 +210,10 @@ public class ClassScanner {
 
         try {
             //Looking for matching resources in jar file [" + jarFileUrl + "]"
-            if (!entryNamePrefix.endsWith(ResourceUtils.REGULAR_FILE_SEPARATOR)) {
+            if (!entryNamePrefix.endsWith(REGULAR_FILE_SEPARATOR)) {
                 // Root entry path must end with slash to allow for proper matching.
                 // The Sun JRE does not return a slash here, but BEA JRockit does.
-                entryNamePrefix = entryNamePrefix + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                entryNamePrefix = entryNamePrefix + REGULAR_FILE_SEPARATOR;
             }
 
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {

@@ -24,7 +24,7 @@ import com.aspectran.utils.wildcard.WildcardPattern;
 import java.io.File;
 
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
-import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class TransletScanner.

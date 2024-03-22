@@ -35,7 +35,7 @@ import java.util.Base64;
  *
  * @since 5.3.3
  */
-public class PBEncryptionUtils {
+public abstract class PBEncryptionUtils {
 
     public static final String DEFAULT_ALGORITHM = "PBEWithMD5AndTripleDES";
 

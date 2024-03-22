@@ -77,7 +77,7 @@ public class DefaultServletHttpRequestHandler {
     /**
      * Lookup default servlet name.
      */
-    void lookupDefaultServletName() {
+    public void lookupDefaultServletName() {
         // To avoid default servlet lookup
         if ("none".equals(defaultServletName)) {
             defaultServletName = null;

@@ -63,15 +63,19 @@ public class WebActivityFilter implements Filter {
                 for (String path : bypasses) {
                     bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
                 }
-                this.bypassPatterns = bypassPatterns;
-                this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
+
+                DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
+                defaultHandler.lookupDefaultServletName();
 
                 if (logger.isDebugEnabled()) {
                     for (WildcardPattern pattern : bypassPatterns) {
-                        logger.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
-                                this.defaultServletHttpRequestHandler.getDefaultServletName() + "]");
+                        logger.debug(pattern + " is bypassed by " + getMyName() + " to servlet '" +
+                                defaultHandler.getDefaultServletName() + "'");
                     }
                 }
+
+                this.bypassPatterns = bypassPatterns;
+                this.defaultServletHttpRequestHandler = defaultHandler;
             }
         }
 

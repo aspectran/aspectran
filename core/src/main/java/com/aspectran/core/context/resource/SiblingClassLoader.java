@@ -96,7 +96,9 @@ public final class SiblingClassLoader extends ClassLoader {
     public SiblingClassLoader(String name, ClassLoader parent, String[] resourceLocations)
         throws InvalidResourceException {
         this(name, parent != null ? parent : ClassUtils.getDefaultClassLoader());
-        createChildren(resourceLocations);
+        if (resourceLocations != null) {
+            createChildren(resourceLocations);
+        }
     }
 
     private SiblingClassLoader(String name, @NonNull SiblingClassLoader parent, String resourceLocation)
@@ -117,13 +119,11 @@ public final class SiblingClassLoader extends ClassLoader {
         parent.createChild(resourceLocation);
     }
 
-    private void createChildren(String[] resourceLocations) throws InvalidResourceException {
+    private void createChildren(@NonNull String[] resourceLocations) throws InvalidResourceException {
         SiblingClassLoader scl = this;
-        if (resourceLocations != null) {
-            for (String resourceLocation : resourceLocations) {
-                if (resourceLocation != null && !resourceLocation.isEmpty()) {
-                    scl = scl.createChild(resourceLocation);
-                }
+        for (String resourceLocation : resourceLocations) {
+            if (resourceLocation != null && !resourceLocation.isEmpty()) {
+                scl = scl.createChild(resourceLocation);
             }
         }
     }

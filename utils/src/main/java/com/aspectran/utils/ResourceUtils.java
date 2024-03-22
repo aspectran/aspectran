@@ -81,10 +81,6 @@ public abstract class ResourceUtils {
     /** Special separator between WAR URL and jar part on Tomcat. */
     public static final String WAR_URL_SEPARATOR = "*/";
 
-    public static final String REGULAR_FILE_SEPARATOR = "/";
-
-    public static final char REGULAR_FILE_SEPARATOR_CHAR = '/';
-
     /**
      * Return whether the given resource location is a URL:
      * either a special "classpath" pseudo URL or a standard URL.
@@ -101,7 +97,7 @@ public abstract class ResourceUtils {
             return true;
         }
         try {
-            new URL(resourceLocation);
+            toURL(resourceLocation);
             return true;
         } catch (MalformedURLException ex) {
             return false;
@@ -134,10 +130,11 @@ public abstract class ResourceUtils {
      */
     @NonNull
     public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        Assert.notNull(resourceLocation, "resourceLocation must not be null");
+        Assert.notNull(classLoader, "classLoader must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
-            URL url = (classLoader != null ? classLoader.getResource(path) : ClassLoader.getSystemResource(path));
+            URL url = classLoader.getResource(path);
             if (url == null) {
                 String description = "class path resource [" + path + "]";
                 throw new FileNotFoundException(description +
@@ -147,7 +144,7 @@ public abstract class ResourceUtils {
         }
         try {
             // try URL
-            return new URL(resourceLocation);
+            return toURL(resourceLocation);
         } catch (MalformedURLException ex) {
             // no URL -> treat as file path
             try {
@@ -189,11 +186,12 @@ public abstract class ResourceUtils {
      */
     @NonNull
     public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        Assert.notNull(resourceLocation, "resourceLocation must not be null");
+        Assert.notNull(classLoader, "classLoader must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
             String description = "class path resource [" + path + "]";
-            URL url = (classLoader != null ? classLoader.getResource(path) : ClassLoader.getSystemResource(path));
+            URL url = classLoader.getResource(path);
             if (url == null) {
                 throw new FileNotFoundException(description +
                         " cannot be resolved to absolute file path because it does not exist");
@@ -332,14 +330,14 @@ public abstract class ResourceUtils {
         if (separatorIndex != -1) {
             String jarFile = urlFile.substring(0, separatorIndex);
             try {
-                return new URL(jarFile);
+                return toURL(jarFile);
             } catch (MalformedURLException ex) {
                 // Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
                 // This usually indicates that the jar file resides in the file system.
                 if (!jarFile.startsWith("/")) {
                     jarFile = "/" + jarFile;
                 }
-                return new URL(FILE_URL_PREFIX + jarFile);
+                return toURL(FILE_URL_PREFIX + jarFile);
             }
         } else {
             return jarUrl;
@@ -364,11 +362,11 @@ public abstract class ResourceUtils {
             // Tomcat's "war:file:...mywar.war*/WEB-INF/lib/myjar.jar!/myentry.txt"
             String warFile = urlFile.substring(0, endIndex);
             if (URL_PROTOCOL_WAR.equals(jarUrl.getProtocol())) {
-                return new URL(warFile);
+                return toURL(warFile);
             }
             int startIndex = warFile.indexOf(WAR_URL_PREFIX);
             if (startIndex != -1) {
-                return new URL(warFile.substring(startIndex + WAR_URL_PREFIX.length()));
+                return toURL(warFile.substring(startIndex + WAR_URL_PREFIX.length()));
             }
         }
         // Regular "jar:file:...myjar.jar!/myentry.txt"
@@ -398,6 +396,27 @@ public abstract class ResourceUtils {
     @NonNull
     public static URI toURI(String location) throws URISyntaxException {
         return new URI(StringUtils.replace(location, " ", "%20"));
+    }
+
+    /**
+     * Create a URL instance for the given location String,
+     * going through URI construction and then URL conversion.
+     * @param location the location String to convert into a URL instance
+     * @return the URL instance
+     * @throws MalformedURLException if the location wasn't a valid URL
+     * @since 6.0
+     */
+    @NonNull
+    @SuppressWarnings("deprecation")  // on JDK 20 / JDK-8294241
+    public static URL toURL(String location) throws MalformedURLException {
+        try {
+            // Prefer URI construction with toURL conversion (as of 6.1)
+            return toURI(PathUtils.cleanPath(location)).toURL();
+        } catch (URISyntaxException | IllegalArgumentException ex) {
+            // Lenient fallback to deprecated (on JDK 20) URL constructor,
+            // e.g. for decoded location Strings with percent characters.
+            return new URL(location);
+        }
     }
 
     /**

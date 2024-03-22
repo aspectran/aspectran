@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Utility reflection methods.
  */
-public class MethodUtils {
+public abstract class MethodUtils {
 
     /** An empty class array */
     public static final Class<?>[] EMPTY_CLASS_PARAMETERS = {};

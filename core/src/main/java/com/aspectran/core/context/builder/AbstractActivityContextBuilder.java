@@ -278,7 +278,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             this.autoReloadEnabled = autoReloadEnabled;
             this.scanIntervalSeconds = scanIntervalSeconds;
         }
-        if (this.autoReloadEnabled && (this.resourceLocations == null || this.resourceLocations.length == 0)) {
+        if (this.autoReloadEnabled && this.resourceLocations == null) {
             this.autoReloadEnabled = false;
         }
         if (this.autoReloadEnabled) {

@@ -17,6 +17,7 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.utils.FileCopyUtils;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -64,7 +65,7 @@ public class LocalResourceManager extends ResourceManager {
 
         this.owner = owner;
 
-        if (resourceLocation != null && !resourceLocation.isEmpty()) {
+        if (StringUtils.hasLength(resourceLocation)) {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
                 if (logger.isDebugEnabled()) {

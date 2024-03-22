@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
+import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR;
+
 /**
  * Utility methods for General filename and filepath manipulation.
  * <p>
@@ -36,15 +39,11 @@ import java.util.StringTokenizer;
  * <li>the extension - txt</li>
  * </ul>
  */
-public class FilenameUtils {
+public abstract class FilenameUtils {
 
     private static final String NAME_SEPARATOR = "_";
 
     private static final String EXTENSION_SEPARATOR = ".";
-
-    private static final char UNIX_SEPARATOR = '/';
-
-    private static final char WINDOWS_SEPARATOR = '\\';
 
     private static final String EXTENSIONS_SEPARATORS = " ,;\t\n\r\f";
 
@@ -158,8 +157,8 @@ public class FilenameUtils {
         if (filename == null) {
             return -1;
         }
-        int lastUnixPos = filename.lastIndexOf(UNIX_SEPARATOR);
-        int lastWindowsPos = filename.lastIndexOf(WINDOWS_SEPARATOR);
+        int lastUnixPos = filename.lastIndexOf(REGULAR_FILE_SEPARATOR);
+        int lastWindowsPos = filename.lastIndexOf(WINDOWS_FILE_SEPARATOR);
         return Math.max(lastUnixPos, lastWindowsPos);
     }
 

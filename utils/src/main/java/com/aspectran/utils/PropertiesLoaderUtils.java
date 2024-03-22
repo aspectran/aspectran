@@ -31,7 +31,7 @@ import static com.aspectran.utils.PBEncryptionUtils.getDefaultEncryptor;
  * Convenient utility methods for loading of java.util.Properties,
  * performing standard handling of input streams.
  */
-public class PropertiesLoaderUtils {
+public abstract class PropertiesLoaderUtils {
 
     private static final String XML_FILE_EXTENSION = ".xml";
 
