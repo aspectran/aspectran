@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
@@ -186,14 +187,18 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     public String renewSessionId(String oldId, String newId) {
         try {
             DefaultSession session = sessionCache.renewSessionId(oldId, newId);
+            if (session == null) {
+                // session doesn't exist
+                return null;
+            }
             for (SessionListener listener : sessionListeners) {
                 listener.sessionIdChanged(session, oldId);
             }
             return session.getId();
         } catch (Exception e) {
-            logger.warn("Failed to renew session", e);
+            logger.warn("Unable to renew session id " + oldId + " to " + newId, e);
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -213,16 +218,19 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // start invalidating if it is not already begun, and call the listeners
                 try {
                     if (session.beginInvalidate()) {
-                        try (AutoLock ignored = session.lock()) {
-                            if (reason != null) {
-                                session.setDestroyedReason(reason);
+                        try {
+                            try (AutoLock ignored = session.lock()) {
+                                if (reason != null) {
+                                    session.setDestroyedReason(reason);
+                                }
+                                fireSessionDestroyedListeners(session);
                             }
-                            fireSessionDestroyedListeners(session);
                         } catch (Exception e) {
-                            logger.warn("Session listener threw exception", e);
+                            logger.warn("Error during Session destroy listener", e);
+                        } finally {
+                            // call the attribute removed listeners and finally mark it as invalid
+                            session.finishInvalidate();
                         }
-                        // call the attribute removed listeners and finally mark it as invalid
-                        session.finishInvalidate();
                     }
                 } catch (IllegalStateException e) {
                     if (logger.isDebugEnabled()) {
@@ -232,7 +240,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
             return session;
         } catch (Exception e) {
-            logger.warn("Unable to invalidate session", e);
+            if (invalidate) {
+                logger.warn("Unable to invalidate session id=" + id, e);
+            } else {
+                logger.warn("Unable to remove session id=" + id, e);
+            }
             return null;
         }
     }
@@ -388,26 +400,22 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue) {
-        if (session == null) {
-            return;
-        }
-        for (SessionListener listener : sessionListeners) {
-            if (oldValue == null) {
-                listener.attributeAdded(session, name, newValue);
-            } else if (newValue == null) {
-                listener.attributeRemoved(session, name, oldValue);
-            } else {
-                listener.attributeUpdated(session, name, newValue, oldValue);
+        if (session != null) {
+            for (SessionListener listener : sessionListeners) {
+                if (oldValue == null) {
+                    listener.attributeAdded(session, name, newValue);
+                } else if (newValue == null) {
+                    listener.attributeRemoved(session, name, oldValue);
+                } else {
+                    listener.attributeUpdated(session, name, newValue, oldValue);
+                }
             }
         }
     }
 
     @Override
     public void fireSessionDestroyedListeners(Session session) {
-        if (session == null) {
-            return;
-        }
-        if (!sessionListeners.isEmpty()) {
+        if (session != null && !sessionListeners.isEmpty()) {
             // We need to create our own snapshot to safely iterate over a concurrent list in reverse
             List<SessionListener> listeners = new ArrayList<>(sessionListeners);
             for (ListIterator<SessionListener> iter = listeners.listIterator(listeners.size()); iter.hasPrevious();) {
@@ -421,11 +429,10 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param session the session on which to call the lifecycle listeners
      */
     private void fireSessionCreatedListeners(Session session) {
-        if (session == null) {
-            return;
-        }
-        for (SessionListener listener : sessionListeners) {
-            listener.sessionCreated(session);
+        if (session != null) {
+            for (SessionListener listener : sessionListeners) {
+                listener.sessionCreated(session);
+            }
         }
     }
 
@@ -440,7 +447,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void recordSessionTime(DefaultSession session) {
+    public void recordSessionTime(@NonNull DefaultSession session) {
         long now = System.currentTimeMillis();
         getStatistics().recordTime(round((now - session.getSessionData().getCreated()) / 1000.0));
     }

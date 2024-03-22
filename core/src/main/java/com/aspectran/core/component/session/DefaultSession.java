@@ -297,6 +297,8 @@ public class DefaultSession implements Session {
     @Override
     public void invalidate() {
         boolean result = beginInvalidate();
+        // if the session was not already invalid, or in process of being
+        // invalidated, do invalidate
         if (result) {
             try {
                 try {
@@ -307,14 +309,15 @@ public class DefaultSession implements Session {
                         }
                         sessionHandler.fireSessionDestroyedListeners(this);
                     }
+                } catch (Exception e) {
+                    logger.warn("Error during Session destroy listener", e);
                 } finally {
-                    // call the attribute removed listeners and finally mark it
-                    // as invalid
+                    // call the attribute removed listeners and finally mark it as invalid
                     finishInvalidate();
+                    sessionHandler.removeSession(sessionData.getId(), false);
                 }
-                sessionHandler.removeSession(sessionData.getId(), false);
             } catch (Exception e) {
-                logger.warn("Unable to invalidate session", e);
+                logger.warn("Unable to invalidate session " + this, e);
             }
         }
     }
@@ -324,7 +327,7 @@ public class DefaultSession implements Session {
         try (AutoLock ignored = autoLock.lock()) {
             switch (state) {
                 case INVALID:
-                    // spec does not allow invalidate of already invalid session
+                    // spec does not allow invalidation of already invalid session
                     throw new IllegalStateException();
                 case INVALIDATING:
                     if (logger.isDebugEnabled()) {
@@ -346,10 +349,10 @@ public class DefaultSession implements Session {
     protected void finishInvalidate() {
         try (AutoLock ignored = autoLock.lock()) {
             try {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Invalidate session id=" + sessionData.getId());
-                }
                 if (state == State.VALID || state == State.INVALIDATING) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Invalidate session id=" + sessionData.getId());
+                    }
                     Set<String> keys;
                     do {
                         keys = sessionData.getKeys();

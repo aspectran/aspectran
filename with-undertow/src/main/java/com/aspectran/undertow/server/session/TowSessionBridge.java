@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
@@ -111,14 +112,20 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
     }
 
     @Override
+    @Nullable
     public String changeSessionId(HttpServerExchange exchange, SessionConfig config) {
-        String oldId = session.getId();
-        String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
-        String sessionId = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
-        if (sessionId != null) {
-            config.setSessionId(exchange, sessionId);
+        synchronized (session) {
+            if (!session.isValid()) {
+                return null;
+            }
+            String oldId = session.getId();
+            String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
+            String sessionId = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
+            if (sessionId != null) {
+                config.setSessionId(exchange, sessionId);
+            }
+            return sessionId;
         }
-        return sessionId;
     }
 
 }

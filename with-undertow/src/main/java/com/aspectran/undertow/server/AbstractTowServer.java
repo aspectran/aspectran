@@ -234,8 +234,8 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         Deployment deployment = deploymentManager.getDeployment();
         if (deployment != null) {
             SessionManager sessionManager = deployment.getSessionManager();
-            if (sessionManager instanceof TowSessionManager) {
-                return ((TowSessionManager) sessionManager).getSessionHandler();
+            if (sessionManager instanceof TowSessionManager towSessionManager) {
+                return towSessionManager.getSessionHandler();
             }
         }
         return null;

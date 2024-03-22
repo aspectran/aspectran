@@ -46,17 +46,11 @@ final class TowSessionListenerBridge implements SessionListener {
     public void sessionDestroyed(Session session) {
         io.undertow.server.session.SessionListener.SessionDestroyedReason reason = null;
         if (session != null && session.getDestroyedReason() != null) {
-            switch (session.getDestroyedReason()) {
-                case INVALIDATED:
-                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
-                    break;
-                case TIMEOUT:
-                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
-                    break;
-                case UNDEPLOY:
-                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
-                    break;
-            }
+            reason = switch (session.getDestroyedReason()) {
+                case INVALIDATED -> io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
+                case TIMEOUT -> io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
+                case UNDEPLOY -> io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
+            };
         }
         listener.sessionDestroyed(wrapSession(session), getCurrentExchange(), reason);
     }
