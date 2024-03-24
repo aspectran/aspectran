@@ -113,8 +113,7 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public boolean isRequestWithContextPath() {
-        Assert.state(adapted, "Not yet adapted");
-        return (contextPath != null && translet.getRequestName().startsWith(contextPath));
+        return (contextPath != null);
     }
 
     /**
@@ -207,11 +206,6 @@ public class CoreActivity extends AdviceActivity {
             translet = new CoreTranslet(transletRule, this);
             translet.setRequestName(requestName); // original request name
             translet.setRequestMethod(requestMethod);
-            if (contextPath != null && requestName.startsWith(contextPath)) {
-                translet.setRelativeName(requestName.substring(contextPath.length()));
-            } else {
-                translet.setRelativeName(requestName);
-            }
             if (prevTranslet != null) {
                 translet.setProcessResult(prevTranslet.getProcessResult());
             }
@@ -701,7 +695,7 @@ public class CoreActivity extends AdviceActivity {
     private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
-            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRelativeName());
+            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRequestName());
             if (pathVariables != null) {
                 pathVariables.applyTo(translet);
             }

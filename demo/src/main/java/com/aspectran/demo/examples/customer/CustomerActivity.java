@@ -69,7 +69,7 @@ public class CustomerActivity {
         if (id == -1) {
             return new DefaultRestResponse(customer).forbidden();
         } else {
-            String resourceUri = translet.getRequestName() + "/" + id;
+            String resourceUri = translet.getActualRequestName() + "/" + id;
             return new DefaultRestResponse(customer).created(resourceUri);
         }
     }

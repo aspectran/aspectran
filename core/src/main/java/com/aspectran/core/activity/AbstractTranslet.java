@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -27,20 +28,10 @@ public abstract class AbstractTranslet implements Translet {
 
     private String requestName;
 
-    private String relativeName;
-
     private MethodType requestMethod;
 
     protected AbstractTranslet(@NonNull TransletRule transletRule) {
         this.transletRule = transletRule;
-    }
-
-    public String getRelativeName() {
-        return relativeName;
-    }
-
-    protected void setRelativeName(String relativeName) {
-        this.relativeName = relativeName;
     }
 
     @Override
@@ -76,6 +67,10 @@ public abstract class AbstractTranslet implements Translet {
 
     protected ResponseRule getResponseRule() {
         return transletRule.getResponseRule();
+    }
+
+    public DescriptionRule getDescriptionRule() {
+        return transletRule.getDescriptionRule();
     }
 
 }

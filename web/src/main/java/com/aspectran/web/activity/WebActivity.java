@@ -58,6 +58,8 @@ public class WebActivity extends CoreActivity {
 
     private final HttpServletResponse response;
 
+    private volatile Boolean requestWithContextPath;
+
     /**
      * Instantiates a new WebActivity.
      * @param context the current ActivityContext
@@ -73,13 +75,16 @@ public class WebActivity extends CoreActivity {
 
     @Override
     public boolean isRequestWithContextPath() {
-        Assert.state(isAdapted(), "Not yet adapted");
-        if (getContextPath() != null) {
+        if (getContextPath() == null) {
+            return false;
+        }
+        if (requestWithContextPath == null) {
+            Assert.state(isAdapted(), "Not yet adapted");
             String forwardedPath = getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PATH);
-            return (forwardedPath == null ||
+            requestWithContextPath = (forwardedPath == null ||
                 !(getContextPath().equals(forwardedPath) || forwardedPath.startsWith(getContextPath() + "/")));
         }
-        return super.isRequestWithContextPath();
+        return requestWithContextPath;
     }
 
     @Override

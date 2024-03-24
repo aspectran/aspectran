@@ -75,14 +75,14 @@ public class DefaultWebService extends AbstractWebService {
             requestUri = request.getRequestURI();
         }
 
-        final String transletName;
-        if (getContextPath() != null && requestUri.startsWith(getContextPath())) {
-            transletName = requestUri.substring(getContextPath().length());
+        final String requestName;
+        if (getContextPath() != null) {
+            requestName = requestUri.substring(getContextPath().length());
         } else {
-            transletName = requestUri;
+            requestName = requestUri;
         }
 
-        if (!isExposable(transletName)) {
+        if (!isExposable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -116,15 +116,15 @@ public class DefaultWebService extends AbstractWebService {
 
         TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        TransletRule transletRule = transletRuleRegistry.getTransletRule(transletName, requestMethod);
+        TransletRule transletRule = transletRuleRegistry.getTransletRule(requestName, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
             if (isTrailingSlashRedirect() &&
                     requestMethod == MethodType.GET &&
-                    StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletNameWithTrailingSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (transletRuleRegistry.contains(transletNameWithTrailingSlash, requestMethod)) {
+                    StringUtils.startsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String requestNameWithTrailingSlash = requestName + ActivityContext.NAME_SEPARATOR_CHAR;
+                if (transletRuleRegistry.contains(requestNameWithTrailingSlash, requestMethod)) {
                     String requestUriWithTrailingSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
                     response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
                     response.setHeader(HttpHeaders.LOCATION, requestUriWithTrailingSlash);
@@ -138,7 +138,7 @@ public class DefaultWebService extends AbstractWebService {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("No translet mapped for " + requestMethod + " " + requestUri);
+                        logger.debug("No translet mapped for " + requestMethod + " " + requestName);
                     }
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
@@ -150,9 +150,9 @@ public class DefaultWebService extends AbstractWebService {
         }
 
         if (transletRule.isAsync() && request.isAsyncSupported()) {
-            asyncPerform(request, response, requestUri, requestMethod, transletRule);
+            asyncPerform(request, response, requestName, requestMethod, transletRule);
         } else {
-            perform(request, response, requestUri, requestMethod, transletRule, null);
+            perform(request, response, requestName, requestMethod, transletRule, null);
         }
     }
 

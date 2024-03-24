@@ -66,7 +66,7 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
-    public void prepare(String transletName, MethodType requestMethod, TransletRule transletRule)
+    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException{
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
@@ -81,7 +81,7 @@ public class TowActivity extends CoreActivity {
             }
         }
 
-        super.prepare(transletName, requestMethod, transletRule);
+        super.prepare(requestName, requestMethod, transletRule);
     }
 
     @Override

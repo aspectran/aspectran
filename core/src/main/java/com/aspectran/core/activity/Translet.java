@@ -44,9 +44,12 @@ import java.util.Map;
  */
 public interface Translet {
 
+    /**
+     * Returns the context path. This is similar to the
+     * servlet context path.
+     * @return the context path
+     */
     String getContextPath();
-
-    String getRelativeName();
 
     /**
      * Returns the request name for this {@code Translet}.
@@ -55,7 +58,21 @@ public interface Translet {
     String getRequestName();
 
     /**
-     * Gets the request http method.
+     * Returns the request name including the context path.
+     * @return the request name including the context path.
+     */
+    String getFullRequestName();
+
+    /**
+     * Returns the actual request name. It may or may not
+     * have a context path.
+     * @return the actual request name
+     */
+    String getActualRequestName();
+
+    /**
+     * Returns the request method. This is similar to the HTTP
+     * request method.
      * @return the request method
      */
     MethodType getRequestMethod();
