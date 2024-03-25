@@ -27,6 +27,7 @@ class PathUtilsTest {
     void applyRelativePath() {
         assertEquals("mypath/mypath/myfile", PathUtils.applyRelativePath("mypath/myfile", "mypath/myfile"));
         assertEquals("mypath/mypath/mypath/myfile", PathUtils.applyRelativePath("mypath/mypath/", "mypath/myfile"));
+        assertEquals("mypath/mypath/", PathUtils.applyRelativePath("mypath/mypath/myfile", ""));
     }
 
     @Test

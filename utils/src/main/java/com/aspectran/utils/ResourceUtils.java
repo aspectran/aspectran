@@ -169,7 +169,7 @@ public abstract class ResourceUtils {
      */
     @NonNull
     public static File getFile(String resourceLocation) throws FileNotFoundException {
-        return getFile(resourceLocation, ClassUtils.getDefaultClassLoader());
+        return getFile(resourceLocation, null);
     }
 
     /**
@@ -187,11 +187,15 @@ public abstract class ResourceUtils {
     @NonNull
     public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         Assert.notNull(resourceLocation, "resourceLocation must not be null");
-        Assert.notNull(classLoader, "classLoader must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
             String description = "class path resource [" + path + "]";
-            URL url = classLoader.getResource(path);
+            URL url;
+            if (classLoader != null) {
+                url = classLoader.getResource(path);
+            } else {
+                url = ClassUtils.getDefaultClassLoader().getResource(path);
+            }
             if (url == null) {
                 throw new FileNotFoundException(description +
                         " cannot be resolved to absolute file path because it does not exist");
@@ -200,7 +204,7 @@ public abstract class ResourceUtils {
         }
         try {
             // try URL
-            return getFile(new URL(resourceLocation));
+            return getFile(toURL(resourceLocation));
         } catch (MalformedURLException ex) {
             // no URL -> treat as file path
             return new File(resourceLocation);

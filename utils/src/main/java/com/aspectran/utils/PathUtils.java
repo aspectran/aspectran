@@ -15,8 +15,6 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -40,7 +38,9 @@ public abstract class PathUtils {
      *                     (relative to the full file path above)
      * @return the full file path that results from applying the relative path
      */
-    public static String applyRelativePath(@NonNull String path, String relativePath) {
+    public static String applyRelativePath(String path, String relativePath) {
+        Assert.notNull(path, "path must not be null");
+        Assert.notNull(relativePath, "relativePath must not be null");
         int separatorIndex = path.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
         if (separatorIndex != -1) {
             String newPath = path.substring(0, separatorIndex);
