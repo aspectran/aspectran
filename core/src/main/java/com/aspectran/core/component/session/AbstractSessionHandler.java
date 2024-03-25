@@ -131,8 +131,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public DefaultSession getSession(String id) {
+        DefaultSession session = null;
         try {
-            DefaultSession session = sessionCache.get(id);
+            session = sessionCache.get(id);
             if (session != null) {
                 // if the session we got back has expired
                 if (session.isExpiredAt(System.currentTimeMillis())) {
@@ -148,7 +149,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
             return session;
         } catch (Exception e) {
-            logger.warn(e);
+            if (session != null && session.isValid()) {
+                logger.warn(e);
+            }
             return null;
         }
     }
