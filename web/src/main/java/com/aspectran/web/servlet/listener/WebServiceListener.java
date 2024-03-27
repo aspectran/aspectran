@@ -37,7 +37,7 @@ public class WebServiceListener implements ServletContextListener {
     @Override
     public void contextInitialized(@NonNull ServletContextEvent event) {
         Object attr = event.getServletContext().getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
-        if ((attr instanceof DefaultWebService)) {
+        if (attr instanceof DefaultWebService) {
             logger.warn("Root WebService already exists; Remove WebServiceListener as it is unnecessary");
             return;
         }

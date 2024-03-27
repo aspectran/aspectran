@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.service;
 
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.RequestDispatcher;
@@ -52,10 +54,13 @@ public class DefaultServletHttpRequestHandler {
 
     private final ServletContext servletContext;
 
+    private final WebService webService;
+
     private String defaultServletName;
 
-    public DefaultServletHttpRequestHandler(ServletContext servletContext) {
+    public DefaultServletHttpRequestHandler(ServletContext servletContext, WebService webService) {
         this.servletContext = servletContext;
+        this.webService = webService;
     }
 
     /**
@@ -120,16 +125,26 @@ public class DefaultServletHttpRequestHandler {
     public boolean handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (defaultServletName != null) {
-            RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
-            if (rd == null) {
-                throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" +
-                        defaultServletName + "'");
+            ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(webService.getServiceClassLoader());
+            try {
+                dispatch(request, response);
+            } finally {
+                ClassUtils.restoreThreadContextClassLoader(origClassLoader);
             }
-            rd.forward(request, response);
             return true;
         } else {
             return false;
         }
+    }
+
+    private void dispatch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
+        if (rd == null) {
+            throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" +
+                    defaultServletName + "'");
+        }
+        rd.forward(request, response);
     }
 
 }

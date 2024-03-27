@@ -46,7 +46,7 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         super(rootService);
         this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
         this.servletContext = servletContext;
-        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
+        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext, this);
     }
 
     @Nullable

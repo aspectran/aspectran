@@ -60,55 +60,64 @@ public interface WebService extends CoreService {
     void service(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * Find the root ActivityContext for this web aspectran service.
-     * @param servletContext ServletContext to find the web aspectran service for
-     * @return the ActivityContext for this web aspectran service
+     * Find the root web service from ServletContext.
+     * @param servletContext ServletContext to find the root web service for
+     * @return the root web service
      */
     @NonNull
-    static ActivityContext getActivityContext(ServletContext servletContext) {
-        ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
-        if (activityContext == null) {
-            throw new IllegalStateException("No root DefaultWebService found; " +
-                "No WebServiceListener registered?");
+    static DefaultWebService getDefaultWebService(ServletContext servletContext) {
+        DefaultWebService webService = getDefaultWebService(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
+        if (webService == null) {
+            throw new IllegalStateException("No DefaultWebService found");
         }
-        return activityContext;
+        return webService;
     }
 
     /**
-     * Find the standalone ActivityContext for this web aspectran service.
+     * Finds the root web service from the ServletContext and returns its ActivityContext.
+     * @param servletContext ServletContext to find the root web service for
+     * @return ActivityContext of root web service
+     */
+    @NonNull
+    static ActivityContext getActivityContext(ServletContext servletContext) {
+        return getDefaultWebService(servletContext).getActivityContext();
+    }
+
+    /**
+     * Finds the standalone web service from the ServletContext and returns its ActivityContext.
      * @param servlet the servlet
-     * @return the ActivityContext for this web aspectran service
+     * @return ActivityContext of standalone web service
      */
     @NonNull
     static ActivityContext getActivityContext(HttpServlet servlet) {
         Assert.notNull(servlet, "servlet must not be null");
         ServletContext servletContext = servlet.getServletContext();
         String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-        ActivityContext activityContext = getActivityContext(servletContext, attrName);
-        if (activityContext != null) {
-            return activityContext;
+        DefaultWebService webService = getDefaultWebService(servletContext, attrName);
+        if (webService != null) {
+            return webService.getActivityContext();
         } else {
             return getActivityContext(servletContext);
         }
     }
 
     /**
-     * Find the ActivityContext for this web aspectran service.
-     * @param servletContext ServletContext to find the web aspectran service for
+     * Find the root web service from ServletContext.
+     * @param servletContext ServletContext to find the root web service for
      * @param attrName the name of the ServletContext attribute to look for
-     * @return the ActivityContext for this web aspectran service
+     * @return the root web service
      */
     @Nullable
-    private static ActivityContext getActivityContext(@NonNull ServletContext servletContext, String attrName) {
+    private static DefaultWebService getDefaultWebService(@NonNull ServletContext servletContext, String attrName) {
         Object attr = servletContext.getAttribute(attrName);
         if (attr == null) {
             return null;
         }
         if (!(attr instanceof DefaultWebService defaultWebService)) {
             throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
-                DefaultWebService.class.getName() + "]");
+                    DefaultWebService.class.getName() + "]");
         }
-        return defaultWebService.getActivityContext();
+        return defaultWebService;
     }
 
 }

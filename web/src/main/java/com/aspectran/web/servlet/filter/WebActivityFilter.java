@@ -23,9 +23,11 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
+import com.aspectran.web.service.WebService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -64,7 +66,9 @@ public class WebActivityFilter implements Filter {
                     bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
                 }
 
-                DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
+                ServletContext servletContext = filterConfig.getServletContext();
+                WebService webService = WebService.getDefaultWebService(servletContext);
+                DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(servletContext, webService);
                 defaultHandler.lookupDefaultServletName();
 
                 if (logger.isDebugEnabled()) {
