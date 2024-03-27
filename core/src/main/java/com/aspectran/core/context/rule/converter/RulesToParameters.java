@@ -24,7 +24,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -767,9 +766,6 @@ public class RulesToParameters {
             } else {
                 parameters.putValue("invoke", toActionParameters(invokeActionRule));
             }
-        } else if (action.getActionType() == ActionType.ACTION_ANNOTATED) {
-            AnnotatedActionRule annotatedActionRule = action.getActionRule();
-            parameters.putValue("action", toActionParameters(annotatedActionRule));
         } else if (action.getActionType() == ActionType.INCLUDE) {
             IncludeActionRule includeActionRule = action.getActionRule();
             parameters.putValue("include", toActionParameters(includeActionRule));
@@ -843,19 +839,6 @@ public class RulesToParameters {
             toItemHolderParameters(argumentItemRuleMap, actionParameters, ActionParameters.arguments);
         }
 
-        return actionParameters;
-    }
-
-    @NonNull
-    public static ActionParameters toActionParameters(AnnotatedActionRule annotatedActionRule) {
-        if (annotatedActionRule == null) {
-            throw new IllegalArgumentException("annotatedActionRule must not be null");
-        }
-
-        ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueNonNull(ActionParameters.id, annotatedActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.bean, annotatedActionRule.getBeanClass());
-        actionParameters.putValueNonNull(ActionParameters.method, annotatedActionRule.getMethod());
         return actionParameters;
     }
 

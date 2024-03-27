@@ -137,7 +137,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
         if (aspectAdviceRuleList != null) {
             if (currentAspectAdviceType == AspectAdviceType.FINALLY) {
-                // Exception thrown when registering BEFORE or AFTER advice at the FINALLY activity phase
+                // Exception thrown when registering BEFORE or AFTER advice in the FINALLY activity phase
                 AdviceConstraintViolationException ex = null;
                 for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
                     AspectAdviceType aspectAdviceType = aspectAdviceRule.getAspectAdviceType();

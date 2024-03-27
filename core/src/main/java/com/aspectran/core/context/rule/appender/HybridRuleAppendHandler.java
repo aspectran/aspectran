@@ -65,11 +65,11 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
                 AspectranParameters aspectranParameters = appender.getAppendRule().getAspectranParameters();
                 RootParameters rootParameters = new RootParameters(aspectranParameters);
-                convertAsRules(rootParameters);
+                convertToRules(rootParameters);
             } else if (appender.getAppendableFileFormatType() == AppendableFileFormatType.APON) {
                 try (Reader reader = appender.getReader(encoding)) {
                     RootParameters rootParameters = new RootParameters(reader);
-                    convertAsRules(rootParameters);
+                    convertToRules(rootParameters);
                 }
             } else if (isUseAponToLoadXml()) {
                 // Using APON to load XML based configuration
@@ -85,7 +85,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                         rootParameters = XmlToApon.from(reader, RootParameters.class, getEntityResolver());
                     }
                 }
-                convertAsRules(rootParameters);
+                convertToRules(rootParameters);
             } else {
                 // Using Nodelet to load XML based configuration: It is much faster than APON
                 getAspectranNodeParser().parse(appender);
@@ -118,7 +118,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return entityResolver;
     }
 
-    private void convertAsRules(RootParameters rootParameters) throws IllegalRuleException {
+    private void convertToRules(RootParameters rootParameters) throws IllegalRuleException {
         new ParametersToRules(getContextRuleAssistant()).toRules(rootParameters);
     }
 

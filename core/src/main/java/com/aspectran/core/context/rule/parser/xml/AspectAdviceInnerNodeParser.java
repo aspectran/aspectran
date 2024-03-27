@@ -70,7 +70,6 @@ class AspectAdviceInnerNodeParser implements SubnodeParser {
         parser.setXpath(xpath + "/finally/thrown");
         parser.addNodelet(attrs -> {
             String exceptionType = attrs.get("type");
-
             AspectAdviceRule aspectAdviceRule = parser.peekObject();
             ExceptionThrownRule etr = new ExceptionThrownRule(aspectAdviceRule);
             if (exceptionType != null) {

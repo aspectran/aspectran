@@ -34,11 +34,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SessionScope extends AbstractScope implements SessionBindingListener {
 
-    public static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
-
     private static final ScopeType scopeType = ScopeType.SESSION;
 
     private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+
+    public static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
     /**
      * Instantiates a new Session scope.

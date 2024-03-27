@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  */
 public final class RequestScope extends AbstractScope {
 
-    private static final ScopeType scopeType = ScopeType.SESSION;
+    private static final ScopeType scopeType = ScopeType.REQUEST;
 
     /**
      * Instantiates a new Request scope.

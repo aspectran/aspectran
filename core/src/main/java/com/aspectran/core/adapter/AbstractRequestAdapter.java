@@ -18,6 +18,7 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.activity.request.AbstractRequest;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class AbstractRequestAdapter.
@@ -47,13 +48,14 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
     }
 
     @Override
-    public RequestScope getRequestScope() {
-        return getRequestScope(true);
+    public boolean hasRequestScope() {
+        return (requestScope == null);
     }
 
     @Override
-    public RequestScope getRequestScope(boolean create) {
-        if (requestScope == null && create) {
+    @NonNull
+    public RequestScope getRequestScope() {
+        if (requestScope == null) {
             requestScope = new RequestScope();
         }
         return requestScope;

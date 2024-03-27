@@ -43,7 +43,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
 
     public SqlSessionAgent(String relevantAspectId) {
         if (relevantAspectId == null) {
-            throw new IllegalArgumentException("relevantAspectId can not be null");
+            throw new IllegalArgumentException("relevantAspectId must not be null");
         }
         this.relevantAspectId = relevantAspectId;
     }
@@ -240,10 +240,10 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
         SqlSession sqlSession = sqlSessionTxAdvice.getSqlSession();
         if (sqlSession == null) {
             if (sqlSessionTxAdvice.isArbitrarilyClosed()) {
-                getSqlSessionTxAdvice().open();
-                sqlSession = getSqlSessionTxAdvice().getSqlSession();
+                sqlSessionTxAdvice.open();
+                sqlSession = sqlSessionTxAdvice.getSqlSession();
             } else {
-                throw new IllegalArgumentException("SqlSession is not opened");
+                throw new IllegalStateException("SqlSession is not opened");
             }
         }
         return sqlSession;
@@ -258,7 +258,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
                         "' handling SqlSessionTxAdvice is undefined");
             }
-            throw new IllegalArgumentException("SqlSessionTxAdvice is not defined");
+            throw new IllegalStateException("SqlSessionTxAdvice is not defined");
         }
         return txAdvice;
     }

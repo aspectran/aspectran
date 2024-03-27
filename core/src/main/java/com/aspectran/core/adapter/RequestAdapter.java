@@ -48,18 +48,17 @@ public interface RequestAdapter {
     <T> T getAdaptee();
 
     /**
-     * Gets the request scope.
+     * Returns whether the request scope exists in this request.
+     * @return true if request scope exists, false otherwise
+     */
+    boolean hasRequestScope();
+
+    /**
+     * Returns the request scope in this request.
+     * If the request scope does not exist, it is created.
      * @return the request scope
      */
     RequestScope getRequestScope();
-
-    /**
-     * Gets the request scope.
-     * @param create {@code true} to create a new request scope for this
-     *         request if necessary; {@code false} to return {@code null}
-     * @return the request scope
-     */
-    RequestScope getRequestScope(boolean create);
 
     /**
      * Returns the value of the response header with the given name.

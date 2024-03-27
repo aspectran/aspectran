@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public final class SingletonScope extends AbstractScope {
 
-    private static final ScopeType scopeType = ScopeType.SESSION;
+    private static final ScopeType scopeType = ScopeType.SINGLETON;
 
     private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 

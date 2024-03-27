@@ -124,7 +124,7 @@ public class SqlSessionTxAdvice {
         open();
     }
 
-    public void open(String executorType) {
+    public void open(ExecutorType executorType) {
         setExecutorType(executorType);
         open();
     }
@@ -132,6 +132,11 @@ public class SqlSessionTxAdvice {
     public void open(ExecutorType executorType, boolean autoCommit) {
         setExecutorType(executorType);
         setAutoCommit(autoCommit);
+        open();
+    }
+
+    public void open(String executorType) {
+        setExecutorType(executorType);
         open();
     }
 

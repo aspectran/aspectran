@@ -26,6 +26,7 @@ public enum ScopeType {
 
     SINGLETON("singleton"),
     PROTOTYPE("prototype"),
+    ASPECT("aspect"),
     REQUEST("request"),
     SESSION("session");
 

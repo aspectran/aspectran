@@ -178,7 +178,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (activity != null) {
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             if (requestAdapter != null) {
-                return requestAdapter.getRequestScope(true);
+                return requestAdapter.getRequestScope();
             }
         }
         return null;

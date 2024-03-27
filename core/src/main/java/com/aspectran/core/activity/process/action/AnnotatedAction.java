@@ -86,12 +86,16 @@ public class AnnotatedAction implements Executable {
             if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
                 bean = activity.getBean(annotatedActionRule.getBeanClass());
             }
-            Method method = annotatedActionRule.getMethod();
-            ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
-            return invokeMethod(activity, bean, method, parameterBindingRules);
+            return execute(activity, bean);
         } catch (Exception e) {
             throw new ActionExecutionException(this, e);
         }
+    }
+
+    protected Object execute(Activity activity, Object bean) throws Exception {
+        Method method = annotatedActionRule.getMethod();
+        ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
+        return invokeMethod(activity, bean, method, parameterBindingRules);
     }
 
     /**

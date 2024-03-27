@@ -424,9 +424,8 @@ public class CoreActivity extends AdviceActivity {
     private void finish() {
         try {
             if (getRequestAdapter() != null) {
-                Scope requestScope = getRequestAdapter().getRequestScope(false);
-                if (requestScope != null) {
-                    requestScope.destroy();
+                if (getRequestAdapter().hasRequestScope()) {
+                    getRequestAdapter().getRequestScope().destroy();
                 }
             }
             if (getResponseAdapter() != null) {
