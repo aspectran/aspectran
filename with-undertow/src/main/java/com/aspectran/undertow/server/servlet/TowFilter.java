@@ -22,6 +22,26 @@ import jakarta.servlet.Filter;
 import java.util.Map;
 
 /**
+ * ex)
+ * <pre>{@code
+ *   <bean class="com.aspectran.undertow.server.servlet.TowFilter">
+ *     <arguments>
+ *       <item>towFilter</item>
+ *       <item>com.aspectran.web.servlet.filter.WebActivityFilter</item>
+ *     </arguments>
+ *     <properties>
+ *       <item name="initParams" type="map">
+ *         <entry name="bypasses">
+ *           /assets/**
+ *           /favicon.ico
+ *           /robots.txt
+ *           /ads.txt
+ *         </entry>
+ *       </item>
+ *     </properties>
+ *   </bean>
+ * }</pre>
+ *
  * <p>Created: 2019-08-05</p>
  */
 public class TowFilter extends FilterInfo {

@@ -19,6 +19,15 @@ import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
 
 /**
+ * ex)
+ * <pre>{@code
+ *   <bean class="com.aspectran.undertow.server.servlet.TowFilterServletMapping">
+ *     <arguments>
+ *       <item>towFilter</item>
+ *       <item>web-activity-servlet</item>
+ *     </arguments>
+ *   </bean>
+ * }</pre>
  * <p>Created: 2019-08-05</p>
  */
 public class TowFilterServletMapping extends FilterMappingInfo {
