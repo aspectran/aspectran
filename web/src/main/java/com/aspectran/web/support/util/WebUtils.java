@@ -17,6 +17,8 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -94,6 +96,15 @@ public abstract class WebUtils {
             // ignore
         }
         return false;
+    }
+
+    public static String getRelativePath(String contextPath, @NonNull String requestUri) {
+        if (StringUtils.hasLength(contextPath)) {
+            return requestUri.substring(contextPath.length());
+        } else {
+            return requestUri;
+        }
+
     }
 
 }

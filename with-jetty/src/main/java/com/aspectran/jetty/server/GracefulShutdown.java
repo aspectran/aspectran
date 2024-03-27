@@ -50,7 +50,7 @@ final class GracefulShutdown {
             shutdown(connector);
         }
         this.shuttingDown = true;
-        new Thread(() -> awaitShutdown(callback), "jetty-shutdown").start();
+        new Thread(() -> awaitShutdown(callback), "shutdown").start();
     }
 
     @SuppressWarnings("unchecked")

@@ -35,6 +35,7 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.AsyncListener;
@@ -75,13 +76,7 @@ public class DefaultWebService extends AbstractWebService {
             requestUri = request.getRequestURI();
         }
 
-        final String requestName;
-        if (getContextPath() != null) {
-            requestName = requestUri.substring(getContextPath().length());
-        } else {
-            requestName = requestUri;
-        }
-
+        final String requestName = WebUtils.getRelativePath(getContextPath(), requestUri);
         if (!isExposable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
@@ -95,7 +90,7 @@ public class DefaultWebService extends AbstractWebService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request));
+            logger.debug(getRequestInfo(request, requestUri, requestName));
         }
 
         if (pauseTimeout != 0L) {
@@ -274,10 +269,15 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     @NonNull
-    private String getRequestInfo(@NonNull HttpServletRequest request) {
+    private String getRequestInfo(@NonNull HttpServletRequest request, String requestUri, String requestName) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getMethod()).append(" ");
-        sb.append(request.getRequestURI()).append(" ");
+        if (WebActivity.isRequestWithContextPath(getContextPath(), request)) {
+            sb.append(requestUri);
+        } else {
+            sb.append(requestName);
+        }
+        sb.append(" ");
         sb.append(request.getProtocol()).append(" ");
         String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
         if (!StringUtils.isEmpty(remoteAddr)) {

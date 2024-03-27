@@ -24,6 +24,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
 import com.aspectran.web.service.WebService;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -59,11 +60,11 @@ public class WebActivityFilter implements Filter {
 
         String bypassesParam = filterConfig.getInitParameter("bypasses");
         if (bypassesParam != null) {
-            String[] bypasses = StringUtils.tokenize(bypassesParam, BYPASS_PATTERN_DELIMITERS);
+            String[] bypasses = StringUtils.tokenize(bypassesParam, BYPASS_PATTERN_DELIMITERS, true);
             if (bypasses.length > 0) {
                 List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
                 for (String path : bypasses) {
-                    bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
+                    bypassPatterns.add(WildcardPattern.compile(path, ActivityContext.NAME_SEPARATOR_CHAR));
                 }
 
                 ServletContext servletContext = filterConfig.getServletContext();
@@ -91,8 +92,9 @@ public class WebActivityFilter implements Filter {
             throws IOException, ServletException {
         if (request instanceof HttpServletRequest httpRequest && response instanceof HttpServletResponse httpResponse) {
             if (bypassPatterns != null) {
+                String requestName = WebUtils.getRelativePath(httpRequest.getContextPath(), httpRequest.getRequestURI());
                 for (WildcardPattern pattern : bypassPatterns) {
-                    if (pattern.matches(httpRequest.getRequestURI())) {
+                    if (pattern.matches(requestName)) {
                         if (defaultServletHttpRequestHandler.handleRequest(httpRequest, httpResponse)) {
                             return;
                         }
