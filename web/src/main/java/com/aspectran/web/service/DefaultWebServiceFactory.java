@@ -108,13 +108,13 @@ public class DefaultWebServiceFactory {
     @Nullable
     public static DefaultWebService create(WebActivityServlet servlet, WebService rootWebService) {
         Assert.notNull(servlet, "servlet must not be null");
-        ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (rootWebService == null || aspectranConfigParam != null) {
             if (aspectranConfigParam == null) {
                 logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
             }
+            ServletContext servletContext = servlet.getServletContext();
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
             ApplicationAdapter applicationAdapter = null;
             if (rootWebService != null && rootWebService.getActivityContext() != null) {
