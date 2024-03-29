@@ -171,7 +171,7 @@ public class XslTransformResponse extends TransformResponse {
                 }
             }
         } else {
-            throw new IllegalArgumentException("No specified template " + templateRule);
+            throw new IllegalArgumentException("No template resource for " + templateRule);
         }
     }
 

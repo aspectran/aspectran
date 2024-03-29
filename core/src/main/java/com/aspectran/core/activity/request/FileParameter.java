@@ -92,7 +92,7 @@ public class FileParameter {
      */
     public InputStream getInputStream() throws IOException {
         if (file == null) {
-            throw new IOException("No file specified for this file parameter " + this);
+            throw new IOException("No file specified in file parameter " + this);
         }
         return new FileInputStream(file);
     }

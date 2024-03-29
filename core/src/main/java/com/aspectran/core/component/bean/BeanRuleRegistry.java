@@ -338,7 +338,7 @@ public class BeanRuleRegistry {
 
     private void saveConfigurableBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getBeanClass() == null) {
-            throw new BeanRuleException("No specified bean class", beanRule);
+            throw new BeanRuleException("No bean class for", beanRule);
         }
         configurableBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }

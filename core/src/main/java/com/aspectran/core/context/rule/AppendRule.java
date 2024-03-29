@@ -135,7 +135,7 @@ public class AppendRule {
 
         AppendableFileFormatType appendableFileFormatType = AppendableFileFormatType.resolve(format);
         if (format != null && appendableFileFormatType == null) {
-            throw new IllegalRuleException("No appendable file format type for '" + format + "'");
+            throw new IllegalRuleException("No such appendable file format '" + format + "'");
         }
         appendRule.setFormat(appendableFileFormatType);
 

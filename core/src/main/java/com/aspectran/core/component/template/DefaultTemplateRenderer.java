@@ -135,7 +135,7 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                     engine = activity.getBean(templateRule.getEngineBeanId());
                 }
                 if (engine == null) {
-                    throw new IllegalArgumentException("No template engine bean type for '" +
+                    throw new IllegalArgumentException("No template engine bean named '" +
                             templateRule.getEngine() + "'");
                 }
 

@@ -90,7 +90,7 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public Response replicate() {
-        throw new UnsupportedOperationException("No replicable");
+        throw new UnsupportedOperationException("Non-Replicable");
     }
 
     @Override

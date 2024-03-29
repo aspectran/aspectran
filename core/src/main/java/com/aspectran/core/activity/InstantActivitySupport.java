@@ -104,7 +104,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         Activity currentActivity = getCurrentActivity();
         Translet translet = currentActivity.getTranslet();
         if (translet == null) {
-            throw new UnsupportedOperationException("No translet in " + currentActivity);
+            throw new UnsupportedOperationException("No Translet in " + currentActivity);
         }
         try {
             TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);

@@ -108,12 +108,12 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("No support applying annotatedActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AspectAdviceRule");
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("No support applying includeActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying IncludeActionRule to AspectAdviceRule");
     }
 
     @Override

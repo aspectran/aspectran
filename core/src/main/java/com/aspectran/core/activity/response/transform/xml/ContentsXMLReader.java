@@ -150,8 +150,7 @@ public class ContentsXMLReader implements XMLReader {
         Object data = cis.getData();
         handler.startDocument();
         if (data != null) {
-            if (data instanceof ProcessResult) {
-                ProcessResult processResult = (ProcessResult)data;
+            if (data instanceof ProcessResult processResult) {
                 if (!processResult.isEmpty()) {
                     parseProcessResult(processResult);
                 }

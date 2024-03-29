@@ -211,7 +211,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         }
         SessionHandler sessionHandler = getSessionHandler(deploymentManager);
         if (sessionHandler == null) {
-            throw new IllegalStateException("No session handler for the deployment named '" + deploymentName + "'");
+            throw new IllegalStateException("No SessionHandler for the deployment named '" + deploymentName + "'");
         }
         return sessionHandler;
     }
@@ -224,7 +224,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         }
         SessionHandler sessionHandler = getSessionHandler(deploymentManager);
         if (sessionHandler == null) {
-            throw new IllegalStateException("No session handler for the deployment with path " + path + "'");
+            throw new IllegalStateException("No SessionHandler for the deployment with path " + path + "'");
         }
         return sessionHandler;
     }
