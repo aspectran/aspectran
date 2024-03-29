@@ -24,20 +24,20 @@ import com.aspectran.utils.StringUtils;
 /**
  * Discriminates logging events based on the name given to the ActivityContext of the current CoreService.
  * <p>ex)
- * <pre>
- *    &lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender"&gt;
- *       &lt;discriminator class="com.aspectran.core.context.ContextBasedLoggerDiscriminator"&gt;
- *         &lt;key>LOGGER_NAME&lt;/key&gt;
- *         &lt;defaultValue&gt;app&lt;/defaultValue&gt;
- *       &lt;/discriminator&gt;
- *       &lt;sift&gt;
- *         &lt;appender name="FILE-${LOGGER_NAME}" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
- *           &lt;file&gt;${aspectran.basePath:-app}/logs/${LOGGER_NAME}.log&lt;/file&gt;
- *           ...
- *         &lt;/appender&gt;
- *       &lt;/sift&gt;
- *   &lt;/appender&gt;
- * </pre></p>
+ * <pre>{@code
+ *   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+ *     <discriminator class="com.aspectran.core.context.ContextBasedLoggerDiscriminator">
+ *       <key>LOGGER_NAME</key>
+ *       <defaultValue>app</defaultValue>
+ *     </discriminator>
+ *     <sift>
+ *       <appender name="FILE-${LOGGER_NAME}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+ *         <file>${aspectran.basePath:-app}/logs/${LOGGER_NAME}.log</file>
+ *         ...
+ *       </appender>
+ *     </sift>
+ *   </appender>
+ * }</pre></p>
  * @see <a href="https://logback.qos.ch/manual/loggingSeparation.html">Logging separation</a>
  */
 public class ContextBasedLoggerDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
@@ -48,17 +48,19 @@ public class ContextBasedLoggerDiscriminator extends AbstractDiscriminator<ILogg
 
     /**
      * Returns the name of the current CoreService's ActivityContext.
-     * If that value is null, then return the value assigned to the DefaultValue
+     * If that value is null, then return the value assigned to the defaultValue
      * property.
      */
     @Override
     public String getDiscriminatingValue(ILoggingEvent event) {
         CoreService service = CoreServiceHolder.acquire();
-        if (service == null) {
-            return defaultValue;
+        if (service != null) {
+            ActivityContext context = service.getActivityContext();
+            if (context != null && context.getName() != null) {
+                return context.getName();
+            }
         }
-        String value = (service.getActivityContext() != null ? service.getActivityContext().getName() : null);
-        return (value != null ? value : defaultValue);
+        return defaultValue;
     }
 
     @Override

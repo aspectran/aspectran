@@ -55,14 +55,14 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
                 ResourceManager resourceManager = deploymentInfo.getResourceManager();
                 if (resourceManager != null) {
-                    TowResourceHandler towResourceHandler = new TowResourceHandler(resourceManager, handler);
+                    TowResourceHandler resourceHandler = new TowResourceHandler(resourceManager, handler);
                     String pathPrefix = contextPath;
                     if (pathPrefix != null && pathPrefix.endsWith("/")) {
                         pathPrefix = pathPrefix.substring(0, pathPrefix.length() - 1);
                     }
-                    towResourceHandler.autoDetect(pathPrefix);
-                    if (towResourceHandler.hasPatterns()) {
-                        handler = towResourceHandler;
+                    resourceHandler.autoDetect(pathPrefix);
+                    if (resourceHandler.hasPatterns()) {
+                        handler = resourceHandler;
                     }
                 }
 

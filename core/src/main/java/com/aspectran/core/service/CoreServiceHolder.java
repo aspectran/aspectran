@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CoreServiceHolder {
 
-    private static final Map<ClassLoader, CoreService> servicePerThread = new ConcurrentHashMap<>();
+    private static final Map<ClassLoader, CoreService> servicesByLoader = new ConcurrentHashMap<>();
 
-    private static final Map<Class<?>, CoreService> servicePerClass = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, CoreService> servicesByClass = new ConcurrentHashMap<>();
 
     private static volatile CoreService currentService;
 
@@ -42,7 +42,7 @@ public class CoreServiceHolder {
             if (classLoader == CoreServiceHolder.class.getClassLoader()) {
                 currentService = service;
             } else {
-                servicePerThread.put(classLoader, service);
+                servicesByLoader.put(classLoader, service);
             }
             if (service.getAltClassLoader() != null) {
                 hold(service, service.getAltClassLoader());
@@ -53,23 +53,23 @@ public class CoreServiceHolder {
     public static void hold(CoreService service, ClassLoader classLoader) {
         Assert.notNull(service, "service must not be null");
         Assert.notNull(classLoader, "classLoader must not be null");
-        Assert.state(currentService == service || servicePerThread.containsValue(service),
+        Assert.state(currentService == service || servicesByLoader.containsValue(service),
             "Unregistered service: " + service);
-        servicePerThread.put(classLoader, service);
+        servicesByLoader.put(classLoader, service);
     }
 
     public static void hold(CoreService service, Class<?> clazz) {
         Assert.notNull(service, "service must not be null");
         Assert.notNull(clazz, "clazz must not be null");
-        Assert.state(currentService == service || servicePerThread.containsValue(service),
+        Assert.state(currentService == service || servicesByLoader.containsValue(service),
             "Unregistered service: " + service);
-        servicePerClass.put(clazz, service);
+        servicesByClass.put(clazz, service);
     }
 
     public static void release(CoreService service) {
         Assert.notNull(service, "service must not be null");
-        servicePerThread.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
-        servicePerClass.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
+        servicesByLoader.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
+        servicesByClass.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
         if (currentService != null && currentService == service) {
             currentService = null;
         }
@@ -78,9 +78,9 @@ public class CoreServiceHolder {
     public static CoreService acquire() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
-            CoreService service = servicePerThread.get(classLoader);
+            CoreService service = servicesByLoader.get(classLoader);
             if (service == null && !(classLoader instanceof SiblingClassLoader)) {
-                service = servicePerThread.get(classLoader.getParent());
+                service = servicesByLoader.get(classLoader.getParent());
             }
             if (service != null) {
                 return service;
@@ -90,7 +90,7 @@ public class CoreServiceHolder {
     }
 
     public static CoreService acquire(Class<?> clazz) {
-        CoreService service = servicePerClass.get(clazz);
+        CoreService service = servicesByClass.get(clazz);
         if (service == null) {
             service = acquire();
         }
@@ -98,13 +98,13 @@ public class CoreServiceHolder {
     }
 
     @Nullable
-    public static ActivityContext getActivityContext() {
+    public static ActivityContext findActivityContext() {
         CoreService service = acquire();
         return (service != null ? service.getActivityContext() : null);
     }
 
     @Nullable
-    public static ActivityContext getActivityContext(Class<?> clazz) {
+    public static ActivityContext findActivityContext(Class<?> clazz) {
         CoreService service = acquire(clazz);
         return (service != null ? service.getActivityContext() : null);
     }

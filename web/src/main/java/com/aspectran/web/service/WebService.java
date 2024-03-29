@@ -65,10 +65,10 @@ public interface WebService extends CoreService {
      * @return the root web service
      */
     @NonNull
-    static DefaultWebService getDefaultWebService(ServletContext servletContext) {
-        DefaultWebService webService = getDefaultWebService(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
+    static DefaultWebService findWebService(ServletContext servletContext) {
+        DefaultWebService webService = findWebService(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
         if (webService == null) {
-            throw new IllegalStateException("No DefaultWebService found");
+            throw new IllegalStateException("No root WebService found");
         }
         return webService;
     }
@@ -79,8 +79,8 @@ public interface WebService extends CoreService {
      * @return ActivityContext of root web service
      */
     @NonNull
-    static ActivityContext getActivityContext(ServletContext servletContext) {
-        return getDefaultWebService(servletContext).getActivityContext();
+    static ActivityContext findActivityContext(ServletContext servletContext) {
+        return findWebService(servletContext).getActivityContext();
     }
 
     /**
@@ -89,15 +89,15 @@ public interface WebService extends CoreService {
      * @return ActivityContext of standalone web service
      */
     @NonNull
-    static ActivityContext getActivityContext(HttpServlet servlet) {
+    static ActivityContext findActivityContext(HttpServlet servlet) {
         Assert.notNull(servlet, "servlet must not be null");
         ServletContext servletContext = servlet.getServletContext();
         String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-        DefaultWebService webService = getDefaultWebService(servletContext, attrName);
+        DefaultWebService webService = findWebService(servletContext, attrName);
         if (webService != null) {
             return webService.getActivityContext();
         } else {
-            return getActivityContext(servletContext);
+            return findActivityContext(servletContext);
         }
     }
 
@@ -108,7 +108,7 @@ public interface WebService extends CoreService {
      * @return the root web service
      */
     @Nullable
-    private static DefaultWebService getDefaultWebService(@NonNull ServletContext servletContext, String attrName) {
+    private static DefaultWebService findWebService(@NonNull ServletContext servletContext, String attrName) {
         Object attr = servletContext.getAttribute(attrName);
         if (attr == null) {
             return null;

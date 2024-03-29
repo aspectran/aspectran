@@ -16,6 +16,9 @@
 package com.aspectran.undertow.server.handler;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.CoreService;
@@ -24,6 +27,7 @@ import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.service.DefaultTowService;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
@@ -33,7 +37,10 @@ import io.undertow.server.session.SessionManager;
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory implements DisposableBean {
+public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
+    implements ActivityContextAware, DisposableBean {
+
+    private ActivityContext context;
 
     private TowServer towServer;
 
@@ -46,6 +53,17 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
     private AspectranConfig aspectranConfig;
 
     private TowService towService;
+
+    @NonNull
+    public ActivityContext getActivityContext() {
+        return context;
+    }
+
+    @Override
+    @AvoidAdvice
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.context = context;
+    }
 
     public void setTowServer(TowServer towServer) {
         this.towServer = towServer;
@@ -78,10 +96,10 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         HttpHandler rootHandler = requestHandler;
 
         if (resourceManager != null) {
-            TowResourceHandler towResourceHandler = new TowResourceHandler(resourceManager, requestHandler);
-            towResourceHandler.autoDetect(null);
-            if (towResourceHandler.hasPatterns()) {
-                rootHandler = towResourceHandler;
+            TowResourceHandler resourceHandler = new TowResourceHandler(resourceManager, requestHandler);
+            resourceHandler.autoDetect(null);
+            if (resourceHandler.hasPatterns()) {
+                rootHandler = resourceHandler;
             }
         }
 

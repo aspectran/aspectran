@@ -120,12 +120,10 @@ public class TowResourceHandler extends ResourceHandler {
                 String fileName = child.getFileName().toString();
                 if ("WEB-INF".equalsIgnoreCase(fileName) || "META-INF".equalsIgnoreCase(fileName)) {
                     resources.add("/" + fileName + "/");
+                } else if (Files.isDirectory(child)) {
+                    findStaticResourceDirs(child, "/" + fileName + "/", resources);
                 } else {
-                    if (Files.isDirectory(child)) {
-                        findStaticResourceDirs(child, "/" + fileName + "/", resources);
-                    } else {
-                        resources.add("/" + fileName);
-                    }
+                    resources.add("/" + fileName);
                 }
             }
         }

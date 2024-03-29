@@ -68,7 +68,7 @@ public class WebActivityFilter implements Filter {
                 }
 
                 ServletContext servletContext = filterConfig.getServletContext();
-                WebService webService = WebService.getDefaultWebService(servletContext);
+                WebService webService = WebService.findWebService(servletContext);
                 DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(servletContext, webService);
                 defaultHandler.lookupDefaultServletName();
 

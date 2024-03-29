@@ -175,6 +175,14 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    public void setInitialHandlerChainWrappers(HandlerWrapper[] wrappers) {
+        if (wrappers != null) {
+            for (HandlerWrapper wrapper : wrappers) {
+                addInitialHandlerChainWrapper(wrapper);
+            }
+        }
+    }
+
     public void setInnerHandlerChainWrappers(HandlerWrapper[] wrappers) {
         if (wrappers != null) {
             for (HandlerWrapper wrapper : wrappers) {
