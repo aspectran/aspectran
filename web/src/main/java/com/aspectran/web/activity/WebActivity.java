@@ -78,7 +78,13 @@ public class WebActivity extends CoreActivity {
         } else {
             forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
         }
-        return (forwardedPath != null ? forwardedPath : super.getReverseContextPath());
+        if (forwardedPath != null) {
+            if (forwardedPath.endsWith("/")) {
+                forwardedPath = forwardedPath.substring(0, forwardedPath.length() - 1);
+            }
+            return forwardedPath;
+        }
+        return super.getReverseContextPath();
     }
 
     @Override
