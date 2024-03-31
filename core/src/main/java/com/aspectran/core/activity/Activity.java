@@ -85,15 +85,16 @@ public interface Activity {
     /**
      * Returns the context path. If the context path is not specified,
      * {@code null} is returned rather than an empty string.
-     * @return the context path
+     * @return the context path of this activity, or {@code null} for
+     *      the root context
      */
     String getContextPath();
 
     /**
-     * Returns whether the request name has a context path.
-     * @return true if request name with context path, false otherwise.
+     * Returns the reverse context path used as a prefix to the actual request name.
+     * @return the reverse context path
      */
-    boolean isRequestWithContextPath();
+    String getReverseContextPath();
 
     /**
      * Performs the prepared activity.

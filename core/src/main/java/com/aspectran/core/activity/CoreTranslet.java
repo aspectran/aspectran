@@ -58,8 +58,6 @@ public class CoreTranslet extends AbstractTranslet {
 
     private final CoreActivity activity;
 
-    private String fullRequestName;
-
     private ProcessResult processResult;
 
     private ActivityData activityData;
@@ -83,24 +81,10 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    protected void setRequestName(String requestName) {
-        super.setRequestName(requestName);
-        if (activity.getContextPath() != null) {
-            fullRequestName = activity.getContextPath() + getRequestName();
-        } else {
-            fullRequestName = requestName;
-        }
-    }
-
-    @Override
-    public String getFullRequestName() {
-        return fullRequestName;
-    }
-
-    @Override
     public String getActualRequestName() {
-        if (activity.isRequestWithContextPath()) {
-            return getFullRequestName();
+        String reverseContextPath = activity.getReverseContextPath();
+        if (reverseContextPath != null) {
+            return reverseContextPath + getRequestName();
         } else {
             return getRequestName();
         }

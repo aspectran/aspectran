@@ -30,7 +30,6 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -112,8 +111,8 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public boolean isRequestWithContextPath() {
-        return (contextPath != null);
+    public String getReverseContextPath() {
+        return contextPath;
     }
 
     /**

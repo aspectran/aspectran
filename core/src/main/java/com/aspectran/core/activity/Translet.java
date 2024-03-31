@@ -47,7 +47,8 @@ public interface Translet {
     /**
      * Returns the context path. This is similar to the
      * servlet context path.
-     * @return the context path
+     * @return the context path of the activity, or ""
+     *      for the root context
      */
     String getContextPath();
 
@@ -56,12 +57,6 @@ public interface Translet {
      * @return the request name
      */
     String getRequestName();
-
-    /**
-     * Returns the request name including the context path.
-     * @return the request name including the context path.
-     */
-    String getFullRequestName();
 
     /**
      * Returns the actual request name. It may or may not

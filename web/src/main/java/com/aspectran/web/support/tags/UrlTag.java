@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -255,9 +254,9 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
         if (this.type == UrlType.CONTEXT_RELATIVE) {
             // add application context to url
             if (this.context == null) {
-                Activity activity = getCurrentActivity();
-                if (activity.isRequestWithContextPath()) {
-                    url.append(activity.getContextPath());
+                String reverseContextPath = getCurrentActivity().getReverseContextPath();
+                if (reverseContextPath != null) {
+                    url.append(reverseContextPath);
                 }
             } else if (this.context.endsWith("/")) {
                 url.append(this.context, 0, this.context.length() - 1);

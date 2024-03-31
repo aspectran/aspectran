@@ -29,7 +29,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -38,7 +37,6 @@ import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -59,8 +57,6 @@ public class WebActivity extends CoreActivity {
 
     private final HttpServletResponse response;
 
-    private volatile Boolean requestWithContextPath;
-
     /**
      * Instantiates a new WebActivity.
      * @param context the current ActivityContext
@@ -75,14 +71,14 @@ public class WebActivity extends CoreActivity {
     }
 
     @Override
-    public boolean isRequestWithContextPath() {
-        if (getContextPath() == null) {
-            return false;
+    public String getReverseContextPath() {
+        String forwardedPath;
+        if (isAdapted()) {
+            forwardedPath = getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PATH);
+        } else {
+            forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
         }
-        if (requestWithContextPath == null) {
-            requestWithContextPath = isRequestWithContextPath(getContextPath(), request);
-        }
-        return requestWithContextPath;
+        return (forwardedPath != null ? forwardedPath : super.getReverseContextPath());
     }
 
     @Override
@@ -211,21 +207,6 @@ public class WebActivity extends CoreActivity {
             }
         }
         return localeResolver;
-    }
-
-    /**
-     * Returns whether the actual request URI contains a context path.
-     * @param servletContext the {@link ServletContext}
-     * @param request the {@link HttpServletRequest} object contains the client's request
-     * @return true if request name with context path, false otherwise.
-     */
-    public static boolean isRequestWithContextPath(String servletContext, @NonNull HttpServletRequest request) {
-        if (servletContext == null) {
-            return false;
-        }
-        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
-        return (forwardedPath == null ||
-            !(servletContext.equals(forwardedPath) || forwardedPath.startsWith(servletContext + "/")));
     }
 
 }

@@ -49,8 +49,8 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public boolean isRequestWithContextPath() {
-        return false;
+    public String getReverseContextPath() {
+        return null;
     }
 
     @Override

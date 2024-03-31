@@ -68,8 +68,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
                 MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    for (Enumeration<String> values = request.getHeaders(name);
-                            values.hasMoreElements();) {
+                    for (Enumeration<String> values = request.getHeaders(name); values.hasMoreElements();) {
                         String value = values.nextElement();
                         multiValueMap.add(name, value);
                     }

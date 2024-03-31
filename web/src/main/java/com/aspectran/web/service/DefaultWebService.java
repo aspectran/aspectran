@@ -272,10 +272,11 @@ public class DefaultWebService extends AbstractWebService {
     private String getRequestInfo(@NonNull HttpServletRequest request, String requestUri, String requestName) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getMethod()).append(" ");
-        if (WebActivity.isRequestWithContextPath(getContextPath(), request)) {
-            sb.append(requestUri);
+        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
+        if (forwardedPath != null) {
+            sb.append(forwardedPath).append(requestName);
         } else {
-            sb.append(requestName);
+            sb.append(requestUri);
         }
         sb.append(" ");
         sb.append(request.getProtocol()).append(" ");
