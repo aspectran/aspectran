@@ -193,9 +193,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         StringBuilder sb = new StringBuilder(256);
         if (path != null) {
             if (path.startsWith("/")) {
-                String reverseContextPath = activity.getReverseContextPath();
-                if (reverseContextPath != null) {
-                    sb.append(reverseContextPath);
+                String contextPath = activity.getReverseContextPath();
+                if (contextPath != null) {
+                    sb.append(contextPath);
                 }
             }
             sb.append(path);
