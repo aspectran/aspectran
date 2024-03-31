@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.io.Serial;
 
 /**
- * Exception thrown when a request handler does not allow a specific request method.
+ * Exception thrown when a specific request method is not allowed.
  */
 public class RequestMethodNotAllowedException extends RequestException {
 

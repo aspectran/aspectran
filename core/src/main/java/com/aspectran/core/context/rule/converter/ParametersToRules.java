@@ -301,7 +301,7 @@ public class ParametersToRules {
         AdviceParameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
         if (adviceParameters != null) {
             String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
-            if (!StringUtils.isEmpty(adviceBeanId)) {
+            if (StringUtils.hasLength(adviceBeanId)) {
                 aspectRule.setAdviceBeanId(adviceBeanId);
             }
 
@@ -501,7 +501,7 @@ public class ParametersToRules {
         SchedulerParameters schedulerParameters = scheduleParameters.getParameters(ScheduleParameters.scheduler);
         if (schedulerParameters != null) {
             String schedulerBeanId = schedulerParameters.getString(SchedulerParameters.bean);
-            if (!StringUtils.isEmpty(schedulerBeanId)) {
+            if (StringUtils.hasLength(schedulerBeanId)) {
                 scheduleRule.setSchedulerBeanId(schedulerBeanId);
             }
             TriggerParameters triggerParameters = schedulerParameters.getParameters(SchedulerParameters.trigger);

@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
@@ -81,26 +82,28 @@ class InstantActivityTest {
     }
 
     @Test
-    void transletEcho11() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletEcho11() throws Exception {
         assertEquals("Hello", instantActivity1("/echo"));
     }
 
     @Test
-    void transletInclude11() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude11() throws Exception {
         assertEquals("Hello World!", instantActivity1("/include11"));
     }
 
     @Test
-    void transletInclude12() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude12() throws Exception {
         assertEquals("Hello World", instantActivity1("/include12"));
     }
 
     @Test
-    void transletInclude13() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude13() throws Exception {
         assertEquals("Hello World", instantActivity1("/include13"));
     }
 
-    private String instantActivity1(String transletName) throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    private String instantActivity1(String transletName)
+            throws TransletNotFoundException, RequestMethodNotAllowedException,
+                ActivityPrepareException, ActivityPerformException, IOException {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameter("msg", "Hello");
         InstantActivity activity = new InstantActivity(context);
@@ -116,21 +119,21 @@ class InstantActivityTest {
     }
 
     @Test
-    void transletInclude21() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude21() throws Exception {
         assertEquals("Hello World!", instantActivity2("/include21"));
     }
 
     @Test
-    void transletInclude22() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude22() throws Exception {
         assertEquals("Hello World!", instantActivity2("/include22"));
     }
 
     @Test
-    void transletInclude23() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    void transletInclude23() throws Exception {
         assertEquals("Hello World", instantActivity2("/include23"));
     }
 
-    private String instantActivity2(String transletName) throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
+    private String instantActivity2(String transletName) throws Exception {
         InstantActivity activity = new InstantActivity(context);
         activity.setSessionAdapter(sessionAdapter);
         activity.prepare(transletName);

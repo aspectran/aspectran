@@ -187,7 +187,7 @@ public class DefaultTowService extends AbstractTowService {
         sb.append(exchange.getRequestURI()).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
         String remoteAddr = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR);
-        if (!StringUtils.isEmpty(remoteAddr)) {
+        if (StringUtils.hasLength(remoteAddr)) {
             sb.append(remoteAddr);
         } else {
             sb.append(exchange.getSourceAddress());

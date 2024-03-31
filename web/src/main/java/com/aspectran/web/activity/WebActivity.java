@@ -19,28 +19,31 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
+import com.aspectran.web.service.WebService;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.UnsupportedEncodingException;
+
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
 
 /**
  * An activity that processes a web request.
@@ -53,47 +56,71 @@ public class WebActivity extends CoreActivity {
 
     private static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
+    private final String reverseContextPath;
+
     private final HttpServletRequest request;
 
     private final HttpServletResponse response;
 
+    private String requestName;
+
+    private MethodType requestMethod;
+
+    private boolean async;
+
+    private Long timeout;
+
     /**
      * Instantiates a new WebActivity.
-     * @param context the current ActivityContext
+     * @param webService the {@code WebService} instance
      * @param request the HTTP request
      * @param response the HTTP response
      */
-    public WebActivity(ActivityContext context, String contextPath,
+    public WebActivity(@NonNull WebService webService, String contextPath, String reverseContextPath,
                        HttpServletRequest request, HttpServletResponse response) {
-        super(context, contextPath);
+        super(webService.getActivityContext(), contextPath);
+        this.reverseContextPath = reverseContextPath;
         this.request = request;
         this.response = response;
     }
 
     @Override
     public String getReverseContextPath() {
-        String forwardedPath;
-        if (isAdapted()) {
-            forwardedPath = getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PATH);
-        } else {
-            forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
-        }
-        if (forwardedPath != null) {
-            if (forwardedPath.equals("/")) {
-                return StringUtils.EMPTY;
-            }
-            if (forwardedPath.endsWith("/")) {
-                forwardedPath = forwardedPath.substring(0, forwardedPath.length() - 1);
-            }
-            return forwardedPath;
-        } else {
-            return super.getReverseContextPath();
-        }
+        return reverseContextPath;
+    }
+
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    public HttpServletResponse getResponse() {
+        return response;
+    }
+
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    public Long getTimeout() {
+        return timeout;
     }
 
     @Override
-    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws ActivityPrepareException {
+    public void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+            throws RequestMethodNotAllowedException, ActivityPrepareException {
+        this.requestName = requestName;
+        this.requestMethod = requestMethod;
+        this.async = transletRule.isAsync();
+        this.timeout = transletRule.getTimeout();
+
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
             String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
@@ -120,7 +147,7 @@ public class WebActivity extends CoreActivity {
                     getTranslet().getRequestMethod(), request);
             if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
-                if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
+                if (StringUtils.hasLength(maxRequestSizeSetting)) {
                     try {
                         long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
                         if (maxRequestSize >= 0L) {
@@ -209,7 +236,7 @@ public class WebActivity extends CoreActivity {
     protected LocaleResolver resolveLocale() {
         LocaleResolver localeResolver = super.resolveLocale();
         if (localeResolver != null) {
-            String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
             if (localeChangeInterceptorId != null) {
                 LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
                         localeChangeInterceptorId);

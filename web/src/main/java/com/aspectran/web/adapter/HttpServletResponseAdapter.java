@@ -26,6 +26,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
 import jakarta.servlet.http.HttpServletResponse;
@@ -194,7 +195,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (path != null) {
             if (path.startsWith("/")) {
                 String contextPath = activity.getReverseContextPath();
-                if (contextPath != null) {
+                if (StringUtils.hasLength(contextPath)) {
                     sb.append(contextPath);
                 }
             }

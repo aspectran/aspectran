@@ -131,10 +131,10 @@ public class FormattingContext {
                 formattingContext.setIndentSize(size);
             }
         }
-        if (!StringUtils.isEmpty(dateFormat)) {
+        if (StringUtils.hasLength(dateFormat)) {
             formattingContext.setDateFormat(dateFormat);
         }
-        if (!StringUtils.isEmpty(dateTimeFormat)) {
+        if (StringUtils.hasLength(dateTimeFormat)) {
             formattingContext.setDateTimeFormat(dateTimeFormat);
         }
         if (nullWritable != null) {

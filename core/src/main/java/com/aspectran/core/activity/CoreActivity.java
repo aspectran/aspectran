@@ -119,10 +119,11 @@ public class CoreActivity extends AdviceActivity {
      * Prepare for the activity.
      * @param requestName the request name
      * @throws TransletNotFoundException thrown if the translet is not found
+     * @throws RequestMethodNotAllowedException thrown when a specific request method is not allowed
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName)
-            throws TransletNotFoundException, ActivityPrepareException {
+            throws TransletNotFoundException, RequestMethodNotAllowedException, ActivityPrepareException {
         TransletRule transletRule = getTransletRule(requestName, MethodType.GET);
         if (transletRule == null) {
             throw new TransletNotFoundException(requestName, MethodType.GET);
@@ -134,9 +135,11 @@ public class CoreActivity extends AdviceActivity {
     /**
      * Prepare for the activity.
      * @param transletRule the translet rule
+     * @throws RequestMethodNotAllowedException thrown when a specific request method is not allowed
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
-    public void prepare(TransletRule transletRule) throws ActivityPrepareException {
+    public void prepare(TransletRule transletRule)
+            throws RequestMethodNotAllowedException, ActivityPrepareException {
         prepare(transletRule.getName(), transletRule);
     }
 
@@ -144,9 +147,11 @@ public class CoreActivity extends AdviceActivity {
      * Prepare for the activity.
      * @param requestName the request name
      * @param transletRule the translet rule
+     * @throws RequestMethodNotAllowedException thrown when a specific request method is not allowed
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
-    public void prepare(String requestName, TransletRule transletRule) throws ActivityPrepareException {
+    public void prepare(String requestName, TransletRule transletRule)
+            throws RequestMethodNotAllowedException, ActivityPrepareException {
         prepare(requestName, MethodType.GET, transletRule);
     }
 
@@ -158,7 +163,7 @@ public class CoreActivity extends AdviceActivity {
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName, String requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException {
+            throws TransletNotFoundException, RequestMethodNotAllowedException, ActivityPrepareException {
         prepare(requestName, MethodType.resolve(requestMethod));
     }
 
@@ -167,10 +172,11 @@ public class CoreActivity extends AdviceActivity {
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
+     * @throws RequestMethodNotAllowedException thrown when a specific request method is not allowed
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName, MethodType requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException {
+            throws TransletNotFoundException, RequestMethodNotAllowedException, ActivityPrepareException {
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
         }
@@ -191,7 +197,7 @@ public class CoreActivity extends AdviceActivity {
      * @param transletRule the translet rule
      */
     public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws ActivityPrepareException {
+            throws RequestMethodNotAllowedException, ActivityPrepareException {
         Assert.notNull(requestName, "requestName must not be null");
         Assert.notNull(requestMethod, "requestMethod must not be null");
         Assert.notNull(transletRule, "transletRule must not be null");
@@ -215,6 +221,8 @@ public class CoreActivity extends AdviceActivity {
             }
 
             prepareAspectAdviceRule(transletRule, transletRule.getName());
+        } catch (RequestMethodNotAllowedException e) {
+            throw e;
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
@@ -400,7 +408,8 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private void forward(@NonNull ForwardRule forwardRule)
-            throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
+            throws TransletNotFoundException, RequestMethodNotAllowedException,
+                    ActivityPrepareException, ActivityPerformException {
         reserveResponse(null);
         committed = false;
 

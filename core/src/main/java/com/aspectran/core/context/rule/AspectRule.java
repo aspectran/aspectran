@@ -313,7 +313,7 @@ public class AspectRule implements BeanReferenceable {
         aspectRule.setIsolated(isolated);
         aspectRule.setDisabled(disabled);
 
-        if (!StringUtils.isEmpty(order)) {
+        if (StringUtils.hasLength(order)) {
             try {
                 aspectRule.setOrder(Integer.parseInt(order));
             } catch (NumberFormatException e) {
@@ -337,7 +337,7 @@ public class AspectRule implements BeanReferenceable {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
 
         String expression = joinpointParameters.getString(JoinpointParameters.expression);
-        if (!StringUtils.isEmpty(expression)) {
+        if (StringUtils.hasLength(expression)) {
             try {
                 AponReader.parse(expression, joinpointParameters);
                 joinpointParameters.removeValue(JoinpointParameters.expression);

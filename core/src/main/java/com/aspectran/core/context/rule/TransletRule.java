@@ -540,7 +540,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private static Long parseTimeout(String timeout) throws IllegalRuleException {
         Long parsedTimeout = null;
-        if (!StringUtils.isEmpty(timeout)) {
+        if (StringUtils.hasLength(timeout)) {
             try {
                 parsedTimeout = Long.parseLong(timeout);
             } catch (NumberFormatException e) {

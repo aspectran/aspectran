@@ -16,11 +16,13 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.activity.request.RequestHeaderParser;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.Cookie;
@@ -105,6 +107,22 @@ public abstract class WebUtils {
             return requestUri;
         }
 
+    }
+
+    @Nullable
+    public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
+        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
+        if (forwardedPath != null) {
+            if (forwardedPath.equals(ActivityContext.NAME_SEPARATOR)) {
+                return StringUtils.EMPTY;
+            } else if (forwardedPath.endsWith(ActivityContext.NAME_SEPARATOR)) {
+                return forwardedPath.substring(0, forwardedPath.length() - 1);
+            } else {
+                return forwardedPath;
+            }
+        } else {
+            return defaultContextPath;
+        }
     }
 
 }

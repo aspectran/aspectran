@@ -112,7 +112,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
 
         String historyFile = shellConfig.getHistoryFile();
-        if (!StringUtils.isEmpty(historyFile)) {
+        if (StringUtils.hasLength(historyFile)) {
             if (basePath != null) {
                 historyFile = new File(basePath, historyFile).getCanonicalPath();
             } else {

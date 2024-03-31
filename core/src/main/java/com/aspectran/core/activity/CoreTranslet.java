@@ -82,9 +82,9 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public String getActualRequestName() {
-        String reverseContextPath = activity.getReverseContextPath();
-        if (StringUtils.hasLength(reverseContextPath)) {
-            return reverseContextPath + getRequestName();
+        String contextPath = activity.getReverseContextPath();
+        if (StringUtils.hasLength(contextPath)) {
+            return contextPath + getRequestName();
         } else {
             return getRequestName();
         }

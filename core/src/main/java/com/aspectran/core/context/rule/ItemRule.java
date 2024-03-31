@@ -647,7 +647,7 @@ public class ItemRule {
         }
         itemRule.setType(itemType != null ? itemType : ItemType.SINGLE);
 
-        if (!StringUtils.isEmpty(name)) {
+        if (StringUtils.hasLength(name)) {
             itemRule.setName(name);
         } else {
             itemRule.setAutoNamed(true);

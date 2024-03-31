@@ -15,14 +15,13 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.ClassUtils;
@@ -45,7 +44,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
@@ -80,17 +78,19 @@ public class DefaultWebService extends AbstractWebService {
         if (!isExposable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    sendError(response, HttpServletResponse.SC_NOT_FOUND, null);
                 }
             } catch (Exception e) {
                 logger.error("Error while processing with default servlet", e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
             }
             return;
         }
 
+        final String reverseContextPath = WebUtils.getReverseContextPath(request, getContextPath());
+
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request, requestUri, requestName));
+            logger.debug(getRequestInfo(request, reverseContextPath, requestName));
         }
 
         if (pauseTimeout != 0L) {
@@ -98,67 +98,41 @@ public class DefaultWebService extends AbstractWebService {
                 if (logger.isDebugEnabled()) {
                     logger.debug(getServiceName() + " has been paused, so did not respond to request " + requestUri);
                 }
-                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, null);
                 return;
             } else if (pauseTimeout == -2L) {
                 logger.warn(getServiceName() + " is not yet started");
-                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
                 return;
             } else {
                 pauseTimeout = 0L;
             }
         }
 
-        TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
-        final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        TransletRule transletRule = transletRuleRegistry.getTransletRule(requestName, requestMethod);
-        if (transletRule == null) {
-            // Provides for "trailing slash" redirects and serving directory index files
-            if (isTrailingSlashRedirect() &&
-                    requestMethod == MethodType.GET &&
-                    StringUtils.startsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String requestNameWithTrailingSlash = requestName + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (transletRuleRegistry.contains(requestNameWithTrailingSlash, requestMethod)) {
-                    String requestUriWithTrailingSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
-                    response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                    response.setHeader(HttpHeaders.LOCATION, requestUriWithTrailingSlash);
-                    response.setHeader(HttpHeaders.CONNECTION, "close");
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Redirect URL with a Trailing Slash: " + requestUriWithTrailingSlash);
-                    }
-                    return;
-                }
-            }
-            try {
-                if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("No translet mapped for " + requestMethod + " " + requestName);
-                    }
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-            } catch (Exception e) {
-                logger.error(e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
+        WebActivity activity = new WebActivity(this, getContextPath(), reverseContextPath, request, response);
+        try {
+            activity.prepare(requestName, request.getMethod());
+        } catch (TransletNotFoundException e) {
+            transletNotFound(request, response, reverseContextPath, requestName);
+            return;
+        } catch (Exception e) {
+            sendError(activity, e);
             return;
         }
-
-        if (transletRule.isAsync() && request.isAsyncSupported()) {
-            asyncPerform(request, response, requestName, requestMethod, transletRule);
+        if (activity.isAsync() && request.isAsyncSupported()) {
+            asyncPerform(activity);
         } else {
-            perform(request, response, requestName, requestMethod, transletRule, null);
+            perform(activity);
         }
     }
 
-    private void asyncPerform(@NonNull HttpServletRequest request, HttpServletResponse response,
-                              String requestName, MethodType requestMethod, TransletRule transletRule) {
+    private void asyncPerform(@NonNull WebActivity activity) {
         final AsyncContext asyncContext;
-        if (request.isAsyncStarted()) {
-            asyncContext = request.getAsyncContext();
-            if (transletRule.getTimeout() != null) {
+        if (activity.getRequest().isAsyncStarted()) {
+            asyncContext = activity.getRequest().getAsyncContext();
+            if (activity.getTimeout() != null) {
                 try {
-                    asyncContext.setTimeout(transletRule.getTimeout());
+                    asyncContext.setTimeout(activity.getTimeout());
                 } catch (IllegalStateException ex) {
                     logger.warn("Servlet request has been put into asynchronous mode by an external force. " +
                             "Proceeding with the existing AsyncContext instance, " +
@@ -166,15 +140,14 @@ public class DefaultWebService extends AbstractWebService {
                 }
             }
         } else {
-            asyncContext = request.startAsync();
+            asyncContext = activity.getRequest().startAsync();
             if (logger.isDebugEnabled()) {
                 logger.debug("Async Started " + asyncContext);
             }
-            if (transletRule.getTimeout() != null) {
-                asyncContext.setTimeout(transletRule.getTimeout());
+            if (activity.getTimeout() != null) {
+                asyncContext.setTimeout(activity.getTimeout());
             }
         }
-        final AtomicReference<Activity> activityReference = new AtomicReference<>();
         asyncContext.addListener(new AsyncListener() {
             @Override
             public void onComplete(AsyncEvent asyncEvent) throws IOException {
@@ -185,8 +158,7 @@ public class DefaultWebService extends AbstractWebService {
 
             @Override
             public void onTimeout(AsyncEvent asyncEvent) throws IOException {
-                Activity activity = activityReference.get();
-                if (activity != null && !activity.isCommitted() && !activity.isExceptionRaised()) {
+                if (!activity.isCommitted() && !activity.isExceptionRaised()) {
                     activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
                 } else {
                     logger.error("Async Timeout " + asyncEvent);
@@ -206,49 +178,84 @@ public class DefaultWebService extends AbstractWebService {
             }
         });
         asyncContext.start(() -> {
-            perform(request, response, requestName, requestMethod, transletRule, activityReference);
+            perform(activity);
             asyncContext.complete();
         });
     }
 
-    private void perform(HttpServletRequest request, HttpServletResponse response,
-                         String requestName, MethodType requestMethod, TransletRule transletRule,
-                         AtomicReference<Activity> activityReference) {
+    private void perform(@NonNull WebActivity activity) {
         ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getServiceClassLoader());
-        WebActivity activity = null;
         try {
-            activity = new WebActivity(getActivityContext(), getContextPath(), request, response);
-            if (activityReference != null) {
-                activityReference.set(activity);
-            }
-            activity.prepare(requestName, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable t;
-            if (activity != null && activity.getRaisedException() != null) {
-                t = activity.getRaisedException();
-            } else {
-                t = e;
-            }
-            Throwable cause = ExceptionUtils.getRootCause(t);
-            logger.error("Error occurred while processing request: " + requestMethod + " " + requestName, t);
-            if (!response.isCommitted()) {
-                if (cause instanceof RequestMethodNotAllowedException) {
-                    sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
-                } else if (cause instanceof SizeLimitExceededException) {
-                    sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
-                } else if (cause instanceof MaxSessionsExceededException) {
-                    sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, MAX_SESSIONS_EXCEEDED);
-                } else {
-                    sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
-                }
-            }
+            sendError(activity, e);
         } finally {
             ClassUtils.restoreThreadContextClassLoader(origClassLoader);
+        }
+    }
+
+    private void transletNotFound(@NonNull HttpServletRequest request, HttpServletResponse response,
+                                  String reverseContextPath, String requestName) {
+        MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
+        // Provides for "trailing slash" redirects and serving directory index files
+        if (isTrailingSlashRedirect() &&
+            requestMethod == MethodType.GET &&
+            StringUtils.startsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+            !StringUtils.endsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+            String requestNameWithTrailingSlash = requestName + ActivityContext.NAME_SEPARATOR_CHAR;
+            TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
+            if (transletRuleRegistry.contains(requestNameWithTrailingSlash, requestMethod)) {
+                String location;
+                if (StringUtils.hasLength(reverseContextPath)) {
+                    location = reverseContextPath + requestName + ActivityContext.NAME_SEPARATOR;
+                } else {
+                    location = requestName + ActivityContext.NAME_SEPARATOR;
+                }
+                response.setHeader(HttpHeaders.LOCATION, location);
+                response.setHeader(HttpHeaders.CONNECTION, "close");
+                sendError(response, HttpServletResponse.SC_MOVED_PERMANENTLY, location);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Redirect URL with a Trailing Slash: " + location);
+                }
+                return;
+            }
+        }
+        try {
+            if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("No translet mapped for " + requestMethod + " " + requestName);
+                }
+                sendError(response, HttpServletResponse.SC_NOT_FOUND, null);
+            }
+        } catch (Exception e) {
+            logger.error(e);
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    private void sendError(@NonNull WebActivity activity, Exception e) {
+        Throwable t;
+        if (activity.getRaisedException() != null) {
+            t = activity.getRaisedException();
+        } else {
+            t = e;
+        }
+        Throwable cause = ExceptionUtils.getRootCause(t);
+        logger.error("Error occurred while processing request: " + activity.getRequestMethod() + " " + activity.getRequestName(), t);
+        if (!activity.getResponse().isCommitted()) {
+            if (cause instanceof RequestMethodNotAllowedException) {
+                sendError(activity.getResponse(), HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
+            } else if (cause instanceof SizeLimitExceededException) {
+                sendError(activity.getResponse(), HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
+            } else if (cause instanceof MaxSessionsExceededException) {
+                sendError(activity.getResponse(), HttpServletResponse.SC_SERVICE_UNAVAILABLE, MAX_SESSIONS_EXCEEDED);
+            } else {
+                sendError(activity.getResponse(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+            }
         }
     }
 
@@ -269,19 +276,16 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     @NonNull
-    private String getRequestInfo(@NonNull HttpServletRequest request, String requestUri, String requestName) {
+    private String getRequestInfo(@NonNull HttpServletRequest request, String reverseContextPath, String requestName) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getMethod()).append(" ");
-        String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
-        if (forwardedPath != null) {
-            sb.append(forwardedPath).append(requestName);
-        } else {
-            sb.append(requestUri);
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
         }
-        sb.append(" ");
+        sb.append(requestName).append(" ");
         sb.append(request.getProtocol()).append(" ");
         String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
-        if (!StringUtils.isEmpty(remoteAddr)) {
+        if (StringUtils.hasLength(remoteAddr)) {
             sb.append(remoteAddr);
         } else {
             sb.append(request.getRemoteAddr());
