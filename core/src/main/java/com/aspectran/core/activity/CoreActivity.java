@@ -224,9 +224,6 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void adapt() throws AdapterException {
-        if (!adapted) {
-            adapted = true;
-        }
     }
 
     protected boolean isRequestParsed() {
@@ -234,8 +231,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (translet != null && !requestParsed) {
-            requestParsed = true;
+        if (translet != null) {
             parseDeclaredParameters();
             parseDeclaredAttributes();
             parsePathVariables();
@@ -269,13 +265,19 @@ public class CoreActivity extends AdviceActivity {
 
         V result = null;
         try {
-            adapt();
+            if (!adapted) {
+                adapt();
+                adapted = true;
+            }
 
             if (!forwarding) {
                 saveCurrentActivity();
             }
 
-            parseRequest();
+            if (!requestParsed) {
+                parseRequest();
+                requestParsed = true;
+            }
 
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
