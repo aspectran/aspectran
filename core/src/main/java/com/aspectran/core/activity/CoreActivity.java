@@ -232,13 +232,14 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (translet != null) {
-            parseDeclaredParameters();
-            parseDeclaredAttributes();
-            parsePathVariables();
-            if (!forwarding) {
-                resolveLocale();
-            }
+        if (translet == null) {
+            throw new IllegalStateException("No Translet");
+        }
+        parseDeclaredParameters();
+        parseDeclaredAttributes();
+        parsePathVariables();
+        if (!forwarding) {
+            resolveLocale();
         }
         requestParsed = true;
     }
@@ -275,7 +276,7 @@ public class CoreActivity extends AdviceActivity {
                 saveCurrentActivity();
             }
 
-            if (!requestParsed) {
+            if (translet != null && !requestParsed) {
                 parseRequest();
             }
 

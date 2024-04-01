@@ -195,7 +195,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public Locale resolveLocale(Translet translet) {
+    public Locale resolveLocale(@NonNull Translet translet) {
         Locale locale = parseLocaleCookie(translet);
         if (locale != null) {
             translet.getRequestAdapter().setLocale(locale);
@@ -205,7 +205,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public TimeZone resolveTimeZone(Translet translet) {
+    public TimeZone resolveTimeZone(@NonNull Translet translet) {
         TimeZone timeZone = parseTimeZoneCookie(translet);
         if (timeZone != null) {
             translet.getRequestAdapter().setTimeZone(timeZone);

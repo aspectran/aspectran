@@ -140,44 +140,41 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        if (!isAdapted()) {
-            try {
-                setSessionAdapter(shellService.newSessionAdapter());
+        try {
+            setSessionAdapter(shellService.newSessionAdapter());
 
-                ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
-                requestAdapter.setEncoding(console.getEncoding());
-                if (getParameterMap() != null) {
-                    requestAdapter.setParameterMap(getParameterMap());
-                }
-                setRequestAdapter(requestAdapter);
-
-                Writer outputWriter = (getOutputWriter() != null ? getOutputWriter() : new OutputStringWriter());
-                ShellResponseAdapter responseAdapter = new ShellResponseAdapter(console, outputWriter);
-                responseAdapter.setEncoding(console.getEncoding());
-                setResponseAdapter(responseAdapter);
-            } catch (Exception e) {
-                throw new AdapterException("Failed to adapt for the shell activity", e);
+            ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
+            requestAdapter.setEncoding(console.getEncoding());
+            if (getParameterMap() != null) {
+                requestAdapter.setParameterMap(getParameterMap());
             }
-            super.adapt();
+            setRequestAdapter(requestAdapter);
+
+            Writer outputWriter = (getOutputWriter() != null ? getOutputWriter() : new OutputStringWriter());
+            ShellResponseAdapter responseAdapter = new ShellResponseAdapter(console, outputWriter);
+            responseAdapter.setEncoding(console.getEncoding());
+            setResponseAdapter(responseAdapter);
+        } catch (Exception e) {
+            throw new AdapterException("Failed to adapt for the shell activity", e);
         }
+
+        super.adapt();
     }
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (!isRequestParsed()) {
-            TransletPreProcedure procedure = new TransletPreProcedure(
-                    shellService, getTransletRule(), getParameterMap(), isProcedural());
-            procedure.printDescription(this);
-            try {
-                procedure.proceed();
-                super.parseRequest();
-            } catch (MissingMandatoryParametersException e) {
-                procedure.printSomeMandatoryParametersMissing(e.getItemRules());
-                terminate("Some mandatory parameters are missing");
-            } catch (MissingMandatoryAttributesException e) {
-                procedure.printSomeMandatoryAttributesMissing(e.getItemRules());
-                terminate("Some mandatory attributes are missing");
-            }
+        TransletPreProcedure procedure = new TransletPreProcedure(
+                shellService, getTransletRule(), getParameterMap(), isProcedural());
+        procedure.printDescription(this);
+        try {
+            procedure.proceed();
+            super.parseRequest();
+        } catch (MissingMandatoryParametersException e) {
+            procedure.printSomeMandatoryParametersMissing(e.getItemRules());
+            terminate("Some mandatory parameters are missing");
+        } catch (MissingMandatoryAttributesException e) {
+            procedure.printSomeMandatoryAttributesMissing(e.getItemRules());
+            terminate("Some mandatory attributes are missing");
         }
     }
 

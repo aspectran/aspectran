@@ -185,21 +185,19 @@ public class WebActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (!isRequestParsed()) {
-            if (getParentActivity() == null) {
-                ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
-            } else {
-                ((HttpServletRequestAdapter)getRequestAdapter()).preparse(
-                        (HttpServletRequestAdapter)getParentActivity().getRequestAdapter());
-            }
+        if (getParentActivity() == null) {
+            ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
+        } else {
+            ((HttpServletRequestAdapter)getRequestAdapter()).preparse(
+                    (HttpServletRequestAdapter)getParentActivity().getRequestAdapter());
+        }
 
-            MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
-            if (mediaType != null) {
-                if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
-                    parseMultipartFormData();
-                } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                    parseURLEncodedFormData();
-                }
+        MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
+        if (mediaType != null) {
+            if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
+                parseMultipartFormData();
+            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
+                parseURLEncodedFormData();
             }
         }
 

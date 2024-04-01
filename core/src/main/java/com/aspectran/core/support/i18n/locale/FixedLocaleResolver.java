@@ -16,6 +16,7 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -24,10 +25,10 @@ import java.util.TimeZone;
  * {@link LocaleResolver} implementation
  * that always returns a fixed default locale and optionally time zone.
  * Default is the current JVM's default locale.
- * 
+ *
  * <p>Note: Does not support {@code setLocale(Context)}, as the fixed
  * locale and time zone cannot be changed.
- *  
+ *
  * <p>Created: 2016. 9. 5.</p>
  */
 public class FixedLocaleResolver extends AbstractLocaleResolver {
@@ -35,7 +36,6 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
     /**
      * Create a default FixedLocaleResolver, exposing a configured default
      * locale (or the JVM's default locale as fallback).
-     *
      * @see #setDefaultLocale
      * @see #setDefaultTimeZone
      */
@@ -62,7 +62,7 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public Locale resolveLocale(Translet translet) {
+    public Locale resolveLocale(@NonNull Translet translet) {
         Locale locale = getDefaultLocale();
         if (locale == null) {
             locale = Locale.getDefault();
@@ -72,7 +72,7 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public TimeZone resolveTimeZone(Translet translet) {
+    public TimeZone resolveTimeZone(@NonNull Translet translet) {
         TimeZone timeZone = getDefaultTimeZone();
         if (timeZone == null) {
             timeZone = TimeZone.getDefault();

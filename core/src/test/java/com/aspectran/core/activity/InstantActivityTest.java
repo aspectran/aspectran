@@ -16,7 +16,6 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
@@ -28,13 +27,13 @@ import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Writer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,6 +70,7 @@ class InstantActivityTest {
         }
     }
 
+    @NonNull
     private SessionManager createSessionManager() throws Exception {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         sessionManagerConfig.setWorkerName("t0");
@@ -101,19 +101,18 @@ class InstantActivityTest {
         assertEquals("Hello World", instantActivity1("/include13"));
     }
 
-    private String instantActivity1(String transletName)
-            throws TransletNotFoundException, RequestMethodNotAllowedException,
-                ActivityPrepareException, ActivityPerformException, IOException {
+    private String instantActivity1(String transletName) throws Exception {
         ParameterMap parameterMap = new ParameterMap();
         parameterMap.setParameter("msg", "Hello");
         InstantActivity activity = new InstantActivity(context);
         activity.setSessionAdapter(sessionAdapter);
         activity.setParameterMap(parameterMap);
         activity.prepare(transletName);
-        activity.perform(() -> {
+        String result = activity.perform(() -> {
             activity.getSessionAdapter().setAttribute("aspectran", Aspectran.POWERED_BY);
             return activity.getSessionAdapter().getAttribute("aspectran");
         });
+        assertEquals(Aspectran.POWERED_BY, result);
         Writer writer = activity.getResponseAdapter().getWriter();
         return writer.toString();
     }
@@ -137,10 +136,11 @@ class InstantActivityTest {
         InstantActivity activity = new InstantActivity(context);
         activity.setSessionAdapter(sessionAdapter);
         activity.prepare(transletName);
-        activity.perform(() -> {
+        String result = activity.perform(() -> {
             activity.getSessionAdapter().setAttribute("aspectran", Aspectran.POWERED_BY);
             return activity.getSessionAdapter().getAttribute("aspectran");
         });
+        assertEquals(Aspectran.POWERED_BY, result);
         Writer writer = activity.getResponseAdapter().getWriter();
         return writer.toString();
     }
