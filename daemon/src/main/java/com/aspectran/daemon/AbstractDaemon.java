@@ -28,6 +28,7 @@ import com.aspectran.daemon.command.polling.DefaultFileCommander;
 import com.aspectran.daemon.command.polling.FileCommander;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.daemon.service.DefaultDaemonService;
+import com.aspectran.daemon.service.DefaultDaemonServiceBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponParseException;
@@ -150,7 +151,7 @@ public class AbstractDaemon implements Daemon {
 
     private void startDaemonService(AspectranConfig aspectranConfig) throws Exception {
         try {
-            this.daemonService = DefaultDaemonService.create(aspectranConfig);
+            this.daemonService = DefaultDaemonServiceBuilder.build(aspectranConfig);
             this.daemonService.start();
         } catch (Exception e) {
             throw new Exception("Failed to start daemon service", e);

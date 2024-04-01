@@ -53,9 +53,9 @@ public class DefaultShellService extends AbstractShellService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultShellService.class);
 
-    private volatile long pauseTimeout = -1L;
+    protected volatile long pauseTimeout = -1L;
 
-    private DefaultShellService(ShellConsole console) {
+    DefaultShellService(ShellConsole console) {
         super(console);
     }
 
@@ -117,6 +117,8 @@ public class DefaultShellService extends AbstractShellService {
     private void asyncPerform(@NonNull ShellActivity activity) {
         try {
             activity.preProcedure();
+        } catch (ActivityTerminatedException e) {
+           return;
         } catch (Exception e) {
             serviceError(activity, e);
         }
@@ -211,80 +213,6 @@ public class DefaultShellService extends AbstractShellService {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultShellService}.
-     * @param aspectranConfig the aspectran configuration
-     * @param console the {@code Console} instance
-     * @return the instance of {@code DefaultShellService}
-     */
-    @NonNull
-    public static DefaultShellService create(@NonNull AspectranConfig aspectranConfig, ShellConsole console) {
-        DefaultShellService shellService = new DefaultShellService(console);
-        ShellConfig shellConfig = aspectranConfig.getShellConfig();
-        if (shellConfig != null) {
-            configure(shellService, shellConfig);
-        }
-        shellService.configure(aspectranConfig);
-        setServiceStateListener(shellService);
-        return shellService;
-    }
-
-    private static void configure(@NonNull DefaultShellService shellService, @NonNull ShellConfig shellConfig) {
-        shellService.setVerbose(shellConfig.isVerbose());
-        shellService.setGreetings(shellConfig.getGreetings());
-        ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            shellService.setExposals(includePatterns, excludePatterns);
-        }
-    }
-
-    private static void setServiceStateListener(@NonNull final DefaultShellService shellService) {
-        shellService.setServiceStateListener(new ServiceStateListener() {
-            @Override
-            public void started() {
-                CoreServiceHolder.hold(shellService);
-                shellService.createSessionManager();
-                shellService.pauseTimeout = 0L;
-                shellService.printGreetings();
-                shellService.printHelp();
-            }
-
-            @Override
-            public void restarted() {
-                started();
-            }
-
-            @Override
-            public void paused(long millis) {
-                if (millis > 0L) {
-                    shellService.pauseTimeout = System.currentTimeMillis() + millis;
-                } else {
-                    logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
-                }
-            }
-
-            @Override
-            public void paused() {
-                shellService.pauseTimeout = -1L;
-            }
-
-            @Override
-            public void resumed() {
-                shellService.pauseTimeout = 0L;
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                shellService.destroySessionManager();
-                CoreServiceHolder.release(shellService);
-            }
-        });
     }
 
 }

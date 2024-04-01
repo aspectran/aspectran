@@ -133,7 +133,7 @@ public class ShellActivity extends CoreActivity {
         super.prepare(requestName, requestMethod, transletRule);
     }
 
-    public void preProcedure() throws AdapterException, ActivityTerminatedException, RequestParseException {
+    public void preProcedure() throws AdapterException, RequestParseException, ActivityTerminatedException {
         adapt();
         parseRequest();
     }

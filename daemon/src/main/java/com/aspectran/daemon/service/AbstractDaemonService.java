@@ -15,16 +15,21 @@
  */
 package com.aspectran.daemon.service;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
+import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Abstract base class for {@code DaemonService} implementations.
@@ -37,7 +42,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
 
     private SessionAgent sessionAgent;
 
-    public AbstractDaemonService() {
+    AbstractDaemonService() {
         super();
         checkDirectoryStructure();
     }
@@ -84,6 +89,29 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
         if (sessionManager != null) {
             sessionManager.destroy();
             sessionManager = null;
+        }
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
+        configure(aspectranConfig, null);
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
+        DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
+        if (daemonConfig != null) {
+            configure(daemonConfig);
+        }
+        super.configure(aspectranConfig, applicationAdapter);
+    }
+
+    private void configure(@NonNull DaemonConfig daemonConfig) {
+        ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
+            setExposals(includePatterns, excludePatterns);
         }
     }
 

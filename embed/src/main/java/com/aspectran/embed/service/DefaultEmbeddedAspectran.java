@@ -48,7 +48,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     private volatile long pauseTimeout = -1L;
 
-    public DefaultEmbeddedAspectran() {
+    DefaultEmbeddedAspectran() {
         super();
     }
 

@@ -15,12 +15,16 @@
  */
 package com.aspectran.shell.service;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
+import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.token.Token;
@@ -31,6 +35,7 @@ import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -56,7 +61,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private Token[] greetingsTokens;
 
-    protected AbstractShellService(ShellConsole console) {
+    AbstractShellService(ShellConsole console) {
         super();
 
         if (console == null) {
@@ -223,6 +228,31 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public boolean isBusy() {
         return console.isReading();
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
+        configure(aspectranConfig, null);
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
+        ShellConfig shellConfig = aspectranConfig.getShellConfig();
+        if (shellConfig != null) {
+            configure(shellConfig);
+        }
+        super.configure(aspectranConfig, applicationAdapter);
+    }
+
+    private void configure(@NonNull ShellConfig shellConfig) {
+        setVerbose(shellConfig.isVerbose());
+        setGreetings(shellConfig.getGreetings());
+        ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
+            setExposals(includePatterns, excludePatterns);
+        }
     }
 
 }

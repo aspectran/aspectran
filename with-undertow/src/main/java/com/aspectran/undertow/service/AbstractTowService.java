@@ -34,11 +34,11 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     private boolean trailingSlashRedirect;
 
-    public AbstractTowService() {
+    AbstractTowService() {
         super();
     }
 
-    public AbstractTowService(CoreService rootService) {
+    AbstractTowService(CoreService rootService) {
         super(rootService);
     }
 
@@ -69,7 +69,6 @@ public abstract class AbstractTowService extends AspectranCoreService implements
         if (webConfig != null) {
             configure(webConfig);
         }
-
         super.configure(aspectranConfig, applicationAdapter);
     }
 

@@ -42,7 +42,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
 
     private SessionAgent sessionAgent;
 
-    public AbstractEmbeddedAspectran() {
+    AbstractEmbeddedAspectran() {
         super();
         checkDirectoryStructure();
     }

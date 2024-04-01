@@ -321,7 +321,7 @@ public interface EmbeddedAspectran {
     @NonNull
     static EmbeddedAspectran run(Reader configFileReader) {
         if (configFileReader == null) {
-            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+            throw new IllegalArgumentException("configFileReader must not be null");
         }
         AspectranConfig aspectranConfig;
         try {

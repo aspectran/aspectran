@@ -43,9 +43,9 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultDaemonService.class);
 
-    private volatile long pauseTimeout = -1L;
+    protected volatile long pauseTimeout = -1L;
 
-    public DefaultDaemonService() {
+    DefaultDaemonService() {
         super();
     }
 
@@ -111,76 +111,6 @@ public class DefaultDaemonService extends AbstractDaemonService {
                 ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultDaemonService}.
-     * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code DefaultDaemonService}
-     */
-    @NonNull
-    public static DefaultDaemonService create(@NonNull AspectranConfig aspectranConfig) {
-        DefaultDaemonService daemonService = new DefaultDaemonService();
-        daemonService.configure(aspectranConfig);
-        DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
-        if (daemonConfig != null) {
-            configure(daemonService, daemonConfig);
-        }
-        setServiceStateListener(daemonService);
-        return daemonService;
-    }
-
-    private static void configure(@NonNull DefaultDaemonService daemonService,
-                                  @NonNull DaemonConfig daemonConfig) {
-        ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            daemonService.setExposals(includePatterns, excludePatterns);
-        }
-    }
-
-    private static void setServiceStateListener(@NonNull final DefaultDaemonService daemonService) {
-        daemonService.setServiceStateListener(new ServiceStateListener() {
-            @Override
-            public void started() {
-                CoreServiceHolder.hold(daemonService);
-                daemonService.createSessionManager();
-                daemonService.pauseTimeout = 0L;
-            }
-
-            @Override
-            public void restarted() {
-                started();
-            }
-
-            @Override
-            public void paused(long millis) {
-                if (millis > 0L) {
-                    daemonService.pauseTimeout = System.currentTimeMillis() + millis;
-                } else {
-                    logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
-                }
-            }
-
-            @Override
-            public void paused() {
-                daemonService.pauseTimeout = -1L;
-            }
-
-            @Override
-            public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                daemonService.destroySessionManager();
-                CoreServiceHolder.release(daemonService);
-            }
-        });
     }
 
 }

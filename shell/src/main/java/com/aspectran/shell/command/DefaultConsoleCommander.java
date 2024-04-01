@@ -28,6 +28,7 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.console.ShellConsoleClosedException;
 import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
+import com.aspectran.shell.service.DefaultShellServiceBuilder;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
@@ -124,7 +125,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         consoleReady();
 
         if (aspectranConfig.hasContextConfig()) {
-            shellService = DefaultShellService.create(aspectranConfig, console);
+            shellService = DefaultShellServiceBuilder.build(aspectranConfig, console);
             shellService.start();
         } else {
             String greetings = shellConfig.getGreetings();

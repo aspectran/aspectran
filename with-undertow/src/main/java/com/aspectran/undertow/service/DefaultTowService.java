@@ -49,11 +49,11 @@ public class DefaultTowService extends AbstractTowService {
 
     protected volatile long pauseTimeout = -2L;
 
-    public DefaultTowService() {
+    DefaultTowService() {
         super();
     }
 
-    public DefaultTowService(CoreService rootService) {
+    DefaultTowService(CoreService rootService) {
         super(rootService);
     }
 
