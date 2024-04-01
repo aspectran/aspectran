@@ -20,15 +20,10 @@ import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
-import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.undertow.activity.TowActivity;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -52,9 +47,7 @@ public class DefaultTowService extends AbstractTowService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowService.class);
 
-    private boolean trailingSlashRedirect;
-
-    private volatile long pauseTimeout = -2L;
+    protected volatile long pauseTimeout = -2L;
 
     public DefaultTowService() {
         super();
@@ -62,10 +55,6 @@ public class DefaultTowService extends AbstractTowService {
 
     public DefaultTowService(CoreService rootService) {
         super(rootService);
-    }
-
-    public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
-        this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
     @Override
@@ -108,7 +97,7 @@ public class DefaultTowService extends AbstractTowService {
                 .getTransletRule(requestPath, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
-            if (trailingSlashRedirect &&
+            if (isTrailingSlashRedirect() &&
                     requestMethod == MethodType.GET &&
                     StringUtils.startsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR)) {
@@ -193,94 +182,6 @@ public class DefaultTowService extends AbstractTowService {
             sb.append(exchange.getSourceAddress());
         }
         return sb.toString();
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultTowService}.
-     * @param rootService the root service
-     * @return the instance of {@code DefaultTowService}
-     */
-    @NonNull
-    public static DefaultTowService create(CoreService rootService) {
-        Assert.notNull(rootService, "rootService must not be null");
-        DefaultTowService towService = new DefaultTowService(rootService);
-        AspectranConfig aspectranConfig = rootService.getAspectranConfig();
-        if (aspectranConfig != null) {
-            WebConfig webConfig = aspectranConfig.getWebConfig();
-            if (webConfig != null) {
-                configure(towService, webConfig);
-            }
-        }
-        setServiceStateListener(towService);
-        return towService;
-    }
-
-    /**
-     * Returns a new instance of {@code DefaultTowService}.
-     * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code DefaultTowService}
-     */
-    @NonNull
-    public static DefaultTowService create(AspectranConfig aspectranConfig) {
-        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
-        DefaultTowService towService = new DefaultTowService();
-        towService.configure(aspectranConfig);
-        WebConfig webConfig = aspectranConfig.getWebConfig();
-        if (webConfig != null) {
-            configure(towService, webConfig);
-        }
-        setServiceStateListener(towService);
-        return towService;
-    }
-
-    private static void configure(@NonNull DefaultTowService towService, @NonNull WebConfig webConfig) {
-        towService.setUriDecoding(webConfig.getUriDecoding());
-        towService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
-        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            towService.setExposals(includePatterns, excludePatterns);
-        }
-    }
-
-    private static void setServiceStateListener(@NonNull final DefaultTowService towService) {
-        towService.setServiceStateListener(new ServiceStateListener() {
-            @Override
-            public void started() {
-                towService.pauseTimeout = 0L;
-            }
-
-            @Override
-            public void restarted() {
-                started();
-            }
-
-            @Override
-            public void paused(long millis) {
-                if (millis > 0L) {
-                    towService.pauseTimeout = System.currentTimeMillis() + millis;
-                } else {
-                    logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
-                }
-            }
-
-            @Override
-            public void paused() {
-                towService.pauseTimeout = -1L;
-            }
-
-            @Override
-            public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-            }
-        });
     }
 
 }

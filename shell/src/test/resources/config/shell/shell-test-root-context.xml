@@ -51,7 +51,7 @@
         </advice>
     </aspect>
 
-    <translet name="hello">
+    <translet name="hello" async="true">
         <description style="apon">
             |
             |   Runs the helloWorld() method of the sampleActivity bean and prints the returned value to the console.
@@ -64,7 +64,7 @@
         <transform format="text"/>
     </translet>
 
-    <translet name="echo1">
+    <translet name="echo1" async="true">
         <description style="apon">
             |It accepts parameters and print them to the console.
         </description>

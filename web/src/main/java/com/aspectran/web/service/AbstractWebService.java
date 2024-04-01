@@ -68,8 +68,16 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         return uriDecoding;
     }
 
+    protected void setUriDecoding(String uriDecoding) {
+        this.uriDecoding = uriDecoding;
+    }
+
     public boolean isTrailingSlashRedirect() {
         return trailingSlashRedirect;
+    }
+
+    protected void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
+        this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
     @Override
@@ -100,14 +108,14 @@ public abstract class AbstractWebService extends AspectranCoreService implements
     }
 
     private void configure(@NonNull WebConfig webConfig) {
-        this.uriDecoding = webConfig.getUriDecoding();
+        setUriDecoding(webConfig.getUriDecoding());
 
         String defaultServletName = webConfig.getDefaultServletName();
         if (defaultServletName != null) {
             this.defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);
         }
 
-        this.trailingSlashRedirect = webConfig.isTrailingSlashRedirect();
+        setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
 
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {

@@ -19,7 +19,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
-import com.aspectran.web.service.DefaultWebServiceFactory;
+import com.aspectran.web.service.DefaultWebServiceBuilder;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
@@ -45,7 +45,7 @@ public class WebServiceListener implements ServletContextListener {
         logger.info("Creating Root WebService...");
 
         try {
-            webService = DefaultWebServiceFactory.create(event.getServletContext());
+            webService = DefaultWebServiceBuilder.build(event.getServletContext());
             webService.getServiceController().start();
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);

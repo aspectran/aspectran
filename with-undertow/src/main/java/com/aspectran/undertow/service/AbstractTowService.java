@@ -15,8 +15,13 @@
  */
 package com.aspectran.undertow.service;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ExposalsConfig;
+import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Abstract base class for {@code TowService} implementations.
@@ -26,6 +31,8 @@ import com.aspectran.core.service.CoreService;
 public abstract class AbstractTowService extends AspectranCoreService implements TowService {
 
     private String uriDecoding;
+
+    private boolean trailingSlashRedirect;
 
     public AbstractTowService() {
         super();
@@ -41,6 +48,40 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
+    }
+
+    public boolean isTrailingSlashRedirect() {
+        return trailingSlashRedirect;
+    }
+
+    protected void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
+        this.trailingSlashRedirect = trailingSlashRedirect;
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
+        configure(aspectranConfig, null);
+    }
+
+    @Override
+    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
+        WebConfig webConfig = aspectranConfig.getWebConfig();
+        if (webConfig != null) {
+            configure(webConfig);
+        }
+
+        super.configure(aspectranConfig, applicationAdapter);
+    }
+
+    protected void configure(@NonNull WebConfig webConfig) {
+        setUriDecoding(webConfig.getUriDecoding());
+        setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
+        if (exposalsConfig != null) {
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
+            setExposals(includePatterns, excludePatterns);
+        }
     }
 
 }

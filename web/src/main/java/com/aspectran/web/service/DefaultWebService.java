@@ -87,10 +87,11 @@ public class DefaultWebService extends AbstractWebService {
             return;
         }
 
+        final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
         final String reverseContextPath = WebUtils.getReverseContextPath(request, getContextPath());
 
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request, reverseContextPath, requestName));
+            logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
         }
 
         if (pauseTimeout != 0L) {
@@ -111,9 +112,9 @@ public class DefaultWebService extends AbstractWebService {
 
         WebActivity activity = new WebActivity(this, getContextPath(), reverseContextPath, request, response);
         try {
-            activity.prepare(requestName, request.getMethod());
+            activity.prepare(requestName, requestMethod);
         } catch (TransletNotFoundException e) {
-            transletNotFound(request, response, reverseContextPath, requestName);
+            transletNotFound(request, response, reverseContextPath, requestName, requestMethod);
             return;
         } catch (Exception e) {
             sendError(activity, e);
@@ -150,14 +151,14 @@ public class DefaultWebService extends AbstractWebService {
         }
         asyncContext.addListener(new AsyncListener() {
             @Override
-            public void onComplete(AsyncEvent asyncEvent) throws IOException {
+            public void onComplete(AsyncEvent asyncEvent) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Async Completed " + asyncEvent);
                 }
             }
 
             @Override
-            public void onTimeout(AsyncEvent asyncEvent) throws IOException {
+            public void onTimeout(AsyncEvent asyncEvent) {
                 if (!activity.isCommitted() && !activity.isExceptionRaised()) {
                     activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
                 } else {
@@ -166,12 +167,12 @@ public class DefaultWebService extends AbstractWebService {
             }
 
             @Override
-            public void onError(AsyncEvent asyncEvent) throws IOException {
+            public void onError(AsyncEvent asyncEvent) {
                 logger.error("Async Error " + asyncEvent);
             }
 
             @Override
-            public void onStartAsync(AsyncEvent asyncEvent) throws IOException {
+            public void onStartAsync(AsyncEvent asyncEvent) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Async Started " + asyncEvent);
                 }
@@ -199,8 +200,7 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     private void transletNotFound(@NonNull HttpServletRequest request, HttpServletResponse response,
-                                  String reverseContextPath, String requestName) {
-        MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
+                                  String reverseContextPath, String requestName, MethodType requestMethod) {
         // Provides for "trailing slash" redirects and serving directory index files
         if (isTrailingSlashRedirect() &&
             requestMethod == MethodType.GET &&
@@ -245,7 +245,8 @@ public class DefaultWebService extends AbstractWebService {
             t = e;
         }
         Throwable cause = ExceptionUtils.getRootCause(t);
-        logger.error("Error occurred while processing request: " + activity.getRequestMethod() + " " + activity.getRequestName(), t);
+        logger.error("Error occurred while processing request: " +
+                activity.getRequestMethod() + " " + activity.getRequestName(), t);
         if (!activity.getResponse().isCommitted()) {
             if (cause instanceof RequestMethodNotAllowedException) {
                 sendError(activity.getResponse(), HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
@@ -276,9 +277,10 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     @NonNull
-    private String getRequestInfo(@NonNull HttpServletRequest request, String reverseContextPath, String requestName) {
+    private String getRequestInfo(@NonNull HttpServletRequest request, String reverseContextPath,
+                                  String requestName, MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
-        sb.append(request.getMethod()).append(" ");
+        sb.append(requestMethod).append(" ");
         if (StringUtils.hasLength(reverseContextPath)) {
             sb.append(reverseContextPath);
         }

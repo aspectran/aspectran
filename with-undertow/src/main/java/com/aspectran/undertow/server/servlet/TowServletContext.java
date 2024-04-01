@@ -22,7 +22,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
-import com.aspectran.web.service.DefaultWebServiceFactory;
+import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.SessionManager;
@@ -207,7 +207,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     void createRootWebService(ServletContext servletContext) throws Exception {
         CoreService rootService = getActivityContext().getRootService();
-        DefaultWebService rootWebService = DefaultWebServiceFactory.create(servletContext, rootService, getAltClassLoader());
+        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, rootService, getAltClassLoader());
         if (rootWebService.isLateStart()) {
             rootWebService.getServiceController().start();
         }

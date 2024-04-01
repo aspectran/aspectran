@@ -17,7 +17,6 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Arrays;
 
@@ -25,11 +24,11 @@ public abstract class AbstractCommandLine {
 
     private static final String PARAM_NAME_PREFIX = "--";
 
+    private final ParameterMap parameterMap = new ParameterMap();
+
     private final CommandLineParser lineParser;
 
     private boolean verbose;
-
-    private ParameterMap parameterMap;
 
     public AbstractCommandLine(@NonNull CommandLineParser lineParser) {
         this.lineParser = lineParser;
@@ -72,16 +71,14 @@ public abstract class AbstractCommandLine {
 
     protected void parse() {
         if (lineParser.getCommandName() != null) {
-            parameterMap = extractParameterMap();
+            extractParameterMap();
         }
     }
 
-    @Nullable
-    private ParameterMap extractParameterMap() {
+    private void extractParameterMap() {
         if (!lineParser.hasArgs()) {
-            return null;
+            return;
         }
-        ParameterMap params = new ParameterMap();
         String name = null;
         for (String arg : lineParser.getArgs()) {
             if (arg.startsWith(PARAM_NAME_PREFIX)) {
@@ -92,31 +89,30 @@ public abstract class AbstractCommandLine {
                 } else if (index > 0) {
                     String value = name.substring(index + 1);
                     name = name.substring(0, index);
-                    String[] values = params.getParameterValues(name);
+                    String[] values = parameterMap.getParameterValues(name);
                     if (values != null) {
                         values = Arrays.copyOf(values, values.length + 1);
                         values[values.length - 1] = value;
                     } else {
                         values = new String[] { value };
                     }
-                    params.setParameterValues(name, values);
+                    parameterMap.setParameterValues(name, values);
                     name = null;
                 } else {
-                    params.setParameterValues(name, null);
+                    parameterMap.setParameterValues(name, null);
                 }
             } else if (name != null) {
-                String[] values = params.getParameterValues(name);
+                String[] values = parameterMap.getParameterValues(name);
                 if (values != null) {
                     values = Arrays.copyOf(values, values.length + 1);
                     values[values.length - 1] = arg;
                 } else {
                     values = new String[] { arg };
                 }
-                params.setParameterValues(name, values);
+                parameterMap.setParameterValues(name, values);
                 name = null;
             }
         }
-        return (!params.isEmpty() ? params : null);
     }
 
 }

@@ -107,15 +107,15 @@ public class InstantActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+            sessionAdapter.getSessionAgent().access();
         }
     }
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+            sessionAdapter.getSessionAgent().complete();
         }
 
         super.removeCurrentActivity();

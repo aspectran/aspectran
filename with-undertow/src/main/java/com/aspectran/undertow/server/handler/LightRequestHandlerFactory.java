@@ -24,7 +24,7 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
-import com.aspectran.undertow.service.DefaultTowService;
+import com.aspectran.undertow.service.DefaultTowServiceBuilder;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -110,7 +110,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
         Assert.state(towService == null, "TowService is already configured");
         CoreService rootService = getActivityContext().getRootService();
         if (aspectranConfig == null) {
-            towService = DefaultTowService.create(rootService);
+            towService = DefaultTowServiceBuilder.build(rootService);
         } else {
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
@@ -119,7 +119,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
                     contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePath());
                 }
             }
-            towService = DefaultTowService.create(aspectranConfig);
+            towService = DefaultTowServiceBuilder.build(aspectranConfig);
         }
         if (towService.isLateStart()) {
             towService.getServiceController().start();

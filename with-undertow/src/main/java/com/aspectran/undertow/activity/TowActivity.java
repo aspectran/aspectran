@@ -19,7 +19,6 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransletRule;
@@ -68,7 +67,7 @@ public class TowActivity extends CoreActivity {
 
     @Override
     public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
-            throws RequestMethodNotAllowedException, ActivityPrepareException{
+            throws ActivityPrepareException{
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
             String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);

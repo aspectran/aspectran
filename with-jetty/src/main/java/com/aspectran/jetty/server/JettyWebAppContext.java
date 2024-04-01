@@ -24,7 +24,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.web.service.DefaultWebServiceFactory;
+import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
@@ -152,7 +152,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         // Create a root web service
         CoreService rootService = context.getRootService();
-        WebService rootWebService = DefaultWebServiceFactory.create(getServletContext(), rootService, webAppClassLoader);
+        WebService rootWebService = DefaultWebServiceBuilder.build(getServletContext(), rootService, webAppClassLoader);
         if (rootWebService.isLateStart()) {
             server.addEventListener(new LifeCycle.Listener() {
                 public void lifeCycleStarted(LifeCycle event) {

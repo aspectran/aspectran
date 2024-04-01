@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.activity;
 
+import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
@@ -23,9 +24,11 @@ import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
-import com.aspectran.shell.command.ShellTransletProcedure;
+import com.aspectran.shell.command.TransletPreProcedure;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.OutputStringWriter;
@@ -52,6 +55,14 @@ public class ShellActivity extends CoreActivity {
 
     private Writer outputWriter;
 
+    private String requestName;
+
+    private MethodType requestMethod;
+
+    private boolean async;
+
+    private Long timeout;
+
     /**
      * Instantiates a new ShellActivity.
      * @param shellService the {@code ShellService} instance
@@ -63,57 +74,100 @@ public class ShellActivity extends CoreActivity {
         this.console = shellService.getConsole();
     }
 
+    public boolean isProcedural() {
+        return procedural;
+    }
+
     public void setProcedural(boolean procedural) {
         this.procedural = procedural;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
     }
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 
+    public ParameterMap getParameterMap() {
+        return parameterMap;
+    }
+
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
+    }
+
+    public Writer getOutputWriter() {
+        return outputWriter;
     }
 
     public void setOutputWriter(Writer outputWriter) {
         this.outputWriter = outputWriter;
     }
 
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    public Long getTimeout() {
+        return timeout;
+    }
+
+    @Override
+    public void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+            throws ActivityPrepareException {
+        this.requestName = requestName;
+        this.requestMethod = requestMethod;
+        this.async = transletRule.isAsync();
+        this.timeout = transletRule.getTimeout();
+
+        super.prepare(requestName, requestMethod, transletRule);
+    }
+
+    public void preProcedure() throws AdapterException, ActivityTerminatedException, RequestParseException {
+        adapt();
+        parseRequest();
+    }
+
     @Override
     protected void adapt() throws AdapterException {
-        try {
-            setSessionAdapter(shellService.newSessionAdapter());
+        if (!isAdapted()) {
+            try {
+                setSessionAdapter(shellService.newSessionAdapter());
 
-            ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
-            requestAdapter.setEncoding(console.getEncoding());
-            if (parameterMap != null) {
-                requestAdapter.setParameterMap(parameterMap);
-            }
-            setRequestAdapter(requestAdapter);
+                ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
+                requestAdapter.setEncoding(console.getEncoding());
+                if (getParameterMap() != null) {
+                    requestAdapter.setParameterMap(getParameterMap());
+                }
+                setRequestAdapter(requestAdapter);
 
-            if (outputWriter == null) {
-                outputWriter = new OutputStringWriter();
+                Writer outputWriter = (getOutputWriter() != null ? getOutputWriter() : new OutputStringWriter());
+                ShellResponseAdapter responseAdapter = new ShellResponseAdapter(console, outputWriter);
+                responseAdapter.setEncoding(console.getEncoding());
+                setResponseAdapter(responseAdapter);
+            } catch (Exception e) {
+                throw new AdapterException("Failed to adapt for the shell activity", e);
             }
-            ShellResponseAdapter responseAdapter = new ShellResponseAdapter(console, outputWriter);
-            responseAdapter.setEncoding(console.getEncoding());
-            setResponseAdapter(responseAdapter);
-        } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for the shell activity", e);
+            super.adapt();
         }
-
-        super.adapt();
     }
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (getTransletRule().isAsync()) {
-            super.parseRequest();
-        } else {
-            ShellTransletProcedure procedure = new ShellTransletProcedure(
-                    shellService, getTransletRule(),
-                    getRequestAdapter().getParameterMap(),
-                    procedural, verbose);
-            procedure.printDescription(getTranslet());
+        if (!isRequestParsed()) {
+            TransletPreProcedure procedure = new TransletPreProcedure(
+                    shellService, getTransletRule(), getParameterMap(), isProcedural());
+            procedure.printDescription(this);
             try {
                 procedure.proceed();
                 super.parseRequest();
@@ -131,15 +185,15 @@ public class ShellActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+            sessionAdapter.getSessionAgent().access();
         }
     }
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+            sessionAdapter.getSessionAgent().complete();
         }
 
         super.removeCurrentActivity();

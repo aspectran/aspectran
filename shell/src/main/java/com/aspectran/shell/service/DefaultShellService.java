@@ -19,25 +19,21 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.TransletNotFoundException;
-import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
-import com.aspectran.shell.command.ShellTransletProcedure;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -46,7 +42,6 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Provides an interactive shell that lets you use or control Aspectran directly
@@ -76,22 +71,14 @@ public class DefaultShellService extends AbstractShellService {
             return null;
         }
 
-        String requestName = transletCommandLine.getRequestName();
-        MethodType requestMethod = transletCommandLine.getRequestMethod();
-        if (requestMethod == null) {
-            requestMethod = MethodType.GET;
-        }
-        TransletRule transletRule = getActivityContext()
-                .getTransletRuleRegistry()
-                .getTransletRule(requestName, requestMethod);
-        if (transletRule == null) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("No translet mapped for " + requestMethod + " " + requestName);
-            }
-            throw new TransletNotFoundException(requestName, requestMethod);
-        }
+        final String requestName = transletCommandLine.getRequestName();
+        final MethodType requestMethod = (transletCommandLine.getRequestMethod() != null ?
+                transletCommandLine.getRequestMethod() : MethodType.GET);
+        final ParameterMap parameterMap = transletCommandLine.getParameterMap();
+        final boolean procedural = (parameterMap.isEmpty());
+        final boolean verbose = (isVerbose() || transletCommandLine.isVerbose());
 
-        PrintWriter outputWriter = null;
+        final PrintWriter outputWriter;
         List<OutputRedirection> redirectionList = transletCommandLine.getLineParser().getRedirectionList();
         if (redirectionList != null) {
             try {
@@ -100,79 +87,58 @@ public class DefaultShellService extends AbstractShellService {
                 getConsole().writeError("Invalid Output Redirection - " + e.getMessage());
                 return null;
             }
+        } else {
+            outputWriter = null;
         }
 
-        ParameterMap parameterMap = transletCommandLine.getParameterMap();
-        boolean procedural = (parameterMap == null);
-        boolean verbose = (isVerbose() || transletCommandLine.isVerbose());
-
-        if (transletRule.isAsync()) {
-            asyncPerform(outputWriter, procedural, verbose, parameterMap,
-                    requestName, requestMethod, transletRule);
+        ShellActivity activity = new ShellActivity(this);
+        activity.setProcedural(procedural);
+        activity.setVerbose(verbose);
+        activity.setParameterMap(parameterMap);
+        activity.setOutputWriter(outputWriter);
+        try {
+            activity.prepare(requestName, requestMethod);
+        } catch (TransletNotFoundException e) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("No translet mapped for " + requestMethod + " " + requestName);
+            }
+            throw e;
+        } catch (Exception e) {
+            serviceError(activity, e);
+        }
+        if (activity.isAsync()) {
+            asyncPerform(activity);
             return null;
         } else {
-            return perform(outputWriter, procedural, verbose, parameterMap,
-                    requestName, requestMethod, transletRule, null);
+            return perform(activity);
         }
     }
 
-    private void asyncPerform(@Nullable PrintWriter outputWriter,
-                              boolean procedural, boolean verbose,
-                              @Nullable ParameterMap parameterMap, String requestName,
-                              MethodType requestMethod, TransletRule transletRule) {
-        final ParameterMap finalParameterMap;
-        if (parameterMap != null) {
-            finalParameterMap = parameterMap;
-        } else {
-            finalParameterMap = new ParameterMap();
-        }
-        ShellTransletProcedure procedure = new ShellTransletProcedure(
-                this, transletRule, finalParameterMap, procedural, verbose);
-        procedure.printDescription(transletRule);
+    private void asyncPerform(@NonNull ShellActivity activity) {
         try {
-            procedure.proceed();
-        } catch (MissingMandatoryParametersException e) {
-            procedure.printSomeMandatoryParametersMissing(e.getItemRules());
-            return;
+            activity.preProcedure();
+        } catch (Exception e) {
+            serviceError(activity, e);
         }
 
-        final AtomicReference<Activity> activityReference = new AtomicReference<>();
-        Runnable performable = () ->
-                perform(outputWriter, procedural, verbose, finalParameterMap,
-                        requestName, requestMethod, transletRule, activityReference);
-
+        final Runnable performable = () -> perform(activity);
         CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(performable);
-        if (transletRule.getTimeout() != null) {
-            completableFuture.orTimeout(transletRule.getTimeout(), TimeUnit.MILLISECONDS);
+        if (activity.getTimeout() != null) {
+            completableFuture.orTimeout(activity.getTimeout(), TimeUnit.MILLISECONDS);
         }
         completableFuture.exceptionally(throwable -> {
-            Activity activity = activityReference.get();
-            if (activity != null && !activity.isCommitted() && !activity.isExceptionRaised()) {
+            if (!activity.isCommitted() && !activity.isExceptionRaised()) {
                 activity.setRaisedException(new ActivityTerminatedException("Async Timeout"));
             } else {
-                logger.error("Async Timeout ", throwable);
+                logger.error(throwable.getMessage(), throwable);
             }
             return null;
         });
     }
 
-    private Translet perform(@Nullable PrintWriter outputWriter,
-                             boolean procedural, boolean verbose,
-                             @Nullable ParameterMap parameterMap, String requestName,
-                             MethodType requestMethod, TransletRule transletRule,
-                             AtomicReference<Activity> activityReference) {
-        ShellActivity activity = null;
+    private Translet perform(@NonNull ShellActivity activity) {
         Translet translet = null;
         try {
-            activity = new ShellActivity(this);
-            if (activityReference != null) {
-                activityReference.set(activity);
-            }
-            activity.setProcedural(procedural);
-            activity.setVerbose(verbose);
-            activity.setParameterMap(parameterMap);
-            activity.setOutputWriter(outputWriter);
-            activity.prepare(requestName, requestMethod, transletRule);
             activity.perform();
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
@@ -180,33 +146,25 @@ public class DefaultShellService extends AbstractShellService {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            getConsole().clearLine();
-            getConsole().resetStyle();
-
-            Throwable t;
-            if (activity != null && activity.getRaisedException() != null) {
-                t = activity.getRaisedException();
-            } else {
-                t = e;
-            }
-            Throwable cause = ExceptionUtils.getRootCause(t);
-            throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeFullRequestName(requestMethod, requestName) + "; Cause: " +
-                ExceptionUtils.getSimpleMessage(cause), t);
+            serviceError(activity, e);
         } finally {
-            if (outputWriter != null) {
-                outputWriter.close();
+            if (activity.getOutputWriter() != null) {
+                try {
+                    activity.getOutputWriter().close();
+                } catch (IOException e) {
+                    // ignore
+                }
             }
         }
-        if (translet != null && outputWriter == null) {
+        if (translet != null && activity.getOutputWriter() == null) {
             try {
                 String result = translet.getResponseAdapter().getWriter().toString();
                 if (StringUtils.hasLength(result)) {
-                    if (transletRule.isAsync()) {
+                    if (activity.isAsync()) {
                         getConsole().clearLine();
                     }
                     getConsole().writeLine(result);
-                    if (transletRule.isAsync()) {
+                    if (activity.isAsync()) {
                         getConsole().redrawLine();
                     }
                 }
@@ -215,6 +173,22 @@ public class DefaultShellService extends AbstractShellService {
             }
         }
         return translet;
+    }
+
+    private void serviceError(@NonNull ShellActivity activity, Exception e) {
+        getConsole().clearLine();
+        getConsole().resetStyle();
+
+        Throwable t;
+        if (activity.getRaisedException() != null) {
+            t = activity.getRaisedException();
+        } else {
+            t = e;
+        }
+        Throwable cause = ExceptionUtils.getRootCause(t);
+        throw new AspectranServiceException("Error occurred while processing request: " +
+                Activity.makeFullRequestName(activity.getRequestMethod(), activity.getRequestName()) + "; Cause: " +
+                ExceptionUtils.getSimpleMessage(cause), t);
     }
 
     private boolean checkPaused() {

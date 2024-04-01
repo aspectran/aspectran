@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.token.Token;
@@ -25,6 +24,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
@@ -40,7 +40,7 @@ import java.util.Set;
 
 import static com.aspectran.shell.console.ShellConsole.MASK_CHAR;
 
-public class ShellTransletProcedure {
+public class TransletPreProcedure {
 
     private final ShellService shellService;
 
@@ -52,18 +52,15 @@ public class ShellTransletProcedure {
 
     private final boolean procedural;
 
-    private final boolean verbose;
-
     private boolean readSimply;
 
-    public ShellTransletProcedure(@NonNull ShellService shellService, @NonNull TransletRule transletRule,
-                                  @NonNull ParameterMap parameterMap, boolean procedural, boolean verbose) {
+    public TransletPreProcedure(@NonNull ShellService shellService, @NonNull TransletRule transletRule,
+                                @NonNull ParameterMap parameterMap, boolean procedural) {
         this.shellService = shellService;
         this.console = shellService.getConsole();
         this.transletRule = transletRule;
         this.parameterMap = parameterMap;
         this.procedural = procedural;
-        this.verbose = verbose;
     }
 
     public void proceed() throws MissingMandatoryParametersException {
@@ -112,7 +109,7 @@ public class ShellTransletProcedure {
         return true;
     }
 
-    public void printDescription(String description) {
+    private void printDescription(String description) {
         if (description != null) {
             console.infoStyle();
             console.writeLine(description);
@@ -120,25 +117,12 @@ public class ShellTransletProcedure {
         }
     }
 
-    public void printDescription(Translet translet) {
-        if (verbose) {
-            printDescription(translet.getDescription());
-        }
-    }
-
-    public void printDescription(TransletRule transletRule) {
-        if (verbose) {
-            printDescription(getDescription(transletRule));
-        }
-    }
-
-    @Nullable
-    private String getDescription(@NonNull TransletRule transletRule) {
-        DescriptionRule descriptionRule = transletRule.getDescriptionRule();
-        if (descriptionRule != null) {
-            return DescriptionRule.render(descriptionRule, shellService.getDefaultActivity());
-        } else {
-            return null;
+    public void printDescription(@NonNull ShellActivity activity) {
+        if (activity.isVerbose()) {
+            DescriptionRule descriptionRule = transletRule.getDescriptionRule();
+            if (descriptionRule != null) {
+                printDescription(DescriptionRule.render(descriptionRule, activity));
+            }
         }
     }
 
