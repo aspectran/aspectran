@@ -224,6 +224,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void adapt() throws AdapterException {
+        adapted = true;
     }
 
     protected boolean isRequestParsed() {
@@ -239,6 +240,7 @@ public class CoreActivity extends AdviceActivity {
                 resolveLocale();
             }
         }
+        requestParsed = true;
     }
 
     protected LocaleResolver resolveLocale() {
@@ -267,7 +269,6 @@ public class CoreActivity extends AdviceActivity {
         try {
             if (!adapted) {
                 adapt();
-                adapted = true;
             }
 
             if (!forwarding) {
@@ -276,7 +277,6 @@ public class CoreActivity extends AdviceActivity {
 
             if (!requestParsed) {
                 parseRequest();
-                requestParsed = true;
             }
 
             try {
