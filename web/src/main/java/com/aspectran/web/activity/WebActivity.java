@@ -117,12 +117,14 @@ public class WebActivity extends CoreActivity {
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
-            sb.append(requestMethod);
+            sb.append(requestMethod).append(" ");
         }
         if (StringUtils.hasLength(reverseContextPath)) {
             sb.append(reverseContextPath);
         }
-        sb.append(requestName);
+        if (requestName != null) {
+            sb.append(requestName);
+        }
         return sb.toString();
     }
 
