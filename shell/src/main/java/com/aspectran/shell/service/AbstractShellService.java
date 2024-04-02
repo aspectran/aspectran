@@ -24,7 +24,6 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
-import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.token.Token;
@@ -158,8 +157,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public boolean isExposable(String transletName) {
-        return super.isExposable(transletName);
+    public boolean isExposable(String requestName) {
+        return super.isExposable(requestName);
     }
 
     @Override

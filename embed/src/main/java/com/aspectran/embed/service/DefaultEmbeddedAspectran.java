@@ -15,7 +15,6 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
@@ -28,7 +27,6 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -54,6 +52,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     @Override
     public <V> V execute(InstantAction<V> instantAction) {
+        if (checkPaused()) {
+            return null;
+        }
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
             return activity.perform(instantAction);
@@ -111,32 +112,26 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     public Translet translate(String name, @Nullable MethodType method,
                               @Nullable Map<String, Object> attributeMap, @Nullable ParameterMap parameterMap,
                               @Nullable String body) {
-        Assert.notNull(name, "name must not be null");
-
+        if (checkPaused()) {
+            return null;
+        }
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         if (!isExposable(name)) {
             logger.error("Unavailable translet: " + name);
             return null;
         }
 
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not execute translet: " + name);
-                }
-                return null;
-            } else {
-                pauseTimeout = 0L;
-            }
-        }
-
-        AspectranActivity activity = null;
+        AspectranActivity activity = new AspectranActivity(this);
+        activity.setRequestName(name);
+        activity.setRequestMethod(method);
+        activity.setAttributeMap(attributeMap);
+        activity.setParameterMap(parameterMap);
+        activity.setBody(body);
         Translet translet = null;
         try {
-            activity = new AspectranActivity(this);
-            activity.setAttributeMap(attributeMap);
-            activity.setParameterMap(parameterMap);
-            activity.setBody(body);
-            activity.prepare(name, method);
+            activity.prepare();
             activity.perform();
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
@@ -145,15 +140,14 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         } catch (Exception e) {
             Throwable t;
-            if (activity != null && activity.getRaisedException() != null) {
+            if (activity.getRaisedException() != null) {
                 t = activity.getRaisedException();
             } else {
                 t = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeFullRequestName(method, name) + "; Cause: " +
-                ExceptionUtils.getSimpleMessage(cause), t);
+                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
     }
@@ -175,17 +169,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     @Override
     public String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap) {
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not execute template: " + templateId);
-                }
-                return null;
-            } else {
-                pauseTimeout = 0L;
-            }
+        if (checkPaused()) {
+            return null;
         }
-
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
             activity.setSessionAdapter(newSessionAdapter());
@@ -252,6 +238,20 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 CoreServiceHolder.release(aspectran);
             }
         });
+    }
+
+    private boolean checkPaused() {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is paused");
+                }
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
 }

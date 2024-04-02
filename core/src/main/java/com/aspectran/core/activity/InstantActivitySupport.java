@@ -22,7 +22,6 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
@@ -97,22 +96,22 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         }
     }
 
-    protected void instantActivity(String transletName) {
-        if (StringUtils.isEmpty(transletName)) {
-            throw new IllegalArgumentException("transletName must not be null or empty");
+    protected void instantActivity(String requestName) {
+        instantActivity(requestName, MethodType.GET);
+    }
+
+    protected void instantActivity(String requestName, MethodType requestMethod) {
+        if (StringUtils.isEmpty(requestName)) {
+            throw new IllegalArgumentException("requestName must not be null or empty");
         }
         Activity currentActivity = getCurrentActivity();
         Translet translet = currentActivity.getTranslet();
         if (translet == null) {
-            throw new UnsupportedOperationException("No Translet in " + currentActivity);
+            throw new IllegalStateException("No Translet in " + currentActivity);
         }
         try {
-            TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);
-            if (transletRule == null) {
-                throw new TransletNotFoundException(transletName, MethodType.GET);
-            }
             InstantActivity activity = new InstantActivity(currentActivity);
-            activity.prepare(transletName, transletRule);
+            activity.prepare(requestName, requestMethod);
             activity.perform();
         } catch (Exception e) {
             throw new InstantActivityException(e);

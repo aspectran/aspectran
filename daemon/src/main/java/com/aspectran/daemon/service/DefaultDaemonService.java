@@ -15,20 +15,13 @@
  */
 package com.aspectran.daemon.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.CoreServiceHolder;
-import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -51,14 +44,13 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
     @Override
     public Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap) {
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
-        }
         MethodType requestMethod = null;
-        for (MethodType methodType : MethodType.values()) {
-            if (name.startsWith(methodType.name() + " ")) {
-                requestMethod = methodType;
-                name = name.substring(methodType.name().length()).trim();
+        if (name != null) {
+            for (MethodType methodType : MethodType.values()) {
+                if (name.startsWith(methodType.name() + " ")) {
+                    requestMethod = methodType;
+                    name = name.substring(methodType.name().length()).trim();
+                }
             }
         }
         return translate(name, requestMethod, attributeMap, parameterMap);
@@ -67,6 +59,9 @@ public class DefaultDaemonService extends AbstractDaemonService {
     @Override
     public Translet translate(String name, MethodType method,
                               Map<String, Object> attributeMap, ParameterMap parameterMap) {
+        if (checkPaused(name)) {
+            return null;
+        }
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -74,24 +69,15 @@ public class DefaultDaemonService extends AbstractDaemonService {
             logger.error("Unavailable translet: " + name);
             return null;
         }
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not execute translet: " + name);
-                }
-                return null;
-            } else {
-                pauseTimeout = 0L;
-            }
-        }
 
-        DaemonActivity activity = null;
+        DaemonActivity activity = new DaemonActivity(this);
+        activity.setRequestName(name);
+        activity.setRequestMethod(method);
+        activity.setAttributeMap(attributeMap);
+        activity.setParameterMap(parameterMap);
         Translet translet = null;
         try {
-            activity = new DaemonActivity(this);
-            activity.setAttributeMap(attributeMap);
-            activity.setParameterMap(parameterMap);
-            activity.prepare(name, method);
+            activity.prepare();
             activity.perform();
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
@@ -100,17 +86,30 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
         } catch (Exception e) {
             Throwable t;
-            if (activity != null && activity.getRaisedException() != null) {
+            if (activity.getRaisedException() != null) {
                 t = activity.getRaisedException();
             } else {
                 t = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeFullRequestName(method, name) + "; Cause: " +
-                ExceptionUtils.getSimpleMessage(cause), t);
+                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
+    }
+
+    private boolean checkPaused(String name) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is paused, so did not execute translet: " + name);
+                }
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
 }

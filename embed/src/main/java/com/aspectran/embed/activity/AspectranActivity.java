@@ -15,14 +15,18 @@
  */
 package com.aspectran.embed.activity;
 
+import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
 import com.aspectran.embed.service.AbstractEmbeddedAspectran;
 import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -37,6 +41,10 @@ public class AspectranActivity extends CoreActivity {
     private final EmbeddedAspectran aspectran;
 
     private Writer outputWriter;
+
+    private String requestName;
+
+    private MethodType requestMethod;
 
     private Map<String, Object> attributeMap;
 
@@ -64,6 +72,30 @@ public class AspectranActivity extends CoreActivity {
         this.outputWriter = outputWriter;
     }
 
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getFullRequestName() {
+        if (requestMethod != null) {
+            return requestMethod + " " + requestName;
+        } else {
+            return requestName;
+        }
+    }
+
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
     }
@@ -74,6 +106,12 @@ public class AspectranActivity extends CoreActivity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public void prepare() throws TransletNotFoundException, ActivityPrepareException {
+        Assert.state(requestMethod != null, "requestMethod is not set");
+        Assert.state(requestName != null, "requestName is not set");
+        prepare(requestName, requestMethod);
     }
 
     @Override

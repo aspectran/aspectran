@@ -19,6 +19,7 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransletRule;
@@ -29,6 +30,7 @@ import com.aspectran.undertow.adapter.TowRequestAdapter;
 import com.aspectran.undertow.adapter.TowResponseAdapter;
 import com.aspectran.undertow.adapter.TowSessionAdapter;
 import com.aspectran.undertow.service.TowService;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
@@ -55,6 +57,10 @@ public class TowActivity extends CoreActivity {
 
     private final HttpServerExchange exchange;
 
+    private String requestName;
+
+    private MethodType requestMethod;
+
     /**
      * Instantiates a new tow service
      * @param service the tow service
@@ -65,8 +71,42 @@ public class TowActivity extends CoreActivity {
         this.exchange = exchange;
     }
 
+    public HttpServerExchange getExchange() {
+        return exchange;
+    }
+
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getFullRequestName() {
+        if (requestMethod != null) {
+            return requestMethod + " " + requestName;
+        } else {
+            return requestName;
+        }
+    }
+
+    public void prepare() throws TransletNotFoundException, ActivityPrepareException {
+        Assert.state(requestMethod != null, "requestMethod is not set");
+        Assert.state(requestName != null, "requestName is not set");
+        prepare(requestName, requestMethod);
+    }
+
     @Override
-    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
+    protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException{
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {

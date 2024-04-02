@@ -15,18 +15,12 @@
  */
 package com.aspectran.shell.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
-import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.CoreServiceHolder;
-import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
@@ -60,14 +54,14 @@ public class DefaultShellService extends AbstractShellService {
     }
 
     public Translet translate(TransletCommandLine transletCommandLine) throws TransletNotFoundException {
+        if (checkPaused()) {
+            return null;
+        }
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
         }
         if (!isExposable(transletCommandLine.getRequestName())) {
             getConsole().writeError("Unavailable translet: " + transletCommandLine.getRequestName());
-            return null;
-        }
-        if (checkPaused()) {
             return null;
         }
 
@@ -94,10 +88,12 @@ public class DefaultShellService extends AbstractShellService {
         ShellActivity activity = new ShellActivity(this);
         activity.setProcedural(procedural);
         activity.setVerbose(verbose);
+        activity.setRequestName(requestName);
+        activity.setRequestMethod(requestMethod);
         activity.setParameterMap(parameterMap);
         activity.setOutputWriter(outputWriter);
         try {
-            activity.prepare(requestName, requestMethod);
+            activity.prepare();
         } catch (TransletNotFoundException e) {
             if (logger.isTraceEnabled()) {
                 logger.trace("No translet mapped for " + requestMethod + " " + requestName);
@@ -189,8 +185,7 @@ public class DefaultShellService extends AbstractShellService {
         }
         Throwable cause = ExceptionUtils.getRootCause(t);
         throw new AspectranServiceException("Error occurred while processing request: " +
-                Activity.makeFullRequestName(activity.getRequestMethod(), activity.getRequestName()) + "; Cause: " +
-                ExceptionUtils.getSimpleMessage(cause), t);
+                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
     }
 
     private boolean checkPaused() {

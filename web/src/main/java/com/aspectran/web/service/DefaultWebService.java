@@ -67,6 +67,10 @@ public class DefaultWebService extends AbstractWebService {
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (checkPaused(response)) {
+            return;
+        }
+
         final String requestUri;
         if (getUriDecoding() != null) {
             requestUri = URLDecoder.decode(request.getRequestURI(), getUriDecoding());
@@ -75,10 +79,17 @@ public class DefaultWebService extends AbstractWebService {
         }
 
         final String requestName = WebUtils.getRelativePath(getContextPath(), requestUri);
+        final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
+        final String reverseContextPath = WebUtils.getReverseContextPath(request, getContextPath());
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
+        }
+
         if (!isExposable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
-                    sendError(response, HttpServletResponse.SC_NOT_FOUND, null);
+                    sendError(response, HttpServletResponse.SC_NOT_FOUND, "Not Exposed");
                 }
             } catch (Exception e) {
                 logger.error("Error while processing with default servlet", e);
@@ -87,34 +98,13 @@ public class DefaultWebService extends AbstractWebService {
             return;
         }
 
-        final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        final String reverseContextPath = WebUtils.getReverseContextPath(request, getContextPath());
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
-        }
-
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " has been paused, so did not respond to request " + requestUri);
-                }
-                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, null);
-                return;
-            } else if (pauseTimeout == -2L) {
-                logger.warn(getServiceName() + " is not yet started");
-                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
-                return;
-            } else {
-                pauseTimeout = 0L;
-            }
-        }
-
         WebActivity activity = new WebActivity(this, getContextPath(), reverseContextPath, request, response);
+        activity.setRequestName(requestName);
+        activity.setRequestMethod(requestMethod);
         try {
-            activity.prepare(requestName, requestMethod);
+            activity.prepare();
         } catch (TransletNotFoundException e) {
-            transletNotFound(request, response, reverseContextPath, requestName, requestMethod);
+            transletNotFound(activity);
             return;
         } catch (Exception e) {
             sendError(activity, e);
@@ -199,41 +189,37 @@ public class DefaultWebService extends AbstractWebService {
         }
     }
 
-    private void transletNotFound(@NonNull HttpServletRequest request, HttpServletResponse response,
-                                  String reverseContextPath, String requestName, MethodType requestMethod) {
+    private void transletNotFound(@NonNull WebActivity activity) {
         // Provides for "trailing slash" redirects and serving directory index files
         if (isTrailingSlashRedirect() &&
-            requestMethod == MethodType.GET &&
-            StringUtils.startsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-            !StringUtils.endsWith(requestName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-            String requestNameWithTrailingSlash = requestName + ActivityContext.NAME_SEPARATOR_CHAR;
+                activity.getRequestMethod() == MethodType.GET &&
+            StringUtils.startsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR) &&
+            !StringUtils.endsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR)) {
+            String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
             TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
-            if (transletRuleRegistry.contains(requestNameWithTrailingSlash, requestMethod)) {
+            if (transletRuleRegistry.contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
                 String location;
-                if (StringUtils.hasLength(reverseContextPath)) {
-                    location = reverseContextPath + requestName + ActivityContext.NAME_SEPARATOR;
+                if (StringUtils.hasLength(activity.getReverseContextPath())) {
+                    location = activity.getReverseContextPath() + activity.getRequestName() + ActivityContext.NAME_SEPARATOR;
                 } else {
-                    location = requestName + ActivityContext.NAME_SEPARATOR;
+                    location = activity.getRequestName() + ActivityContext.NAME_SEPARATOR;
                 }
-                response.setHeader(HttpHeaders.LOCATION, location);
-                response.setHeader(HttpHeaders.CONNECTION, "close");
-                sendError(response, HttpServletResponse.SC_MOVED_PERMANENTLY, location);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Redirect URL with a Trailing Slash: " + location);
-                }
+                activity.getResponse().setHeader(HttpHeaders.LOCATION, location);
+                activity.getResponse().setHeader(HttpHeaders.CONNECTION, "close");
+                sendError(activity.getResponse(), HttpServletResponse.SC_MOVED_PERMANENTLY, null);
                 return;
             }
         }
         try {
-            if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
+            if (!getDefaultServletHttpRequestHandler().handleRequest(activity.getRequest(), activity.getResponse())) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("No translet mapped for " + requestMethod + " " + requestName);
+                    logger.debug("No translet mapped for " + activity.getFullRequestName());
                 }
-                sendError(response, HttpServletResponse.SC_NOT_FOUND, null);
+                sendError(activity.getResponse(), HttpServletResponse.SC_NOT_FOUND, null);
             }
         } catch (Exception e) {
             logger.error(e);
-            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+            sendError(activity.getResponse(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
         }
     }
 
@@ -244,10 +230,9 @@ public class DefaultWebService extends AbstractWebService {
         } else {
             t = e;
         }
-        Throwable cause = ExceptionUtils.getRootCause(t);
-        logger.error("Error occurred while processing request: " +
-                activity.getRequestMethod() + " " + activity.getRequestName(), t);
+        logger.error("Error occurred while processing request: " + activity.getFullRequestName(), t);
         if (!activity.getResponse().isCommitted()) {
+            Throwable cause = ExceptionUtils.getRootCause(t);
             if (cause instanceof RequestMethodNotAllowedException) {
                 sendError(activity.getResponse(), HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
             } else if (cause instanceof SizeLimitExceededException) {
@@ -264,7 +249,9 @@ public class DefaultWebService extends AbstractWebService {
         ToStringBuilder tsb = new ToStringBuilder("Send error response");
         tsb.append("code", sc);
         tsb.append("message", msg);
-        logger.error(tsb.toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug(tsb.toString());
+        }
         try {
             if (msg != null) {
                 response.sendError(sc, msg);
@@ -293,6 +280,25 @@ public class DefaultWebService extends AbstractWebService {
             sb.append(request.getRemoteAddr());
         }
         return sb.toString();
+    }
+
+    private boolean checkPaused(@NonNull HttpServletResponse response) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is paused, so did not respond to requests");
+                }
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Paused");
+                return true;
+            } else if (pauseTimeout == -2L) {
+                logger.warn(getServiceName() + " is not yet started");
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
 }

@@ -15,13 +15,17 @@
  */
 package com.aspectran.daemon.activity;
 
+import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -35,7 +39,9 @@ public class DaemonActivity extends CoreActivity {
 
     private final DaemonService daemonService;
 
-    private Writer outputWriter;
+    private String requestName;
+
+    private MethodType requestMethod;
 
     private Map<String, Object> attributeMap;
 
@@ -50,6 +56,30 @@ public class DaemonActivity extends CoreActivity {
         this.daemonService = daemonService;
     }
 
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getFullRequestName() {
+        if (requestMethod != null) {
+            return requestMethod + " " + requestName;
+        } else {
+            return requestName;
+        }
+    }
+
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
     }
@@ -58,8 +88,10 @@ public class DaemonActivity extends CoreActivity {
         this.parameterMap = parameterMap;
     }
 
-    public void setOutputWriter(Writer outputWriter) {
-        this.outputWriter = outputWriter;
+    public void prepare() throws TransletNotFoundException, ActivityPrepareException {
+        Assert.state(requestMethod != null, "requestMethod is not set");
+        Assert.state(requestName != null, "requestName is not set");
+        prepare(requestName, requestMethod);
     }
 
     @Override
@@ -75,9 +107,7 @@ public class DaemonActivity extends CoreActivity {
         }
         setRequestAdapter(requestAdapter);
 
-        if (outputWriter == null) {
-            outputWriter = new OutputStringWriter();
-        }
+        Writer outputWriter = new OutputStringWriter();
         DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
         setResponseAdapter(responseAdapter);
 

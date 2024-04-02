@@ -48,8 +48,8 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     @Override
-    public boolean isExposable(String transletName) {
-        return super.isExposable(transletName);
+    public boolean isExposable(String requestName) {
+        return super.isExposable(requestName);
     }
 
     @Override

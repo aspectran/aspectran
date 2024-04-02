@@ -19,6 +19,7 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
@@ -31,6 +32,7 @@ import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.TransletPreProcedure;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -51,13 +53,13 @@ public class ShellActivity extends CoreActivity {
 
     private boolean verbose;
 
-    private ParameterMap parameterMap;
-
-    private Writer outputWriter;
-
     private String requestName;
 
     private MethodType requestMethod;
+
+    private ParameterMap parameterMap;
+
+    private Writer outputWriter;
 
     private boolean async;
 
@@ -90,6 +92,30 @@ public class ShellActivity extends CoreActivity {
         this.verbose = verbose;
     }
 
+    public String getRequestName() {
+        return requestName;
+    }
+
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getFullRequestName() {
+        if (requestMethod != null) {
+            return requestMethod + " " + requestName;
+        } else {
+            return requestName;
+        }
+    }
+
     public ParameterMap getParameterMap() {
         return parameterMap;
     }
@@ -106,14 +132,6 @@ public class ShellActivity extends CoreActivity {
         this.outputWriter = outputWriter;
     }
 
-    public String getRequestName() {
-        return requestName;
-    }
-
-    public MethodType getRequestMethod() {
-        return requestMethod;
-    }
-
     public boolean isAsync() {
         return async;
     }
@@ -122,11 +140,15 @@ public class ShellActivity extends CoreActivity {
         return timeout;
     }
 
+    public void prepare() throws TransletNotFoundException, ActivityPrepareException {
+        Assert.state(requestMethod != null, "requestMethod is not set");
+        Assert.state(requestName != null, "requestName is not set");
+        prepare(requestName, requestMethod);
+    }
+
     @Override
-    public void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+    protected void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
             throws ActivityPrepareException {
-        this.requestName = requestName;
-        this.requestMethod = requestMethod;
         this.async = transletRule.isAsync();
         this.timeout = transletRule.getTimeout();
 

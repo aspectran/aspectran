@@ -91,8 +91,8 @@ public abstract class AbstractServiceController implements ServiceController {
         }
     }
 
-    protected boolean isExposable(String transletName) {
-        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
+    protected boolean isExposable(String requestName) {
+        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(requestName));
     }
 
     protected void setExposals(String[] includePatterns, String[] excludePatterns) {

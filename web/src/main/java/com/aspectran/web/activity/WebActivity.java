@@ -19,6 +19,7 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -26,6 +27,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
@@ -100,8 +102,28 @@ public class WebActivity extends CoreActivity {
         return requestName;
     }
 
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
     public MethodType getRequestMethod() {
         return requestMethod;
+    }
+
+    public void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getFullRequestName() {
+        StringBuilder sb = new StringBuilder();
+        if (requestMethod != null) {
+            sb.append(requestMethod);
+        }
+        if (StringUtils.hasLength(reverseContextPath)) {
+            sb.append(reverseContextPath);
+        }
+        sb.append(requestName);
+        return sb.toString();
     }
 
     public boolean isAsync() {
@@ -112,11 +134,15 @@ public class WebActivity extends CoreActivity {
         return timeout;
     }
 
+    public void prepare() throws TransletNotFoundException, ActivityPrepareException {
+        Assert.state(requestMethod != null, "requestMethod is not set");
+        Assert.state(requestName != null, "requestName is not set");
+        prepare(requestName, requestMethod);
+    }
+
     @Override
-    public void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
+    protected void prepare(String requestName, MethodType requestMethod, @NonNull TransletRule transletRule)
             throws ActivityPrepareException {
-        this.requestName = requestName;
-        this.requestMethod = requestMethod;
         this.async = transletRule.isAsync();
         this.timeout = transletRule.getTimeout();
 

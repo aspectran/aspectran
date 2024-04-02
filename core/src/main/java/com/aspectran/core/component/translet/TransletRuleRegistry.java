@@ -100,13 +100,13 @@ public class TransletRuleRegistry extends AbstractComponent {
         return transletRuleMap.values();
     }
 
-    public TransletRule getTransletRule(String transletName) {
-        return getTransletRule(transletName, MethodType.GET);
+    public TransletRule getTransletRule(String requestName) {
+        return getTransletRule(requestName, MethodType.GET);
     }
 
-    public TransletRule getTransletRule(String transletName, MethodType requestMethod) {
-        if (transletName == null) {
-            throw new IllegalArgumentException("transletName must not be null");
+    public TransletRule getTransletRule(String requestName, MethodType requestMethod) {
+        if (requestName == null) {
+            throw new IllegalArgumentException("requestName must not be null");
         }
         if (requestMethod == null) {
             throw new IllegalArgumentException("requestMethod must not be null");
@@ -115,58 +115,58 @@ public class TransletRuleRegistry extends AbstractComponent {
         TransletRule transletRule;
         switch (requestMethod) {
             case GET:
-                transletRule = getTransletRuleMap.get(transletName);
+                transletRule = getTransletRuleMap.get(requestName);
                 if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, requestName);
                 }
                 break;
             case POST:
-                transletRule = postTransletRuleMap.get(transletName);
+                transletRule = postTransletRuleMap.get(requestName);
                 if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPostTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPostTransletRuleSet, requestName);
                 }
                 break;
             case PUT:
-                transletRule = putTransletRuleMap.get(transletName);
+                transletRule = putTransletRuleMap.get(requestName);
                 if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPutTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPutTransletRuleSet, requestName);
                 }
                 break;
             case PATCH:
-                transletRule = patchTransletRuleMap.get(transletName);
+                transletRule = patchTransletRuleMap.get(requestName);
                 if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPatchTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPatchTransletRuleSet, requestName);
                 }
                 break;
             case DELETE:
-                transletRule = deleteTransletRuleMap.get(transletName);
+                transletRule = deleteTransletRuleMap.get(requestName);
                 if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildDeleteTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildDeleteTransletRuleSet, requestName);
                 }
                 break;
             default:
-                transletRule = retrieveEtcTransletRule(transletName, requestMethod);
+                transletRule = retrieveEtcTransletRule(requestName, requestMethod);
         }
         if (transletRule == null && requestMethod != MethodType.GET) {
-            transletRule = transletRuleMap.get(transletName);
+            transletRule = transletRuleMap.get(requestName);
             if (transletRule == null) {
-                transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, transletName);
+                transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, requestName);
             }
         }
         return transletRule;
     }
 
     @Nullable
-    private TransletRule retrieveWildTransletRule(@NonNull Set<TransletRule> transletRuleSet, String transletName) {
+    private TransletRule retrieveWildTransletRule(@NonNull Set<TransletRule> transletRuleSet, String requestName) {
         if (!transletRuleSet.isEmpty()) {
             for (TransletRule transletRule : transletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
                 if (namePattern != null) {
-                    if (namePattern.matches(transletName)) {
+                    if (namePattern.matches(requestName)) {
                         return transletRule;
                     }
                 } else {
-                    if (transletName.equals(transletRule.getName())) {
+                    if (requestName.equals(transletRule.getName())) {
                         return transletRule;
                     }
                 }
@@ -176,17 +176,17 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     @Nullable
-    private TransletRule retrieveEtcTransletRule(String transletName, MethodType requestMethod) {
+    private TransletRule retrieveEtcTransletRule(String requestName, MethodType requestMethod) {
         if (!etcTransletRuleSet.isEmpty()) {
             for (TransletRule transletRule : etcTransletRuleSet) {
                 if (requestMethod.containsTo(transletRule.getAllowedMethods())) {
                     WildcardPattern namePattern = transletRule.getNamePattern();
                     if (namePattern != null) {
-                        if (namePattern.matches(transletName)) {
+                        if (namePattern.matches(requestName)) {
                             return transletRule;
                         }
                     } else {
-                        if (transletName.equals(transletRule.getName())) {
+                        if (requestName.equals(transletRule.getName())) {
                             return transletRule;
                         }
                     }
@@ -196,12 +196,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
-    public boolean contains(String transletName) {
-        return contains(transletName, MethodType.GET);
+    public boolean contains(String requestName) {
+        return contains(requestName, MethodType.GET);
     }
 
-    public boolean contains(String transletName, MethodType requestMethod) {
-        return (getTransletRule(transletName, requestMethod) != null);
+    public boolean contains(String requestName, MethodType requestMethod) {
+        return (getTransletRule(requestName, requestMethod) != null);
     }
 
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {

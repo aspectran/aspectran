@@ -24,7 +24,6 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
@@ -48,8 +47,8 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     }
 
     @Override
-    public boolean isExposable(String transletName) {
-        return super.isExposable(transletName);
+    public boolean isExposable(String requestName) {
+        return super.isExposable(requestName);
     }
 
     @Override

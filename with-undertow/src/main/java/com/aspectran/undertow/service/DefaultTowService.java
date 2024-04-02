@@ -16,11 +16,11 @@
 package com.aspectran.undertow.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.activity.TowActivity;
@@ -36,7 +36,6 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
@@ -59,121 +58,112 @@ public class DefaultTowService extends AbstractTowService {
 
     @Override
     public boolean service(@NonNull HttpServerExchange exchange) throws IOException {
-        String requestPath = exchange.getRequestPath();
-        if (getUriDecoding() != null) {
-            requestPath = URLDecoder.decode(requestPath, getUriDecoding());
-        }
-        if (!isExposable(requestPath)) {
+        if (checkPaused(exchange)) {
             return false;
         }
 
+        final String requestName = exchange.getRequestPath();
+        final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
+
         if (logger.isDebugEnabled()) {
-            logger.debug(getRequestInfo(exchange));
+            logger.debug(getRequestInfo(exchange, requestName, requestMethod));
         }
 
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " has been paused, so did not respond to request " + requestPath);
-                }
-                exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-                return true;
-            } else if (pauseTimeout == -2L) {
-                logger.warn(getServiceName() + " is not yet started");
-                exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-                exchange.setReasonPhrase("Starting... Try again in a moment.");
-                return true;
-            } else {
-                pauseTimeout = 0L;
-            }
+        if (!isExposable(requestName)) {
+            sendError(exchange, HttpStatus.NOT_FOUND, "Not Exposed");
+            return false;
         }
 
-        MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString());
-        if (requestMethod == null) {
-            requestMethod = MethodType.GET;
+        TowActivity activity = new TowActivity(this, exchange);
+        activity.setRequestName(requestName);
+        activity.setRequestMethod(requestMethod);
+        try {
+            activity.prepare();
+        } catch (TransletNotFoundException e) {
+            transletNotFound(activity);
+            return false;
+        } catch (Exception e) {
+            sendError(activity, e);
+            return false;
         }
-        TransletRule transletRule = getActivityContext()
-                .getTransletRuleRegistry()
-                .getTransletRule(requestPath, requestMethod);
-        if (transletRule == null) {
-            // Provides for "trailing slash" redirects and serving directory index files
-            if (isTrailingSlashRedirect() &&
-                    requestMethod == MethodType.GET &&
-                    StringUtils.startsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletNameWithSlash = requestPath + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
-                    exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
-                    exchange.getResponseHeaders().put(Headers.LOCATION, transletNameWithSlash);
-                    exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Redirect URL with a Trailing Slash: " + requestPath);
-                    }
-                    return true;
-                }
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("No translet mapped for " + requestMethod + " " + requestPath);
-            }
-            exchange.setStatusCode(HttpStatus.NOT_FOUND.value());
-            return true;
-        }
-
-        perform(exchange, requestPath, requestMethod, transletRule);
-
+        perform(activity);
         return true;
     }
 
-    private void perform(HttpServerExchange exchange, String requestPath,
-                         MethodType requestMethod, TransletRule transletRule) {
-        TowActivity activity = null;
+    private void perform(TowActivity activity) {
         try {
-            activity = new TowActivity(this, exchange);
-            activity.prepare(requestPath, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable t;
-            if (activity != null && activity.getRaisedException() != null) {
-                t = activity.getRaisedException();
-            } else {
-                t = e;
+            sendError(activity, e);
+        }
+    }
+
+    private void transletNotFound(TowActivity activity) {
+        // Provides for "trailing slash" redirects and serving directory index files
+        if (isTrailingSlashRedirect() &&
+                activity.getRequestMethod() == MethodType.GET &&
+                StringUtils.startsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR) &&
+                !StringUtils.endsWith(activity.getRequestName(), ActivityContext.NAME_SEPARATOR_CHAR)) {
+            String requestNameWithTrailingSlash = activity.getRequestName() + ActivityContext.NAME_SEPARATOR_CHAR;
+            if (getActivityContext().getTransletRuleRegistry().contains(requestNameWithTrailingSlash, activity.getRequestMethod())) {
+                activity.getExchange().getResponseHeaders().put(Headers.LOCATION, requestNameWithTrailingSlash);
+                activity.getExchange().getResponseHeaders().put(Headers.CONNECTION, "close");
+                sendError(activity.getExchange(), HttpStatus.MOVED_PERMANENTLY, null);
+                return;
             }
-            Throwable cause = ExceptionUtils.getRootCause(t);
-            logger.error("Error occurred while processing request: " + requestMethod + " " + requestPath, t);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("No translet mapped for " + activity.getFullRequestName());
+        }
+        sendError(activity.getExchange(), HttpStatus.NOT_FOUND, null);
+    }
+
+    private void sendError(@NonNull TowActivity activity, Exception e) {
+        Throwable t;
+        if (activity.getRaisedException() != null) {
+            t = activity.getRaisedException();
+        } else {
+            t = e;
+        }
+        Throwable cause = ExceptionUtils.getRootCause(t);
+        logger.error("Error occurred while processing request: " + activity.getFullRequestName(), t);
+        if (!activity.getExchange().isComplete()) {
             if (cause instanceof RequestMethodNotAllowedException) {
-                sendError(exchange, HttpStatus.METHOD_NOT_ALLOWED.value(), null);
+                sendError(activity.getExchange(), HttpStatus.METHOD_NOT_ALLOWED, null);
             } else if (cause instanceof SizeLimitExceededException) {
-                sendError(exchange, HttpStatus.PAYLOAD_TOO_LARGE.value(), null);
+                sendError(activity.getExchange(), HttpStatus.PAYLOAD_TOO_LARGE, null);
             } else if (cause instanceof MaxSessionsExceededException) {
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE.value(), MAX_SESSIONS_EXCEEDED);
+                sendError(activity.getExchange(), HttpStatus.SERVICE_UNAVAILABLE, MAX_SESSIONS_EXCEEDED);
             } else {
-                sendError(exchange, HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
+                sendError(activity.getExchange(), HttpStatus.INTERNAL_SERVER_ERROR, null);
             }
         }
     }
 
-    private void sendError(HttpServerExchange exchange, int sc, String msg) {
+    private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, String msg) {
         ToStringBuilder tsb = new ToStringBuilder("Send error response");
-        tsb.append("code", sc);
+        tsb.append("code", status.value());
         tsb.append("message", msg);
-        logger.error(tsb.toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug(tsb.toString());
+        }
         if (msg != null) {
-            exchange.setStatusCode(sc);
+            exchange.setStatusCode(status.value());
             exchange.setReasonPhrase(msg);
         } else {
-            exchange.setStatusCode(sc);
+            exchange.setStatusCode(status.value());
         }
     }
 
     @NonNull
-    private String getRequestInfo(@NonNull HttpServerExchange exchange) {
+    private String getRequestInfo(@NonNull HttpServerExchange exchange, String requestName, MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
-        sb.append(exchange.getRequestMethod()).append(" ");
-        sb.append(exchange.getRequestURI()).append(" ");
+        sb.append(requestMethod).append(" ");
+        sb.append(requestName).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
         String remoteAddr = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR);
         if (StringUtils.hasLength(remoteAddr)) {
@@ -182,6 +172,25 @@ public class DefaultTowService extends AbstractTowService {
             sb.append(exchange.getSourceAddress());
         }
         return sb.toString();
+    }
+
+    private boolean checkPaused(@NonNull HttpServerExchange exchange) {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is paused, so did not respond to requests");
+                }
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Paused");
+                return true;
+            } else if (pauseTimeout == -2L) {
+                logger.warn(getServiceName() + " is not yet started");
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
 }

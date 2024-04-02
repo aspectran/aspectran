@@ -189,7 +189,7 @@ public class CoreActivity extends AdviceActivity {
      * @param requestMethod the request method
      * @param transletRule the translet rule
      */
-    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
+    protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
         Assert.notNull(requestName, "requestName must not be null");
         Assert.notNull(requestMethod, "requestMethod must not be null");
@@ -576,8 +576,8 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    private TransletRule findTransletRule(String transletName, MethodType requestMethod) {
-        return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
+    private TransletRule findTransletRule(String requestName, MethodType requestMethod) {
+        return getActivityContext().getTransletRuleRegistry().getTransletRule(requestName, requestMethod);
     }
 
     protected TransletRule getTransletRule() {
