@@ -125,7 +125,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
         AspectranActivity activity = new AspectranActivity(this);
         activity.setRequestName(name);
-        activity.setRequestMethod(method);
+        activity.setRequestMethod(method != null ? method : MethodType.GET);
         activity.setAttributeMap(attributeMap);
         activity.setParameterMap(parameterMap);
         activity.setBody(body);

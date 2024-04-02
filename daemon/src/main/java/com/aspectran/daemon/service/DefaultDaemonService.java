@@ -72,7 +72,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
         DaemonActivity activity = new DaemonActivity(this);
         activity.setRequestName(name);
-        activity.setRequestMethod(method);
+        activity.setRequestMethod(method != null ? method : MethodType.GET);
         activity.setAttributeMap(attributeMap);
         activity.setParameterMap(parameterMap);
         Translet translet = null;

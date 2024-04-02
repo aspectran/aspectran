@@ -109,8 +109,8 @@ public class AspectranActivity extends CoreActivity {
     }
 
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
-        Assert.state(requestMethod != null, "requestMethod is not set");
         Assert.state(requestName != null, "requestName is not set");
+        Assert.state(requestMethod != null, "requestMethod is not set");
         prepare(requestName, requestMethod);
     }
 
