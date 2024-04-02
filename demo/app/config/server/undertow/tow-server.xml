@@ -106,7 +106,7 @@
           class="com.aspectran.undertow.server.handler.accesslog.AccessLogHandlerWrapper"
           scope="prototype">
         <properties>
-            <item name="formatString">combined</item>
+            <item name="formatString" tokenize="false">%a %{i,X-Forwarded-For} %t "%r" %s %b "%{i,Referer}" "%{i,User-Agent}"</item>
             <item name="category">io.undertow.accesslog</item>
         </properties>
     </bean>
