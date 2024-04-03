@@ -36,6 +36,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
@@ -62,7 +63,12 @@ public class DefaultTowService extends AbstractTowService {
             return false;
         }
 
-        final String requestName = exchange.getRequestPath();
+        final String requestName;
+        if (getUriDecoding() != null) {
+            requestName = URLDecoder.decode(exchange.getRequestPath(), getUriDecoding());
+        } else {
+            requestName = exchange.getRequestPath();
+        }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
 
         if (logger.isDebugEnabled()) {
@@ -145,17 +151,15 @@ public class DefaultTowService extends AbstractTowService {
     }
 
     private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, String msg) {
-        ToStringBuilder tsb = new ToStringBuilder("Send error response");
+        ToStringBuilder tsb = new ToStringBuilder("Response");
         tsb.append("code", status.value());
         tsb.append("message", msg);
         if (logger.isDebugEnabled()) {
             logger.debug(tsb.toString());
         }
+        exchange.setStatusCode(status.value());
         if (msg != null) {
-            exchange.setStatusCode(status.value());
             exchange.setReasonPhrase(msg);
-        } else {
-            exchange.setStatusCode(status.value());
         }
     }
 
