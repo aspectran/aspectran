@@ -66,15 +66,10 @@
         <properties>
             <item name="servletContainer">#{tow.server^servletContainer}</item>
         </properties>
-        <properties profile="prod">
+        <properties>
             <item name="handlerChainWrappers" type="array">
                 <value>#{tow.server.handler.encodingHandlerWrapper}</value>
                 <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
-            </item>
-        </properties>
-        <properties profile="!prod">
-            <item name="handlerChainWrappers" type="array">
-                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
             </item>
         </properties>
     </bean>
