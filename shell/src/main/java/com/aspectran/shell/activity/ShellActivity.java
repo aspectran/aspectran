@@ -34,6 +34,7 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
@@ -109,10 +110,12 @@ public class ShellActivity extends CoreActivity {
     }
 
     public String getFullRequestName() {
-        if (requestMethod != null) {
+        if (requestMethod != null && requestName != null) {
             return requestMethod + " " + requestName;
-        } else {
+        } else if (requestName != null) {
             return requestName;
+        } else {
+            return StringUtils.EMPTY;
         }
     }
 
