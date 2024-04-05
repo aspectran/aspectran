@@ -95,7 +95,12 @@ public class AnnotatedAction implements Executable {
     protected Object execute(Activity activity, Object bean) throws Exception {
         Method method = annotatedActionRule.getMethod();
         ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
-        return invokeMethod(activity, bean, method, parameterBindingRules);
+        if (method.getReturnType() == Void.TYPE) {
+            invokeMethod(activity, bean, method, parameterBindingRules);
+            return Void.TYPE;
+        } else {
+            return invokeMethod(activity, bean, method, parameterBindingRules);
+        }
     }
 
     /**
@@ -135,8 +140,7 @@ public class AnnotatedAction implements Executable {
     }
 
     public static Object invokeMethod(Activity activity, Object bean, Method method,
-                                      ParameterBindingRule[] parameterBindingRules)
-            throws Exception {
+                                      ParameterBindingRule[] parameterBindingRules) throws Exception {
         ParameterBindingRule parameterBindingRule = null;
         try {
             if (parameterBindingRules == null) {

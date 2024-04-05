@@ -183,13 +183,17 @@ public class InvokeAction implements Executable {
     }
 
     private static Object invokeMethod(Object bean, @NonNull Method method, Object[] args) throws Exception {
-        return method.invoke(bean, args);
+        if (method.getReturnType() == Void.TYPE) {
+            method.invoke(bean, args);
+            return Void.TYPE;
+        } else {
+            return method.invoke(bean, args);
+        }
     }
 
     private static Object invokeMethod(Activity activity, Object bean, String methodName,
                                        ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator,
-                                       boolean requiresTranslet)
-            throws Exception {
+                                       boolean requiresTranslet) throws Exception {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
@@ -224,7 +228,22 @@ public class InvokeAction implements Executable {
             argsObjects = new Object[] { activity.getTranslet() };
         }
 
-        return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
+        return invokeMethod(bean, methodName, argsObjects, argsTypes);
+    }
+
+    private static Object invokeMethod(@NonNull Object object, String methodName, Object[] args, Class<?>[] paramTypes)
+        throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = MethodUtils.getMatchingAccessibleMethod(object.getClass(), methodName, args, paramTypes);
+        if (method == null) {
+            throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+                + object.getClass().getName());
+        }
+        if (method.getReturnType() == Void.TYPE) {
+            MethodUtils.invokeMethod(object, method, args, paramTypes);
+            return Void.TYPE;
+        } else {
+            return MethodUtils.invokeMethod(object, method, args, paramTypes);
+        }
     }
 
     @NonNull

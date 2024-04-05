@@ -26,8 +26,6 @@ import com.aspectran.utils.ToStringBuilder;
  */
 public class ActionResult {
 
-    public static final Object NO_RESULT = new Object();
-
     private String actionId;
 
     private Object resultValue;

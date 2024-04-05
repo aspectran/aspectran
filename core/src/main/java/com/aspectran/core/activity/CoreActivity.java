@@ -19,7 +19,6 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
@@ -481,7 +480,7 @@ public class CoreActivity extends AdviceActivity {
 
             if (action.getActionType() == ActionType.CHOOSE) {
                 Object resultValue = action.execute(this);
-                if (resultValue != ActionResult.NO_RESULT) {
+                if (resultValue != Void.TYPE) {
                     ChooseWhenRule chooseWhenRule = (ChooseWhenRule)resultValue;
                     ActionList actionList = chooseWhenRule.getActionList();
                     execute(actionList, contentResult);
@@ -491,7 +490,7 @@ public class CoreActivity extends AdviceActivity {
                 }
             } else {
                 Object resultValue = action.execute(this);
-                if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
+                if (!action.isHidden() && contentResult != null && resultValue != Void.TYPE) {
                     if (resultValue instanceof ProcessResult) {
                         contentResult.addActionResult(action, (ProcessResult)resultValue);
                     } else {

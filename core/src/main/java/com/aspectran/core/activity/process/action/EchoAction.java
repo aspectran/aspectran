@@ -45,7 +45,7 @@ public class EchoAction implements Executable {
     public Object execute(Activity activity) throws Exception {
         ItemRuleMap itemRuleMap = echoActionRule.getEchoItemRuleMap();
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
-            return null;
+            return Void.TYPE;
         }
         try {
             ItemEvaluator evaluator = new ItemEvaluation(activity);

@@ -545,14 +545,15 @@ public abstract class MethodUtils {
         return invokeExactStaticMethod(objectClass, methodName, args, paramTypes);
     }
 
-    private static Object invokeMethod(@Nullable Object object, @NonNull Method method, Object[] args, Class<?>[] paramTypes)
+    public static Object invokeMethod(@Nullable Object object, @NonNull Method method,
+                                      Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Class<?>[] methodsParams = method.getParameterTypes();
         return invokeMethod(object, method, methodsParams, args, paramTypes);
     }
 
-    private static Object invokeMethod(@Nullable Object object, @NonNull Method method, Class<?>[] methodsParams, Object[] args,
-                                       Class<?>[] paramTypes)
+    private static Object invokeMethod(@Nullable Object object, @NonNull Method method,
+                                       Class<?>[] methodsParams, Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (methodsParams != null && methodsParams.length > 0) {
             Object[] args2 = new Object[methodsParams.length];

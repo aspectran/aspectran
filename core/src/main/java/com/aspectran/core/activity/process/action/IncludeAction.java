@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -65,7 +66,8 @@ public class IncludeAction implements Executable {
             }
             instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
             instantActivity.perform();
-            return instantActivity.getProcessResult();
+            ProcessResult processResult = instantActivity.getProcessResult();
+            return (processResult != null ? processResult : Void.TYPE);
         } catch (Exception e) {
             throw new ActionExecutionException(this, e);
         }

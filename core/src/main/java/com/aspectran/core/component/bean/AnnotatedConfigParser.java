@@ -376,23 +376,25 @@ public class AnnotatedConfigParser {
         }
 
         for (Method method : beanClass.getMethods()) {
+            Action actionAnno = method.getAnnotation(Action.class);
+            String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.value()) : null);
             if (method.isAnnotationPresent(Before.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, beanClass, method));
+                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, beanClass, method));
+                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Around.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, beanClass, method));
+                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Finally.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, beanClass, method));
+                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 Class<? extends Throwable>[] types = exceptionThrownAnno.value();
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.THROWN);
-                AnnotatedAction action = createAnnotatedAdviceAction(aspectAdviceRule, beanClass, method);
+                AnnotatedAction action = createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method);
                 ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Transform.class)) {
@@ -946,8 +948,10 @@ public class AnnotatedConfigParser {
     }
 
     @NonNull
-    private AnnotatedAction createAnnotatedAdviceAction(AspectAdviceRule aspectAdviceRule, Class<?> beanClass, Method method) {
+    private AnnotatedAction createAnnotatedAdviceAction(AspectAdviceRule aspectAdviceRule, String actionId,
+                                                        Class<?> beanClass, Method method) {
         AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
+        annotatedActionRule.setActionId(actionId);
         annotatedActionRule.setBeanClass(beanClass);
         annotatedActionRule.setMethod(method);
         annotatedActionRule.setParameterBindingRules(createParameterBindingRules(method));

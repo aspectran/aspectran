@@ -51,7 +51,7 @@ public class HeaderAction implements Executable {
     public Object execute(Activity activity) throws Exception {
         ItemRuleMap itemRuleMap = headerActionRule.getHeaderItemRuleMap();
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
-            return null;
+            return Void.TYPE;
         }
         try {
             ItemEvaluator evaluator = new ItemEvaluation(activity);

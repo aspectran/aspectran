@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
@@ -55,7 +54,7 @@ public class ChooseAction implements Executable {
                 }
             }
         }
-        return ActionResult.NO_RESULT;
+        return Void.TYPE;
     }
 
     @Override

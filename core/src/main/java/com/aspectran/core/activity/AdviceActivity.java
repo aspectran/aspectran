@@ -20,7 +20,6 @@ import com.aspectran.core.activity.aspect.AspectAdviceException;
 import com.aspectran.core.activity.aspect.AspectAdviceResult;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
@@ -280,7 +279,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
 
                 Object resultValue = action.execute(this);
-                if (!action.isHidden() && resultValue != null && resultValue != ActionResult.NO_RESULT) {
+                if (!action.isHidden() && resultValue != null && resultValue != Void.TYPE) {
                     putAdviceResult(aspectAdviceRule, resultValue);
                     if (action.getActionType() == ActionType.ECHO) {
                         if (action.getActionId() != null) {
@@ -353,7 +352,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                     try {
                         Object resultValue = action.execute(this);
-                        if (getTranslet() != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
+                        if (getTranslet() != null && !action.isHidden() && resultValue != Void.TYPE) {
                             if (resultValue instanceof ProcessResult) {
                                 getTranslet().setProcessResult((ProcessResult)resultValue);
                             } else {

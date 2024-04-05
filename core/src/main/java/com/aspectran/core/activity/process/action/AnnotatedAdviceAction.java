@@ -62,7 +62,7 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     @Override
     public String getActionId() {
-        throw new UnsupportedOperationException("No Action ID");
+        return getAnnotatedActionRule().getActionId();
     }
 
     @Override
