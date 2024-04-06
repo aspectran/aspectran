@@ -111,9 +111,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
      */
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        NoBodyResponse response = new NoBodyResponse(res);
-        webService.service(req, res);
-        response.setContentLength();
+        NoBodyResponse noBodyResponse = new NoBodyResponse(res);
+        webService.service(req, noBodyResponse);
+        noBodyResponse.setContentLength();
     }
 
     @Override

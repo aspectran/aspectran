@@ -83,21 +83,32 @@
           class="com.aspectran.undertow.server.handler.encoding.EncodingHandlerWrapper"
           scope="prototype">
         <properties>
-            <item name="contentEncodingProviders" type="array">
+            <item name="encodingProviders" type="array">
                 <value>gzip</value>
-                <value>deflate</value>
             </item>
-            <item name="maxContentSize" valueType="long">32</item>
-            <item name="mediaTypes" type="array">
-                <value>text/html</value>
-                <value>text/xml</value>
-                <value>text/plain</value>
-                <value>text/css</value>
-                <value>text/javascript</value>
-                <value>application/javascript</value>
-                <value>application/json</value>
-                <value>application/xml</value>
-                <value>application/apon</value>
+            <item name="encodingPredicates" type="array">
+                <bean class="com.aspectran.undertow.server.handler.encoding.ContentEncodingPredicates">
+                    <properties>
+                        <item name="mediaTypes" type="array">
+                            <value>text/html</value>
+                            <value>text/css</value>
+                            <value>text/javascript</value>
+                            <value>application/javascript</value>
+                        </item>
+                    </properties>
+                </bean>
+                <bean class="com.aspectran.undertow.server.handler.encoding.ContentEncodingPredicates">
+                    <properties>
+                        <item name="contentSizeLargerThan" valueType="long">1024</item>
+                        <item name="mediaTypes" type="array">
+                            <value>text/xml</value>
+                            <value>text/plain</value>
+                            <value>application/json</value>
+                            <value>application/xml</value>
+                            <value>application/apon</value>
+                        </item>
+                    </properties>
+                </bean>
             </item>
         </properties>
     </bean>

@@ -32,7 +32,7 @@ import java.io.UnsupportedEncodingException;
  * content length appropriately. All other methods delegate directly to
  * the wrapped HTTP Servlet Response object.
  */
-class NoBodyResponse  extends HttpServletResponseWrapper {
+class NoBodyResponse extends HttpServletResponseWrapper {
 
     private final NoBodyOutputStream noBody;
 
@@ -141,7 +141,7 @@ class NoBodyResponse  extends HttpServletResponseWrapper {
         return writer;
     }
 
-    /*
+    /**
      * Servlet output stream that gobbles up all its data.
      */
     static class NoBodyOutputStream extends ServletOutputStream {

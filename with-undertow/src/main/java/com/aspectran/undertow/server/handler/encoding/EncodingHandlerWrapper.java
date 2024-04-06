@@ -15,27 +15,18 @@
  */
 package com.aspectran.undertow.server.handler.encoding;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.support.http.HttpHeaders;
-import com.aspectran.web.support.http.MediaType;
-import io.undertow.attribute.RequestHeaderAttribute;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.predicate.Predicate;
 import io.undertow.predicate.Predicates;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.encoding.ContentEncodingRepository;
 import io.undertow.server.handlers.encoding.DeflateEncodingProvider;
 import io.undertow.server.handlers.encoding.EncodingHandler;
 import io.undertow.server.handlers.encoding.GzipEncodingProvider;
-import io.undertow.util.HttpString;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Configure HTTP compression in Undertow {@link HttpHandler} and
@@ -49,99 +40,55 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
 
     private static final String DEFLATE = "deflate";
 
-    private String[] contentEncodingProviderNames;
+    private String[] encodingProviderNames;
 
-    private long maxContentSize = 2048L;
+    private ContentEncodingPredicates[] encodingPredicates;
 
-    private String[] mediaTypes;
-
-    private String[] excludedUserAgents;
-
-    public void setContentEncodingProviders(String... contentEncodingProviderNames) {
-        this.contentEncodingProviderNames = contentEncodingProviderNames;
+    public void setEncodingProviders(String... encodingProviderNames) {
+        this.encodingProviderNames = encodingProviderNames;
     }
 
-    public void setMaxContentSize(long maxContentSize) {
-        this.maxContentSize = maxContentSize;
-    }
-
-    public void setMediaTypes(String[] mediaTypes) {
-        this.mediaTypes = mediaTypes;
-    }
-
-    public void setExcludedUserAgents(String[] excludedUserAgents) {
-        this.excludedUserAgents = excludedUserAgents;
+    public void setEncodingPredicates(ContentEncodingPredicates... encodingPredicates) {
+        this.encodingPredicates = encodingPredicates;
     }
 
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         ContentEncodingRepository contentEncodingRepository = new ContentEncodingRepository();
-        if (contentEncodingProviderNames != null && contentEncodingProviderNames.length != 0) {
-            Set<String> names = new LinkedHashSet<>(Arrays.asList(contentEncodingProviderNames));
-            Predicate predicate = Predicates.and(getCompressionPredicates());
-            int priority = 100;
-            for (String name : names) {
-                if (GZIP.equalsIgnoreCase(name)) {
+        if (encodingProviderNames != null && encodingProviderNames.length != 0) {
+            Predicate predicate = createPredicate();
+            int priority = encodingProviderNames.length;
+            for (String providerName : encodingProviderNames) {
+                if (GZIP.equalsIgnoreCase(providerName)) {
                     contentEncodingRepository.addEncodingHandler(GZIP,
                             new GzipEncodingProvider(), priority, predicate);
-                } else if (DEFLATE.equalsIgnoreCase(name)) {
+                } else if (DEFLATE.equalsIgnoreCase(providerName)) {
                     contentEncodingRepository.addEncodingHandler(DEFLATE,
                             new DeflateEncodingProvider(), priority, predicate);
                 } else {
-                    throw new IllegalArgumentException("Unknown content encoding provider '" + name + "'");
+                    throw new IllegalArgumentException("Unknown content encoding provider '" + providerName + "'");
                 }
-                priority /= 10;
+                priority--;
             }
         }
         return new EncodingHandler(handler, contentEncodingRepository);
     }
 
-    @NonNull
-    private Predicate[] getCompressionPredicates() {
-        List<Predicate> predicates = new ArrayList<>();
-        if (maxContentSize > 0L) {
-            predicates.add(Predicates.requestLargerThan(maxContentSize));
-        }
-        if (mediaTypes != null && mediaTypes.length > 0) {
-            predicates.add(new CompressibleMimeTypePredicate(mediaTypes));
-        }
-        if (excludedUserAgents != null) {
-            for (String agent : excludedUserAgents) {
-                RequestHeaderAttribute agentHeader = new RequestHeaderAttribute(new HttpString(HttpHeaders.USER_AGENT));
-                predicates.add(Predicates.not(Predicates.regex(agentHeader, agent)));
-            }
-        }
-        return predicates.toArray(new Predicate[0]);
-    }
-
-    private static class CompressibleMimeTypePredicate implements Predicate {
-
-        private final List<MediaType> mediaTypes;
-
-        private CompressibleMimeTypePredicate(@NonNull String[] mediaTypes) {
-            if (mediaTypes.length == 1) {
-                this.mediaTypes = Collections.singletonList(MediaType.parseMediaType(mediaTypes[0]));
+    @Nullable
+    private Predicate createPredicate() {
+        Predicate predicate = null;
+        if (encodingPredicates != null && encodingPredicates.length > 0) {
+            if (encodingPredicates.length == 1) {
+                predicate = encodingPredicates[0].createPredicate();
             } else {
-                this.mediaTypes = new ArrayList<>(mediaTypes.length);
-                for (String mediaType : mediaTypes) {
-                    this.mediaTypes.add(MediaType.parseMediaType(mediaType));
+                List<Predicate> predicates = new ArrayList<>(encodingPredicates.length);
+                for (ContentEncodingPredicates compressionPredicate : encodingPredicates) {
+                    predicates.add(compressionPredicate.createPredicate());
                 }
+                predicate = Predicates.or(predicates.toArray(new Predicate[0]));
             }
         }
-
-        @Override
-        public boolean resolve(@NonNull HttpServerExchange exchange) {
-            String contentType = exchange.getResponseHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
-            if (contentType != null) {
-                for (MediaType mediaType : this.mediaTypes) {
-                    if (mediaType.isCompatibleWith(MediaType.parseMediaType(contentType))) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
+        return predicate;
     }
 
 }
