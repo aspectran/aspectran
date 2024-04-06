@@ -53,13 +53,12 @@ public class OutputStringWriter extends Writer {
 
     @Override
     public void write(@NonNull char[] buf, int off, int len) {
-        if ((off < 0) || (off > buf.length) || (len < 0) ||
-                ((off + len) > buf.length) || ((off + len) < 0)) {
-            throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
-            return;
+        if (off < 0 || len < 0 || off + len > buf.length) {
+            throw new IndexOutOfBoundsException("Invalid offset [" + off + "] and / or length [" +
+                len + "] specified for array of size [" + buf.length + "]");
+        } else if (len > 0) {
+            touchBuffer().append(buf, off, len);
         }
-        touchBuffer().append(buf, off, len);
     }
 
     @Override

@@ -24,6 +24,7 @@ public class WebConfig extends AbstractParameters {
     private static final ParameterKey uriDecoding;
     private static final ParameterKey defaultServletName;
     private static final ParameterKey trailingSlashRedirect;
+    private static final ParameterKey legacyHeadHandling;
     private static final ParameterKey exposals;
 
     private static final ParameterKey[] parameterKeys;
@@ -32,12 +33,14 @@ public class WebConfig extends AbstractParameters {
         uriDecoding = new ParameterKey("uriDecoding", ValueType.STRING);
         defaultServletName = new ParameterKey("defaultServletName", ValueType.STRING);
         trailingSlashRedirect = new ParameterKey("trailingSlashRedirect", ValueType.BOOLEAN);
+        legacyHeadHandling = new ParameterKey("legacyHeadHandling", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 uriDecoding,
                 defaultServletName,
                 trailingSlashRedirect,
+            legacyHeadHandling,
                 exposals
         };
     }
@@ -70,6 +73,15 @@ public class WebConfig extends AbstractParameters {
 
     public WebConfig setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         putValue(WebConfig.trailingSlashRedirect, trailingSlashRedirect);
+        return this;
+    }
+
+    public boolean isLegacyHeadHandling() {
+        return getBoolean(legacyHeadHandling, false);
+    }
+
+    public WebConfig setLegacyHeadHandling(boolean legacyHeadHandling) {
+        putValue(WebConfig.legacyHeadHandling, legacyHeadHandling);
         return this;
     }
 

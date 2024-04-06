@@ -38,6 +38,8 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     private boolean trailingSlashRedirect;
 
+    private boolean legacyHeadHandling;
+
     AbstractWebService(@NonNull ServletContext servletContext) {
         this(servletContext, null);
     }
@@ -80,6 +82,14 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
+    public boolean isLegacyHeadHandling() {
+        return legacyHeadHandling;
+    }
+
+    protected void setLegacyHeadHandling(boolean legacyHeadHandling) {
+        this.legacyHeadHandling = legacyHeadHandling;
+    }
+
     @Override
     protected void afterContextLoaded() throws Exception {
         super.afterContextLoaded();
@@ -116,6 +126,7 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         }
 
         setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
 
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {

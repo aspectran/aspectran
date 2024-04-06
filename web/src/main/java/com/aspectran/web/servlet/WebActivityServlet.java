@@ -45,6 +45,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
+    private static final String METHOD_HEAD = "HEAD";
+
     private DefaultWebService webService;
 
     private boolean standalone;
@@ -93,7 +95,25 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (webService.isLegacyHeadHandling() && METHOD_HEAD.equals(req.getMethod())) {
+            doHead(req, res);
+        } else {
+            webService.service(req, res);
+        }
+    }
+
+    /**
+     * If the WebConfig parameter {@code legacyHeadHandling} is set to "true",
+     * this {@code doHead} method is called to remove the response body.
+     * As a side note, the legacy head handling mode is being deprecated
+     * because it may not be accurate in producing the same head as returned
+     * by the GET method.
+     */
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        NoBodyResponse response = new NoBodyResponse(res);
         webService.service(req, res);
+        response.setContentLength();
     }
 
     @Override
