@@ -99,7 +99,7 @@
                 </bean>
                 <bean class="com.aspectran.undertow.server.handler.encoding.ContentEncodingPredicates">
                     <properties>
-                        <item name="contentSizeLargerThan" valueType="long">1024</item>
+                        <item name="contentSizeLargerThan" valueType="long">32</item>
                         <item name="mediaTypes" type="array">
                             <value>text/xml</value>
                             <value>text/plain</value>

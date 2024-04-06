@@ -16,6 +16,8 @@
 package com.aspectran.undertow.server.handler.encoding;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.attribute.RequestHeaderAttribute;
@@ -32,6 +34,10 @@ import java.util.List;
  * <p>Created: 4/6/24</p>
  */
 public class ContentEncodingPredicates {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContentEncodingPredicates.class);
+
+    public static final long BREAK_EVEN_GZIP_SIZE = 23L;
 
     private long contentSizeLargerThan = 0L;
 
@@ -55,6 +61,10 @@ public class ContentEncodingPredicates {
     public Predicate createPredicate() {
         List<Predicate> predicates = new ArrayList<>();
         if (contentSizeLargerThan > 0L) {
+            if (contentSizeLargerThan < BREAK_EVEN_GZIP_SIZE) {
+                logger.warn("contentSizeLargerThan of " + contentSizeLargerThan +
+                    " is inefficient for short content, break even is size " + BREAK_EVEN_GZIP_SIZE);
+            }
             predicates.add(Predicates.requestLargerThan(contentSizeLargerThan));
         }
         if (mediaTypes != null && mediaTypes.length > 0) {
