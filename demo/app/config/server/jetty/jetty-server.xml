@@ -15,9 +15,9 @@
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
             <item name="jetty.server.maxConnections" value="9999" valueType="int"/>
-            <item name="jetty.server.gzip.minGzipSize" value="20000" valueType="int"/>
+            <item name="jetty.server.gzip.minGzipSize" value="32" valueType="int"/>
             <item name="jetty.server.gzip.syncFlush" value="false" valueType="boolean"/>
-            <item name="jetty.server.gzip.includedMethodList" value="GET"/>
+            <item name="jetty.server.gzip.includedMethodList" value="GET,POST"/>
             <item name="jetty.server.gzip.excludedMethodList" value=""/>
         </properties>
     </environment>
