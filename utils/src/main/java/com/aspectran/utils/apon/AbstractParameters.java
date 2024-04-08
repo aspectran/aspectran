@@ -16,6 +16,8 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -833,6 +835,18 @@ public abstract class AbstractParameters implements Parameters {
     public void readFrom(Reader reader) throws AponParseException {
         if (reader != null) {
             AponReader.parse(reader, this);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> T copy() {
+        try {
+            T parameters = (T)ClassUtils.createInstance(getClass());
+            parameters.readFrom(toString());
+            return parameters;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to copy " + ObjectUtils.identityToString(this), e);
         }
     }
 

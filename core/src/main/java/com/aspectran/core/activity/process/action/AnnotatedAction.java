@@ -67,7 +67,7 @@ public class AnnotatedAction implements Executable {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedAction.class);
 
-    private static final Object UNKNOWN_VALUE = new Object();
+    private static final Object NO_VALUE = new Object();
 
     private final AnnotatedActionRule annotatedActionRule;
 
@@ -156,7 +156,11 @@ public class AnnotatedAction implements Executable {
                 boolean required = parameterBindingRule.isRequired();
                 Exception thrown = null;
                 try {
-                    args[i] = parseArgument(translet, type, name, format);
+                    if (translet != null) {
+                        args[i] = resolveArgument(translet, type, name, format);
+                    } else {
+                        args[i] = resolveArgument(activity, type, name);
+                    }
                 } catch (IllegalArgumentException e) {
                     throw e;
                 } catch (MethodArgumentTypeMismatchException e) {
@@ -201,111 +205,128 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object parseArgument(Translet translet, Class<?> type, String name, String format)
+    private static Object resolveArgument(Translet translet, Class<?> type, String name, String format)
             throws MethodArgumentTypeMismatchException, RequestParseException {
-        Object result = null;
-        if (translet != null) {
+        Object result;
+        if (type == Translet.class) {
+            result = translet;
+        } else if (type.isArray()) {
+            type = type.getComponentType();
             if (type == Translet.class) {
-                result = translet;
-            } else if (type.isArray()) {
-                type = type.getComponentType();
-                if (type == Translet.class) {
-                    result = new Translet[] { translet };
-                } else {
-                    String[] values = translet.getParameterValues(name);
-                    result = parseArrayValues(type, values, format);
-                    if (result == UNKNOWN_VALUE) {
-                        result = null;
-                    }
-                }
-            } else if (type == ParameterMap.class) {
-                ParameterMap parameterMap = new ParameterMap();
-                for (String paramName : translet.getParameterNames()) {
-                    parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
-                }
-                result = parameterMap;
-            } else if (Map.class.isAssignableFrom(type)) {
-                if (!type.isInterface()) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
-                    map.putAll(translet.getAllParameters());
-                    result = map;
-                } else {
-                    result = new HashMap<>(translet.getAllParameters());
-                }
-            } else if (Collection.class.isAssignableFrom(type)) {
-                String[] values = translet.getParameterValues(name);
-                if (!type.isInterface()) {
-                    @SuppressWarnings("unchecked")
-                    Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
-                    if (values != null) {
-                        collection.addAll(Arrays.asList(values));
-                    }
-                    result = collection;
-                } else {
-                    if (values != null) {
-                        result = new ArrayList<>(Arrays.asList(values));
-                    } else {
-                        result = new ArrayList<>();
-                    }
-                }
-            } else if (Parameters.class.isAssignableFrom(type)) {
-                Parameters parameters;
-                if (type.isInterface()) {
-                    parameters = translet.getRequestAdapter().getBodyAsParameters();
-                    if (parameters == null) {
-                        parameters = translet.getRequestAdapter().getParameters();
-                    }
-                } else {
-                    @SuppressWarnings("unchecked")
-                    Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
-                    parameters = translet.getRequestAdapter().getBodyAsParameters(requiredType);
-                    if (parameters == null) {
-                        parameters = translet.getRequestAdapter().getParameters(requiredType);
-                    }
-                }
-                return parameters;
+                result = new Translet[] { translet };
             } else {
-                String value = translet.getParameter(name);
-                result = parseValue(type, value, format);
-                if (result == UNKNOWN_VALUE) {
-                    if (type.isAnnotationPresent(Component.class)) {
-                        try {
-                            result = translet.getBean(type);
-                        } catch (NoUniqueBeanException e) {
-                            result = translet.getBean(type, name);
-                        }
-                    } else {
-                        result = parseModel(translet, type);
+                String[] values = translet.getParameterValues(name);
+                result = resolveValue(type, values, format);
+                if (result == NO_VALUE) {
+                    result = null;
+                }
+            }
+        } else if (type == ParameterMap.class) {
+            ParameterMap parameterMap = new ParameterMap();
+            for (String paramName : translet.getParameterNames()) {
+                parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
+            }
+            result = parameterMap;
+        } else if (Map.class.isAssignableFrom(type)) {
+            if (!type.isInterface()) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
+                map.putAll(translet.getAllParameters());
+                result = map;
+            } else {
+                result = new HashMap<>(translet.getAllParameters());
+            }
+        } else if (Collection.class.isAssignableFrom(type)) {
+            String[] values = translet.getParameterValues(name);
+            if (!type.isInterface()) {
+                @SuppressWarnings("unchecked")
+                Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
+                if (values != null) {
+                    collection.addAll(Arrays.asList(values));
+                }
+                result = collection;
+            } else {
+                if (values != null) {
+                    result = new ArrayList<>(Arrays.asList(values));
+                } else {
+                    result = new ArrayList<>();
+                }
+            }
+        } else if (Parameters.class.isAssignableFrom(type)) {
+            Parameters parameters;
+            if (type.isInterface()) {
+                parameters = translet.getRequestAdapter().getBodyAsParameters();
+                if (parameters == null) {
+                    parameters = translet.getRequestAdapter().getParameters();
+                }
+            } else {
+                @SuppressWarnings("unchecked")
+                Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
+                parameters = translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                if (parameters == null) {
+                    parameters = translet.getRequestAdapter().getParameters(requiredType);
+                }
+            }
+            return parameters;
+        } else {
+            String value = translet.getParameter(name);
+            result = resolveValue(type, value, format);
+            if (result == NO_VALUE) {
+                if (type.isAnnotationPresent(Component.class)) {
+                    try {
+                        result = translet.getBean(type);
+                    } catch (NoUniqueBeanException e) {
+                        result = translet.getBean(type, name);
                     }
+                } else {
+                    result = parseModel(translet, type);
                 }
             }
         }
         return result;
     }
 
+    private static Object resolveArgument(Activity activity, Class<?> type, String name)
+            throws MethodArgumentTypeMismatchException {
+        Object result;
+        if (type == Translet.class) {
+            result = null;
+        } else if (type.isArray() && type.getComponentType() == Translet.class) {
+            result = new Translet[] { };
+        } else if (type.isAnnotationPresent(Component.class)) {
+            try {
+                result = activity.getBean(type);
+            } catch (NoUniqueBeanException e) {
+                result = activity.getBean(type, name);
+            }
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
     @NonNull
-    private static Object parseModel(Translet translet, Class<?> modelType) {
-        Object model = ClassUtils.createInstance(modelType);
-        BeanDescriptor bd = BeanDescriptor.getInstance(modelType);
+    private static Object parseModel(Translet translet, Class<?> type) {
+        Object model = ClassUtils.createInstance(type);
+        BeanDescriptor bd = BeanDescriptor.getInstance(type);
         List<String> missingProperties = new ArrayList<>();
         for (String name : bd.getWritablePropertyNames()) {
             try {
                 Method method = bd.getSetter(name);
-                Class<?> type = bd.getSetterType(name);
+                Class<?> setterType = bd.getSetterType(name);
                 Qualifier qualifierAnno = bd.getSetterAnnotation(method, Qualifier.class);
                 String paramName = (qualifierAnno != null ? qualifierAnno.value() : name);
                 Format formatAnno = bd.getSetterAnnotation(method, Format.class);
                 String format = (formatAnno != null ? formatAnno.value() : null);
-                Object val;
-                if (type.isArray()) {
-                    type = type.getComponentType();
-                    val = parseArrayValues(type, translet.getParameterValues(paramName), format);
+                Object value;
+                if (setterType.isArray()) {
+                    setterType = setterType.getComponentType();
+                    value = resolveValue(setterType, translet.getParameterValues(paramName), format);
                 } else {
-                    val = parseValue(type, translet.getParameter(paramName), format);
+                    value = resolveValue(setterType, translet.getParameter(paramName), format);
                 }
-                if (val != null && val != UNKNOWN_VALUE) {
-                    BeanUtils.setProperty(model, name, val);
+                if (value != null && value != NO_VALUE) {
+                    BeanUtils.setProperty(model, name, value);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     missingProperties.add(name);
                 }
@@ -317,12 +338,12 @@ public class AnnotatedAction implements Executable {
         }
         if (!missingProperties.isEmpty()) {
             String properties = StringUtils.joinCommaDelimitedList(missingProperties);
-            throw new IllegalArgumentException("Missing required properties [" + properties + "] for " + modelType);
+            throw new IllegalArgumentException("Missing required properties [" + properties + "] for " + type);
         }
         return model;
     }
 
-    private static Object parseValue(Class<?> type, String value, String format)
+    private static Object resolveValue(Class<?> type, String value, String format)
             throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
@@ -427,7 +448,7 @@ public class AnnotatedAction implements Executable {
                     result = new BigDecimal(value);
                 }
             } else {
-                result = UNKNOWN_VALUE;
+                result = NO_VALUE;
             }
             return result;
         } catch (Exception e) {
@@ -435,7 +456,7 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object parseArrayValues(Class<?> type, String[] values, String format)
+    private static Object resolveValue(Class<?> type, String[] values, String format)
             throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
@@ -636,7 +657,7 @@ public class AnnotatedAction implements Executable {
                     result = arr;
                 }
             } else {
-                result = UNKNOWN_VALUE;
+                result = NO_VALUE;
             }
             return result;
         } catch (Exception e) {

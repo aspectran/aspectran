@@ -154,9 +154,13 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(super.toString());
-        tsb.append("scavengingInterval", scavengingInterval);
-        return tsb.toString();
+        if (isStopped()) {
+            ToStringBuilder tsb = new ToStringBuilder(super.toString());
+            tsb.append("scavengingInterval", scavengingInterval);
+            return tsb.toString();
+        } else {
+            return super.toString();
+        }
     }
 
     /**

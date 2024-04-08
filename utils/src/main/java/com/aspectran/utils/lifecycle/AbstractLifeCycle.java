@@ -129,19 +129,14 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public String getState() {
-        switch (state) {
-            case STATE_FAILED:
-                return FAILED;
-            case STATE_STARTING:
-                return STARTING;
-            case STATE_STARTED:
-                return STARTED;
-            case STATE_STOPPING:
-                return STOPPING;
-            case STATE_STOPPED:
-                return STOPPED;
-        }
-        return null;
+        return switch (state) {
+            case STATE_FAILED -> FAILED;
+            case STATE_STARTING -> STARTING;
+            case STATE_STARTED -> STARTED;
+            case STATE_STOPPING -> STOPPING;
+            case STATE_STOPPED -> STOPPED;
+            default -> null;
+        };
     }
 
     public static String getState(@NonNull LifeCycle lc) {
@@ -163,7 +158,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     private void setStarted() {
         state = STATE_STARTED;
         if (logger.isDebugEnabled()) {
-            logger.debug(STARTED + " " + this);
+            logger.debug("Started " + this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStarted(this);
@@ -193,7 +188,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     private void setStopped() {
         state = STATE_STOPPED;
         if (logger.isDebugEnabled()) {
-            logger.debug(STOPPED + " " + this);
+            logger.debug("Stopped " + this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStopped(this);
@@ -202,9 +197,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setFailed(Throwable th) {
         state = STATE_FAILED;
-        if (logger.isDebugEnabled()) {
-            logger.warn(FAILED + " " + this + ": " + th, th);
-        }
+        logger.warn("Failed " + this + ": " + th, th);
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);
         }
@@ -212,13 +205,16 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public String toString() {
-        Class<?> clazz = getClass();
-        String name = clazz.getSimpleName();
-        if (StringUtils.isEmpty(name) && clazz.getSuperclass() != null) {
-            clazz = clazz.getSuperclass();
-            name = clazz.getSimpleName();
+        return String.format("%s@%x{%s}", myName(), hashCode(), getState());
+    }
+
+    private String myName() {
+        Class<?> type = getClass();
+        String name = type.getSimpleName();
+        if (StringUtils.isEmpty(name) && type.getSuperclass() != null) {
+            name = type.getSuperclass().getSimpleName();
         }
-        return String.format("%s@%x{%s}", name, hashCode(), getState());
+        return name;
     }
 
 }

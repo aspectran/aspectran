@@ -706,6 +706,8 @@ public interface Parameters {
 
     void readFrom(Reader reader) throws AponParseException;
 
+    <T extends Parameters> T copy();
+
     String describe();
 
     String describe(boolean details);

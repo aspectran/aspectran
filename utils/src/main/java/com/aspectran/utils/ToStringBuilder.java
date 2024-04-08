@@ -43,7 +43,7 @@ public class ToStringBuilder {
     }
 
     public ToStringBuilder(String name) {
-        this(name, 32);
+        this(name, 64);
     }
 
     public ToStringBuilder(int capacity) {
@@ -62,7 +62,7 @@ public class ToStringBuilder {
     }
 
     public ToStringBuilder(String name, Parameters parameters) {
-        this(name, 32);
+        this(name, 128);
         if (parameters != null) {
             append(parameters);
         }
@@ -253,6 +253,14 @@ public class ToStringBuilder {
     public String toString() {
         buffer.append("}");
         return buffer.toString();
+    }
+
+    public static String toString(Parameters parameters) {
+        return toString(null, parameters);
+    }
+
+    public static String toString(String name, Parameters parameters) {
+        return new ToStringBuilder(name, parameters).toString();
     }
 
     protected StringBuilder getBuffer() {
