@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <logback.version>1.5.3</logback.version>
+        <logback.version>1.5.4</logback.version>
         <slf4j.version>2.0.12</slf4j.version>
     </properties>
 
