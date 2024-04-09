@@ -125,6 +125,21 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public String getQualifiedName(String name) {
+        ParameterValue pv = getParameterValue(name);
+        return pv.getQualifiedName();
+    }
+
+    @Override
+    public String getQualifiedName(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        ParameterValue pv = getParameterValue(key.getName());
+        return pv.getQualifiedName();
+    }
+
+    @Override
     public ParameterValue getParameterValue(String name) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
@@ -137,6 +152,14 @@ public abstract class AbstractParameters implements Parameters {
             return altParameterValueMap.get(name);
         }
         return null;
+    }
+
+    @Override
+    public ParameterValue getParameterValue(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getParameterValue(key.getName());
     }
 
     @Override
@@ -199,8 +222,7 @@ public abstract class AbstractParameters implements Parameters {
         if (key == null) {
             throw new IllegalArgumentException("key must not be null");
         }
-        Parameter p = getParameterValue(key.getName());
-        return (p != null && p.hasValue());
+        return hasValue(key.getName());
     }
 
     @Override
@@ -875,7 +897,10 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public String toString() {
         try {
-            return new AponWriter().nullWritable(false).write(this).toString();
+            return new AponWriter()
+                    .nullWritable(false)
+                    .write(this)
+                    .toString();
         } catch (IOException e) {
             return StringUtils.EMPTY;
         }

@@ -74,7 +74,13 @@ public interface Parameters {
      */
     String getQualifiedName();
 
+    String getQualifiedName(String name);
+
+    String getQualifiedName(ParameterKey key);
+
     ParameterValue getParameterValue(String name);
+
+    ParameterValue getParameterValue(ParameterKey key);
 
     /**
      * Returns a map of the {@code ParameterValue}s.

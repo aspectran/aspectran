@@ -142,7 +142,7 @@ public interface SessionHandler extends Component {
      * @param name name of the attribute
      * @param newValue new value of the attribute
      * @param oldValue previous value of the attribute
-     * @throws IllegalStateException if no session manager can be find
+     * @throws IllegalStateException if no session manager can be found
      */
     void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue);
 

@@ -25,9 +25,8 @@ import java.util.EventListener;
  */
 public class TowListener extends ListenerInfo {
 
-    @SuppressWarnings("unchecked")
     public TowListener(String listenerClass) throws ClassNotFoundException {
-        this((Class<? extends EventListener>) ClassUtils.loadClass(listenerClass));
+        this(ClassUtils.loadClass(listenerClass));
     }
 
     public TowListener(Class<? extends EventListener> listenerClass) {

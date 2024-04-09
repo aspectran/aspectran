@@ -195,17 +195,19 @@ public abstract class ClassUtils {
     }
 
     @NonNull
-    public static Class<?> classForName(String name) throws ClassNotFoundException {
+    public static <T> Class<T> classForName(String name) throws ClassNotFoundException {
         return classForName(name, getDefaultClassLoader());
     }
 
     @NonNull
-    public static Class<?> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException {
-        return Class.forName(name, true, classLoader);
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException {
+        return (Class<T>)Class.forName(name, true, classLoader);
     }
 
-    public static Class<?> loadClass(String name) throws ClassNotFoundException {
-        return getDefaultClassLoader().loadClass(name);
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> loadClass(String name) throws ClassNotFoundException {
+        return (Class<T>)getDefaultClassLoader().loadClass(name);
     }
 
     /**

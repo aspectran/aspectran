@@ -46,9 +46,8 @@ import java.util.Map;
  */
 public class TowFilter extends FilterInfo {
 
-    @SuppressWarnings("unchecked")
     public TowFilter(String name, String filterClass) throws ClassNotFoundException {
-        this(name, (Class<? extends Filter>) ClassUtils.loadClass(filterClass));
+        this(name, ClassUtils.loadClass(filterClass));
     }
 
     public TowFilter(String name, Class<? extends Filter> filterClass) {
