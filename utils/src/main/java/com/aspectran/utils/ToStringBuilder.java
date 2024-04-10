@@ -68,59 +68,67 @@ public class ToStringBuilder {
         }
     }
 
-    public void append(String name, Object value) {
+    public ToStringBuilder append(String name, Object value) {
         if (value != null) {
             appendName(name);
             append(value);
         }
+        return this;
     }
 
-    public void append(String name, Class<?> clazz) {
+    public ToStringBuilder append(String name, Class<?> clazz) {
         if (clazz != null) {
             appendName(name);
             append(clazz.getTypeName());
         }
+        return this;
     }
 
-    public void append(String name, Method method) {
+    public ToStringBuilder append(String name, Method method) {
         if (method != null) {
             appendName(name);
             append(method);
         }
+        return this;
     }
 
-    public void appendForce(String name, Object value) {
+    public ToStringBuilder appendForce(String name, Object value) {
         appendName(name);
         append(value);
+        return this;
     }
 
-    public void append(String name, boolean value) {
+    public ToStringBuilder append(String name, boolean value) {
         if (value) {
             appendName(name);
             buffer.append(true);
         }
+        return this;
     }
 
-    public void appendForce(String name, boolean value) {
+    public ToStringBuilder appendForce(String name, boolean value) {
         appendName(name);
         buffer.append(value);
+        return this;
     }
 
-    public void appendEqual(String name, Object value, Object compare) {
+    public ToStringBuilder appendEqual(String name, Object value, Object compare) {
         if (value != null && value.equals(compare)) {
             appendName(name);
             append(value);
         }
+        return this;
     }
 
-    public void appendNotEqual(String name, Object value, Object compare) {
+    public ToStringBuilder appendNotEqual(String name, Object value, Object compare) {
         if (value != null && !value.equals(compare)) {
             appendName(name);
             append(value);
         }
+        return this;
     }
 
-    public void appendSize(String name, Object object) {
+    public ToStringBuilder appendSize(String name, Object object) {
         if (object != null) {
             appendName(name);
             if (object instanceof Map<?, ?> map) {
@@ -133,6 +141,7 @@ public class ToStringBuilder {
                 buffer.append(charSequence.length());
             }
         }
+        return this;
     }
 
     private void appendName(Object name) {
