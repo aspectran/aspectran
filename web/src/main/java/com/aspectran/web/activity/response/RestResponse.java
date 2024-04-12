@@ -30,6 +30,8 @@ public interface RestResponse extends CustomTransformer {
 
     Object getData();
 
+    boolean hasData();
+
     /**
      * Specifies response data.
      * @param data the response data

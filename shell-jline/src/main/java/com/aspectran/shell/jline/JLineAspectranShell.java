@@ -44,7 +44,7 @@ public class JLineAspectranShell {
         }
     }
 
-    public static void bootstrap(File aspectranConfigFile) throws IOException {
+    public static void bootstrap(File aspectranConfigFile) {
         bootstrap(null, aspectranConfigFile);
     }
 

@@ -78,6 +78,11 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
+    public boolean hasData() {
+        return (data != null);
+    }
+
+    @Override
     public RestResponse setData(Object data) {
         return setData(null, data);
     }
