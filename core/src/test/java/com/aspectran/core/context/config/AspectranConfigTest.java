@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.apon.AponReader;
-import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.AponWriterCloseable;
 import com.aspectran.utils.apon.Parameters;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ class AspectranConfigTest {
 
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 
-        try (AponWriter aponWriter = new AponWriter(outputFile)) {
+        try (AponWriterCloseable aponWriter = new AponWriterCloseable(outputFile)) {
             aponWriter.nullWritable(false);
             aponWriter.write(aspectranConfig);
         }
@@ -59,11 +59,11 @@ class AspectranConfigTest {
 
             //System.out.println(aspectranConfig);
 
-            AponWriter aponWriter = new AponWriter(new PrintWriter(System.out));
-            aponWriter.comment("\ncomment line-1\ncomment line-2\ncomment line-3\n");
-            aponWriter.enableValueTypeHints(false);
-            aponWriter.write(aspectranConfig);
-            aponWriter.close();
+            try (AponWriterCloseable aponWriter = new AponWriterCloseable(new PrintWriter(System.out))) {
+                aponWriter.comment("\ncomment line-1\ncomment line-2\ncomment line-3\n");
+                aponWriter.enableValueTypeHints(false);
+                aponWriter.write(aspectranConfig);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

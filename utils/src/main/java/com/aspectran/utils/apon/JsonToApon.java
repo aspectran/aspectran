@@ -28,7 +28,7 @@ import java.io.StringReader;
  *
  * @since 6.2.0
  */
-public class JsonToApon {
+public abstract class JsonToApon {
 
     @NonNull
     public static Parameters from(String json) throws IOException {

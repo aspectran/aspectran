@@ -39,7 +39,7 @@ import java.io.StringReader;
  *
  * @since 6.2.0
  */
-public class XmlToApon {
+public abstract class XmlToApon {
 
     @NonNull
     public static Parameters from(String xml) throws IOException {

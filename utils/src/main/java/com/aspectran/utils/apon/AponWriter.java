@@ -19,7 +19,6 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Flushable;
@@ -30,10 +29,9 @@ import java.util.List;
 
 /**
  * Writes an APON object to an output source.
- *
  * <p>By default, the indentation string is "  " (two blanks)</p>
  */
-public class AponWriter extends AponFormat implements Flushable, Closeable {
+public class AponWriter extends AponFormat implements Flushable {
 
     private final Writer writer;
 
@@ -62,23 +60,23 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Instantiates a new AponWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     * @param writer the character-output stream
+     * @param file a File object to write to
+     * @throws IOException if an I/O error occurs
      */
-    public AponWriter(Writer writer) {
-        this.writer = writer;
-        this.prettyPrint = true;
-        setIndentString(DEFAULT_INDENT_STRING);
+    public AponWriter(File file) throws IOException {
+        this(new FileWriter(file));
     }
 
     /**
      * Instantiates a new AponWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     * @param file a File object to write to
-     * @throws IOException if an I/O error occurs
+     * @param writer the character-output stream
      */
-    public AponWriter(File file) throws IOException {
-        this(new FileWriter(file));
+    public AponWriter(Writer writer) {
+        this.writer = writer;
+        this.prettyPrint = true;
+        setIndentString(DEFAULT_INDENT_STRING);
     }
 
     @SuppressWarnings("unchecked")
@@ -570,7 +568,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         writer.flush();
     }
 
-    @Override
     public void close() throws IOException {
         if (writer != null) {
             writer.close();

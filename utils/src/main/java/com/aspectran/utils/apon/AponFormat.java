@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
-public class AponFormat {
+public abstract class AponFormat {
 
     protected static final char CURLY_BRACKET_OPEN = '{';
 

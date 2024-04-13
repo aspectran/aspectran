@@ -27,12 +27,12 @@ import com.aspectran.utils.StringUtils;
  * <pre>{@code
  *   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
  *     <discriminator class="com.aspectran.core.context.ContextBasedLoggerDiscriminator">
- *       <key>LOGGER_NAME</key>
+ *       <key>LOGGING_GROUP</key>
  *       <defaultValue>app</defaultValue>
  *     </discriminator>
  *     <sift>
- *       <appender name="FILE-${LOGGER_NAME}" class="ch.qos.logback.core.rolling.RollingFileAppender">
- *         <file>${aspectran.basePath:-app}/logs/${LOGGER_NAME}.log</file>
+ *       <appender name="FILE-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+ *         <file>${aspectran.basePath:-app}/logs/${LOGGING_GROUP}.log</file>
  *         ...
  *       </appender>
  *     </sift>

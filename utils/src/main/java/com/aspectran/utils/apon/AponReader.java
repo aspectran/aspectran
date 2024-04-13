@@ -53,8 +53,8 @@ public class AponReader extends AponFormat implements Closeable {
         if (reader == null) {
             throw new IllegalArgumentException("reader must not be null");
         }
-        if (reader instanceof BufferedReader) {
-            this.reader = (BufferedReader)reader;
+        if (reader instanceof BufferedReader bufferedReader) {
+            this.reader = bufferedReader;
         } else {
             this.reader = new BufferedReader(reader);
         }
