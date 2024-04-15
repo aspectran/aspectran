@@ -115,21 +115,32 @@ public class FormattingContext {
     @NonNull
     public static FormattingContext parse(@NonNull Activity activity) {
         String indentStyle = activity.getSetting(FORMAT_INDENT_TAB);
-        String indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
         String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
         String dateTimeFormat = activity.getSetting(FORMAT_DATETIME_FORMAT);
-        Boolean nullWritable = BooleanUtils.toNullableBooleanObject(activity.getSetting(FORMAT_NULL_WRITABLE));
+
+        Object indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
+        Integer indentSizeToUse = null;
+        if (indentSize instanceof Integer indentSizeInInt) {
+            indentSizeToUse = indentSizeInInt;
+        } else if (indentSize != null) {
+            indentSizeToUse = parseIndentSize(indentSize.toString());
+        }
+
+        Object nullWritable = activity.getSetting(FORMAT_NULL_WRITABLE);
+        Boolean nullWritableToUse = null;
+        if (nullWritable instanceof Boolean nullWritableInBool) {
+            nullWritableToUse = nullWritableInBool;
+        } else if (nullWritable != null) {
+            nullWritableToUse = BooleanUtils.toBooleanObject(nullWritable.toString());
+        }
 
         FormattingContext formattingContext = new FormattingContext();
         if ("tab".equalsIgnoreCase(indentStyle)) {
             formattingContext.setPretty(true);
             formattingContext.setIndentTab(true);
-        } else {
-            int size = parseIndentSize(indentSize);
-            if (size > 0) {
-                formattingContext.setPretty(true);
-                formattingContext.setIndentSize(size);
-            }
+        } else if (indentSizeToUse != null && indentSizeToUse > 0) {
+            formattingContext.setPretty(true);
+            formattingContext.setIndentSize(indentSizeToUse);
         }
         if (StringUtils.hasLength(dateFormat)) {
             formattingContext.setDateFormat(dateFormat);
@@ -137,8 +148,8 @@ public class FormattingContext {
         if (StringUtils.hasLength(dateTimeFormat)) {
             formattingContext.setDateTimeFormat(dateTimeFormat);
         }
-        if (nullWritable != null) {
-            formattingContext.setNullWritable(nullWritable);
+        if (nullWritableToUse != null) {
+            formattingContext.setNullWritable(nullWritableToUse);
         }
         return formattingContext;
     }
