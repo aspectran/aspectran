@@ -38,8 +38,8 @@ public abstract class AbstractTowService extends AspectranCoreService implements
         super();
     }
 
-    AbstractTowService(CoreService rootService) {
-        super(rootService);
+    AbstractTowService(CoreService rootService, boolean derived) {
+        super(rootService, derived);
     }
 
     public String getUriDecoding() {

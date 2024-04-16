@@ -104,6 +104,7 @@ public abstract class PropertiesLoaderUtils {
         Assert.notNull(resourceName, "resourceName must not be null");
         Assert.notNull(classLoader, "classLoader must not be null");
         Enumeration<URL> urls = classLoader.getResources(resourceName);
+        boolean found = false;
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             URLConnection con = url.openConnection();
@@ -114,6 +115,10 @@ public abstract class PropertiesLoaderUtils {
                     props.load(is);
                 }
             }
+            found = true;
+        }
+        if (!found) {
+            throw new IOException("Could not find resource '" + resourceName + "'");
         }
         if (resourceName.endsWith(ENCRYPTED_RESOURCE_NAME_SUFFIX)) {
             for (Map.Entry<?, ?> entry: props.entrySet()) {

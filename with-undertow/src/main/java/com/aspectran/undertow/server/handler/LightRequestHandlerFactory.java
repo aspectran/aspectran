@@ -108,9 +108,9 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
 
     private TowService createTowService() throws Exception {
         Assert.state(towService == null, "TowService is already configured");
-        CoreService rootService = getActivityContext().getRootService();
+        CoreService masterService = getActivityContext().getMasterService();
         if (aspectranConfig == null) {
-            towService = DefaultTowServiceBuilder.build(rootService);
+            towService = DefaultTowServiceBuilder.build(masterService);
         } else {
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
@@ -119,7 +119,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
                     contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePath());
                 }
             }
-            towService = DefaultTowServiceBuilder.build(aspectranConfig);
+            towService = DefaultTowServiceBuilder.build(masterService, aspectranConfig);
         }
         if (towService.isLateStart()) {
             towService.getServiceController().start();
@@ -139,9 +139,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
         if (towService != null) {
             if (towService.getServiceController().isActive()) {
                 towService.getServiceController().stop();
-                if (towService.isDerived()) {
-                    towService.leaveFromRootService();
-                }
+                towService.leaveFromRootService();
             }
             towService = null;
         }

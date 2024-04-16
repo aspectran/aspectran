@@ -33,14 +33,14 @@ public class DefaultTowServiceBuilder {
 
     /**
      * Returns a new instance of {@code DefaultTowService}.
-     * @param rootService the root service
+     * @param masterService the root service
      * @return the instance of {@code DefaultTowService}
      */
     @NonNull
-    public static DefaultTowService build(CoreService rootService) {
-        Assert.notNull(rootService, "rootService must not be null");
-        DefaultTowService towService = new DefaultTowService(rootService);
-        AspectranConfig aspectranConfig = rootService.getAspectranConfig();
+    public static DefaultTowService build(CoreService masterService) {
+        Assert.notNull(masterService, "masterService must not be null");
+        DefaultTowService towService = new DefaultTowService(masterService, true);
+        AspectranConfig aspectranConfig = masterService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
             if (webConfig != null) {
@@ -57,9 +57,9 @@ public class DefaultTowServiceBuilder {
      * @return the instance of {@code DefaultTowService}
      */
     @NonNull
-    public static DefaultTowService build(AspectranConfig aspectranConfig) {
+    public static DefaultTowService build(CoreService masterService, AspectranConfig aspectranConfig) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
-        DefaultTowService towService = new DefaultTowService();
+        DefaultTowService towService = new DefaultTowService(masterService, false);
         towService.configure(aspectranConfig);
         setServiceStateListener(towService);
         return towService;

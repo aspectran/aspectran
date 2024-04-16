@@ -51,7 +51,7 @@ import com.aspectran.core.context.rule.assistant.BeanReferenceException;
 import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
-import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -91,7 +91,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ContextReloadingTimer contextReloadingTimer;
 
-    private ServiceController serviceController;
+    private CoreService masterService;
 
     private SiblingClassLoader siblingClassLoader;
 
@@ -223,13 +223,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public ServiceController getServiceController() {
-        return serviceController;
+    public CoreService getMasterService() {
+        return masterService;
     }
 
     @Override
-    public void setServiceController(ServiceController serviceController) {
-        this.serviceController = serviceController;
+    public void setMasterService(CoreService masterService) {
+        this.masterService = masterService;
     }
 
     @Override
@@ -383,8 +383,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected void startContextReloadingTimer() {
-        if (autoReloadEnabled && siblingClassLoader != null) {
-            contextReloadingTimer = new ContextReloadingTimer(serviceController);
+        if (autoReloadEnabled && masterService != null && siblingClassLoader != null) {
+            contextReloadingTimer = new ContextReloadingTimer(masterService.getServiceController());
             contextReloadingTimer.setResources(siblingClassLoader.getAllResources());
             contextReloadingTimer.start(scanIntervalSeconds);
         }

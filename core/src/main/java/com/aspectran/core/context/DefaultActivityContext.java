@@ -58,7 +58,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private DescriptionRule descriptionRule;
 
-    private CoreService rootService;
+    private CoreService masterService;
 
     private ActivityEnvironment activityEnvironment;
 
@@ -112,14 +112,14 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
-    public CoreService getRootService() {
-        return rootService;
+    public CoreService getMasterService() {
+        return masterService;
     }
 
     @Override
-    public void setRootService(CoreService rootService) {
+    public void setMasterService(CoreService masterService) {
         Assert.state(!isInitialized(), "ActivityContext is already initialized");
-        this.rootService = rootService;
+        this.masterService = masterService;
     }
 
     @Override

@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
@@ -39,6 +40,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     public <V> V getBean(@NonNull String id) {
         BeanRule beanRule = getBeanRuleRegistry().getBeanRule(id);
         if (beanRule == null) {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                return parent.getBean(id);
+            }
             throw new NoSuchBeanException(id);
         }
         return getBean(beanRule);
@@ -57,6 +62,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
             if (beanRule != null) {
                 return getBean(beanRule);
             } else {
+                BeanRegistry parent = getParentBeanRegistry();
+                if (parent != null) {
+                    return parent.getBean(type, id);
+                }
                 if (id != null) {
                     throw new NoSuchBeanException(type, id);
                 } else {
@@ -69,6 +78,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
                 if (id.equals(beanRules[0].getId())) {
                     return getBean(beanRules[0]);
                 } else {
+                    BeanRegistry parent = getParentBeanRegistry();
+                    if (parent != null) {
+                        return parent.getBean(type, id);
+                    }
                     throw new NoSuchBeanException(type, id);
                 }
             } else {
@@ -81,8 +94,16 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
                         return getBean(beanRule);
                     }
                 }
+                BeanRegistry parent = getParentBeanRegistry();
+                if (parent != null) {
+                    return parent.getBean(type, id);
+                }
                 throw new NoSuchBeanException(type, id);
             } else {
+                BeanRegistry parent = getParentBeanRegistry();
+                if (parent != null) {
+                    return parent.getBean(type, null);
+                }
                 throw new NoUniqueBeanException(type, beanRules);
             }
         }
@@ -100,40 +121,77 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
             }
             return (V[])arr;
         } else {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                return parent.getBeansOfType(type);
+            }
             return null;
         }
     }
 
     @Override
     public boolean containsBean(@NonNull String id) {
-        return getBeanRuleRegistry().containsBeanRule(id);
+        boolean found = getBeanRuleRegistry().containsBeanRule(id);
+        if (!found) {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                found = parent.containsBean(id);
+            }
+        }
+        return found;
     }
 
     @Override
     public boolean containsBean(@NonNull Class<?> type) {
-        return getBeanRuleRegistry().containsBeanRule(type);
+        boolean found = getBeanRuleRegistry().containsBeanRule(type);
+        if (!found) {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                found = parent.containsBean(type);
+            }
+        }
+        return found;
     }
 
     @Override
     public boolean containsBean(@NonNull Class<?> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                return parent.containsBean(type, id);
+            }
             return false;
         }
         if (beanRules.length == 1) {
             if (id != null) {
-                return id.equals(beanRules[0].getId());
+                boolean found = id.equals(beanRules[0].getId());
+                if (!found) {
+                    BeanRegistry parent = getParentBeanRegistry();
+                    if (parent != null) {
+                        found = parent.containsBean(type, id);
+                    }
+                }
+                return found;
             } else {
                 return true;
             }
         } else {
             if (id != null) {
+                boolean found = false;
                 for (BeanRule beanRule : beanRules) {
                     if (id.equals(beanRule.getId())) {
-                        return true;
+                        found = true;
+                        break;
                     }
                 }
-                return false;
+                if (!found) {
+                    BeanRegistry parent = getParentBeanRegistry();
+                    if (parent != null) {
+                        found = parent.containsBean(type, id);
+                    }
+                }
+                return found;
             } else {
                 return true;
             }
@@ -143,6 +201,17 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     @Override
     public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
         return getBeanRuleRegistry().findConfigBeanClassesWithAnnotation(annotationType);
+    }
+
+    @Nullable
+    private BeanRegistry getParentBeanRegistry() {
+        if (getActivityContext().getMasterService() != null) {
+            CoreService rootService = getActivityContext().getMasterService().getRootService();
+            if (rootService != null) {
+                return rootService.getActivityContext().getBeanRegistry();
+            }
+        }
+        return null;
     }
 
 }

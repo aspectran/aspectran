@@ -64,10 +64,12 @@ public interface CoreService {
     void leaveFromRootService();
 
     /**
-     * Returns whether this service is derived from another root service.
+     * Returns whether this service is derived from a parent service.
      * @return whether this service is derived
      */
     boolean isDerived();
+
+    CoreService getRootService();
 
     /**
      * Returns the Aspectran configuration parameters used to

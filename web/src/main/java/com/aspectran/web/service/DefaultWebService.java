@@ -57,12 +57,8 @@ public class DefaultWebService extends AbstractWebService {
 
     protected volatile long pauseTimeout = -2L;
 
-    DefaultWebService(@NonNull ServletContext servletContext) {
-        super(servletContext);
-    }
-
-    DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
-        super(servletContext, rootService);
+    DefaultWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
+        super(servletContext, parentService, derived);
     }
 
     @Override

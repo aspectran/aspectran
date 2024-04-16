@@ -53,8 +53,8 @@ public class DefaultTowService extends AbstractTowService {
         super();
     }
 
-    DefaultTowService(CoreService rootService) {
-        super(rootService);
+    DefaultTowService(CoreService rootService, boolean derived) {
+        super(rootService, derived);
     }
 
     @Override

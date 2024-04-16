@@ -139,9 +139,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             assistant.release();
 
             // When driven by a service
-            if (getServiceController() != null) {
+            if (getMasterService() != null) {
                 // ActivityContext will be initialized in that service
-                activityContext.setRootService(getServiceController().getRootService());
+                activityContext.setMasterService(getMasterService());
             } else {
                 ((Component)activityContext).initialize();
             }
@@ -150,7 +150,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             logger.info("ActivityContext build completed in " + elapsedTime + " ms");
 
-            if (getServiceController() != null) {
+            if (getMasterService() != null) {
                 // Timer starts only if it is driven by a service
                 startContextReloadingTimer();
             } else {

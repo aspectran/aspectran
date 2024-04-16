@@ -67,14 +67,14 @@ public interface ActivityContext {
      * Returns the first created CoreService that holds the ActivityContext.
      * @return the root service
      */
-    CoreService getRootService();
+    CoreService getMasterService();
 
     /**
      * Sets the Aspectran Service that created the current ActivityContext.
      * It is set only once, just after the ActivityContext is created.
-     * @param rootService the root service
+     * @param masterService the root service
      */
-    void setRootService(CoreService rootService);
+    void setMasterService(CoreService masterService);
 
     /**
      * Returns the class loader used by the current application.

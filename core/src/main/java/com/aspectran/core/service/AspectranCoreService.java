@@ -51,8 +51,8 @@ public class AspectranCoreService extends AbstractCoreService {
         super();
     }
 
-    public AspectranCoreService(CoreService rootService) {
-        super(rootService);
+    public AspectranCoreService(CoreService parentService, boolean derived) {
+        super(parentService, derived);
     }
 
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
@@ -98,10 +98,12 @@ public class AspectranCoreService extends AbstractCoreService {
                 activityContextBuilder.setBasePath(getBasePath());
             }
             activityContextBuilder.configure(contextConfig);
-            activityContextBuilder.setServiceController(getServiceController());
+            activityContextBuilder.setMasterService(this);
             setActivityContextBuilder(activityContextBuilder);
 
-            createSchedulerService(aspectranConfig.getSchedulerConfig());
+            if (aspectranConfig.hasSchedulerConfig()) {
+                createSchedulerService(aspectranConfig.getSchedulerConfig());
+            }
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
         }

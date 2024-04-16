@@ -134,6 +134,10 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(scheduler);
     }
 
+    public boolean hasSchedulerConfig() {
+        return hasValue(scheduler);
+    }
+
     public EmbedConfig getEmbedConfig() {
         return getParameters(embed);
     }

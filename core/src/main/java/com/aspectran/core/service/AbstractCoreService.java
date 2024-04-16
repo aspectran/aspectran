@@ -44,7 +44,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final CoreService rootService;
+    private final CoreService parentService;
+
+    private final boolean derived;
 
     private String basePath;
 
@@ -61,27 +63,40 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     private SchedulerService schedulerService;
 
     public AbstractCoreService() {
-        this(null);
+        this(null, false);
     }
 
-    public AbstractCoreService(CoreService rootService) {
+    public AbstractCoreService(CoreService parentService, boolean derived) {
         super(true);
 
-        if (rootService != null) {
-            Assert.state(rootService.getActivityContext() != null,
-                    "Oops! No ActivityContext configured");
-
-            super.setRootService(rootService);
-            this.rootService = rootService;
-            this.activityContext = rootService.getActivityContext();
-            this.aspectranConfig = rootService.getAspectranConfig();
-
-            setBasePath(rootService.getBasePath());
-            rootService.joinDerivedService(this);
-        } else {
-            super.setRootService(this);
-            this.rootService = null;
+        if (parentService == null && derived) {
+            throw new IllegalArgumentException("parentService must not be null");
         }
+
+        this.parentService = parentService;
+        this.derived = derived;
+
+        if (parentService != null) {
+            if (derived) {
+                Assert.state(parentService.getActivityContext() != null,
+                        "Oops! No ActivityContext configured");
+
+                this.activityContext = parentService.getActivityContext();
+                this.aspectranConfig = parentService.getAspectranConfig();
+
+                setBasePath(parentService.getBasePath());
+//                parentService.getRootService().joinDerivedService(this);
+            }
+            parentService.getRootService().joinDerivedService(this);
+            setRootService(parentService.getRootService());
+        } else {
+            setRootService(this);
+        }
+    }
+
+    @Override
+    public boolean isDerived() {
+        return derived;
     }
 
     @Override
@@ -95,7 +110,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public boolean isLateStart() {
-        return (rootService == null || rootService.getServiceController().isActive());
+        return (parentService == null || parentService.getServiceController().isActive());
     }
 
     @Override
@@ -122,14 +137,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public void leaveFromRootService() {
-        Assert.state(isDerived(), "Not derived service: " + this);
-        Assert.state(!isActive(), "Not stopped service: " + this);
-        rootService.withdrawDerivedService(this);
-    }
-
-    @Override
-    public boolean isDerived() {
-        return (rootService != null);
+        if (isDerived()) {
+            getRootService().withdrawDerivedService(this);
+        }
     }
 
     @Override
@@ -210,8 +220,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return schedulerService;
     }
 
-    protected void createSchedulerService(SchedulerConfig schedulerConfig) {
-        if (schedulerConfig == null || !schedulerConfig.isEnabled()) {
+    protected void createSchedulerService(@NonNull SchedulerConfig schedulerConfig) {
+        if (!schedulerConfig.isEnabled()) {
             return;
         }
 

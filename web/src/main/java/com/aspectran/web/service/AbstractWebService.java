@@ -40,12 +40,8 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     private boolean legacyHeadHandling;
 
-    AbstractWebService(@NonNull ServletContext servletContext) {
-        this(servletContext, null);
-    }
-
-    AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService rootService) {
-        super(rootService);
+    AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
+        super(parentService, derived);
         this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
         this.servletContext = servletContext;
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext, this);
