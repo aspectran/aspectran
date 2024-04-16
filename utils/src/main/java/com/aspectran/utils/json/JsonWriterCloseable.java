@@ -13,44 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils.apon;
+package com.aspectran.utils.json;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Writes an APON object to an output source.
- * <p>By default, the indentation string is "  " (two blanks)</p>
+ * Converts an object to a JSON formatted string.
+ * <p>If pretty-printing is enabled, the JsonWriter will add newlines and
+ * indentation to the written data. Pretty-printing is disabled by default.</p>
  * <p>Useful with Java 7 for example :
  * <pre>{@code
- *   try(AponWriterCloseable aponWriter = AponWriterCloseable(writer)) {
+ *   try(JsonWriterCloseable jsonWriter = JsonWriterCloseable(out)) {
  *     ....
  *   }
  * }</pre></p>
+ *
+ * <p>Created: 2008. 06. 12 PM 8:20:54</p>
+ *
+ * @author Juho Jeong
  */
-public class AponWriterCloseable extends AponWriter implements Closeable {
+public class JsonWriterCloseable extends JsonWriter implements Closeable {
 
     /**
-     * Instantiates a new AponWriter.
+     * Instantiates a new JsonWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     * @param file a File object to write to
-     * @throws IOException if an I/O error occurs
+     * @param out the character-output stream
      */
-    public AponWriterCloseable(File file) throws IOException {
-        super(file);
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     * @param writer the character-output stream
-     */
-    public AponWriterCloseable(Writer writer) {
-        super(writer);
+    public JsonWriterCloseable(Writer out) {
+        super(out);
     }
 
 }

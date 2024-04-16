@@ -35,19 +35,19 @@ public interface Parameters {
     boolean isStructureFixed();
 
     /**
-     * Returns the owner of this Parameters.
-     * @return the owner of this Parameters
+     * Returns the owner of this {@code Parameters}.
+     * @return the owner of this {@code Parameters}
      */
     Parameter getProprietor();
 
     /**
-     * Specifies the owner of this Parameters.
-     * @param proprietor the owner of this Parameters
+     * Specifies the owner of this {@code Parameters}.
+     * @param proprietor the owner of this {@code Parameters}
      */
     void setProprietor(Parameter proprietor);
 
     /**
-     * Returns the parent of the proprietor of this Parameters.
+     * Returns the parent of the proprietor of this {@code Parameters}.
      * <pre>
      * proprietor --&gt; container --&gt; proprietor == parent
      * </pre>
@@ -63,8 +63,8 @@ public interface Parameters {
     String getActualName();
 
     /**
-     * Specifies the actual name of this Parameters.
-     * @param actualName the actual name of this Parameters
+     * Specifies the actual name of this {@code Parameters}.
+     * @param actualName the actual name of this {@code Parameters}
      */
     void setActualName(String actualName);
 
@@ -89,14 +89,14 @@ public interface Parameters {
     Map<String, ParameterValue> getParameterValueMap();
 
     /**
-     * Returns all the parameter names associated with this Parameters.
-     * @return an array of all parameter names associated with this Parameters
+     * Returns all the parameter names associated with this {@code Parameters}.
+     * @return an array of all parameter names associated with this {@code Parameters}
      */
     String[] getParameterNames();
 
     /**
-     * Returns all the parameter names associated with this Parameters.
-     * @return the Set with all parameter names associated with this Parameters
+     * Returns all the parameter names associated with this {@code Parameters}.
+     * @return the Set with all parameter names associated with this {@code Parameters}
      */
     Set<String> getParameterNameSet();
 

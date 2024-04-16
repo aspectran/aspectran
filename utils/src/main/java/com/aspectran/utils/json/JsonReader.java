@@ -1546,11 +1546,11 @@ public class JsonReader implements Closeable {
                     char c = buffer[i];
                     result <<= 4;
                     if (c >= '0' && c <= '9') {
-                        result += (c - '0');
+                        result += (char)(c - '0');
                     } else if (c >= 'a' && c <= 'f') {
-                        result += (c - 'a' + 10);
+                        result += (char)(c - 'a' + 10);
                     } else if (c >= 'A' && c <= 'F') {
-                        result += (c - 'A' + 10);
+                        result += (char)(c - 'A' + 10);
                     } else {
                         throw new NumberFormatException("\\u" + new String(buffer, pos, 4));
                     }
