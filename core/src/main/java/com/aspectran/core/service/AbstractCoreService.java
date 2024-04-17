@@ -24,6 +24,7 @@ import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -104,6 +105,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     @Override
     public boolean isLateStart() {
         return (parentService == null || parentService.getServiceController().isActive());
+    }
+
+    @Override
+    public String getServiceName() {
+        if (getActivityContext() != null && getActivityContext().getName() != null) {
+            return ObjectUtils.simpleIdentityToString(this, getActivityContext().getName());
+        } else {
+            return super.getServiceName();
+        }
     }
 
     @Override

@@ -59,11 +59,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
     @Override
     public String getServiceName() {
-        if (getService().getActivityContext() != null && getService().getActivityContext().getName() != null) {
-            return ObjectUtils.simpleIdentityToString(this, getService().getActivityContext().getName());
-        } else {
-            return ObjectUtils.simpleIdentityToString(this);
-        }
+        return ObjectUtils.simpleIdentityToString(this);
     }
 
     @Override
