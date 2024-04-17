@@ -16,9 +16,9 @@
 package com.aspectran.core.service;
 
 /**
- * The Interface ServiceController.
+ * The Interface ServiceLifeCycle.
  */
-public interface ServiceController {
+public interface ServiceLifeCycle {
 
     /**
      * Returns the name of this service.

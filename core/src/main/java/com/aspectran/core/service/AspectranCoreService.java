@@ -100,10 +100,6 @@ public class AspectranCoreService extends AbstractCoreService {
             activityContextBuilder.configure(contextConfig);
             activityContextBuilder.setMasterService(this);
             setActivityContextBuilder(activityContextBuilder);
-
-            if (aspectranConfig.hasSchedulerConfig()) {
-                createSchedulerService(aspectranConfig.getSchedulerConfig());
-            }
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
         }
@@ -135,7 +131,6 @@ public class AspectranCoreService extends AbstractCoreService {
      * @throws Exception if an error occurs
      */
     protected void afterContextLoaded() throws Exception {
-        Assert.state(!isDerived(), "Derived services should not have a new context");
     }
 
     /**
@@ -146,32 +141,25 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     protected void doStart() throws Exception {
-        buildActivityContext();
-        afterContextLoaded();
-    }
-
-    @Override
-    protected void doPause() throws Exception {
-    }
-
-    @Override
-    protected void doPause(long timeout) throws Exception {
-    }
-
-    @Override
-    protected void doResume() throws Exception {
+        if (!isDerived()) {
+            buildActivityContext();
+            buildSchedulerService();
+            afterContextLoaded();
+        }
     }
 
     @Override
     protected void doStop() {
-        clearDerivedServices();
-        beforeContextDestroy();
-        destroyActivityContext();
+        if (!isDerived()) {
+            clearDerivedServices();
+            beforeContextDestroy();
+            destroyActivityContext();
+        }
     }
 
     @Override
     public void start() throws Exception {
-        if (!isDerived()) {
+        if (isRootService()) {
             registerShutdownTask();
         }
         super.start();
@@ -180,8 +168,10 @@ public class AspectranCoreService extends AbstractCoreService {
     @Override
     public void stop() {
         super.stop();
-        releaseSingletonLock();
-        removeShutdownTask();
+        if (isRootService()) {
+            releaseSingletonLock();
+            removeShutdownTask();
+        }
     }
 
     private boolean acquireSingletonLock() throws Exception {

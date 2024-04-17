@@ -40,7 +40,7 @@ public class RestartCommand extends AbstractCommand {
 
         try {
             info("Restarting Now. See you soon.");
-            daemonService.getServiceController().restart();
+            daemonService.getServiceLifeCycle().restart();
             return success(info("Successful restart command"));
         } catch (Exception e) {
             return failed(e);

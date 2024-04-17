@@ -19,9 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
-import com.aspectran.core.context.config.SchedulerConfig;
-import com.aspectran.core.scheduler.service.QuartzSchedulerService;
+import com.aspectran.core.scheduler.service.DefaultSchedulerServiceBuilder;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
@@ -41,7 +39,7 @@ import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPER
 /**
  * The Class AbstractCoreService.
  */
-public abstract class AbstractCoreService extends AbstractServiceController implements CoreService {
+public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -98,13 +96,18 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
+    public boolean isRootService() {
+        return (parentService == null);
+    }
+
+    @Override
     public boolean isDerived() {
         return derived;
     }
 
     @Override
-    public boolean isLateStart() {
-        return (parentService == null || parentService.getServiceController().isActive());
+    public boolean isOrphan() {
+        return (parentService == null || parentService.getServiceLifeCycle().isActive());
     }
 
     @Override
@@ -117,20 +120,20 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
-    public ServiceController getServiceController() {
+    public ServiceLifeCycle getServiceLifeCycle() {
         return this;
     }
 
     @Override
-    public void joinDerivedService(ServiceController serviceController) {
-        super.joinDerivedService(serviceController);
+    public void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
+        super.joinDerivedService(serviceLifeCycle);
     }
 
     @Override
     public void withdrawDerivedService(@NonNull CoreService coreService) {
         Assert.state(coreService.isDerived(), "Not derived service: " + coreService);
-        Assert.state(!coreService.getServiceController().isActive(), "Not stopped service: " + coreService);
-        super.withdrawDerivedService(coreService.getServiceController());
+        Assert.state(!coreService.getServiceLifeCycle().isActive(), "Not stopped service: " + coreService);
+        super.withdrawDerivedService(coreService.getServiceLifeCycle());
     }
 
     @Override
@@ -227,33 +230,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return schedulerService;
     }
 
-    protected void createSchedulerService(@NonNull SchedulerConfig schedulerConfig) {
-        if (!schedulerConfig.isEnabled()) {
-            return;
+    protected void buildSchedulerService() {
+        Assert.state(getAspectranConfig() != null, "AspectranConfig is not set");
+        if (getAspectranConfig().hasSchedulerConfig() && getAspectranConfig().getSchedulerConfig().isEnabled()) {
+            this.schedulerService = DefaultSchedulerServiceBuilder.build(this, getAspectranConfig().getSchedulerConfig());
         }
-
-        int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
-        boolean waitOnShutdown = schedulerConfig.isWaitOnShutdown();
-        ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
-
-        if (startDelaySeconds == -1) {
-            startDelaySeconds = 3;
-            if (logger.isDebugEnabled()) {
-                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
-            }
-        }
-
-        QuartzSchedulerService schedulerService = new QuartzSchedulerService(this);
-        if (waitOnShutdown) {
-            schedulerService.setWaitOnShutdown(true);
-        }
-        schedulerService.setStartDelaySeconds(startDelaySeconds);
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            schedulerService.setExposals(includePatterns, excludePatterns);
-        }
-        this.schedulerService = schedulerService;
     }
 
     protected void checkDirectoryStructure() {

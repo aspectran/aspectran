@@ -207,8 +207,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
 
             @Override
-            public void restarted() {
-                started();
+            public void stopped() {
+                aspectran.destroySessionManager();
+                CoreServiceHolder.release(aspectran);
             }
 
             @Override
@@ -228,14 +229,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
             @Override
             public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                aspectran.destroySessionManager();
-                paused();
-                CoreServiceHolder.release(aspectran);
+                aspectran.pauseTimeout = 0L;
             }
         });
     }

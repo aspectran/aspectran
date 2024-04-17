@@ -16,17 +16,29 @@
 package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.service.ServiceLifeCycle;
 
 /**
  * The Interface SchedulerService.
  */
-public interface SchedulerService extends ServiceController {
+public interface SchedulerService extends ServiceLifeCycle {
+
+    String SERVICE_DATA_KEY = "SERVICE";
+
+    String JOB_RULE_DATA_KEY = "JOB_RULE";
+
+    ActivityContext getActivityContext();
 
     int getStartDelaySeconds();
 
     boolean isWaitOnShutdown();
 
-    ActivityContext getActivityContext();
+    void pauseAll();
+
+    void resumeAll();
+
+    void pause(String scheduleId) throws SchedulerServiceException;
+
+    void resume(String scheduleId) throws SchedulerServiceException;
 
 }

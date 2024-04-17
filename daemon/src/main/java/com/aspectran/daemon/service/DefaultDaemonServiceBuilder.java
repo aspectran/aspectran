@@ -52,8 +52,9 @@ public class DefaultDaemonServiceBuilder {
             }
 
             @Override
-            public void restarted() {
-                started();
+            public void stopped() {
+                daemonService.destroySessionManager();
+                CoreServiceHolder.release(daemonService);
             }
 
             @Override
@@ -73,14 +74,7 @@ public class DefaultDaemonServiceBuilder {
 
             @Override
             public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                daemonService.destroySessionManager();
-                CoreServiceHolder.release(daemonService);
+                daemonService.pauseTimeout = 0L;
             }
         });
     }

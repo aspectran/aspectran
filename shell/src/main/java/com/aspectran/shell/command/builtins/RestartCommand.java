@@ -51,10 +51,10 @@ public class RestartCommand extends AbstractCommand {
         } else if (console.confirmRestart()) {
             console.clearScreen();
             try {
-                if (getShellService().getServiceController().isActive()) {
-                    getShellService().getServiceController().restart();
+                if (getShellService().getServiceLifeCycle().isActive()) {
+                    getShellService().getServiceLifeCycle().restart();
                 } else {
-                    getShellService().getServiceController().start();
+                    getShellService().getServiceLifeCycle().start();
                 }
             } catch (Exception e) {
                 throw new ShellCommandExecutionException("Shell restart failed!", e);

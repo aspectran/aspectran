@@ -82,7 +82,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             }
             if (newWebService != null) {
                 logger.info(newWebService.getServiceName() + " is running in standalone mode inside " + getMyName());
-                newWebService.getServiceController().start();
+                newWebService.getServiceLifeCycle().start();
                 this.webService = newWebService;
             }
         } catch (Exception e) {

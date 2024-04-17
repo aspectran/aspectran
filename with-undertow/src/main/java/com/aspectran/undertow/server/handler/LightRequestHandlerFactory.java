@@ -121,8 +121,8 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
             }
             towService = DefaultTowServiceBuilder.build(masterService, aspectranConfig);
         }
-        if (towService.isLateStart()) {
-            towService.getServiceController().start();
+        if (towService.isOrphan()) {
+            towService.getServiceLifeCycle().start();
         }
         if (towServer != null) {
             towServer.addLifeCycleListener(new LifeCycle.Listener() {
@@ -137,8 +137,8 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
 
     private void destroyTowService() {
         if (towService != null) {
-            if (towService.getServiceController().isActive()) {
-                towService.getServiceController().stop();
+            if (towService.getServiceLifeCycle().isActive()) {
+                towService.getServiceLifeCycle().stop();
                 towService.leaveFromRootService();
             }
             towService = null;

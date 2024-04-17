@@ -46,7 +46,7 @@ public class WebServiceListener implements ServletContextListener {
 
         try {
             webService = DefaultWebServiceBuilder.build(event.getServletContext());
-            webService.getServiceController().start();
+            webService.getServiceLifeCycle().start();
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);
         }

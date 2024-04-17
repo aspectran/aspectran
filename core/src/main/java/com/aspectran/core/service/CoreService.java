@@ -25,35 +25,11 @@ import com.aspectran.core.scheduler.service.SchedulerService;
  */
 public interface CoreService {
 
-    /**
-     * Returns whether the service should be started separately
-     * late after the root service is started.
-     * @return true if the service should start separately late; false otherwise
-     */
-    boolean isLateStart();
+    CoreService getRootService();
 
-    /**
-     * Returns the base path where the root application is running.
-     * @return the base path for the root application
-     */
-    String getBasePath();
+    CoreService getParentService();
 
-    /**
-     * Returns the service controller for this service.
-     * @return the service controller
-     */
-    ServiceController getServiceController();
-
-    /**
-     * Add a derived core service.
-     * Derived services follow the life cycle of the root service.
-     * @param serviceController the service controller
-     */
-    void joinDerivedService(ServiceController serviceController);
-
-    void withdrawDerivedService(CoreService coreService);
-
-    void leaveFromRootService();
+    boolean isRootService();
 
     /**
      * Returns whether this service is derived from a parent service.
@@ -61,9 +37,35 @@ public interface CoreService {
      */
     boolean isDerived();
 
-    CoreService getRootService();
+    /**
+     * Returns whether the service should be started separately
+     * late after the root service is started.
+     * @return true if the service should start separately late; false otherwise
+     */
+    boolean isOrphan();
 
-    CoreService getParentService();
+    /**
+     * Returns the service life cycle for this service.
+     * @return the service life cycle
+     */
+    ServiceLifeCycle getServiceLifeCycle();
+
+    /**
+     * Add a derived core service.
+     * Derived services follow the life cycle of the root service.
+     * @param serviceLifeCycle the service life cycle
+     */
+    void joinDerivedService(ServiceLifeCycle serviceLifeCycle);
+
+    void withdrawDerivedService(CoreService coreService);
+
+    void leaveFromRootService();
+
+    /**
+     * Returns the base path where the root application is running.
+     * @return the base path for the root application
+     */
+    String getBasePath();
 
     /**
      * Returns the Aspectran configuration parameters used to

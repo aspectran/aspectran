@@ -28,9 +28,9 @@ public interface ServiceStateListener extends EventListener {
     void started();
 
     /**
-     * This method is called when the service is restarted.
+     * This method is called when the service is stopped.
      */
-    void restarted();
+    void stopped();
 
     /**
      * This method is called when the service is paused.
@@ -47,10 +47,5 @@ public interface ServiceStateListener extends EventListener {
      * This method is called when the service is resumed.
      */
     void resumed();
-
-    /**
-     * This method is called when the service is stopped.
-     */
-    void stopped();
 
 }

@@ -27,6 +27,9 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import static com.aspectran.core.scheduler.service.SchedulerService.JOB_RULE_DATA_KEY;
+import static com.aspectran.core.scheduler.service.SchedulerService.SERVICE_DATA_KEY;
+
 /**
  * The Class ActivityLauncherJob.
  */
@@ -37,9 +40,9 @@ public class ActivityLauncherJob implements Job {
         try {
             JobDetail jobDetail = jobExecutionContext.getJobDetail();
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
+            ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(JOB_RULE_DATA_KEY);
             if (!jobRule.isDisabled()) {
-                SchedulerService service = (SchedulerService)jobDataMap.get(QuartzSchedulerService.SERVICE_DATA_KEY);
+                SchedulerService service = (SchedulerService)jobDataMap.get(SERVICE_DATA_KEY);
                 if (service.isActive()) {
                     Activity activity = performActivity(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
                     jobExecutionContext.setResult(activity);

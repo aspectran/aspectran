@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.reload;
 
-import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.service.ServiceLifeCycle;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -35,14 +35,14 @@ public class ContextReloadingTimerTask extends TimerTask {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimerTask.class);
 
-    private final ServiceController serviceController;
+    private final ServiceLifeCycle serviceLifeCycle;
 
     private final Map<String, Long> modifiedTimeMap = new HashMap<>();
 
     private boolean modified = false;
 
-    public ContextReloadingTimerTask(ServiceController serviceController) {
-        this.serviceController = serviceController;
+    public ContextReloadingTimerTask(ServiceLifeCycle serviceLifeCycle) {
+        this.serviceLifeCycle = serviceLifeCycle;
     }
 
     public void setResources(Enumeration<URL> resources) {
@@ -93,7 +93,7 @@ public class ContextReloadingTimerTask extends TimerTask {
     private void restartService() {
         try {
             String message = "Some resource file changes have been detected.";
-            serviceController.restart(message);
+            serviceLifeCycle.restart(message);
         } catch (Exception e) {
             // ignore
         } finally {

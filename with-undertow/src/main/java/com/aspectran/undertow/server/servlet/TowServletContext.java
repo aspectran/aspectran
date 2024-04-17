@@ -208,8 +208,8 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     void createRootWebService(ServletContext servletContext) throws Exception {
         CoreService masterService = getActivityContext().getMasterService();
         DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService, getAltClassLoader());
-        if (rootWebService.isLateStart()) {
-            rootWebService.getServiceController().start();
+        if (rootWebService.isOrphan()) {
+            rootWebService.getServiceLifeCycle().start();
         }
     }
 

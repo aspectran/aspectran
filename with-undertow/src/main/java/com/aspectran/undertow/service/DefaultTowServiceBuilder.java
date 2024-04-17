@@ -74,8 +74,7 @@ public class DefaultTowServiceBuilder {
             }
 
             @Override
-            public void restarted() {
-                started();
+            public void stopped() {
             }
 
             @Override
@@ -95,12 +94,7 @@ public class DefaultTowServiceBuilder {
 
             @Override
             public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
+                towService.pauseTimeout = 0L;
             }
         });
     }

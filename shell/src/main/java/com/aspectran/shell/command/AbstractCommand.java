@@ -58,7 +58,7 @@ public abstract class AbstractCommand implements Command {
 
     public ShellService getActiveShellService() {
         ShellService shellService = getShellService();
-        if (!shellService.getServiceController().isActive()) {
+        if (!shellService.getServiceLifeCycle().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
         return shellService;
@@ -66,7 +66,7 @@ public abstract class AbstractCommand implements Command {
 
     public boolean isServiceAvailable() {
         return (getCommandRunner() != null && getCommandRunner().getShellService() != null &&
-                getCommandRunner().getShellService().getServiceController().isActive());
+                getCommandRunner().getShellService().getServiceLifeCycle().isActive());
     }
 
     protected void addOption(Option option) {

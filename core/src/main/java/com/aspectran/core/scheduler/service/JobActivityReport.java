@@ -89,7 +89,7 @@ public class JobActivityReport {
                 }
             } else {
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
-                ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(QuartzSchedulerService.JOB_RULE_DATA_KEY);
+                ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
                 if (jobRule.isDisabled()) {
                     sb.append("- Execution of this job is disabled.").append(System.lineSeparator());
                     sb.append("----------------------------------------------------------------------------").append(System.lineSeparator());

@@ -56,8 +56,9 @@ public class DefaultShellServiceBuilder {
             }
 
             @Override
-            public void restarted() {
-                started();
+            public void stopped() {
+                shellService.destroySessionManager();
+                CoreServiceHolder.release(shellService);
             }
 
             @Override
@@ -78,13 +79,6 @@ public class DefaultShellServiceBuilder {
             @Override
             public void resumed() {
                 shellService.pauseTimeout = 0L;
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                shellService.destroySessionManager();
-                CoreServiceHolder.release(shellService);
             }
         });
     }

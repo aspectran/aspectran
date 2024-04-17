@@ -384,7 +384,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected void startContextReloadingTimer() {
         if (autoReloadEnabled && masterService != null && siblingClassLoader != null) {
-            contextReloadingTimer = new ContextReloadingTimer(masterService.getServiceController());
+            contextReloadingTimer = new ContextReloadingTimer(masterService.getServiceLifeCycle());
             contextReloadingTimer.setResources(siblingClassLoader.getAllResources());
             contextReloadingTimer.start(scanIntervalSeconds);
         }

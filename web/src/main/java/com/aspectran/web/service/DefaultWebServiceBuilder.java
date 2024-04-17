@@ -222,8 +222,8 @@ public class DefaultWebServiceBuilder {
             }
 
             @Override
-            public void restarted() {
-                started();
+            public void stopped() {
+                CoreServiceHolder.release(webService);
             }
 
             @Override
@@ -243,13 +243,7 @@ public class DefaultWebServiceBuilder {
 
             @Override
             public void resumed() {
-                started();
-            }
-
-            @Override
-            public void stopped() {
-                paused();
-                CoreServiceHolder.release(webService);
+                webService.pauseTimeout = 0L;
             }
         });
     }

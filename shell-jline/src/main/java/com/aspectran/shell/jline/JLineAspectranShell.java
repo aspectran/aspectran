@@ -23,7 +23,6 @@ import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Main entry point for the Aspectran Shell using JLine.

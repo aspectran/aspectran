@@ -26,15 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class AbstractServiceController.
+ * The Class AbstractServiceLifeCycle.
  */
-public abstract class AbstractServiceController implements ServiceController {
+public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
-    private final Logger logger = LoggerFactory.getLogger(AbstractServiceController.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractServiceLifeCycle.class);
 
     private final Object lock = new Object();
 
-    private final List<ServiceController> derivedServices;
+    private final List<ServiceLifeCycle> derivedServices;
 
     private CoreService rootService;
 
@@ -45,7 +45,7 @@ public abstract class AbstractServiceController implements ServiceController {
     /** Flag that indicates whether this service is active */
     private volatile boolean active;
 
-    public AbstractServiceController(boolean derivable) {
+    public AbstractServiceLifeCycle(boolean derivable) {
         if (derivable) {
             derivedServices = new ArrayList<>();
         } else {
@@ -72,18 +72,18 @@ public abstract class AbstractServiceController implements ServiceController {
         this.serviceStateListener = serviceStateListener;
     }
 
-    protected void joinDerivedService(ServiceController serviceController) {
+    protected void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
         if (derivedServices == null) {
             throw new UnsupportedOperationException("No support to control derived services");
         }
-        derivedServices.add(serviceController);
+        derivedServices.add(serviceLifeCycle);
     }
 
-    protected void withdrawDerivedService(ServiceController serviceController) {
+    protected void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle) {
         if (derivedServices == null) {
             throw new UnsupportedOperationException("No support to control derived services");
         }
-        derivedServices.remove(serviceController);
+        derivedServices.remove(serviceLifeCycle);
     }
 
     protected void clearDerivedServices() {
@@ -104,15 +104,13 @@ public abstract class AbstractServiceController implements ServiceController {
         }
     }
 
+    protected abstract boolean isRootService();
+
     protected abstract boolean isDerived();
 
+    protected abstract boolean isOrphan();
+
     protected abstract void doStart() throws Exception;
-
-    protected abstract void doPause() throws Exception;
-
-    protected abstract void doPause(long timeout) throws Exception;
-
-    protected abstract void doResume() throws Exception;
 
     protected abstract void doStop() throws Exception;
 
@@ -125,15 +123,15 @@ public abstract class AbstractServiceController implements ServiceController {
         synchronized (lock) {
             Assert.state(!active, getServiceName() + " is already started");
 
-            if (!isDerived()) {
-                logger.info("Starting " + getServiceName());
+            logger.info("Starting " + getServiceName());
 
-                doStart();
+            doStart();
 
-                if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.start();
-                    }
+            logger.info(getServiceName() + " started successfully");
+
+            if (derivedServices != null) {
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.start();
                 }
             }
 
@@ -141,57 +139,85 @@ public abstract class AbstractServiceController implements ServiceController {
                 serviceStateListener.started();
             }
 
-            logger.info(getServiceName() + " started successfully");
-
             active = true;
+        }
+    }
+
+    @Override
+    public void stop() {
+        synchronized (lock) {
+            if (!active) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is not running, will do nothing");
+                }
+                return;
+            }
+
+            if (serviceStateListener != null) {
+                try {
+                    serviceStateListener.paused();
+                    serviceStateListener.stopped();
+                } catch (Exception e) {
+                    logger.warn(e);
+                }
+            }
+
+            if (derivedServices != null) {
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.stop();
+                }
+            }
+
+            try {
+                logger.info("Stopping " + getServiceName());
+
+                doStop();
+
+                logger.info(getServiceName() + " stopped successfully");
+            } catch (Exception e) {
+                logger.error(getServiceName() + " was not stopped normally", e);
+            }
+
+            active = false;
         }
     }
 
     @Override
     public void restart() throws Exception {
         synchronized (lock) {
-            if (!isDerived()) {
-                Assert.state(active, getServiceName() + " is not yet started");
-                logger.info("Restarting " + getServiceName());
-            } else {
-                Assert.state(!active, getServiceName() + " should never be run separately");
-                active = true;
-            }
+            Assert.state(isRootService(), "Only root service can be restarted");
+            Assert.state(active, getServiceName() + " is not yet started");
+
+            logger.info("Restarting " + getServiceName());
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
             }
 
-            if (!isDerived()) {
-                if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.stop();
-                    }
-                }
-
-                active = false;
-                doStop();
-
-                if (serviceStateListener != null) {
-                    try {
-                        serviceStateListener.stopped();
-                    } catch (Exception e) {
-                        logger.warn(e);
-                    }
-                }
-
-                doStart();
-                active = true;
-
-                if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.start();
-                    }
+            if (derivedServices != null) {
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.stop();
                 }
             }
 
+            active = false;
+            doStop();
+
             if (serviceStateListener != null) {
-                serviceStateListener.restarted();
+                try {
+                    serviceStateListener.stopped();
+                } catch (Exception e) {
+                    logger.warn(e);
+                }
+            }
+
+            doStart();
+            active = true;
+
+            if (derivedServices != null) {
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.start();
+                }
             }
 
             logger.info(getServiceName() + " restarted successfully");
@@ -213,13 +239,11 @@ public abstract class AbstractServiceController implements ServiceController {
 
             if (!isDerived()) {
                 if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.pause();
+                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                        serviceLifeCycle.pause();
                     }
                 }
             }
-
-            doPause();
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
@@ -239,13 +263,11 @@ public abstract class AbstractServiceController implements ServiceController {
 
             if (!isDerived()) {
                 if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.pause(timeout);
+                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                        serviceLifeCycle.pause(timeout);
                     }
                 }
             }
-
-            doPause(timeout);
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused(timeout);
@@ -263,12 +285,10 @@ public abstract class AbstractServiceController implements ServiceController {
                 return;
             }
 
-            doResume();
-
             if (!isDerived()) {
                 if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.resume();
+                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                        serviceLifeCycle.resume();
                     }
                 }
             }
@@ -278,48 +298,6 @@ public abstract class AbstractServiceController implements ServiceController {
             }
 
             logger.info(getServiceName() + " is resumed");
-        }
-    }
-
-    @Override
-    public void stop() {
-        synchronized (lock) {
-            if (!active) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is not running, will do nothing");
-                }
-                return;
-            }
-
-            if (serviceStateListener != null) {
-                try {
-                    serviceStateListener.stopped();
-                } catch (Exception e) {
-                    logger.warn(e);
-                }
-            }
-
-            if (!isDerived()) {
-                if (derivedServices != null) {
-                    for (ServiceController serviceController : derivedServices) {
-                        serviceController.stop();
-                    }
-                }
-
-                try {
-                    logger.info("Stopping " + getServiceName());
-
-                    doStop();
-
-                    logger.info(getServiceName() + " stopped successfully");
-                } catch (Exception e) {
-                    logger.error(getServiceName() + " was not stopped normally", e);
-                }
-            } else {
-                logger.info(getServiceName() + " stopped successfully");
-            }
-
-            active = false;
         }
     }
 

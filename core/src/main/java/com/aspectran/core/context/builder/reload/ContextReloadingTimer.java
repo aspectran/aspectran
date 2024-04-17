@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.reload;
 
-import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.service.ServiceLifeCycle;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class ContextReloadingTimer {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimer.class);
 
-    private final ServiceController serviceController;
+    private final ServiceLifeCycle serviceLifeCycle;
 
     private Enumeration<URL> resources;
 
@@ -38,8 +38,8 @@ public class ContextReloadingTimer {
 
     private ContextReloadingTimerTask timerTask;
 
-    public ContextReloadingTimer(ServiceController serviceController) {
-        this.serviceController = serviceController;
+    public ContextReloadingTimer(ServiceLifeCycle serviceLifeCycle) {
+        this.serviceLifeCycle = serviceLifeCycle;
     }
 
     public void setResources(Enumeration<URL> resources) {
@@ -53,7 +53,7 @@ public class ContextReloadingTimer {
             logger.debug("Starting ContextReloadingTimer...");
         }
 
-        timerTask = new ContextReloadingTimerTask(serviceController);
+        timerTask = new ContextReloadingTimerTask(serviceLifeCycle);
         timerTask.setResources(resources);
 
         timer = new Timer("ContextReloading");

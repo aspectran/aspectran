@@ -186,7 +186,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             console.setConsoleCommander(null);
 
             if (logger.isDebugEnabled()) {
-                if (shellService != null && shellService.getServiceController().isActive()) {
+                if (shellService != null && shellService.getServiceLifeCycle().isActive()) {
                     logger.debug("Do not terminate this application while releasing all resources");
                 }
             }
