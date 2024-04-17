@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class DefaultSchedulerService.
+ * The Class AbstractSchedulerService.
  */
 public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle implements SchedulerService {
 
