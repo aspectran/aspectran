@@ -30,6 +30,8 @@ import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import org.jasypt.exceptions.EncryptionInitializationException;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -405,7 +407,7 @@ public class TokenEvaluation implements TokenEvaluator {
                 Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
                 Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
                 return (value != null ? value : token.getDefaultValue());
-            } catch (Exception e) {
+            } catch (EncryptionInitializationException | EncryptionOperationNotPossibleException e) {
                 // Most of these occur when the password used for encryption is different
                 logger.error("Failed to decrypt values of encrypted properties while evaluating token " +
                         token + "; Most of these occur when the password used for encryption is different" , e);

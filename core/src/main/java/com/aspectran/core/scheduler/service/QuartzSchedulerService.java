@@ -66,10 +66,11 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private boolean waitOnShutdown = false;
 
-    public QuartzSchedulerService(CoreService rootService) {
+    public QuartzSchedulerService(CoreService parentService) {
         super(false);
-        Assert.state(rootService != null, "rootService must not be null");
-        setRootService(rootService);
+        Assert.notNull(parentService, "parentService must not be null");
+        setRootService(parentService.getRootService());
+        parentService.getRootService().joinDerivedService(this);
     }
 
     @Override
@@ -248,7 +249,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                     scheduler.scheduleJob(jobDetail, trigger);
                 }
             } else {
-                logger.warn("Unavailable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
+                logger.warn("Unexposed translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
             }
         }
 

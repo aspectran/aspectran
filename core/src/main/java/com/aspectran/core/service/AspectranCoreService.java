@@ -148,9 +148,6 @@ public class AspectranCoreService extends AbstractCoreService {
     protected void doStart() throws Exception {
         buildActivityContext();
         afterContextLoaded();
-        if (getSchedulerService() != null) {
-            joinDerivedService(getSchedulerService());
-        }
     }
 
     @Override
@@ -167,7 +164,7 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     protected void doStop() {
-        clearDerivedService();
+        clearDerivedServices();
         beforeContextDestroy();
         destroyActivityContext();
     }

@@ -85,8 +85,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 this.aspectranConfig = parentService.getAspectranConfig();
             }
             setBasePath(parentService.getBasePath());
-            parentService.getRootService().joinDerivedService(this);
             setRootService(parentService.getRootService());
+            parentService.getRootService().joinDerivedService(this);
         } else {
             setRootService(this);
         }
@@ -122,8 +122,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
-    public void joinDerivedService(@NonNull CoreService coreService) {
-        super.joinDerivedService(coreService.getServiceController());
+    public void joinDerivedService(ServiceController serviceController) {
+        super.joinDerivedService(serviceController);
     }
 
     @Override
@@ -237,9 +237,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
 
         if (startDelaySeconds == -1) {
-            startDelaySeconds = 5;
+            startDelaySeconds = 3;
             if (logger.isDebugEnabled()) {
-                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 5 seconds");
+                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
             }
         }
 

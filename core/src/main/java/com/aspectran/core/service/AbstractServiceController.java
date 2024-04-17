@@ -86,7 +86,7 @@ public abstract class AbstractServiceController implements ServiceController {
         derivedServices.remove(serviceController);
     }
 
-    protected void clearDerivedService() {
+    protected void clearDerivedServices() {
         if (derivedServices != null) {
             derivedServices.clear();
         }
@@ -104,10 +104,6 @@ public abstract class AbstractServiceController implements ServiceController {
         }
     }
 
-    /**
-     * Returns whether this service is derived from another root service.
-     * @return whether this service is derived
-     */
     protected abstract boolean isDerived();
 
     protected abstract void doStart() throws Exception;
@@ -141,11 +137,11 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            logger.info(getServiceName() + " started successfully");
-
             if (serviceStateListener != null) {
                 serviceStateListener.started();
             }
+
+            logger.info(getServiceName() + " started successfully");
 
             active = true;
         }
@@ -194,11 +190,11 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            logger.info(getServiceName() + " restarted successfully");
-
             if (serviceStateListener != null) {
                 serviceStateListener.restarted();
             }
+
+            logger.info(getServiceName() + " restarted successfully");
         }
     }
 
@@ -225,11 +221,11 @@ public abstract class AbstractServiceController implements ServiceController {
 
             doPause();
 
-            logger.info(getServiceName() + " is paused");
-
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
             }
+
+            logger.info(getServiceName() + " is paused");
         }
     }
 
@@ -251,11 +247,11 @@ public abstract class AbstractServiceController implements ServiceController {
 
             doPause(timeout);
 
-            logger.info(getServiceName() + " is paused and will resume after " + timeout + " ms");
-
             if (serviceStateListener != null) {
                 serviceStateListener.paused(timeout);
             }
+
+            logger.info(getServiceName() + " is paused and will resume after " + timeout + " ms");
         }
     }
 
@@ -277,11 +273,11 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            logger.info(getServiceName() + " is resumed");
-
             if (serviceStateListener != null) {
                 serviceStateListener.resumed();
             }
+
+            logger.info(getServiceName() + " is resumed");
         }
     }
 

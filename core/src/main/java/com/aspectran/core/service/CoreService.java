@@ -47,9 +47,9 @@ public interface CoreService {
     /**
      * Add a derived core service.
      * Derived services follow the life cycle of the root service.
-     * @param coreService the core service
+     * @param serviceController the service controller
      */
-    void joinDerivedService(CoreService coreService);
+    void joinDerivedService(ServiceController serviceController);
 
     void withdrawDerivedService(CoreService coreService);
 
