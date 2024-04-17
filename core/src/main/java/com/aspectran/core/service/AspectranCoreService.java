@@ -135,6 +135,7 @@ public class AspectranCoreService extends AbstractCoreService {
      * @throws Exception if an error occurs
      */
     protected void afterContextLoaded() throws Exception {
+        Assert.state(!isDerived(), "Derived services should not have a new context");
     }
 
     /**

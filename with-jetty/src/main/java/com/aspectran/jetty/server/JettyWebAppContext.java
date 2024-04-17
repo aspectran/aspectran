@@ -151,8 +151,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
 
         // Create a root web service
-        CoreService parentService = context.getMasterService();
-        WebService rootWebService = DefaultWebServiceBuilder.build(getServletContext(), parentService, webAppClassLoader);
+        CoreService masterService = context.getMasterService();
+        WebService rootWebService = DefaultWebServiceBuilder.build(getServletContext(), masterService, webAppClassLoader);
         if (rootWebService.isLateStart()) {
             server.addEventListener(new LifeCycle.Listener() {
                 @Override

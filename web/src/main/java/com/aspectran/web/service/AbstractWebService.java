@@ -99,17 +99,20 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
+        if (!isDerived()) {
+            if (getBasePath() == null) {
+                setBasePath(servletContext.getRealPath("/"));
+            }
+            super.configure(aspectranConfig, applicationAdapter);
+        }
+
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
             configure(webConfig);
         }
 
-        if (isDerived()) {
-            setBasePath(getRootService().getBasePath());
-            setServiceClassLoader(new WebServiceClassLoader(getRootService().getActivityContext().getClassLoader()));
-        } else {
-            setBasePath(servletContext.getRealPath("/"));
-            super.configure(aspectranConfig, applicationAdapter);
+        if (getParentService() != null && isDerived()) {
+            setServiceClassLoader(new WebServiceClassLoader(getParentService().getActivityContext().getClassLoader()));
         }
     }
 

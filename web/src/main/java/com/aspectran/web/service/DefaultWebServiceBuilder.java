@@ -74,7 +74,8 @@ public class DefaultWebServiceBuilder {
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servletContext the servlet context
-     * @param parentService the root service
+     * @param parentService the parent service
+     * @param altClassLoader the alternative classloader
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
@@ -101,6 +102,7 @@ public class DefaultWebServiceBuilder {
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servlet the web activity servlet
+     * @param rootWebService the root web service
      * @return the instance of {@code DefaultWebService}
      */
     @Nullable

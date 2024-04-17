@@ -49,12 +49,8 @@ public class DefaultTowService extends AbstractTowService {
 
     protected volatile long pauseTimeout = -2L;
 
-    DefaultTowService() {
-        super();
-    }
-
-    DefaultTowService(CoreService rootService, boolean derived) {
-        super(rootService, derived);
+    DefaultTowService(CoreService parentService, boolean derived) {
+        super(parentService, derived);
     }
 
     @Override

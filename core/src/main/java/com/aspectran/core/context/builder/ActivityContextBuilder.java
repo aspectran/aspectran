@@ -80,6 +80,12 @@ public interface ActivityContextBuilder {
 
     void addPropertyItemRule(ItemRuleMap propertyItemRuleMap);
 
+    /**
+     * Returns whether to reload all Java classes, resources,
+     * and activity context configurations.
+     * @return false if only the activity context configuration
+     *      is reloaded; true if all are reloaded
+     */
     boolean isHardReload();
 
     void setHardReload(boolean hardReload);

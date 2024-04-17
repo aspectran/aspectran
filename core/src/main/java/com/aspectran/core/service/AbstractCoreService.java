@@ -80,13 +80,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             if (derived) {
                 Assert.state(parentService.getActivityContext() != null,
                         "Oops! No ActivityContext configured");
-
                 this.activityContext = parentService.getActivityContext();
                 this.aspectranConfig = parentService.getAspectranConfig();
-
-                setBasePath(parentService.getBasePath());
-//                parentService.getRootService().joinDerivedService(this);
             }
+            setBasePath(parentService.getBasePath());
             parentService.getRootService().joinDerivedService(this);
             setRootService(parentService.getRootService());
         } else {
@@ -95,27 +92,18 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
+    public CoreService getParentService() {
+        return parentService;
+    }
+
+    @Override
     public boolean isDerived() {
         return derived;
     }
 
     @Override
-    public String getBasePath() {
-        return basePath;
-    }
-
-    protected void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    @Override
     public boolean isLateStart() {
         return (parentService == null || parentService.getServiceController().isActive());
-    }
-
-    @Override
-    public boolean isHardReload() {
-        return getActivityContextBuilder().isHardReload();
     }
 
     @Override
@@ -140,6 +128,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         if (isDerived()) {
             getRootService().withdrawDerivedService(this);
         }
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    protected void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 
     @Override

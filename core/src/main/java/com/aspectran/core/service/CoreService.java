@@ -26,12 +26,6 @@ import com.aspectran.core.scheduler.service.SchedulerService;
 public interface CoreService {
 
     /**
-     * Returns the base path where the root application is running.
-     * @return the base path for the root application
-     */
-    String getBasePath();
-
-    /**
      * Returns whether the service should be started separately
      * late after the root service is started.
      * @return true if the service should start separately late; false otherwise
@@ -39,12 +33,10 @@ public interface CoreService {
     boolean isLateStart();
 
     /**
-     * Returns whether to reload all Java classes, resources,
-     * and activity context configurations.
-     * @return false if only the activity context configuration
-     *      is reloaded; true if all are reloaded
+     * Returns the base path where the root application is running.
+     * @return the base path for the root application
      */
-    boolean isHardReload();
+    String getBasePath();
 
     /**
      * Returns the service controller for this service.
@@ -70,6 +62,8 @@ public interface CoreService {
     boolean isDerived();
 
     CoreService getRootService();
+
+    CoreService getParentService();
 
     /**
      * Returns the Aspectran configuration parameters used to

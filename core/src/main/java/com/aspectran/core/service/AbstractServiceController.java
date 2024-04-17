@@ -17,6 +17,7 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.PluralWildcardPattern;
@@ -52,9 +53,17 @@ public abstract class AbstractServiceController implements ServiceController {
         }
     }
 
+    private CoreService getService() {
+        return (CoreService)this;
+    }
+
     @Override
     public String getServiceName() {
-        return getClass().getSimpleName();
+        if (getService().getActivityContext() != null && getService().getActivityContext().getName() != null) {
+            return ObjectUtils.simpleIdentityToString(this, getService().getActivityContext().getName());
+        } else {
+            return ObjectUtils.simpleIdentityToString(this);
+        }
     }
 
     @Override

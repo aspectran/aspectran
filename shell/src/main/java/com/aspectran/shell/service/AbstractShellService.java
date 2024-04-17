@@ -73,6 +73,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     public void afterContextLoaded() throws Exception {
+        super.afterContextLoaded();
         parseGreetings();
     }
 
