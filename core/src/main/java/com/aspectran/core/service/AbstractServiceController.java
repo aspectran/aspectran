@@ -53,10 +53,6 @@ public abstract class AbstractServiceController implements ServiceController {
         }
     }
 
-    private CoreService getService() {
-        return (CoreService)this;
-    }
-
     @Override
     public String getServiceName() {
         return ObjectUtils.simpleIdentityToString(this);
