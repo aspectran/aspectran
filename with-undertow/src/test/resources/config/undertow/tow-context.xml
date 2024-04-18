@@ -62,7 +62,7 @@
                 </bean>
                 <bean class="com.aspectran.undertow.server.servlet.TowServlet">
                     <arguments>
-                        <item>web-activity-servlet</item>
+                        <item>webActivityServlet</item>
                         <item>com.aspectran.web.servlet.WebActivityServlet</item>
                     </arguments>
                     <properties>

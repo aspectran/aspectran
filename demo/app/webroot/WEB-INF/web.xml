@@ -28,15 +28,15 @@ The Undertow server does not use web.xml separately, instead it is set directly 
   <filter-mapping>
     <filter-name>web-activity-filter</filter-name>
     <url-pattern>/</url-pattern>
-    <servlet-name>web-activity-servlet</servlet-name>
+    <servlet-name>webActivityServlet</servlet-name>
   </filter-mapping>
   <servlet>
-    <servlet-name>web-activity-servlet</servlet-name>
+    <servlet-name>webActivityServlet</servlet-name>
     <servlet-class>com.aspectran.web.servlet.WebActivityServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>web-activity-servlet</servlet-name>
+    <servlet-name>webActivityServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
   <session-config>

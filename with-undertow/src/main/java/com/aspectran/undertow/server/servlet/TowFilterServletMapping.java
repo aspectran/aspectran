@@ -24,7 +24,7 @@ import jakarta.servlet.DispatcherType;
  *   <bean class="com.aspectran.undertow.server.servlet.TowFilterServletMapping">
  *     <arguments>
  *       <item>towFilter</item>
- *       <item>web-activity-servlet</item>
+ *       <item>webActivityServlet</item>
  *     </arguments>
  *   </bean>
  * }</pre>

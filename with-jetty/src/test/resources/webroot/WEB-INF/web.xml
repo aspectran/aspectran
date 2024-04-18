@@ -9,12 +9,12 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
-    <servlet-name>web-activity-servlet</servlet-name>
+    <servlet-name>webActivityServlet</servlet-name>
     <servlet-class>com.aspectran.web.servlet.WebActivityServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>web-activity-servlet</servlet-name>
+    <servlet-name>webActivityServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -26,7 +26,7 @@ import com.aspectran.utils.StringUtils;
  * <p>ex)
  * <pre>{@code
  *   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
- *     <discriminator class="com.aspectran.core.context.ContextBasedLoggerDiscriminator">
+ *     <discriminator class="com.aspectran.core.context.ContextBasedLoggingGroupDiscriminator">
  *       <key>LOGGING_GROUP</key>
  *       <defaultValue>app</defaultValue>
  *     </discriminator>
@@ -40,7 +40,7 @@ import com.aspectran.utils.StringUtils;
  * }</pre></p>
  * @see <a href="https://logback.qos.ch/manual/loggingSeparation.html">Logging separation</a>
  */
-public class ContextBasedLoggerDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
+public class ContextBasedLoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
     private String key;
 
