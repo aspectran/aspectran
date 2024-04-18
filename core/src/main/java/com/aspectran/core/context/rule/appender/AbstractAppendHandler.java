@@ -31,6 +31,7 @@ import java.util.List;
  */
 abstract class AbstractAppendHandler implements RuleAppendHandler {
 
+    /** Logger available to subclasses */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ActivityRuleAssistant assistant;

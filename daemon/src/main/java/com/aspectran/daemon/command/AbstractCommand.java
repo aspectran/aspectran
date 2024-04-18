@@ -22,7 +22,8 @@ import com.aspectran.utils.logging.LoggerFactory;
 
 public abstract class AbstractCommand implements Command {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    /** Logger available to subclasses */
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CommandRegistry registry;
 

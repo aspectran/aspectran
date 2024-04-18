@@ -15,7 +15,6 @@
  */
 package com.aspectran.daemon.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -93,16 +92,11 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
 
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        configure(aspectranConfig, null);
-    }
-
-    @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
         if (daemonConfig != null) {
             configure(daemonConfig);
         }
-        super.configure(aspectranConfig, applicationAdapter);
+        super.configure(aspectranConfig);
     }
 
     private void configure(@NonNull DaemonConfig daemonConfig) {

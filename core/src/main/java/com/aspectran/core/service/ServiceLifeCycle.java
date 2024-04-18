@@ -32,6 +32,12 @@ public interface ServiceLifeCycle {
      */
     CoreService getRootService();
 
+    CoreService getParentService();
+
+    boolean isRootService();
+
+    boolean isOrphan();
+
     /**
      * Sets the service state listener.
      * @param serviceStateListener the new service state listener

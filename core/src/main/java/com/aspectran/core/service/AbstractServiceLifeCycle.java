@@ -18,6 +18,8 @@ package com.aspectran.core.service;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.PluralWildcardPattern;
@@ -34,9 +36,11 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     private final Object lock = new Object();
 
-    private final List<ServiceLifeCycle> derivedServices;
+    private final List<ServiceLifeCycle> derivedServices = new ArrayList<>();
 
-    private CoreService rootService;
+    private final CoreService rootService;
+
+    private final CoreService parentService;
 
     private ServiceStateListener serviceStateListener;
 
@@ -45,11 +49,13 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     /** Flag that indicates whether this service is active */
     private volatile boolean active;
 
-    public AbstractServiceLifeCycle(boolean derivable) {
-        if (derivable) {
-            derivedServices = new ArrayList<>();
+    public AbstractServiceLifeCycle(@Nullable CoreService parentService) {
+        this.parentService = parentService;
+        if (parentService != null) {
+            this.rootService = parentService.getRootService();
+            this.rootService.joinDerivedService(this);
         } else {
-            derivedServices = null;
+            this.rootService = (CoreService)this;
         }
     }
 
@@ -59,37 +65,29 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     }
 
     @Override
+    @NonNull
     public CoreService getRootService() {
         return rootService;
     }
 
-    protected void setRootService(CoreService rootService) {
-        this.rootService = rootService;
+    @Override
+    public CoreService getParentService() {
+        return parentService;
+    }
+
+    @Override
+    public boolean isRootService() {
+        return (parentService == null);
+    }
+
+    @Override
+    public boolean isOrphan() {
+        return (parentService == null || parentService.getServiceLifeCycle().isActive());
     }
 
     @Override
     public void setServiceStateListener(ServiceStateListener serviceStateListener) {
         this.serviceStateListener = serviceStateListener;
-    }
-
-    protected void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
-        if (derivedServices == null) {
-            throw new UnsupportedOperationException("No support to control derived services");
-        }
-        derivedServices.add(serviceLifeCycle);
-    }
-
-    protected void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle) {
-        if (derivedServices == null) {
-            throw new UnsupportedOperationException("No support to control derived services");
-        }
-        derivedServices.remove(serviceLifeCycle);
-    }
-
-    protected void clearDerivedServices() {
-        if (derivedServices != null) {
-            derivedServices.clear();
-        }
     }
 
     protected boolean isExposable(String requestName) {
@@ -98,25 +96,33 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     protected void setExposals(String[] includePatterns, String[] excludePatterns) {
         if ((includePatterns != null && includePatterns.length > 0) ||
-            excludePatterns != null && excludePatterns.length > 0) {
+                excludePatterns != null && excludePatterns.length > 0) {
             exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                ActivityContext.NAME_SEPARATOR_CHAR);
+                    ActivityContext.NAME_SEPARATOR_CHAR);
         }
     }
 
-    protected abstract boolean isRootService();
+    protected void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
+        derivedServices.add(serviceLifeCycle);
+    }
 
-    protected abstract boolean isDerived();
+    protected void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle) {
+        derivedServices.remove(serviceLifeCycle);
+    }
 
-    protected abstract boolean isOrphan();
-
-    protected abstract void doStart() throws Exception;
-
-    protected abstract void doStop() throws Exception;
+    protected void clearDerivedServices() {
+        derivedServices.clear();
+    }
 
     protected Object getLock() {
         return lock;
     }
+
+    protected abstract boolean isDerived();
+
+    protected abstract void doStart() throws Exception;
+
+    protected abstract void doStop() throws Exception;
 
     @Override
     public void start() throws Exception {
@@ -129,10 +135,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
             logger.info(getServiceName() + " started successfully");
 
-            if (derivedServices != null) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.start();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                serviceLifeCycle.start();
             }
 
             if (serviceStateListener != null) {
@@ -162,10 +166,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 }
             }
 
-            if (derivedServices != null) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.stop();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                serviceLifeCycle.stop();
             }
 
             try {
@@ -194,10 +196,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused();
             }
 
-            if (derivedServices != null) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.stop();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                serviceLifeCycle.stop();
             }
 
             active = false;
@@ -214,10 +214,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             doStart();
             active = true;
 
-            if (derivedServices != null) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.start();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                serviceLifeCycle.start();
             }
 
             logger.info(getServiceName() + " restarted successfully");
@@ -238,10 +236,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             }
 
             if (!isDerived()) {
-                if (derivedServices != null) {
-                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                        serviceLifeCycle.pause();
-                    }
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.pause();
                 }
             }
 
@@ -262,10 +258,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             }
 
             if (!isDerived()) {
-                if (derivedServices != null) {
-                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                        serviceLifeCycle.pause(timeout);
-                    }
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.pause(timeout);
                 }
             }
 
@@ -286,10 +280,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             }
 
             if (!isDerived()) {
-                if (derivedServices != null) {
-                    for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                        serviceLifeCycle.resume();
-                    }
+                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+                    serviceLifeCycle.resume();
                 }
             }
 

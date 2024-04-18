@@ -30,6 +30,7 @@ import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -38,7 +39,7 @@ import com.aspectran.utils.logging.LoggerFactory;
  */
 public class AspectranCoreService extends AbstractCoreService {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(AspectranCoreService.class);
 
     private FileLocker fileLocker;
 
@@ -55,11 +56,16 @@ public class AspectranCoreService extends AbstractCoreService {
         super(parentService, derived);
     }
 
-    protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        configure(aspectranConfig, null);
+    @Nullable
+    protected ApplicationAdapter getApplicationAdapter() {
+        if (getRootService().getActivityContext() != null) {
+            return getRootService().getActivityContext().getApplicationAdapter();
+        } else {
+            return null;
+        }
     }
 
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
+    protected void configure(@NonNull AspectranConfig aspectranConfig) {
         Assert.state(!isDerived(),
             "Must not be called for derived services");
         Assert.state(!hasActivityContextBuilder(),
@@ -79,7 +85,7 @@ public class AspectranCoreService extends AbstractCoreService {
             }
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
-            if (applicationAdapter == null && contextConfig != null) {
+            if (getApplicationAdapter() == null && contextConfig != null) {
                 String basePath = contextConfig.getBasePath();
                 if (basePath != null) {
                     setBasePath(basePath);
@@ -91,9 +97,9 @@ public class AspectranCoreService extends AbstractCoreService {
             }
 
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder();
-            if (applicationAdapter != null) {
-                activityContextBuilder.setApplicationAdapter(applicationAdapter);
-                activityContextBuilder.setBasePath(applicationAdapter.getBasePath());
+            if (getApplicationAdapter() != null) {
+                activityContextBuilder.setApplicationAdapter(getApplicationAdapter());
+                activityContextBuilder.setBasePath(getApplicationAdapter().getBasePath());
             } else {
                 activityContextBuilder.setBasePath(getBasePath());
             }

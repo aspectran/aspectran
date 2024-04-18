@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -232,16 +231,11 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        configure(aspectranConfig, null);
-    }
-
-    @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
             configure(shellConfig);
         }
-        super.configure(aspectranConfig, applicationAdapter);
+        super.configure(aspectranConfig);
     }
 
     private void configure(@NonNull ShellConfig shellConfig) {

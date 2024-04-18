@@ -100,7 +100,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
 
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return getActivityContext().getApplicationAdapter();
+        return super.getApplicationAdapter();
     }
 
     @Override

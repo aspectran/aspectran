@@ -53,8 +53,6 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSchedulerService.class);
 
-    private final CoreService parentService;
-
     private final Set<Scheduler> schedulers = new HashSet<>();
 
     private final Map<String, Scheduler> schedulerMap = new HashMap<>();
@@ -64,18 +62,15 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     private boolean waitOnShutdown = false;
 
     AbstractSchedulerService(CoreService parentService) {
-        super(false);
+        super(parentService);
         Assert.notNull(parentService, "parentService must not be null");
-        this.parentService = parentService;
-        setRootService(parentService.getRootService());
-        parentService.getRootService().joinDerivedService(this);
     }
 
     @Override
     public ActivityContext getActivityContext() {
-        Assert.state(parentService.getActivityContext() != null,
+        Assert.state(getParentService().getActivityContext() != null,
                 "No ActivityContext configured yet");
-        return parentService.getActivityContext();
+        return getParentService().getActivityContext();
     }
 
     @Override
@@ -102,18 +97,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     @Override
-    protected boolean isRootService() {
-        return false;
-    }
-
-    @Override
     public boolean isDerived() {
         return true;
-    }
-
-    @Override
-    protected boolean isOrphan() {
-        return false;
     }
 
     protected Set<Scheduler> getSchedulers() {
@@ -296,194 +281,5 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                     .build();
         }
     }
-
-//    private void startSchedulerService() throws SchedulerServiceException {
-//        ScheduleRuleRegistry scheduleRuleRegistry = getActivityContext().getScheduleRuleRegistry();
-//        if (scheduleRuleRegistry == null) {
-//            return;
-//        }
-//
-//        Collection<ScheduleRule> scheduleRules = scheduleRuleRegistry.getScheduleRules();
-//        if (scheduleRules == null || scheduleRules.isEmpty()) {
-//            return;
-//        }
-//
-//        logger.info("Now try to starting DefaultSchedulerService");
-//
-//        try {
-//            for (ScheduleRule scheduleRule : scheduleRules) {
-//                Scheduler scheduler = buildScheduler(scheduleRule);
-//                schedulers.add(scheduler);
-//                schedulerMap.put(scheduleRule.getId(), scheduler);
-//            }
-//
-//            for (Scheduler scheduler : schedulers) {
-//                logger.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
-//
-//                // Listener attached to jobKey
-//                JobListener defaultJobListener = new QuartzJobListener();
-//                scheduler.getListenerManager().addJobListener(defaultJobListener);
-//
-//                if (startDelaySeconds > 0) {
-//                    scheduler.startDelayed(startDelaySeconds);
-//                } else {
-//                    scheduler.start();
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new SchedulerServiceException("Could not start DefaultSchedulerService", e);
-//        }
-//    }
-//
-//    private void stopSchedulerService() throws SchedulerServiceException {
-//        logger.info("Now try to shutting down DefaultSchedulerService");
-//
-//        try {
-//            for (Scheduler scheduler : schedulers) {
-//                if (!scheduler.isShutdown()) {
-//                    logger.info("Shutting down the scheduler '" + scheduler.getSchedulerName() +
-//                            "' with waitForJobsToComplete=" + waitOnShutdown);
-//                    scheduler.shutdown(waitOnShutdown);
-//                }
-//            }
-//            schedulers.clear();
-//            schedulerMap.clear();
-//        } catch (Exception e) {
-//            throw new SchedulerServiceException("Could not shutdown DefaultSchedulerService", e);
-//        }
-//    }
-//
-//    public void pause(String scheduleId) throws SchedulerServiceException {
-//        synchronized (getLock()) {
-//            try {
-//                Scheduler scheduler = getScheduler(scheduleId);
-//                if (scheduler != null && scheduler.isStarted()) {
-//                    scheduler.pauseJobs(GroupMatcher.jobGroupEquals(scheduleId));
-//                }
-//            } catch (Exception e) {
-//                throw new SchedulerServiceException("Could not pause scheduler '" + scheduleId + "'", e);
-//            }
-//        }
-//    }
-//
-//    public synchronized void resume(String scheduleId) throws SchedulerServiceException {
-//        synchronized (getLock()) {
-//            try {
-//                Scheduler scheduler = getScheduler(scheduleId);
-//                if (scheduler != null && scheduler.isStarted()) {
-//                    scheduler.resumeJobs(GroupMatcher.jobGroupEquals(scheduleId));
-//                }
-//            } catch (Exception e) {
-//                throw new SchedulerServiceException("Could not resume scheduler '" + scheduleId + "'", e);
-//            }
-//        }
-//    }
-//
-//    private Scheduler getScheduler(String scheduleId) {
-//        return schedulerMap.get(scheduleId);
-//    }
-//
-//    @NonNull
-//    private Scheduler buildScheduler(@NonNull ScheduleRule scheduleRule) throws SchedulerException {
-//        Scheduler scheduler = null;
-//        if (scheduleRule.getSchedulerBeanClass() != null) {
-//            scheduler = (Scheduler)getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
-//        } else if (scheduleRule.getSchedulerBeanId() != null) {
-//            scheduler = getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
-//        }
-//        if (scheduler == null) {
-//            throw new SchedulerServiceException("No such scheduler bean; Invalid ScheduleRule " + scheduleRule);
-//        }
-//
-//        List<ScheduledJobRule> jobRuleList = scheduleRule.getScheduledJobRuleList();
-//        for (ScheduledJobRule jobRule : jobRuleList) {
-//            if (isExposable(jobRule.getTransletName())) {
-//                JobDetail jobDetail = buildJobDetail(jobRule);
-//                if (jobDetail != null) {
-//                    String triggerName = jobDetail.getKey().getName();
-//                    String triggerGroup = scheduleRule.getId();
-//                    Trigger trigger = buildTrigger(triggerName, triggerGroup, scheduleRule);
-//                    scheduler.scheduleJob(jobDetail, trigger);
-//                }
-//            } else {
-//                logger.warn("Unexposed translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
-//            }
-//        }
-//
-//        return scheduler;
-//    }
-//
-//    private JobDetail buildJobDetail(@NonNull ScheduledJobRule jobRule) {
-//        String jobName = jobRule.getTransletName();
-//        String jobGroup = jobRule.getScheduleRule().getId();
-//
-//        JobDataMap jobDataMap = new JobDataMap();
-//        jobDataMap.put(SERVICE_DATA_KEY, this);
-//        jobDataMap.put(JOB_RULE_DATA_KEY, jobRule);
-//
-//        return JobBuilder.newJob(ActivityLauncherJob.class)
-//                .withIdentity(jobName, jobGroup)
-//                .setJobData(jobDataMap)
-//                .build();
-//    }
-//
-//    private Trigger buildTrigger(String name, String group, @NonNull ScheduleRule scheduleRule) {
-//        TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
-//        int startDelaySeconds = this.startDelaySeconds;
-//        if (expressionParameters.getStartDelaySeconds() != null) {
-//            startDelaySeconds += expressionParameters.getStartDelaySeconds();
-//        }
-//
-//        Date firstFireTime;
-//        if (startDelaySeconds > 0) {
-//            firstFireTime = new Date(System.currentTimeMillis() + (startDelaySeconds * 1000L));
-//        } else {
-//            firstFireTime = new Date();
-//        }
-//
-//        if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-//            Long intervalInMilliseconds = expressionParameters.getIntervalInMilliseconds();
-//            Integer intervalInSeconds = expressionParameters.getIntervalInSeconds();
-//            Integer intervalInMinutes = expressionParameters.getIntervalInMinutes();
-//            Integer intervalInHours = expressionParameters.getIntervalInHours();
-//            Integer repeatCount = expressionParameters.getRepeatCount();
-//            Boolean repeatForever = expressionParameters.getRepeatForever();
-//
-//            SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
-//            if (intervalInMilliseconds != null) {
-//                builder.withIntervalInMilliseconds(intervalInMilliseconds);
-//            }
-//            if (intervalInSeconds != null) {
-//                builder.withIntervalInSeconds(intervalInSeconds);
-//            }
-//            if (intervalInMinutes != null) {
-//                builder.withIntervalInMinutes(intervalInMinutes);
-//            }
-//            if (intervalInHours != null) {
-//                builder.withIntervalInHours(intervalInHours);
-//            }
-//            if (repeatCount != null) {
-//                builder.withRepeatCount(repeatCount);
-//            }
-//            if (Boolean.TRUE.equals(repeatForever)) {
-//                builder.repeatForever();
-//            }
-//
-//            return TriggerBuilder.newTrigger()
-//                    .withIdentity(name, group)
-//                    .startAt(firstFireTime)
-//                    .withSchedule(builder)
-//                    .build();
-//        } else {
-//            String expression = expressionParameters.getExpression();
-//            CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
-//
-//            return TriggerBuilder.newTrigger()
-//                    .withIdentity(name, group)
-//                    .startAt(firstFireTime)
-//                    .withSchedule(cronSchedule)
-//                    .build();
-//        }
-//    }
 
 }

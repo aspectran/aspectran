@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
@@ -94,16 +93,11 @@ public abstract class AbstractWebService extends AspectranCoreService implements
 
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        configure(aspectranConfig, null);
-    }
-
-    @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         if (!isDerived()) {
             if (getBasePath() == null) {
                 setBasePath(servletContext.getRealPath("/"));
             }
-            super.configure(aspectranConfig, applicationAdapter);
+            super.configure(aspectranConfig);
         }
 
         WebConfig webConfig = aspectranConfig.getWebConfig();

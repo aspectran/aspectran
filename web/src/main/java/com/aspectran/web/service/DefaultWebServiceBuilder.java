@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.AspectranServiceException;
@@ -160,12 +159,8 @@ public class DefaultWebServiceBuilder {
         if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
         }
-        ApplicationAdapter applicationAdapter = null;
-        if (parentService != null && parentService.getActivityContext() != null) {
-            applicationAdapter = parentService.getActivityContext().getApplicationAdapter();
-        }
         DefaultWebService webService = new DefaultWebService(servletContext, parentService, false);
-        webService.configure(aspectranConfig, applicationAdapter);
+        webService.configure(aspectranConfig);
         setServiceStateListener(webService);
         return webService;
     }

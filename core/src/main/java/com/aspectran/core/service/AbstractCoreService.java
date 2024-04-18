@@ -41,9 +41,7 @@ import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPER
  */
 public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final CoreService parentService;
+    private final Logger logger = LoggerFactory.getLogger(AbstractCoreService.class);
 
     private final boolean derived;
 
@@ -66,48 +64,28 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     public AbstractCoreService(CoreService parentService, boolean derived) {
-        super(true);
+        super(parentService);
 
-        if (parentService == null && derived) {
-            throw new IllegalArgumentException("parentService must not be null");
+        if (parentService == null) {
+            Assert.isTrue(!derived, "When in derived mode, parentService must not be null");
+        } else if (derived) {
+            Assert.state(parentService.getActivityContext() != null,
+                    "Oops! No ActivityContext configured");
         }
 
-        this.parentService = parentService;
         this.derived = derived;
-
         if (parentService != null) {
-            if (derived) {
-                Assert.state(parentService.getActivityContext() != null,
-                        "Oops! No ActivityContext configured");
-                this.activityContext = parentService.getActivityContext();
-                this.aspectranConfig = parentService.getAspectranConfig();
-            }
             setBasePath(parentService.getBasePath());
-            setRootService(parentService.getRootService());
-            parentService.getRootService().joinDerivedService(this);
-        } else {
-            setRootService(this);
+            if (derived) {
+                setActivityContext(parentService.getActivityContext());
+                setAspectranConfig(parentService.getAspectranConfig());
+            }
         }
-    }
-
-    @Override
-    public CoreService getParentService() {
-        return parentService;
-    }
-
-    @Override
-    public boolean isRootService() {
-        return (parentService == null);
     }
 
     @Override
     public boolean isDerived() {
         return derived;
-    }
-
-    @Override
-    public boolean isOrphan() {
-        return (parentService == null || parentService.getServiceLifeCycle().isActive());
     }
 
     @Override

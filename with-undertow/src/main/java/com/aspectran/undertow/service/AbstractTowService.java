@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
@@ -33,10 +32,6 @@ public abstract class AbstractTowService extends AspectranCoreService implements
     private String uriDecoding;
 
     private boolean trailingSlashRedirect;
-
-    AbstractTowService() {
-        super();
-    }
 
     AbstractTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
@@ -60,16 +55,11 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        configure(aspectranConfig, null);
-    }
-
-    @Override
-    protected void configure(@NonNull AspectranConfig aspectranConfig, ApplicationAdapter applicationAdapter) {
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
             configure(webConfig);
         }
-        super.configure(aspectranConfig, applicationAdapter);
+        super.configure(aspectranConfig);
     }
 
     protected void configure(@NonNull WebConfig webConfig) {

@@ -32,6 +32,7 @@ import com.aspectran.utils.logging.LoggerFactory;
  */
 public abstract class AbstractActivityContextParser implements ActivityContextParser {
 
+    /** Logger available to subclasses */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ActivityRuleAssistant assistant;
