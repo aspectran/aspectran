@@ -214,11 +214,15 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             doStart();
             active = true;
 
+            logger.info(getServiceName() + " restarted successfully");
+
             for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
                 serviceLifeCycle.start();
             }
 
-            logger.info(getServiceName() + " restarted successfully");
+            if (serviceStateListener != null) {
+                serviceStateListener.started();
+            }
         }
     }
 
