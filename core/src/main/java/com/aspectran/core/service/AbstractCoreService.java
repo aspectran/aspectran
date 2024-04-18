@@ -16,6 +16,7 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -75,7 +76,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
         this.derived = derived;
         if (parentService != null) {
-            setBasePath(parentService.getBasePath());
+//            setBasePath(parentService.getBasePath());
             if (derived) {
                 setActivityContext(parentService.getActivityContext());
                 setAspectranConfig(parentService.getAspectranConfig());
@@ -153,6 +154,15 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         Assert.state(!hasActivityContextBuilder(),
             "ActivityContextBuilder is already configured");
         this.activityContextBuilder = activityContextBuilder;
+    }
+
+    @Nullable
+    public ApplicationAdapter getApplicationAdapter() {
+        if (getRootService().getActivityContext() != null) {
+            return getRootService().getActivityContext().getApplicationAdapter();
+        } else {
+            return null;
+        }
     }
 
     @Override

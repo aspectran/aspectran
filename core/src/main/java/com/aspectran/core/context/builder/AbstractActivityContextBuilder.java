@@ -63,6 +63,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivityContextBuilder.class);
 
+    private final CoreService masterService;
+
     private ContextConfig contextConfig;
 
     private AspectranParameters aspectranParameters;
@@ -91,17 +93,21 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ContextReloadingTimer contextReloadingTimer;
 
-    private CoreService masterService;
-
     private SiblingClassLoader siblingClassLoader;
 
     private boolean useAponToLoadXml;
 
     private boolean debugMode;
 
-    public AbstractActivityContextBuilder() {
+    public AbstractActivityContextBuilder(CoreService masterService) {
+        this.masterService = masterService;
         this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY_NAME));
         this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
+    }
+
+    @Override
+    public CoreService getMasterService() {
+        return masterService;
     }
 
     @Override
@@ -223,16 +229,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public CoreService getMasterService() {
-        return masterService;
-    }
-
-    @Override
-    public void setMasterService(CoreService masterService) {
-        this.masterService = masterService;
-    }
-
-    @Override
     public ClassLoader getClassLoader() {
         return siblingClassLoader;
     }
@@ -245,8 +241,17 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         this.contextConfig = contextConfig;
 
-        if (getBasePath() == null) {
-            setBasePath(contextConfig.getBasePath());
+        if (getMasterService() != null) {
+            ApplicationAdapter applicationAdapter = getMasterService().getApplicationAdapter();
+            if (applicationAdapter != null) {
+                this.basePath = applicationAdapter.getBasePath();
+            }
+            if (this.basePath == null) {
+                setBasePath(getMasterService().getBasePath());
+            }
+        }
+        if (this.basePath == null) {
+            this.basePath = contextConfig.getBasePath();
         }
 
         this.contextRules = contextConfig.getContextRules();
@@ -309,10 +314,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.debugMode = debugMode;
     }
 
-    protected SiblingClassLoader createSiblingClassLoader() throws InvalidResourceException {
+    protected SiblingClassLoader createSiblingClassLoader(String contextName, ClassLoader parentClassLoader)
+        throws InvalidResourceException {
         if (siblingClassLoader == null || hardReload) {
-            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
-            siblingClassLoader = new SiblingClassLoader(contextName, resourceLocations);
+            siblingClassLoader = new SiblingClassLoader(contextName, parentClassLoader, resourceLocations);
         } else {
             siblingClassLoader.reload();
         }

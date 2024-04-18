@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
+import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.StringUtils;
@@ -36,25 +37,22 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     private static final Logger logger = LoggerFactory.getLogger(HybridActivityContextBuilder.class);
 
-    private ApplicationAdapter applicationAdapter;
-
-    private volatile ActivityContext activityContext;
+    /** Synchronization monitor for the "build" and "destroy" */
+    private final Object buildDestroyMonitor = new Object();
 
     /** Flag that indicates whether an ActivityContext is activated */
     private final AtomicBoolean active = new AtomicBoolean();
 
-    /** Synchronization monitor for the "build" and "destroy" */
-    private final Object buildDestroyMonitor = new Object();
-
     private ShutdownHook.Manager shutdownHookManager;
 
+    private ActivityContext activityContext;
+
     public HybridActivityContextBuilder() {
-        super();
+        this(null);
     }
 
-    @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public HybridActivityContextBuilder(CoreService masterService) {
+        super(masterService);
     }
 
     @Override
@@ -66,17 +64,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String[] contextRules) throws ActivityContextBuilderException {
+    public ActivityContext build(String... contextRules) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
             setContextRules(contextRules);
-            return doBuild();
-        }
-    }
-
-    @Override
-    public ActivityContext build(String contextRuleFile) throws ActivityContextBuilderException {
-        synchronized (this.buildDestroyMonitor) {
-            setContextRules(new String[] { contextRuleFile });
             return doBuild();
         }
     }
@@ -106,12 +96,27 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
-            ClassLoader classLoader = createSiblingClassLoader();
-            ApplicationAdapter applicationAdapter = this.applicationAdapter;
+            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
+            ClassLoader parentClassLoader = null;
+            if (getMasterService() != null && getMasterService().getParentService() != null) {
+                CoreService parentService = getMasterService().getParentService();
+                if (parentService != null) {
+                    parentClassLoader = parentService.getActivityContext().getClassLoader();
+                }
+            }
+
+            ClassLoader classLoader = createSiblingClassLoader(contextName, parentClassLoader);
+
+            ApplicationAdapter applicationAdapter = null;
+            if (getMasterService() != null) {
+                applicationAdapter = getMasterService().getApplicationAdapter();
+            }
             if (applicationAdapter == null) {
                 applicationAdapter = createApplicationAdapter();
             }
+
             EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
+
             ActivityRuleAssistant assistant = new ActivityRuleAssistant(
                 classLoader, applicationAdapter, environmentProfiles);
             assistant.prepare();

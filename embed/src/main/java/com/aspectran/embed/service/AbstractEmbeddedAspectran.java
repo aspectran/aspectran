@@ -99,11 +99,6 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return super.getApplicationAdapter();
-    }
-
-    @Override
     public void release() {
         stop();
     }

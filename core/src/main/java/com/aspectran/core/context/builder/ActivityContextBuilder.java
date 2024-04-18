@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.resource.InvalidResourceException;
@@ -31,6 +30,8 @@ public interface ActivityContextBuilder {
     String DEBUG_MODE_PROPERTY_NAME = "com.aspectran.core.context.builder.debugMode";
 
     String USE_APON_TO_LOAD_XML_PROPERTY_NAME = "com.aspectran.core.context.builder.useAponToLoadXml";
+
+    CoreService getMasterService();
 
     ContextConfig getContextConfig();
 
@@ -90,21 +91,14 @@ public interface ActivityContextBuilder {
 
     void setHardReload(boolean hardReload);
 
-    CoreService getMasterService();
-
-    void setMasterService(CoreService masterService);
-
     ClassLoader getClassLoader();
-
-    void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
     void configure(ContextConfig contextConfig) throws InvalidResourceException;
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 
-    ActivityContext build(String[] contextRules) throws ActivityContextBuilderException;
+    ActivityContext build(String... contextRules) throws ActivityContextBuilderException;
 
-    ActivityContext build(String contextRuleFile) throws ActivityContextBuilderException;
 
     ActivityContext build() throws ActivityContextBuilderException;
 

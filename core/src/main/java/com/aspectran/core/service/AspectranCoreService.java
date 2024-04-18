@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -30,7 +29,6 @@ import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -56,15 +54,6 @@ public class AspectranCoreService extends AbstractCoreService {
         super(parentService, derived);
     }
 
-    @Nullable
-    protected ApplicationAdapter getApplicationAdapter() {
-        if (getRootService().getActivityContext() != null) {
-            return getRootService().getActivityContext().getApplicationAdapter();
-        } else {
-            return null;
-        }
-    }
-
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
         Assert.state(!isDerived(),
             "Must not be called for derived services");
@@ -85,26 +74,15 @@ public class AspectranCoreService extends AbstractCoreService {
             }
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
-            if (getApplicationAdapter() == null && contextConfig != null) {
-                String basePath = contextConfig.getBasePath();
-                if (basePath != null) {
-                    setBasePath(basePath);
-                }
+            if (isRootService() && contextConfig != null) {
                 if (contextConfig.isSingleton() && !acquireSingletonLock()) {
                     throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
                         "running; Only one instance is allowed (context.singleton is set to true)");
                 }
             }
 
-            ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder();
-            if (getApplicationAdapter() != null) {
-                activityContextBuilder.setApplicationAdapter(getApplicationAdapter());
-                activityContextBuilder.setBasePath(getApplicationAdapter().getBasePath());
-            } else {
-                activityContextBuilder.setBasePath(getBasePath());
-            }
+            ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.configure(contextConfig);
-            activityContextBuilder.setMasterService(this);
             setActivityContextBuilder(activityContextBuilder);
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
