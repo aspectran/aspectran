@@ -867,7 +867,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
                 }
             }
         }
-
         return 0;
     }
 
@@ -1111,8 +1110,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Comparator used by {@link #sortBySpecificity(List)}.
      */
-    public static final Comparator<MediaType> SPECIFICITY_COMPARATOR = new SpecificityComparator<MediaType>() {
-
+    public static final Comparator<MediaType> SPECIFICITY_COMPARATOR = new SpecificityComparator<>() {
         @Override
         protected int compareParameters(@NonNull MediaType mediaType1, @NonNull MediaType mediaType2) {
             double quality1 = mediaType1.getQualityValue();
@@ -1123,7 +1121,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
             }
             return super.compareParameters(mediaType1, mediaType2);
         }
-
     };
 
 
@@ -1132,7 +1129,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param <T> the type of mime types that may be compared by this comparator
      */
     public static class SpecificityComparator<T extends MediaType> implements Comparator<T> {
-
         @Override
         public int compare(@NonNull T MediaType1, T MediaType2) {
             if (MediaType1.isWildcardType() && !MediaType2.isWildcardType()) {  // */* < audio/*
@@ -1159,7 +1155,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
             int paramsSize2 = mediaType2.getParameters().size();
             return Integer.compare(paramsSize2, paramsSize1);  // audio/basic;level=1 < audio/basic
         }
-
     }
 
 }
