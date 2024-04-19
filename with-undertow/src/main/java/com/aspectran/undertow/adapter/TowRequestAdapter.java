@@ -15,22 +15,20 @@
  */
 package com.aspectran.undertow.adapter;
 
-import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
-import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.web.activity.request.WebRequestBodyParser;
+import com.aspectran.web.adapter.AbstractWebRequestAdapter;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderMap;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
 import io.undertow.util.LocaleUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -41,17 +39,9 @@ import java.util.Map;
  *
  * <p>Created: 2019-07-27</p>
  */
-public class TowRequestAdapter extends AbstractRequestAdapter {
-
-    private static final Logger logger = LoggerFactory.getLogger(TowRequestAdapter.class);
+public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
     private boolean headersObtained;
-
-    private boolean encodingObtained;
-
-    private boolean bodyObtained;
-
-    private MediaType mediaType;
 
     /**
      * Instantiates a new TowRequestAdapter.
@@ -66,9 +56,10 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     public MultiValueMap<String, String> getHeaderMap() {
         if (!headersObtained) {
             headersObtained = true;
-            if (getHttpServerExchange().getRequestHeaders().size() > 0) {
+            HeaderMap headerMap = getHttpServerExchange().getRequestHeaders();
+            if (headerMap.size() > 0) {
                 MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
-                for (HeaderValues headerValues : getHttpServerExchange().getRequestHeaders()) {
+                for (HeaderValues headerValues : headerMap) {
                     String name = headerValues.getHeaderName().toString();
                     for (String value : headerValues) {
                         multiValueMap.add(name, value);
@@ -80,19 +71,6 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
-    public String getEncoding() {
-        if (!encodingObtained) {
-            encodingObtained = true;
-            String contentType = getHttpServerExchange().getRequestHeaders().getFirst(Headers.CONTENT_TYPE);
-            if (contentType == null) {
-                return null;
-            }
-            return Headers.extractQuotedValueFromHeader(contentType, MediaType.PARAM_CHARSET);
-        }
-        return super.getEncoding();
-    }
-
-    @Override
     public InputStream getInputStream() throws IOException {
         if (!getHttpServerExchange().isBlocking()) {
             getHttpServerExchange().startBlocking();
@@ -100,47 +78,11 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         return getHttpServerExchange().getInputStream();
     }
 
-    @Override
-    public String getBody() {
-        if (!bodyObtained) {
-            bodyObtained = true;
-            try {
-                String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
-                setBody(body);
-            } catch (Exception e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Failed to parse request body", e);
-                }
-                setBody(null);
-            }
-        }
-        return super.getBody();
-    }
-
-    @Override
-    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
-        if (getMediaType() != null) {
-            return WebRequestBodyParser.parseBodyAsParameters(this, getMediaType(), requiredType);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Gets the media type value included in the Content-Type header.
-     */
-    public MediaType getMediaType() {
-        return mediaType;
-    }
-
-    private void setMediaType(MediaType mediaType) {
-        this.mediaType = mediaType;
-    }
-
     private HttpServerExchange getHttpServerExchange() {
         return getAdaptee();
     }
 
+    @Override
     public void preparse() {
         HttpServerExchange exchange = getAdaptee();
         for (Map.Entry<String, Deque<String>> entry : exchange.getQueryParameters().entrySet()) {
@@ -150,7 +92,15 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         }
         String contentType = exchange.getRequestHeaders().getFirst(Headers.CONTENT_TYPE);
         if (contentType != null) {
-            setMediaType(MediaType.parseMediaType(contentType));
+            MediaType mediaType = MediaType.parseMediaType(contentType);
+            setMediaType(mediaType);
+            if (mediaType.getCharset() != null) {
+                try {
+                    setEncoding(mediaType.getCharset().name());
+                } catch (UnsupportedEncodingException e) {
+                    // ignored
+                }
+            }
         }
         String acceptLanguage = exchange.getRequestHeaders().getFirst(Headers.ACCEPT_LANGUAGE);
         List<Locale> locales = LocaleUtils.getLocalesFromHeader(acceptLanguage);
@@ -159,7 +109,8 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         }
     }
 
-    public void preparse(TowRequestAdapter requestAdapter) {
+    @Override
+    public void preparse(WebRequestAdapter requestAdapter) {
         if (requestAdapter == this) {
             throw new IllegalStateException("Unable To Replicate");
         }

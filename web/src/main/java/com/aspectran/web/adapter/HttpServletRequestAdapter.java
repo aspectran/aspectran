@@ -15,16 +15,10 @@
  */
 package com.aspectran.web.adapter;
 
-import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
-import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.request.RequestAttributeMap;
-import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -39,15 +33,9 @@ import java.util.Map;
  *
  * @since 2011. 3. 13.
  */
-public class HttpServletRequestAdapter extends AbstractRequestAdapter {
-
-    private static final Logger logger = LoggerFactory.getLogger(HttpServletRequestAdapter.class);
+public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     private boolean headersObtained;
-
-    private boolean bodyObtained;
-
-    private MediaType mediaType;
 
     /**
      * Instantiates a new HttpServletRequestAdapter.
@@ -80,56 +68,24 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     @Override
     public String getEncoding() {
-        return ((HttpServletRequest)getAdaptee()).getCharacterEncoding();
+        return getHttpServletRequest().getCharacterEncoding();
     }
 
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
-        ((HttpServletRequest)getAdaptee()).setCharacterEncoding(encoding);
+        getHttpServletRequest().setCharacterEncoding(encoding);
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return ((HttpServletRequest)getAdaptee()).getInputStream();
+        return getHttpServletRequest().getInputStream();
     }
 
+    private HttpServletRequest getHttpServletRequest() {
+        return getAdaptee();
+    }
+    
     @Override
-    public String getBody() {
-        if (!bodyObtained) {
-            bodyObtained = true;
-            try {
-                String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
-                setBody(body);
-            } catch (Exception e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Failed to parse request body", e);
-                }
-                setBody(null);
-            }
-        }
-        return super.getBody();
-    }
-
-    @Override
-    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
-        if (getMediaType() != null) {
-            return WebRequestBodyParser.parseBodyAsParameters(this, getMediaType(), requiredType);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Gets the media type value included in the Content-Type header.
-     */
-    public MediaType getMediaType() {
-        return mediaType;
-    }
-
-    private void setMediaType(MediaType mediaType) {
-        this.mediaType = mediaType;
-    }
-
     public void preparse() {
         HttpServletRequest request = getAdaptee();
         setAttributeMap(new RequestAttributeMap(request));
@@ -137,13 +93,23 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
-        if (request.getContentType() != null) {
-            setMediaType(MediaType.parseMediaType(request.getContentType()));
+        String contentType = request.getContentType();
+        if (contentType != null) {
+            MediaType mediaType = MediaType.parseMediaType(contentType);
+            setMediaType(mediaType);
+            if (mediaType.getCharset() != null) {
+                try {
+                    setEncoding(mediaType.getCharset().name());
+                } catch (UnsupportedEncodingException e) {
+                    // ignored
+                }
+            }
         }
         setLocale(request.getLocale());
     }
 
-    public void preparse(HttpServletRequestAdapter requestAdapter) {
+    @Override
+    public void preparse(WebRequestAdapter requestAdapter) {
         if (requestAdapter == this) {
             throw new IllegalStateException("Unable To Replicate");
         }

@@ -33,9 +33,8 @@ import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.activity.request.MultipartFormDataParser;
-import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
+import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
@@ -45,15 +44,12 @@ import io.undertow.server.session.SessionManager;
 import java.io.UnsupportedEncodingException;
 
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
+import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUEST_SIZE_SETTING_NAME;
 
 /**
  * <p>Created: 2019-07-27</p>
  */
 public class TowActivity extends CoreActivity {
-
-    private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
-
-    private static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
     private final HttpServerExchange exchange;
 
@@ -192,38 +188,13 @@ public class TowActivity extends CoreActivity {
         MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
         if (mediaType != null) {
             if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
-                parseMultipartFormData();
+                WebRequestBodyParser.parseMultipartFormData(this);
             } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                parseURLEncodedFormData();
+                WebRequestBodyParser.parseURLEncodedFormData((WebRequestAdapter)getRequestAdapter());
             }
         }
 
         super.parseRequest();
-    }
-
-    /**
-     * Parse the multipart form data.
-     */
-    private void parseMultipartFormData() throws MultipartRequestParseException {
-        String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-        if (multipartFormDataParser == null) {
-            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' for multipart " +
-                    "form data parsing is not specified. Please specify 'multipartFormDataParser' via Aspect so " +
-                    "that Translet can parse multipart form data.");
-        }
-
-        MultipartFormDataParser parser = getBean(multipartFormDataParser);
-        if (parser == null) {
-            throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined");
-        }
-        parser.parse(getRequestAdapter());
-    }
-
-    /**
-     * Parse the URL-encoded Form Data to get the request parameters.
-     */
-    private void parseURLEncodedFormData() throws RequestParseException {
-        WebRequestBodyParser.parseURLEncodedFormData(getRequestAdapter());
     }
 
     @Override
