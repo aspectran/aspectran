@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -201,12 +202,14 @@ public class AspectranConfig extends AbstractParameters {
         } else {
             basePath = args[0];
         }
-        if (basePath != null) {
+        if (StringUtils.hasText(basePath)) {
             try {
                 basePath = new File(basePath).getCanonicalPath();
             } catch (IOException e) {
                 throw new IllegalArgumentException("Unable to determine the base path", e);
             }
+        } else {
+            basePath = null;
         }
         return basePath;
     }
@@ -216,7 +219,7 @@ public class AspectranConfig extends AbstractParameters {
         File file;
         if (args == null || args.length == 0) {
             String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
-            if (basePath != null) {
+            if (StringUtils.hasText(basePath)) {
                 file = new File(basePath, DEFAULT_ASPECTRAN_CONFIG_FILE);
             } else {
                 file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);

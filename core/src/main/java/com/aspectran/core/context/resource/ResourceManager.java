@@ -310,7 +310,7 @@ public class ResourceManager {
                 } else {
                     try {
                         File f;
-                        if (basePath != null) {
+                        if (StringUtils.hasText(basePath)) {
                             f = new File(basePath, tempLocation);
                             if (!f.exists()) {
                                 File f2 = new File(tempLocation);

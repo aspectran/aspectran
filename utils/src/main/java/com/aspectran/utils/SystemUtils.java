@@ -33,11 +33,11 @@ public abstract class SystemUtils {
     private static final String USER_DIR_PROPERTY = "user.dir";
 
     /**
-     * <p>Gets a System property, defaulting to <code>null</code> if the property
-     * cannot be read.</p>
-     * <p>If a <code>SecurityException</code> is caught, the return value is <code>null</code>.</p>
+     * Gets a System property, defaulting to {@code null} if the property
+     * cannot be read.
+     * If a {@code SecurityException} is caught, the return value is {@code null}.
      * @param key the name of the system property
-     * @return the system property value or <code>null</code> if a security problem occurs
+     * @return the system property value or {@code null} if a security problem occurs
      */
     @Nullable
     public static String getProperty(String key) {
@@ -57,6 +57,20 @@ public abstract class SystemUtils {
     public static String getProperty(String name, String defVal) {
         String val = getProperty(name);
         return (val != null ? val : defVal);
+    }
+
+    @Nullable
+    public static String clearProperty(String key) {
+        try {
+            return System.clearProperty(key);
+        } catch (Exception ex) { // AccessControlException is deprecated for removal
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format(
+                    "Caught AccessControlException when accessing system property [%s]. Reason: %s",
+                    key, ex.getMessage()));
+            }
+            return null;
+        }
     }
 
     public static String getJavaIoTmpDir() {

@@ -24,7 +24,7 @@ import java.io.PrintStream;
  * Class that exposes the build information of Aspectran.
  * Fetches the "Implementation-Version" manifest attribute from the jar file.
  */
-public class Aspectran {
+public abstract class Aspectran {
 
     public static final String VERSION;
 
@@ -48,12 +48,6 @@ public class Aspectran {
 
         // Show warning when RC# or M# is in version string
         STABLE = !VERSION.matches("^.*\\.(RC|M)[0-9]+$");
-    }
-
-    /**
-     * No public constructor to prevent instances from being created.
-     */
-    private Aspectran() {
     }
 
     public static String getVersion() {

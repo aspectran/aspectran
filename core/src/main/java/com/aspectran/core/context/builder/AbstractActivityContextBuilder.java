@@ -52,24 +52,38 @@ import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 public abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivityContextBuilder.class);
+
+    private static final String TMP_BASE_DIRNAME_PREFIX = "com.aspectran-";
+
+    private String basePath;
+
+    private boolean ownBasePath;
 
     private final CoreService masterService;
 
     private ContextConfig contextConfig;
 
     private AspectranParameters aspectranParameters;
-
-    private String basePath;
 
     private String[] contextRules;
 
@@ -106,6 +120,29 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    @Override
+    public void setBasePath(String basePath) {
+        if (StringUtils.hasText(basePath)) {
+            this.basePath = basePath;
+        } else {
+            this.basePath = null;
+        }
+    }
+
+    @Override
+    public boolean hasOwnBasePath() {
+        return ownBasePath;
+    }
+
+    protected void setOwnBasePath(boolean ownBasePath) {
+        this.ownBasePath = ownBasePath;
+    }
+
+    @Override
     public CoreService getMasterService() {
         return masterService;
     }
@@ -124,16 +161,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
         this.contextRules = null;
-    }
-
-    @Override
-    public String getBasePath() {
-        return basePath;
-    }
-
-    @Override
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
     }
 
     @Override
@@ -234,24 +261,20 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void configure(ContextConfig contextConfig) throws InvalidResourceException {
-        if (contextConfig == null) {
-            throw new IllegalArgumentException("contextConfig must not be null");
-        }
-
+    public void configure(ContextConfig contextConfig) throws IOException, InvalidResourceException {
+        Assert.notNull(contextConfig, "contextConfig must not be null");
         this.contextConfig = contextConfig;
 
-        if (getMasterService() != null) {
-            ApplicationAdapter applicationAdapter = getMasterService().getApplicationAdapter();
-            if (applicationAdapter != null) {
-                this.basePath = applicationAdapter.getBasePath();
-            }
-            if (this.basePath == null) {
-                setBasePath(getMasterService().getBasePath());
+        if (this.basePath == null) {
+            if (getMasterService() != null) {
+                this.basePath = getMasterService().getBasePath();
+            } else {
+                this.basePath = contextConfig.getBasePath();
             }
         }
-        if (this.basePath == null) {
-            this.basePath = contextConfig.getBasePath();
+
+        if (getMasterService() == null || getMasterService().isRootService()) {
+            checkDirectoryStructure();
         }
 
         this.contextRules = contextConfig.getContextRules();
@@ -504,6 +527,80 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     logger.debug(msg);
                 }
             }
+        }
+    }
+
+    public void clear() {
+        SystemUtils.clearProperty(BASE_PATH_PROPERTY_NAME);
+        SystemUtils.clearProperty(WORK_PATH_PROPERTY_NAME);
+        SystemUtils.clearProperty(TEMP_PATH_PROPERTY_NAME);
+    }
+
+    private void checkDirectoryStructure() throws IOException {
+        setOwnBasePath(true);
+
+        // Determines the path of the base directory
+        if (getBasePath() == null) {
+            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            File baseDir;
+            if (StringUtils.hasText(basePath)) {
+                baseDir = new File(basePath);
+                if (!baseDir.isDirectory()) {
+                    throw new IOException("Make sure it is a valid base directory; " +
+                        BASE_PATH_PROPERTY_NAME + "=" + basePath);
+                }
+            } else {
+                setOwnBasePath(false);
+                try {
+                    String tmpDir = SystemUtils.getJavaIoTmpDir();
+                    baseDir = Files.createTempDirectory(Path.of(tmpDir), TMP_BASE_DIRNAME_PREFIX).toFile();
+                    baseDir.deleteOnExit();
+                } catch (IOException e) {
+                    throw new IOException("Could not verify the base directory", e);
+                }
+            }
+            try {
+                setBasePath(baseDir.getCanonicalPath());
+                System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
+            } catch (IOException e) {
+                throw new IOException("Could not verify the base directory", e);
+            }
+        } else {
+            System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
+        }
+
+        // Determines the path of the working directory.
+        // If a 'work' directory exists under the base directory,
+        // set it as the system property 'aspectran.workPath'.
+        File workDir = null;
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        if (StringUtils.hasText(workPath)) {
+            workDir = new File(workPath);
+        }
+        if (workDir == null || !workDir.isDirectory()) {
+            workDir = new File(getBasePath(), "work");
+        }
+        try {
+            System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
+        } catch (Exception e) {
+            logger.warn("Could not verify the working directory: " + workDir);
+        }
+
+        // Determines the path of the temporary directory.
+        // If a 'temp' directory exists under the base directory,
+        // set it as the system property 'aspectran.tempPath'.
+        File tempDir = null;
+        String tempPath = SystemUtils.getProperty(TEMP_PATH_PROPERTY_NAME);
+        if (StringUtils.hasText(tempPath)) {
+            tempDir = new File(tempPath);
+        }
+        if (tempDir == null || !tempDir.isDirectory()) {
+            tempDir = new File(getBasePath(), "temp");
+        }
+        try {
+            System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
+        } catch (Exception e) {
+            logger.warn("Could not verify the temporary directory: " + tempDir);
         }
     }
 

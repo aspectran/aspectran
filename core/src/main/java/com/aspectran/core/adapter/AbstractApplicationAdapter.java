@@ -17,6 +17,7 @@ package com.aspectran.core.adapter;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,12 +71,10 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
                 throw new FileNotFoundException("Could not find resource file for given classpath: " + path);
             }
             file = new File(url.getFile());
+        } else if (StringUtils.hasText(basePath)) {
+            file = new File(basePath, filePath);
         } else {
-            if (basePath != null) {
-                file = new File(basePath, filePath);
-            } else {
-                file = new File(filePath);
-            }
+            file = new File(filePath);
         }
         return file;
     }

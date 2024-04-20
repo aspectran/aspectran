@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.type.AppenderType;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.io.File;
@@ -54,10 +55,10 @@ public class FileRuleAppender extends AbstractRuleAppender {
     }
 
     public File getFile() {
-        if (basePath == null) {
-            return new File(filePath);
-        } else {
+        if (StringUtils.hasText(basePath)) {
             return new File(basePath, filePath);
+        } else {
+            return new File(filePath);
         }
     }
 

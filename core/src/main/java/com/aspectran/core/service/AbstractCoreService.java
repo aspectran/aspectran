@@ -24,25 +24,13 @@ import com.aspectran.core.scheduler.service.DefaultSchedulerServiceBuilder;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-
-import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
-import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
-import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
  * The Class AbstractCoreService.
  */
 public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
-
-    private final Logger logger = LoggerFactory.getLogger(AbstractCoreService.class);
 
     private final boolean derived;
 
@@ -75,12 +63,9 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         }
 
         this.derived = derived;
-        if (parentService != null) {
-//            setBasePath(parentService.getBasePath());
-            if (derived) {
-                setActivityContext(parentService.getActivityContext());
-                setAspectranConfig(parentService.getAspectranConfig());
-            }
+        if (parentService != null && derived) {
+            setAspectranConfig(parentService.getAspectranConfig());
+            setActivityContext(parentService.getActivityContext());
         }
     }
 
@@ -222,77 +207,6 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         Assert.state(getAspectranConfig() != null, "AspectranConfig is not set");
         if (getAspectranConfig().hasSchedulerConfig() && getAspectranConfig().getSchedulerConfig().isEnabled()) {
             this.schedulerService = DefaultSchedulerServiceBuilder.build(this, getAspectranConfig().getSchedulerConfig());
-        }
-    }
-
-    protected void checkDirectoryStructure() {
-        // Determines the path of the base directory
-        try {
-            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
-            if (basePath != null) {
-                File baseDir = new File(basePath);
-                if (!baseDir.isDirectory()) {
-                    throw new AspectranServiceException("Make sure it is a valid base directory; " +
-                            BASE_PATH_PROPERTY_NAME + "=" + basePath);
-                }
-            } else {
-                basePath = new File("").getCanonicalPath();
-            }
-            setBasePath(basePath);
-        } catch (IOException e) {
-            throw new AspectranServiceException("Could not verify the base directory", e);
-        }
-
-        // Determines the path of the working directory
-        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
-        if (workPath != null) {
-            File workDir = new File(workPath);
-            if (!workDir.isDirectory()) {
-                throw new AspectranServiceException("Make sure it is a valid working directory; " +
-                        WORK_PATH_PROPERTY_NAME + "=" + workPath);
-            }
-        } else {
-            /*
-             * Sets the path to the working directory as a system property.
-             * The property {@code aspectran.workPath} is set if the working
-             * directory {@code work} exists under the base directory.
-             */
-            File workDir = new File(getBasePath(), "work");
-            if (workDir.isDirectory()) {
-                try {
-                    System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
-                } catch (Exception e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Could not verify the working directory: " + workDir);
-                    }
-                }
-            }
-        }
-
-        // Determines the path of the temporary directory
-        String tempPath = SystemUtils.getProperty(TEMP_PATH_PROPERTY_NAME);
-        if (tempPath != null) {
-            File tempDir = new File(tempPath);
-            if (!tempDir.isDirectory()) {
-                throw new AspectranServiceException("Make sure it is a valid temporary directory; " +
-                        TEMP_PATH_PROPERTY_NAME + "=" + tempPath);
-            }
-        } else {
-            /*
-             * Sets the path to the temporary directory as a system property.
-             * The property {@code aspectran.tempPath} is set if the temporary
-             * directory {@code temp} exists under the base directory.
-             */
-            File tempDir = new File(getBasePath(), "temp");
-            if (tempDir.isDirectory()) {
-                try {
-                    System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
-                } catch (Exception e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Could not verify the temporary directory: " + tempDir);
-                    }
-                }
-            }
         }
     }
 

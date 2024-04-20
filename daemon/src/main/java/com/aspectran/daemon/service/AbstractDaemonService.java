@@ -42,7 +42,6 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
 
     AbstractDaemonService() {
         super();
-        checkDirectoryStructure();
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
@@ -70,7 +71,11 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public ContextConfig setName(String name) {
-        putValue(name, ContextConfig.name);
+        if (StringUtils.hasText(name)) {
+            putValue(ContextConfig.name, name);
+        } else if (hasValue(name)) {
+            removeValue(ContextConfig.name);
+        }
         return this;
     }
 
@@ -78,8 +83,16 @@ public class ContextConfig extends AbstractParameters {
         return getString(base);
     }
 
+    public boolean hasBasePath() {
+        return hasValue(base);
+    }
+
     public ContextConfig setBasePath(String basePath) {
-        putValue(base, basePath);
+        if (StringUtils.hasText(basePath)) {
+            putValue(base, basePath);
+        } else if (hasValue(base)) {
+            removeValue(base);
+        }
         return this;
     }
 

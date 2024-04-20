@@ -134,7 +134,7 @@ public class OutputRedirection {
             List<Writer> writers = new ArrayList<>(redirectionList.size());
             for (OutputRedirection redirection : redirectionList) {
                 if (!StringUtils.hasText(redirection.getOperand())) {
-                    throw new FileNotFoundException("Redirect destination file not specified");
+                    throw new IllegalArgumentException("Redirect destination file not specified");
                 }
                 File file;
                 Path path = Paths.get(redirection.getOperand());
@@ -145,7 +145,9 @@ public class OutputRedirection {
                 } else {
                     file = new File(redirection.getOperand());
                 }
-                file.getParentFile().mkdirs();
+                if (file.getParentFile() != null) {
+                    file.getParentFile().mkdirs();
+                }
                 boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
                 OutputStream stream = new FileOutputStream(file, append);
                 writers.add(new OutputStreamWriter(stream, console.getEncoding()));

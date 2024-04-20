@@ -37,7 +37,7 @@ import java.util.List;
  * All copy methods use a block size of 4096 bytes,
  * and close all affected streams when done.
  */
-public class FileCopyUtils {
+public abstract class FileCopyUtils {
 
     /**
      * The default buffer size ({@value}) to use in copy methods.

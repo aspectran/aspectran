@@ -84,7 +84,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         console.getOutput().flush();
     }
 
-    public void prepare(@Nullable String basePath, @NonNull File aspectranConfigFile) throws Exception {
+    public void configure(@Nullable String basePath, @NonNull File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig;
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
@@ -93,13 +93,8 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                     aspectranConfigFile, e);
         }
 
-        if (basePath != null) {
+        if (StringUtils.hasText(basePath)) {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
-        }
-
-        File workingDir = determineWorkingDir();
-        if (workingDir != null) {
-            console.setWorkingDir(workingDir);
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
@@ -114,7 +109,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
 
         String historyFile = shellConfig.getHistoryFile();
         if (StringUtils.hasLength(historyFile)) {
-            if (basePath != null) {
+            if (StringUtils.hasText(basePath)) {
                 historyFile = new File(basePath, historyFile).getCanonicalPath();
             } else {
                 historyFile = new File(historyFile).getCanonicalPath();
@@ -127,6 +122,8 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         if (aspectranConfig.hasContextConfig()) {
             shellService = DefaultShellServiceBuilder.build(aspectranConfig, console);
             shellService.start();
+            File workingDir = determineWorkingDir();
+            console.setWorkingDir(workingDir);
         } else {
             String greetings = shellConfig.getGreetings();
             if (StringUtils.hasText(greetings)) {
@@ -141,7 +138,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
-    public void perform() {
+    public void run() {
         try {
             console.setConsoleCommander(this);
 
@@ -186,7 +183,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             console.setConsoleCommander(null);
 
             if (logger.isDebugEnabled()) {
-                if (shellService != null && shellService.getServiceLifeCycle().isActive()) {
+                if (shellService != null && shellService.isActive()) {
                     logger.debug("Do not terminate this application while releasing all resources");
                 }
             }
@@ -260,18 +257,11 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     @Nullable
     private File determineWorkingDir() {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
-        if (workPath != null) {
+        if (StringUtils.hasText(workPath)) {
             return new File(workPath);
+        } else {
+            return null;
         }
-        String userHome = SystemUtils.getUserHome();
-        if (userHome != null) {
-            return new File(userHome);
-        }
-        String userDir = SystemUtils.getUserDir();
-        if (userDir != null) {
-            return new File(userDir);
-        }
-        return null;
     }
 
 }

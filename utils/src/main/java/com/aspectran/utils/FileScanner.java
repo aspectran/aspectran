@@ -104,7 +104,7 @@ public class FileScanner {
 
     protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
         final File target;
-        if (basePath != null) {
+        if (StringUtils.hasText(basePath)) {
             target = new File(basePath, targetPath);
         } else {
             target = new File(targetPath);

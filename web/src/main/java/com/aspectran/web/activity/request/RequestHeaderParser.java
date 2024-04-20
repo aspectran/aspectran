@@ -32,16 +32,13 @@ import java.util.List;
  *
  * @since 6.2.0
  */
-public class RequestHeaderParser {
+public abstract class RequestHeaderParser {
 
     /**
      * A singleton list with {@link MediaType#ALL} that is returned from
      * {@link #resolveAcceptContentTypes} when no specific media types are requested.
      */
     public static final List<MediaType> MEDIA_TYPE_ALL_LIST = Collections.singletonList(MediaType.ALL);
-
-    private RequestHeaderParser() {
-    }
 
     @NonNull
     public static List<MediaType> resolveAcceptContentTypes(@NonNull RequestAdapter requestAdapter)

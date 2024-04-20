@@ -25,7 +25,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * <p>Created: 4/1/24</p>
  */
-public class DefaultDaemonServiceBuilder {
+public abstract class DefaultDaemonServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultDaemonServiceBuilder.class);
 

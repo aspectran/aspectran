@@ -62,12 +62,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     AbstractShellService(ShellConsole console) {
         super();
 
-        if (console == null) {
-            throw new IllegalArgumentException("console must not be null");
-        }
+        Assert.notNull(console, "console must not be null");
         this.console = console;
-
-        checkDirectoryStructure();
     }
 
     @Override

@@ -15,7 +15,6 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -44,7 +43,6 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
 
     AbstractEmbeddedAspectran() {
         super();
-        checkDirectoryStructure();
     }
 
     @Override

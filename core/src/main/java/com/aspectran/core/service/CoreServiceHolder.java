@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>Created: 01/10/2019</p>
  */
-public class CoreServiceHolder {
+public abstract class CoreServiceHolder {
 
     private static final Map<ClassLoader, CoreService> servicesByLoader = new ConcurrentHashMap<>();
 

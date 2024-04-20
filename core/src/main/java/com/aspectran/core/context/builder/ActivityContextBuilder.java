@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.CoreService;
 
+import java.io.IOException;
+
 /**
  * Strategy interface for building ActivityContext.
  */
@@ -31,13 +33,15 @@ public interface ActivityContextBuilder {
 
     String USE_APON_TO_LOAD_XML_PROPERTY_NAME = "com.aspectran.core.context.builder.useAponToLoadXml";
 
-    CoreService getMasterService();
-
-    ContextConfig getContextConfig();
-
     String getBasePath();
 
     void setBasePath(String basePath);
+
+    boolean hasOwnBasePath();
+
+    CoreService getMasterService();
+
+    ContextConfig getContextConfig();
 
     AspectranParameters getAspectranParameters();
 
@@ -93,7 +97,7 @@ public interface ActivityContextBuilder {
 
     ClassLoader getClassLoader();
 
-    void configure(ContextConfig contextConfig) throws InvalidResourceException;
+    void configure(ContextConfig contextConfig) throws InvalidResourceException, IOException;
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 
@@ -103,6 +107,8 @@ public interface ActivityContextBuilder {
     ActivityContext build() throws ActivityContextBuilderException;
 
     void destroy();
+
+    void clear();
 
     boolean isActive();
 

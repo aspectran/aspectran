@@ -29,6 +29,7 @@ import com.aspectran.daemon.command.polling.FileCommander;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.daemon.service.DefaultDaemonService;
 import com.aspectran.daemon.service.DefaultDaemonServiceBuilder;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponParseException;
@@ -120,7 +121,7 @@ public class AbstractDaemon implements Daemon {
     }
 
     protected void prepare(@Nullable String basePath, @NonNull AspectranConfig aspectranConfig) throws Exception {
-        if (basePath != null) {
+        if (StringUtils.hasText(basePath)) {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 

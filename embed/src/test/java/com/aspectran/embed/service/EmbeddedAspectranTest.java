@@ -20,11 +20,15 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,10 +41,14 @@ class EmbeddedAspectranTest {
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    void ready() {
+    void ready() throws IOException {
         //String rootFile = "classpath:config/embedded/embedded-aspectran-context.xml";
+        File file = new File("./target/test-classes/config/embedded/embedded-aspectran-context.xml");
+        String ruleFile = ResourceUtils.FILE_URL_PREFIX + file.getCanonicalPath();
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig().setContextRules(new String[] {"./target/test-classes/config/embedded/embedded-aspectran-context.xml"});
+        aspectranConfig
+            .newContextConfig()
+            .setContextRules(new String[] {ruleFile});
         aspectranConfig.newEmbedConfig().newSessionManagerConfig().setEnabled(true);
         System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY_NAME, "true");
         aspectran = EmbeddedAspectran.run(aspectranConfig);

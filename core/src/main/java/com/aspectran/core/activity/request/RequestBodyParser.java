@@ -25,10 +25,7 @@ import com.aspectran.utils.apon.Parameters;
  *
  * @since 6.2.0
  */
-public class RequestBodyParser {
-
-    private RequestBodyParser() {
-    }
+public abstract class RequestBodyParser {
 
     @Nullable
     public static <T extends Parameters> T parseBodyAsParameters(String body, Class<T> requiredType)

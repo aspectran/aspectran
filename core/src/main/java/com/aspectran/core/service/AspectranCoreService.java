@@ -27,7 +27,6 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
-import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -74,16 +73,28 @@ public class AspectranCoreService extends AbstractCoreService {
             }
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
-            if (isRootService() && contextConfig != null) {
-                if (contextConfig.isSingleton() && !acquireSingletonLock()) {
-                    throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
-                        "running; Only one instance is allowed (context.singleton is set to true)");
+            if (isRootService()) {
+                if (getBasePath() == null && contextConfig != null && contextConfig.hasBasePath()) {
+                    setBasePath(contextConfig.getBasePath());
                 }
+            } else {
+                setBasePath(getParentService().getBasePath());
             }
 
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.configure(contextConfig);
             setActivityContextBuilder(activityContextBuilder);
+            if (getBasePath() == null) {
+                setBasePath(activityContextBuilder.getBasePath());
+            }
+
+            if (isRootService() && contextConfig != null && contextConfig.isSingleton()) {
+                if (activityContextBuilder.hasOwnBasePath()) {
+                    acquireSingletonLock();
+                } else {
+                    logger.warn("Since no base directory is explicitly specified, no singleton lock is applied");
+                }
+            }
         } catch (Exception e) {
             throw new AspectranServiceException("Unable to prepare the service", e);
         }
@@ -155,22 +166,16 @@ public class AspectranCoreService extends AbstractCoreService {
         if (isRootService()) {
             releaseSingletonLock();
             removeShutdownTask();
+            getActivityContextBuilder().clear();
         }
     }
 
-    private boolean acquireSingletonLock() throws Exception {
+    private void acquireSingletonLock() throws Exception {
         Assert.state(fileLocker == null, "Singleton lock is already configured");
-        try {
-            String basePath = getBasePath();
-            if (basePath == null) {
-                basePath = SystemUtils.getJavaIoTmpDir();
-            }
-            Assert.state(basePath != null,
-                "Unable to determine the directory where the lock file will be located");
-            fileLocker = new FileLocker(basePath);
-            return fileLocker.lock();
-        } catch (Exception e) {
-            throw new Exception("Unable to acquire singleton lock", e);
+        fileLocker = new FileLocker(getBasePath());
+        if (!fileLocker.lock()) {
+            throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
+                "running; Only one instance is allowed (context.singleton is set to true)");
         }
     }
 

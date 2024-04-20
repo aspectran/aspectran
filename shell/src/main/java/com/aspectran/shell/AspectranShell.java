@@ -56,8 +56,8 @@ public class AspectranShell {
         try {
             ShellConsole console = new DefaultShellConsole();
             commander = new DefaultConsoleCommander(console);
-            commander.prepare(basePath, aspectranConfigFile);
-            commander.perform();
+            commander.configure(basePath, aspectranConfigFile);
+            commander.run();
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof InsufficientEnvironmentException) {

@@ -58,8 +58,8 @@ public class JLineAspectranShell {
         try {
             JLineShellConsole console = new JLineShellConsole();
             commander = new JLineConsoleCommander(console);
-            commander.prepare(basePath, aspectranConfigFile);
-            commander.perform();
+            commander.configure(basePath, aspectranConfigFile);
+            commander.run();
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof InsufficientEnvironmentException) {
