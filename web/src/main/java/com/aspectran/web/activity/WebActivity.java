@@ -25,8 +25,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
-import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -43,7 +41,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.UnsupportedEncodingException;
 
-import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
 import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUEST_SIZE_SETTING_NAME;
 
 /**
@@ -208,38 +205,28 @@ public class WebActivity extends CoreActivity {
     }
 
     @Override
+    public WebRequestAdapter getRequestAdapter() {
+        return (WebRequestAdapter)super.getRequestAdapter();
+    }
+
+    @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         if (getParentActivity() == null) {
-            ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
+            getRequestAdapter().preparse();
         } else {
-            ((HttpServletRequestAdapter)getRequestAdapter()).preparse(
-                    (HttpServletRequestAdapter)getParentActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter)getParentActivity().getRequestAdapter());
         }
 
-        MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
+        MediaType mediaType = getRequestAdapter().getMediaType();
         if (mediaType != null) {
             if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
                 WebRequestBodyParser.parseMultipartFormData(this);
             } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                WebRequestBodyParser.parseURLEncodedFormData((WebRequestAdapter)getRequestAdapter());
+                WebRequestBodyParser.parseURLEncodedFormData(getRequestAdapter());
             }
         }
 
         super.parseRequest();
-    }
-
-    @Override
-    protected LocaleResolver resolveLocale() {
-        LocaleResolver localeResolver = super.resolveLocale();
-        if (localeResolver != null) {
-            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-            if (localeChangeInterceptorId != null) {
-                LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
-                        localeChangeInterceptorId);
-                localeChangeInterceptor.handle(getTranslet(), localeResolver);
-            }
-        }
-        return localeResolver;
     }
 
 }

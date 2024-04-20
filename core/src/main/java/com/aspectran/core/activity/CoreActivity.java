@@ -48,6 +48,7 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
@@ -57,6 +58,7 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
 import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;
 
 /**
@@ -250,6 +252,14 @@ public class CoreActivity extends AdviceActivity {
             localeResolver = getBean(LocaleResolver.class, localeResolverBeanId);
             localeResolver.resolveLocale(getTranslet());
             localeResolver.resolveTimeZone(getTranslet());
+        }
+        if (localeResolver != null) {
+            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+            if (localeChangeInterceptorId != null) {
+                LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
+                    localeChangeInterceptorId);
+                localeChangeInterceptor.handle(getTranslet(), localeResolver);
+            }
         }
         return localeResolver;
     }

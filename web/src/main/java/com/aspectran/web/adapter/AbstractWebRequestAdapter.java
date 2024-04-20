@@ -70,8 +70,4 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
         }
     }
 
-    protected abstract void preparse();
-
-    protected abstract void preparse(WebRequestAdapter requestAdapter);
-
 }

@@ -22,4 +22,8 @@ public interface WebRequestAdapter extends RequestAdapter {
 
     MediaType getMediaType();
 
+    void preparse();
+
+    void preparse(WebRequestAdapter requestAdapter);
+
 }
