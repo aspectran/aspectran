@@ -245,13 +245,13 @@ public class ComponentCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !daemonService.isExposable(transletName)) {
+            if (!all && !daemonService.isAcceptable(transletName)) {
                 continue;
             }
             if (keywords != null) {
                 boolean exists = false;
-                for (String keyw : keywords) {
-                    if (transletName.toLowerCase().contains(keyw.toLowerCase())) {
+                for (String kw : keywords) {
+                    if (transletName.toLowerCase().contains(kw.toLowerCase())) {
                         exists = true;
                         break;
                     }
@@ -305,7 +305,7 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (TransletRule transletRule : transletRules) {
-            if (!all && !daemonService.isExposable(transletRule.getName())) {
+            if (!all && !daemonService.isAcceptable(transletRule.getName())) {
                 continue;
             }
             TransletParameters transletParameters = RulesToParameters.toTransletParameters(transletRule);

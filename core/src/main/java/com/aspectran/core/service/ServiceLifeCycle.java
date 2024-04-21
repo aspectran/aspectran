@@ -38,11 +38,24 @@ public interface ServiceLifeCycle {
 
     boolean isOrphan();
 
+    boolean isDerived();
+
     /**
      * Sets the service state listener.
      * @param serviceStateListener the new service state listener
      */
     void setServiceStateListener(ServiceStateListener serviceStateListener);
+
+    /**
+     * Add a derived core service.
+     * Derived services follow the life cycle of the root service.
+     * @param serviceLifeCycle the service life cycle
+     */
+    void joinDerivedService(ServiceLifeCycle serviceLifeCycle);
+
+    void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle);
+
+    void leaveFromRootService();
 
     /**
      * Starts the service.

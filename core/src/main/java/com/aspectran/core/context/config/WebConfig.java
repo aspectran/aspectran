@@ -25,7 +25,7 @@ public class WebConfig extends AbstractParameters {
     private static final ParameterKey defaultServletName;
     private static final ParameterKey trailingSlashRedirect;
     private static final ParameterKey legacyHeadHandling;
-    private static final ParameterKey exposals;
+    private static final ParameterKey acceptables;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -34,14 +34,14 @@ public class WebConfig extends AbstractParameters {
         defaultServletName = new ParameterKey("defaultServletName", ValueType.STRING);
         trailingSlashRedirect = new ParameterKey("trailingSlashRedirect", ValueType.BOOLEAN);
         legacyHeadHandling = new ParameterKey("legacyHeadHandling", ValueType.BOOLEAN);
-        exposals = new ParameterKey("exposals", ExposalsConfig.class);
+        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 uriDecoding,
                 defaultServletName,
                 trailingSlashRedirect,
-            legacyHeadHandling,
-                exposals
+                legacyHeadHandling,
+                acceptables
         };
     }
 
@@ -85,16 +85,16 @@ public class WebConfig extends AbstractParameters {
         return this;
     }
 
-    public ExposalsConfig getExposalsConfig() {
-        return getParameters(exposals);
+    public AcceptablesConfig getAcceptablesConfig() {
+        return getParameters(acceptables);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
+    public AcceptablesConfig newAcceptablesConfig() {
+        return newParameters(acceptables);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public AcceptablesConfig touchAcceptablesConfig() {
+        return touchParameters(acceptables);
     }
 
 }

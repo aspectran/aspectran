@@ -20,7 +20,7 @@ scheduler: {
 }
 web: {
     uriDecoding: utf-8
-    exposals: {
+    acceptables: {
         +: /**
     }
 }

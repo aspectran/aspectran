@@ -33,12 +33,6 @@ public interface CoreService {
     boolean isRootService();
 
     /**
-     * Returns whether this service is derived from a parent service.
-     * @return whether this service is derived
-     */
-    boolean isDerived();
-
-    /**
      * Returns whether the service should be started separately
      * late after the root service is started.
      * @return true if the service should start separately late; false otherwise
@@ -46,21 +40,16 @@ public interface CoreService {
     boolean isOrphan();
 
     /**
+     * Returns whether this service is derived from a parent service.
+     * @return whether this service is derived
+     */
+    boolean isDerived();
+
+    /**
      * Returns the service life cycle for this service.
      * @return the service life cycle
      */
     ServiceLifeCycle getServiceLifeCycle();
-
-    /**
-     * Add a derived core service.
-     * Derived services follow the life cycle of the root service.
-     * @param serviceLifeCycle the service life cycle
-     */
-    void joinDerivedService(ServiceLifeCycle serviceLifeCycle);
-
-    void withdrawDerivedService(CoreService coreService);
-
-    void leaveFromRootService();
 
     /**
      * Returns the base path where the root application is running.
@@ -100,5 +89,12 @@ public interface CoreService {
      * @return the scheduler service
      */
     SchedulerService getSchedulerService();
+
+    /**
+     * Returns whether the request can be processed by this service.
+     * @param requestName the name of the request to check
+     * @return true if the request can be processed by this service; otherwise, false
+     */
+    boolean isAcceptable(String requestName);
 
 }

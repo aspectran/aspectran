@@ -156,13 +156,13 @@ public class TransletCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !shellService.isExposable(transletName)) {
+            if (!all && !shellService.isAcceptable(transletName)) {
                 continue;
             }
             if (keywords != null) {
                 boolean exists = false;
-                for (String keyw : keywords) {
-                    if (transletName.toLowerCase().contains(keyw.toLowerCase())) {
+                for (String kw : keywords) {
+                    if (transletName.toLowerCase().contains(kw.toLowerCase())) {
                         exists = true;
                         break;
                     }
@@ -231,7 +231,7 @@ public class TransletCommand extends AbstractCommand {
         }
         int count = 0;
         for (TransletRule transletRule : transletRules) {
-            if (!all && !shellService.isExposable(transletRule.getName())) {
+            if (!all && !shellService.isAcceptable(transletRule.getName())) {
                 continue;
             }
 

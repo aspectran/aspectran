@@ -18,6 +18,7 @@ package com.aspectran.daemon.service;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -35,7 +36,8 @@ public abstract class DefaultDaemonServiceBuilder {
      * @return the instance of {@code DefaultDaemonService}
      */
     @NonNull
-    public static DefaultDaemonService build(@NonNull AspectranConfig aspectranConfig) {
+    public static DefaultDaemonService build(AspectranConfig aspectranConfig) {
+        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultDaemonService daemonService = new DefaultDaemonService();
         daemonService.configure(aspectranConfig);
         setServiceStateListener(daemonService);

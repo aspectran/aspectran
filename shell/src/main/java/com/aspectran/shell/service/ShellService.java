@@ -70,13 +70,6 @@ public interface ShellService extends CoreService {
     void printHelp();
 
     /**
-     * Returns whether the translet can be exposed to the shell service.
-     * @param transletName the name of the translet to check
-     * @return true if the translet can be exposed; false otherwise
-     */
-    boolean isExposable(String transletName);
-
-    /**
      * Create and return a new session adapter from the shell service.
      * @return the session adapter
      */

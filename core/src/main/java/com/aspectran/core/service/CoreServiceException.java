@@ -18,11 +18,11 @@ package com.aspectran.core.service;
 import java.io.Serial;
 
 /**
- * The Class AspectranServiceException.
+ * The Class CoreServiceException.
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class AspectranServiceException extends RuntimeException {
+public class CoreServiceException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = -7460804495296696284L;
@@ -30,7 +30,7 @@ public class AspectranServiceException extends RuntimeException {
     /**
      * Simple constructor
      */
-    public AspectranServiceException() {
+    public CoreServiceException() {
         super();
     }
 
@@ -38,7 +38,7 @@ public class AspectranServiceException extends RuntimeException {
      * Constructor to create exception with a message.
      * @param msg a message to associate with the exception
      */
-    public AspectranServiceException(String msg) {
+    public CoreServiceException(String msg) {
         super(msg);
     }
 
@@ -46,7 +46,7 @@ public class AspectranServiceException extends RuntimeException {
      * Constructor to create exception to wrap another exception.
      * @param cause the real cause of the exception
      */
-    public AspectranServiceException(Throwable cause) {
+    public CoreServiceException(Throwable cause) {
         super(cause);
     }
 
@@ -55,7 +55,7 @@ public class AspectranServiceException extends RuntimeException {
      * @param msg the detail message
      * @param cause the real cause of the exception
      */
-    public AspectranServiceException(String msg, Throwable cause) {
+    public CoreServiceException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

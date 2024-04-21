@@ -44,7 +44,7 @@ shell: {
         |
 
     )
-    exposals: {
+    acceptables: {
         -: /**
         +: ""
         +: " "
@@ -54,7 +54,7 @@ shell: {
 web: {
     uriDecoding: utf-8
     defaultServletName: none
-    exposals: {
+    acceptables: {
         +: /**
     }
 }

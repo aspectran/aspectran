@@ -15,17 +15,18 @@
  */
 package com.aspectran.web.service;
 
+import com.aspectran.core.context.config.AcceptablesConfig;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
-import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.DefaultCoreService;
+import com.aspectran.core.service.ServiceAcceptables;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletContext;
 
-public abstract class AbstractWebService extends AspectranCoreService implements WebService {
+public abstract class AbstractWebService extends DefaultCoreService implements WebService {
 
     private final String contextPath;
 
@@ -121,11 +122,9 @@ public abstract class AbstractWebService extends AspectranCoreService implements
         setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
 
-        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            setExposals(includePatterns, excludePatterns);
+        AcceptablesConfig acceptablesConfig = webConfig.getAcceptablesConfig();
+        if (acceptablesConfig != null) {
+            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
         }
     }
 

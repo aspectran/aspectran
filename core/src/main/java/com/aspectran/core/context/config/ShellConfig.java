@@ -28,7 +28,7 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterKey session;
     private static final ParameterKey historyFile;
     private static final ParameterKey verbose;
-    private static final ParameterKey exposals;
+    private static final ParameterKey acceptables;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -40,7 +40,7 @@ public class ShellConfig extends AbstractParameters {
         session = new ParameterKey("session", SessionManagerConfig.class);
         historyFile = new ParameterKey("historyFile", ValueType.STRING);
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
-        exposals = new ParameterKey("exposals", ExposalsConfig.class);
+        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 style,
@@ -50,7 +50,7 @@ public class ShellConfig extends AbstractParameters {
                 session,
                 historyFile,
                 verbose,
-                exposals
+                acceptables
         };
     }
 
@@ -132,16 +132,16 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
-    public ExposalsConfig getExposalsConfig() {
-        return getParameters(exposals);
+    public AcceptablesConfig getAcceptablesConfig() {
+        return getParameters(acceptables);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
+    public AcceptablesConfig newAcceptablesConfig() {
+        return newParameters(acceptables);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public AcceptablesConfig touchAcceptablesConfig() {
+        return touchParameters(acceptables);
     }
 
 }

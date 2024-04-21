@@ -24,7 +24,7 @@ public class SchedulerConfig extends AbstractParameters {
     private static final ParameterKey startDelaySeconds;
     private static final ParameterKey waitOnShutdown;
     private static final ParameterKey enabled;
-    private static final ParameterKey exposals;
+    private static final ParameterKey acceptables;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -32,13 +32,13 @@ public class SchedulerConfig extends AbstractParameters {
         startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
         waitOnShutdown = new ParameterKey("waitOnShutdown", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
-        exposals = new ParameterKey("exposals", ExposalsConfig.class);
+        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 startDelaySeconds,
                 waitOnShutdown,
                 enabled,
-                exposals
+                acceptables
         };
     }
 
@@ -73,16 +73,16 @@ public class SchedulerConfig extends AbstractParameters {
         return this;
     }
 
-    public ExposalsConfig getExposalsConfig() {
-        return getParameters(exposals);
+    public AcceptablesConfig getAcceptablesConfig() {
+        return getParameters(acceptables);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
+    public AcceptablesConfig newAcceptablesConfig() {
+        return newParameters(acceptables);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public AcceptablesConfig touchAcceptablesConfig() {
+        return touchParameters(acceptables);
     }
 
 }

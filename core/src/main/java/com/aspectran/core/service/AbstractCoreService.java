@@ -24,7 +24,6 @@ import com.aspectran.core.scheduler.service.DefaultSchedulerServiceBuilder;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
@@ -47,6 +46,8 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     private ClassLoader altClassLoader;
 
     private SchedulerService schedulerService;
+
+    private ServiceAcceptables serviceAcceptables;
 
     public AbstractCoreService() {
         this(null, false);
@@ -86,25 +87,6 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     @Override
     public ServiceLifeCycle getServiceLifeCycle() {
         return this;
-    }
-
-    @Override
-    public void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
-        super.joinDerivedService(serviceLifeCycle);
-    }
-
-    @Override
-    public void withdrawDerivedService(@NonNull CoreService coreService) {
-        Assert.state(coreService.isDerived(), "Not derived service: " + coreService);
-        Assert.state(!coreService.getServiceLifeCycle().isActive(), "Not stopped service: " + coreService);
-        super.withdrawDerivedService(coreService.getServiceLifeCycle());
-    }
-
-    @Override
-    public void leaveFromRootService() {
-        if (isDerived()) {
-            getRootService().withdrawDerivedService(this);
-        }
     }
 
     @Override
@@ -161,8 +143,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     @Override
     public Activity getDefaultActivity() {
-        Assert.state(getActivityContext() != null,
-            "No ActivityContext configured yet");
+        Assert.state(getActivityContext() != null, "No ActivityContext configured yet");
         return getActivityContext().getDefaultActivity();
     }
 
@@ -208,6 +189,15 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         if (getAspectranConfig().hasSchedulerConfig() && getAspectranConfig().getSchedulerConfig().isEnabled()) {
             this.schedulerService = DefaultSchedulerServiceBuilder.build(this, getAspectranConfig().getSchedulerConfig());
         }
+    }
+
+    @Override
+    public boolean isAcceptable(String requestName) {
+        return (serviceAcceptables == null || serviceAcceptables.isAcceptable(requestName));
+    }
+
+    protected void setServiceAcceptables(ServiceAcceptables serviceAcceptables) {
+        this.serviceAcceptables = serviceAcceptables;
     }
 
 }

@@ -28,7 +28,7 @@ public class DaemonConfig extends AbstractParameters {
     private static final ParameterKey polling;
     private static final ParameterKey commands;
     private static final ParameterKey session;
-    private static final ParameterKey exposals;
+    private static final ParameterKey acceptables;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -37,14 +37,14 @@ public class DaemonConfig extends AbstractParameters {
         polling = new ParameterKey("polling", DaemonPollingConfig.class);
         commands = new ParameterKey("commands", ValueType.STRING, true);
         session = new ParameterKey("session", SessionManagerConfig.class);
-        exposals = new ParameterKey("exposals", ExposalsConfig.class);
+        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 executor,
                 polling,
                 commands,
                 session,
-                exposals
+                acceptables
         };
     }
 
@@ -102,16 +102,16 @@ public class DaemonConfig extends AbstractParameters {
         return touchParameters(session);
     }
 
-    public ExposalsConfig getExposalsConfig() {
-        return getParameters(exposals);
+    public AcceptablesConfig getAcceptablesConfig() {
+        return getParameters(acceptables);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
+    public AcceptablesConfig newAcceptablesConfig() {
+        return newParameters(acceptables);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public AcceptablesConfig touchAcceptablesConfig() {
+        return touchParameters(acceptables);
     }
 
 }

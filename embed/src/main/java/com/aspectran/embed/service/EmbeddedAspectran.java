@@ -23,8 +23,9 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
@@ -41,13 +42,6 @@ import java.util.Map;
  * <p>Created: 2017. 10. 28.</p>
  */
 public interface EmbeddedAspectran {
-
-    /**
-     * Returns whether the translet can be exposed to the daemon service.
-     * @param transletName the name of the translet to check
-     * @return true if the translet can be exposed; false otherwise
-     */
-    boolean isExposable(String transletName);
 
     /**
      * Executes an instant activity.
@@ -307,7 +301,7 @@ public interface EmbeddedAspectran {
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
         } catch (AponParseException e) {
-            throw new AspectranServiceException("Error parsing aspectran configuration file: " +
+            throw new CoreServiceException("Error parsing aspectran configuration file: " +
                     aspectranConfigFile, e);
         }
         return run(aspectranConfig);
@@ -327,7 +321,7 @@ public interface EmbeddedAspectran {
         try {
             aspectranConfig = new AspectranConfig(configFileReader);
         } catch (AponParseException e) {
-            throw new AspectranServiceException("Error parsing aspectran configuration", e);
+            throw new CoreServiceException("Error parsing aspectran configuration", e);
         }
         return run(aspectranConfig);
     }
@@ -339,20 +333,18 @@ public interface EmbeddedAspectran {
      */
     @NonNull
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
-        if (aspectranConfig == null) {
-            throw new IllegalArgumentException("aspectranConfig must not be null");
-        }
+        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         try {
             DefaultEmbeddedAspectran aspectran = DefaultEmbeddedAspectran.create(aspectranConfig);
             aspectran.start();
             return aspectran;
-        } catch (AspectranServiceException e) {
+        } catch (CoreServiceException e) {
             throw e;
         } catch (Exception e) {
             String message = "EmbeddedAspectran run failed with parameters:" + System.lineSeparator() + aspectranConfig;
             Logger logger = LoggerFactory.getLogger(EmbeddedAspectran.class);
             logger.error(message);
-            throw new AspectranServiceException("EmbeddedAspectran run failed", e);
+            throw new CoreServiceException("EmbeddedAspectran run failed", e);
         }
     }
 

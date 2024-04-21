@@ -140,7 +140,7 @@ public class CommandCompleter implements Completer {
                 for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
                     String name = transletRule.getName();
                     String dispName = name;
-                    if (shellService.isExposable(name)) {
+                    if (shellService.isAcceptable(name)) {
                         if (word == null || name.startsWith(word)) {
                             if (transletRule.hasPathVariables()) {
                                 name = transletRule.getNamePattern().toString();

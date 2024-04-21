@@ -82,7 +82,7 @@ public class DefaultWebService extends AbstractWebService {
             logger.debug(getRequestInfo(request, reverseContextPath, requestName, requestMethod));
         }
 
-        if (!isExposable(requestName)) {
+        if (!isAcceptable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
                     sendError(response, HttpServletResponse.SC_NOT_FOUND, "Not Exposed");

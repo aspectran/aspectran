@@ -19,16 +19,17 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.context.config.AcceptablesConfig;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
+import com.aspectran.core.service.DefaultCoreService;
+import com.aspectran.core.service.ServiceAcceptables;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.Assert;
@@ -42,7 +43,7 @@ import com.aspectran.utils.logging.LoggerFactory;
  *
  * <p>Created: 2017. 10. 30.</p>
  */
-public abstract class AbstractShellService extends AspectranCoreService implements ShellService {
+public abstract class AbstractShellService extends DefaultCoreService implements ShellService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractShellService.class);
 
@@ -153,11 +154,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public boolean isExposable(String requestName) {
-        return super.isExposable(requestName);
-    }
-
-    @Override
     public SessionAdapter newSessionAdapter() {
         if (sessionAgent != null) {
             return new ShellSessionAdapter(sessionAgent);
@@ -181,7 +177,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to create session manager for shell service", e);
+                    throw new CoreServiceException("Failed to create session manager for shell service", e);
                 }
             }
         }
@@ -237,11 +233,9 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     private void configure(@NonNull ShellConfig shellConfig) {
         setVerbose(shellConfig.isVerbose());
         setGreetings(shellConfig.getGreetings());
-        ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            setExposals(includePatterns, excludePatterns);
+        AcceptablesConfig acceptablesConfig = shellConfig.getAcceptablesConfig();
+        if (acceptablesConfig != null) {
+            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
         }
     }
 

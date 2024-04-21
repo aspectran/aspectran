@@ -19,7 +19,7 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.logging.Logger;
@@ -65,7 +65,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        if (!isExposable(name)) {
+        if (!isAcceptable(name)) {
             logger.error("Unavailable translet: " + name);
             return null;
         }
@@ -92,7 +92,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
                 t = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
-            throw new AspectranServiceException("Error occurred while processing request: " +
+            throw new CoreServiceException("Error occurred while processing request: " +
                 activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;

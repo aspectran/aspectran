@@ -17,8 +17,8 @@ package com.aspectran.web.service;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
@@ -174,21 +174,21 @@ public class DefaultWebServiceBuilder {
                     File configFile = new File(servletContext.getRealPath(filePath));
                     aspectranConfig = new AspectranConfig(configFile);
                 } catch (IOException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
+                    throw new CoreServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
                 }
             } else if (aspectranConfigParam.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
                 String resourcePath = aspectranConfigParam.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length()).stripLeading();
                 try {
                     aspectranConfig = new AspectranConfig(ResourceUtils.getResourceAsReader(resourcePath));
                 } catch (IOException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from resource: " +
+                    throw new CoreServiceException("Error parsing Aspectran configuration from resource: " +
                         resourcePath, e);
                 }
             } else {
                 try {
                     aspectranConfig = new AspectranConfig(aspectranConfigParam);
                 } catch (AponParseException e) {
-                    throw new AspectranServiceException("Error parsing Aspectran configuration from '" +
+                    throw new CoreServiceException("Error parsing Aspectran configuration from '" +
                         ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
                 }
             }

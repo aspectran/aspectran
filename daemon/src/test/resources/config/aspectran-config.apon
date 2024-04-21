@@ -35,7 +35,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.RestartCommand
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
-    exposals: {
+    acceptables: {
         -: /**
     }
 }
@@ -43,7 +43,7 @@ web: {
     defaultServletName: none
     trailingSlashRedirect: true
     legacyHeadHandling: true
-    exposals: {
+    acceptables: {
         +: /**
     }
 }

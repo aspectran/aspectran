@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.scheduler.service;
 
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
@@ -32,30 +31,8 @@ public class DefaultSchedulerServiceBuilder {
     public static DefaultSchedulerService build(CoreService parentService, SchedulerConfig schedulerConfig) {
         Assert.notNull(parentService, "parentService must not be null");
         Assert.notNull(schedulerConfig, "schedulerConfig must not be null");
-
         DefaultSchedulerService schedulerService = new DefaultSchedulerService(parentService);
-
-        int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
-        if (startDelaySeconds == -1) {
-            startDelaySeconds = 3;
-            if (logger.isDebugEnabled()) {
-                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
-            }
-        }
-
-        boolean waitOnShutdown = schedulerConfig.isWaitOnShutdown();
-        if (waitOnShutdown) {
-            schedulerService.setWaitOnShutdown(true);
-        }
-        schedulerService.setStartDelaySeconds(startDelaySeconds);
-
-        ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            schedulerService.setExposals(includePatterns, excludePatterns);
-        }
-
+        schedulerService.configure(schedulerConfig);
         setServiceStateListener(schedulerService);
         return schedulerService;
     }

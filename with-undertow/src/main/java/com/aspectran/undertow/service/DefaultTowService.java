@@ -71,7 +71,7 @@ public class DefaultTowService extends AbstractTowService {
             logger.debug(getRequestInfo(exchange, requestName, requestMethod));
         }
 
-        if (!isExposable(requestName)) {
+        if (!isAcceptable(requestName)) {
             sendError(exchange, HttpStatus.NOT_FOUND, "Not Exposed");
             return false;
         }

@@ -139,7 +139,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
         if (towService != null) {
             if (towService.getServiceLifeCycle().isActive()) {
                 towService.getServiceLifeCycle().stop();
-                towService.leaveFromRootService();
+                towService.getServiceLifeCycle().leaveFromRootService();
             }
             towService = null;
         }

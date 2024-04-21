@@ -19,7 +19,7 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
-public class ExposalsConfig extends AbstractParameters {
+public class AcceptablesConfig extends AbstractParameters {
 
     private static final ParameterKey plus;
     private static final ParameterKey minus;
@@ -36,7 +36,7 @@ public class ExposalsConfig extends AbstractParameters {
         };
     }
 
-    public ExposalsConfig() {
+    public AcceptablesConfig() {
         super(parameterKeys);
     }
 
@@ -44,7 +44,7 @@ public class ExposalsConfig extends AbstractParameters {
         return getStringArray(plus);
     }
 
-    public ExposalsConfig addIncludePattern(String pattern) {
+    public AcceptablesConfig addIncludePattern(String pattern) {
         putValue(plus, pattern);
         return this;
     }
@@ -53,7 +53,7 @@ public class ExposalsConfig extends AbstractParameters {
         return getStringArray(minus);
     }
 
-    public ExposalsConfig addExcludePattern(String pattern) {
+    public AcceptablesConfig addExcludePattern(String pattern) {
         putValue(minus, pattern);
         return this;
     }

@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.wildcard.PluralWildcardPattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +42,6 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     private ServiceStateListener serviceStateListener;
 
-    private PluralWildcardPattern exposableTransletNamesPattern;
-
     /** Flag that indicates whether this service is active */
     private volatile boolean active;
 
@@ -53,7 +49,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         this.parentService = parentService;
         if (parentService != null) {
             this.rootService = parentService.getRootService();
-            this.rootService.joinDerivedService(this);
+            this.rootService.getServiceLifeCycle().joinDerivedService(this);
         } else {
             this.rootService = (CoreService)this;
         }
@@ -90,24 +86,23 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         this.serviceStateListener = serviceStateListener;
     }
 
-    protected boolean isExposable(String requestName) {
-        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(requestName));
-    }
-
-    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
-        if ((includePatterns != null && includePatterns.length > 0) ||
-                excludePatterns != null && excludePatterns.length > 0) {
-            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                    ActivityContext.NAME_SEPARATOR_CHAR);
-        }
-    }
-
-    protected void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
+    @Override
+    public void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
         derivedServices.add(serviceLifeCycle);
     }
 
-    protected void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle) {
+    @Override
+    public void withdrawDerivedService(@NonNull ServiceLifeCycle serviceLifeCycle) {
+        Assert.state(serviceLifeCycle.isDerived(), "Not derived service: " + serviceLifeCycle);
+        Assert.state(!serviceLifeCycle.isActive(), "Not yet stopped service: " + serviceLifeCycle);
         derivedServices.remove(serviceLifeCycle);
+    }
+
+    @Override
+    public void leaveFromRootService() {
+        if (isDerived()) {
+            getRootService().getServiceLifeCycle().withdrawDerivedService(this);
+        }
     }
 
     protected void clearDerivedServices() {
@@ -117,8 +112,6 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     protected Object getLock() {
         return lock;
     }
-
-    protected abstract boolean isDerived();
 
     protected abstract void doStart() throws Exception;
 

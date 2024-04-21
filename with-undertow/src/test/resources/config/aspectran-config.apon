@@ -16,7 +16,7 @@ scheduler: {
     enabled: false
 }
 web: {
-    exposals: {
+    acceptables: {
         +: /**
     }
 }

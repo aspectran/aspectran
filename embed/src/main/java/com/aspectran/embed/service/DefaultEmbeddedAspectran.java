@@ -23,7 +23,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
@@ -118,7 +118,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        if (!isExposable(name)) {
+        if (!isAcceptable(name)) {
             logger.error("Unavailable translet: " + name);
             return null;
         }
@@ -146,7 +146,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 t = e;
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
-            throw new AspectranServiceException("Error occurred while processing request: " +
+            throw new CoreServiceException("Error occurred while processing request: " +
                 activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
@@ -180,7 +180,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
             return result.toString();
         } catch (Exception e) {
-            throw new AspectranServiceException("Error while rendering template: " + templateId, e);
+            throw new CoreServiceException("Error while rendering template: " + templateId, e);
         }
     }
 

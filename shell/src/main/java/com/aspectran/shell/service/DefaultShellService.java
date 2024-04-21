@@ -20,7 +20,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
@@ -60,7 +60,7 @@ public class DefaultShellService extends AbstractShellService {
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
         }
-        if (!isExposable(transletCommandLine.getRequestName())) {
+        if (!isAcceptable(transletCommandLine.getRequestName())) {
             getConsole().writeError("Unavailable translet: " + transletCommandLine.getRequestName());
             return null;
         }
@@ -184,7 +184,7 @@ public class DefaultShellService extends AbstractShellService {
             t = e;
         }
         Throwable cause = ExceptionUtils.getRootCause(t);
-        throw new AspectranServiceException("Error occurred while processing request: " +
+        throw new CoreServiceException("Error occurred while processing request: " +
                 activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
     }
 

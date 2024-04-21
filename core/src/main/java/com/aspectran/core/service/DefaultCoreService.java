@@ -32,24 +32,24 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
 /**
- * The Class AspectranCoreService.
+ * The Class DefaultCoreService.
  */
-public class AspectranCoreService extends AbstractCoreService {
+public class DefaultCoreService extends AbstractCoreService {
 
-    private final Logger logger = LoggerFactory.getLogger(AspectranCoreService.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultCoreService.class);
 
     private FileLocker fileLocker;
 
     private ShutdownHook.Manager shutdownHookManager;
 
     /**
-     * Instantiates a new AspectranCoreService.
+     * Instantiates a new DefaultCoreService.
      */
-    public AspectranCoreService() {
+    public DefaultCoreService() {
         super();
     }
 
-    public AspectranCoreService(CoreService parentService, boolean derived) {
+    public DefaultCoreService(CoreService parentService, boolean derived) {
         super(parentService, derived);
     }
 
@@ -96,7 +96,7 @@ public class AspectranCoreService extends AbstractCoreService {
                 }
             }
         } catch (Exception e) {
-            throw new AspectranServiceException("Unable to prepare the service", e);
+            throw new CoreServiceException("Unable to prepare the service", e);
         }
     }
 
@@ -199,7 +199,7 @@ public class AspectranCoreService extends AbstractCoreService {
             @Override
             public void run() throws Exception {
                 if (isActive()) {
-                    AspectranCoreService.super.stop();
+                    DefaultCoreService.super.stop();
                     releaseSingletonLock();
                 }
             }

@@ -19,12 +19,13 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.context.config.AcceptablesConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
+import com.aspectran.core.service.DefaultCoreService;
+import com.aspectran.core.service.ServiceAcceptables;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -34,7 +35,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * @since 5.1.0
  */
-public abstract class AbstractDaemonService extends AspectranCoreService implements DaemonService {
+public abstract class AbstractDaemonService extends DefaultCoreService implements DaemonService {
 
     private SessionManager sessionManager;
 
@@ -42,11 +43,6 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
 
     AbstractDaemonService() {
         super();
-    }
-
-    @Override
-    public boolean isExposable(String requestName) {
-        return super.isExposable(requestName);
     }
 
     @Override
@@ -72,7 +68,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to create session manager for daemon service", e);
+                    throw new CoreServiceException("Failed to create session manager for daemon service", e);
                 }
             }
         }
@@ -99,11 +95,9 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     }
 
     private void configure(@NonNull DaemonConfig daemonConfig) {
-        ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            setExposals(includePatterns, excludePatterns);
+        AcceptablesConfig acceptablesConfig = daemonConfig.getAcceptablesConfig();
+        if (acceptablesConfig != null) {
+            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
         }
     }
 

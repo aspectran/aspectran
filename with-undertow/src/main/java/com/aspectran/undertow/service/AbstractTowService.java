@@ -15,11 +15,12 @@
  */
 package com.aspectran.undertow.service;
 
+import com.aspectran.core.context.config.AcceptablesConfig;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
-import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.DefaultCoreService;
+import com.aspectran.core.service.ServiceAcceptables;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
@@ -27,7 +28,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 2019-07-27</p>
  */
-public abstract class AbstractTowService extends AspectranCoreService implements TowService {
+public abstract class AbstractTowService extends DefaultCoreService implements TowService {
 
     private String uriDecoding;
 
@@ -65,11 +66,9 @@ public abstract class AbstractTowService extends AspectranCoreService implements
     protected void configure(@NonNull WebConfig webConfig) {
         setUriDecoding(webConfig.getUriDecoding());
         setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
-        ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
-        if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getIncludePatterns();
-            String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            setExposals(includePatterns, excludePatterns);
+        AcceptablesConfig acceptablesConfig = webConfig.getAcceptablesConfig();
+        if (acceptablesConfig != null) {
+            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
         }
     }
 

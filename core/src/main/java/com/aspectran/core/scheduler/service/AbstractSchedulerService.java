@@ -17,12 +17,15 @@ package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.config.AcceptablesConfig;
+import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceLifeCycle;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.service.ServiceAcceptables;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -61,6 +64,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private boolean waitOnShutdown = false;
 
+    private ServiceAcceptables serviceAcceptables;
+
     AbstractSchedulerService(CoreService parentService) {
         super(parentService);
         Assert.notNull(parentService, "parentService must not be null");
@@ -92,13 +97,16 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     @Override
-    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
-        super.setExposals(includePatterns, excludePatterns);
-    }
-
-    @Override
     public boolean isDerived() {
         return true;
+    }
+
+    public boolean isAcceptable(String requestName) {
+        return (serviceAcceptables == null || serviceAcceptables.isAcceptable(requestName));
+    }
+
+    protected void setServiceAcceptables(ServiceAcceptables serviceAcceptables) {
+        this.serviceAcceptables = serviceAcceptables;
     }
 
     protected Set<Scheduler> getSchedulers() {
@@ -193,7 +201,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
         List<ScheduledJobRule> jobRuleList = scheduleRule.getScheduledJobRuleList();
         for (ScheduledJobRule jobRule : jobRuleList) {
-            if (isExposable(jobRule.getTransletName())) {
+            if (isAcceptable(jobRule.getTransletName())) {
                 JobDetail jobDetail = createJobDetail(jobRule);
                 if (jobDetail != null) {
                     String triggerName = jobDetail.getKey().getName();
@@ -279,6 +287,27 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                     .startAt(firstFireTime)
                     .withSchedule(cronSchedule)
                     .build();
+        }
+    }
+
+    protected void configure(@NonNull SchedulerConfig schedulerConfig) {
+        int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
+        if (startDelaySeconds == -1) {
+            startDelaySeconds = 3;
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
+            }
+        }
+
+        boolean waitOnShutdown = schedulerConfig.isWaitOnShutdown();
+        if (waitOnShutdown) {
+            setWaitOnShutdown(true);
+        }
+        setStartDelaySeconds(startDelaySeconds);
+
+        AcceptablesConfig acceptablesConfig = schedulerConfig.getAcceptablesConfig();
+        if (acceptablesConfig != null) {
+            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
         }
     }
 

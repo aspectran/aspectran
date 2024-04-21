@@ -19,6 +19,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -37,7 +38,8 @@ public class DefaultShellServiceBuilder {
      * @return the instance of {@code DefaultShellService}
      */
     @NonNull
-    public static DefaultShellService build(@NonNull AspectranConfig aspectranConfig, ShellConsole console) {
+    public static DefaultShellService build(AspectranConfig aspectranConfig, ShellConsole console) {
+        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultShellService shellService = new DefaultShellService(console);
         shellService.configure(aspectranConfig);
         setServiceStateListener(shellService);

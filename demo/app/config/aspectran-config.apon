@@ -88,7 +88,7 @@ shell: {
     }
     historyFile: /logs/history.log
     verbose: true
-    exposals: {
+    acceptables: {
         -: /**
     }
 }
@@ -115,7 +115,7 @@ daemon: {
     session: {
         enabled: true
     }
-    exposals: {
+    acceptables: {
         -: /**
     }
 }
@@ -123,7 +123,7 @@ web: {
     uriDecoding: utf-8
     trailingSlashRedirect: true
     legacyHeadHandling: true
-    exposals: {
+    acceptables: {
         +: /**
     }
 }

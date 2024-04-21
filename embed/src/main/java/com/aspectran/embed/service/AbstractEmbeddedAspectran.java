@@ -22,8 +22,8 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.EmbedConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.service.CoreServiceException;
+import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.embed.adapter.AspectranSessionAdapter;
 import com.aspectran.utils.Assert;
@@ -35,7 +35,7 @@ import java.util.Locale;
  *
  * @since 3.0.0
  */
-public abstract class AbstractEmbeddedAspectran extends AspectranCoreService implements EmbeddedAspectran {
+public abstract class AbstractEmbeddedAspectran extends DefaultCoreService implements EmbeddedAspectran {
 
     private SessionManager sessionManager;
 
@@ -43,11 +43,6 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
 
     AbstractEmbeddedAspectran() {
         super();
-    }
-
-    @Override
-    public boolean isExposable(String requestName) {
-        return super.isExposable(requestName);
     }
 
     @Override
@@ -74,7 +69,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to create session manager for embedded aspectran", e);
+                    throw new CoreServiceException("Failed to create session manager for embedded aspectran", e);
                 }
             }
         }
