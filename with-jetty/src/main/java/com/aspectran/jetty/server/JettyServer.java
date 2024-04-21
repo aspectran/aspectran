@@ -17,6 +17,7 @@ package com.aspectran.jetty.server;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.jetty.server.servlet.JettyWebAppContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -187,7 +188,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
-    private void handleDeferredInitialize(Handler handler) throws Exception {
+    private void handleDeferredInitialize(Handler handler) {
         if (handler instanceof JettyWebAppContext jettyWebAppContext) {
             jettyWebAppContext.deferredInitialize(this);
         } else if (handler instanceof Handler.Wrapper handlerWrapper) {
@@ -197,7 +198,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
-    private void handleDeferredInitialize(@NonNull List<Handler> handlers) throws Exception {
+    private void handleDeferredInitialize(@NonNull List<Handler> handlers) {
         for (Handler handler : handlers) {
             handleDeferredInitialize(handler);
         }

@@ -176,7 +176,6 @@ class JsonWriterTest {
             JsonWriter writer = new JsonWriter();
             writer.write(map1);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             assertEquals("JSON Serialization Failure: A circular reference was detected while converting member 'map2-1'", e.getMessage());
         }
     }
@@ -193,7 +192,6 @@ class JsonWriterTest {
             JsonWriter writer = new JsonWriter();
             writer.write(map1);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             assertEquals("JSON Serialization Failure: A circular reference was detected while converting a member", e.getMessage());
         }
     }

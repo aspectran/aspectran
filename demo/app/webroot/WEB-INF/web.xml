@@ -30,15 +30,6 @@ The Undertow server does not use web.xml separately, instead it is set directly 
     <url-pattern>/</url-pattern>
     <servlet-name>webActivityServlet</servlet-name>
   </filter-mapping>
-  <servlet>
-    <servlet-name>webActivityServlet</servlet-name>
-    <servlet-class>com.aspectran.web.servlet.WebActivityServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>webActivityServlet</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>

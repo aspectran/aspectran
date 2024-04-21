@@ -3,7 +3,19 @@
         "http://aspectran.github.io/dtd/aspectran-8.dtd">
 <aspectran>
 
+    <settings>
+        <setting name="transletNamePrefix" value="/commands"/>
+    </settings>
+
     <translet name="/hello">
+        <transform format="text">
+            <template style="apon">
+                |Hello, World!
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="/login">
         <parameters>
             <item name="email" mandatory="true">${id}@${domain}</item>
             <item name="password" mandatory="true" secret="true"/>

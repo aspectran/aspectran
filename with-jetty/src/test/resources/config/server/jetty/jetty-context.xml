@@ -14,7 +14,7 @@
             <item name="jetty.context.root.baseDir">#{basePath}/webroot</item>
             <item name="jetty.context.root.scratchDir">#{basePath}/work/_webroot</item>
             <item name="jetty.context.root.sessionStoreDir">#{basePath}/work/_sessions</item>
-            <item name="jetty.context.root.defaultsDescriptor">#{basePath}/config/server/jetty/webdefault-ee10.xml</item>
+            <item name="jetty.context.root.defaultsDescriptor">config/server/jetty/webdefault-ee10.xml</item>
         </properties>
     </environment>
 

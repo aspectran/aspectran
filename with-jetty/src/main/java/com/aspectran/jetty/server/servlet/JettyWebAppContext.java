@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty.server;
+package com.aspectran.jetty.server.servlet;
 
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
@@ -26,7 +26,10 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
+import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.server.ServerContainer;
+import org.apache.hc.core5.util.Asserts;
+import org.eclipse.jetty.ee10.servlet.ServletMapping;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.ee10.webapp.WebXmlConfiguration;
@@ -55,6 +58,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private ActivityContext context;
 
     private JettyWebSocketInitializer webSocketInitializer;
+
+    @NonNull
+    private ActivityContext getActivityContext() {
+        Assert.state(context != null, "No ActivityContext injected");
+        return context;
+    }
 
     @Override
     @AvoidAdvice
@@ -132,14 +141,32 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+        Asserts.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
+        for (ServletContainerInitializer initializer : servletContainerInitializers) {
+            addServletContainerInitializer(initializer);
+        }
+    }
+
     public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
         this.webSocketInitializer = webSocketInitializer;
     }
 
-    void deferredInitialize(Server server) throws Exception {
-        Assert.state(context != null, "No ActivityContext injected");
+    public void setServlets(JettyServlet[] servlets) {
+        if (servlets != null) {
+            for (JettyServlet servlet : servlets) {
+                getServletHandler().addServlet(servlet);
 
-        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(context.getClassLoader(), this);
+                ServletMapping mapping = new ServletMapping();
+                mapping.setServletName(servlet.getName());
+                mapping.setPathSpecs(servlet.getMappings());
+                getServletHandler().addServletMapping(mapping);
+            }
+        }
+    }
+
+    public void deferredInitialize(Server server) {
+        WebAppClassLoader webAppClassLoader = new WebAppClassLoader(getActivityContext().getClassLoader(), this);
         setClassLoader(webAppClassLoader);
 
         if (webSocketInitializer != null) {
@@ -151,7 +178,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
 
         // Create a root web service
-        CoreService masterService = context.getMasterService();
+        CoreService masterService = getActivityContext().getMasterService();
         WebService rootWebService = DefaultWebServiceBuilder.build(getServletContext(), masterService, webAppClassLoader);
         if (rootWebService.isOrphan()) {
             server.addEventListener(new LifeCycle.Listener() {

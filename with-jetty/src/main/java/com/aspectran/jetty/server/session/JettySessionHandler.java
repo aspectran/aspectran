@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty.server;
+package com.aspectran.jetty.server.session;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.eclipse.jetty.ee10.servlet.SessionHandler;

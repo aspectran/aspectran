@@ -120,13 +120,13 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     @Override
     public void start() throws Exception {
         synchronized (lock) {
-            Assert.state(!active, getServiceName() + " is already started");
+            Assert.state(!active, getServiceName() + " has already started");
 
             logger.info("Starting " + getServiceName());
 
             doStart();
 
-            logger.info(getServiceName() + " started successfully");
+            logger.info("Started " + getServiceName());
 
             for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
                 serviceLifeCycle.start();
@@ -168,9 +168,9 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
                 doStop();
 
-                logger.info(getServiceName() + " stopped successfully");
+                logger.info("Stopped " + getServiceName());
             } catch (Exception e) {
-                logger.error(getServiceName() + " was not stopped normally", e);
+                logger.error(getServiceName() + " did not stop normally", e);
             }
 
             active = false;
@@ -180,7 +180,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     @Override
     public void restart() throws Exception {
         synchronized (lock) {
-            Assert.state(isRootService(), "Only root service can be restarted");
+            Assert.state(isRootService(), "Must be a root service to restart");
             Assert.state(active, getServiceName() + " is not yet started");
 
             logger.info("Restarting " + getServiceName());
@@ -207,7 +207,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             doStart();
             active = true;
 
-            logger.info(getServiceName() + " restarted successfully");
+            logger.info("Restarted " + getServiceName());
 
             for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
                 serviceLifeCycle.start();
@@ -242,7 +242,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused();
             }
 
-            logger.info(getServiceName() + " is paused");
+            logger.info("Pause " + getServiceName());
         }
     }
 
@@ -264,7 +264,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused(timeout);
             }
 
-            logger.info(getServiceName() + " is paused and will resume after " + timeout + " ms");
+            logger.info("Pause " + getServiceName() + ", resume after " + timeout + "ms");
         }
     }
 
@@ -286,7 +286,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.resumed();
             }
 
-            logger.info(getServiceName() + " is resumed");
+            logger.info("Resume " + getServiceName());
         }
     }
 
