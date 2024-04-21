@@ -53,6 +53,7 @@ public class DefaultShellServiceBuilder {
                 CoreServiceHolder.hold(shellService);
                 shellService.createSessionManager();
                 shellService.pauseTimeout = 0L;
+                shellService.getConsole().clearScreen();
                 shellService.printGreetings();
                 shellService.printHelp();
             }

@@ -49,7 +49,7 @@ public class RestartCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmRestart()) {
-            console.clearScreen();
+            console.writeLine("Restarting...");
             try {
                 if (getShellService().getServiceLifeCycle().isActive()) {
                     getShellService().getServiceLifeCycle().restart();

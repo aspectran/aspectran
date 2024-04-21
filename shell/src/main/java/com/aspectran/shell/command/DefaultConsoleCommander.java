@@ -167,6 +167,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                         console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
                     }
                 } catch (ShellConsoleClosedException e) {
+                    if (StringUtils.hasText(e.getMessage())) {
+                        console.writeLine(e.getMessage());
+                    }
                     break;
                 } catch (CommandReadFailedException e) {
                     if (logger.isDebugEnabled()) {
