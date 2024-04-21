@@ -68,8 +68,8 @@ Aspectran consists of the following major packages:
 
 Requirements
 
-* Maven 3.5+ (prefer included maven-wrapper)
-* Java 11+
+* Maven 3.6.3+ (prefer included maven-wrapper)
+* Java 17+
 
 Check out and build:
 
