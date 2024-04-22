@@ -33,7 +33,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -71,70 +70,70 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String getHeader(String name) {
-        return ((HttpServletResponse)getAdaptee()).getHeader(name);
+        return getHttpServletResponse().getHeader(name);
     }
 
     @Override
     public Collection<String> getHeaders(String name) {
-        return ((HttpServletResponse)getAdaptee()).getHeaders(name);
+        return getHttpServletResponse().getHeaders(name);
     }
 
     @Override
     public Collection<String> getHeaderNames() {
-        return ((HttpServletResponse)getAdaptee()).getHeaderNames();
+        return getHttpServletResponse().getHeaderNames();
     }
 
     @Override
     public boolean containsHeader(String name) {
-        return ((HttpServletResponse)getAdaptee()).containsHeader(name);
+        return getHttpServletResponse().containsHeader(name);
     }
 
     @Override
     public void setHeader(String name, String value) {
-        ((HttpServletResponse)getAdaptee()).setHeader(name, value);
+        getHttpServletResponse().setHeader(name, value);
     }
 
     @Override
     public void addHeader(String name, String value) {
-        ((HttpServletResponse)getAdaptee()).addHeader(name, value);
+        getHttpServletResponse().addHeader(name, value);
     }
 
     @Override
     public String getEncoding() {
-        return ((HttpServletResponse)getAdaptee()).getCharacterEncoding();
+        return getHttpServletResponse().getCharacterEncoding();
     }
 
     @Override
-    public void setEncoding(String encoding) throws UnsupportedEncodingException {
-        ((HttpServletResponse)getAdaptee()).setCharacterEncoding(encoding);
+    public void setEncoding(String encoding) {
+        getHttpServletResponse().setCharacterEncoding(encoding);
     }
 
     @Override
     public String getContentType() {
-        return ((HttpServletResponse)getAdaptee()).getContentType();
+        return getHttpServletResponse().getContentType();
     }
 
     @Override
     public void setContentType(String contentType) {
-        ((HttpServletResponse)getAdaptee()).setContentType(contentType);
+        getHttpServletResponse().setContentType(contentType);
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
         precommit();
-        return ((HttpServletResponse)getAdaptee()).getOutputStream();
+        return getHttpServletResponse().getOutputStream();
     }
 
     @Override
     public Writer getWriter() throws IOException {
         precommit();
-        return ((HttpServletResponse)getAdaptee()).getWriter();
+        return getHttpServletResponse().getWriter();
     }
 
     @Override
     public void flush() throws IOException {
-        if (((HttpServletResponse)getAdaptee()).isCommitted()) {
-            ((HttpServletResponse)getAdaptee()).flushBuffer();
+        if (getHttpServletResponse().isCommitted()) {
+            getHttpServletResponse().flushBuffer();
         }
     }
 
@@ -144,7 +143,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (proxyProtocolAware) {
             location = SendRedirectBasedOnXForwardedProtocol.getLocation(activity.getTranslet(), location);
         }
-        ((HttpServletResponse)getAdaptee()).sendRedirect(location);
+        getHttpServletResponse().sendRedirect(location);
     }
 
     @Override
@@ -156,12 +155,16 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public int getStatus() {
-        return ((HttpServletResponse)getAdaptee()).getStatus();
+        return getHttpServletResponse().getStatus();
     }
 
     @Override
     public void setStatus(int status) {
-        ((HttpServletResponse)getAdaptee()).setStatus(status);
+        getHttpServletResponse().setStatus(status);
+    }
+
+    private HttpServletResponse getHttpServletResponse() {
+        return getAdaptee();
     }
 
     private void precommit() throws IOException {

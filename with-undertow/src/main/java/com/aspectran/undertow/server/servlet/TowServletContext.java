@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
@@ -34,7 +35,6 @@ import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
-import org.apache.hc.core5.util.Asserts;
 
 import java.io.File;
 import java.io.IOException;
@@ -153,7 +153,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     }
 
     public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
-        Asserts.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
+        Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
             Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
             InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);

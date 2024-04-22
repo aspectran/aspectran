@@ -28,7 +28,6 @@ import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.server.ServerContainer;
-import org.apache.hc.core5.util.Asserts;
 import org.eclipse.jetty.ee10.servlet.ServletMapping;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
@@ -142,7 +141,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
-        Asserts.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
+        Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
             addServletContainerInitializer(initializer);
         }

@@ -34,6 +34,7 @@ import com.aspectran.web.support.http.MediaType;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -95,21 +96,18 @@ public class DefaultRestResponse extends AbstractRestResponse {
         Assert.notNull(activity, "activity must not be null");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-        String encoding = determineEncoding(activity);
-        if (encoding != null) {
-            responseAdapter.setEncoding(encoding);
-        }
-
-        MediaType contentType;
+        MediaType acceptContentType;
         try {
-            contentType = determineContentType(activity);
+            acceptContentType = determineAcceptContentType(activity);
         } catch (HttpMediaTypeNotAcceptableException e) {
             responseAdapter.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             return;
         }
-        responseAdapter.setContentType(contentType.toString());
 
-        transformByContentType(activity, encoding, contentType);
+        MediaType responseContentType = determineResponseContentType(activity, acceptContentType);
+        responseAdapter.setContentType(responseContentType.toString());
+
+        transformByContentType(activity, acceptContentType);
 
         if (getHeaders() != null) {
             for (Map.Entry<String, List<String>> entry : getHeaders().entrySet()) {
@@ -126,21 +124,14 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    public String getContentType(Activity activity) {
-        try {
-            MediaType contentType = determineContentType(activity);
-            return (contentType != null ? contentType.toString() : null);
-        } catch (HttpMediaTypeNotAcceptableException e) {
-            return null;
-        }
-    }
-
-    protected void transformByContentType(Activity activity, String encoding, MediaType contentType) throws Exception {
+    protected void transformByContentType(Activity activity, MediaType contentType) throws Exception {
         if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
             toJSON(activity, parseIndent(contentType));
         } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(contentType)) {
             toAPON(activity, parseIndent(contentType));
         } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(contentType)) {
+            Charset charset = contentType.getCharset();
+            String encoding = (charset != null ? charset.name() : null);
             toXML(activity, encoding, parseIndent(contentType));
         } else {
             toText(activity);

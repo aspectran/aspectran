@@ -28,6 +28,7 @@ import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
 
@@ -350,11 +351,7 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     protected abstract MediaType getContentTypeByPathExtension(String extension);
 
-    protected String determineEncoding(@NonNull Activity activity) {
-        return activity.getTranslet().getIntendedResponseEncoding();
-    }
-
-    protected MediaType determineContentType(@NonNull Activity activity)
+    protected MediaType determineAcceptContentType(@NonNull Activity activity)
             throws HttpMediaTypeNotAcceptableException {
         if (isFavorPathExtension()) {
             String path = activity.getTranslet().getRequestName();
@@ -371,16 +368,16 @@ public abstract class AbstractRestResponse implements RestResponse {
             }
         }
         if (!isIgnoreAcceptHeader()) {
-            List<MediaType> contentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
-            for (MediaType contentType : contentTypes) {
-                if (contentType.equalsTypeAndSubtype(MediaType.ALL) && getDefaultContentType() != null) {
-                    if (getSupportedContentTypes().contains(getDefaultContentType())) {
-                        return getDefaultContentType();
-                    }
+            List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
+            for (MediaType contentType : acceptContentTypes) {
+                if (contentType.equalsTypeAndSubtype(MediaType.ALL) &&
+                        getDefaultContentType() != null &&
+                        getSupportedContentTypes().contains(getDefaultContentType())) {
+                    return getDefaultContentType();
                 }
                 for (MediaType supportedContentType : getSupportedContentTypes()) {
                     if (contentType.includes(supportedContentType)) {
-                        return supportedContentType;
+                        return contentType;
                     }
                 }
             }
@@ -389,6 +386,25 @@ public abstract class AbstractRestResponse implements RestResponse {
             }
         }
         throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
+    }
+
+    protected MediaType determineResponseContentType(@NonNull Activity activity, @NonNull MediaType acceptContentType) {
+        Charset charset = acceptContentType.getCharset();
+        if (charset == null) {
+            String encoding = determineIntendedEncoding(activity);
+            if (encoding != null) {
+                charset = Charset.forName(encoding);
+            }
+        }
+        if (charset != null) {
+            return new MediaType(acceptContentType.getType(), acceptContentType.getSubtype(), charset);
+        } else {
+            return new MediaType(acceptContentType.getType(), acceptContentType.getSubtype());
+        }
+    }
+
+    protected String determineIntendedEncoding(@NonNull Activity activity) {
+        return activity.getTranslet().getIntendedResponseEncoding();
     }
 
 }

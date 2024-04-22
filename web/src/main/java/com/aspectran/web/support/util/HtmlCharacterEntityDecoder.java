@@ -45,7 +45,6 @@ class HtmlCharacterEntityDecoder {
         this.decodedMessage = new StringBuilder(original.length());
     }
 
-
     public String decode() {
         while (this.currentPosition < this.originalMessage.length()) {
             findNextPotentialReference(this.currentPosition);

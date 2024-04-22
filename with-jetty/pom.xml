@@ -76,17 +76,6 @@
             <artifactId>jetty-ee10-websocket-jakarta-server</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-<!--        &lt;!&ndash; JSP and JSTL dependencies &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.eclipse.jetty.ee10</groupId>-->
-<!--            <artifactId>jetty-ee10-apache-jsp</artifactId>-->
-<!--            <version>${jetty.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.eclipse.jetty.ee10</groupId>-->
-<!--            <artifactId>jetty-ee10-glassfish-jstl</artifactId>-->
-<!--            <version>${jetty.version}</version>-->
-<!--        </dependency>-->
         <!-- Apache JSP and JSTL dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>

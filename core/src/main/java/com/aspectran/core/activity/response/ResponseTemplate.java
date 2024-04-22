@@ -26,7 +26,6 @@ import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Collection;
 
@@ -100,7 +99,7 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
-    public void setEncoding(String encoding) throws UnsupportedEncodingException {
+    public void setEncoding(String encoding) {
         responseAdapter.setEncoding(encoding);
     }
 

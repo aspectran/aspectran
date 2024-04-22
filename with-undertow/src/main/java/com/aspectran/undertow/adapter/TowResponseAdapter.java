@@ -34,7 +34,6 @@ import io.undertow.util.URLUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -131,7 +130,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void setEncoding(String encoding) throws UnsupportedEncodingException {
+    public void setEncoding(String encoding) {
         this.charset = encoding;
         if (contentType != null) {
             getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE, getContentType());

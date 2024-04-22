@@ -47,7 +47,7 @@ class HtmlCharacterEntityReferences {
 
     static final char REFERENCE_END = ';';
 
-    static final char CHAR_NULL = (char) -1;
+    static final char CHAR_NULL = (char)-1;
 
     private final String[] characterToEntityReferenceMap = new String[3000];
 
@@ -89,7 +89,6 @@ class HtmlCharacterEntityReferences {
             entityReferenceToCharacterMap.put(reference, (char) referredChar);
         }
     }
-
 
     /**
      * Return the number of supported entity references.
@@ -151,10 +150,7 @@ class HtmlCharacterEntityReferences {
      */
     public char convertToCharacter(String entityReference) {
         Character referredCharacter = entityReferenceToCharacterMap.get(entityReference);
-        if (referredCharacter != null) {
-            return referredCharacter;
-        }
-        return CHAR_NULL;
+        return (referredCharacter != null ? referredCharacter : CHAR_NULL);
     }
 
 }

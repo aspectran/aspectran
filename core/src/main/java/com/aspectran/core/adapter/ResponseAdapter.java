@@ -19,7 +19,6 @@ import com.aspectran.core.context.rule.RedirectRule;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Collection;
 
@@ -101,9 +100,8 @@ public interface ResponseAdapter {
      * Sets the character encoding of the response being sent to the client.
      * @param encoding a {@code String} specifying only the character set
      *         defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
-     * @throws UnsupportedEncodingException if character encoding is not supported
      */
-    void setEncoding(String encoding) throws UnsupportedEncodingException;
+    void setEncoding(String encoding);
 
     /**
      * Returns the content type used for the MIME body sent in this response.
