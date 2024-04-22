@@ -19,6 +19,9 @@ import com.aspectran.utils.ClassUtils;
 import io.undertow.servlet.api.FilterInfo;
 import jakarta.servlet.Filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +41,13 @@ import java.util.Map;
  *           /ads.txt
  *         </entry>
  *       </item>
+ *       <item name="servletMappings" type="array">
+ *         <bean class="com.aspectran.undertow.server.servlet.TowFilterMapping">
+ *           <arguments>
+ *             <item>webActivityServlet</item>
+ *           </arguments>
+ *         </bean>
+ *       </item>
  *     </properties>
  *   </bean>
  * }</pre>
@@ -46,12 +56,76 @@ import java.util.Map;
  */
 public class TowFilter extends FilterInfo {
 
+    private TowFilterUrlMapping[] urlMappings;
+
+    private TowFilterServletMapping[] servletMappings;
+
     public TowFilter(String name, String filterClass) throws ClassNotFoundException {
         this(name, ClassUtils.loadClass(filterClass));
     }
 
     public TowFilter(String name, Class<? extends Filter> filterClass) {
         super(name, filterClass);
+    }
+
+    public TowFilterUrlMapping[] getUrlMappings() {
+        return urlMappings;
+    }
+
+    public void setMappingUrls(String[] mappingUrls) {
+        if (mappingUrls != null) {
+            List<TowFilterMapping> mappingList = new ArrayList<>(mappingUrls.length);
+            for (String url : mappingUrls) {
+                mappingList.add(new TowFilterMapping(url));
+            }
+            setUrlMappings(mappingList.toArray(new TowFilterMapping[0]));
+        }
+    }
+
+    public void setUrlMappings(TowFilterMapping[] towFilterMappings) {
+        if (towFilterMappings != null) {
+            List<TowFilterUrlMapping> urlMappingList;
+            if (this.urlMappings != null) {
+                urlMappingList = new ArrayList<>(this.servletMappings.length + towFilterMappings.length);
+                urlMappingList.addAll(Arrays.asList(this.urlMappings));
+            } else {
+                urlMappingList = new ArrayList<>(towFilterMappings.length);
+            }
+            for (TowFilterMapping mapping : towFilterMappings) {
+                urlMappingList.add(new TowFilterUrlMapping(getName(), mapping));
+            }
+            this.urlMappings = urlMappingList.toArray(new TowFilterUrlMapping[0]);
+        }
+    }
+
+    public TowFilterServletMapping[] getServletMappings() {
+        return servletMappings;
+    }
+
+    public void setMappingServlets(String[] mappingServlets) {
+        if (mappingServlets != null) {
+            List<TowFilterMapping> mappingList = new ArrayList<>(mappingServlets.length);
+            for (String servletName : mappingServlets) {
+                mappingList.add(new TowFilterMapping(servletName));
+            }
+            setServletMappings(mappingList.toArray(new TowFilterMapping[0]));
+        }
+    }
+
+    public void setServletMappings(TowFilterMapping[] towFilterMappings) {
+        if (towFilterMappings != null) {
+            List<TowFilterServletMapping> servletMappingList;
+            if (this.servletMappings != null) {
+                servletMappingList = new ArrayList<>(this.servletMappings.length + towFilterMappings.length);
+                servletMappingList.addAll(Arrays.asList(this.servletMappings));
+            } else {
+                servletMappingList = new ArrayList<>(towFilterMappings.length);
+            }
+            for (TowFilterMapping towFilterMapping : towFilterMappings) {
+                servletMappingList.add(new TowFilterServletMapping(getName(), towFilterMapping));
+            }
+            this.servletMappings = servletMappingList.toArray(new TowFilterServletMapping[0]);
+        }
     }
 
     public void setInitParams(Map<String, String> initParams) {

@@ -70,14 +70,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.context = context;
     }
 
-    public void setInitParams(Map<String, String> initParams) {
-        if (initParams != null) {
-            for (Map.Entry<String, String> entry : initParams.entrySet()) {
-                setInitParameter(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
     @Override
     public void setWar(String war) {
         File warFile = null;
@@ -140,15 +132,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
-    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
-        Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
-        for (ServletContainerInitializer initializer : servletContainerInitializers) {
-            addServletContainerInitializer(initializer);
+    public void setInitParams(Map<String, String> initParams) {
+        if (initParams != null) {
+            for (Map.Entry<String, String> entry : initParams.entrySet()) {
+                setInitParameter(entry.getKey(), entry.getValue());
+            }
         }
-    }
-
-    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
-        this.webSocketInitializer = webSocketInitializer;
     }
 
     public void setServlets(JettyServlet[] servlets) {
@@ -162,6 +151,17 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                 getServletHandler().addServletMapping(mapping);
             }
         }
+    }
+
+    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+        Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
+        for (ServletContainerInitializer initializer : servletContainerInitializers) {
+            addServletContainerInitializer(initializer);
+        }
+    }
+
+    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
+        this.webSocketInitializer = webSocketInitializer;
     }
 
     public void deferredInitialize(Server server) {

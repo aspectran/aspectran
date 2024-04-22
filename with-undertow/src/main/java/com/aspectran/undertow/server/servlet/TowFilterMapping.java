@@ -15,25 +15,33 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
 
 /**
- * <p>Created: 2019-08-05</p>
+ * <p>Created: 4/22/24</p>
  */
-public class TowFilterUrlMapping extends FilterMappingInfo {
+public class TowFilterMapping {
 
-    public TowFilterUrlMapping(String filterName, String mapping) {
-        this(filterName, mapping, DispatcherType.REQUEST);
+    private final String target;
+
+    private final DispatcherType dispatcher;
+
+    public TowFilterMapping(String target) {
+        this(target, DispatcherType.REQUEST);
     }
 
-    public TowFilterUrlMapping(String filterName, String mapping, DispatcherType dispatcher) {
-        super(filterName, MappingType.URL, mapping, dispatcher);
+    public TowFilterMapping(String target, DispatcherType dispatcher) {
+        this.target = target;
+        this.dispatcher = dispatcher;
     }
 
-    public TowFilterUrlMapping(String filterName, @NonNull TowFilterMapping towFilterMapping) {
-        this(filterName, towFilterMapping.getTarget(), towFilterMapping.getDispatcher());
+    public String getTarget() {
+        return target;
     }
+
+    public DispatcherType getDispatcher() {
+        return dispatcher;
+    }
+
 
 }

@@ -111,43 +111,37 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    public void setFilters(TowFilter[] towFilters) {
+        if (towFilters != null) {
+            for (TowFilter towFilter : towFilters) {
+                addFilter(towFilter);
+                if (towFilter.getUrlMappings() != null) {
+                    for (TowFilterUrlMapping urlMapping : towFilter.getUrlMappings()) {
+                        addFilterUrlMapping(urlMapping.getFilterName(), urlMapping.getMapping(),
+                            urlMapping.getDispatcher());
+                    }
+                }
+                if (towFilter.getServletMappings() != null) {
+                    for (TowFilterServletMapping servletMapping : towFilter.getServletMappings()) {
+                        addFilterServletNameMapping(servletMapping.getFilterName(), servletMapping.getMapping(),
+                            servletMapping.getDispatcher());
+                    }
+                }
+            }
+        }
+    }
+
     public void setServlets(TowServlet[] towServlets) {
         if (towServlets != null) {
             for (TowServlet towServlet : towServlets) {
                 ServletInfo existingServlet = getServlets().get(towServlet.getName());
                 if (getServlets().containsKey(towServlet.getName())) {
                     throw new IllegalArgumentException("Duplicate servlet name detected: " +
-                            "Existing: " + existingServlet + "; This: " + towServlet + "; " +
-                            "Each servlet added to the servlet context must have a unique name. " +
-                            "Otherwise existing servlets will be ignored.");
+                        "Existing: " + existingServlet + "; This: " + towServlet + "; " +
+                        "Each servlet added to the servlet context must have a unique name. " +
+                        "Otherwise existing servlets will be ignored.");
                 }
                 addServlet(towServlet);
-            }
-        }
-    }
-
-    public void setFilters(TowFilter[] towFilters) {
-        if (towFilters != null) {
-            for (TowFilter towFilter : towFilters) {
-                addFilter(towFilter);
-            }
-        }
-    }
-
-    public void setFilterUrlMappings(TowFilterUrlMapping[] towFilterUrlMappings) {
-        if (towFilterUrlMappings != null) {
-            for (TowFilterUrlMapping filterUrlMapping : towFilterUrlMappings) {
-                addFilterUrlMapping(filterUrlMapping.getFilterName(), filterUrlMapping.getMapping(),
-                        filterUrlMapping.getDispatcher());
-            }
-        }
-    }
-
-    public void setFilterServletMappings(TowFilterServletMapping[] towFilterServletMappings) {
-        if (towFilterServletMappings != null) {
-            for (TowFilterServletMapping filterServletMapping : towFilterServletMappings) {
-                addFilterServletNameMapping(filterServletMapping.getFilterName(), filterServletMapping.getMapping(),
-                        filterServletMapping.getDispatcher());
             }
         }
     }

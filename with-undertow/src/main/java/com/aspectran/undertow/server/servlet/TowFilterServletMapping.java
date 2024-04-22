@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
 
@@ -39,6 +40,35 @@ public class TowFilterServletMapping extends FilterMappingInfo {
 
     public TowFilterServletMapping(String filterName, String mapping, DispatcherType dispatcher) {
         super(filterName, MappingType.SERVLET, mapping, dispatcher);
+    }
+
+    public TowFilterServletMapping(String filterName, @NonNull TowFilterMapping towFilterMapping) {
+        this(filterName, towFilterMapping.getTarget(), towFilterMapping.getDispatcher());
+    }
+
+    public static class Mapping {
+
+        private final String target;
+
+        private final DispatcherType dispatcher;
+
+        public Mapping(String target) {
+            this(target, DispatcherType.REQUEST);
+        }
+
+        public Mapping(String target, DispatcherType dispatcher) {
+            this.target = target;
+            this.dispatcher = dispatcher;
+        }
+
+        public String getTarget() {
+            return target;
+        }
+
+        public DispatcherType getDispatcher() {
+            return dispatcher;
+        }
+
     }
 
 }
