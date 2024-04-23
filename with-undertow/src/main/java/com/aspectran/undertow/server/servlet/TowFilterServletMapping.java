@@ -46,29 +46,4 @@ public class TowFilterServletMapping extends FilterMappingInfo {
         this(filterName, towFilterMapping.getTarget(), towFilterMapping.getDispatcher());
     }
 
-    public static class Mapping {
-
-        private final String target;
-
-        private final DispatcherType dispatcher;
-
-        public Mapping(String target) {
-            this(target, DispatcherType.REQUEST);
-        }
-
-        public Mapping(String target, DispatcherType dispatcher) {
-            this.target = target;
-            this.dispatcher = dispatcher;
-        }
-
-        public String getTarget() {
-            return target;
-        }
-
-        public DispatcherType getDispatcher() {
-            return dispatcher;
-        }
-
-    }
-
 }
