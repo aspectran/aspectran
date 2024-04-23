@@ -19,21 +19,30 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>Created: 2019-08-05</p>
  */
 public class TowFilterUrlMapping extends FilterMappingInfo {
 
-    public TowFilterUrlMapping(String filterName, String mapping) {
+    TowFilterUrlMapping(String filterName, String mapping) {
         this(filterName, mapping, DispatcherType.REQUEST);
     }
 
-    public TowFilterUrlMapping(String filterName, String mapping, DispatcherType dispatcher) {
+    TowFilterUrlMapping(String filterName, String mapping, DispatcherType dispatcher) {
         super(filterName, MappingType.URL, mapping, dispatcher);
     }
 
-    public TowFilterUrlMapping(String filterName, @NonNull TowFilterMapping towFilterMapping) {
-        this(filterName, towFilterMapping.getTarget(), towFilterMapping.getDispatcher());
+    @NonNull
+    static List<TowFilterUrlMapping> of(String filterName, @NonNull TowFilterMapping towFilterMapping) {
+        DispatcherType[] dispatchers = towFilterMapping.getDispatchers();
+        List<TowFilterUrlMapping> list = new ArrayList<>(dispatchers.length);
+        for (DispatcherType dispatcherType : dispatchers) {
+            list.add(new TowFilterUrlMapping(filterName, towFilterMapping.getTarget(), dispatcherType));
+        }
+        return list;
     }
 
 }

@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.servlet;
+package com.aspectran.jetty.server.servlet;
 
-import com.aspectran.utils.Assert;
 import jakarta.servlet.DispatcherType;
 
 /**
- * <p>Created: 4/22/24</p>
+ * <p>Created: 4/23/24</p>
  */
-public class TowFilterMapping {
+public class JettyFilterMapping {
 
     private final String target;
 
     private final DispatcherType[] dispatchers;
 
-    public TowFilterMapping(String target) {
+    public JettyFilterMapping(String target) {
         this(target, DispatcherType.REQUEST);
     }
 
-    public TowFilterMapping(String target, DispatcherType... dispatchers) {
-        Assert.notNull(target, "target must not be null");
-        Assert.notNull(dispatchers, "dispatchers must not be null");
+    public JettyFilterMapping(String target, DispatcherType... dispatchers) {
         this.target = target;
         this.dispatchers = dispatchers;
     }
@@ -45,6 +42,5 @@ public class TowFilterMapping {
     public DispatcherType[] getDispatchers() {
         return dispatchers;
     }
-
 
 }

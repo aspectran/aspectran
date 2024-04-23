@@ -28,6 +28,16 @@
             <item name="tempDirectoryPersistent" valueType="boolean">true</item>
             <item name="defaultsDescriptor">%{jetty.context.root.defaultsDescriptor}</item>
             <item name="sessionHandler">#{jetty.context.root.sessionHandler}</item>
+            <item name="listeners" type="array">
+                <bean class="com.aspectran.jetty.server.servlet.JettyListener">
+                    <arguments>
+                        <item>com.aspectran.jetty.server.MyContextListener</item>
+                    </arguments>
+                </bean>
+            </item>
+<!--            <item name="eventListeners" type="array">-->
+<!--                <bean class="com.aspectran.jetty.server.MyContextListener"/>-->
+<!--            </item>-->
             <item name="servlets" type="array">
                 <bean class="com.aspectran.jetty.server.servlet.JettyServlet">
                     <arguments>
@@ -58,6 +68,27 @@
                             <value>/</value>
                         </item>
                         <item name="initOrder" valueType="int">1</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="filters" type="array">
+                <bean class="com.aspectran.jetty.server.servlet.JettyFilter">
+                    <arguments>
+                        <item>webActivityFilter</item>
+                        <item>com.aspectran.web.servlet.filter.WebActivityFilter</item>
+                    </arguments>
+                    <properties>
+                        <item name="mappingServlets" type="array">
+                            <value>webActivityServlet</value>
+                        </item>
+                        <item name="initParams" type="map">
+                            <entry name="bypasses">
+                                /assets/**
+                                /favicon.ico
+                                /robots.txt
+                                /ads.txt
+                            </entry>
+                        </item>
                     </properties>
                 </bean>
             </item>

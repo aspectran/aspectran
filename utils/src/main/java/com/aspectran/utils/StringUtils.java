@@ -622,7 +622,7 @@ public abstract class StringUtils {
         if (str == null) {
             return EMPTY_STRING_ARRAY;
         }
-        StringTokenizer st = new StringTokenizer(str, delimiters);
+        StringTokenizer st = new StringTokenizer((trim ? str.trim() : str), delimiters);
         List<String> tokens = new ArrayList<>();
         while (st.hasMoreTokens()) {
             String token = st.nextToken();

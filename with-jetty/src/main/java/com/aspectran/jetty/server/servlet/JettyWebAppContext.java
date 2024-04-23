@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.Map;
 
 /**
@@ -140,15 +141,49 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    public void setListeners(JettyListener[] jettyListeners) {
+        if (jettyListeners != null) {
+            for (JettyListener jettyListener : jettyListeners) {
+                getServletHandler().addListener(jettyListener);
+            }
+        }
+    }
+
+    public void setEventListeners(EventListener[] eventListeners) {
+        if (eventListeners != null) {
+            for (EventListener eventListener : eventListeners) {
+                addEventListener(eventListener);
+                addProgrammaticListener(eventListener);
+            }
+        }
+    }
+
     public void setServlets(JettyServlet[] servlets) {
         if (servlets != null) {
             for (JettyServlet servlet : servlets) {
                 getServletHandler().addServlet(servlet);
-
                 ServletMapping mapping = new ServletMapping();
                 mapping.setServletName(servlet.getName());
                 mapping.setPathSpecs(servlet.getMappings());
                 getServletHandler().addServletMapping(mapping);
+            }
+        }
+    }
+
+    public void setFilters(JettyFilter[] jettyFilters) {
+        if (jettyFilters != null) {
+            for (JettyFilter jettyFilter : jettyFilters) {
+                getServletHandler().addFilter(jettyFilter);
+                if (jettyFilter.getUrlMappings() != null) {
+                    for (JettyFilterUrlMapping urlMapping : jettyFilter.getUrlMappings()) {
+                        getServletHandler().addFilterMapping(urlMapping);
+                    }
+                }
+                if (jettyFilter.getServletMappings() != null) {
+                    for (JettyFilterServletMapping servletMapping : jettyFilter.getServletMappings()) {
+                        getServletHandler().addFilterMapping(servletMapping);
+                    }
+                }
             }
         }
     }

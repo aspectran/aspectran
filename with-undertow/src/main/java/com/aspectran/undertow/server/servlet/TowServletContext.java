@@ -111,6 +111,21 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    public void setServlets(TowServlet[] towServlets) {
+        if (towServlets != null) {
+            for (TowServlet towServlet : towServlets) {
+                ServletInfo existingServlet = getServlets().get(towServlet.getName());
+                if (getServlets().containsKey(towServlet.getName())) {
+                    throw new IllegalArgumentException("Duplicate servlet name detected: " +
+                        "Existing: " + existingServlet + "; This: " + towServlet + "; " +
+                        "Each servlet added to the servlet context must have a unique name. " +
+                        "Otherwise existing servlets will be ignored.");
+                }
+                addServlet(towServlet);
+            }
+        }
+    }
+
     public void setFilters(TowFilter[] towFilters) {
         if (towFilters != null) {
             for (TowFilter towFilter : towFilters) {
@@ -127,21 +142,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
                             servletMapping.getDispatcher());
                     }
                 }
-            }
-        }
-    }
-
-    public void setServlets(TowServlet[] towServlets) {
-        if (towServlets != null) {
-            for (TowServlet towServlet : towServlets) {
-                ServletInfo existingServlet = getServlets().get(towServlet.getName());
-                if (getServlets().containsKey(towServlet.getName())) {
-                    throw new IllegalArgumentException("Duplicate servlet name detected: " +
-                        "Existing: " + existingServlet + "; This: " + towServlet + "; " +
-                        "Each servlet added to the servlet context must have a unique name. " +
-                        "Otherwise existing servlets will be ignored.");
-                }
-                addServlet(towServlet);
             }
         }
     }

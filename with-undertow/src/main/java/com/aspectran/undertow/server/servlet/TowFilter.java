@@ -29,7 +29,7 @@ import java.util.Map;
  * <pre>{@code
  *   <bean class="com.aspectran.undertow.server.servlet.TowFilter">
  *     <arguments>
- *       <item>towFilter</item>
+ *       <item>activityFilter</item>
  *       <item>com.aspectran.web.servlet.filter.WebActivityFilter</item>
  *     </arguments>
  *     <properties>
@@ -92,7 +92,7 @@ public class TowFilter extends FilterInfo {
                 urlMappingList = new ArrayList<>(towFilterMappings.length);
             }
             for (TowFilterMapping mapping : towFilterMappings) {
-                urlMappingList.add(new TowFilterUrlMapping(getName(), mapping));
+                urlMappingList.addAll(TowFilterUrlMapping.of(getName(), mapping));
             }
             this.urlMappings = urlMappingList.toArray(new TowFilterUrlMapping[0]);
         }
@@ -122,7 +122,7 @@ public class TowFilter extends FilterInfo {
                 servletMappingList = new ArrayList<>(towFilterMappings.length);
             }
             for (TowFilterMapping towFilterMapping : towFilterMappings) {
-                servletMappingList.add(new TowFilterServletMapping(getName(), towFilterMapping));
+                servletMappingList.addAll(TowFilterServletMapping.of(getName(), towFilterMapping));
             }
             this.servletMappings = servletMappingList.toArray(new TowFilterServletMapping[0]);
         }

@@ -19,31 +19,30 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * ex)
- * <pre>{@code
- *   <bean class="com.aspectran.undertow.server.servlet.TowFilterServletMapping">
- *     <arguments>
- *       <item>towFilter</item>
- *       <item>webActivityServlet</item>
- *     </arguments>
- *   </bean>
- * }</pre>
- *
  * <p>Created: 2019-08-05</p>
  */
 public class TowFilterServletMapping extends FilterMappingInfo {
 
-    public TowFilterServletMapping(String filterName, String mapping) {
+    TowFilterServletMapping(String filterName, String mapping) {
         this(filterName, mapping, DispatcherType.REQUEST);
     }
 
-    public TowFilterServletMapping(String filterName, String mapping, DispatcherType dispatcher) {
+    TowFilterServletMapping(String filterName, String mapping, DispatcherType dispatcher) {
         super(filterName, MappingType.SERVLET, mapping, dispatcher);
     }
 
-    public TowFilterServletMapping(String filterName, @NonNull TowFilterMapping towFilterMapping) {
-        this(filterName, towFilterMapping.getTarget(), towFilterMapping.getDispatcher());
+    @NonNull
+    static List<TowFilterServletMapping> of(String filterName, @NonNull TowFilterMapping towFilterMapping) {
+        DispatcherType[] dispatchers = towFilterMapping.getDispatchers();
+        List<TowFilterServletMapping> list = new ArrayList<>(dispatchers.length);
+        for (DispatcherType dispatcherType : dispatchers) {
+            list.add(new TowFilterServletMapping(filterName, towFilterMapping.getTarget(), dispatcherType));
+        }
+        return list;
     }
 
 }
