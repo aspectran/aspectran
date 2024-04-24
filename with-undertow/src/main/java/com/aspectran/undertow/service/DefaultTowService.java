@@ -118,8 +118,8 @@ public class DefaultTowService extends AbstractTowService {
                 return;
             }
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("No translet mapped for " + activity.getFullRequestName());
+        if (logger.isTraceEnabled()) {
+            logger.trace("No translet mapped for " + activity.getFullRequestName());
         }
         sendError(activity.getExchange(), HttpStatus.NOT_FOUND, null);
     }

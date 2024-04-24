@@ -208,8 +208,8 @@ public class DefaultWebService extends AbstractWebService {
         }
         try {
             if (!getDefaultServletHttpRequestHandler().handleRequest(activity.getRequest(), activity.getResponse())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("No translet mapped for " + activity.getFullRequestName());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("No translet mapped for " + activity.getFullRequestName());
                 }
                 sendError(activity.getResponse(), HttpServletResponse.SC_NOT_FOUND, null);
             }
