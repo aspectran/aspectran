@@ -35,7 +35,7 @@
                     </arguments>
                 </bean>
             </item>
-<!--            <item name="eventListeners" type="array">-->
+<!--            <item name="webListeners" type="array">-->
 <!--                <bean class="com.aspectran.jetty.server.MyContextListener"/>-->
 <!--            </item>-->
             <item name="servlets" type="array">

@@ -149,11 +149,17 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
-    public void setEventListeners(EventListener[] eventListeners) {
+    /**
+     * Any event listeners added as WebListener must implement one or more of the
+     * {@link jakarta.servlet.ServletContextListener}, {@link jakarta.servlet.ServletContextAttributeListener},
+     * {@link jakarta.servlet.ServletRequestListener}, {@link jakarta.servlet.ServletRequestAttributeListener},
+     * {@link jakarta.servlet.http.HttpSessionListener}, or {@link jakarta.servlet.http.HttpSessionAttributeListener}, or
+     * {@link jakarta.servlet.http.HttpSessionIdListener} interfaces.
+     */
+    public void setWebListeners(EventListener[] eventListeners) {
         if (eventListeners != null) {
             for (EventListener eventListener : eventListeners) {
                 addEventListener(eventListener);
-                addProgrammaticListener(eventListener);
             }
         }
     }

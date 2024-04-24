@@ -38,6 +38,7 @@ public class MyContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        // To this day, Jetty appears to have never properly handled this event. In other words, this event is not called!
         logger.info("contextDestroyed-1");
         System.out.println("================== contextDestroyed-1 ================== ");
     }
