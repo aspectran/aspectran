@@ -61,9 +61,9 @@ public class DefaultTowService extends AbstractTowService {
 
         final String requestName;
         if (getUriDecoding() != null) {
-            requestName = URLDecoder.decode(exchange.getRequestPath(), getUriDecoding());
+            requestName = URLDecoder.decode(exchange.getRequestURI(), getUriDecoding());
         } else {
-            requestName = exchange.getRequestPath();
+            requestName = exchange.getRequestURI();
         }
         final MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString(), MethodType.GET);
 
@@ -147,10 +147,10 @@ public class DefaultTowService extends AbstractTowService {
     }
 
     private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, String msg) {
-        ToStringBuilder tsb = new ToStringBuilder("Response");
-        tsb.append("code", status.value());
-        tsb.append("message", msg);
         if (logger.isDebugEnabled()) {
+            ToStringBuilder tsb = new ToStringBuilder("Response");
+            tsb.append("code", status.value());
+            tsb.append("message", msg);
             logger.debug(tsb.toString());
         }
         exchange.setStatusCode(status.value());

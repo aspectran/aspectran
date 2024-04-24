@@ -16,6 +16,7 @@
 package com.aspectran.web.service;
 
 import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.RequestDispatcher;
@@ -23,6 +24,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.io.IOException;
 
@@ -143,7 +145,39 @@ public class DefaultServletHttpRequestHandler {
             throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" +
                     defaultServletName + "'");
         }
-        rd.forward(request, response);
+        rd.forward(request, new ErrorLoggingHttpServletResponse(response));
+    }
+
+    private static class ErrorLoggingHttpServletResponse extends HttpServletResponseWrapper {
+
+        public ErrorLoggingHttpServletResponse(HttpServletResponse response) {
+            super(response);
+        }
+
+        @Override
+        public void sendError(int sc, String msg) throws IOException {
+            if (logger.isDebugEnabled()) {
+                ToStringBuilder tsb = new ToStringBuilder("Response");
+                tsb.append("code", sc);
+                tsb.append("message", msg);
+                logger.debug(tsb.toString());
+            }
+            super.sendError(sc, msg);
+        }
+
+        /**
+         * The default behavior of this method is to call sendError(int sc) on the wrapped response object.
+         */
+        @Override
+        public void sendError(int sc) throws IOException {
+            if (logger.isDebugEnabled()) {
+                ToStringBuilder tsb = new ToStringBuilder("Response");
+                tsb.append("code", sc);
+                logger.debug(tsb.toString());
+            }
+            super.sendError(sc);
+        }
+
     }
 
 }

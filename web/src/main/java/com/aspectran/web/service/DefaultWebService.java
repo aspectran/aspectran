@@ -242,10 +242,10 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     private void sendError(HttpServletResponse response, int sc, String msg) {
-        ToStringBuilder tsb = new ToStringBuilder("Response");
-        tsb.append("code", sc);
-        tsb.append("message", msg);
         if (logger.isDebugEnabled()) {
+            ToStringBuilder tsb = new ToStringBuilder("Response");
+            tsb.append("code", sc);
+            tsb.append("message", msg);
             logger.debug(tsb.toString());
         }
         try {
