@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Package containing a Redis session store implementation using Lettuce as a client.
+ * Package containing a Redis session store implementation leveraging Lettuce as a client.
  */
 package com.aspectran.core.component.session.redis.lettuce;

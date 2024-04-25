@@ -28,6 +28,7 @@ public class TerminalPrintWriter extends PrintWriter {
         this.jlineTerminal = jlineTerminal;
     }
 
+    @Override
     public void write(int c) {
         String str = Character.toString(c);
         write(str, 0, str.length());

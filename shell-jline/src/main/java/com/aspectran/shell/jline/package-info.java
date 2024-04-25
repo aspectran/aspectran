@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Package for building feature-rich Aspectran-based interactive shell applications with JLine 3.
+ * Package for building feature-rich Aspectran-based interactive shell applications leveraging JLine 3.
  */
 package com.aspectran.shell.jline;

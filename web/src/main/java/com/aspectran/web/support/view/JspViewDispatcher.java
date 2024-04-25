@@ -30,8 +30,6 @@ import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.FileNotFoundException;
-
 /**
  * JSP or other web resource integration.
  * Sends the model produced by Aspectran's internal activity
@@ -122,17 +120,13 @@ public class JspViewDispatcher implements ViewDispatcher {
                 response.reset();
             }
 
-            if (logger.isTraceEnabled()) {
-                logger.trace("Dispatching to JSP [" + resource + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Dispatching to " + resource);
             }
 
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
             RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(resource);
             requestDispatcher.forward(requestWrapper, response);
-
-            if (response.getStatus() == 404) {
-                throw new FileNotFoundException("Failed to find resource '" + resource + "'");
-            }
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to JSP " +

@@ -28,6 +28,7 @@ import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.server.ServerContainer;
+import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.ee10.servlet.ServletMapping;
 import org.eclipse.jetty.ee10.webapp.WebAppClassLoader;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
@@ -43,7 +44,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EventListener;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,6 +60,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private static final Logger logger = LoggerFactory.getLogger(JettyWebAppContext.class);
 
     private ActivityContext context;
+
+    private List<JettyErrorPage> errorPages = new ArrayList<>();
 
     private JettyWebSocketInitializer webSocketInitializer;
 
@@ -194,6 +200,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    public void setErrorPages(JettyErrorPage[] errorPages) {
+        if (errorPages != null) {
+            this.errorPages.addAll(Arrays.asList(errorPages));
+        }
+    }
+
     public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
         Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
@@ -208,6 +220,24 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     public void deferredInitialize(Server server) {
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(getActivityContext().getClassLoader(), this);
         setClassLoader(webAppClassLoader);
+
+        if (!errorPages.isEmpty()) {
+            ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
+            for (JettyErrorPage errorPage : errorPages) {
+                if (StringUtils.hasText(errorPage.getLocation())) {
+                    if (errorPage.getErrorCode() != null) {
+                        if (errorPage.getToErrorCode() != null) {
+                            errorHandler.addErrorPage(errorPage.getErrorCode(), errorPage.getToErrorCode(), errorPage.getLocation());
+                        } else {
+                            errorHandler.addErrorPage(errorPage.getErrorCode(), errorPage.getLocation());
+                        }
+                    } else if (errorPage.getExceptionType() != null) {
+                        errorHandler.addErrorPage(errorPage.getExceptionType(), errorPage.getLocation());
+                    }
+                }
+            }
+            setErrorHandler(errorHandler);
+        }
 
         if (webSocketInitializer != null) {
             JakartaWebSocketServletContainerInitializer.configure(this,

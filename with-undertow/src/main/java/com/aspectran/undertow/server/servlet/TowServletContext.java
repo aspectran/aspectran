@@ -163,7 +163,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
-    public void setErrorPages(ErrorPage[] errorPages) {
+    public void setErrorPages(TowErrorPage[] errorPages) {
         if (errorPages != null) {
             addErrorPages(errorPages);
         }

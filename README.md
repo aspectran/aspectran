@@ -46,13 +46,13 @@ Aspectran consists of the following major packages:
 * **com.aspectran.shell**  
   Package for building interactive shell (aka command line) applications based on Aspectran
 * **com.aspectran.shell-jline**  
-  Package for building feature-rich Aspectran-based interactive shell applications with JLine 3
+  Package for building feature-rich Aspectran-based interactive shell applications leveraging JLine 3
 * **com.aspectran.utils**  
   Miscellaneous utility classes used across multiple packages
 * **com.aspectran.web**  
-  Package for building web applications using Jakarta EE
+  Packages required to build Jakarta EE compatible web applications
 * **com.aspectran.rss-lettuce**  
-  Package containing a Redis session store implementation using Lettuce as a client
+  Package containing a Redis session store implementation leveraging Lettuce as a client
 * **com.aspectran.jetty**  
   Add-on package for using Jetty as the embedded servlet container
 * **com.aspectran.undertow**  

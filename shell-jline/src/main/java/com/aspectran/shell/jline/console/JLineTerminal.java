@@ -113,6 +113,10 @@ public class JLineTerminal {
         return dumbColor;
     }
 
+    protected boolean isNormal() {
+        return (!dumb && !dumbColor);
+    }
+
     public LineReader getReader() {
         return reader;
     }
@@ -167,7 +171,7 @@ public class JLineTerminal {
     }
 
     public void clearLine() {
-        if (!isDumb() && !isDumbColor()) {
+        if (isNormal()) {
             if (reader.isReading()) {
                 reader.callWidget(LineReader.CLEAR);
             } else {
