@@ -23,6 +23,8 @@ import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>Created: 2024-04-27</p>
  */
 public abstract class AbstractSessionManager implements ApplicationAdapterAware, DisposableBean {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSessionManager.class);
 
     private final DefaultSessionManager sessionManager = new DefaultSessionManager();
 
@@ -79,18 +83,24 @@ public abstract class AbstractSessionManager implements ApplicationAdapterAware,
 
     public void stop() {
         int count = startCount.decrementAndGet();
-        if (count == 0 && sessionManager.isAvailable()) {
+        if (count == 0) {
             try {
-                sessionManager.destroy();
+                destroy();
             } catch (Exception e) {
-                throw new RuntimeException("Error destroying TowSessionManager", e);
+                logger.error("Error destroying TowSessionManager", e);
             }
         }
     }
 
     @Override
     public void destroy() throws Exception {
-        stop();
+        if (sessionManager.isAvailable()) {
+            try {
+                sessionManager.destroy();
+            } catch (Exception e) {
+                throw new RuntimeException("Error destroying TowSessionManager", e);
+            }
+        }
     }
 
 }
