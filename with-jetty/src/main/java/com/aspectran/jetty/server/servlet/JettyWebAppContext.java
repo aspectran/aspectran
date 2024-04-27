@@ -44,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.List;
@@ -61,7 +60,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private ActivityContext context;
 
-    private List<JettyErrorPage> errorPages = new ArrayList<>();
+    private List<JettyErrorPage> errorPages;
 
     private JettyWebSocketInitializer webSocketInitializer;
 
@@ -201,8 +200,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     public void setErrorPages(JettyErrorPage[] errorPages) {
-        if (errorPages != null) {
-            this.errorPages.addAll(Arrays.asList(errorPages));
+        if (errorPages != null && errorPages.length > 0) {
+            this.errorPages = Arrays.asList(errorPages);
+        } else {
+            this.errorPages = null;
         }
     }
 
@@ -221,7 +222,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(getActivityContext().getClassLoader(), this);
         setClassLoader(webAppClassLoader);
 
-        if (!errorPages.isEmpty()) {
+        if (errorPages != null) {
             ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
             for (JettyErrorPage errorPage : errorPages) {
                 if (StringUtils.hasText(errorPage.getLocation())) {
