@@ -35,7 +35,7 @@ public class DefaultServletHttpRequestHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultServletHttpRequestHandler.class);
 
-    /** Default Servlet name used by Tomcat, Jetty, JBoss, and Glassfish */
+    /** Default Servlet name used by Undertow, Jetty, Tomcat, JBoss, and Glassfish */
     private static final String COMMON_DEFAULT_SERVLET_NAME = "default";
 
     /** Default Servlet name used by Resin */
@@ -145,7 +145,11 @@ public class DefaultServletHttpRequestHandler {
             throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" +
                     defaultServletName + "'");
         }
-        rd.forward(request, new ErrorLoggingHttpServletResponse(response));
+        if (logger.isDebugEnabled()) {
+            rd.forward(request, new ErrorLoggingHttpServletResponse(response));
+        } else {
+            rd.forward(request, response);
+        }
     }
 
     private static class ErrorLoggingHttpServletResponse extends HttpServletResponseWrapper {
@@ -156,12 +160,11 @@ public class DefaultServletHttpRequestHandler {
 
         @Override
         public void sendError(int sc, String msg) throws IOException {
-            if (logger.isDebugEnabled()) {
-                ToStringBuilder tsb = new ToStringBuilder("Response");
-                tsb.append("code", sc);
-                tsb.append("message", msg);
-                logger.debug(tsb.toString());
-            }
+            ToStringBuilder tsb = new ToStringBuilder("Response");
+            tsb.append("code", sc);
+            tsb.append("message", msg);
+            logger.debug(tsb.toString());
+
             super.sendError(sc, msg);
         }
 
@@ -170,11 +173,10 @@ public class DefaultServletHttpRequestHandler {
          */
         @Override
         public void sendError(int sc) throws IOException {
-            if (logger.isDebugEnabled()) {
-                ToStringBuilder tsb = new ToStringBuilder("Response");
-                tsb.append("code", sc);
-                logger.debug(tsb.toString());
-            }
+            ToStringBuilder tsb = new ToStringBuilder("Response");
+            tsb.append("code", sc);
+            logger.debug(tsb.toString());
+
             super.sendError(sc);
         }
 
