@@ -62,12 +62,17 @@ public class ScheduledExecutorScheduler implements Scheduler {
 
     @Override
     public Task schedule(Runnable task, long delay, TimeUnit unit) {
+        return schedule(task, delay, unit, false);
+    }
+
+    @Override
+    public Task schedule(Runnable task, long delay, TimeUnit unit, boolean mayInterruptIfRunning) {
         ScheduledThreadPoolExecutor executor = this.executor;
         if (executor == null) {
             return () -> false;
         }
         ScheduledFuture<?> result = executor.schedule(task, delay, unit);
-        return new ScheduledFutureTask(result);
+        return new ScheduledFutureTask(result, mayInterruptIfRunning);
     }
 
     @Override
@@ -103,13 +108,16 @@ public class ScheduledExecutorScheduler implements Scheduler {
 
         private final ScheduledFuture<?> scheduledFuture;
 
-        ScheduledFutureTask(ScheduledFuture<?> scheduledFuture) {
+        private final boolean mayInterruptIfRunning;
+
+        ScheduledFutureTask(ScheduledFuture<?> scheduledFuture, boolean mayInterruptIfRunning) {
             this.scheduledFuture = scheduledFuture;
+            this.mayInterruptIfRunning = mayInterruptIfRunning;
         }
 
         @Override
         public boolean cancel() {
-            return scheduledFuture.cancel(false);
+            return scheduledFuture.cancel(mayInterruptIfRunning);
         }
 
     }

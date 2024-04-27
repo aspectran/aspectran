@@ -126,11 +126,11 @@ public class DefaultSessionManager extends AbstractSessionHandler
             setScheduler(scheduler);
         }
 
-        if (scavengingIntervalSeconds >= 0) {
+        if (scavengingIntervalSeconds > -1) {
+            HouseKeeper houseKeeper = new HouseKeeper(this, scavengingIntervalSeconds);
+            setHouseKeeper(houseKeeper);
+        } else {
             HouseKeeper houseKeeper = new HouseKeeper(this);
-            if (scavengingIntervalSeconds > 0) {
-                houseKeeper.setScavengingInterval(scavengingIntervalSeconds);
-            }
             setHouseKeeper(houseKeeper);
         }
 

@@ -24,6 +24,8 @@ public interface Scheduler {
 
     Task schedule(Runnable task, long delay, TimeUnit units);
 
+    Task schedule(Runnable task, long delay, TimeUnit units, boolean mayInterruptIfRunning);
+
     void start();
 
     void stop();

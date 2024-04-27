@@ -33,7 +33,7 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
 
-    public static final long DEFAULT_SCAVENGING_INTERVAL_MS = 1000 * 60 * 10; //default of 10min
+    public static final int DEFAULT_SCAVENGING_INTERVAL = 60 * 10; // default of 10 minutes
 
     private final AutoLock lock = new AutoLock();
 
@@ -45,15 +45,23 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private Runner runner;
 
-    /** 10 minute default */
-    private long scavengingInterval = DEFAULT_SCAVENGING_INTERVAL_MS;
+    private long scavengingInterval;
 
     /**
      * @param sessionHandler SessionHandler associated with this scavenger
      */
     public HouseKeeper(@NonNull SessionHandler sessionHandler) {
+        this(sessionHandler, DEFAULT_SCAVENGING_INTERVAL);
+    }
+
+    /**
+     * @param sessionHandler SessionHandler associated with this scavenger
+     * @param scavengingIntervalInSecs the period between scavenge cycles
+     */
+    public HouseKeeper(@NonNull SessionHandler sessionHandler, int scavengingIntervalInSecs) {
         this.sessionHandler = sessionHandler;
         this.scheduler = sessionHandler.getScheduler();
+        this.scavengingInterval = scavengingIntervalInSecs * 1000L;
     }
 
     /**
@@ -80,9 +88,7 @@ public class HouseKeeper extends AbstractLifeCycle {
                         logger.warn("Short interval of " + intervalInSecs + " secs for session scavenging");
                     }
                     scavengingInterval = intervalInSecs * 1000L;
-                    if (isStarting() || isStarted()) {
-                        startScavenging();
-                    }
+                    startScavenging();
                 }
             } else {
                 scavengingInterval = intervalInSecs * 1000L;
@@ -99,13 +105,14 @@ public class HouseKeeper extends AbstractLifeCycle {
             if (task != null) {
                 task.cancel();
             }
-            if (runner == null) {
-                runner = new Runner();
+            if (runner != null) {
+                runner.stop();
             }
             if (logger.isTraceEnabled()) {
                 logger.trace(this + " is scavenging every " + scavengingInterval + " ms");
             }
-            task = scheduler.schedule(runner, scavengingInterval, TimeUnit.MILLISECONDS);
+            runner = new Runner();
+            task = scheduler.schedule(runner, scavengingInterval, TimeUnit.MILLISECONDS, true);
         }
     }
 
@@ -116,12 +123,12 @@ public class HouseKeeper extends AbstractLifeCycle {
         try (AutoLock ignored = lock.lock()) {
             if (task != null) {
                 task.cancel();
-                if (logger.isTraceEnabled()) {
-                    logger.trace(this + "  stopped scavenging");
-                }
+                task = null;
             }
-            task = null;
-            runner = null;
+            if (runner != null) {
+                runner.stop();
+                runner = null;
+            }
         }
     }
 
@@ -168,17 +175,29 @@ public class HouseKeeper extends AbstractLifeCycle {
      */
     private class Runner implements Runnable {
 
+        private volatile boolean running = true;
+
         @Override
         public void run() {
-            try {
-                scavenge();
-            } finally {
+            if (running) {
                 try (AutoLock ignored = lock.lock()) {
-                    if (scheduler != null && scheduler.isRunning()) {
-                        task = scheduler.schedule(this, scavengingInterval, TimeUnit.MILLISECONDS);
+                    try {
+                        scavenge();
+                    } finally {
+                        if (scheduler != null && scheduler.isRunning()) {
+                            // cancel any previous task
+                            if (task != null) {
+                                task.cancel();
+                            }
+                            task = scheduler.schedule(this, scavengingInterval, TimeUnit.MILLISECONDS, true);
+                        }
                     }
                 }
             }
+        }
+
+        public void stop() {
+            running = false;
         }
 
     }

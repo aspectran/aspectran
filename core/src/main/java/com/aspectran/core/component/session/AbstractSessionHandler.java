@@ -370,8 +370,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         long now = System.currentTimeMillis();
         try {
             if (now > (lastOrphanSweepTime + scavengingInterval * 10L)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
                 }
                 sessionCache.cleanOrphans(now - scavengingInterval * 10L);
             }
