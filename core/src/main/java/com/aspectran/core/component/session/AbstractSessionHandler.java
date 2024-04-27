@@ -64,6 +64,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
 
+    AbstractSessionHandler() {
+    }
+
     @Override
     public String getWorkerName() {
         return workerName;

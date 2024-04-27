@@ -160,6 +160,11 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     @Override
+    public boolean isRunning() {
+        return (super.isRunning() && scavengingInterval > 0L);
+    }
+
+    @Override
     public String toString() {
         if (isStopped()) {
             ToStringBuilder tsb = new ToStringBuilder(super.toString());

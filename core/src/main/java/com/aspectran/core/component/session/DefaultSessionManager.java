@@ -112,6 +112,8 @@ public class DefaultSessionManager extends AbstractSessionHandler
             }
             if (sessionManagerConfig.hasScavengingIntervalSeconds()) {
                 scavengingIntervalSeconds = sessionManagerConfig.getScavengingIntervalSeconds();
+            } else {
+                scavengingIntervalSeconds = 0;
             }
         }
 
@@ -128,9 +130,6 @@ public class DefaultSessionManager extends AbstractSessionHandler
 
         if (scavengingIntervalSeconds > -1) {
             HouseKeeper houseKeeper = new HouseKeeper(this, scavengingIntervalSeconds);
-            setHouseKeeper(houseKeeper);
-        } else {
-            HouseKeeper houseKeeper = new HouseKeeper(this);
             setHouseKeeper(houseKeeper);
         }
 
