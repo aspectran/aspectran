@@ -28,6 +28,7 @@ import com.aspectran.utils.thread.ScheduledExecutorScheduler;
 import com.aspectran.utils.thread.Scheduler;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Implementation of SessionManager.
@@ -38,6 +39,10 @@ public class DefaultSessionManager extends AbstractSessionHandler
         implements SessionManager, ApplicationAdapterAware, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
+
+    private static final String UNNAMED_WORKER_PREFIX = "unnamed";
+
+    private static final AtomicInteger uniqueNumberIssuer = new AtomicInteger();
 
     private ApplicationAdapter applicationAdapter;
 
@@ -97,6 +102,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
             if (logger.isDebugEnabled()) {
                 logger.debug("Initializing " + getComponentName());
             }
+            setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Initializing " + new ToStringBuilder(getComponentName(), sessionManagerConfig));
@@ -105,7 +111,10 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 clusterEnabled = true;
             }
             if (sessionManagerConfig.hasWorkerName()) {
+                uniqueNumberIssuer.getAndIncrement();
                 setWorkerName(sessionManagerConfig.getWorkerName());
+            } else {
+                setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
             }
             if (sessionManagerConfig.hasMaxIdleSeconds()) {
                 setDefaultMaxIdleSecs(sessionManagerConfig.getMaxIdleSeconds());
@@ -120,9 +129,9 @@ public class DefaultSessionManager extends AbstractSessionHandler
         if (getScheduler() == null) {
             String schedulerName;
             if (getWorkerName() != null) {
-                schedulerName = "S-Scheduler-" + getWorkerName();
+                schedulerName = "Scheduler-" + getWorkerName();
             } else {
-                schedulerName = String.format("S-Scheduler-%x", hashCode());
+                schedulerName = String.format("Scheduler@%x", hashCode());
             }
             Scheduler scheduler = new ScheduledExecutorScheduler(schedulerName, false);
             setScheduler(scheduler);

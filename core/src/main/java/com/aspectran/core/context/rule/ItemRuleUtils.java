@@ -40,10 +40,7 @@ import java.util.Set;
  *
  * @since 6.3.0
  */
-public class ItemRuleUtils {
-
-    private ItemRuleUtils() {
-    }
+public abstract class ItemRuleUtils {
 
     /**
      * Returns the {@code Class} according to the given item value.

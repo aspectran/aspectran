@@ -240,11 +240,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
     @NonNull
     public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
                                            String encoding, Boolean defaultResponse) throws IllegalRuleException {
-        if (name == null) {
-            throw new IllegalRuleException("name must not be null");
-        }
-        DispatchRule dr = new DispatchRule();
-        dr.setName(name);
+        DispatchRule dr = newInstance(name);
         dr.setDispatcherName(dispatcherName);
         dr.setContentType(contentType);
         dr.setEncoding(encoding);

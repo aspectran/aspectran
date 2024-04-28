@@ -52,7 +52,7 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
      * @param itemRule the item rule
      * @return the item rule
      */
-    public ItemRule putItemRule(ItemRule itemRule) {
+    public ItemRule putItemRule(@NonNull ItemRule itemRule) {
         if (itemRule.isAutoNamed()) {
             autoNaming(itemRule);
         }
