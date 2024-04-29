@@ -81,10 +81,13 @@ public class TowResourceManager extends PathResourceManager implements Applicati
     @Override
     public TowResourceManager setBase(File base) {
         if (base == null) {
-            throw new IllegalArgumentException("Resource base path must not be null");
+            throw new IllegalArgumentException("Base path must not be null");
+        }
+        if (!base.exists()) {
+            base.mkdirs();
         }
         if (!base.isDirectory()) {
-            throw new IllegalArgumentException("Resource base path '" + base + "' does not exist");
+            throw new IllegalArgumentException("Base path '" + base + "' is not resolved");
         }
         super.setBase(base);
         return this;

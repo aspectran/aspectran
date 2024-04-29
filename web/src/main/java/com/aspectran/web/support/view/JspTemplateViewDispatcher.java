@@ -119,6 +119,10 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
             RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(template);
             requestDispatcher.forward(requestWrapper, response);
+
+            if (response.getStatus() == 404) {
+                logger.warn("Resource file [" + template + "] not found");
+            }
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
