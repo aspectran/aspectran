@@ -564,7 +564,7 @@ public class DefaultSession implements Session {
         /**
          * @param time the timeout to set; -1 means that the timer will not be scheduled
          */
-        public void schedule (long time) {
+        public void schedule(long time) {
             if (time >= 0) {
                 if (logger.isTraceEnabled()) {
                     logger.trace("(Re)starting timer for session " + getId() + " at " + time + "ms");

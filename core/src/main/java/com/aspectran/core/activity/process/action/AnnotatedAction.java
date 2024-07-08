@@ -293,14 +293,12 @@ public class AnnotatedAction implements Executable {
             result = null;
         } else if (type.isArray() && type.getComponentType() == Translet.class) {
             result = new Translet[] { };
-        } else if (type.isAnnotationPresent(Component.class)) {
+        } else {
             try {
                 result = activity.getBean(type);
             } catch (NoUniqueBeanException e) {
                 result = activity.getBean(type, name);
             }
-        } else {
-            result = null;
         }
         return result;
     }

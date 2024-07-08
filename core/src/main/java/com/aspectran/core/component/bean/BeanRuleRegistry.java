@@ -89,6 +89,8 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.lang.Cloneable.class);
         ignoreDependencyInterface(java.lang.Comparable.class);
         ignoreDependencyInterface(java.lang.CharSequence.class);
+        ignoreDependencyInterface(java.lang.constant.Constable.class);
+        ignoreDependencyInterface(java.lang.constant.ConstantDesc.class);
         ignoreDependencyInterface(java.io.Serializable.class);
         ignoreDependencyInterface(java.io.Closeable.class);
     }
@@ -195,6 +197,7 @@ public class BeanRuleRegistry {
             });
             for (BeanRule beanRule : beanRules) {
                 saveConfigurableBeanRule(beanRule);
+                saveBeanRuleWithInterfaces(beanRule.getBeanClass(), beanRule);
             }
         }
     }
@@ -276,8 +279,8 @@ public class BeanRuleRegistry {
                     saveConfigurableBeanRule(beanRule);
                 } else {
                     saveBeanRule(targetBeanClass, beanRule);
-                    saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
                 }
+                saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
             }
             if (logger.isTraceEnabled()) {
                 logger.trace("add BeanRule " + beanRule);
