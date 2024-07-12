@@ -72,8 +72,8 @@ public abstract class IdleTimeout {
     }
 
     /**
-     * <p>Sets the idle timeout in milliseconds.</p>
-     * <p>A value that is less than or zero disables the idle timeout checks.</p>
+     * Sets the idle timeout in milliseconds.
+     * A value that is less than or zero disables the idle timeout checks.
      * @param idleTimeout the idle timeout in milliseconds
      * @see #getIdleTimeout()
      */

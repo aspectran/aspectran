@@ -174,7 +174,7 @@ public abstract class CyclicTimeout implements Destroyable {
             return String.format("%s@%x:%dms,%s",
                 getClass().getSimpleName(),
                 hashCode(),
-                TimeUnit.NANOSECONDS.toMillis(at - System.nanoTime()),
+                TimeUnit.NANOSECONDS.toMillis(at),
                 wakeup);
         }
     }
@@ -275,10 +275,9 @@ public abstract class CyclicTimeout implements Destroyable {
             return String.format("%s@%x:%dms->%s",
                 getClass().getSimpleName(),
                 hashCode(),
-                (at == MAX_VALUE ? at : TimeUnit.NANOSECONDS.toMillis(at - System.nanoTime())),
+                (at == MAX_VALUE ? at : TimeUnit.NANOSECONDS.toMillis(at)),
                 next);
         }
-
     }
 
 }

@@ -536,7 +536,7 @@ public class DefaultSession implements Session {
      */
     public class SessionInactivityTimer {
 
-        protected final CyclicTimeout timer;
+        private final CyclicTimeout timer;
 
         SessionInactivityTimer() {
             timer = new CyclicTimeout(getSessionHandler().getScheduler()) {
