@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jline.version>3.26.3</jline.version>
+        <jline.version>3.27.0</jline.version>
     </properties>
 
     <dependencies>
