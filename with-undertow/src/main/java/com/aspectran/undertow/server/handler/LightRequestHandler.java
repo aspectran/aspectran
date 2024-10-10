@@ -37,6 +37,8 @@ public class LightRequestHandler implements HttpHandler {
 
     private final SessionConfig sessionConfig;
 
+    private final ExchangeCompletionListener exchangeCompletionListener;
+
     public LightRequestHandler(TowService towService) {
         this(towService, null);
     }
@@ -53,6 +55,7 @@ public class LightRequestHandler implements HttpHandler {
         } else {
             this.sessionConfig = null;
         }
+        this.exchangeCompletionListener = new UpdateLastAccessTimeListener(sessionManager, sessionConfig);
     }
 
     @Override
@@ -63,8 +66,7 @@ public class LightRequestHandler implements HttpHandler {
             if (sessionManager != null) {
                 exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
                 exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
-                UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionManager, sessionConfig);
-                exchange.addExchangeCompleteListener(listener);
+                exchange.addExchangeCompleteListener(exchangeCompletionListener);
             }
 
             boolean processed = towService.service(exchange);

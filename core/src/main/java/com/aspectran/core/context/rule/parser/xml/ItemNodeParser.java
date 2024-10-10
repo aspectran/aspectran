@@ -84,24 +84,18 @@ class ItemNodeParser implements SubnodeParser {
             itemRuleMap.putItemRule(itemRule);
         });
         parser.setXpath(xpath + "/item/value");
-        if (depth < nodeParser.getMaxInnerBeans()) {
-            nodeParser.parseInnerBeanNode(depth);
-        } else {
-            parser.setXpath(xpath + "/item/value/bean");
-            parser.addNodelet(attrs -> {
-                nestLimitExceeded(nodeParser.getMaxInnerBeans());
-            });
-            parser.setXpath(xpath + "/item/value");
-        }
         parser.addEndNodelet(text -> {
             if (StringUtils.hasText(text)) {
                 ItemRule itemRule = parser.peekObject();
-                if (itemRule.getValueType() != ItemValueType.BEAN) {
-                    if (itemRule.isListableType()) {
-                        itemRule.addValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
-                    } else if (itemRule.getType() == ItemType.SINGLE) {
-                        itemRule.setValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
-                    }
+
+                if (itemRule.getValueType() == ItemValueType.BEAN) {
+                    throw new IllegalRuleException("<bean> and <value> elements cannot exist together within an <item> element");
+                }
+
+                if (itemRule.isListableType()) {
+                    itemRule.addValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                } else if (itemRule.getType() == ItemType.SINGLE) {
+                    itemRule.setValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
                 }
             }
         });

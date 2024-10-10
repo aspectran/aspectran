@@ -20,6 +20,7 @@ import io.undertow.server.HttpHandler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 public abstract class AbstractRequestHandlerFactory {
 
@@ -35,7 +36,9 @@ public abstract class AbstractRequestHandlerFactory {
     protected HttpHandler wrapHandler(HttpHandler wrapee) {
         if (handlerChainWrappers != null) {
             HttpHandler current = wrapee;
-            for (HandlerWrapper wrapper : handlerChainWrappers) {
+            ListIterator<HandlerWrapper> iterator = handlerChainWrappers.listIterator(handlerChainWrappers.size());
+            while (iterator.hasPrevious()) {
+                HandlerWrapper wrapper = iterator.previous();
                 current = wrapper.wrap(current);
             }
             return current;

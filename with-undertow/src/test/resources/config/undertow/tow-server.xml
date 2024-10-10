@@ -68,8 +68,8 @@
         </properties>
         <properties profile="prod">
             <item name="handlerChainWrappers" type="array">
-                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
                 <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
+                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
             </item>
         </properties>
         <properties profile="!prod">

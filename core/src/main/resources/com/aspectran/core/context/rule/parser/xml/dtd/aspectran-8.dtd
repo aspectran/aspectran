@@ -268,7 +268,7 @@
   secret    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | bean)*>
+<!ELEMENT value (#PCDATA)>
 
 <!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry

@@ -131,10 +131,9 @@ public class ProcessResult extends ArrayList<ContentResult> {
                 return (actionResult != null ? actionResult.getResultValue() : null);
             } else {
                 ActionResult actionResult = getActionResult(ids[0]);
-                if (actionResult == null || !(actionResult.getResultValue() instanceof Map)) {
+                if (actionResult == null || !(actionResult.getResultValue() instanceof Map<?, ?> valueMap)) {
                     return null;
                 }
-                Map<?, ?> valueMap = (Map<?, ?>)actionResult.getResultValue();
                 for (int i = 1; i < ids.length - 1; i++) {
                     Object value = valueMap.get(ids[i]);
                     if (!(value instanceof Map)) {
