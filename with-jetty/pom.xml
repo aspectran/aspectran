@@ -33,6 +33,10 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <jetty.version>12.0.14</jetty.version>
+        <jakarta.servlet.jsp.jstl.api.version>3.0.0</jakarta.servlet.jsp.jstl.api.version>
+        <jakarta.servlet.jsp.jstl.impl.version>3.0.1</jakarta.servlet.jsp.jstl.impl.version>
+        <jsp.impl.version>10.1.25</jsp.impl.version>
+        <taglibs-standard.version>10.0.2</taglibs-standard.version>
     </properties>
 
     <dependencies>
@@ -80,22 +84,32 @@
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>11.0.0</version>
+            <version>${jsp.impl.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>3.0.2</version>
+            <version>${jakarta.servlet.jsp.jstl.api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-            <version>3.0.1</version>
+            <version>${jakarta.servlet.jsp.jstl.impl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>taglibs-standard</artifactId>
-            <version>10.0.2</version>
+            <version>${taglibs-standard.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Additional testing dependencies -->
