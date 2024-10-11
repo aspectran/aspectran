@@ -35,7 +35,7 @@
         <jetty.version>12.0.14</jetty.version>
         <jakarta.servlet.jsp.jstl.api.version>3.0.0</jakarta.servlet.jsp.jstl.api.version>
         <jakarta.servlet.jsp.jstl.impl.version>3.0.1</jakarta.servlet.jsp.jstl.impl.version>
-        <jsp.impl.version>10.1.25</jsp.impl.version>
+        <jsp.impl.version>11.0.0</jsp.impl.version>
         <taglibs-standard.version>10.0.2</taglibs-standard.version>
     </properties>
 
