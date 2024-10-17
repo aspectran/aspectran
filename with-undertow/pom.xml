@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <undertow.version>2.3.17.Final</undertow.version>
+        <undertow.version>2.3.18.Final</undertow.version>
         <jakarta.servlet.jsp.jstl.api.version>3.0.0</jakarta.servlet.jsp.jstl.api.version>
         <jakarta.servlet.jsp.jstl.impl.version>3.0.1</jakarta.servlet.jsp.jstl.impl.version>
         <jakarta.websocket.api.version>2.2.0</jakarta.websocket.api.version>
