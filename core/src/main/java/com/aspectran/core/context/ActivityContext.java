@@ -65,7 +65,7 @@ public interface ActivityContext {
 
     /**
      * Returns the first created CoreService that holds the ActivityContext.
-     * @return the root service
+     * @return the master service
      */
     CoreService getMasterService();
 

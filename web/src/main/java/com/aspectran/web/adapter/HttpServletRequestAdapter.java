@@ -84,15 +84,20 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     private HttpServletRequest getHttpServletRequest() {
         return getAdaptee();
     }
-    
+
     @Override
     public void preparse() {
         HttpServletRequest request = getAdaptee();
-        setAttributeMap(new RequestAttributeMap(request));
+
+        RequestAttributeMap requestAttributeMap = new RequestAttributeMap();
+        requestAttributeMap.setRequest(request);
+        setAttributeMap(requestAttributeMap);
+
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
+
         String contentType = request.getContentType();
         if (contentType != null) {
             MediaType mediaType = MediaType.parseMediaType(contentType);
@@ -105,6 +110,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
                 }
             }
         }
+
         setLocale(request.getLocale());
     }
 

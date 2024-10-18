@@ -28,7 +28,6 @@ import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
-import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
@@ -51,8 +50,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private ActivityContext context;
 
-    private ClassLoader altClassLoader;
-
     private SessionManager sessionManager;
 
     @NonNull
@@ -64,18 +61,13 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
-        this.altClassLoader = new WebServiceClassLoader(context.getClassLoader());
-        setClassLoader(this.altClassLoader);
+        ClassLoader webServiceClassLoader = new WebServiceClassLoader(context.getClassLoader());
+        setClassLoader(webServiceClassLoader);
     }
 
     @NonNull
     public ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
-    }
-
-    @NonNull
-    public ClassLoader getAltClassLoader() {
-        return this.altClassLoader;
     }
 
     public void setScratchDir(String scratchDir) throws IOException {
@@ -201,7 +193,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     void createRootWebService(ServletContext servletContext) throws Exception {
         CoreService masterService = getActivityContext().getMasterService();
-        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService, getAltClassLoader());
+        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
         if (rootWebService.isOrphan()) {
             rootWebService.getServiceLifeCycle().start();
         }

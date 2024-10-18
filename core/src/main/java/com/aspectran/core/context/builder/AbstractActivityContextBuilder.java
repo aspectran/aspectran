@@ -262,9 +262,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @Override
     public void configure(ContextConfig contextConfig) throws IOException, InvalidResourceException {
-        Assert.notNull(contextConfig, "contextConfig must not be null");
-        this.contextConfig = contextConfig;
-
         if (this.basePath == null) {
             if (getMasterService() != null) {
                 this.basePath = getMasterService().getBasePath();
@@ -277,43 +274,46 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             checkDirectoryStructure();
         }
 
-        this.contextRules = contextConfig.getContextRules();
+        if (contextConfig != null) {
+            this.contextConfig = contextConfig;
+            this.contextRules = contextConfig.getContextRules();
 
-        AspectranParameters aspectranParameters = contextConfig.getAspectranParameters();
-        if (aspectranParameters != null) {
-            this.aspectranParameters = aspectranParameters;
-        }
+            AspectranParameters aspectranParameters = contextConfig.getAspectranParameters();
+            if (aspectranParameters != null) {
+                this.aspectranParameters = aspectranParameters;
+            }
 
-        this.encoding = contextConfig.getEncoding();
+            this.encoding = contextConfig.getEncoding();
 
-        String[] resourceLocations = contextConfig.getResourceLocations();
-        this.resourceLocations = ResourceManager.checkResourceLocations(resourceLocations, getBasePath());
+            String[] resourceLocations = contextConfig.getResourceLocations();
+            this.resourceLocations = ResourceManager.checkResourceLocations(resourceLocations, getBasePath());
 
-        this.basePackages = contextConfig.getBasePackages();
+            this.basePackages = contextConfig.getBasePackages();
 
-        ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
-        if (profilesConfig != null) {
-            setActiveProfiles(profilesConfig.getActiveProfiles());
-            setDefaultProfiles(profilesConfig.getDefaultProfiles());
-        }
+            ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
+            if (profilesConfig != null) {
+                setActiveProfiles(profilesConfig.getActiveProfiles());
+                setDefaultProfiles(profilesConfig.getDefaultProfiles());
+            }
 
-        ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
-        if (autoReloadConfig != null) {
-            String reloadMode = autoReloadConfig.getReloadMode();
-            int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
-            boolean autoReloadEnabled = autoReloadConfig.isEnabled();
-            this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
-            this.autoReloadEnabled = autoReloadEnabled;
-            this.scanIntervalSeconds = scanIntervalSeconds;
-        }
-        if (this.autoReloadEnabled && this.resourceLocations == null) {
-            this.autoReloadEnabled = false;
-        }
-        if (this.autoReloadEnabled) {
-            if (this.scanIntervalSeconds == -1) {
-                this.scanIntervalSeconds = 10;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
+            ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
+            if (autoReloadConfig != null) {
+                String reloadMode = autoReloadConfig.getReloadMode();
+                int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
+                boolean autoReloadEnabled = autoReloadConfig.isEnabled();
+                this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
+                this.autoReloadEnabled = autoReloadEnabled;
+                this.scanIntervalSeconds = scanIntervalSeconds;
+            }
+            if (this.autoReloadEnabled && this.resourceLocations == null) {
+                this.autoReloadEnabled = false;
+            }
+            if (this.autoReloadEnabled) {
+                if (this.scanIntervalSeconds == -1) {
+                    this.scanIntervalSeconds = 10;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
+                    }
                 }
             }
         }

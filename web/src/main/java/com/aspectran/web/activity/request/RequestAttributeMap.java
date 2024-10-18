@@ -37,18 +37,11 @@ import java.util.Set;
  *
  * @since 5.2.0
  */
-public class RequestAttributeMap implements Map<String, Object> {
+public final class RequestAttributeMap implements Map<String, Object> {
 
     private ServletRequest request;
 
-    public RequestAttributeMap(ServletRequest request) {
-        setRequest(request);
-    }
-
     public ServletRequest getRequest() {
-        if (request == null) {
-            throw new IllegalStateException("ServletRequest is not specified");
-        }
         return request;
     }
 
@@ -56,27 +49,45 @@ public class RequestAttributeMap implements Map<String, Object> {
         this.request = request;
     }
 
+    private void checkState() {
+        if (request == null) {
+            throw new IllegalStateException("ServletRequest is not specified");
+        }
+    }
+
     @Override
     public int size() {
-        return Collections.list(getRequest().getAttributeNames()).size();
+        if (request == null) {
+            return 0;
+        }
+        return Collections.list(request.getAttributeNames()).size();
     }
 
     @Override
     public boolean isEmpty() {
-        return !getRequest().getAttributeNames().hasMoreElements();
+        if (request == null) {
+            return true;
+        }
+        return !request.getAttributeNames().hasMoreElements();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return (getRequest().getAttribute((String)key) != null);
+        if (request == null) {
+            return false;
+        }
+        return (request.getAttribute((String)key) != null);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        Enumeration<String> names = getRequest().getAttributeNames();
+        if (request == null) {
+            return false;
+        }
+        Enumeration<String> names = request.getAttributeNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            Object object = getRequest().getAttribute(name);
+            Object object = request.getAttribute(name);
             if (Objects.equals(value, object)) {
                 return true;
             }
@@ -86,69 +97,86 @@ public class RequestAttributeMap implements Map<String, Object> {
 
     @Override
     public Object get(Object key) {
-        return getRequest().getAttribute((String)key);
+        if (request == null) {
+            return null;
+        }
+        return request.getAttribute((String)key);
     }
 
     @Override
     public Object put(String name, Object value) {
-        Object old = getRequest().getAttribute(name);
-        getRequest().setAttribute(name, value);
+        checkState();
+        Object old = request.getAttribute(name);
+        request.setAttribute(name, value);
         return old;
     }
 
     @Override
     public Object remove(@NonNull Object key) {
-        Object old = getRequest().getAttribute((String)key);
-        getRequest().removeAttribute((String)key);
+        checkState();
+        Object old = request.getAttribute((String)key);
+        request.removeAttribute((String)key);
         return old;
     }
 
     @Override
     public void putAll(@Nullable Map<? extends String, ?> map) {
+        checkState();
         if (map != null) {
             for (Entry<? extends String, ?> entry : map.entrySet()) {
-                getRequest().setAttribute(entry.getKey(), entry.getValue());
+                request.setAttribute(entry.getKey(), entry.getValue());
             }
         }
     }
 
     @Override
     public void clear() {
-        for (String name : Collections.list(getRequest().getAttributeNames())) {
-            getRequest().removeAttribute(name);
+        if (request != null) {
+            for (String name : Collections.list(request.getAttributeNames())) {
+                request.removeAttribute(name);
+            }
         }
     }
 
     @Override
     @NonNull
     public Set<String> keySet() {
-        return new HashSet<>(Collections.list(getRequest().getAttributeNames()));
+        if (request == null) {
+            return Collections.emptySet();
+        }
+        return Set.copyOf(Collections.list(request.getAttributeNames()));
     }
 
     @Override
     @NonNull
     public Collection<Object> values() {
+        if (request == null) {
+            return Collections.emptyList();
+        }
         List<Object> list = new ArrayList<>();
-        Enumeration<String> names = getRequest().getAttributeNames();
+        Enumeration<String> names = request.getAttributeNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            Object value = getRequest().getAttribute(name);
+            Object value = request.getAttribute(name);
             list.add(value);
         }
-        return list;
+        return Collections.unmodifiableList(list);
     }
 
     @Override
     @NonNull
     public Set<Entry<String, Object>> entrySet() {
+        if (request == null) {
+            return Collections.emptySet();
+        }
         Set<Entry<String, Object>> entries = new HashSet<>();
-        Enumeration<String> names = getRequest().getAttributeNames();
+        Enumeration<String> names = request.getAttributeNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            Object value = getRequest().getAttribute(name);
+            Object value = request.getAttribute(name);
             entries.add(new AbstractMap.SimpleImmutableEntry<>(name, value));
         }
-        return entries;
+        return Collections.unmodifiableSet(entries);
     }
 
 }

@@ -77,7 +77,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                     this.standalone = true;
                 }
             } else {
-                newWebService = DefaultWebServiceBuilder.build(this, null);
+                newWebService = DefaultWebServiceBuilder.build(this);
                 this.standalone = true;
             }
             if (newWebService != null) {

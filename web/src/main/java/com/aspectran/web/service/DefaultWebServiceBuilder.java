@@ -16,13 +16,11 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -46,8 +44,6 @@ public class DefaultWebServiceBuilder {
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
-
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servletContext the servlet context
@@ -55,47 +51,56 @@ public class DefaultWebServiceBuilder {
      */
     @NonNull
     public static DefaultWebService build(ServletContext servletContext) {
-        Assert.notNull(servletContext, "servletContext must not be null");
-        String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (aspectranConfigParam == null) {
-            logger.warn("No specified servlet context initialization parameter for instantiating DefaultWebService");
-        }
-        AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-        DefaultWebService webService = build(servletContext, null, aspectranConfig);
-        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
-        if (logger.isDebugEnabled()) {
-            logger.debug("The Root WebService attribute in ServletContext has been created; " +
-                    ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
-        }
-        return webService;
+        return build(servletContext, null);
     }
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servletContext the servlet context
-     * @param parentService the parent service
-     * @param altClassLoader the alternative classloader
+     * @param masterService the master service
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    public static DefaultWebService build(ServletContext servletContext, CoreService parentService, ClassLoader altClassLoader) {
+    public static DefaultWebService build(ServletContext servletContext, CoreService masterService) {
         Assert.notNull(servletContext, "servletContext must not be null");
-        Assert.notNull(parentService, "parentService must not be null");
+
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        DefaultWebService webService;
-        if (aspectranConfigParam != null) {
-            AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            webService = build(servletContext, parentService, aspectranConfig);
-        } else {
-            webService = build(servletContext, parentService);
+        if (masterService == null && aspectranConfigParam == null) {
+            logger.warn("No specified servlet context initialization parameter for instantiating DefaultWebService");
         }
-        webService.setAltClassLoader(altClassLoader);
+
+        DefaultWebService webService;
+        if (masterService != null) {
+            if (aspectranConfigParam != null) {
+                AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+                webService = doBuild(servletContext, masterService, aspectranConfig);
+            } else {
+                webService = doBuild(servletContext, masterService);
+            }
+        } else {
+            AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
+            webService = doBuild(servletContext, null, aspectranConfig);
+        }
+
+        webService.setAltClassLoader(servletContext.getClassLoader());
+
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
         if (logger.isDebugEnabled()) {
             logger.debug("The Root WebService attribute in ServletContext has been created; " +
                 ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
         }
+
         return webService;
+    }
+
+    /**
+     * Returns a new instance of {@code DefaultWebService}.
+     * @param servlet the web activity servlet
+     * @return the instance of {@code DefaultWebService}
+     */
+    @Nullable
+    public static DefaultWebService build(WebActivityServlet servlet) {
+        return build(servlet, null);
     }
 
     /**
@@ -107,27 +112,31 @@ public class DefaultWebServiceBuilder {
     @Nullable
     public static DefaultWebService build(WebActivityServlet servlet, WebService rootWebService) {
         Assert.notNull(servlet, "servlet must not be null");
+
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+        if (rootWebService == null && aspectranConfigParam == null) {
+            logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
+        }
+
         if (rootWebService == null || aspectranConfigParam != null) {
-            if (aspectranConfigParam == null) {
-                logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
-            }
             ServletContext servletContext = servlet.getServletContext();
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            DefaultWebService webService = build(servletContext, rootWebService, aspectranConfig);
+            DefaultWebService webService = doBuild(servletContext, rootWebService, aspectranConfig);
+            webService.setAltClassLoader(servletContext.getClassLoader());
+
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, webService);
             if (logger.isDebugEnabled()) {
                 logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
                     attrName + ": " + webService);
             }
+
             return webService;
         } else {
             return null;
         }
     }
-
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
@@ -136,7 +145,7 @@ public class DefaultWebServiceBuilder {
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    private static DefaultWebService build(ServletContext servletContext, @NonNull CoreService parentService) {
+    private static DefaultWebService doBuild(ServletContext servletContext, @NonNull CoreService parentService) {
         DefaultWebService webService = new DefaultWebService(servletContext, parentService, true);
         webService.configure(parentService.getAspectranConfig());
         setServiceStateListener(webService);
@@ -151,14 +160,9 @@ public class DefaultWebServiceBuilder {
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    private static DefaultWebService build(ServletContext servletContext,
-                                           @Nullable CoreService parentService,
-                                           @NonNull AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
-        }
+    private static DefaultWebService doBuild(ServletContext servletContext,
+                                             @Nullable CoreService parentService,
+                                             @NonNull AspectranConfig aspectranConfig) {
         DefaultWebService webService = new DefaultWebService(servletContext, parentService, false);
         webService.configure(aspectranConfig);
         setServiceStateListener(webService);
