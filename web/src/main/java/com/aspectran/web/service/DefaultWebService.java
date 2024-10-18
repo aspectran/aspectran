@@ -97,6 +97,7 @@ public class DefaultWebService extends AbstractWebService {
         WebActivity activity = new WebActivity(this, getContextPath(), reverseContextPath, request, response);
         activity.setRequestName(requestName);
         activity.setRequestMethod(requestMethod);
+
         try {
             activity.prepare();
         } catch (TransletNotFoundException e) {
@@ -106,6 +107,9 @@ public class DefaultWebService extends AbstractWebService {
             sendError(activity, e);
             return;
         }
+
+        WebService.bind(activity, this);
+
         if (activity.isAsync() && request.isAsyncSupported()) {
             asyncPerform(activity);
         } else {

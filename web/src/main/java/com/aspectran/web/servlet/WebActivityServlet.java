@@ -81,8 +81,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                 this.standalone = true;
             }
             if (newWebService != null) {
-                logger.info(newWebService.getServiceName() + " is running in standalone mode inside " + getMyName());
-                newWebService.getServiceLifeCycle().start();
+                newWebService.start();
                 this.webService = newWebService;
             }
         } catch (Exception e) {
@@ -121,7 +120,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         super.destroy();
 
         if (standalone) {
-            logger.info("Do not terminate the application server while destroying all scoped beans");
             webService.stop();
         }
 

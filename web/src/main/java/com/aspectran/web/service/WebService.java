@@ -20,8 +20,9 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.web.activity.WebActivity;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -39,10 +40,7 @@ public interface WebService extends CoreService {
      */
     String ROOT_WEB_SERVICE_ATTR_NAME = WebService.class.getName() + ".ROOT";
 
-    /**
-     * The prefix of the ServletContext property name used to get the standalone WebService object.
-     */
-    String STANDALONE_WEB_SERVICE_ATTR_PREFIX = WebService.class.getName() + ".STANDALONE:";
+    String DERIVED_WEB_SERVICE_ATTR_NAME = WebService.class.getName() + ".DERIVED";
 
     /**
      * Returns a reference to the {@link ServletContext} in which this WebService is running.
@@ -59,6 +57,18 @@ public interface WebService extends CoreService {
      */
     void service(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+    static void bind(ServletContext servletContext, WebService service) {
+        Assert.notNull(servletContext, "servletContext must not be null");
+        Assert.notNull(service, "service must not be null");
+        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
+    }
+
+    static void bind(WebActivity activity, WebService service) {
+        Assert.notNull(activity, "activity must not be null");
+        Assert.notNull(service, "service must not be null");
+        activity.getRequest().setAttribute(DERIVED_WEB_SERVICE_ATTR_NAME, service);
+    }
+
     /**
      * Find the root web service from ServletContext.
      * @param servletContext ServletContext to find the root web service for
@@ -66,9 +76,23 @@ public interface WebService extends CoreService {
      */
     @NonNull
     static DefaultWebService findWebService(ServletContext servletContext) {
+        Assert.notNull(servletContext, "servletContext must not be null");
         DefaultWebService webService = findWebService(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
         if (webService == null) {
-            throw new IllegalStateException("No root WebService found");
+            throw new IllegalStateException("No WebService found");
+        }
+        return webService;
+    }
+
+    @NonNull
+    static DefaultWebService findWebService(ServletRequest servletRequest) {
+        Assert.notNull(servletRequest, "servletRequest must not be null");
+        DefaultWebService webService = findWebService(servletRequest, DERIVED_WEB_SERVICE_ATTR_NAME);
+        if (webService == null) {
+            webService = findWebService(servletRequest.getServletContext(), ROOT_WEB_SERVICE_ATTR_NAME);
+        }
+        if (webService == null) {
+            throw new IllegalStateException("No WebService found");
         }
         return webService;
     }
@@ -84,21 +108,12 @@ public interface WebService extends CoreService {
     }
 
     /**
-     * Finds the standalone web service from the ServletContext and returns its ActivityContext.
-     * @param servlet the servlet
-     * @return ActivityContext of standalone web service
+     * Finds the derived web service from the ServletRequest and returns its ActivityContext.
+     * @param servletRequest ServletRequest to find the derived web service for
+     * @return ActivityContext of derived web service
      */
-    @NonNull
-    static ActivityContext findActivityContext(HttpServlet servlet) {
-        Assert.notNull(servlet, "servlet must not be null");
-        ServletContext servletContext = servlet.getServletContext();
-        String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-        DefaultWebService webService = findWebService(servletContext, attrName);
-        if (webService != null) {
-            return webService.getActivityContext();
-        } else {
-            return findActivityContext(servletContext);
-        }
+    static ActivityContext findActivityContext(ServletRequest servletRequest) {
+        return findWebService(servletRequest).getActivityContext();
     }
 
     /**
@@ -113,11 +128,30 @@ public interface WebService extends CoreService {
         if (attr == null) {
             return null;
         }
-        if (!(attr instanceof DefaultWebService defaultWebService)) {
+        if (!(attr instanceof DefaultWebService webService)) {
             throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
                     DefaultWebService.class.getName() + "]");
         }
-        return defaultWebService;
+        return webService;
+    }
+
+    /**
+     * Find the derived web service from ServletRequest.
+     * @param servletRequest ServletRequest to find the derived web service for
+     * @param attrName the name of the ServletRequest attribute to look for
+     * @return the derived web service
+     */
+    @Nullable
+    private static DefaultWebService findWebService(@NonNull ServletRequest servletRequest, String attrName) {
+        Object attr = servletRequest.getAttribute(attrName);
+        if (attr == null) {
+            return null;
+        }
+        if (!(attr instanceof DefaultWebService webService)) {
+            throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
+                    DefaultWebService.class.getName() + "]");
+        }
+        return webService;
     }
 
 }

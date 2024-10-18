@@ -15,15 +15,15 @@
  */
 package com.aspectran.web.servlet.listener;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
+import com.aspectran.web.service.WebService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * The Class WebServiceListener.
@@ -36,10 +36,12 @@ public class WebServiceListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(@NonNull ServletContextEvent event) {
-        Object attr = event.getServletContext().getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
-        if (attr instanceof DefaultWebService) {
+        try {
+            WebService.findWebService(event.getServletContext());
             logger.warn("Root WebService already exists; Remove WebServiceListener as it is unnecessary");
             return;
+        } catch (IllegalStateException ignored) {
+            // ignore
         }
 
         logger.info("Creating Root WebService...");
@@ -47,6 +49,8 @@ public class WebServiceListener implements ServletContextListener {
         try {
             webService = DefaultWebServiceBuilder.build(event.getServletContext());
             webService.start();
+
+            logger.info("Initialized " + getMyName());
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);
         }
@@ -55,13 +59,16 @@ public class WebServiceListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         if (webService != null) {
-            logger.info("Do not terminate the server while the all scoped bean destroying");
-
             webService.stop();
             webService = null;
 
-            logger.info("Successfully destroyed WebService: " + this);
+            logger.info("Destroyed " + getMyName());
         }
+    }
+
+    @NonNull
+    private String getMyName() {
+        return ObjectUtils.simpleIdentityToString(this);
     }
 
 }

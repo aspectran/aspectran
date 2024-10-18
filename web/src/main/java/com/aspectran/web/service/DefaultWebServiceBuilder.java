@@ -35,9 +35,6 @@ import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
-import static com.aspectran.web.service.WebService.STANDALONE_WEB_SERVICE_ATTR_PREFIX;
-
 public class DefaultWebServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultWebServiceBuilder.class);
@@ -57,39 +54,32 @@ public class DefaultWebServiceBuilder {
     /**
      * Returns a new instance of {@code DefaultWebService}.
      * @param servletContext the servlet context
-     * @param masterService the master service
+     * @param parentService the parent service
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    public static DefaultWebService build(ServletContext servletContext, CoreService masterService) {
+    public static DefaultWebService build(ServletContext servletContext, CoreService parentService) {
         Assert.notNull(servletContext, "servletContext must not be null");
 
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-        if (masterService == null && aspectranConfigParam == null) {
+        if (parentService == null && aspectranConfigParam == null) {
             logger.warn("No specified servlet context initialization parameter for instantiating DefaultWebService");
         }
 
         DefaultWebService webService;
-        if (masterService != null) {
+        if (parentService != null) {
             if (aspectranConfigParam != null) {
                 AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-                webService = doBuild(servletContext, masterService, aspectranConfig);
+                webService = doBuild(servletContext, parentService, aspectranConfig);
             } else {
-                webService = doBuild(servletContext, masterService);
+                webService = doBuild(servletContext, parentService);
             }
         } else {
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
             webService = doBuild(servletContext, null, aspectranConfig);
         }
-
         webService.setAltClassLoader(servletContext.getClassLoader());
-
-        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
-        if (logger.isDebugEnabled()) {
-            logger.debug("The Root WebService attribute in ServletContext has been created; " +
-                ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
-        }
-
+        WebService.bind(servletContext, webService);
         return webService;
     }
 
@@ -122,17 +112,7 @@ public class DefaultWebServiceBuilder {
         if (rootWebService == null || aspectranConfigParam != null) {
             ServletContext servletContext = servlet.getServletContext();
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            DefaultWebService webService = doBuild(servletContext, rootWebService, aspectranConfig);
-            webService.setAltClassLoader(servletContext.getClassLoader());
-
-            String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-            servletContext.setAttribute(attrName, webService);
-            if (logger.isDebugEnabled()) {
-                logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
-                    attrName + ": " + webService);
-            }
-
-            return webService;
+            return doBuild(servletContext, rootWebService, aspectranConfig);
         } else {
             return null;
         }
