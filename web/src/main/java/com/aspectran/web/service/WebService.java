@@ -40,6 +40,9 @@ public interface WebService extends CoreService {
      */
     String ROOT_WEB_SERVICE_ATTR_NAME = WebService.class.getName() + ".ROOT";
 
+    /**
+     * ServletRequest attribute name used to obtain the derived WebService object.
+     */
     String DERIVED_WEB_SERVICE_ATTR_NAME = WebService.class.getName() + ".DERIVED";
 
     /**

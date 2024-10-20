@@ -224,6 +224,9 @@ public class AspectranConfig extends AbstractParameters {
             } else {
                 file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
             }
+            if (!file.exists()) {
+                throw new IllegalArgumentException("No Aspectran Configuration file provided");
+            }
         } else if (args.length == 1) {
             String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
             if (baseDir != null) {
