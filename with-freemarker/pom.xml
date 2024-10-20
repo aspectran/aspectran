@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>8.1.5-SNAPSHOT</version>
+        <version>8.1.5</version>
     </parent>
 
     <artifactId>aspectran-with-freemarker</artifactId>
-    <version>8.1.5-SNAPSHOT</version>
+    <version>8.1.5</version>
     <packaging>jar</packaging>
 
     <name>Aspectran with Freemarker</name>
