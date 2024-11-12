@@ -69,9 +69,8 @@ public abstract class Aspectran {
     public static void printAboutMe(PrintStream output) {
         Assert.notNull(output, "output must not be null");
         output.println("Aspectran: " + VERSION);
-        output.println("JVM: " + System.getProperty("java.version") +
-                " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
-                System.getProperty("java.runtime.version") + ")");
+        output.println("JVM: " + System.getProperty("java.vm.name") + " (build " +
+                System.getProperty("java.vm.version") + ", " + System.getProperty("java.vm.info") + ")");
         output.println("OS: " + System.getProperty("os.name") + " " +
                 System.getProperty("os.version") + " " + System.getProperty("os.arch"));
     }
@@ -84,9 +83,8 @@ public abstract class Aspectran {
         Assert.notNull(output, "output must not be null");
         output.println("---------------------------------------------------------------------");
         output.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
-        output.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.version") +
-                " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
-                System.getProperty("java.runtime.version") + ")");
+        output.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.vm.name") + " (build " +
+                System.getProperty("java.vm.version") + ", " + System.getProperty("java.vm.info") + ")");
         output.printf(" %1$-9s : %2$s%n", "OS", System.getProperty("os.name") + " " +
                 System.getProperty("os.version") + " " + System.getProperty("os.arch"));
         output.println("---------------------------------------------------------------------");
