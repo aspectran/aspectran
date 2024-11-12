@@ -308,14 +308,26 @@ public class AnnotatedConfigParser {
                     }
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
-                } else if (method.isAnnotationPresent(Initialize.class)) {
-                    if (!beanRule.isInitializableBean() && beanRule.getInitMethod() == null) {
-                        beanRule.setInitMethod(method);
-                        beanRule.setInitMethodParameterBindingRules(createParameterBindingRules(method));
+                } else if (!beanRule.isInitializableBean() && method.isAnnotationPresent(Initialize.class)) {
+                    Initialize initializeAnno = method.getAnnotation(Initialize.class);
+                    String profile = StringUtils.emptyToNull(initializeAnno.profile());
+                    if (profile == null || environmentProfiles.matchesProfiles(profile)) {
+                        if (beanRule.getInitMethod() == null) {
+                            beanRule.setInitMethod(method);
+                            beanRule.setInitMethodParameterBindingRules(createParameterBindingRules(method));
+                        } else {
+                            throw new IllegalRuleException("Found duplicate methods to initialize " + beanRule);
+                        }
                     }
-                } else if (method.isAnnotationPresent(Destroy.class)) {
-                    if (!beanRule.isDisposableBean() && beanRule.getDestroyMethod() == null) {
-                        beanRule.setDestroyMethod(method);
+                } else if (!beanRule.isDisposableBean() && method.isAnnotationPresent(Destroy.class)) {
+                    Destroy destroyAnno = method.getAnnotation(Destroy.class);
+                    String profile = StringUtils.emptyToNull(destroyAnno.profile());
+                    if (profile == null || environmentProfiles.matchesProfiles(profile)) {
+                        if (beanRule.getDestroyMethod() == null) {
+                            beanRule.setDestroyMethod(method);
+                        } else {
+                            throw new IllegalRuleException("Found duplicate methods to destroy " + beanRule);
+                        }
                     }
                 }
             }
