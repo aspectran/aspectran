@@ -3,31 +3,31 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="google" content="notranslate">
     <title>${empty page.title ? "Aspectran Demo Site" : page.title}</title>
-    <meta name="description" content="${empty page.description ? "Welcome to the Aspectran Demo Site" : page.description}" />
-    <link rel="stylesheet" type="text/css" href="https://aspectran.com/assets/css/aspectran.css" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
+    <meta name="description" content="${empty page.description ? "Welcome to the Aspectran Demo Site" : page.description}">
+    <link rel="stylesheet" href="https://aspectran.com/assets/css/aspectran.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
     <script src="https://aspectran.com/assets/js/modernizr-custom.js"></script>
     <script src="https://aspectran.com/assets/js/jquery.min.js"></script>
-    <link rel="mask-icon" href="https://aspectran.com/assets/img/aspectran-logo.svg" color="#4B555A" />
-    <link rel="apple-touch-icon" sizes="57x57" href="https://aspectran.com/assets/img/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="https://aspectran.com/assets/img/apple-icon-60x60.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="https://aspectran.com/assets/img/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="https://aspectran.com/assets/img/apple-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="https://aspectran.com/assets/img/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="https://aspectran.com/assets/img/apple-icon-120x120.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="https://aspectran.com/assets/img/apple-icon-144x144.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="https://aspectran.com/assets/img/apple-icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="https://aspectran.com/assets/img/apple-icon-180x180.png" />
-    <link rel="icon" type="image/png" sizes="192x192"  href="https://aspectran.com/assets/img/android-icon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="https://aspectran.com/assets/img/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="https://aspectran.com/assets/img/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="https://aspectran.com/assets/img/favicon-96x96.png" />
-    <meta name="msapplication-TileImage" content="https://aspectran.com/assets/img/ms-icon-144x144.png" />
-    <meta name="msapplication-TileColor" content="#4B555A" />
+    <link rel="mask-icon" href="https://aspectran.com/assets/img/aspectran-logo.svg" color="#4B555A">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://aspectran.com/assets/img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://aspectran.com/assets/img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://aspectran.com/assets/img/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://aspectran.com/assets/img/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://aspectran.com/assets/img/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://aspectran.com/assets/img/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://aspectran.com/assets/img/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://aspectran.com/assets/img/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://aspectran.com/assets/img/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="https://aspectran.com/assets/img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://aspectran.com/assets/img/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://aspectran.com/assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="https://aspectran.com/assets/img/favicon-96x96.png">
+    <meta name="msapplication-TileImage" content="https://aspectran.com/assets/img/ms-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#4B555A">
 </head>
 <body id="top-of-page" class="${page.style}" itemscope itemtype="http://schema.org/WebPage">
 <nav id="navigation" class="no-js">
@@ -356,7 +356,7 @@
         /* Add 'external' CSS class to all external links */
         $('a:external').addClass('external');
         /* turn target into target=_blank for elements w external class */
-        $(".external").attr('target','_blank');
+        $('.external').attr('target','_blank');
     })
 </script>
 <script>
