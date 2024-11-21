@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -62,7 +63,8 @@ class TransletScannerTest {
         });
     }
 
-    private TransletScanner createTransletScanner(String basePath, TransletRule transletRule) throws IllegalRuleException {
+    @NonNull
+    private TransletScanner createTransletScanner(String basePath, @NonNull TransletRule transletRule) throws IllegalRuleException {
         TransletScanner scanner = new TransletScanner(basePath);
         if (transletRule.getFilterParameters() != null) {
             FilterParameters filterParameters = transletRule.getFilterParameters();

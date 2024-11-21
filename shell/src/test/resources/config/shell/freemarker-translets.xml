@@ -7,40 +7,40 @@
         This is an example using the Freemarker template engine.
     </description>
 
-    <bean id="freemarkerConfigurationFactory" class="com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean">
-        <properties>
-            <item name="freemarkerSettings" type="properties">
-                <entry name="incompatible_improvements">2.3.23</entry>
-                <entry name="template_exception_handler">rethrow</entry>
-                <entry name="default_encoding">UTF-8</entry>
-                <entry name="number_format">0.####</entry>
-            </item>
-            <item name="trimDirectives" valueType="parameters">
-                directive: {
-                    name: trim
-                }
-                directive: {
-                    name: where
-                    prefix: "WHERE "
-                    deprefixes: [
-                        "and "
-                        "and\t"
-                        "or "
-                        "or\t"
-                    ]
-                }
-                directive: {
-                    name: set
-                    prefix: "SET "
-                    desuffixes: ","
-                }
-            </item>
-        </properties>
-    </bean>
-
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
         <arguments>
-            <item>#{freemarkerConfigurationFactory}</item>
+            <item>
+                <bean class="com.aspectran.freemarker.ConfigurationFactoryBean">
+                    <properties>
+                        <item name="freemarkerSettings" type="properties">
+                            <entry name="incompatible_improvements">2.3.23</entry>
+                            <entry name="template_exception_handler">rethrow</entry>
+                            <entry name="default_encoding">UTF-8</entry>
+                            <entry name="number_format">0.####</entry>
+                        </item>
+                        <item name="trimDirectives" valueType="parameters">
+                            directive: {
+                                name: trim
+                            }
+                            directive: {
+                                name: where
+                                prefix: "WHERE "
+                                deprefixes: [
+                                    "and "
+                                    "and\t"
+                                    "or "
+                                    "or\t"
+                                ]
+                            }
+                            directive: {
+                                name: set
+                                prefix: "SET "
+                                desuffixes: ","
+                            }
+                        </item>
+                    </properties>
+                </bean>
+            </item>
         </arguments>
     </bean>
 

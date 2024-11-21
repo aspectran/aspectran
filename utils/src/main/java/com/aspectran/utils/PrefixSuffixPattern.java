@@ -58,11 +58,11 @@ public class PrefixSuffixPattern {
     public static String join(String prefix, String infix, String suffix) {
         Assert.notNull(infix, "infix must not be null");
         if (prefix != null && suffix != null) {
-            return prefix + StringUtils.nullToEmpty(infix) + suffix;
+            return prefix + infix + suffix;
         } else if (prefix != null) {
-            return prefix + StringUtils.nullToEmpty(infix);
+            return prefix + infix;
         } else if (suffix != null) {
-            return StringUtils.nullToEmpty(infix) + suffix;
+            return infix + suffix;
         } else {
             return infix;
         }

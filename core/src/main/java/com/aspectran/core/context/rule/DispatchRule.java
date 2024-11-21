@@ -49,22 +49,22 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     private String encoding;
 
-    private ViewDispatcher viewDispatcher;
-
     private Boolean defaultResponse;
 
+    private ViewDispatcher viewDispatcher;
+
     /**
-     * Gets the dispatch name.
-     * @return the dispatch name
+     * Gets the view name.
+     * @return the view name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the dispatch name.
+     * Gets the view name.
      * @param activity the activity
-     * @return the dispatch name
+     * @return the view name
      */
     public String getName(Activity activity) {
         if (nameTokens != null && nameTokens.length > 0) {
@@ -167,14 +167,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
         this.encoding = encoding;
     }
 
-    public ViewDispatcher getViewDispatcher() {
-        return viewDispatcher;
-    }
-
-    public void setViewDispatcher(ViewDispatcher viewDispatcher) {
-        this.viewDispatcher = viewDispatcher;
-    }
-
     /**
      * Returns whether the default response.
      * @return whether the default response
@@ -199,6 +191,14 @@ public class DispatchRule implements Replicable<DispatchRule> {
         this.defaultResponse = defaultResponse;
     }
 
+    public ViewDispatcher getViewDispatcher() {
+        return viewDispatcher;
+    }
+
+    public void setViewDispatcher(ViewDispatcher viewDispatcher) {
+        this.viewDispatcher = viewDispatcher;
+    }
+
     @Override
     public DispatchRule replicate() {
         return replicate(this);
@@ -212,18 +212,17 @@ public class DispatchRule implements Replicable<DispatchRule> {
     /**
      * Returns a string representation of {@code DispatchRule} with used {@code Dispatcher}.
      * @param viewDispatcher the view dispatcher
-     * @param targetName the new dispatch name
+     * @param viewName the target view name
      * @return a string representation of {@code DispatchRule}.
      */
-    public String toString(ViewDispatcher viewDispatcher, String targetName) {
+    public String toString(ViewDispatcher viewDispatcher, String viewName) {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
-        tsb.appendForce("name", name);
+        tsb.appendForce("name", viewName != null ? viewName : name);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());
         tsb.append("viewDispatcher", viewDispatcher);
-        tsb.append("targetName", targetName);
         return tsb.toString();
     }
 

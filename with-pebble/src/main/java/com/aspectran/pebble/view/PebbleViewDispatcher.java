@@ -16,16 +16,19 @@
 package com.aspectran.pebble.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.pebble.PebbleTemplateEngine;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
-import io.pebbletemplates.pebble.template.PebbleTemplate;
+
+import java.util.Locale;
 
 /**
  * The Class PebbleViewDispatcher.
@@ -34,64 +37,25 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
  *
  * @since 2.0.0
  */
-public class PebbleViewDispatcher implements ViewDispatcher {
+public class PebbleViewDispatcher extends AbstractViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(PebbleViewDispatcher.class);
 
     private final PebbleEngine pebbleEngine;
 
-    private String contentType;
-
-    private String prefix;
-
-    private String suffix;
+    public PebbleViewDispatcher(@NonNull PebbleTemplateEngine pebbleTemplateEngine) {
+        this(pebbleTemplateEngine.getPebbleEngine());
+    }
 
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
         this.pebbleEngine = pebbleEngine;
     }
 
     @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    /**
-     * Sets the prefix for the template name.
-     * @param prefix the new prefix for the template name
-     */
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    /**
-     * Sets the suffix for the template name.
-     * @param suffix the new suffix for the template name
-     */
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    @Override
     public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
-        String dispatchName = null;
-
+        String viewName = null;
         try {
-            dispatchName = dispatchRule.getName();
-            if (dispatchName == null) {
-                throw new IllegalArgumentException("No specified dispatch name");
-            }
-
-            if (prefix != null && suffix != null) {
-                dispatchName = prefix + dispatchName + suffix;
-            } else if (prefix != null) {
-                dispatchName = prefix + dispatchName;
-            } else if (suffix != null) {
-                dispatchName = dispatchName + suffix;
-            }
+            viewName = resolveViewName(dispatchRule, activity);
 
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
@@ -112,32 +76,17 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Pebble template [" + dispatchName + "]");
+                logger.debug("Dispatching to Pebble template [" + viewName + "]");
             }
 
             TemplateModel model = new TemplateModel(activity);
-            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
-            compiledTemplate.evaluate(responseAdapter.getWriter(), model);
+            Locale locale = activity.getRequestAdapter().getLocale();
+            PebbleTemplateEngine.process(pebbleEngine, viewName, model, responseAdapter.getWriter(), locale);
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
-                    dispatchRule.toString(this, dispatchName), e);
+                    dispatchRule.toString(this, viewName), e);
         }
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("name", super.toString());
-        tsb.append("defaultContentType", contentType);
-        tsb.append("prefix", prefix);
-        tsb.append("suffix", suffix);
-        return tsb.toString();
     }
 
 }

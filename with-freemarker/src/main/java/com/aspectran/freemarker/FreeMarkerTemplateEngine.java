@@ -17,9 +17,12 @@ package com.aspectran.freemarker;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
@@ -39,23 +42,8 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         this.configuration = configuration;
     }
 
-    @Override
-    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer)
-            throws TemplateEngineProcessException {
-        try {
-            Reader reader = new StringReader(templateSource);
-            Template template = new Template(templateName, reader, configuration);
-            template.process(model, writer);
-            writer.flush();
-        } catch (Exception e) {
-            throw new TemplateEngineProcessException(e);
-        }
-    }
-
-    @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer) throws
-            TemplateEngineProcessException {
-        process(templateName, model, writer, null);
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     @Override
@@ -68,6 +56,25 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
+    }
+
+    @Override
+    public void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+            throws TemplateEngineProcessException {
+        try {
+            Reader reader = new StringReader(templateSource);
+            Template template = new Template(templateName, reader, configuration);
+            template.process(model, writer);
+            writer.flush();
+        } catch (Exception e) {
+            throw new TemplateEngineProcessException(e);
+        }
+    }
+
+    public static void process(@NonNull Configuration configuration, String templateName, Map<String, Object> model, Writer writer, Locale locale)
+            throws IOException, TemplateException {
+        Template template = configuration.getTemplate(templateName);
+        template.process(model, writer);
     }
 
 }

@@ -17,13 +17,12 @@ package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
@@ -37,59 +36,17 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class JspViewDispatcher implements ViewDispatcher {
+public class JspViewDispatcher extends AbstractViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(JspViewDispatcher.class);
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
-    private String contentType;
-
-    private String prefix;
-
-    private String suffix;
-
-    @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    /**
-     * Sets the prefix for the template name.
-     * @param prefix the new prefix for the template name
-     */
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    /**
-     * Sets the suffix for the template name.
-     * @param suffix the new suffix for the template name
-     */
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
     @Override
     public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
-        String resource = null;
+        String jspPath = null;
         try {
-            resource = dispatchRule.getName(activity);
-            if (resource == null) {
-                throw new IllegalArgumentException("No specified dispatch name");
-            }
-
-            if (prefix != null && suffix != null) {
-                resource = prefix + resource + suffix;
-            } else if (prefix != null) {
-                resource = prefix + resource;
-            } else if (suffix != null) {
-                resource = resource + suffix;
-            }
+            jspPath = resolveViewName(dispatchRule, activity);
 
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -121,36 +78,21 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to " + resource);
+                logger.debug("Dispatching to " + jspPath);
             }
 
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
-            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(resource);
+            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(jspPath);
             requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
-                logger.warn("Resource file [" + resource + "] not found");
+                logger.warn("Resource file [" + jspPath + "] not found");
             }
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, resource), e);
+                    dispatchRule.toString(this, jspPath), e);
         }
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("name", super.toString());
-        tsb.append("defaultContentType", contentType);
-        tsb.append("prefix", prefix);
-        tsb.append("suffix", suffix);
-        return tsb.toString();
     }
 
 }

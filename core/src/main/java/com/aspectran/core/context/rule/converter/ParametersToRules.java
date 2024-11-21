@@ -970,12 +970,13 @@ public class ParametersToRules {
             String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
             String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
             String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
-            String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
             String style = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.style));
+            String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+            String contentType2 = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.contentType));
             String encoding2 = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.encoding));
             Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url, style, content, encoding2, noCache);
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url, style, content, contentType2, encoding2, noCache);
             transformRule.setTemplateRule(templateRule);
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
         }
@@ -1067,12 +1068,13 @@ public class ParametersToRules {
         String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
         String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
         String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
-        String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
         String style = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.style));
+        String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+        String contentType = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.contentType));
         String encoding = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.encoding));
         Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-        TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, style, encoding, noCache);
+        TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, style, content, contentType, encoding, noCache);
         assistant.addTemplateRule(templateRule);
     }
 

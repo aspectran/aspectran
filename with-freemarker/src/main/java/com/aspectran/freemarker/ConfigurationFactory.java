@@ -48,9 +48,9 @@ import java.util.Properties;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactory implements ActivityContextAware {
+public class ConfigurationFactory implements ActivityContextAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(FreeMarkerConfigurationFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationFactory.class);
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 

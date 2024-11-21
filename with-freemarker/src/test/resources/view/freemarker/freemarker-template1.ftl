@@ -1,4 +1,4 @@
--------------- Tesing for FreeMarkerViewDispatcher --------------
+-------------- Testing for FreeMarkerViewDispatcher --------------
 <#list fruits>
 <p>Fruits: ${fruits?join(', ')}</p>
 <ul>

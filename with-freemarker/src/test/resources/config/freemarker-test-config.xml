@@ -11,39 +11,54 @@
         <setting name="defaultTemplateEngineBean" value="freemarker"/>
     </settings>
 
-    <bean id="freemarkerConfiguration" class="com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean">
-        <properties>
-            <item name="freemarkerSettings" type="properties">
-                <entry name="incompatible_improvements">2.3.23</entry>
-                <entry name="template_exception_handler">rethrow</entry>
-                <entry name="default_encoding">UTF-8</entry>
-                <entry name="number_format">0.####</entry>
-            </item>
-            <item name="trimDirectives" valueType="parameters">
-                directive: {
-                    name: "trim"
-                }
-                directive: {
-                    name: "where"
-                    prefix: "WHERE "
-                    deprefixes: [
-                        "and"
-                        "or"
-                    ]
-                }
-                directive: {
-                    name: "set"
-                    prefix: "SET "
-                    desuffixes: ","
-                }
-            </item>
-        </properties>
-    </bean>
-
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
         <arguments>
-            <item>#{freemarkerConfiguration}</item>
+            <item>
+                <bean class="com.aspectran.freemarker.ConfigurationFactoryBean">
+                    <properties>
+                        <item name="freemarkerSettings" type="properties">
+                            <entry name="incompatible_improvements">2.3.23</entry>
+                            <entry name="template_exception_handler">rethrow</entry>
+                            <entry name="default_encoding">UTF-8</entry>
+                            <entry name="number_format">0.####</entry>
+                        </item>
+                        <item name="templateLoaderPath" type="array">
+                            <value>classpath:view/freemarker</value>
+                        </item>
+                        <item name="trimDirectives" valueType="parameters">
+                            directive: {
+                                name: "trim"
+                            }
+                            directive: {
+                                name: "where"
+                                prefix: "WHERE "
+                                deprefixes: [
+                                    "and"
+                                    "or"
+                                ]
+                            }
+                            directive: {
+                                name: "set"
+                                prefix: "SET "
+                                desuffixes: ","
+                            }
+                        </item>
+                    </properties>
+                </bean>
+            </item>
         </arguments>
+    </bean>
+
+    <bean id="freemarkerViewDispatcher" class="com.aspectran.freemarker.view.FreeMarkerViewDispatcher">
+        <description>
+            Register a FreeMarker View Dispatcher.
+        </description>
+        <arguments>
+            <item>#{freemarker}</item>
+        </arguments>
+        <properties>
+            <item name="suffix">.ftl</item>
+        </properties>
     </bean>
 
     <translet name="echo-1">
@@ -106,7 +121,7 @@
         </transform>
     </translet>
 
-    <translet name="update-translet">
+    <translet name="update-translet-1">
         <attributes>
             <item name="name">${name:Jane}</item>
             <item name="email">${email:jane@mail.com}</item>
@@ -114,6 +129,14 @@
         <transform format="text">
             <template>~{update-template}</template>
         </transform>
+    </translet>
+
+    <translet name="update-translet-2">
+        <attributes>
+            <item name="name">${name:Jane}</item>
+            <item name="email">${email:jane@mail.com}</item>
+        </attributes>
+        <dispatch name="update-translet-2" dispatcher="freemarkerViewDispatcher"/>
     </translet>
 
 </aspectran>

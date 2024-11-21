@@ -44,11 +44,12 @@ class TemplateNodeParser implements SubnodeParser {
             String resource = StringUtils.emptyToNull(attrs.get("resource"));
             String url = StringUtils.emptyToNull(attrs.get("url"));
             String style = attrs.get("style");
+            String contentType = attrs.get("contentType");
             String encoding = attrs.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
             TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file,
-                    resource, url, null, style, encoding, noCache);
+                    resource, url, style, null, contentType, encoding, noCache);
 
             parser.pushObject(templateRule);
         });

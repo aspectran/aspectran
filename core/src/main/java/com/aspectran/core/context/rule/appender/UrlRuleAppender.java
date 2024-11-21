@@ -20,6 +20,7 @@ import com.aspectran.utils.ToStringBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -46,11 +47,11 @@ public class UrlRuleAppender extends AbstractRuleAppender {
     @Override
     public InputStream getInputStream() throws IOException {
         try {
-            URL url = new URL(ruleUrl);
+            URL url = new URI(ruleUrl).toURL();
             URLConnection conn = url.openConnection();
             setLastModified(conn.getLastModified());
             return conn.getInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IOException("Failed to get rules from url: " + ruleUrl, e);
         }
     }

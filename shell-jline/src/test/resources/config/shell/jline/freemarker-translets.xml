@@ -7,7 +7,7 @@
         This is an example using the Freemarker template engine.
     </description>
 
-    <bean id="freemarkerConfigurationFactory" class="com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean">
+    <bean id="freemarkerConfiguration" class="com.aspectran.freemarker.ConfigurationFactoryBean">
         <properties>
             <item name="freemarkerSettings" type="properties">
                 <entry name="incompatible_improvements">2.3.23</entry>
@@ -40,7 +40,7 @@
 
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
         <arguments>
-            <item>#{freemarkerConfigurationFactory}</item>
+            <item>#{freemarkerConfiguration}</item>
         </arguments>
     </bean>
 

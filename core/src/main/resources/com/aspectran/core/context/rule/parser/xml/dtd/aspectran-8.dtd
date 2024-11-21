@@ -279,15 +279,16 @@
 
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template
-  id       CDATA #IMPLIED
-  engine   CDATA #IMPLIED
-  style    (apon | compact | compressed) #IMPLIED
-  name     CDATA #IMPLIED
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  encoding CDATA #IMPLIED
-  noCache  (true | false) #IMPLIED
+  id          CDATA #IMPLIED
+  engine      CDATA #IMPLIED
+  name        CDATA #IMPLIED
+  file        CDATA #IMPLIED
+  resource    CDATA #IMPLIED
+  url         CDATA #IMPLIED
+  style       (apon | compact | compressed) #IMPLIED
+  contentType CDATA #IMPLIED
+  encoding    CDATA #IMPLIED
+  noCache     (true | false) #IMPLIED
 >
 
 <!ELEMENT append EMPTY>

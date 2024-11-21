@@ -18,6 +18,7 @@ package com.aspectran.embed.sample.custom;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * <p>Created: 2019-06-16</p>
@@ -25,7 +26,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 public class TestCustomTransformer implements CustomTransformer {
 
     @Override
-    public void transform(Activity activity) throws Exception {
+    public void transform(@NonNull Activity activity) throws Exception {
         String one = activity.getTranslet().getParameter("one");
         String two = activity.getTranslet().getParameter("two");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();

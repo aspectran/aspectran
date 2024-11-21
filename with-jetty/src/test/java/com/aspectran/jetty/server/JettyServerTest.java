@@ -67,7 +67,7 @@ class JettyServerTest {
     @Test
     void testHello() throws IOException {
         Translet translet = aspectran.translate("hello");
-        String result1 = translet.toString();
+        String result1 = translet.getWrittenResponse();
         String result2;
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

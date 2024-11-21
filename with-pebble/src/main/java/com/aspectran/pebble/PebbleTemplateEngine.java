@@ -17,9 +17,11 @@ package com.aspectran.pebble;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -37,34 +39,40 @@ public class PebbleTemplateEngine implements TemplateEngine {
         this.pebbleEngine = pebbleEngine;
     }
 
-    @Override
-    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer)
-            throws TemplateEngineProcessException {
-        try {
-            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateSource);
-            compiledTemplate.evaluate(writer, model);
-            writer.flush();
-        } catch (Exception e) {
-            throw new TemplateEngineProcessException(e);
-        }
-    }
-
-    @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer)
-            throws TemplateEngineProcessException {
-        process(templateName, model, writer, null);
+    public PebbleEngine getPebbleEngine() {
+        return pebbleEngine;
     }
 
     @Override
     public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
         try {
-            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
-            compiledTemplate.evaluate(writer, model, locale);
+            process(pebbleEngine, templateName, model, writer, locale);
             writer.flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
-    
+
+    @Override
+    public void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+            throws TemplateEngineProcessException {
+        try {
+            process(pebbleEngine, templateSource, templateSource, model, writer, locale);
+            writer.flush();
+        } catch (Exception e) {
+            throw new TemplateEngineProcessException(e);
+        }
+    }
+
+    public static void process(@NonNull PebbleEngine pebbleEngine, String templateName, Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+        PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
+        compiledTemplate.evaluate(writer, model, locale);
+    }
+
+    public static void process(@NonNull PebbleEngine pebbleEngine, String templateName, String templateSource, Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+        PebbleTemplate compiledTemplate = pebbleEngine.getLiteralTemplate(templateName);
+        compiledTemplate.evaluate(writer, model, locale);
+    }
+
 }

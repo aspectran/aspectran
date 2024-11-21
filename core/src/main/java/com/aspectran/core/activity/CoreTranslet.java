@@ -423,7 +423,7 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public String toString() {
+    public String getWrittenResponse() {
         if (getResponseAdapter() != null && getResponseAdapter().getAdaptee() == null) {
             try {
                 return getResponseAdapter().getWriter().toString();
@@ -431,7 +431,16 @@ public class CoreTranslet extends AbstractTranslet {
                 // ignore
             }
         }
-        return super.toString();
+        return StringUtils.EMPTY;
+    }
+
+    @Override
+    public String toString() {
+        if (getTransletRule() != null) {
+            return getTransletRule().toString();
+        } else {
+            return super.toString();
+        }
     }
 
     //---------------------------------------------------------------------

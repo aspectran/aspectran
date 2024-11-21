@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean;
+import com.aspectran.freemarker.ConfigurationFactoryBean;
 import com.aspectran.freemarker.FreeMarkerTemplateEngine;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,7 +59,7 @@ class FreeMarkerViewDispatcherTest {
 
         BeanRule freeMarkerConfigurationBeanRule = new BeanRule();
         freeMarkerConfigurationBeanRule.setId("freeMarkerConfiguration");
-        freeMarkerConfigurationBeanRule.setBeanClass(FreeMarkerConfigurationFactoryBean.class);
+        freeMarkerConfigurationBeanRule.setBeanClass(ConfigurationFactoryBean.class);
         freeMarkerConfigurationBeanRule.newPropertyItemRule("templateLoaderPath").setValue("classpath:view");
         parameters.addRule(freeMarkerConfigurationBeanRule);
 
@@ -137,7 +137,7 @@ class FreeMarkerViewDispatcherTest {
         params.setParameter("param2", "world");
 
         Translet translet = aspectran.translate("test/freemarker", params);
-        String result = translet.toString();
+        String result = translet.getWrittenResponse();
 
         assertEquals("hello world", result);
         //System.out.println(result);
@@ -150,7 +150,7 @@ class FreeMarkerViewDispatcherTest {
         params.setParameter("param2", "world2");
 
         Translet translet = aspectran.translate("test/appended/echo", params);
-        String result = translet.toString();
+        String result = translet.getWrittenResponse();
 
         assertEquals("hello2 world2", result);
         //System.out.println(result);
@@ -168,7 +168,7 @@ class FreeMarkerViewDispatcherTest {
         attrs.put("fruits", fruits);
 
         Translet translet = aspectran.translate("test/appended/freemarker/template1", attrs);
-        String result = translet.toString();
+        String result = translet.getWrittenResponse();
 
         System.out.println(result);
     }

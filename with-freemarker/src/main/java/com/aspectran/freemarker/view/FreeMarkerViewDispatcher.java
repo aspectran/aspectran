@@ -16,16 +16,18 @@
 package com.aspectran.freemarker.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.freemarker.FreeMarkerTemplateEngine;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import freemarker.template.Configuration;
-import freemarker.template.Template;
+
+import java.util.Locale;
 
 /**
  * The Class FreeMarkerViewDispatcher.
@@ -34,64 +36,25 @@ import freemarker.template.Template;
  *
  * @since 2.0.0
  */
-public class FreeMarkerViewDispatcher implements ViewDispatcher {
+public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(FreeMarkerViewDispatcher.class);
 
     private final Configuration configuration;
 
-    private String contentType;
-
-    private String prefix;
-
-    private String suffix;
+    public FreeMarkerViewDispatcher(@NonNull FreeMarkerTemplateEngine templateEngine) {
+        this(templateEngine.getConfiguration());
+    }
 
     public FreeMarkerViewDispatcher(Configuration configuration) {
         this.configuration = configuration;
     }
 
     @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    /**
-     * Sets the prefix for the template name.
-     * @param prefix the new prefix for the template name
-     */
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    /**
-     * Sets the suffix for the template name.
-     * @param suffix the new suffix for the template name
-     */
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    @Override
     public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
-        String dispatchName = null;
-
+        String viewName = null;
         try {
-            dispatchName = dispatchRule.getName(activity);
-            if (dispatchName == null) {
-                throw new IllegalArgumentException("No specified dispatch name");
-            }
-
-            if (prefix != null && suffix != null) {
-                dispatchName = prefix + dispatchName + suffix;
-            } else if (prefix != null) {
-                dispatchName = prefix + dispatchName;
-            } else if (suffix != null) {
-                dispatchName = dispatchName + suffix;
-            }
+            viewName = resolveViewName(dispatchRule, activity);
 
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
@@ -112,32 +75,17 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to FreeMarker template [" + dispatchName + "]");
+                logger.debug("Dispatching to FreeMarker template [" + viewName + "]");
             }
 
             TemplateModel model = new TemplateModel(activity);
-            Template template = configuration.getTemplate(dispatchName);
-            template.process(model, responseAdapter.getWriter());
+            Locale locale = activity.getRequestAdapter().getLocale();
+            FreeMarkerTemplateEngine.process(configuration, viewName, model, responseAdapter.getWriter(), locale);
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to FreeMarker template " +
-                    dispatchRule.toString(this, dispatchName), e);
+                    dispatchRule.toString(this, viewName), e);
         }
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("name", super.toString());
-        tsb.append("defaultContentType", contentType);
-        tsb.append("prefix", prefix);
-        tsb.append("suffix", suffix);
-        return tsb.toString();
     }
 
 }

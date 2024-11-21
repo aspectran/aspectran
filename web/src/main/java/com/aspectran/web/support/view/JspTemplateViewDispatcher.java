@@ -17,8 +17,8 @@ package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -37,26 +37,15 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * <p>Created: 2019. 02. 18</p>
  */
-public class JspTemplateViewDispatcher implements ViewDispatcher {
+public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(JspTemplateViewDispatcher.class);
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
-    private String contentType;
-
     private String template;
 
     private String includePageKey;
-
-    @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
 
     public void setTemplate(String template) {
         this.template = template;
@@ -76,15 +65,12 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
                 throw new IllegalArgumentException("No attribute name to specify the include page name");
             }
 
-            String dispatchName = dispatchRule.getName(activity);
-            if (dispatchName == null) {
-                throw new IllegalArgumentException("No specified dispatch name");
-            }
+            String jspPath = resolveViewName(dispatchRule, activity);
 
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-            requestAdapter.setAttribute(includePageKey, dispatchName);
+            requestAdapter.setAttribute(includePageKey, jspPath);
 
             String contentType = dispatchRule.getContentType();
             if (contentType == null) {
@@ -113,7 +99,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to " + template + " for " + dispatchName);
+                logger.debug("Dispatching to " + template + " for " + jspPath);
             }
 
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
@@ -131,15 +117,12 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public boolean isSingleton() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", super.toString());
-        tsb.append("defaultContentType", contentType);
+        tsb.append("defaultContentType", getContentType());
+        tsb.append("prefix", getPrefix());
+        tsb.append("suffix", getSuffix());
         tsb.append("template", template);
         tsb.append("includePageKey", includePageKey);
         return tsb.toString();

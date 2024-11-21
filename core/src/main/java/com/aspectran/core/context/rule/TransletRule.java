@@ -569,7 +569,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @NonNull
-    public static TransletRule replicate(@NonNull TransletRule transletRule, String newDispatchName) {
+    public static TransletRule replicate(@NonNull TransletRule transletRule, String newName) {
         TransletRule tr = new TransletRule();
         tr.setName(transletRule.getName());
         tr.setAllowedMethods(transletRule.getAllowedMethods());
@@ -580,14 +580,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setDescriptionRule(transletRule.getDescriptionRule());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();
-            ResponseRule rr = replicate(responseRule, newDispatchName);
+            ResponseRule rr = replicate(responseRule, newName);
             tr.setResponseRule(rr);
         }
         if (transletRule.getResponseRuleList() != null) {
             List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
             List<ResponseRule> newResponseRuleList = new ArrayList<>(responseRuleList.size());
             for (ResponseRule responseRule : responseRuleList) {
-                ResponseRule rr = replicate(responseRule, newDispatchName);
+                ResponseRule rr = replicate(responseRule, newName);
                 newResponseRuleList.add(rr);
             }
             tr.setResponseRuleList(newResponseRuleList);
@@ -596,22 +596,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @NonNull
-    private static ResponseRule replicate(@NonNull ResponseRule responseRule, String newDispatchName) {
+    private static ResponseRule replicate(@NonNull ResponseRule responseRule, String newName) {
         ResponseRule rr = responseRule.replicate();
         if (rr.getResponse() != null) {
             // assign dispatch name if the dispatch response exists
             if (rr.getResponse() instanceof DispatchResponse dispatchResponse) {
                 DispatchRule dispatchRule = dispatchResponse.getDispatchRule();
-                String dispatchName = dispatchRule.getName();
-
-                PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(dispatchName);
+                String name = dispatchRule.getName();
+                PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(name);
                 if (prefixSuffixPattern != null) {
-                    dispatchRule.setName(prefixSuffixPattern.enclose(newDispatchName));
+                    dispatchRule.setName(prefixSuffixPattern.enclose(newName));
                 } else {
-                    if (dispatchName != null) {
-                        dispatchRule.setName(dispatchName + newDispatchName);
+                    if (name != null) {
+                        dispatchRule.setName(name + newName);
                     } else {
-                        dispatchRule.setName(newDispatchName);
+                        dispatchRule.setName(newName);
                     }
                 }
             }

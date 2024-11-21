@@ -68,10 +68,10 @@ class EmbeddedAspectranTest {
         //System.out.println(firstBean);
         //System.out.println(firstBean.getMessage());
 
-        assertEquals(firstBean.getMessage(), SecondBean.message);
+        assertEquals(SecondBean.message, firstBean.getMessage());
 
         Translet translet = aspectran.translate("echo");
-        System.out.println(translet);
+        System.out.println(translet.getWrittenResponse());
 
         ParameterMap params = new ParameterMap();
         params.setParameter("id", "0001");
@@ -85,19 +85,19 @@ class EmbeddedAspectranTest {
     @Test
     void test2() {
         Translet translet = aspectran.translate("attr-test");
-        assertEquals("abc123", translet.toString());
+        assertEquals("abc123", translet.getWrittenResponse());
     }
 
     @Test
     void includeTest() {
         Translet translet = aspectran.translate("include-test");
-        assertEquals("abc123-param1 :: This is the second bean.test", translet.toString());
+        assertEquals("abc123-param1 :: This is the second bean.test", translet.getWrittenResponse());
     }
 
     @Test
     void forwardTest() {
         Translet translet = aspectran.translate("forward-test");
-        assertEquals("abc123-param1 :: This is the second bean.test", translet.toString());
+        assertEquals("abc123-param1 :: This is the second bean.test", translet.getWrittenResponse());
     }
 
     @Test
@@ -111,13 +111,13 @@ class EmbeddedAspectranTest {
         Translet translet = aspectran.translate("add-up");
         ActivityData activityData = translet.getActivityData();
         //System.out.println("Result: " + activityData.get("result"));
-        assertEquals(activityData.get("result"), 10);
+        assertEquals(10, activityData.get("result"));
     }
 
     @Test
     void testEcho123() {
         Translet translet = aspectran.translate("echo123");
-        assertEquals("123==123", translet.toString().trim());
+        assertEquals("123==123", translet.getWrittenResponse().trim());
     }
 
     @Test
@@ -129,7 +129,7 @@ class EmbeddedAspectranTest {
 
         Translet translet = aspectran.translate("chooseWhenTest", params);
         ActivityData activityData = translet.getActivityData();
-        String response = translet.toString();
+        String response = translet.getWrittenResponse();
 
         System.out.println("Mode: " + mode);
         System.out.println("Action Result: " + activityData.get(mode));
@@ -147,7 +147,7 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("thrownTest", params);
-        String response = translet.toString();
+        String response = translet.getWrittenResponse();
 
         assertEquals("thrown1 - thrown NullPointerException", response);
     }
@@ -160,7 +160,7 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("thrownTest", params);
-        String response = translet.toString();
+        String response = translet.getWrittenResponse();
 
         assertEquals("thrown2 - thrown IllegalArgumentException", response);
     }
@@ -173,7 +173,7 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("thrownTest", params);
-        String response = translet.toString();
+        String response = translet.getWrittenResponse();
 
         assertEquals("thrown3 - thrown UnsupportedOperationException", response);
     }

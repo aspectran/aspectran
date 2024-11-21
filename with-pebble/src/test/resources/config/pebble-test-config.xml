@@ -11,12 +11,30 @@
         <setting name="defaultTemplateEngineBean" value="pebble"/>
     </settings>
 
-    <bean id="pebbleConfigurationFactory" class="com.aspectran.pebble.PebbleEngineFactoryBean"/>
-
     <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
         <arguments>
-            <item>#{pebbleConfigurationFactory}</item>
+            <item>
+                <bean class="com.aspectran.pebble.PebbleEngineFactoryBean">
+                    <properties>
+                        <item name="templateLoaderPath" type="array">
+                            <value>classpath:view</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
         </arguments>
+    </bean>
+
+    <bean id="pebbleViewDispatcher" class="com.aspectran.pebble.view.PebbleViewDispatcher">
+        <description>
+            Register a Pebble View Dispatcher.
+        </description>
+        <arguments>
+            <item>#{pebble}</item>
+        </arguments>
+        <properties>
+            <item name="suffix">.peb</item>
+        </properties>
     </bean>
 
     <translet name="echo-1">
@@ -39,8 +57,12 @@
         </transform>
     </translet>
 
+    <translet name="translet-2">
+        <dispatch name="template-2" dispatcher="pebbleViewDispatcher"/>
+    </translet>
+
     <template id="template-1" engine="pebble" style="apon">
-        | Name: {{ name }}, Email: {{ email }}
+        |Name: {{ name }}, Email: {{ email }}
     </template>
 
 </aspectran>

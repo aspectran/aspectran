@@ -92,7 +92,7 @@ class PebbleViewDispatcherTest {
         params.setParameter("param2", "pebble");
 
         Translet translet = aspectran.translate("test/pebble", params);
-        String result = translet.toString();
+        String result = translet.getWrittenResponse();
 
         assertEquals("hello pebble", result);
     }

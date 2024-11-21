@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-8.dtd">
+<aspectran>
+
+    <description>
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <settings>
+        <setting name="defaultTemplateEngineBean" value="thymeleaf"/>
+    </settings>
+
+    <bean id="pebbleConfigurationFactory" class="com.aspectran.pebble.PebbleEngineFactoryBean"/>
+
+    <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
+        <arguments>
+            <item>#{pebbleConfigurationFactory}</item>
+        </arguments>
+    </bean>
+
+    <translet name="echo-1">
+        <request>
+            <parameters>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </parameters>
+        </request>
+        <transform format="text">
+            <template engine="thymeleaf" style="apon">
+                |{{ input_1 }}{{ input_2 }}
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="translet-1">
+        <transform format="text">
+            <template>~{template-1}</template>
+        </transform>
+    </translet>
+
+    <template id="template-1" engine="thymeleaf" style="apon">
+        | Name: {{ name }}, Email: {{ email }}
+    </template>
+
+</aspectran>

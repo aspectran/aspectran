@@ -129,7 +129,7 @@ public class SysInfoCommand extends AbstractCommand {
             // Let the finalizer finish its work and remove objects from its queue
             System.gc(); // asynchronous garbage collector might already run
             System.gc(); // to make sure it does a full gc call it twice
-            System.runFinalization();
+            // System.runFinalization(); // deprecated
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

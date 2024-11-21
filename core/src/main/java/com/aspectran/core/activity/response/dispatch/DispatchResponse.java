@@ -106,7 +106,7 @@ public class DispatchResponse implements Response {
                 if (dispatcherName == null) {
                     throw new IllegalArgumentException("Could not find the '" +
                             ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
-                            "' setting in the translet " + activity.getTranslet());
+                            "' setting in translet " + activity.getTranslet());
                 }
             }
 

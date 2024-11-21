@@ -76,7 +76,7 @@ class ViewDispatcherTest {
         params.setParameter("param2", "world2");
 
         Translet translet = aspectran.translate("test/appended/echo", params);
-        String result = translet.toString();
+        String result = translet.getWrittenResponse();
 
         assertEquals("hello2 world2", result);
         //System.out.println(result);

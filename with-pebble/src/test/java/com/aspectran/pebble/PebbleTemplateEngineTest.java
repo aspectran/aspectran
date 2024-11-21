@@ -54,7 +54,7 @@ class PebbleTemplateEngineTest {
     @Test
     void testEcho1() {
         Translet translet = aspectran.translate("echo-1");
-        assertEquals("1234567890", translet.toString());
+        assertEquals("1234567890", translet.getWrittenResponse());
     }
 
     @Test
@@ -64,9 +64,15 @@ class PebbleTemplateEngineTest {
         params.setParameter("email", "tester@aspectran.com");
 
         String result1 = aspectran.render("template-1", params.extractAsMap());
-        Translet translet = aspectran.translate("translet-1", params);
+        String result2 = aspectran.translate("translet-1", params).getWrittenResponse();
+        String result3 = aspectran.translate("translet-2", params).getWrittenResponse();
 
-        assertEquals(result1, translet.toString());
+        //System.out.println(result1);
+        //System.out.println(result2);
+        //System.out.println(result3);
+
+        assertEquals(result1, result2);
+        assertEquals(result1, result3);
     }
 
 }

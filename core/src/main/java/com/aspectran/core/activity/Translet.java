@@ -494,6 +494,8 @@ public interface Translet {
      */
     boolean hasPathVariables();
 
+    String getWrittenResponse();
+
     /**
      * Evaluates a token expression.
      * @param <V> the type of evaluation result value

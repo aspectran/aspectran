@@ -734,7 +734,7 @@ public class RulesToParameters {
             templateParameters.putValueNonNull(TemplateParameters.name, templateRule.getName());
         } else {
             if (templateRule.getContent() != null) {
-                if (templateRule.getContentStyle() == TextStyleType.APON) {
+                if (templateRule.getTextStyle() == TextStyleType.APON) {
                     String content = TextStyler.stripAponStyle(templateRule.getContent());
                     templateParameters.putValue(TemplateParameters.content, content);
                 } else {
@@ -743,8 +743,9 @@ public class RulesToParameters {
             } else {
                 templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getTemplateSource());
             }
-            templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
+            templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getTextStyle());
         }
+        templateParameters.putValueNonNull(TemplateParameters.contentType, templateRule.getContentType());
         templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
         templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
 

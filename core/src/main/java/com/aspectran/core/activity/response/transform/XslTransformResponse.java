@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
@@ -157,13 +158,13 @@ public class XslTransformResponse extends TransformResponse {
             }
         } else if (templateUrl != null) {
             if (noCache) {
-                this.templates = createTemplates(new URL(templateUrl));
+                this.templates = createTemplates(URI.create(templateUrl).toURL());
                 determineOutputStyle();
             } else {
                 if (!this.templateLoaded) {
                     synchronized (this) {
                         if (!this.templateLoaded) {
-                            this.templates = createTemplates(new URL(templateUrl));
+                            this.templates = createTemplates(URI.create(templateUrl).toURL());
                             determineOutputStyle();
                             this.templateLoaded = true;
                         }

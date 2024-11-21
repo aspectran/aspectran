@@ -21,7 +21,7 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class ContextReloadingTimerTask extends TimerTask {
                 try {
                     File file;
                     if (URL_PROTOCOL_JAR.equals(url.getProtocol())) {
-                        URL fileUrl = new URL(url.getFile());
+                        URL fileUrl = new URI(url.getFile()).toURL();
                         String[] parts = StringUtils.split(fileUrl.getFile(), JAR_URL_SEPARATOR);
                         file = new File(parts[0]);
                     } else {
@@ -60,7 +60,7 @@ public class ContextReloadingTimerTask extends TimerTask {
                     }
                     String filePath = file.getAbsolutePath();
                     modifiedTimeMap.put(filePath, file.lastModified());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.error(e);
                 }
             }

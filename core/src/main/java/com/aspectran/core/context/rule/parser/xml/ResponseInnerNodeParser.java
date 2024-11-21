@@ -67,11 +67,12 @@ class ResponseInnerNodeParser implements SubnodeParser {
             String resource = attrs.get("resource");
             String url = attrs.get("url");
             String style = attrs.get("style");
+            String contentType = attrs.get("contentType");
             String encoding = attrs.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url,
-                    style, null, encoding, noCache);
+                    style, null, contentType, encoding, noCache);
             parser.pushObject(templateRule);
         });
         parser.addEndNodelet(text -> {

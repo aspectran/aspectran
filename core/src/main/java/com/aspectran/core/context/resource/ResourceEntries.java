@@ -21,6 +21,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.File;
 import java.io.Serial;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
@@ -58,8 +60,8 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         URL url;
         try {
             // "jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
-            url = new URL(JAR_URL_PREFIX + file.toURI() + JAR_URL_SEPARATOR + resourceName);
-        } catch (MalformedURLException e) {
+            url = new URI(JAR_URL_PREFIX + file.toURI() + JAR_URL_SEPARATOR + resourceName).toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);
         }
         put(resourceName, url);

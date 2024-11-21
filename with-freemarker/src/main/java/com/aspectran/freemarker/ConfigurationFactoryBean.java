@@ -26,7 +26,7 @@ import freemarker.template.Configuration;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory
+public class ConfigurationFactoryBean extends ConfigurationFactory
         implements InitializableBean, FactoryBean<Configuration> {
 
     private Configuration configuration;

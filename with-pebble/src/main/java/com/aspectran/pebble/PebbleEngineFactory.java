@@ -82,7 +82,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
     }
 
     public void setTemplateLoader(Loader<?> templateLoaders) {
-        this.templateLoaders = new Loader<?>[] {templateLoaders};
+        this.templateLoaders = new Loader<?>[] { templateLoaders };
     }
 
     public void setTemplateLoader(Loader<?>[] templateLoaders) {
@@ -140,6 +140,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
                 return templateLoaders[0];
             default:
                 List<Loader<?>> defaultLoadingStrategies = new ArrayList<>();
+                defaultLoadingStrategies.add(new StringLoader());
                 Collections.addAll(defaultLoadingStrategies, templateLoaders);
                 Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
                 if (logger.isDebugEnabled()) {

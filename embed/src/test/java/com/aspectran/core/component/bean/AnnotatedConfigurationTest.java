@@ -188,7 +188,7 @@ class AnnotatedConfigurationTest {
         params.setParameter("one", "1");
         params.setParameter("two", "2");
         Translet translet = aspectran.translate("/action-13", params);
-        String result = translet.getResponseAdapter().getWriter().toString();
+        String result = translet.getWrittenResponse();
         assertEquals("12", result);
     }
 

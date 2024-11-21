@@ -29,6 +29,7 @@ public class TemplateParameters extends AbstractParameters {
     public static final ParameterKey url;
     public static final ParameterKey style;
     public static final ParameterKey content;
+    public static final ParameterKey contentType;
     public static final ParameterKey encoding;
     public static final ParameterKey noCache;
 
@@ -43,6 +44,7 @@ public class TemplateParameters extends AbstractParameters {
         url = new ParameterKey("url", ValueType.STRING);
         style = new ParameterKey("style", ValueType.STRING);
         content = new ParameterKey("content", new String[] {"template"}, ValueType.TEXT);
+        contentType = new ParameterKey("contentType", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);
         noCache = new ParameterKey("noCache", ValueType.BOOLEAN);
 
@@ -55,6 +57,7 @@ public class TemplateParameters extends AbstractParameters {
                 url,
                 style,
                 content,
+                contentType,
                 encoding,
                 noCache
         };
