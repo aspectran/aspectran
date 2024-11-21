@@ -47,28 +47,34 @@ public class UrlTemplateResolver extends AbstractConfigurableTemplateResolver {
 
     @Override
     protected ITemplateResource computeTemplateResource(
-        final IEngineConfiguration configuration, final String ownerTemplate, final String template,
-        final String resourceName, final String characterEncoding,
-        final Map<String, Object> templateResolutionAttributes) {
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            String resourceName,
+            String characterEncoding,
+            Map<String, Object> templateResolutionAttributes) {
         try {
             return new UrlTemplateResource(resourceName, characterEncoding);
-        } catch (final MalformedURLException ignored) {
+        } catch (MalformedURLException ignored) {
             return null;
         }
     }
 
     @Override
-    protected ICacheEntryValidity computeValidity(final IEngineConfiguration configuration, final String ownerTemplate,
-                                                  @NonNull final String template,
-                                                  final Map<String, Object> templateResolutionAttributes) {
+    protected ICacheEntryValidity computeValidity(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            @NonNull String template,
+            Map<String, Object> templateResolutionAttributes) {
         /*
          * This check is made so that we don't fill the cache with entries for the same
          * template with different jsessionid values.
          */
         if (JSESSIONID_PATTERN.matcher(template.toLowerCase()).matches()) {
             return NonCacheableCacheEntryValidity.INSTANCE;
+        } else {
+            return computeValidity(configuration, ownerTemplate, template, templateResolutionAttributes);
         }
-        return super.computeValidity(configuration, ownerTemplate, template, templateResolutionAttributes);
     }
 
 }

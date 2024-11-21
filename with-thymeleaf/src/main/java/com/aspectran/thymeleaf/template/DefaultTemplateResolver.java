@@ -19,6 +19,7 @@
  */
 package com.aspectran.thymeleaf.template;
 
+import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.cache.AlwaysValidCacheEntryValidity;
 import org.thymeleaf.cache.ICacheEntryValidity;
@@ -27,7 +28,6 @@ import org.thymeleaf.templateresolver.AbstractTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresource.ITemplateResource;
 import org.thymeleaf.templateresource.StringTemplateResource;
-import org.thymeleaf.util.Validate;
 
 import java.util.Map;
 
@@ -46,6 +46,7 @@ public class DefaultTemplateResolver extends AbstractTemplateResolver {
     public static final TemplateMode DEFAULT_TEMPLATE_MODE = TemplateMode.HTML;
 
     private TemplateMode templateMode = DEFAULT_TEMPLATE_MODE;
+
     private String template = "";
 
     /**
@@ -60,7 +61,7 @@ public class DefaultTemplateResolver extends AbstractTemplateResolver {
      * this template resolver.
      * @return the template mode to be used.
      */
-    public final TemplateMode getTemplateMode() {
+    public TemplateMode getTemplateMode() {
         return this.templateMode;
     }
 
@@ -68,8 +69,8 @@ public class DefaultTemplateResolver extends AbstractTemplateResolver {
      * Sets the template mode to be applied to templates resolved by this resolver.
      * @param templateMode the template mode.
      */
-    public final void setTemplateMode(final TemplateMode templateMode) {
-        Validate.notNull(templateMode, "Cannot set a null template mode value");
+    public void setTemplateMode(TemplateMode templateMode) {
+        Assert.notNull(templateMode, "Cannot set a null template mode value");
         this.templateMode = templateMode;
     }
 
@@ -78,11 +79,11 @@ public class DefaultTemplateResolver extends AbstractTemplateResolver {
      * Allowed templates modes are defined by the {@link TemplateMode} class.
      * @param templateMode the template mode.
      */
-    public final void setTemplateMode(final String templateMode) {
+    public void setTemplateMode(String templateMode) {
         // Setter overload actually goes against the JavaBeans spec, but having this one is good for legacy
         // compatibility reasons. Besides, given the getter returns TemplateMode, intelligent frameworks like
         // Spring will recognized the property as TemplateMode-typed and simply ignore this setter.
-        Validate.notNull(templateMode, "Cannot set a null template mode value");
+        Assert.notNull(templateMode, "Cannot set a null template mode value");
         this.templateMode = TemplateMode.parse(templateMode);
     }
 
@@ -98,28 +99,34 @@ public class DefaultTemplateResolver extends AbstractTemplateResolver {
      * Set the text that will be returned as the resolved template.
      * @param template the text to be returned as template.
      */
-    public void setTemplate(final String template) {
+    public void setTemplate(String template) {
         this.template = template;
     }
 
     @Override
-    protected ITemplateResource computeTemplateResource(final IEngineConfiguration configuration,
-                                                        final String ownerTemplate, final String template,
-                                                        final Map<String, Object> templateResolutionAttributes) {
-        return new StringTemplateResource(this.template);
+    protected ITemplateResource computeTemplateResource(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
+        return new StringTemplateResource(template);
     }
 
     @Override
-    protected TemplateMode computeTemplateMode(final IEngineConfiguration configuration, final String ownerTemplate,
-                                               final String template,
-                                               final Map<String, Object> templateResolutionAttributes) {
-        return this.templateMode;
+    protected TemplateMode computeTemplateMode(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
+        return templateMode;
     }
 
     @Override
-    protected ICacheEntryValidity computeValidity(final IEngineConfiguration configuration, final String ownerTemplate,
-                                                  final String template,
-                                                  final Map<String, Object> templateResolutionAttributes) {
+    protected ICacheEntryValidity computeValidity(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
         return AlwaysValidCacheEntryValidity.INSTANCE;
     }
 

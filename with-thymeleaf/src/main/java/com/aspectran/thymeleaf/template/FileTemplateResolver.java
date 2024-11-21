@@ -20,9 +20,12 @@ public class FileTemplateResolver extends AbstractConfigurableTemplateResolver {
 
     @Override
     protected ITemplateResource computeTemplateResource(
-        final IEngineConfiguration configuration, final String ownerTemplate, final String template,
-        final String resourceName, final String characterEncoding,
-        final Map<String, Object> templateResolutionAttributes) {
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            String resourceName,
+            String characterEncoding,
+            Map<String, Object> templateResolutionAttributes) {
         return new FileTemplateResource(resourceName, characterEncoding);
     }
 

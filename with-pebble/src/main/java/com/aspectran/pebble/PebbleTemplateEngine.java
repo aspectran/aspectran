@@ -17,6 +17,7 @@ package com.aspectran.pebble;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
@@ -46,6 +47,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     @Override
     public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasEngine();
         try {
             process(pebbleEngine, templateName, model, writer, locale);
             writer.flush();
@@ -55,24 +57,36 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType,
+                        Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasEngine();
         try {
-            process(pebbleEngine, templateSource, templateSource, model, writer, locale);
+            processLiteral(pebbleEngine, templateSource, model, writer, locale);
             writer.flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
-    public static void process(@NonNull PebbleEngine pebbleEngine, String templateName, Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+    public static void process(PebbleEngine pebbleEngine, String templateName,
+                               Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+        Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
         compiledTemplate.evaluate(writer, model, locale);
     }
 
-    public static void process(@NonNull PebbleEngine pebbleEngine, String templateName, String templateSource, Map<String, Object> model, Writer writer, Locale locale) throws IOException {
-        PebbleTemplate compiledTemplate = pebbleEngine.getLiteralTemplate(templateName);
+    private static void processLiteral(@NonNull PebbleEngine pebbleEngine, String templateSource,
+                               Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+        Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
+        PebbleTemplate compiledTemplate = pebbleEngine.getLiteralTemplate(templateSource);
         compiledTemplate.evaluate(writer, model, locale);
+    }
+
+    private void checkHasEngine() {
+        if (pebbleEngine == null) {
+            throw new IllegalStateException("PebbleEngine not specified");
+        }
     }
 
 }

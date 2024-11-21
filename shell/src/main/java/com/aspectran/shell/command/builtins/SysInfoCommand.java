@@ -153,12 +153,13 @@ public class SysInfoCommand extends AbstractCommand {
         console.writeLine("%-23s %12s", "Available memory", StringUtils.convertToHumanFriendlyByteSize(max));
         console.writeLine("%-23s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
         console.writeLine("%-23s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - free));
+        console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(free));
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
             System.gc(); // asynchronous garbage collector might already run
             System.gc(); // to make sure it does a full gc call it twice
-            System.runFinalization();
+            // System.runFinalization(); // deprecated
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -167,7 +168,6 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(free));
             console.writeLine("%-23s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
             console.writeLine("%-23s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - free));
         } else {

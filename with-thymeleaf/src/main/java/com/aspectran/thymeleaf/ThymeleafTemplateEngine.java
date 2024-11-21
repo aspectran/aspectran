@@ -17,12 +17,14 @@ package com.aspectran.thymeleaf;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateSpec;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.ExpressionContext;
+import org.thymeleaf.context.IContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.standard.expression.FragmentExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
@@ -37,6 +39,8 @@ import java.util.Set;
  * The Class ThymeleafTemplateEngine.
  *
  * <p>Created: 2024. 11. 18.</p>
+ *
+ * @since 8.2.0
  */
 public class ThymeleafTemplateEngine implements TemplateEngine {
 
@@ -53,6 +57,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
     @Override
     public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasEngine();
         try {
             process(templateEngine, templateName, model, writer, locale);
             writer.flush();
@@ -62,10 +67,12 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType,
+                        Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasEngine();
         try {
-            Context context = new Context(locale, model);
+            IContext context = new Context(locale, model);
             TemplateSpec templateSpec = new TemplateSpec(templateSource, contentType);
             templateEngine.process(templateSpec, context, writer);
             writer.flush();
@@ -74,7 +81,9 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         }
     }
 
-    public static void process(@NonNull ITemplateEngine templateEngine, @NonNull String templateName, Map<String, Object> model, Writer writer, Locale locale) {
+    public static void process(ITemplateEngine templateEngine, @NonNull String templateName,
+                               Map<String, Object> model, Writer writer, Locale locale) {
+        Assert.notNull(templateEngine, "templateEngine must not be null");
         IEngineConfiguration configuration = templateEngine.getConfiguration();
         ExpressionContext context = new ExpressionContext(configuration, locale, model);
 
@@ -115,6 +124,12 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         }
 
         templateEngine.process(templateNameToUse, markupSelectors, context, writer);
+    }
+
+    private void checkHasEngine() {
+        if (templateEngine == null) {
+            throw new IllegalStateException("TemplateEngine not specified");
+        }
     }
 
 }

@@ -73,6 +73,7 @@ public class LocaleUtils {
     }
 
     @Nullable
+    @SuppressWarnings("deprecation")  // on JDK 19 / JDK-8283478
     private static Locale parseLocaleTokens(String localeString, @NonNull String[] tokens) {
         String language = (tokens.length > 0 ? tokens[0] : StringUtils.EMPTY);
         String country = (tokens.length > 1 ? tokens[1] : StringUtils.EMPTY);

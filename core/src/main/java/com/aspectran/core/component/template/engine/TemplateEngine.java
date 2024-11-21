@@ -39,14 +39,13 @@ public interface TemplateEngine {
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     * @param templateName the template name
      * @param templateSource the template source
      * @param contentType the content type
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+    void process(String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException;
 
 }

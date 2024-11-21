@@ -19,6 +19,7 @@
  */
 package com.aspectran.thymeleaf.template;
 
+import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.cache.AlwaysValidCacheEntryValidity;
 import org.thymeleaf.cache.ICacheEntryValidity;
@@ -30,7 +31,6 @@ import org.thymeleaf.templateresolver.AbstractTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresource.ITemplateResource;
 import org.thymeleaf.templateresource.StringTemplateResource;
-import org.thymeleaf.util.Validate;
 
 import java.util.Map;
 
@@ -64,7 +64,9 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
     public static final Long DEFAULT_CACHE_TTL_MS = null;
 
     private TemplateMode templateMode = DEFAULT_TEMPLATE_MODE;
+
     private boolean cacheable = DEFAULT_CACHEABLE;
+
     private Long cacheTTLMs = DEFAULT_CACHE_TTL_MS;
 
     /**
@@ -79,7 +81,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * this template resolver.
      * @return the template mode to be used.
      */
-    public final TemplateMode getTemplateMode() {
+    public TemplateMode getTemplateMode() {
         return this.templateMode;
     }
 
@@ -87,8 +89,8 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * Sets the template mode to be applied to templates resolved by this resolver.
      * @param templateMode the template mode.
      */
-    public final void setTemplateMode(final TemplateMode templateMode) {
-        Validate.notNull(templateMode, "Cannot set a null template mode value");
+    public void setTemplateMode(TemplateMode templateMode) {
+        Assert.notNull(templateMode, "Cannot set a null template mode value");
         this.templateMode = templateMode;
     }
 
@@ -97,11 +99,11 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * Allowed templates modes are defined by the {@link TemplateMode} class.
      * @param templateMode the template mode.
      */
-    public final void setTemplateMode(final String templateMode) {
+    public void setTemplateMode(String templateMode) {
         // Setter overload actually goes against the JavaBeans spec, but having this one is good for legacy
         // compatibility reasons. Besides, given the getter returns TemplateMode, intelligent frameworks like
         // Spring will recognized the property as TemplateMode-typed and simply ignore this setter.
-        Validate.notNull(templateMode, "Cannot set a null template mode value");
+        Assert.notNull(templateMode, "Cannot set a null template mode value");
         this.templateMode = TemplateMode.parse(templateMode);
     }
 
@@ -110,7 +112,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * cacheable or not.
      * @return whether templates resolved are cacheable or not.
      */
-    public final boolean isCacheable() {
+    public boolean isCacheable() {
         return this.cacheable;
     }
 
@@ -118,7 +120,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * Sets a new value for the <i>cacheable</i> flag.
      * @param cacheable whether resolved patterns should be considered cacheable or not.
      */
-    public final void setCacheable(final boolean cacheable) {
+    public void setCacheable(boolean cacheable) {
         this.cacheable = cacheable;
     }
 
@@ -130,7 +132,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * (Least Recently Used) algorithm for being the oldest entry in cache.
      * @return the cache TTL for resolved templates.
      */
-    public final Long getCacheTTLMs() {
+    public Long getCacheTTLMs() {
         return this.cacheTTLMs;
     }
 
@@ -141,12 +143,12 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
      * (Least Recently Used) algorithm for being the oldest entry in cache.
      * @param cacheTTLMs the new cache TTL, or null for using natural LRU eviction.
      */
-    public final void setCacheTTLMs(final Long cacheTTLMs) {
+    public void setCacheTTLMs(Long cacheTTLMs) {
         this.cacheTTLMs = cacheTTLMs;
     }
 
     @Override
-    public void setUseDecoupledLogic(final boolean useDecoupledLogic) {
+    public void setUseDecoupledLogic(boolean useDecoupledLogic) {
         if (useDecoupledLogic) {
             throw new ConfigurationException("The 'useDecoupledLogic' flag is not allowed for String template resolution");
         }
@@ -154,32 +156,37 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
     }
 
     @Override
-    protected ITemplateResource computeTemplateResource(final IEngineConfiguration configuration,
-                                                        final String ownerTemplate, final String template,
-                                                        final Map<String, Object> templateResolutionAttributes) {
+    protected ITemplateResource computeTemplateResource(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
         return new StringTemplateResource(template);
     }
 
     @Override
-    protected TemplateMode computeTemplateMode(final IEngineConfiguration configuration, final String ownerTemplate,
-                                               final String template,
-                                               final Map<String, Object> templateResolutionAttributes) {
-        return this.templateMode;
+    protected TemplateMode computeTemplateMode(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
+        return templateMode;
     }
 
     @Override
-    protected ICacheEntryValidity computeValidity(final IEngineConfiguration configuration, final String ownerTemplate,
-                                                  final String template,
-                                                  final Map<String, Object> templateResolutionAttributes) {
-
+    protected ICacheEntryValidity computeValidity(
+            IEngineConfiguration configuration,
+            String ownerTemplate,
+            String template,
+            Map<String, Object> templateResolutionAttributes) {
         if (isCacheable()) {
-            if (this.cacheTTLMs != null) {
-                return new TTLCacheEntryValidity(this.cacheTTLMs);
+            if (cacheTTLMs != null) {
+                return new TTLCacheEntryValidity(cacheTTLMs);
+            } else {
+                return AlwaysValidCacheEntryValidity.INSTANCE;
             }
-            return AlwaysValidCacheEntryValidity.INSTANCE;
         }
         return NonCacheableCacheEntryValidity.INSTANCE;
-
     }
 
 }

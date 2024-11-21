@@ -154,16 +154,12 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                 } else {
                     String templateSource = templateRule.getTemplateSource(context);
                     if (templateSource != null) {
-                        String templateName = templateRule.getId();
-                        if (templateName == null) {
-                            templateName = templateRule.getEngine() + "/" + templateRule.hashCode();
-                        }
                         String contentType = templateRule.getContentType();
                         if (contentType == null && activity.getResponseAdapter() != null) {
                             contentType = activity.getResponseAdapter().getContentType();
                         }
                         Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
-                        engine.process(templateName, templateSource, contentType, model, writer, locale);
+                        engine.process(templateSource, contentType, model, writer, locale);
                     }
                 }
             } else {

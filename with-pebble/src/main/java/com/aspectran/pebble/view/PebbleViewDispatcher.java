@@ -48,6 +48,7 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
     }
 
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
+        Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         this.pebbleEngine = pebbleEngine;
     }
 

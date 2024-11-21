@@ -17,7 +17,7 @@ package com.aspectran.freemarker;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.Assert;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -49,9 +49,9 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     @Override
     public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasConfiguration();
         try {
-            Template template = configuration.getTemplate(templateName, locale);
-            template.process(model, writer);
+            process(configuration, templateName, model, writer, locale);
             writer.flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
@@ -59,9 +59,12 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType,
+                        Map<String, Object> model, Writer writer, Locale locale)
             throws TemplateEngineProcessException {
+        checkHasConfiguration();
         try {
+            String templateName = "template@" + templateSource.hashCode();
             Reader reader = new StringReader(templateSource);
             Template template = new Template(templateName, reader, configuration);
             template.process(model, writer);
@@ -71,10 +74,18 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         }
     }
 
-    public static void process(@NonNull Configuration configuration, String templateName, Map<String, Object> model, Writer writer, Locale locale)
+    public static void process(Configuration configuration, String templateName,
+                               Map<String, Object> model, Writer writer, Locale locale)
             throws IOException, TemplateException {
-        Template template = configuration.getTemplate(templateName);
+        Assert.notNull(configuration, "configuration must not be null");
+        Template template = configuration.getTemplate(templateName, locale);
         template.process(model, writer);
+    }
+
+    private void checkHasConfiguration() {
+        if (configuration == null) {
+            throw new IllegalStateException("Configuration not specified");
+        }
     }
 
 }
