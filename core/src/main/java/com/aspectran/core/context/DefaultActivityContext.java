@@ -200,8 +200,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public MessageSource getMessageSource() {
-        if (this.messageSource == null) {
-            throw new IllegalStateException("No MessageSource configured");
+        if (messageSource == null) {
+            resolveMessageSource();
         }
         return messageSource;
     }
@@ -245,7 +245,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * Initialize the MessageSource.
      * Use parent's if none defined in this context.
      */
-    private void initMessageSource() {
+    private void resolveMessageSource() {
         if (defaultBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
             messageSource = defaultBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
             if (logger.isDebugEnabled()) {
@@ -282,7 +282,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 transletRuleRegistry.initialize();
             }
             if (defaultBeanRegistry != null) {
-                initMessageSource();
+                resolveMessageSource();
             }
         } finally {
             ClassUtils.restoreThreadContextClassLoader(origClassLoader);

@@ -39,7 +39,7 @@ public class ClassLoaderTemplateResolver extends AbstractConfigurableTemplateRes
         this(null);
     }
 
-    public ClassLoaderTemplateResolver(final ClassLoader classLoader) {
+    public ClassLoaderTemplateResolver(ClassLoader classLoader) {
         super();
         // Class Loader might be null if we want to apply the default one
         this.classLoader = classLoader;

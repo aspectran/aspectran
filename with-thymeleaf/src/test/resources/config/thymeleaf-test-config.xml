@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-8.dtd">
+<aspectran>
+
+    <description>
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <settings>
+        <setting name="defaultTemplateEngineBean" value="thymeleaf"/>
+    </settings>
+
+    <bean id="messageSource" class="com.aspectran.core.support.i18n.message.ResourceBundleMessageSource">
+        <description>
+            Defines a bean for multilingual processing.
+        </description>
+        <properties>
+            <item name="basename">locale.messages</item>
+        </properties>
+    </bean>
+
+    <bean id="templateEngine" class="com.aspectran.thymeleaf.TemplateEngineFactoryBean"/>
+
+    <bean id="thymeleaf" class="com.aspectran.thymeleaf.ThymeleafTemplateEngine">
+        <arguments>
+            <item>
+                <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
+                    <properties>
+                        <item name="templateResolvers" type="set">
+                            <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
+                                <properties>
+                                    <item name="templateMode">TEXT</item>
+                                    <item name="cacheable" valueType="boolean">false</item>
+                                </properties>
+                            </bean>
+                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                                <properties>
+                                    <item name="prefix">view</item>
+                                    <item name="suffix">.html</item>
+                                    <item name="templateMode">HTML</item>
+                                    <item name="cacheable" valueType="boolean">true</item>
+                                </properties>
+                            </bean>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
+    </bean>
+
+    <translet name="echo-1">
+        <request>
+            <parameters>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </parameters>
+        </request>
+        <transform format="text">
+            <template engine="thymeleaf" style="apon" contentType="plain/text">
+                |[[${input_1}]][[${input_2}]]
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="translet-1">
+        <transform format="text">
+            <template>~{template-1}</template>
+        </transform>
+    </translet>
+
+    <template id="template-1" engine="thymeleaf" style="apon">
+        | Name: {{ name }}, Email: {{ email }}
+    </template>
+
+</aspectran>
