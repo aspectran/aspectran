@@ -22,8 +22,8 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.context.expr.ExpressionEvaluation;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.value.ValueExpression;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.AutowireTargetRule;
@@ -517,9 +517,9 @@ public class ActivityRuleAssistant {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                 AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                 if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
-                    if (expressionEvaluation != null) {
-                        Token[] tokens = expressionEvaluation.getTokens();
+                    ValueExpression valueExpression = autowireTargetRule.getValueExpression();
+                    if (valueExpression != null) {
+                        Token[] tokens = valueExpression.getTokens();
                         resolveBeanClass(tokens, autowireRule);
                     } else {
                         Class<?> type = autowireTargetRule.getType();
@@ -530,9 +530,9 @@ public class ActivityRuleAssistant {
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
                 AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                 if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
-                    if (expressionEvaluation != null) {
-                        Token[] tokens = expressionEvaluation.getTokens();
+                    ValueExpression valueExpression = autowireTargetRule.getValueExpression();
+                    if (valueExpression != null) {
+                        Token[] tokens = valueExpression.getTokens();
                         resolveBeanClass(tokens, autowireRule);
                     }
                 }
@@ -542,9 +542,9 @@ public class ActivityRuleAssistant {
                 if (autowireRule.isRequired() && autowireTargetRules != null) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
                         if (!autowireTargetRule.isInnerBean()) {
-                            ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
-                            if (expressionEvaluation != null) {
-                                Token[] tokens = expressionEvaluation.getTokens();
+                            ValueExpression valueExpression = autowireTargetRule.getValueExpression();
+                            if (valueExpression != null) {
+                                Token[] tokens = valueExpression.getTokens();
                                 resolveBeanClass(tokens, autowireRule);
                             } else {
                                 Class<?> type = autowireTargetRule.getType();

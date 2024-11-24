@@ -26,7 +26,7 @@ import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -428,8 +428,8 @@ public abstract class AdviceActivity extends AbstractActivity {
             for (SettingsAdviceRule settingsAdviceRule : aspectAdviceRuleRegistry.getSettingsAdviceRuleList()) {
                 Object value = settingsAdviceRule.getSetting(name);
                 if (value != null && isAcceptable(settingsAdviceRule.getAspectRule())) {
-                    if (value instanceof String) {
-                        return (V)TokenEvaluator.evaluate((String)value, this);
+                    if (value instanceof String str) {
+                        return (V)TokenEvaluator.evaluate(str, this);
                     } else {
                         return (V)value;
                     }

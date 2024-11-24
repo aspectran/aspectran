@@ -24,8 +24,11 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -54,6 +57,12 @@ public interface Activity {
      * @return the environment
      */
     Environment getEnvironment();
+
+    TemplateRenderer getTemplateRenderer();
+
+    TokenEvaluator getTokenEvaluator();
+
+    ItemEvaluator getItemEvaluator();
 
     /**
      * Gets the application adapter.
@@ -140,6 +149,8 @@ public interface Activity {
      * @return an action result
      */
     Object getProcessResult(String actionId);
+
+    ActivityData getActivityData();
 
     /**
      * Returns the originally declared response.

@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.utils.Assert;
@@ -27,8 +26,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import freemarker.template.Configuration;
-
-import java.util.Locale;
 
 /**
  * The Class FreeMarkerViewDispatcher.
@@ -80,9 +77,7 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
                 logger.debug("Dispatching to FreeMarker template [" + viewName + "]");
             }
 
-            TemplateModel model = new TemplateModel(activity);
-            Locale locale = activity.getRequestAdapter().getLocale();
-            FreeMarkerTemplateEngine.process(configuration, viewName, model, responseAdapter.getWriter(), locale);
+            FreeMarkerTemplateEngine.process(configuration, viewName, activity);
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to FreeMarker template " +

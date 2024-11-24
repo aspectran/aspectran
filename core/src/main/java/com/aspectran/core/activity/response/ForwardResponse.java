@@ -16,8 +16,6 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -53,8 +51,7 @@ public class ForwardResponse implements Response {
 
         ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemEvaluation(activity);
-            Map<String, Object> valueMap = evaluator.evaluate(itemRuleMap);
+            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(itemRuleMap);
             activity.getRequestAdapter().putAllAttributes(valueMap);
         }
     }

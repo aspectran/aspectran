@@ -17,8 +17,6 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -74,13 +72,8 @@ public class InvokeAction implements Executable {
         try {
             ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
             ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
-            ItemEvaluator evaluator = null;
-            if ((propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) ||
-                    (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty())) {
-                evaluator = new ItemEvaluation(activity);
-            }
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
+                Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(propertyItemRuleMap);
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     BeanUtils.setProperty(bean, entry.getKey(), entry.getValue());
                 }
@@ -89,8 +82,7 @@ public class InvokeAction implements Executable {
             Method method = invokeActionRule.getMethod();
             if (method != null) {
                 if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
-                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator,
-                        invokeActionRule.isRequiresTranslet());
+                    Object[] args = createArguments(activity, argumentItemRuleMap, invokeActionRule.isRequiresTranslet());
                     return invokeMethod(bean, method, args);
                 } else {
                     return invokeMethod(activity, bean, method, invokeActionRule.isRequiresTranslet());
@@ -101,24 +93,20 @@ public class InvokeAction implements Executable {
                 if (activity.getTranslet() != null) {
                     if (requiresTranslet == null) {
                         try {
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
-                                evaluator, true);
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, true);
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (logger.isTraceEnabled()) {
                                 logger.trace("No such accessible method to invoke action " + invokeActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
-                                evaluator, false);
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, false);
                         }
                     } else {
-                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
-                            evaluator, requiresTranslet);
+                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, requiresTranslet);
                     }
                 } else {
-                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
-                        evaluator, false);
+                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, false);
                 }
                 return result;
             }
@@ -192,17 +180,12 @@ public class InvokeAction implements Executable {
     }
 
     private static Object invokeMethod(Activity activity, Object bean, String methodName,
-                                       ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator,
-                                       boolean requiresTranslet) throws Exception {
+                                       ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) throws Exception {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
         if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
-            if (evaluator == null) {
-                evaluator = new ItemEvaluation(activity);
-            }
-
-            Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
+            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
             int argSize = argumentItemRuleMap.size();
             int argIndex;
             if (requiresTranslet) {
@@ -232,7 +215,7 @@ public class InvokeAction implements Executable {
     }
 
     private static Object invokeMethod(@NonNull Object object, String methodName, Object[] args, Class<?>[] paramTypes)
-        throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method method = MethodUtils.getMatchingAccessibleMethod(object.getClass(), methodName, args, paramTypes);
         if (method == null) {
             throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
@@ -247,12 +230,8 @@ public class InvokeAction implements Executable {
     }
 
     @NonNull
-    private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
-                                            ItemEvaluator evaluator, boolean requiresTranslet) {
-        if (evaluator == null) {
-            evaluator = new ItemEvaluation(activity);
-        }
-
+    private static Object[] createArguments(@NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap,
+                                            boolean requiresTranslet) {
         Object[] args;
         int size = argumentItemRuleMap.size();
         int index;
@@ -264,7 +243,7 @@ public class InvokeAction implements Executable {
             index = 0;
             args = new Object[size];
         }
-        Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
+        Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
         for (String name : argumentItemRuleMap.keySet()) {
             Object o = valueMap.get(name);
             args[index] = o;

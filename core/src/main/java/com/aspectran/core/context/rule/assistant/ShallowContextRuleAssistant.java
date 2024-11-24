@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;

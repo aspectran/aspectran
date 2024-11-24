@@ -23,10 +23,9 @@ import com.aspectran.core.context.config.AcceptablesConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.ServiceAcceptables;
@@ -113,7 +112,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     @Override
     public void printGreetings() {
         if (greetingsTokens != null) {
-            TokenEvaluator evaluator = new TokenEvaluation(getDefaultActivity());
+            TokenEvaluator evaluator = getDefaultActivity().getTokenEvaluator();
             String message = evaluator.evaluateAsString(greetingsTokens);
             if (console.isReading()) {
                 console.clearLine();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.token;
+package com.aspectran.core.context.asel.token;
 
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.StringUtils;

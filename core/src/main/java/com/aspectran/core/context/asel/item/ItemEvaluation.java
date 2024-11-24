@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel.item;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -48,14 +48,16 @@ import java.util.Set;
  *
  * @since 2008. 06. 19
  */
-public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
+public class ItemEvaluation implements ItemEvaluator {
+
+    private final TokenEvaluator tokenEvaluator;
 
     /**
      * Instantiates a new ItemEvaluation.
-     * @param activity the current Activity
+     * @param tokenEvaluator the token evaluator
      */
-    public ItemEvaluation(Activity activity) {
-        super(activity);
+    public ItemEvaluation(TokenEvaluator tokenEvaluator) {
+        this.tokenEvaluator = tokenEvaluator;
     }
 
     @Override
@@ -237,7 +239,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
     }
 
     private Object evaluate(Token[] tokens, ItemValueType valueType) throws Exception {
-        Object value = evaluate(tokens);
+        Object value = tokenEvaluator.evaluate(tokens);
         return (value == null || valueType == null ? value : valuelize(value, valueType));
     }
 
@@ -279,7 +281,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
         }
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
-            Object value = evaluate(tokens);
+            Object value = tokenEvaluator.evaluate(tokens);
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -295,7 +297,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
         }
         Set<Object> valueSet = new LinkedHashSet<>();
         for (Token[] tokens : tokensList) {
-            Object value = evaluate(tokens);
+            Object value = tokenEvaluator.evaluate(tokens);
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -311,7 +313,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
         }
         Map<String, Object> valueMap = new LinkedHashMap<>();
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-            Object value = evaluate(entry.getValue());
+            Object value = tokenEvaluator.evaluate(entry.getValue());
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -327,7 +329,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
         }
         Properties prop = new Properties();
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-            Object value = evaluate(entry.getValue());
+            Object value = tokenEvaluator.evaluate(entry.getValue());
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -363,7 +365,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
     }
 
     private Object evaluateBean(BeanRule beanRule) {
-        return activity.getPrototypeScopeBean(beanRule);
+        return tokenEvaluator.getActivity().getPrototypeScopeBean(beanRule);
     }
 
     @Nullable

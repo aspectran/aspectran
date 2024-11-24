@@ -15,10 +15,9 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -98,13 +97,6 @@ public class TokenTag extends HtmlEscapingAwareTag {
     @Serial
     private static final long serialVersionUID = -3988228472260819648L;
 
-    /**
-     * {@link jakarta.servlet.jsp.PageContext} attribute for the
-     * page-level {@link TokenEvaluator} instance.
-     */
-    protected static final String TOKEN_EVALUATOR_PAGE_ATTRIBUTE =
-            "com.aspectran.web.support.tags.TOKEN_EVALUATOR";
-
     @Nullable
     private String type;
 
@@ -163,12 +155,7 @@ public class TokenTag extends HtmlEscapingAwareTag {
 
     @Override
     public int doEndTag() throws JspException {
-        TokenEvaluator tokenEvaluator =
-                (TokenEvaluator)super.pageContext.getAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE);
-        if (tokenEvaluator == null) {
-            tokenEvaluator = new TokenEvaluation(getCurrentActivity());
-            super.pageContext.setAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE, tokenEvaluator);
-        }
+        TokenEvaluator tokenEvaluator = getCurrentActivity().getTokenEvaluator();
         try {
             if (this.type == null) {
                 throw new IllegalArgumentException("No token type set");

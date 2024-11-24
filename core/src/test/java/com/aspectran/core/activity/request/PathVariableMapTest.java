@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.Tokenizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

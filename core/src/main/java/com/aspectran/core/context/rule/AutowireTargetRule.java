@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.expr.ExpressionEvaluation;
+import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -32,7 +32,7 @@ public class AutowireTargetRule {
 
     private String qualifier;
 
-    private ExpressionEvaluation expressionEvaluation;
+    private ValueExpression valueExpression;
 
     private boolean innerBean;
 
@@ -52,12 +52,12 @@ public class AutowireTargetRule {
         this.qualifier = qualifier;
     }
 
-    public ExpressionEvaluation getExpressionEvaluation() {
-        return expressionEvaluation;
+    public ValueExpression getValueExpression() {
+        return valueExpression;
     }
 
     public void setExpression(String expression) throws IllegalRuleException {
-        this.expressionEvaluation = new ExpressionEvaluation(expression);
+        this.valueExpression = new ValueExpression(expression);
     }
 
     public boolean isInnerBean() {
@@ -73,8 +73,8 @@ public class AutowireTargetRule {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", type);
         tsb.append("qualifier", qualifier);
-        if (expressionEvaluation != null) {
-            tsb.append("expression", expressionEvaluation.getExpression());
+        if (valueExpression != null) {
+            tsb.append("expression", valueExpression.getExpressionString());
         }
         return tsb.toString();
     }

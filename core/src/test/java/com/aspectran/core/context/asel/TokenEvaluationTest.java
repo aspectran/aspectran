@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -52,7 +53,7 @@ class TokenEvaluationTest {
 
             Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
+            TokenEvaluator tokenEvaluator = activity.getTokenEvaluator();
             return tokenEvaluator.evaluateAsString(tokens);
         });
         assertEquals("Apple, Tomato, Strawberry, Melon", result);
@@ -72,7 +73,7 @@ class TokenEvaluationTest {
             Token[] tokens2 = TokenParser.parse("@{stringList}");
             Token[] tokens3 = TokenParser.parse("@{stringArray}@{stringList}");
 
-            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
+            TokenEvaluator tokenEvaluator = activity.getTokenEvaluator();
             String result1 = tokenEvaluator.evaluateAsString(tokens1);
             String result2 = tokenEvaluator.evaluateAsString(tokens2);
             String result3 = tokenEvaluator.evaluateAsString(tokens3);

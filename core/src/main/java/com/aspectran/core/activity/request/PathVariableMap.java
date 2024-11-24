@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.request;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;

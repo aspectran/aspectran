@@ -79,6 +79,11 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public ActivityData getActivityData() {
+        return new ActivityData(this);
+    }
+
+    @Override
     public Response getDeclaredResponse() {
         return null;
     }

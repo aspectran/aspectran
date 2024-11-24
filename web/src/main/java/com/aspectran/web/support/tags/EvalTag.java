@@ -15,9 +15,7 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.context.expr.ExpressionEvaluator;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
@@ -28,8 +26,6 @@ import jakarta.servlet.jsp.PageContext;
 
 import java.io.IOException;
 import java.io.Serial;
-
-import static com.aspectran.web.support.tags.TokenTag.TOKEN_EVALUATOR_PAGE_ATTRIBUTE;
 
 /**
  * The {@code <eval>} tag evaluates an Aspectran expression and either prints
@@ -141,19 +137,13 @@ public class EvalTag extends HtmlEscapingAwareTag {
 
     @Override
     public int doEndTag() throws JspException {
-        TokenEvaluator tokenEvaluator =
-                (TokenEvaluator)super.pageContext.getAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE);
-        if (tokenEvaluator == null) {
-            tokenEvaluator = new TokenEvaluation(getCurrentActivity());
-            super.pageContext.setAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE, tokenEvaluator);
-        }
         try {
             if (this.var != null) {
-                Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
+                Object result = ValueExpression.evaluate(this.expression, getCurrentActivity());
                 super.pageContext.setAttribute(this.var, result, this.scope);
             } else {
                 try {
-                    Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
+                    Object result = ValueExpression.evaluate(this.expression, getCurrentActivity());
                     String str = ObjectUtils.getDisplayString(result);
                     str = htmlEscape(str);
                     if (this.javaScriptEscape) {

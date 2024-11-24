@@ -17,10 +17,8 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -68,8 +66,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
      */
     public String getName(Activity activity) {
         if (nameTokens != null && nameTokens.length > 0) {
-            TokenEvaluator evaluator = new TokenEvaluation(activity);
-            return evaluator.evaluateAsString(nameTokens);
+            return activity.getTokenEvaluator().evaluateAsString(nameTokens);
         } else {
             return name;
         }

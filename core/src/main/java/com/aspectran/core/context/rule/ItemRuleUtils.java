@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.annotation.AttrItem;
 import com.aspectran.core.component.bean.annotation.ParamItem;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;

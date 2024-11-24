@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.ognl;
+package com.aspectran.core.context.asel.ognl;
 
-import com.aspectran.core.context.expr.ExpressionParserException;
+import com.aspectran.core.context.asel.value.ExpressionParserException;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -31,16 +31,13 @@ import java.util.Map;
  *
  * @since 6.0.0
  */
-public class OgnlSupport {
+public abstract class OgnlSupport {
 
     private static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
 
     private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
     private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
-
-    private OgnlSupport() {
-    }
 
     @Nullable
     public static Object parseExpression(String expression) throws ExpressionParserException {

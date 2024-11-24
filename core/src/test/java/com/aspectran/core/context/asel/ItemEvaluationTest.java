@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
@@ -68,7 +69,7 @@ class ItemEvaluationTest {
             itemRuleMap.putItemRule(itemRule1);
             itemRuleMap.putItemRule(itemRule2);
 
-            ItemEvaluator itemEvaluator = new ItemEvaluation(activity);
+            ItemEvaluator itemEvaluator = activity.getItemEvaluator();
             return itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
         });
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {

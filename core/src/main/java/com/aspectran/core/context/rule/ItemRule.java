@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;

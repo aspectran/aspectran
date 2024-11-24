@@ -52,7 +52,7 @@ class ActivityDataTest {
         activity.setParameterMap(parameterMap);
         activity.setAttributeMap(attributes);
         ActivityData activityData = activity.perform(() -> {
-            ActivityData activityData2 = new ActivityData(activity);
+            ActivityData activityData2 = activity.getActivityData();
             activityData2.put("result1", 1);
             return activityData2;
         });

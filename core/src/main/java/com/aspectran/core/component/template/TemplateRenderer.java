@@ -18,9 +18,6 @@ package com.aspectran.core.component.template;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.TemplateRule;
 
-import java.io.Writer;
-import java.util.Map;
-
 /**
  * The Interface TemplateRenderer.
  *
@@ -38,22 +35,6 @@ public interface TemplateRenderer {
     /**
      * Renders the template with specified TemplateRule by its ID.
      * @param templateId the template id
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @return the output string of the template
-     */
-    String render(String templateId, Map<String, Object> model);
-
-    /**
-     * Renders the template with specified TemplateRule.
-     * @param templateRule the template rule
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @return the output string of the template
-     */
-    String render(TemplateRule templateRule, Map<String, Object> model);
-
-    /**
-     * Renders the template with specified TemplateRule by its ID.
-     * @param templateId the template id
      * @param activity the activity
      */
     void render(String templateId, Activity activity);
@@ -64,52 +45,5 @@ public interface TemplateRenderer {
      * @param activity the activity
      */
     void render(TemplateRule templateRule, Activity activity);
-
-    /**
-     * Renders the template with specified TemplateRule by its ID.
-     * @param templateId the template id
-     * @param activity the activity
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     */
-    void render(String templateId, Activity activity, Map<String, Object> model);
-
-    /**
-     * Renders the template with specified TemplateRule by its ID.
-     * @param templateId the template id
-     * @param activity the activity
-     * @param writer the {@link Writer} where the output of the template will go.
-     *         {@link Writer#close()} is not called.
-     */
-    void render(String templateId, Activity activity, Writer writer);
-
-    /**
-     * Renders the template with specified TemplateRule.
-     * @param templateRule the template rule
-     * @param activity the activity
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     */
-    void render(TemplateRule templateRule, Activity activity, Map<String, Object> model);
-
-    /**
-     * TRenders the template with specified TemplateRule by its ID.
-     * Writing the generated output to the supplied {@link Writer}.
-     * @param templateId the template id
-     * @param activity the activity
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @param writer the {@link Writer} where the output of the template will go.
-     *         {@link Writer#close()} is not called.
-     */
-    void render(String templateId, Activity activity, Map<String, Object> model, Writer writer);
-
-    /**
-     * Renders the template with specified TemplateRule.
-     * Writing the generated output to the supplied {@link Writer}.
-     * @param templateRule the template rule
-     * @param activity the activity
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @param writer the {@link Writer} where the output of the template will go.
-     *         {@link Writer#close()} is not called.
-     */
-    void render(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer);
 
 }

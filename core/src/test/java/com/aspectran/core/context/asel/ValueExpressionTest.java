@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.NonActivity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2021/02/04</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ExpressionEvaluationTest {
+class ValueExpressionTest {
 
     private Activity activity;
 
@@ -42,23 +43,38 @@ class ExpressionEvaluationTest {
 
         NonActivity activity = new NonActivity(context);
         activity.getRequestAdapter().setParameter("foo", "foo");
+        activity.getRequestAdapter().setParameter("who", "bar");
         activity.getRequestAdapter().setParameter("bars", new String[] {"bar1", "bar2", "bar3"});
         this.activity = activity;
     }
 
     @Test
     void evaluate() {
-        assertEquals(true, ExpressionEvaluator.evaluate("foo in {'foo','bar'}", activity));
-        assertEquals(true, ExpressionEvaluator.evaluate("${foo} in {'foo','bar'}", activity));
-        assertEquals(3, (int)ExpressionEvaluator.evaluate("bars.length", activity));
-        assertEquals(3, (int)ExpressionEvaluator.evaluate("${bars}.length", activity));
-        assertEquals("bar2", ExpressionEvaluator.evaluate("bars[1]", activity));
-        assertEquals("bar2", ExpressionEvaluator.evaluate("${bars}[1]", activity));
-        assertEquals("T", ExpressionEvaluator.evaluate("${bars}.length > 3 ? \"F\" : \"T\"", activity));
-        assertEquals("foofoo", ExpressionEvaluator.evaluate("${foo} + ${foo}", activity));
-        assertEquals("[1]", ExpressionEvaluator.evaluate("'${bars--}[1]'", activity));
-        //System.out.println(ExpressionEvaluator.evaluate("${foo} + ${foo}", activity));
-        //System.out.println(ExpressionEvaluator.evaluate("'${bars--}[1]'", activity));
+        assertEquals(true, ValueExpression.evaluate("foo in {'foo','bar'}", activity));
+        assertEquals(true, ValueExpression.evaluate("${foo} in {'foo','bar'}", activity));
+        assertEquals(3, (int)ValueExpression.evaluate("bars.length", activity));
+        assertEquals(3, (int)ValueExpression.evaluate("${bars}.length", activity));
+        assertEquals("bar2", ValueExpression.evaluate("bars[1]", activity));
+        assertEquals("bar2", ValueExpression.evaluate("${bars}[1]", activity));
+        assertEquals("T", ValueExpression.evaluate("${bars}.length > 3 ? \"F\" : \"T\"", activity));
+        assertEquals("foofoo", ValueExpression.evaluate("${foo} + ${foo}", activity));
+        //System.out.println(ValueExpression.evaluate("${foo} + ${foo}", activity));
+        //System.out.println(ValueExpression.evaluate("'${bars--}[1]'", activity));
+    }
+
+    @Test
+    void evaluate2() {
+        assertEquals("foobar", ValueExpression.evaluate("${foo} + who", activity));
+    }
+
+    @Test
+    void evaluate3() {
+        assertEquals("==()==", ValueExpression.evaluate("'==(${foobar})=='", activity));
+    }
+
+    @Test
+    void evaluate4() {
+        assertEquals("bar1", ValueExpression.evaluate("'${bars}'", activity));
     }
 
 }

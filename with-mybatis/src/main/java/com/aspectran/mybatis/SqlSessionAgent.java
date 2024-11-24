@@ -17,7 +17,6 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -265,12 +264,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
 
     @Nullable
     private ActivityData getActivityData() {
-        Translet translet = getAvailableActivity().getTranslet();
-        if (translet != null) {
-            return translet.getActivityData();
-        } else {
-            return null;
-        }
+        return getAvailableActivity().getActivityData();
     }
 
 }

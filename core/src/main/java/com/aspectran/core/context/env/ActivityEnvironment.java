@@ -17,8 +17,6 @@ package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
@@ -106,8 +104,7 @@ public class ActivityEnvironment implements Environment {
         }
         ItemRule itemRule = propertyItemRuleMap.get(name);
         if (itemRule != null) {
-            ItemEvaluator evaluator = new ItemEvaluation(activity);
-            return evaluator.evaluate(itemRule);
+            return activity.getItemEvaluator().evaluate(itemRule);
         } else {
             return null;
         }

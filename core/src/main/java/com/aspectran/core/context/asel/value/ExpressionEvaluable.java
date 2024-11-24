@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.token;
+package com.aspectran.core.context.asel.value;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.aspectran.core.activity.Activity;
 
 /**
- * <p>Created: 20/11/2018</p>
+ * The Expression Evaluator.
+ *
+ * <p>Created: 2021/01/31</p>
+ *
+ * @since 6.11.0
  */
-class TokenTest {
+public interface ExpressionEvaluable {
 
-    @Test
-    void hasTokenTest() {
-        String text = "a${#{x}z";
-        assertTrue(Token.hasToken(text));
-    }
+    /**
+     * Evaluates an expression.
+     * @param activity the aspectran activity
+     * @param resultType the expected type of the result of the evaluation
+     * @param <V> the type of the result
+     * @return the result of the expression evaluation
+     */
+    <V> V evaluate(Activity activity, Class<V> resultType);
 
 }

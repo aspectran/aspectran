@@ -17,10 +17,8 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.env.Profiles;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.utils.StringUtils;
@@ -145,8 +143,7 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         for (Token token : contentTokens) {
             Token.resolveAlternativeValue(token, activity.getClassLoader());
         }
-        TokenEvaluator evaluator = new TokenEvaluation(activity);
-        return evaluator.evaluateAsString(contentTokens);
+        return activity.getTokenEvaluator().evaluateAsString(contentTokens);
     }
 
     @NonNull

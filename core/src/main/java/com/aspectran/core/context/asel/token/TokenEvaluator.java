@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel.token;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -28,7 +26,7 @@ import java.util.Set;
 
 /**
  * Evaluates token expressions.
- * 
+ *
  * <p>Created: 2010. 5. 6. AM 1:35:16</p>
  */
 public interface TokenEvaluator {
@@ -54,8 +52,7 @@ public interface TokenEvaluator {
     static Object evaluate(String expression, Activity activity) {
         if (Token.hasToken(expression)) {
             Token[] tokens = TokenParser.parse(expression);
-            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
-            return tokenEvaluator.evaluate(tokens);
+            return activity.getTokenEvaluator().evaluate(tokens);
         } else {
             return expression;
         }

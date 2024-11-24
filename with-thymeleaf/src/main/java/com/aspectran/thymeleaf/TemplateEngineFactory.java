@@ -27,7 +27,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import java.util.Set;
 
 /**
- * Factory that configures a Pebble Engine Configuration.
+ * Factory that configures a Thymeleaf Template Engine.
  *
  * <p>Created: 2024. 11. 18.</p>
  */

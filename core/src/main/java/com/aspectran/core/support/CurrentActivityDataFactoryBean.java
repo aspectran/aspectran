@@ -37,7 +37,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     private String attributeName;
 
-    private Translet translet;
+    private Activity activity;
 
     /**
      * Returns whether the current {@code ActivityData} is registered as an attribute
@@ -70,16 +70,16 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     @Override
     public void setCurrentActivity(@NonNull Activity activity) {
-        Assert.state(translet == null, "Current activity already injected");
-        translet = activity.getTranslet();
-        if (translet != null && attributeName != null) {
-            translet.setAttribute(attributeName, translet.getActivityData());
+        Assert.state(this.activity == null, "Current activity already injected");
+        this.activity = activity;
+        if (activity.getTranslet() != null && attributeName != null) {
+            activity.getTranslet().setAttribute(attributeName, activity.getActivityData());
         }
     }
 
     @Override
     public ActivityData getObject() {
-        return translet.getActivityData();
+        return activity.getActivityData();
     }
 
 }

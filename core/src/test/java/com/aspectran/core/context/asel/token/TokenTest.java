@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.ognl;
+package com.aspectran.core.context.asel.token;
 
-import ognl.MemberAccess;
-import ognl.OgnlContext;
+import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Member;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OgnlMemberAccess implements MemberAccess {
+/**
+ * <p>Created: 20/11/2018</p>
+ */
+class TokenTest {
 
-    @Override
-    public Object setup(OgnlContext context, Object target, Member member, String propertyName) {
-        return null;
-    }
-
-    @Override
-    public void restore(OgnlContext context, Object target, Member member, String propertyName, Object state) {
-    }
-
-    @Override
-    public boolean isAccessible(OgnlContext context, Object target, Member member, String propertyName) {
-        return false;
+    @Test
+    void hasTokenTest() {
+        String text = "a${#{x}z";
+        assertTrue(Token.hasToken(text));
     }
 
 }

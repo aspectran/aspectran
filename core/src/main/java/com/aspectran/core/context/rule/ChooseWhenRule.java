@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
-import com.aspectran.core.context.expr.BooleanExpression;
+import com.aspectran.core.context.asel.value.BooleanExpression;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.utils.StringUtils;
@@ -34,19 +34,19 @@ import com.aspectran.utils.StringUtils;
  */
 public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
 
-    private BooleanExpression booleanExpression;
+    private BooleanExpression booleanEvaluation;
 
     private ActionList actionList;
 
     private Response response;
 
     public BooleanExpression getBooleanExpression() {
-        return booleanExpression;
+        return booleanEvaluation;
     }
 
     public String getExpression() {
-        if (booleanExpression != null) {
-            return booleanExpression.getExpression();
+        if (booleanEvaluation != null) {
+            return booleanEvaluation.getExpressionString();
         } else {
             return null;
         }
@@ -55,9 +55,9 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     public void setExpression(String expression) throws IllegalRuleException {
         expression = (StringUtils.hasText(expression) ? expression.trim() : null);
         if (expression != null) {
-            this.booleanExpression = new BooleanExpression(expression);
+            this.booleanEvaluation = new BooleanExpression(expression);
         } else {
-            this.booleanExpression = null;
+            this.booleanEvaluation = null;
         }
     }
 

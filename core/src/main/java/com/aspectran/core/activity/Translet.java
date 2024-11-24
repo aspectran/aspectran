@@ -24,7 +24,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;

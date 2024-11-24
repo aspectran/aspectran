@@ -16,19 +16,16 @@
 package com.aspectran.core.component.template;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityData;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.utils.Assert;
 
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The Class DefaultTemplateRenderer.
@@ -53,78 +50,41 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
 
     @Override
     public String render(String templateId) {
-        StringWriter writer = new StringWriter();
-        render(templateId, null, null, writer);
-        return writer.toString();
-    }
-
-    @Override
-    public String render(String templateId, Map<String, Object> model) {
-        StringWriter writer = new StringWriter();
-        render(templateId, null, model, writer);
-        return writer.toString();
-    }
-
-    @Override
-    public String render(TemplateRule templateRule, Map<String, Object> model) {
-        StringWriter writer = new StringWriter();
-        render(templateRule, null, model, writer);
-        return writer.toString();
+        try {
+            InstantActivity activity = new InstantActivity(context);
+            return activity.perform(() -> {
+                render(templateId, activity);
+                return activity.getResponseAdapter().getWriter().toString();
+            });
+        } catch (Exception e) {
+            throw new InstantActivityException(e);
+        }
     }
 
     @Override
     public void render(String templateId, Activity activity) {
-        render(templateId, activity, null, null);
-    }
-
-    @Override
-    public void render(TemplateRule templateRule, Activity activity) {
-        render(templateRule, activity, null, null);
-    }
-
-    @Override
-    public void render(String templateId, Activity activity, Map<String, Object> model) {
-        render(templateId, activity, model, null);
-    }
-
-    @Override
-    public void render(String templateId, Activity activity, Writer writer) {
-        render(templateId, activity, null, writer);
-    }
-
-    @Override
-    public void render(TemplateRule templateRule, Activity activity, Map<String, Object> model) {
-        render(templateRule, activity, model, null);
-    }
-
-    @Override
-    public void render(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
-        if (templateId == null) {
-            throw new IllegalArgumentException("templateId must not be null");
-        }
+        Assert.notNull(templateId, "templateId must not be null");
 
         TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
         if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
 
-        render(templateRule, activity, model, writer);
+        render(templateRule, activity);
     }
 
     @Override
-    public void render(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
+    public void render(TemplateRule templateRule, Activity activity) {
         try {
-            if (activity == null) {
-                activity = context.getAvailableActivity();
-            }
+            Assert.notNull(templateRule, "templateRule must not be null");
+            Assert.notNull(activity, "activity must not be null");
 
+            Writer writer = null;
+            if (activity.getResponseAdapter() != null) {
+                writer = activity.getResponseAdapter().getWriter();
+            }
             if (writer == null) {
-                if (activity.getResponseAdapter() != null) {
-                    writer = activity.getResponseAdapter().getWriter();
-                }
-                if (writer == null) {
-                    throw new IllegalStateException("No such writer to transfer the output string");
-                }
+                throw new IllegalStateException("No such writer to transfer the output string");
             }
 
             if (templateRule.isExternalEngine()) {
@@ -139,18 +99,9 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                             templateRule.getEngine() + "'");
                 }
 
-                if (model == null) {
-                    if (activity.getTranslet() != null) {
-                        model = activity.getTranslet().getActivityData();
-                    } else {
-                        model = new ActivityData(activity);
-                    }
-                }
-
                 if (templateRule.isOutsourcing()) {
                     String templateName = templateRule.getName();
-                    Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
-                    engine.process(templateName, model, writer, locale);
+                    engine.process(templateName, activity);
                 } else {
                     String templateSource = templateRule.getTemplateSource(context);
                     if (templateSource != null) {
@@ -158,15 +109,13 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
                         if (contentType == null && activity.getResponseAdapter() != null) {
                             contentType = activity.getResponseAdapter().getContentType();
                         }
-                        Locale locale = (activity.getRequestAdapter() != null ? activity.getRequestAdapter().getLocale() : null);
-                        engine.process(templateSource, contentType, model, writer, locale);
+                        engine.process(templateSource, contentType, activity);
                     }
                 }
             } else {
                 Token[] templateTokens = templateRule.getTemplateTokens(context);
                 if (templateTokens != null) {
-                    TokenEvaluator evaluator = new TokenEvaluation(activity);
-                    evaluator.evaluate(templateTokens, writer);
+                    activity.getTokenEvaluator().evaluate(templateTokens, writer);
                 } else {
                     writer.write(templateRule.getTemplateSource(context));
                 }

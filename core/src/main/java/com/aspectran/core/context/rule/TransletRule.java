@@ -21,7 +21,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;

@@ -16,7 +16,7 @@ public class AspectranStandardDialect extends StandardDialect {
     }
 
     @Override
-    public void setVariableExpressionEvaluator(final IStandardVariableExpressionEvaluator variableExpressionEvaluator) {
+    public void setVariableExpressionEvaluator(IStandardVariableExpressionEvaluator variableExpressionEvaluator) {
         throw new UnsupportedOperationException(
             "Variable Expression Evaluator cannot be modified in AspectranStandardDialect");
     }

@@ -52,7 +52,7 @@ public class ActivityData extends HashMap<String, Object> {
      * Instantiates a new ActivityData.
      * @param activity the activity
      */
-    public ActivityData(Activity activity) {
+    ActivityData(Activity activity) {
         super();
         this.activity = activity;
         refresh();

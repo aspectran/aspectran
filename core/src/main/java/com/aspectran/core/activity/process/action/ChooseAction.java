@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.expr.BooleanExpression;
+import com.aspectran.core.context.asel.value.BooleanExpression;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -48,8 +48,8 @@ public class ChooseAction implements Executable {
     public Object execute(Activity activity) throws Exception {
         if (chooseWhenRules != null) {
             for (ChooseWhenRule chooseWhenRule : chooseWhenRules) {
-                BooleanExpression booleanExpression = chooseWhenRule.getBooleanExpression();
-                if (booleanExpression == null || booleanExpression.evaluate(activity)) {
+                BooleanExpression booleanEvaluation = chooseWhenRule.getBooleanExpression();
+                if (booleanEvaluation == null || booleanEvaluation.evaluate(activity)) {
                     return chooseWhenRule;
                 }
             }

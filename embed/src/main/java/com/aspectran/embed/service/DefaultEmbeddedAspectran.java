@@ -177,8 +177,10 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             activity.setSessionAdapter(newSessionAdapter());
             activity.setAttributeMap(attributeMap);
             activity.setParameterMap(parameterMap);
-            Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
-            return result.toString();
+            return activity.perform(() -> {
+                activity.getTemplateRenderer().render(templateId, activity);
+                return activity.getResponseAdapter().getWriter().toString();
+            });
         } catch (Exception e) {
             throw new CoreServiceException("Error while rendering template: " + templateId, e);
         }

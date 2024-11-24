@@ -15,9 +15,11 @@
  */
 package com.aspectran.freemarker;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -47,44 +49,62 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
-            throws TemplateEngineProcessException {
+    public void process(String templateName, Activity activity) throws TemplateEngineProcessException {
         checkHasConfiguration();
         try {
-            process(configuration, templateName, model, writer, locale);
-            writer.flush();
+            process(configuration, templateName, activity);
+            activity.getResponseAdapter().getWriter().flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
     @Override
-    public void process(String templateSource, String contentType,
-                        Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException {
         checkHasConfiguration();
         try {
-            String templateName = "template@" + templateSource.hashCode();
+            Map<String, Object> variables = activity.getActivityData();
+            Writer writer = activity.getResponseAdapter().getWriter();
+
+            String templateName = createTemplateName(templateSource);
             Reader reader = new StringReader(templateSource);
             Template template = new Template(templateName, reader, configuration);
-            template.process(model, writer);
+            template.process(variables, writer);
+
             writer.flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
-    public static void process(Configuration configuration, String templateName,
-                               Map<String, Object> model, Writer writer, Locale locale)
+    public static void process(Configuration configuration, String templateName, Activity activity)
             throws IOException, TemplateException {
         Assert.notNull(configuration, "configuration must not be null");
+        Assert.notNull(templateName, "templateName must not be null");
+        Assert.notNull(activity, "activity must not be null");
+
+        Locale locale = activity.getRequestAdapter().getLocale();
+        Map<String, Object> variables = activity.getActivityData();
+        Writer writer = activity.getResponseAdapter().getWriter();
+
         Template template = configuration.getTemplate(templateName, locale);
-        template.process(model, writer);
+        template.process(variables, writer);
     }
 
     private void checkHasConfiguration() {
         if (configuration == null) {
             throw new IllegalStateException("Configuration not specified");
+        }
+    }
+
+    @NonNull
+    private String createTemplateName(@NonNull String templateSource) {
+        int hashCode = templateSource.hashCode();
+        if (hashCode >= 0) {
+            return Long.toString(hashCode, 32);
+        } else {
+            return Long.toString(hashCode & 0x7fffffff, 32);
         }
     }
 

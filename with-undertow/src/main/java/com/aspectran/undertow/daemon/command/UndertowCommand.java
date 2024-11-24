@@ -18,8 +18,7 @@ package com.aspectran.undertow.daemon.command;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
@@ -55,7 +54,7 @@ public class UndertowCommand extends AbstractCommand {
             String serverName = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(getDaemonService().getDefaultActivity());
+                ItemEvaluator evaluator = getDaemonService().getDefaultActivity().getItemEvaluator();
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");

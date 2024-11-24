@@ -19,8 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -52,17 +50,13 @@ public class IncludeAction implements Executable {
             InstantActivity instantActivity = new InstantActivity(activity);
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
             ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
-            if ((attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) ||
-                    (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(activity);
-                if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                    Map<String, Object> attributeMap = evaluator.evaluate(attributeItemRuleMap);
-                    instantActivity.setAttributeMap(attributeMap);
-                }
-                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                    ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
-                    instantActivity.setParameterMap(parameterMap);
-                }
+            if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+                Map<String, Object> attributeMap = activity.getItemEvaluator().evaluate(attributeItemRuleMap);
+                instantActivity.setAttributeMap(attributeMap);
+            }
+            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+                ParameterMap parameterMap = activity.getItemEvaluator().evaluateAsParameterMap(parameterItemRuleMap);
+                instantActivity.setParameterMap(parameterMap);
             }
             instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
             instantActivity.perform();

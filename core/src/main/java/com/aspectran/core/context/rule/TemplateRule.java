@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;

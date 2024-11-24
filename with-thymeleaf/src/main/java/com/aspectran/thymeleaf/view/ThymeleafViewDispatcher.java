@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.thymeleaf.ThymeleafTemplateEngine;
 import com.aspectran.utils.Assert;
@@ -27,8 +26,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.thymeleaf.ITemplateEngine;
-
-import java.util.Locale;
 
 /**
  * The Class PebbleViewDispatcher.
@@ -80,9 +77,7 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
                 logger.debug("Dispatching to Pebble template [" + viewName + "]");
             }
 
-            TemplateModel model = new TemplateModel(activity);
-            Locale locale = activity.getRequestAdapter().getLocale();
-            ThymeleafTemplateEngine.process(templateEngine, viewName, model, responseAdapter.getWriter(), locale);
+            ThymeleafTemplateEngine.process(templateEngine, viewName, activity);
         } catch (Exception e) {
             activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +

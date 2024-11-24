@@ -19,8 +19,13 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.asel.item.ItemEvaluation;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
+import com.aspectran.core.context.asel.token.TokenEvaluation;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -43,6 +48,10 @@ public abstract class AbstractActivity implements Activity {
     private ResponseAdapter responseAdapter;
 
     private Throwable raisedException;
+
+    private TokenEvaluator tokenEvaluator;
+
+    private ItemEvaluator itemEvaluator;
 
     /**
      * Instantiates a new abstract activity.
@@ -74,6 +83,27 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public Environment getEnvironment() {
         return context.getEnvironment();
+    }
+
+    @Override
+    public TemplateRenderer getTemplateRenderer() {
+        return context.getTemplateRenderer();
+    }
+
+    @Override
+    public TokenEvaluator getTokenEvaluator() {
+        if (tokenEvaluator == null) {
+            tokenEvaluator = new TokenEvaluation(this);
+        }
+        return tokenEvaluator;
+    }
+
+    @Override
+    public ItemEvaluator getItemEvaluator() {
+        if (itemEvaluator == null) {
+            itemEvaluator = new ItemEvaluation(getTokenEvaluator());
+        }
+        return itemEvaluator;
     }
 
     /**

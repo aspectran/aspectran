@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.component.template.engine;
 
+import com.aspectran.core.activity.Activity;
+
 import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The Interface TemplateEngine.
@@ -29,23 +29,20 @@ public interface TemplateEngine {
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
      * @param templateName the template name
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
-     * @param locale the locale
+     * @param activity the activity
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
+    void process(String templateName, Activity activity)
             throws TemplateEngineProcessException;
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
      * @param templateSource the template source
      * @param contentType the content type
-     * @param model the holder of the variables visible from the template (name-value pairs)
-     * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
+     * @param activity the activity
      * @throws TemplateEngineProcessException if an exception occurs during template processing
      */
-    void process(String templateSource, String contentType, Map<String, Object> model, Writer writer, Locale locale)
+    void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException;
 
 }

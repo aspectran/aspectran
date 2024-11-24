@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel.item;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.ItemRule;

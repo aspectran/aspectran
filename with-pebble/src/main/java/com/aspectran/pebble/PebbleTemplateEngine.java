@@ -15,6 +15,7 @@
  */
 package com.aspectran.pebble;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 import com.aspectran.utils.Assert;
@@ -45,42 +46,53 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
-            throws TemplateEngineProcessException {
+    public void process(String templateName, Activity activity) throws TemplateEngineProcessException {
         checkHasEngine();
         try {
-            process(pebbleEngine, templateName, model, writer, locale);
-            writer.flush();
+            process(pebbleEngine, templateName, activity);
+            activity.getResponseAdapter().getWriter().flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
     @Override
-    public void process(String templateSource, String contentType,
-                        Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException {
         checkHasEngine();
         try {
-            processLiteral(pebbleEngine, templateSource, model, writer, locale);
-            writer.flush();
+            processLiteral(pebbleEngine, templateSource, activity);
+            activity.getResponseAdapter().getWriter().flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
-    public static void process(PebbleEngine pebbleEngine, String templateName,
-                               Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+    public static void process(PebbleEngine pebbleEngine, String templateName, Activity activity) throws IOException {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
+        Assert.notNull(templateName, "templateName must not be null");
+        Assert.notNull(activity, "activity must not be null");
+
+        Locale locale = activity.getRequestAdapter().getLocale();
+        Map<String, Object> variables = activity.getActivityData();
+        Writer writer = activity.getResponseAdapter().getWriter();
+
         PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
-        compiledTemplate.evaluate(writer, model, locale);
+        compiledTemplate.evaluate(writer, variables, locale);
     }
 
-    private static void processLiteral(@NonNull PebbleEngine pebbleEngine, String templateSource,
-                               Map<String, Object> model, Writer writer, Locale locale) throws IOException {
+    private static void processLiteral(PebbleEngine pebbleEngine, String templateSource, Activity activity)
+            throws IOException {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
+        Assert.notNull(templateSource, "templateName must not be null");
+        Assert.notNull(activity, "activity must not be null");
+
+        Locale locale = activity.getRequestAdapter().getLocale();
+        Map<String, Object> variables = activity.getActivityData();
+        Writer writer = activity.getResponseAdapter().getWriter();
+
         PebbleTemplate compiledTemplate = pebbleEngine.getLiteralTemplate(templateSource);
-        compiledTemplate.evaluate(writer, model, locale);
+        compiledTemplate.evaluate(writer, variables, locale);
     }
 
     private void checkHasEngine() {

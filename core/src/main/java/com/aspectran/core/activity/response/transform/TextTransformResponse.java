@@ -29,7 +29,7 @@ import java.io.Writer;
 
 /**
  * Text Transform Response converts the response data to plain text and outputs it.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TextTransformResponse extends TransformResponse {
@@ -74,9 +74,9 @@ public class TextTransformResponse extends TransformResponse {
 
         Writer writer = responseAdapter.getWriter();
         if (templateId != null) {
-            activity.getActivityContext().getTemplateRenderer().render(templateId, activity);
+            activity.getTemplateRenderer().render(templateId, activity);
         } else if (templateRule != null) {
-            activity.getActivityContext().getTemplateRenderer().render(templateRule, activity);
+            activity.getTemplateRenderer().render(templateRule, activity);
         } else {
             ProcessResult processResult = activity.getProcessResult();
             if (processResult != null) {

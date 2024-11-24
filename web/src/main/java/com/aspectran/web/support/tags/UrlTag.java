@@ -149,7 +149,6 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
     @Nullable
     private UrlType type;
 
-    @Nullable
     private String value;
 
     @Nullable

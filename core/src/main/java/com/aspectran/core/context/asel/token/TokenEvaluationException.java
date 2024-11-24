@@ -13,38 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
-
-import com.aspectran.core.context.rule.ItemRule;
+package com.aspectran.core.context.asel.token;
 
 import java.io.Serial;
 
 /**
- * The Class ItemEvaluationException.
+ * The Class TokenEvaluationException.
  */
-public class ItemEvaluationException extends RuntimeException {
+public class TokenEvaluationException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = -139399791062499758L;
+    private static final long serialVersionUID = 2303202652519466514L;
 
-    private final ItemRule itemRule;
+    private final Token token;
 
     /**
-     * Instantiates a new item evaluation exception.
-     * @param itemRule the item rule
+     * Instantiates a new token evaluation exception.
+     * @param token the token
      * @param cause the root cause
      */
-    public ItemEvaluationException(ItemRule itemRule, Throwable cause) {
-        super("Failed to evaluate item " + itemRule, cause);
-        this.itemRule = itemRule;
+    public TokenEvaluationException(Token token, Throwable cause) {
+        super("Failed to evaluate token " + token, cause);
+        this.token = token;
     }
 
     /**
-     * Gets the item rule which is failed to evaluate expression.
-     * @return the item rule
+     * Gets the token which is failed to evaluate expression.
+     * @return the token
      */
-    public ItemRule getItemRule() {
-        return this.itemRule;
+    public Token getToken() {
+        return this.token;
     }
 
 }

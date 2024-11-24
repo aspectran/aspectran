@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.asel.token;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
-import com.aspectran.core.component.template.TemplateRenderer;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BeanUtils;
@@ -34,7 +33,6 @@ import org.jasypt.exceptions.EncryptionInitializationException;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -209,34 +207,6 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Returns the value of an activity's request parameter as a {@code String},
-     * or {@code defaultValue} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @param defaultValue the default value
-     * @return a {@code String} representing the
-     *      single value of the parameter
-     */
-    private String getParameter(String name, String defaultValue) {
-        String value = getParameter(name);
-        return (value != null ? value : defaultValue);
-    }
-
-    /**
-     * Returns the value of an activity's request parameter as a {@code String},
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code String} representing the
-     *      single value of the parameter
-     */
-    protected String getParameter(String name) {
-        if (activity.getRequestAdapter() != null) {
-            return activity.getRequestAdapter().getParameter(name);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Returns an array of {@code String} objects containing all
      * of the values the given activity's request parameter has,
      * or {@code null} if the parameter does not exist.
@@ -247,37 +217,6 @@ public class TokenEvaluation implements TokenEvaluator {
     protected String[] getParameterValues(String name) {
         if (activity.getRequestAdapter() != null) {
             return activity.getRequestAdapter().getParameterValues(name);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns a {@code FileParameter} object as a given activity's request parameter name,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code FileParameter} representing the
-     *      single value of the parameter
-     */
-    protected FileParameter getFileParameter(String name) {
-        if (activity.getRequestAdapter() != null) {
-            return activity.getRequestAdapter().getFileParameter(name);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns an array of {@code FileParameter} objects containing all
-     * of the values the given activity's request parameter has,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return an array of {@code FileParameter} objects
-     *      containing the parameter's values
-     */
-    protected FileParameter[] getFileParameterValues(String name) {
-        if (activity.getRequestAdapter() != null) {
-            return activity.getRequestAdapter().getFileParameterValues(name);
         } else {
             return null;
         }
@@ -429,14 +368,13 @@ public class TokenEvaluation implements TokenEvaluator {
      * @param token the token
      * @return the generated output as {@code String}
      */
-    protected String getTemplate(@NonNull Token token) {
-        TemplateRenderer templateRenderer = activity.getActivityContext().getTemplateRenderer();
-
-        StringWriter writer = new StringWriter();
-        templateRenderer.render(token.getName(), activity, writer);
-
-        String result = writer.toString();
-        return (result != null ? result : token.getDefaultValue());
+    protected String getTemplate(@NonNull Token token) throws ActivityPerformException {
+        InstantActivity instantActivity = new InstantActivity(activity, false);
+        return instantActivity.perform(() -> {
+            activity.getTemplateRenderer().render(token.getName(), instantActivity);
+            String result = instantActivity.getResponseAdapter().getWriter().toString();
+            return (result != null ? result : token.getDefaultValue());
+        });
     }
 
 }

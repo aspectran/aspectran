@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;

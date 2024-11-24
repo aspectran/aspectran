@@ -30,9 +30,7 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
@@ -76,6 +74,8 @@ public class CoreActivity extends AdviceActivity {
     private final String contextPath;
 
     private CoreTranslet translet;
+
+    private ActivityData activityData;
 
     private Response reservedResponse;
 
@@ -585,6 +585,16 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    @Override
+    public ActivityData getActivityData() {
+        if (activityData == null) {
+            activityData = new ActivityData(this);
+        } else {
+            activityData.refresh();
+        }
+        return activityData;
+    }
+
     private TransletRule findTransletRule(String requestName, MethodType requestMethod) {
         return getActivityContext().getTransletRuleRegistry().getTransletRule(requestName, requestMethod);
     }
@@ -636,15 +646,11 @@ public class CoreActivity extends AdviceActivity {
     protected void parseDeclaredParameters() throws MissingMandatoryParametersException {
         ItemRuleMap itemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
                 if (itemRule.isEvaluable()) {
-                    if (evaluator == null) {
-                        evaluator = new ItemEvaluation(this);
-                    }
                     String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
-                    String[] newValues = evaluator.evaluateAsStringArray(itemRule);
+                    String[] newValues = getItemEvaluator().evaluateAsStringArray(itemRule);
                     if (oldValues != newValues) {
                         getRequestAdapter().setParameter(itemRule.getName(), newValues);
                     }
@@ -672,15 +678,11 @@ public class CoreActivity extends AdviceActivity {
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
         ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
                 if (itemRule.isEvaluable()) {
-                    if (evaluator == null) {
-                        evaluator = new ItemEvaluation(this);
-                    }
                     Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());
-                    Object newValue = evaluator.evaluate(itemRule);
+                    Object newValue = getItemEvaluator().evaluate(itemRule);
                     if (oldValue != newValue) {
                         getRequestAdapter().setAttribute(itemRule.getName(), newValue);
                     }

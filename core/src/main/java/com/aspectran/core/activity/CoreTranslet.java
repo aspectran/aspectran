@@ -29,10 +29,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -59,10 +57,6 @@ public class CoreTranslet extends AbstractTranslet {
     private final CoreActivity activity;
 
     private ProcessResult processResult;
-
-    private ActivityData activityData;
-
-    private TokenEvaluator evaluator;
 
     /**
      * Instantiates a new CoreTranslet.
@@ -168,12 +162,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public ActivityData getActivityData() {
-        if (activityData == null) {
-            activityData = new ActivityData(activity);
-        } else {
-            activityData.refresh();
-        }
-        return activityData;
+        return activity.getActivityData();
     }
 
     @Override
@@ -456,10 +445,7 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     @SuppressWarnings("unchecked")
     public <V> V evaluate(Token[] tokens) {
-        if (evaluator == null) {
-            evaluator = new TokenEvaluation(activity);
-        }
-        return (V)evaluator.evaluate(tokens);
+        return (V)activity.getTokenEvaluator().evaluate(tokens);
     }
 
     //---------------------------------------------------------------------

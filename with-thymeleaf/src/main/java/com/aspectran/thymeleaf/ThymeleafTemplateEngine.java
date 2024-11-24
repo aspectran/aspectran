@@ -15,21 +15,20 @@
  */
 package com.aspectran.thymeleaf;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateSpec;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.context.ExpressionContext;
-import org.thymeleaf.context.IContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.standard.expression.FragmentExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -55,37 +54,48 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale)
-            throws TemplateEngineProcessException {
+    public void process(String templateName, Activity activity) throws TemplateEngineProcessException {
         checkHasEngine();
         try {
-            process(templateEngine, templateName, model, writer, locale);
-            writer.flush();
+            process(templateEngine, templateName, activity);
+            activity.getResponseAdapter().getWriter().flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
     @Override
-    public void process(String templateSource, String contentType,
-                        Map<String, Object> model, Writer writer, Locale locale)
+    public void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException {
         checkHasEngine();
         try {
-            IContext context = new Context(locale, model);
+            Locale locale = activity.getRequestAdapter().getLocale();
+            Map<String, Object> variables = activity.getActivityData();
+            Writer writer = activity.getResponseAdapter().getWriter();
+
+            IEngineConfiguration configuration = templateEngine.getConfiguration();
+            ExpressionContext context = new ExpressionContext(configuration, locale, variables);
             TemplateSpec templateSpec = new TemplateSpec(templateSource, contentType);
             templateEngine.process(templateSpec, context, writer);
+
             writer.flush();
         } catch (Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
-    public static void process(ITemplateEngine templateEngine, @NonNull String templateName,
-                               Map<String, Object> model, Writer writer, Locale locale) {
+    public static void process(ITemplateEngine templateEngine, String templateName, Activity activity)
+            throws IOException {
         Assert.notNull(templateEngine, "templateEngine must not be null");
+        Assert.notNull(templateName, "templateName must not be null");
+        Assert.notNull(activity, "activity must not be null");
+
+        Locale locale = activity.getRequestAdapter().getLocale();
+        Map<String, Object> variables = activity.getActivityData();
+        Writer writer = activity.getResponseAdapter().getWriter();
+
         IEngineConfiguration configuration = templateEngine.getConfiguration();
-        ExpressionContext context = new ExpressionContext(configuration, locale, model);
+        ExpressionContext context = new ExpressionContext(configuration, locale, variables);
 
         String templateNameToUse;
         Set<String> markupSelectors;

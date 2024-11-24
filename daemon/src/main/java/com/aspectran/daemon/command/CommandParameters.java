@@ -17,8 +17,7 @@ package com.aspectran.daemon.command;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -150,7 +149,7 @@ public class CommandParameters extends AbstractParameters {
         }
         ItemRuleList itemRuleList = getArgumentItemRuleList();
         if (itemRuleList != null) {
-            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            ItemEvaluator evaluator = activity.getItemEvaluator();
             Object[] args = new Object[itemRuleList.size()];
             for (int i = 0; i < itemRuleList.size(); i++) {
                 args[i] = evaluator.evaluate(itemRuleList.get(i));
@@ -193,7 +192,7 @@ public class CommandParameters extends AbstractParameters {
         }
         ItemRuleMap parameterItemRuleMap = getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            ItemEvaluator evaluator = activity.getItemEvaluator();
             return evaluator.evaluateAsParameterMap(parameterItemRuleMap);
         } else {
             return null;
@@ -216,7 +215,7 @@ public class CommandParameters extends AbstractParameters {
         }
         ItemRuleMap attributeItemRuleMap = getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            ItemEvaluator evaluator = activity.getItemEvaluator();
             return evaluator.evaluate(attributeItemRuleMap);
         } else {
             return null;
