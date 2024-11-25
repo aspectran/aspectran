@@ -36,6 +36,8 @@ import java.util.Map;
  */
 public class InstantActivity extends CoreActivity {
 
+    private final Mode mode;
+
     private Map<String, Object> attributeMap;
 
     private ParameterMap parameterMap;
@@ -46,6 +48,7 @@ public class InstantActivity extends CoreActivity {
      */
     public InstantActivity(ActivityContext context) {
         super(context);
+        mode = Mode.DEFAULT;
     }
 
     public InstantActivity(@NonNull Activity activity) {
@@ -54,11 +57,17 @@ public class InstantActivity extends CoreActivity {
 
     public InstantActivity(@NonNull Activity activity, boolean inheritResponseAdapter) {
         super(activity.getActivityContext());
+        this.mode = activity.getMode();
         setSessionAdapter(activity.getSessionAdapter());
         setRequestAdapter(activity.getRequestAdapter());
         if (inheritResponseAdapter) {
             setResponseAdapter(activity.getResponseAdapter());
         }
+    }
+
+    @Override
+    public Mode getMode() {
+        return mode;
     }
 
     @Override

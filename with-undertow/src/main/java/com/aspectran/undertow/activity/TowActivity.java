@@ -64,6 +64,11 @@ public class TowActivity extends CoreActivity {
         this.exchange = exchange;
     }
 
+    @Override
+    public Mode getMode() {
+        return Mode.WEB;
+    }
+
     public HttpServerExchange getExchange() {
         return exchange;
     }

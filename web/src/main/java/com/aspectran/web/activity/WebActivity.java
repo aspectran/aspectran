@@ -79,6 +79,11 @@ public class WebActivity extends CoreActivity {
     }
 
     @Override
+    public Mode getMode() {
+        return Mode.WEB;
+    }
+
+    @Override
     public String getReverseContextPath() {
         return reverseContextPath;
     }

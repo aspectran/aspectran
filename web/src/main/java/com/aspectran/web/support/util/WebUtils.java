@@ -15,8 +15,12 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.asel.item.ItemEvaluator;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -28,7 +32,11 @@ import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Miscellaneous utilities for web applications.
@@ -42,6 +50,12 @@ public abstract class WebUtils {
      * resolution mechanism.</p>
      */
     public static final String ERROR_EXCEPTION_ATTRIBUTE = "jakarta.servlet.error.exception";
+
+    private static final char QUESTION_CHAR = '?';
+
+    private static final char AMPERSAND_CHAR = '&';
+
+    private static final char EQUAL_CHAR = '=';
 
     /**
      * Retrieve the first cookie with the given name. Note that multiple
@@ -123,6 +137,63 @@ public abstract class WebUtils {
         } else {
             return defaultContextPath;
         }
+    }
+
+    @NonNull
+    public static String createRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
+        if (redirectRule == null) {
+            throw new IllegalArgumentException("redirectRule must not be null");
+        }
+        String path = redirectRule.getPath(activity);
+        int questionPos = -1;
+        StringBuilder sb = new StringBuilder(256);
+        if (path != null) {
+            if (path.startsWith("/")) {
+                String contextPath = activity.getReverseContextPath();
+                if (StringUtils.hasLength(contextPath)) {
+                    sb.append(contextPath);
+                }
+            }
+            sb.append(path);
+            questionPos = path.indexOf(QUESTION_CHAR);
+        }
+        ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+            ItemEvaluator evaluator = activity.getItemEvaluator();
+            Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
+            if (valueMap != null && !valueMap.isEmpty()) {
+                if (questionPos == -1) {
+                    sb.append(QUESTION_CHAR);
+                }
+                String name = null;
+                Object value;
+                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
+                    if (name != null) {
+                        sb.append(AMPERSAND_CHAR);
+                    }
+                    name = entry.getKey();
+                    value = entry.getValue();
+                    String stringValue = (value != null ? value.toString() : null);
+                    if (redirectRule.isExcludeEmptyParameters() &&
+                        stringValue != null && !stringValue.isEmpty()) {
+                        sb.append(name).append(EQUAL_CHAR);
+                    } else if (redirectRule.isExcludeNullParameters() && stringValue != null) {
+                        sb.append(name).append(EQUAL_CHAR);
+                    } else {
+                        sb.append(name).append(EQUAL_CHAR);
+                    }
+                    if (stringValue != null) {
+                        String encoding = redirectRule.getEncoding();
+                        if (encoding == null) {
+                            encoding = StandardCharsets.ISO_8859_1.name();
+                        }
+                        stringValue = URLEncoder.encode(stringValue, encoding);
+                        sb.append(stringValue);
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 
 }

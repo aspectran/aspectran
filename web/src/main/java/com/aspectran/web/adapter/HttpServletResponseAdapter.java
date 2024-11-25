@@ -21,22 +21,16 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.asel.item.ItemEvaluator;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Adapt {@link HttpServletResponse} to Core {@link ResponseAdapter}.
@@ -46,12 +40,6 @@ import java.util.Map;
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     public static final String PROXY_PROTOCOL_AWARE_SETTING_NAME = "proxyProtocolAware";
-
-    private static final char QUESTION_CHAR = '?';
-
-    private static final char AMPERSAND_CHAR = '&';
-
-    private static final char EQUAL_CHAR = '=';
 
     private final Activity activity;
 
@@ -147,8 +135,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String redirect(RedirectRule redirectRule) throws IOException {
-        String path = makeRedirectPath(redirectRule, activity);
-        redirect(path);
+        String path = WebUtils.createRedirectPath(redirectRule, activity);
+        String url = getHttpServletResponse().encodeRedirectURL(path);
+        redirect(url);
         return path;
     }
 
@@ -160,6 +149,11 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void setStatus(int status) {
         getHttpServletResponse().setStatus(status);
+    }
+
+    @Override
+    public String transformPath(String path) {
+        return getHttpServletResponse().encodeURL(path);
     }
 
     private HttpServletResponse getHttpServletResponse() {
@@ -181,62 +175,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                 }
             }
         }
-    }
-
-    @NonNull
-    public static String makeRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
-        if (redirectRule == null) {
-            throw new IllegalArgumentException("redirectRule must not be null");
-        }
-        if (redirectRule.getEncoding() == null) {
-            redirectRule.setEncoding(StandardCharsets.ISO_8859_1.name());
-        }
-        String path = redirectRule.getPath(activity);
-        int questionPos = -1;
-        StringBuilder sb = new StringBuilder(256);
-        if (path != null) {
-            if (path.startsWith("/")) {
-                String contextPath = activity.getReverseContextPath();
-                if (StringUtils.hasLength(contextPath)) {
-                    sb.append(contextPath);
-                }
-            }
-            sb.append(path);
-            questionPos = path.indexOf(QUESTION_CHAR);
-        }
-        ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
-        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = activity.getItemEvaluator();
-            Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
-            if (valueMap != null && !valueMap.isEmpty()) {
-                if (questionPos == -1) {
-                    sb.append(QUESTION_CHAR);
-                }
-                String name = null;
-                Object value;
-                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    if (name != null) {
-                        sb.append(AMPERSAND_CHAR);
-                    }
-                    name = entry.getKey();
-                    value = entry.getValue();
-                    String stringValue = (value != null ? value.toString() : null);
-                    if (redirectRule.isExcludeEmptyParameters() &&
-                        stringValue != null && !stringValue.isEmpty()) {
-                        sb.append(name).append(EQUAL_CHAR);
-                    } else if (redirectRule.isExcludeNullParameters() && stringValue != null) {
-                        sb.append(name).append(EQUAL_CHAR);
-                    } else {
-                        sb.append(name).append(EQUAL_CHAR);
-                    }
-                    if (stringValue != null) {
-                        stringValue = URLEncoder.encode(stringValue, redirectRule.getEncoding());
-                        sb.append(stringValue);
-                    }
-                }
-            }
-        }
-        return sb.toString();
     }
 
 }

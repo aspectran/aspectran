@@ -16,6 +16,7 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Enumeration;
 
@@ -96,6 +97,7 @@ public interface SessionAdapter {
      *         of all the objects bound to this session
      * @since 1.5.0
      */
+    @Nullable
     Enumeration<String> getAttributeNames();
 
     /**

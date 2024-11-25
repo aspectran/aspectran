@@ -57,6 +57,11 @@ public class DaemonActivity extends CoreActivity {
         this.daemonService = daemonService;
     }
 
+    @Override
+    public Mode getMode() {
+        return Mode.DAEMON;
+    }
+
     public String getRequestName() {
         return requestName;
     }

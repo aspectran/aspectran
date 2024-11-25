@@ -20,6 +20,8 @@ import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.security.Principal;
+
 /**
  * The Class AbstractRequestAdapter.
   *
@@ -59,6 +61,11 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
             requestScope = new RequestScope();
         }
         return requestScope;
+    }
+
+    @Override
+    public Principal getPrincipal() {
+        return null;
     }
 
 }

@@ -164,4 +164,6 @@ public interface ResponseAdapter {
      */
     void setStatus(int status);
 
+    String transformPath(String path);
+
 }

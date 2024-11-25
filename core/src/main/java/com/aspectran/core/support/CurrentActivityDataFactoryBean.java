@@ -17,7 +17,6 @@ package com.aspectran.core.support;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;

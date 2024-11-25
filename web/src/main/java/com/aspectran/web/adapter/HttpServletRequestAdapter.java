@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -79,6 +80,11 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     @Override
     public InputStream getInputStream() throws IOException {
         return getHttpServletRequest().getInputStream();
+    }
+
+    @Override
+    public Principal getPrincipal() {
+        return getHttpServletRequest().getUserPrincipal();
     }
 
     private HttpServletRequest getHttpServletRequest() {

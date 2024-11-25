@@ -77,6 +77,11 @@ public class ShellActivity extends CoreActivity {
         this.console = shellService.getConsole();
     }
 
+    @Override
+    public Mode getMode() {
+        return Mode.SHELL;
+    }
+
     public boolean isProcedural() {
         return procedural;
     }

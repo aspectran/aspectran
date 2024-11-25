@@ -20,10 +20,10 @@ import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
+import com.aspectran.web.support.util.WebUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.CanonicalPathUtils;
 import io.undertow.util.HeaderMap;
@@ -227,7 +227,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String redirect(RedirectRule redirectRule) throws IOException {
-        String path = HttpServletResponseAdapter.makeRedirectPath(redirectRule, activity);
+        String path = WebUtils.createRedirectPath(redirectRule, activity);
         redirect(path);
         return path;
     }
@@ -240,6 +240,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void setStatus(int status) {
         getHttpServerExchange().setStatusCode(status);
+    }
+
+    @Override
+    public String transformPath(String path) {
+        return path;
     }
 
     private void ifSetChunked() {

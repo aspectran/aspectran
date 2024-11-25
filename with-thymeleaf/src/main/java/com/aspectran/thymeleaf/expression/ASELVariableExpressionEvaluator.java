@@ -1,34 +1,7 @@
 package com.aspectran.thymeleaf.expression;
 
-import com.aspectran.core.context.asel.ognl.OgnlSupport;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import org.thymeleaf.IEngineConfiguration;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.IContext;
-import org.thymeleaf.context.IExpressionContext;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateProcessingException;
-//import org.thymeleaf.standard.expression.ExpressionCache;
-//import org.thymeleaf.standard.expression.IStandardConversionService;
-//import org.thymeleaf.standard.expression.IStandardVariableExpression;
-//import org.thymeleaf.standard.expression.IStandardVariableExpressionEvaluator;
-//import org.thymeleaf.standard.expression.OGNLContextPropertyAccessor;
-//import org.thymeleaf.standard.expression.OGNLExpressionObjectsWrapper;
-//import org.thymeleaf.standard.expression.OGNLShortcutExpression;
-import org.thymeleaf.standard.expression.SelectionVariableExpression;
-import org.thymeleaf.standard.expression.StandardExpressionExecutionContext;
-import org.thymeleaf.standard.expression.StandardExpressions;
-import org.thymeleaf.standard.expression.VariableExpression;
-import org.thymeleaf.standard.util.StandardExpressionUtils;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Evaluator for variable expressions ({@code ${...}}) in Thymeleaf Standard Expressions, using the

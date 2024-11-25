@@ -208,6 +208,14 @@ public abstract class AbstractRequest {
         return (attributes != null && !attributes.isEmpty());
     }
 
+    public boolean hasAttribute(String name) {
+        if (attributes != null) {
+            return attributes.containsKey(name);
+        } else {
+            return false;
+        }
+    }
+
     public String getParameter(String name) {
         return getParameterMap().getParameter(name);
     }
@@ -275,6 +283,14 @@ public abstract class AbstractRequest {
 
     public boolean hasParameters() {
         return (parameterMap != null && !parameterMap.isEmpty());
+    }
+
+    public boolean hasParameter(String name) {
+        if (parameterMap != null) {
+            return parameterMap.containsKey(name);
+        } else {
+            return false;
+        }
     }
 
     public FileParameter getFileParameter(String name) {

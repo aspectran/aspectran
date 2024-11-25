@@ -96,6 +96,7 @@ public final class RequestAttributeMap implements Map<String, Object> {
     }
 
     @Override
+    @NonNull
     public Object get(Object key) {
         if (request == null) {
             return null;

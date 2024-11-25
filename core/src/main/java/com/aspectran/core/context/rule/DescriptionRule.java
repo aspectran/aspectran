@@ -16,9 +16,9 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
+import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.utils.StringUtils;

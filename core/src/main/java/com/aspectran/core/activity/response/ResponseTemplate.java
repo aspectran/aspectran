@@ -148,6 +148,11 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
+    public String transformPath(String path) {
+        return responseAdapter.transformPath(path);
+    }
+
+    @Override
     public Response replicate() {
         throw new UnsupportedOperationException();
     }

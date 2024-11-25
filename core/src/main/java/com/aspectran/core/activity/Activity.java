@@ -26,9 +26,9 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -43,6 +43,16 @@ import java.util.List;
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public interface Activity {
+
+    enum Mode {
+        DAEMON,
+        DEFAULT,
+        SCHEDULER,
+        SHELL,
+        WEB
+    }
+
+    Mode getMode();
 
     /**
      * Gets the activity context.

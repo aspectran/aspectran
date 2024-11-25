@@ -225,6 +225,7 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
      * Returns the status code.
      * @return the status
      */
+    @Override
     public int getStatus() {
         return status;
     }
@@ -233,8 +234,14 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
      * Sets the status code.
      * @param status the status code
      */
+    @Override
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public String transformPath(String path) {
+        return path;
     }
 
 }

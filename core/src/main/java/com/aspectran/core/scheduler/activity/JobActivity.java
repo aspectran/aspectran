@@ -26,7 +26,7 @@ import org.quartz.JobExecutionContext;
 
 /**
  * The Class JobActivity.
- * 
+ *
  * <p>Created: 2013. 11. 18 PM 3:40:48</p>
  */
 public class JobActivity extends CoreActivity {
@@ -41,6 +41,11 @@ public class JobActivity extends CoreActivity {
     public JobActivity(ActivityContext context, JobExecutionContext jobExecutionContext) {
         super(context);
         this.jobExecutionContext = jobExecutionContext;
+    }
+
+    @Override
+    public Mode getMode() {
+        return Mode.SCHEDULER;
     }
 
     @Override

@@ -18,6 +18,8 @@ package com.aspectran.thymeleaf;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
+import com.aspectran.thymeleaf.expression.ActivityExpressionContext;
+import com.aspectran.thymeleaf.expression.ActivityExpressionContextFactory;
 import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.ITemplateEngine;
@@ -95,7 +97,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         Writer writer = activity.getResponseAdapter().getWriter();
 
         IEngineConfiguration configuration = templateEngine.getConfiguration();
-        ExpressionContext context = new ExpressionContext(configuration, locale, variables);
+        ActivityExpressionContext context = ActivityExpressionContextFactory.create(activity, configuration, locale, variables);
 
         String templateNameToUse;
         Set<String> markupSelectors;
@@ -110,7 +112,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
             FragmentExpression fragmentExpression;
             try {
                 // By parsing it as a standard expression, we might profit from the expression cache
-                fragmentExpression = (FragmentExpression) parser.parseExpression(context, "~{" + templateName + "}");
+                fragmentExpression = (FragmentExpression)parser.parseExpression(context, "~{" + templateName + "}");
             } catch (TemplateProcessingException e) {
                 throw new IllegalArgumentException("Invalid template name specification: '" + templateName + "'");
             }

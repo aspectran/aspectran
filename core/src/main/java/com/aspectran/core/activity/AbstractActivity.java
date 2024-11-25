@@ -21,11 +21,11 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.asel.item.ItemEvaluation;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.asel.token.TokenEvaluation;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -59,6 +59,11 @@ public abstract class AbstractActivity implements Activity {
      */
     protected AbstractActivity(@NonNull ActivityContext context) {
         this.context = context;
+    }
+
+    @Override
+    public Mode getMode() {
+        return Mode.DEFAULT;
     }
 
     @Override
