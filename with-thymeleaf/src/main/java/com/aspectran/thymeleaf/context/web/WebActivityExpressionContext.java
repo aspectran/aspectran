@@ -1,5 +1,6 @@
-package com.aspectran.thymeleaf.expression;
+package com.aspectran.thymeleaf.context.web;
 
+import com.aspectran.thymeleaf.context.ActivityExpressionContext;
 import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.IWebContext;

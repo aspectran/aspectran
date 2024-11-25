@@ -41,6 +41,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     private final Configuration configuration;
 
     public FreeMarkerTemplateEngine(Configuration configuration) {
+        Assert.notNull(configuration, "configuration must not be null");
         this.configuration = configuration;
     }
 

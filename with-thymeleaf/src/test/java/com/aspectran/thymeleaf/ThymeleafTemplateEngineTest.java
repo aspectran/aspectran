@@ -35,8 +35,8 @@ class ThymeleafTemplateEngineTest {
 
     @Test
     void testEcho1() {
-//        Translet translet = aspectran.translate("echo-1");
-//        assertEquals("1234567890", translet.getWrittenResponse());
+        Translet translet = aspectran.translate("echo-1");
+        assertEquals("1234567890", translet.getWrittenResponse());
     }
 
     @Test

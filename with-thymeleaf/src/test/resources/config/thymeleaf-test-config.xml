@@ -51,10 +51,10 @@
 
     <translet name="echo-1">
         <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
+            <attributes>
+                <item name="input_1">12345</item>
                 <item name="input_2">${input_2:67890}</item>
-            </parameters>
+            </attributes>
         </request>
         <transform format="text">
             <template engine="thymeleaf" style="apon" contentType="plain/text">

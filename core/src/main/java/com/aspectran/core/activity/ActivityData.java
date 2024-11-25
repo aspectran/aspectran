@@ -248,8 +248,4 @@ public class ActivityData extends HashMap<String, Object> {
         }
     }
 
-    protected Activity getActivity() {
-        return activity;
-    }
-
 }

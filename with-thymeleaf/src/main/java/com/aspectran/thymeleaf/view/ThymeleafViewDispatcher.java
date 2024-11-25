@@ -22,7 +22,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.thymeleaf.ThymeleafTemplateEngine;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.thymeleaf.ITemplateEngine;
@@ -40,8 +39,9 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
 
     private final ITemplateEngine templateEngine;
 
-    public ThymeleafViewDispatcher(@NonNull ThymeleafTemplateEngine templateEngine) {
-        this(templateEngine.getTemplateEngine());
+    public ThymeleafViewDispatcher(ThymeleafTemplateEngine thymeleafTemplateEngine) {
+        Assert.notNull(thymeleafTemplateEngine, "thymeleafTemplateEngine must not be null");
+        this.templateEngine = thymeleafTemplateEngine.getTemplateEngine();
     }
 
     public ThymeleafViewDispatcher(ITemplateEngine templateEngine) {

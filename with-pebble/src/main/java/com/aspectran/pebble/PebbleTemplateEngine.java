@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 
@@ -38,6 +37,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     private final PebbleEngine pebbleEngine;
 
     public PebbleTemplateEngine(PebbleEngine pebbleEngine) {
+        Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         this.pebbleEngine = pebbleEngine;
     }
 

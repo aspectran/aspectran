@@ -22,7 +22,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.pebble.PebbleTemplateEngine;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
@@ -40,8 +39,9 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
 
     private final PebbleEngine pebbleEngine;
 
-    public PebbleViewDispatcher(@NonNull PebbleTemplateEngine pebbleTemplateEngine) {
-        this(pebbleTemplateEngine.getPebbleEngine());
+    public PebbleViewDispatcher(PebbleTemplateEngine pebbleTemplateEngine) {
+        Assert.notNull(pebbleTemplateEngine, "pebbleTemplateEngine must not be null");
+        this.pebbleEngine = pebbleTemplateEngine.getPebbleEngine();
     }
 
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {

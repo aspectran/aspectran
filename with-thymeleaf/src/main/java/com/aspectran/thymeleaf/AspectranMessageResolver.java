@@ -3,7 +3,6 @@ package com.aspectran.thymeleaf;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.AbstractMessageResolver;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
@@ -14,8 +13,9 @@ public class AspectranMessageResolver extends AbstractMessageResolver {
 
     private final StandardMessageResolver standardMessageResolver;
 
-    public AspectranMessageResolver(@NonNull MessageSource messageSource) {
+    public AspectranMessageResolver(MessageSource messageSource) {
         super();
+        Assert.notNull(messageSource, "messageSource must not be null");
         this.messageSource = messageSource;
         this.standardMessageResolver = new StandardMessageResolver();
     }

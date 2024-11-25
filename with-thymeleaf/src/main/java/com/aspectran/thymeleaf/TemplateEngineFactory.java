@@ -20,8 +20,6 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.messageresolver.IMessageResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.Set;
@@ -48,10 +46,8 @@ public class TemplateEngineFactory implements ActivityContextAware {
     }
 
     public ITemplateEngine createTemplateEngine() {
-        IMessageResolver messageResolver = new AspectranMessageResolver(context.getMessageSource());
-
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setMessageResolver(messageResolver);
+        AspectranTemplateEngine templateEngine = new AspectranTemplateEngine();
+        templateEngine.setMessageSource(context.getMessageSource());
         if (templateResolvers != null) {
             templateEngine.setTemplateResolvers(templateResolvers);
         }

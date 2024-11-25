@@ -22,7 +22,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import freemarker.template.Configuration;
@@ -40,8 +39,9 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
 
     private final Configuration configuration;
 
-    public FreeMarkerViewDispatcher(@NonNull FreeMarkerTemplateEngine templateEngine) {
-        this(templateEngine.getConfiguration());
+    public FreeMarkerViewDispatcher(FreeMarkerTemplateEngine templateEngine) {
+        Assert.notNull(templateEngine, "templateEngine must not be null");
+        this.configuration = templateEngine.getConfiguration();
     }
 
     public FreeMarkerViewDispatcher(Configuration configuration) {

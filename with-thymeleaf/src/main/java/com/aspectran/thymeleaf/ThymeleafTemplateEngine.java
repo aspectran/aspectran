@@ -18,13 +18,12 @@ package com.aspectran.thymeleaf;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
-import com.aspectran.thymeleaf.expression.ActivityExpressionContext;
-import com.aspectran.thymeleaf.expression.ActivityExpressionContextFactory;
+import com.aspectran.thymeleaf.context.ActivityExpressionContext;
+import com.aspectran.thymeleaf.context.ActivityExpressionContextFactory;
 import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateSpec;
-import org.thymeleaf.context.ExpressionContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.standard.expression.FragmentExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
@@ -48,6 +47,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
     private final ITemplateEngine templateEngine;
 
     public ThymeleafTemplateEngine(ITemplateEngine templateEngine) {
+        Assert.notNull(templateEngine, "templateEngine must not be null");
         this.templateEngine = templateEngine;
     }
 
@@ -72,11 +72,10 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         checkHasEngine();
         try {
             Locale locale = activity.getRequestAdapter().getLocale();
-            Map<String, Object> variables = activity.getActivityData();
             Writer writer = activity.getResponseAdapter().getWriter();
 
             IEngineConfiguration configuration = templateEngine.getConfiguration();
-            ExpressionContext context = new ExpressionContext(configuration, locale, variables);
+            ActivityExpressionContext context = ActivityExpressionContextFactory.create(activity, configuration, locale);
             TemplateSpec templateSpec = new TemplateSpec(templateSource, contentType);
             templateEngine.process(templateSpec, context, writer);
 
@@ -97,7 +96,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         Writer writer = activity.getResponseAdapter().getWriter();
 
         IEngineConfiguration configuration = templateEngine.getConfiguration();
-        ActivityExpressionContext context = ActivityExpressionContextFactory.create(activity, configuration, locale, variables);
+        ActivityExpressionContext context = ActivityExpressionContextFactory.create(activity, configuration, locale);
 
         String templateNameToUse;
         Set<String> markupSelectors;
