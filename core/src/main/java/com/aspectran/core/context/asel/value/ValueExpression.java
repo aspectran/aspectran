@@ -16,13 +16,13 @@
 package com.aspectran.core.context.asel.value;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.asel.ExpressionEvaluationException;
+import com.aspectran.core.context.asel.ExpressionParserException;
+import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
-import com.aspectran.core.context.asel.ognl.expression.TokenizedExpression;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import ognl.Ognl;
 import ognl.OgnlContext;
-import ognl.OgnlException;
 
 /**
  * ExpressionEvaluable implementation that evaluates expressions written in
@@ -64,14 +64,8 @@ public class ValueExpression implements ExpressionEvaluable {
         if (getParsedExpression() == null) {
             return null;
         }
-        try {
-            OgnlContext ognlContext = OgnlSupport.createDefaultContext();
-            tokenizedExpression.preProcess(activity, ognlContext);
-            Object value = Ognl.getValue(getParsedExpression(), ognlContext, activity.getActivityData(), resultType);
-            return (V)tokenizedExpression.postProcess(ognlContext, value);
-        } catch (OgnlException e) {
-            throw new ExpressionEvaluationException(getExpressionString(), e);
-        }
+        OgnlContext ognlContext = OgnlSupport.createDefaultContext();
+        return (V)tokenizedExpression.evaluate(activity, ognlContext, resultType);
     }
 
     /**

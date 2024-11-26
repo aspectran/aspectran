@@ -1,15 +1,15 @@
-package com.aspectran.core.context.asel.ognl.expression;
+package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
-import com.aspectran.core.context.asel.value.ExpressionParserException;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlOps;
 
@@ -104,14 +104,31 @@ public class TokenizedExpression {
         this.parsedExpression = OgnlSupport.parseExpression(expressionString);
     }
 
-    public void preProcess(Activity activity, OgnlContext ognlContext) {
+    public Object evaluate(Activity activity, OgnlContext ognlContext) {
+        return evaluate(activity, ognlContext, null);
+    }
+
+    public Object evaluate(Activity activity, OgnlContext ognlContext, Class<?> resultType) {
+        if (getParsedExpression() == null) {
+            return null;
+        }
+        try {
+            preProcess(activity, ognlContext);
+            Object value = Ognl.getValue(getParsedExpression(), ognlContext, activity.getActivityData(), resultType);
+            return postProcess(ognlContext, value);
+        } catch (Exception e) {
+            throw new ExpressionEvaluationException(getExpressionString(), e);
+        }
+    }
+
+    private void preProcess(Activity activity, OgnlContext ognlContext) {
         if (hasTokenVars()) {
             TokenEvaluator tokenEvaluator = activity.getTokenEvaluator();
             resolveTokenVariables(ognlContext, tokenEvaluator);
         }
     }
 
-    public Object postProcess(OgnlContext ognlContext, Object value) {
+    private Object postProcess(OgnlContext ognlContext, Object value) {
         if (getTokenVarNames() != null && value instanceof String str) {
             for (String tokenVarName : getTokenVarNames()) {
                 String tokenVarRefName = createTokenVarRefName(tokenVarName);

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.asel.value;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.asel.ExpressionParserException;
 
 /**
  * It supports expressions in the CHOOSE-WHEN statement,

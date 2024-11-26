@@ -1,7 +1,6 @@
 package com.aspectran.thymeleaf;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.ResourceAppendRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;

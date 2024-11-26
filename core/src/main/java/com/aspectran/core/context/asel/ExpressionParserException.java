@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.asel.value;
+package com.aspectran.core.context.asel;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
 
