@@ -211,8 +211,9 @@ public class ScheduleRule implements BeanReferenceable {
             String expression = expressionParameters.getString(TriggerExpressionParameters.expression);
             String[] fields = StringUtils.tokenize(expression, " ");
             if (fields.length != 6) {
-                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)",
-                        fields.length, expression));
+                throw new IllegalArgumentException(
+                        String.format("Cron expression must consist of 6 fields (found %d in %s)",
+                            fields.length, expression));
             }
             expressionParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
         }

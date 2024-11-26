@@ -53,7 +53,7 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     public Object put(@NonNull String key, Object value) {
         if (expressionObjects.containsObject(key)) {
             throw new IllegalArgumentException(
-                "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: key matches the " +
+                    "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: key matches the " +
                     "name of one of the expression objects");
         }
         return super.put(key, value);
@@ -69,7 +69,7 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     public Object remove(@NonNull Object key) {
         if (expressionObjects.containsObject(key.toString())) {
             throw new IllegalArgumentException(
-                "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: key matches the " +
+                    "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: key matches the " +
                     "name of one of the expression objects");
         }
         return super.remove(key);
@@ -111,19 +111,19 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     @NonNull
     public Set<Map.Entry<String, Object>> entrySet() {
         throw new UnsupportedOperationException(
-            "Cannot retrieve a complete entry set for Expression Objects wrapper map. Get a key set instead");
+                "Cannot retrieve a complete entry set for Expression Objects wrapper map. Get a key set instead");
     }
 
     @Override
     public boolean equals(Object o) {
         throw new UnsupportedOperationException(
-            "Cannot execute equals operation on Expression Objects wrapper map");
+                "Cannot execute equals operation on Expression Objects wrapper map");
     }
 
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException(
-            "Cannot execute hashCode operation on Expression Objects wrapper map");
+                "Cannot execute hashCode operation on Expression Objects wrapper map");
     }
 
     @Override

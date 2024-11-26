@@ -32,12 +32,13 @@ public class ExpressionCache {
     }
 
     @Nullable
-    static Object getFromCache(@NonNull IEngineConfiguration configuration, String input, String type) {
+    static <V> V getFromCache(@NonNull IEngineConfiguration configuration, String input, String type) {
         ICacheManager cacheManager = configuration.getCacheManager();
         if (cacheManager != null) {
             ICache<ExpressionCacheKey,Object> cache = cacheManager.getExpressionCache();
             if (cache != null) {
-                return cache.get(new ExpressionCacheKey(type,input));
+                //noinspection unchecked
+                return (V)cache.get(new ExpressionCacheKey(type,input));
             }
         }
         return null;
@@ -64,7 +65,7 @@ public class ExpressionCache {
     }
 
     static IStandardExpression getExpressionFromCache(IEngineConfiguration configuration, String input) {
-        return (IStandardExpression) getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_STANDARD_EXPRESSION);
+        return getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_STANDARD_EXPRESSION);
     }
 
     static void putExpressionIntoCache(IEngineConfiguration configuration, String input, IStandardExpression value) {
@@ -72,7 +73,7 @@ public class ExpressionCache {
     }
 
     static AssignationSequence getAssignationSequenceFromCache(IEngineConfiguration configuration, String input) {
-        return (AssignationSequence) getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_ASSIGNATION_SEQUENCE);
+        return getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_ASSIGNATION_SEQUENCE);
     }
 
     static void putAssignationSequenceIntoCache(IEngineConfiguration configuration, String input, AssignationSequence value) {
@@ -80,7 +81,7 @@ public class ExpressionCache {
     }
 
     static ExpressionSequence getExpressionSequenceFromCache(IEngineConfiguration configuration, String input) {
-        return (ExpressionSequence) getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_EXPRESSION_SEQUENCE);
+        return getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_EXPRESSION_SEQUENCE);
     }
 
     static void putExpressionSequenceIntoCache(IEngineConfiguration configuration, String input, ExpressionSequence value) {
@@ -88,7 +89,7 @@ public class ExpressionCache {
     }
 
     static Each getEachFromCache(IEngineConfiguration configuration, String input) {
-        return (Each) getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_EACH);
+        return getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_EACH);
     }
 
     static void putEachIntoCache(IEngineConfiguration configuration, String input, Each value) {
@@ -96,7 +97,7 @@ public class ExpressionCache {
     }
 
     static FragmentSignature getFragmentSignatureFromCache(IEngineConfiguration configuration, String input) {
-        return (FragmentSignature) getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_FRAGMENT_SIGNATURE);
+        return getFromCache(configuration, input, EXPRESSION_CACHE_TYPE_FRAGMENT_SIGNATURE);
     }
 
     static void putFragmentSignatureIntoCache(IEngineConfiguration configuration, String input, FragmentSignature value) {

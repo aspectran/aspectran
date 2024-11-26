@@ -184,15 +184,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Sets the token directive type.
-     * @param directiveType the token directive type
-     * @see TokenDirectiveType
-     */
-    private void setDirectiveType(TokenDirectiveType directiveType) {
-        this.directiveType = directiveType;
-    }
-
-    /**
      * Gets the token name.
      * @return the token name
      */

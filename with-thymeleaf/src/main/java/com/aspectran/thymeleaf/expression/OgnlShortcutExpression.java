@@ -56,7 +56,7 @@ public class OgnlShortcutExpression {
         ICache<ExpressionCacheKey, Object> expressionCache = (cacheManager == null ? null : cacheManager.getExpressionCache());
 
         Object target = root;
-        for (String propertyName : this.expressionLevels) {
+        for (String propertyName : expressionLevels) {
             // If target is null, we will mimic what OGNL does in these cases...
             if (target == null) {
                 throw new OgnlException("source is null for getProperty(null, \"" + propertyName + "\")");
@@ -105,7 +105,8 @@ public class OgnlShortcutExpression {
         if (REQUEST_PARAMETERS_RESTRICTED_VARIABLE_NAME.equals(propertyName) &&
                 context != null && context.containsKey(RESTRICT_REQUEST_PARAMETERS)) {
             throw new OgnlException(
-                "Access to variable \"" + propertyName + "\" is forbidden in this context. Note some restrictions apply to " +
+                    "Access to variable \"" + propertyName +
+                    "\" is forbidden in this context. Note some restrictions apply to " +
                     "variable access. For example, accessing request parameters is forbidden in preprocessing and " +
                     "unescaped expressions, and also in fragment inclusion specifications.");
         }

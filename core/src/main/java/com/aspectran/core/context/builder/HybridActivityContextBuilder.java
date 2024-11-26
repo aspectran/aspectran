@@ -90,8 +90,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                         StringUtils.joinCommaDelimitedList(contextRules) + "]");
             } else if (aspectranParameters != null) {
                 logger.info("Building ActivityContext with specified parameters");
-            } else {
-                logger.warn("No context rules configured");
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("No context rules configured");
             }
 
             long startTime = System.currentTimeMillis();

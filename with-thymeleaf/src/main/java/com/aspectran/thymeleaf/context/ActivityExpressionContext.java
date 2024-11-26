@@ -16,8 +16,8 @@ public class ActivityExpressionContext extends AbstractExpressionContext {
         super(configuration, locale);
     }
 
-    public ActivityExpressionContext(IEngineConfiguration configuration, Locale locale,
-                                     Map<String, Object> variables) {
+    public ActivityExpressionContext(
+            IEngineConfiguration configuration, Locale locale, Map<String, Object> variables) {
         super(configuration, locale, variables);
     }
 

@@ -26,7 +26,7 @@ final class OgnlContextPropertyAccessor implements PropertyAccessor {
 
         if (REQUEST_PARAMETERS_RESTRICTED_VARIABLE_NAME.equals(name) && ognlContext != null && ognlContext.containsKey(RESTRICT_REQUEST_PARAMETERS)) {
             throw new OgnlException(
-                "Access to variable \"" + name + "\" is forbidden in this context. Note some restrictions apply to " +
+                    "Access to variable \"" + name + "\" is forbidden in this context. Note some restrictions apply to " +
                     "variable access. For example, direct access to request parameters is forbidden in preprocessing and " +
                     "unescaped expressions, in TEXT template mode, in fragment insertion specifications and " +
                     "in some specific attribute processors.");
@@ -67,7 +67,7 @@ final class OgnlContextPropertyAccessor implements PropertyAccessor {
         // performing methods to access the properties of an object. Given IVariablesMap implementations should never
         // be set any values from OGNL, this exception should never be thrown anyway.
         throw new UnsupportedCompilationException(
-            "Setting expression for " + context.getCurrentObject() + " with index of " + index + " cannot " +
+                "Setting expression for " + context.getCurrentObject() + " with index of " + index + " cannot " +
                 "be computed. IVariablesMap implementations are considered read-only by OGNL.");
     }
 

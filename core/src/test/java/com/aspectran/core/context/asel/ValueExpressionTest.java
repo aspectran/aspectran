@@ -43,6 +43,7 @@ class ValueExpressionTest {
 
         NonActivity activity = new NonActivity(context);
         activity.getRequestAdapter().setParameter("foo", "foo");
+        activity.getRequestAdapter().setParameter("bar", "bar");
         activity.getRequestAdapter().setParameter("who", "bar");
         activity.getRequestAdapter().setParameter("bars", new String[] {"bar1", "bar2", "bar3"});
         this.activity = activity;
@@ -50,6 +51,8 @@ class ValueExpressionTest {
 
     @Test
     void evaluate() {
+        assertEquals("foo", ValueExpression.evaluate("'${foo}'", activity));
+        assertEquals("foobar", ValueExpression.evaluate("'${foo}${bar}'", activity));
         assertEquals(true, ValueExpression.evaluate("foo in {'foo','bar'}", activity));
         assertEquals(true, ValueExpression.evaluate("${foo} in {'foo','bar'}", activity));
         assertEquals(3, (int)ValueExpression.evaluate("bars.length", activity));
