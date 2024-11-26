@@ -3,6 +3,7 @@ package com.aspectran.thymeleaf.expression;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.thymeleaf.expression.IExpressionObjects;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -13,6 +14,9 @@ import java.util.Set;
  * <p>Created: 2024. 11. 25.</p>
  */
 final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
+
+    @Serial
+    private static final long serialVersionUID = 8501710469626305662L;
 
     private final IExpressionObjects expressionObjects;
 
@@ -127,4 +131,5 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     public String toString() {
         return "{EXPRESSION OBJECTS WRAPPER MAP FOR KEYS: " + keySet() + "}";
     }
+
 }

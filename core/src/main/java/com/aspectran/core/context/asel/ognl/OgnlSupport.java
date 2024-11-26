@@ -64,4 +64,13 @@ public abstract class OgnlSupport {
         return new OgnlContext(CLASS_RESOLVER, null, MEMBER_ACCESS);
     }
 
+    @NonNull
+    public static OgnlContext createDefaultContext(Map<String, Object> contextVariables) {
+        OgnlContext ognlContext = createDefaultContext();
+        if (contextVariables != null) {
+            ognlContext.putAll(contextVariables);
+        }
+        return ognlContext;
+    }
+
 }
