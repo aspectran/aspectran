@@ -617,10 +617,10 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Determines the default request encoding.
-     * @return the default request encoding
+     * Returns the definitive request encoding.
+     * @return the definitive request encoding
      */
-    protected String getIntendedRequestEncoding() {
+    protected String getDefinitiveRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
             encoding = getSetting(CHARACTER_ENCODING_SETTING_NAME);
@@ -629,13 +629,13 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Determines the default response encoding.
-     * @return the default response encoding
+     * Returns the definitive response encoding.
+     * @return the definitive response encoding
      */
-    protected String getIntendedResponseEncoding() {
+    protected String getDefinitiveResponseEncoding() {
         String encoding = getResponseRule().getEncoding();
         if (encoding == null) {
-            encoding = getIntendedRequestEncoding();
+            encoding = getDefinitiveRequestEncoding();
         }
         return encoding;
     }

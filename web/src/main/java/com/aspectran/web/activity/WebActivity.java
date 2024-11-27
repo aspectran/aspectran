@@ -183,7 +183,7 @@ public class WebActivity extends CoreActivity {
                                 ": " + maxRequestSizeSetting, e);
                     }
                 }
-                String requestEncoding = getIntendedRequestEncoding();
+                String requestEncoding = getDefinitiveRequestEncoding();
                 if (requestEncoding != null) {
                     try {
                         requestAdapter.setEncoding(requestEncoding);
@@ -196,7 +196,7 @@ public class WebActivity extends CoreActivity {
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
             if (getParentActivity() == null) {
-                String responseEncoding = getIntendedResponseEncoding();
+                String responseEncoding = getDefinitiveResponseEncoding();
                 if (responseEncoding != null) {
                     responseAdapter.setEncoding(responseEncoding);
                 }

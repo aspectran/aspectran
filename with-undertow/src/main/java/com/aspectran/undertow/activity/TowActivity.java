@@ -152,7 +152,7 @@ public class TowActivity extends CoreActivity {
                                 ": " + maxRequestSizeSetting, e);
                     }
                 }
-                String requestEncoding = getIntendedRequestEncoding();
+                String requestEncoding = getDefinitiveRequestEncoding();
                 if (requestEncoding != null) {
                     try {
                         requestAdapter.setEncoding(requestEncoding);
@@ -165,7 +165,7 @@ public class TowActivity extends CoreActivity {
 
             ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
             if (getParentActivity() == null) {
-                String responseEncoding = getIntendedResponseEncoding();
+                String responseEncoding = getDefinitiveResponseEncoding();
                 if (responseEncoding != null) {
                     responseAdapter.setEncoding(responseEncoding);
                 }

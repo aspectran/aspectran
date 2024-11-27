@@ -63,7 +63,7 @@ public class JspViewDispatcher extends AbstractViewDispatcher {
 
             String encoding = dispatchRule.getEncoding();
             if (encoding == null && responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getIntendedResponseEncoding();
+                encoding = activity.getTranslet().getDefinitiveResponseEncoding();
             }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);

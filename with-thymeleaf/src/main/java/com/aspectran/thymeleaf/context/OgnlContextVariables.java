@@ -1,27 +1,24 @@
-package com.aspectran.thymeleaf.expression;
+package com.aspectran.thymeleaf.context;
 
+import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import ognl.OgnlContext;
 import org.thymeleaf.expression.IExpressionObjects;
 
-import java.io.Serial;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * <p>Created: 2024. 11. 25.</p>
+ * <p>Created: 2024. 11. 27.</p>
  */
-final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
-
-    @Serial
-    private static final long serialVersionUID = 8501710469626305662L;
+public final class OgnlContextVariables extends OgnlContext {
 
     private final IExpressionObjects expressionObjects;
 
-    OgnlExpressionObjectsWrapper(IExpressionObjects expressionObjects) {
-        super(5);
+    public OgnlContextVariables(IExpressionObjects expressionObjects) {
+        super(OgnlSupport.CLASS_RESOLVER, null, OgnlSupport.MEMBER_ACCESS);
         this.expressionObjects = expressionObjects;
     }
 
@@ -53,7 +50,7 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     public Object put(@NonNull String key, Object value) {
         if (expressionObjects.containsObject(key)) {
             throw new IllegalArgumentException(
-                    "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: key matches the " +
+                "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: key matches the " +
                     "name of one of the expression objects");
         }
         return super.put(key, value);
@@ -69,7 +66,7 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     public Object remove(@NonNull Object key) {
         if (expressionObjects.containsObject(key.toString())) {
             throw new IllegalArgumentException(
-                    "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: key matches the " +
+                "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: key matches the " +
                     "name of one of the expression objects");
         }
         return super.remove(key);
@@ -110,9 +107,8 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     @Override
     @NonNull
     public Set<Map.Entry<String, Object>> entrySet() {
-        return super.entrySet();
-//        throw new UnsupportedOperationException(
-//                "Cannot retrieve a complete entry set for Expression Objects wrapper map. Get a key set instead");
+        throw new UnsupportedOperationException(
+                "Cannot retrieve a complete entry set for Expression Objects wrapper map. Get a key set instead");
     }
 
     @Override
@@ -130,7 +126,7 @@ final class OgnlExpressionObjectsWrapper extends HashMap<String, Object> {
     @Override
     @NonNull
     public String toString() {
-        return "{EXPRESSION OBJECTS WRAPPER MAP FOR KEYS: " + keySet() + "}";
+        return "{EXPRESSION OBJECTS WRAPPER CONTEXT FOR KEYS: " + keySet() + "}";
     }
 
 }

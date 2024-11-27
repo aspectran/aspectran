@@ -17,7 +17,6 @@ package com.aspectran.thymeleaf;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import org.thymeleaf.ITemplateEngine;
 
 /**
  * The Class TemplateEngineFactoryBean.
@@ -25,9 +24,9 @@ import org.thymeleaf.ITemplateEngine;
  * <p>Created: 2024. 11. 18.</p>
  */
 public class TemplateEngineFactoryBean extends TemplateEngineFactory
-        implements InitializableBean, FactoryBean<ITemplateEngine> {
+        implements InitializableBean, FactoryBean<AspectranTemplateEngine> {
 
-    private ITemplateEngine templateEngine;
+    private AspectranTemplateEngine templateEngine;
 
     @Override
     public void initialize() {
@@ -37,7 +36,7 @@ public class TemplateEngineFactoryBean extends TemplateEngineFactory
     }
 
     @Override
-    public ITemplateEngine getObject() {
+    public AspectranTemplateEngine getObject() {
         return this.templateEngine;
     }
 

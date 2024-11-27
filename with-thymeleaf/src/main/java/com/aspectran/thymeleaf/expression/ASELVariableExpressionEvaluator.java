@@ -5,6 +5,7 @@ import com.aspectran.core.context.asel.ExpressionParserException;
 import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.thymeleaf.context.CurrentActivityHolder;
+import com.aspectran.thymeleaf.context.OgnlContextVariables;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -43,9 +44,6 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     private static final Logger logger = LoggerFactory.getLogger(ASELVariableExpressionEvaluator.class);
 
     private static final String EXPRESSION_CACHE_TYPE_OGNL = "asel";
-
-    private static final Map<String,Object> CONTEXT_VARIABLES_MAP_NOEXPOBJECTS_RESTRICTIONS =
-            Collections.singletonMap(RESTRICT_REQUEST_PARAMETERS, RESTRICT_REQUEST_PARAMETERS);
 
     private final boolean applyOgnlShortcuts;
 
@@ -88,7 +86,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
             ComputedOgnlExpression parsedExpression = obtainComputedOgnlExpression(
                     activity, configuration, expression, expressionStr, exeContext, applyOgnlShortcuts);
 
-            Map<String, Object> contextVariables = resolveContextVariables(context, exeContext, parsedExpression);
+            OgnlContext contextVariables = resolveContextVariables(context, exeContext, parsedExpression);
 
             // The root object on which we will evaluate expressions will depend on whether a selection target is
             // active or not...
@@ -122,40 +120,33 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     }
 
     @NonNull
-    private static Map<String, Object> resolveContextVariables(
+    private static OgnlContext resolveContextVariables(
             IExpressionContext context,
             StandardExpressionExecutionContext exeContext,
             @NonNull ComputedOgnlExpression parsedExpression) {
-        Map<String, Object> contextVariables;
-//        if (parsedExpression.mightNeedExpressionObjects) {
-//
-//            // The IExpressionObjects implementation returned by processing contexts that include the Standard
-//            // Dialects will be lazy in the creation of expression objects (i.e. they won't be created until really
-//            // needed). And in order for this behaviour to be accepted by OGNL, we will be wrapping this object
-//            // inside an implementation of Map<String,Object>, which will afterwards be fed to the constructor
-//            // of an OgnlContext object.
-//
-//            // Note this will never happen with shortcut expressions, as the '#' character with which all
-//            // expression object names start is not allowed by the OgnlShortcutExpression parser.
-//
-//            contextVariables = new OgnlExpressionObjectsWrapper(context.getExpressionObjects());
-//
-//            // We might need to apply restrictions on the request parameters. In the case of OGNL, the only way we
-//            // can actually communicate with the PropertyAccessor, (OGNLVariablesMapPropertyAccessor), which is the
-//            // agent in charge of applying such restrictions, is by adding a context variable that the property accessor
-//            // can later lookup during evaluation.
-//            if (exeContext.getRestrictVariableAccess()) {
-//                contextVariables.put(RESTRICT_REQUEST_PARAMETERS, RESTRICT_REQUEST_PARAMETERS);
-//            } else {
-//                contextVariables.remove(RESTRICT_REQUEST_PARAMETERS);
-//            }
-//        } else {
-            if (exeContext.getRestrictVariableAccess()) {
-                contextVariables = CONTEXT_VARIABLES_MAP_NOEXPOBJECTS_RESTRICTIONS;
-            } else {
-                contextVariables = Collections.emptyMap();
-            }
-//        }
+        OgnlContext contextVariables;
+        if (parsedExpression.mightNeedExpressionObjects) {
+            // The IExpressionObjects implementation returned by processing contexts that include the Standard
+            // Dialects will be lazy in the creation of expression objects (i.e. they won't be created until really
+            // needed). And in order for this behaviour to be accepted by OGNL, we will be wrapping this object
+            // inside an implementation of Map<String,Object>, which will afterwards be fed to the constructor
+            // of an OgnlContext object.
+
+            // Note this will never happen with shortcut expressions, as the '#' character with which all
+            // expression object names start is not allowed by the OgnlShortcutExpression parser.
+            contextVariables = new OgnlContextVariables(context.getExpressionObjects());
+        } else {
+            contextVariables = OgnlSupport.createDefaultContext();
+        }
+
+        // We might need to apply restrictions on the request parameters. In the case of OGNL, the only way we
+        // can actually communicate with the PropertyAccessor, (OGNLVariablesMapPropertyAccessor), which is the
+        // agent in charge of applying such restrictions, is by adding a context variable that the property accessor
+        // can later lookup during evaluation.
+        if (exeContext.getRestrictVariableAccess()) {
+            contextVariables.put(RESTRICT_REQUEST_PARAMETERS, RESTRICT_REQUEST_PARAMETERS);
+        }
+
         return contextVariables;
     }
 
@@ -226,42 +217,44 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     @NonNull
     private static ComputedOgnlExpression parseExpression(
             Activity activity, String expressionStr, boolean applyOgnlShortcuts) throws ExpressionParserException {
-        boolean mightNeedExpressionObjects = StandardExpressionUtils.mightNeedExpressionObjects(expressionStr);
         if (applyOgnlShortcuts) {
             String[] expressions = OgnlShortcutExpression.parse(expressionStr);
             if (expressions != null) {
                 OgnlShortcutExpression ose = new OgnlShortcutExpression(expressions);
+                boolean mightNeedExpressionObjects = StandardExpressionUtils.mightNeedExpressionObjects(expressionStr);
                 return new ComputedOgnlExpression(ose, mightNeedExpressionObjects);
             }
         }
+        boolean mightNeedExpressionObjects = false;
         Object parsedExpression;
         if (activity != null) {
-            parsedExpression = new TokenizedExpression(expressionStr);
+            TokenizedExpression tokenizedExpression = new TokenizedExpression(expressionStr);
+            String substitutedExpression = tokenizedExpression.getSubstitutedExpression();
+            if (substitutedExpression != null) {
+                mightNeedExpressionObjects = StandardExpressionUtils.mightNeedExpressionObjects(substitutedExpression);
+            }
+            parsedExpression = tokenizedExpression;
         } else {
             try {
                 parsedExpression = Ognl.parseExpression(expressionStr);
             } catch (OgnlException e) {
                 throw new ExpressionParserException(expressionStr, e);
             }
+            mightNeedExpressionObjects = StandardExpressionUtils.mightNeedExpressionObjects(expressionStr);
         }
         return new ComputedOgnlExpression(parsedExpression, mightNeedExpressionObjects);
     }
 
     private static Object executeExpression(
             Activity activity, IEngineConfiguration configuration, Object parsedExpression,
-            Map<String, Object> contextVariables, Object root) throws Exception {
+            OgnlContext contextVariables, Object root) throws Exception {
         if (parsedExpression instanceof OgnlShortcutExpression ose) {
             return ose.evaluate(configuration, contextVariables, root);
         }
-
-        // We create the OgnlContext here instead of just sending the Map as context because that prevents OGNL from
-        // creating the OgnlContext empty and then setting the context Map variables one by one
-        OgnlContext ognlContext = OgnlSupport.createDefaultContext(contextVariables);
-
-        if (activity != null && parsedExpression instanceof TokenizedExpression tokenizedExpression) {
-            return tokenizedExpression.evaluate(activity, ognlContext, root);
+        if (activity != null && parsedExpression instanceof TokenizedExpression te) {
+            return te.evaluate(activity, contextVariables, root);
         } else {
-            return Ognl.getValue(parsedExpression, ognlContext, root);
+            return Ognl.getValue(parsedExpression, contextVariables, root);
         }
     }
 

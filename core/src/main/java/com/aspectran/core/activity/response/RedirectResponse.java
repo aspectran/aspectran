@@ -53,7 +53,7 @@ public class RedirectResponse implements Response {
             if (newRedirectRule.getEncoding() != null) {
                 responseAdapter.setEncoding(newRedirectRule.getEncoding());
             } else {
-                String encoding = activity.getTranslet().getIntendedResponseEncoding();
+                String encoding = activity.getTranslet().getDefinitiveResponseEncoding();
                 if (encoding != null) {
                     responseAdapter.setEncoding(encoding);
                     newRedirectRule.setEncoding(encoding);

@@ -32,6 +32,8 @@ public class TokenizedExpression implements ExpressionEvaluator {
 
     private final String expression;
 
+    private String substitutedExpression;
+
     private Object parsedExpression;
 
     private Token[] tokens;
@@ -53,6 +55,12 @@ public class TokenizedExpression implements ExpressionEvaluator {
 
     @Override
     @Nullable
+    public String getSubstitutedExpression() {
+        return substitutedExpression;
+    }
+
+    @Override
+    @Nullable
     public Object getParsedExpression() {
         return parsedExpression;
     }
@@ -70,23 +78,23 @@ public class TokenizedExpression implements ExpressionEvaluator {
     }
 
     public boolean hasTokenVars() {
-        return !tokenVarNames.isEmpty();
+        return (tokenVarNames != null && !tokenVarNames.isEmpty());
     }
 
     private void parseExpression() throws ExpressionParserException {
         Token[] tokens = TokenParser.makeTokens(expression, true);
         Map<String, Token> tokenVars = null;
-        String expressionString = null;
+        String substitutedExpression = null;
         if (tokens != null && tokens.length > 0) {
             tokenVars = new HashMap<>();
             if (tokens.length == 1) {
                 Token token = tokens[0];
                 if (token.getType() == TokenType.TEXT) {
-                    expressionString = token.getDefaultValue();
+                    substitutedExpression = token.getDefaultValue();
                 } else {
                     String tokenVarName = createTokenVarName(token);
                     tokenVars.putIfAbsent(tokenVarName, token);
-                    expressionString = createTokenVarRefName(tokenVarName);
+                    substitutedExpression = createTokenVarRefName(tokenVarName);
                 }
             } else {
                 StringBuilder sb = new StringBuilder();
@@ -96,17 +104,18 @@ public class TokenizedExpression implements ExpressionEvaluator {
                     } else {
                         String tokenVarName = createTokenVarName(token);
                         tokenVars.putIfAbsent(tokenVarName, token);
-                        expressionString = createTokenVarRefName(tokenVarName);
-                        sb.append(expressionString);
+                        substitutedExpression = createTokenVarRefName(tokenVarName);
+                        sb.append(substitutedExpression);
                     }
                 }
-                expressionString = sb.toString();
+                substitutedExpression = sb.toString();
             }
         }
         this.tokens = tokens;
-        this.tokenVars = (tokenVars != null ? Collections.unmodifiableMap(tokenVars) : null);
-        this.tokenVarNames = (tokenVars != null ? Collections.unmodifiableSet(tokenVars.keySet()) : null);
-        this.parsedExpression = OgnlSupport.parseExpression(expressionString);
+        this.tokenVars = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableMap(tokenVars) : null);
+        this.tokenVarNames = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableSet(tokenVars.keySet()) : null);
+        this.parsedExpression = OgnlSupport.parseExpression(substitutedExpression);
+        this.substitutedExpression = substitutedExpression;
     }
 
     @Override

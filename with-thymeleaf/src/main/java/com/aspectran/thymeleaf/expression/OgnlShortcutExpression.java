@@ -17,6 +17,7 @@ import org.thymeleaf.cache.ExpressionCacheKey;
 import org.thymeleaf.cache.ICache;
 import org.thymeleaf.cache.ICacheManager;
 import org.thymeleaf.context.IContext;
+import org.thymeleaf.standard.expression.OGNLContextPropertyAccessor;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -74,22 +75,22 @@ public class OgnlShortcutExpression {
                 // object itself, so we might be trying to apply a PropertyAccessor to a Class instead of a real object,
                 // something we avoid by means of this shortcut
                 target = getObjectProperty(expressionCache, propertyName, target);
-            } else if (org.thymeleaf.standard.expression.OGNLContextPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
+            } else if (OGNLContextPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
                 target = getContextProperty(propertyName, context, target);
             } else if (ObjectPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
                 target = getObjectProperty(expressionCache, propertyName, target);
             } else if (MapPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getMapProperty(propertyName, (Map<?, ?>) target);
+                target = getMapProperty(propertyName, (Map<?, ?>)target);
             } else if (ListPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getListProperty(expressionCache, propertyName, (List<?>) target);
+                target = getListProperty(expressionCache, propertyName, (List<?>)target);
             } else if (SetPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getSetProperty(expressionCache, propertyName, (Set<?>) target);
+                target = getSetProperty(expressionCache, propertyName, (Set<?>)target);
             } else if (IteratorPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getIteratorProperty(expressionCache, propertyName, (Iterator<?>) target);
+                target = getIteratorProperty(expressionCache, propertyName, (Iterator<?>)target);
             } else if (EnumerationPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getEnumerationProperty(expressionCache, propertyName, (Enumeration<?>) target);
+                target = getEnumerationProperty(expressionCache, propertyName, (Enumeration<?>)target);
             } else if (ArrayPropertyAccessor.class.equals(ognlPropertyAccessor.getClass())) {
-                target = getArrayProperty(expressionCache, propertyName, (Object[]) target);
+                target = getArrayProperty(expressionCache, propertyName, (Object[])target);
             } else {
                 // OGNL would like to apply a different property accessor (probably a custom one we do not know). In
                 // these cases, we must signal the problem with this exception and let the expression evaluator
@@ -110,7 +111,7 @@ public class OgnlShortcutExpression {
                     "variable access. For example, accessing request parameters is forbidden in preprocessing and " +
                     "unescaped expressions, and also in fragment inclusion specifications.");
         }
-        return ((IContext) target).getVariable(propertyName);
+        return ((IContext)target).getVariable(propertyName);
     }
 
     private static Object getObjectProperty(

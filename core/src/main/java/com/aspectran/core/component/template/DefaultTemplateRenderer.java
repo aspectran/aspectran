@@ -44,6 +44,8 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
      * @param templateRuleRegistry the template rule registry
      */
     public DefaultTemplateRenderer(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
+        Assert.notNull(context, "context must not be null");
+        Assert.notNull(templateRuleRegistry, "templateRuleRegistry must not be null");
         this.context = context;
         this.templateRuleRegistry = templateRuleRegistry;
     }

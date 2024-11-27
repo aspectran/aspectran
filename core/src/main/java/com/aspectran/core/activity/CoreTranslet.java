@@ -136,13 +136,13 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public String getIntendedRequestEncoding() {
-        return activity.getIntendedRequestEncoding();
+    public String getDefinitiveRequestEncoding() {
+        return activity.getDefinitiveRequestEncoding();
     }
 
     @Override
-    public String getIntendedResponseEncoding() {
-        return activity.getIntendedResponseEncoding();
+    public String getDefinitiveResponseEncoding() {
+        return activity.getDefinitiveResponseEncoding();
     }
 
     @Override

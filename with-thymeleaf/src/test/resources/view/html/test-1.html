@@ -15,7 +15,7 @@
         <tbody>
         <tr th:each="prod: ${allProducts}">
             <td th:text="${prod.name}">Oranges</td>
-            <td th:text="${prod.price}">0.99</td>
+            <td th:text="${#numbers.formatDecimal(prod.price,5,'COMMA',2,'POINT')}">0.99</td>
         </tr>
         </tbody>
     </table>

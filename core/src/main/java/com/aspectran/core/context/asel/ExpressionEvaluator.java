@@ -13,6 +13,8 @@ public interface ExpressionEvaluator {
 
     String getExpressionString();
 
+    String getSubstitutedExpression();
+
     Object getParsedExpression();
 
     Token[] getTokens();

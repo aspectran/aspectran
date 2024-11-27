@@ -104,7 +104,7 @@ public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
         String encoding = null;
         ResponseAdapter responseAdapter = getCurrentActivity().getResponseAdapter();
         if (responseAdapter.getEncoding() == null) {
-            encoding = getCurrentActivity().getTranslet().getIntendedResponseEncoding();
+            encoding = getCurrentActivity().getTranslet().getDefinitiveResponseEncoding();
         }
         return encoding;
     }

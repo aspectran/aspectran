@@ -46,7 +46,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
 
     private final ITemplateEngine templateEngine;
 
-    public ThymeleafTemplateEngine(ITemplateEngine templateEngine) {
+    public ThymeleafTemplateEngine(AspectranTemplateEngine templateEngine) {
         Assert.notNull(templateEngine, "templateEngine must not be null");
         this.templateEngine = templateEngine;
     }
@@ -57,7 +57,6 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
 
     @Override
     public void process(String templateName, Activity activity) throws TemplateEngineProcessException {
-        checkHasEngine();
         try {
             process(templateEngine, templateName, activity);
             activity.getResponseAdapter().getWriter().flush();
@@ -69,8 +68,10 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
     @Override
     public void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException {
-        checkHasEngine();
         try {
+            if (contentType == null) {
+                contentType = activity.getResponseAdapter().getContentType();
+            }
             Locale locale = activity.getRequestAdapter().getLocale();
             Writer writer = activity.getResponseAdapter().getWriter();
 
@@ -91,8 +92,8 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         Assert.notNull(templateName, "templateName must not be null");
         Assert.notNull(activity, "activity must not be null");
 
-        Locale locale = activity.getRequestAdapter().getLocale();
         String contentType = activity.getResponseAdapter().getContentType();
+        Locale locale = activity.getRequestAdapter().getLocale();
         Writer writer = activity.getResponseAdapter().getWriter();
 
         IEngineConfiguration configuration = templateEngine.getConfiguration();
@@ -133,12 +134,6 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         }
 
         templateEngine.process(templateSpec, context, writer);
-    }
-
-    private void checkHasEngine() {
-        if (templateEngine == null) {
-            throw new IllegalStateException("TemplateEngine not specified");
-        }
     }
 
 }

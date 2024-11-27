@@ -404,7 +404,7 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     protected String determineIntendedEncoding(@NonNull Activity activity) {
-        return activity.getTranslet().getIntendedResponseEncoding();
+        return activity.getTranslet().getDefinitiveResponseEncoding();
     }
 
 }

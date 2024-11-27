@@ -20,14 +20,32 @@
         </properties>
     </bean>
 
-    <bean id="templateEngine" class="com.aspectran.thymeleaf.TemplateEngineFactoryBean"/>
-
     <bean id="thymeleaf" class="com.aspectran.thymeleaf.ThymeleafTemplateEngine">
         <arguments>
             <item>
                 <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
                     <properties>
                         <item name="templateResolvers" type="set">
+                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                                <properties>
+                                    <item name="prefix">view/html/</item>
+                                    <item name="resolvablePatterns" type="set">
+                                        <value>*.html</value>
+                                    </item>
+                                    <item name="templateMode">HTML</item>
+                                    <item name="cacheable" valueType="boolean">true</item>
+                                </properties>
+                            </bean>
+                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                                <properties>
+                                    <item name="prefix">view/text/</item>
+                                    <item name="resolvablePatterns" type="set">
+                                        <value>*.txt</value>
+                                    </item>
+                                    <item name="templateMode">TEXT</item>
+                                    <item name="cacheable" valueType="boolean">true</item>
+                                </properties>
+                            </bean>
                             <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
                                 <properties>
                                     <item name="templateMode">TEXT</item>
@@ -46,22 +64,7 @@
             Register a Thymeleaf View Dispatcher.
         </description>
         <arguments>
-            <item>
-                <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
-                    <properties>
-                        <item name="templateResolvers" type="set">
-                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
-                                <properties>
-                                    <item name="prefix">view/html/</item>
-                                    <item name="suffix">.html</item>
-                                    <item name="templateMode">HTML</item>
-                                    <item name="cacheable" valueType="boolean">true</item>
-                                </properties>
-                            </bean>
-                        </item>
-                    </properties>
-                </bean>
-            </item>
+            <item>#{thymeleaf}</item>
         </arguments>
     </bean>
 
@@ -79,7 +82,7 @@
         </transform>
     </translet>
 
-    <template id="template-1" engine="thymeleaf" style="apon">
+    <template id="template-1" engine="thymeleaf" style="apon" contentType="plain/text">
         |Name: [[${name}]], Email: [[${email}]]
     </template>
 
@@ -98,11 +101,11 @@
             <item name="name">${name:Jane}</item>
             <item name="email">${email:jane@mail.com}</item>
         </attributes>
-        <dispatch name="translet-2.txt" dispatcher="thymeleafViewDispatcher"/>
+        <dispatch name="translet-2.txt" dispatcher="thymeleafViewDispatcher" contentType="text/plain"/>
     </translet>
 
     <translet name="test-1.html">
-        <dispatch name="test-1" dispatcher="thymeleafViewDispatcher" contentType="text/html"/>
+        <dispatch name="test-1.html" dispatcher="thymeleafViewDispatcher" contentType="text/html"/>
     </translet>
 
 </aspectran>

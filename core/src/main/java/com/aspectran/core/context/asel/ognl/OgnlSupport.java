@@ -33,9 +33,9 @@ import java.util.Map;
  */
 public abstract class OgnlSupport {
 
-    private static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
+    public static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
 
-    private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
+    public static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
     private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
 
