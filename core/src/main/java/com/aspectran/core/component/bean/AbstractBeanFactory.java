@@ -28,7 +28,7 @@ import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.proxy.ProxyBeanFactory;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.asel.value.ExpressionEvaluable;
+import com.aspectran.core.context.asel.value.ValueEvaluator;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -120,9 +120,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     argTypes = new Class<?>[autowireTargetRules.length];
                     for (int i = 0; i < autowireTargetRules.length; i++) {
                         Class<?> type = autowireTargetRules[i].getType();
-                        ExpressionEvaluable valueExpression = autowireTargetRules[i].getValueExpression();
-                        if (valueExpression != null) {
-                            args[i] = valueExpression.evaluate(activity, null);
+                        ValueEvaluator valueEvaluator = autowireTargetRules[i].getValueExpression();
+                        if (valueEvaluator != null) {
+                            args[i] = valueEvaluator.evaluate(activity, null);
                             if (ctorAutowireRule.isRequired() && args[i] == null) {
                                 throw new BeanCreationException("Could not autowire constructor: " +
                                         ctorAutowireRule, beanRule);
@@ -257,9 +257,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                     if (autowireTargetRule != null) {
                         Object value;
-                        ExpressionEvaluable valueExpression = autowireTargetRule.getValueExpression();
-                        if (valueExpression != null) {
-                            value = valueExpression.evaluate(activity, null);
+                        ValueEvaluator valueEvaluator = autowireTargetRule.getValueExpression();
+                        if (valueEvaluator != null) {
+                            value = valueEvaluator.evaluate(activity, null);
                         } else {
                             Class<?> type = autowireTargetRule.getType();
                             String qualifier = autowireTargetRule.getQualifier();
@@ -287,9 +287,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
                     AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                     if (autowireTargetRule != null) {
-                        ExpressionEvaluable valueExpression = autowireTargetRule.getValueExpression();
-                        if (valueExpression != null) {
-                            Object value = valueExpression.evaluate(activity, null);
+                        ValueEvaluator valueEvaluator = autowireTargetRule.getValueExpression();
+                        if (valueEvaluator != null) {
+                            Object value = valueEvaluator.evaluate(activity, null);
                             ReflectionUtils.setField(autowireRule.getTarget(), bean, value);
                         }
                     }
@@ -298,9 +298,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     if (autowireTargetRules != null) {
                         Object[] args = new Object[autowireTargetRules.length];
                         for (int i = 0; i < autowireTargetRules.length; i++) {
-                            ExpressionEvaluable valueExpression = autowireTargetRules[i].getValueExpression();
-                            if (valueExpression != null) {
-                                args[i] = valueExpression.evaluate(activity, null);
+                            ValueEvaluator valueEvaluator = autowireTargetRules[i].getValueExpression();
+                            if (valueEvaluator != null) {
+                                args[i] = valueEvaluator.evaluate(activity, null);
                                 if (autowireRule.isRequired() && args[i] == null) {
                                     throw new BeanCreationException("Autowiring failed for method: " +
                                             autowireRule, beanRule);

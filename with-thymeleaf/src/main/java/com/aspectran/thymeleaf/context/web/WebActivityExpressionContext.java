@@ -1,5 +1,6 @@
 package com.aspectran.thymeleaf.context.web;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.thymeleaf.context.ActivityExpressionContext;
 import com.aspectran.utils.Assert;
 import org.thymeleaf.IEngineConfiguration;
@@ -13,24 +14,24 @@ public class WebActivityExpressionContext extends ActivityExpressionContext impl
 
     private final IWebExchange webExchange;
 
-    public WebActivityExpressionContext(IEngineConfiguration configuration,
-                                        IWebExchange webExchange) {
-        super(configuration);
+    public WebActivityExpressionContext(
+        Activity activity, IEngineConfiguration configuration, IWebExchange webExchange) {
+        super(activity, configuration);
         Assert.notNull(webExchange, "Web exchange cannot be null in web context");
         this.webExchange = webExchange;
     }
 
-    public WebActivityExpressionContext(IEngineConfiguration configuration,
-                                        IWebExchange webExchange, Locale locale) {
-        super(configuration, locale);
+    public WebActivityExpressionContext(
+            Activity activity, IEngineConfiguration configuration, IWebExchange webExchange, Locale locale) {
+        super(activity, configuration, locale);
         Assert.notNull(webExchange, "Web exchange cannot be null in web context");
         this.webExchange = webExchange;
     }
 
-    public WebActivityExpressionContext(IEngineConfiguration configuration,
-                                        IWebExchange webExchange, Locale locale,
-                                        Map<String, Object> variables) {
-        super(configuration, locale, variables);
+    public WebActivityExpressionContext(
+            Activity activity, IEngineConfiguration configuration, IWebExchange webExchange, Locale locale,
+            Map<String, Object> variables) {
+        super(activity, configuration, locale, variables);
         Assert.notNull(webExchange, "Web exchange cannot be null in web context");
         this.webExchange = webExchange;
     }

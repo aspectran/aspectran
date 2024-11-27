@@ -17,6 +17,7 @@ package com.aspectran.core.context.asel.value;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.ExpressionEvaluationException;
+import com.aspectran.core.context.asel.ExpressionEvaluator;
 import com.aspectran.core.context.asel.ExpressionParserException;
 import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
@@ -25,34 +26,34 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.OgnlContext;
 
 /**
- * ExpressionEvaluable implementation that evaluates expressions written in
+ * ValueEvaluator implementation that evaluates expressions written in
  * OGNL-based Aspectran expression language.
  *
  * <p>Created: 2021/01/31</p>
  *
  * @since 6.11.0
  */
-public class ValueExpression implements ExpressionEvaluable {
+public class ValueExpression implements ValueEvaluator {
 
-    private final TokenizedExpression tokenizedExpression;
+    private final ExpressionEvaluator expressionEvaluator;
 
     public ValueExpression(String expression) throws ExpressionParserException {
-        this.tokenizedExpression = new TokenizedExpression(expression);
+        this.expressionEvaluator = new TokenizedExpression(expression);
     }
 
     @Nullable
     public String getExpressionString() {
-        return tokenizedExpression.getExpressionString();
+        return expressionEvaluator.getExpressionString();
     }
 
     @Nullable
     public Object getParsedExpression() {
-        return tokenizedExpression.getParsedExpression();
+        return expressionEvaluator.getParsedExpression();
     }
 
     @Nullable
     public Token[] getTokens() {
-        return tokenizedExpression.getTokens();
+        return expressionEvaluator.getTokens();
     }
 
     @Override
@@ -65,7 +66,7 @@ public class ValueExpression implements ExpressionEvaluable {
             return null;
         }
         OgnlContext ognlContext = OgnlSupport.createDefaultContext();
-        return (V)tokenizedExpression.evaluate(activity, ognlContext, resultType);
+        return (V)expressionEvaluator.evaluate(activity, ognlContext, activity.getActivityData(), resultType);
     }
 
     /**
@@ -90,8 +91,8 @@ public class ValueExpression implements ExpressionEvaluable {
      */
     public static <V> V evaluate(String expression, Activity activity, Class<V> resultType) {
         try {
-            ExpressionEvaluable valueExpression = new ValueExpression(expression);
-            return valueExpression.evaluate(activity, resultType);
+            ValueEvaluator valueEvaluator = new ValueExpression(expression);
+            return valueEvaluator.evaluate(activity, resultType);
         } catch (Exception e) {
             throw new ExpressionEvaluationException(expression, e);
         }

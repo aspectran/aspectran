@@ -92,21 +92,15 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         Assert.notNull(activity, "activity must not be null");
 
         Locale locale = activity.getRequestAdapter().getLocale();
-        Map<String, Object> variables = activity.getActivityData();
+        String contentType = activity.getResponseAdapter().getContentType();
         Writer writer = activity.getResponseAdapter().getWriter();
 
         IEngineConfiguration configuration = templateEngine.getConfiguration();
         ActivityExpressionContext context = ActivityExpressionContextFactory.create(activity, configuration, locale);
 
-        String templateNameToUse;
-        Set<String> markupSelectors;
-        if (!templateName.contains("::")) {
-            // No fragment specified at the template name
-            templateNameToUse = templateName;
-            markupSelectors = null;
-        } else {
+        TemplateSpec templateSpec;
+        if (templateName.contains("::")) {
             // Template name contains a fragment name, so we should parse it as such
-
             IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
             FragmentExpression fragmentExpression;
             try {
@@ -119,10 +113,10 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
             FragmentExpression.ExecutedFragmentExpression fragment =
                 FragmentExpression.createExecutedFragmentExpression(context, fragmentExpression);
 
-            templateNameToUse = FragmentExpression.resolveTemplateName(fragment);
-            markupSelectors = FragmentExpression.resolveFragments(fragment);
+            String templateNameToUse = FragmentExpression.resolveTemplateName(fragment);
+            Set<String> markupSelectors = FragmentExpression.resolveFragments(fragment);
 
-            Map<String,Object> nameFragmentParameters = fragment.getFragmentParameters();
+            Map<String, Object> nameFragmentParameters = fragment.getFragmentParameters();
             if (nameFragmentParameters != null) {
                 if (fragment.hasSyntheticParameters()) {
                     // We cannot allow synthetic parameters because there is no way to specify them at the template
@@ -130,11 +124,15 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
                     throw new IllegalArgumentException(
                         "Parameters in a view specification must be named (non-synthetic): '" + templateName + "'");
                 }
-                context.setVariables(nameFragmentParameters);
             }
+
+            templateSpec = new TemplateSpec(templateNameToUse, markupSelectors, contentType, nameFragmentParameters);
+        } else {
+            // No fragment specified at the template name
+            templateSpec = new TemplateSpec(templateName, contentType);
         }
 
-        templateEngine.process(templateNameToUse, markupSelectors, context, writer);
+        templateEngine.process(templateSpec, context, writer);
     }
 
     private void checkHasEngine() {

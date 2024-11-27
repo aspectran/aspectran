@@ -24,10 +24,10 @@ public abstract class ActivityExpressionContextFactory {
         if (activity.getMode() == Activity.Mode.WEB) {
             IWebExchange webExchange = WebActivityExchange.buildExchange(activity);
             Map<String, Object> variables = toVariables(activity.getProcessResult());
-            return new WebActivityExpressionContext(configuration, webExchange, locale, variables);
+            return new WebActivityExpressionContext(activity, configuration, webExchange, locale, variables);
         } else {
             Map<String, Object> variables = activity.getActivityData();
-            return new ActivityExpressionContext(configuration, locale, variables);
+            return new ActivityExpressionContext(activity, configuration, locale, variables);
         }
     }
 

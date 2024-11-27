@@ -48,7 +48,7 @@ public class TransletNotFoundException extends ActivityException {
      * @param requestMethod the request method
      */
     public TransletNotFoundException(String requestName, MethodType requestMethod) {
-        super("No such translet map to " + makeRequestName(requestName, requestMethod));
+        super("No such translet mapped to " + makeRequestName(requestName, requestMethod));
         this.transletName = requestName;
         this.requestMethod = requestMethod;
     }

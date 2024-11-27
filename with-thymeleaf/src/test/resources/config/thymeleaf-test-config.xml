@@ -34,9 +34,25 @@
                                     <item name="cacheable" valueType="boolean">false</item>
                                 </properties>
                             </bean>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
+    </bean>
+
+    <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
+        <description>
+            Register a Thymeleaf View Dispatcher.
+        </description>
+        <arguments>
+            <item>
+                <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
+                    <properties>
+                        <item name="templateResolvers" type="set">
                             <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
                                 <properties>
-                                    <item name="prefix">view</item>
+                                    <item name="prefix">view/html/</item>
                                     <item name="suffix">.html</item>
                                     <item name="templateMode">HTML</item>
                                     <item name="cacheable" valueType="boolean">true</item>
@@ -63,14 +79,30 @@
         </transform>
     </translet>
 
+    <template id="template-1" engine="thymeleaf" style="apon">
+        |Name: [[${name}]], Email: [[${email}]]
+    </template>
+
     <translet name="translet-1">
+        <attributes>
+            <item name="name">${name:Jane}</item>
+            <item name="email">${email:jane@mail.com}</item>
+        </attributes>
         <transform format="text">
             <template>~{template-1}</template>
         </transform>
     </translet>
 
-    <template id="template-1" engine="thymeleaf" style="apon">
-        | Name: {{ name }}, Email: {{ email }}
-    </template>
+    <translet name="translet-2">
+        <attributes>
+            <item name="name">${name:Jane}</item>
+            <item name="email">${email:jane@mail.com}</item>
+        </attributes>
+        <dispatch name="translet-2.txt" dispatcher="thymeleafViewDispatcher"/>
+    </translet>
+
+    <translet name="test-1.html">
+        <dispatch name="test-1" dispatcher="thymeleafViewDispatcher" contentType="text/html"/>
+    </translet>
 
 </aspectran>

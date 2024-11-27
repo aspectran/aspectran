@@ -24,7 +24,7 @@ import com.aspectran.core.activity.Activity;
  *
  * @since 6.11.0
  */
-public interface ExpressionEvaluable {
+public interface ValueEvaluator {
 
     /**
      * Evaluates an expression.

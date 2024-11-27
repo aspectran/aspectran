@@ -6,6 +6,7 @@ import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -21,7 +22,7 @@ import java.util.Set;
 /**
  * <p>Created: 2024. 11. 26.</p>
  */
-public class TokenizedExpression {
+public class TokenizedExpression implements ExpressionEvaluator {
 
     private static final String TOKEN_VAR_REF_SYMBOL = "#";
 
@@ -44,21 +45,25 @@ public class TokenizedExpression {
         parseExpression();
     }
 
+    @Override
     @Nullable
     public String getExpressionString() {
         return expression;
     }
 
+    @Override
     @Nullable
     public Object getParsedExpression() {
         return parsedExpression;
     }
 
+    @Override
     @Nullable
     public Token[] getTokens() {
         return tokens;
     }
 
+    @Override
     @Nullable
     public Set<String> getTokenVarNames() {
         return tokenVarNames;
@@ -104,17 +109,26 @@ public class TokenizedExpression {
         this.parsedExpression = OgnlSupport.parseExpression(expressionString);
     }
 
+    @Override
     public Object evaluate(Activity activity, OgnlContext ognlContext) {
-        return evaluate(activity, ognlContext, null);
+        return evaluate(activity, ognlContext, null, null);
     }
 
-    public Object evaluate(Activity activity, OgnlContext ognlContext, Class<?> resultType) {
+    @Override
+    public Object evaluate(Activity activity, OgnlContext ognlContext, Object root) {
+        return evaluate(activity, ognlContext, root, null);
+    }
+
+    @Override
+    public Object evaluate(Activity activity, OgnlContext ognlContext, Object root, Class<?> resultType) {
+        Assert.notNull(activity, "activity must not be null");
+        Assert.notNull(ognlContext, "ognlContext must not be null");
         if (getParsedExpression() == null) {
             return null;
         }
         try {
             preProcess(activity, ognlContext);
-            Object value = Ognl.getValue(getParsedExpression(), ognlContext, activity.getActivityData(), resultType);
+            Object value = Ognl.getValue(getParsedExpression(), ognlContext, root, resultType);
             return postProcess(ognlContext, value);
         } catch (Exception e) {
             throw new ExpressionEvaluationException(getExpressionString(), e);

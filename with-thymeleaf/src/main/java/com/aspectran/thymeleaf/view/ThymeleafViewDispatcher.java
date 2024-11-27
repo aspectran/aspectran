@@ -27,11 +27,11 @@ import com.aspectran.utils.logging.LoggerFactory;
 import org.thymeleaf.ITemplateEngine;
 
 /**
- * The Class PebbleViewDispatcher.
+ * The Class ThymeleafViewDispatcher.
  *
- * <p>Created: 2016. 1. 27.</p>
+ * <p>Created: 2024. 11. 18.</p>
  *
- * @since 2.0.0
+ * @since 8.2.0
  */
 public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
 
@@ -74,13 +74,13 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Pebble template [" + viewName + "]");
+                logger.debug("Dispatching to Thymeleaf template [" + viewName + "]");
             }
 
             ThymeleafTemplateEngine.process(templateEngine, viewName, activity);
         } catch (Exception e) {
             activity.setRaisedException(e);
-            throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
+            throw new ViewDispatcherException("Failed to dispatch to Thymeleaf template " +
                     dispatchRule.toString(this, viewName), e);
         }
     }
