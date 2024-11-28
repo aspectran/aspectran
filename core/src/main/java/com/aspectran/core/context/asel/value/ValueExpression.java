@@ -22,8 +22,11 @@ import com.aspectran.core.context.asel.ExpressionParserException;
 import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.utils.ConcurrentReferenceHashMap;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.OgnlContext;
+
+import java.util.Map;
 
 /**
  * ValueEvaluator implementation that evaluates expressions written in
@@ -35,10 +38,12 @@ import ognl.OgnlContext;
  */
 public class ValueExpression implements ValueEvaluator {
 
+    private static final Map<String, ExpressionEvaluator> cache = new ConcurrentReferenceHashMap<>();
+
     private final ExpressionEvaluator expressionEvaluator;
 
     public ValueExpression(String expression) throws ExpressionParserException {
-        this.expressionEvaluator = new TokenizedExpression(expression);
+        this.expressionEvaluator = parseExpression(expression);
     }
 
     @Nullable
@@ -96,6 +101,18 @@ public class ValueExpression implements ValueEvaluator {
         } catch (Exception e) {
             throw new ExpressionEvaluationException(expression, e);
         }
+    }
+
+    private static ExpressionEvaluator parseExpression(String expression) throws ExpressionParserException {
+        ExpressionEvaluator evaluator = cache.get(expression);
+        if (evaluator == null) {
+            evaluator = new TokenizedExpression(expression);
+            ExpressionEvaluator existing = cache.putIfAbsent(expression, evaluator);
+            if (existing != null) {
+                evaluator = existing;
+            }
+        }
+        return evaluator;
     }
 
 }

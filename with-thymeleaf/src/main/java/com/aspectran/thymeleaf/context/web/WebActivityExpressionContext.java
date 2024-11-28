@@ -16,16 +16,12 @@ public class WebActivityExpressionContext extends ActivityExpressionContext impl
 
     public WebActivityExpressionContext(
         Activity activity, IEngineConfiguration configuration, IWebExchange webExchange) {
-        super(activity, configuration);
-        Assert.notNull(webExchange, "Web exchange cannot be null in web context");
-        this.webExchange = webExchange;
+        this(activity, configuration, webExchange, null, null);
     }
 
     public WebActivityExpressionContext(
             Activity activity, IEngineConfiguration configuration, IWebExchange webExchange, Locale locale) {
-        super(activity, configuration, locale);
-        Assert.notNull(webExchange, "Web exchange cannot be null in web context");
-        this.webExchange = webExchange;
+        this(activity, configuration, webExchange, locale, null);
     }
 
     public WebActivityExpressionContext(

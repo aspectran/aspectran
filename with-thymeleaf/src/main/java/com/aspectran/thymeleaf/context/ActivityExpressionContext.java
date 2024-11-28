@@ -13,15 +13,11 @@ public class ActivityExpressionContext extends AbstractExpressionContext impleme
     private final Activity activity;
 
     public ActivityExpressionContext(Activity activity, IEngineConfiguration configuration) {
-        super(configuration);
-        Assert.notNull(activity, "activity must not be null");
-        this.activity = activity;
+        this(activity, configuration, null, null);
     }
 
     public ActivityExpressionContext(Activity activity, IEngineConfiguration configuration, Locale locale) {
-        super(configuration, locale);
-        Assert.notNull(activity, "activity must not be null");
-        this.activity = activity;
+        this(activity, configuration, locale, null);
     }
 
     public ActivityExpressionContext(

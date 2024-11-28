@@ -69,28 +69,28 @@ public class ActivityData extends HashMap<String, Object> {
         }
 
         String name = key.toString();
-        Object data = getActionResultWithoutCache(name);
-        if (data != null) {
+        value = getActionResultWithoutCache(name);
+        if (value != null) {
             preempt(name, value);
-            return data;
+            return value;
         }
 
-        data = getAttributeWithoutCache(name);
-        if (data != null) {
+        value = getAttributeWithoutCache(name);
+        if (value != null) {
             preempt(name, value);
-            return data;
+            return value;
         }
 
-        data = getParameterWithoutCache(name);
-        if (data != null) {
+        value = getParameterWithoutCache(name);
+        if (value != null) {
             preempt(name, value);
-            return data;
+            return value;
         }
 
-        data = getSessionAttributeWithoutCache(name);
-        if (data != null) {
+        value = getSessionAttributeWithoutCache(name);
+        if (value != null) {
             preempt(name, value);
-            return data;
+            return value;
         }
 
         return null;
@@ -102,6 +102,11 @@ public class ActivityData extends HashMap<String, Object> {
             throw new IllegalArgumentException("Same instance as this map can not be stored");
         }
         return super.put(key, value);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return (super.get(key) != null);
     }
 
     @Override

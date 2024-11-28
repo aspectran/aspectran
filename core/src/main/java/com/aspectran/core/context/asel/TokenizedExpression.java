@@ -1,7 +1,6 @@
 package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
@@ -12,6 +11,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.Ognl;
 import ognl.OgnlContext;
+import ognl.OgnlException;
 import ognl.OgnlOps;
 
 import java.util.Collections;
@@ -114,8 +114,14 @@ public class TokenizedExpression implements ExpressionEvaluator {
         this.tokens = tokens;
         this.tokenVars = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableMap(tokenVars) : null);
         this.tokenVarNames = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableSet(tokenVars.keySet()) : null);
-        this.parsedExpression = OgnlSupport.parseExpression(substitutedExpression);
         this.substitutedExpression = substitutedExpression;
+        if (substitutedExpression != null) {
+            try {
+                this.parsedExpression = Ognl.parseExpression(substitutedExpression);
+            } catch (OgnlException e) {
+                throw new ExpressionParserException(expression, e);
+            }
+        }
     }
 
     @Override
@@ -159,6 +165,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
                     Object tokenValue = ognlContext.get(tokenVarName);
                     String replacement;
                     if (tokenValue != null) {
+                        // TODO stringify
                         replacement = (String)OgnlOps.convertValue(tokenValue, String.class, true);
                     } else {
                         replacement = StringUtils.EMPTY;

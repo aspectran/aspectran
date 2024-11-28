@@ -82,6 +82,19 @@
         </transform>
     </translet>
 
+    <translet name="echo-2">
+        <request>
+            <attributes>
+                <item name="input_1" valueType="double">123456789</item>
+            </attributes>
+        </request>
+        <transform format="text">
+            <template engine="thymeleaf" style="apon" contentType="plain/text">
+                |[[${#numbers.formatDecimal(input_1,5,'COMMA',2,'POINT')}]]
+            </template>
+        </transform>
+    </translet>
+
     <template id="template-1" engine="thymeleaf" style="apon" contentType="plain/text">
         |Name: [[${name}]], Email: [[${email}]]
     </template>

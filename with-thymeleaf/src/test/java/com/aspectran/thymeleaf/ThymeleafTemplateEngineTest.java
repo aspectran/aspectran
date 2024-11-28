@@ -46,6 +46,12 @@ class ThymeleafTemplateEngineTest {
 
     @Test
     void testEcho2() {
+        Translet translet = aspectran.translate("echo-2");
+        assertEquals("123,456,789.00", translet.getWrittenResponse());
+    }
+
+    @Test
+    void testText() {
         ParameterMap params = new ParameterMap();
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");

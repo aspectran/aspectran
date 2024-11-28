@@ -15,14 +15,8 @@
  */
 package com.aspectran.core.context.asel.ognl;
 
-import com.aspectran.core.context.asel.ExpressionParserException;
-import com.aspectran.utils.ConcurrentReferenceHashMap;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
-import ognl.Ognl;
 import ognl.OgnlContext;
-import ognl.OgnlException;
 
 import java.util.Map;
 
@@ -37,8 +31,6 @@ public abstract class OgnlSupport {
 
     public static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
-    private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
-
     @NonNull
     public static OgnlContext createDefaultContext() {
         return new OgnlContext(CLASS_RESOLVER, null, MEMBER_ACCESS);
@@ -51,26 +43,6 @@ public abstract class OgnlSupport {
             ognlContext.putAll(contextVariables);
         }
         return ognlContext;
-    }
-
-    @Nullable
-    public static Object parseExpression(String expression) throws ExpressionParserException {
-        if (!StringUtils.hasLength(expression)) {
-            return null;
-        }
-        try {
-            Object node = cache.get(expression);
-            if (node == null) {
-                node = Ognl.parseExpression(expression);
-                Object existing = cache.putIfAbsent(expression, node);
-                if (existing != null) {
-                    node = existing;
-                }
-            }
-            return node;
-        } catch (OgnlException e) {
-            throw new ExpressionParserException(expression, e);
-        }
     }
 
 }

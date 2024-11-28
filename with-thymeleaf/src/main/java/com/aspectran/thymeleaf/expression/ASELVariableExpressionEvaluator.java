@@ -5,7 +5,7 @@ import com.aspectran.core.context.asel.ExpressionParserException;
 import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.thymeleaf.context.CurrentActivityHolder;
-import com.aspectran.thymeleaf.context.OgnlContextVariables;
+import com.aspectran.thymeleaf.context.UtilizedOgnlContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -27,9 +27,6 @@ import org.thymeleaf.standard.expression.StandardExpressionExecutionContext;
 import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.standard.util.StandardExpressionUtils;
-
-import java.util.Collections;
-import java.util.Map;
 
 import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.RESTRICT_REQUEST_PARAMETERS;
 
@@ -70,7 +67,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
            StandardExpressionExecutionContext exeContext, boolean applyOgnlShortcuts) {
         if (logger.isTraceEnabled()) {
             logger.trace("[THYMELEAF][" + TemplateEngine.threadIndex() +
-                "] SpringEL expression: evaluating expression \"" + expression.getExpression() + "\" on target");
+                "] AspectranEL expression: evaluating expression \"" + expression.getExpression() + "\" on target");
         }
 
         try {
@@ -90,14 +87,18 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
 
             // The root object on which we will evaluate expressions will depend on whether a selection target is
             // active or not...
-            ITemplateContext templateContext = (context instanceof ITemplateContext ? (ITemplateContext)context : null);
+            ITemplateContext templateContext = (context instanceof ITemplateContext tc ? tc : null);
             Object root = (useSelectionAsRoot && templateContext != null && templateContext.hasSelectionTarget() ?
                     templateContext.getSelectionTarget() : templateContext);
+
+            if (root != null) {
+                contextVariables.setRoot(root);
+            }
 
             // Execute the expression!
             Object result;
             try {
-                result = executeExpression(activity, configuration, parsedExpression.expression, contextVariables, root);
+                result = executeExpression(activity, configuration, parsedExpression.expression, contextVariables);
             } catch (OgnlShortcutExpression.OGNLShortcutExpressionNotApplicableException notApplicable) {
                 // We tried to apply shortcuts, but it is not possible for this expression even if it parsed OK,
                 // so we need to empty the cache and try again disabling shortcuts. Once processed for the first time,
@@ -107,12 +108,12 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
                 return evaluate(context, expression, exeContext, false);
             }
 
-            if (!exeContext.getPerformTypeConversion()) {
+            if (exeContext.getPerformTypeConversion()) {
+                IStandardConversionService conversionService = StandardExpressions.getConversionService(configuration);
+                return conversionService.convert(context, result, String.class);
+            } else {
                 return result;
             }
-
-            IStandardConversionService conversionService = StandardExpressions.getConversionService(configuration);
-            return conversionService.convert(context, result, String.class);
         } catch (Exception e) {
             throw new TemplateProcessingException(
                 "Exception evaluating OGNL expression: \"" + expression.getExpression() + "\"", e);
@@ -134,7 +135,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
 
             // Note this will never happen with shortcut expressions, as the '#' character with which all
             // expression object names start is not allowed by the OgnlShortcutExpression parser.
-            contextVariables = new OgnlContextVariables(context.getExpressionObjects());
+            contextVariables = new UtilizedOgnlContext(context.getExpressionObjects());
         } else {
             contextVariables = OgnlSupport.createDefaultContext();
         }
@@ -246,15 +247,15 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     }
 
     private static Object executeExpression(
-            Activity activity, IEngineConfiguration configuration, Object parsedExpression,
-            OgnlContext contextVariables, Object root) throws Exception {
+            Activity activity, IEngineConfiguration configuration,
+            Object parsedExpression, OgnlContext contextVariables) throws Exception {
         if (parsedExpression instanceof OgnlShortcutExpression ose) {
-            return ose.evaluate(configuration, contextVariables, root);
+            return ose.evaluate(configuration, contextVariables, contextVariables.getRoot());
         }
         if (activity != null && parsedExpression instanceof TokenizedExpression te) {
-            return te.evaluate(activity, contextVariables, root);
+            return te.evaluate(activity, contextVariables, contextVariables.getRoot());
         } else {
-            return Ognl.getValue(parsedExpression, contextVariables, root);
+            return Ognl.getValue(parsedExpression, contextVariables, contextVariables.getRoot());
         }
     }
 
