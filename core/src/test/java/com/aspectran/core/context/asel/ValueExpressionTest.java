@@ -78,6 +78,7 @@ class ValueExpressionTest {
     @Test
     void evaluate4() {
         assertEquals("bar1", ValueExpression.evaluate("'${bars}'", activity));
+        assertEquals("bar1", ValueExpression.evaluate("'${bars}'", activity));
     }
 
 }
