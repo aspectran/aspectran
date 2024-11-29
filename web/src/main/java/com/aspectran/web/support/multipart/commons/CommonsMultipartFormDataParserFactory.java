@@ -82,7 +82,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
      */
     public void setMaxRequestSize(String maxRequestSize) {
-        this.maxRequestSize = StringUtils.convertToMachineFriendlyByteSize(maxRequestSize);
+        this.maxRequestSize = StringUtils.toMachineFriendlyByteSize(maxRequestSize);
     }
 
     /**
@@ -100,7 +100,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
      */
     public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSize = StringUtils.convertToMachineFriendlyByteSize(maxFileSize);
+        this.maxFileSize = StringUtils.toMachineFriendlyByteSize(maxFileSize);
     }
 
     /**
@@ -122,7 +122,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
      */
     public void setMaxInMemorySize(String maxInMemorySize) {
-        this.maxInMemorySize = (int)StringUtils.convertToMachineFriendlyByteSize(maxInMemorySize);
+        this.maxInMemorySize = (int)StringUtils.toMachineFriendlyByteSize(maxInMemorySize);
     }
 
     /**

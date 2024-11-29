@@ -20,15 +20,15 @@ import org.junit.jupiter.api.Test;
 class StringUtilsTest {
 
     @Test
-    void convertToHumanFriendlyByteSize() {
+    void toHumanFriendlyByteSize() {
         for (long l : new long[] {1L, 1024L, 10000L, 1234567890L})
-            System.out.println(l + " = " + StringUtils.convertToHumanFriendlyByteSize(l));
+            System.out.println(l + " = " + StringUtils.toHumanFriendlyByteSize(l));
     }
 
     @Test
-    void convertToMachineFriendlyByteSize() {
+    void toMachineFriendlyByteSize() {
         for (String s : "1K, 1KB, 10M, 10MB, 1.2 GB, 2.4GB, 3.75MB, 1.28KB, 1024, 1024B".split(","))
-            System.out.println(s.trim() + " = " + StringUtils.convertToMachineFriendlyByteSize(s));
+            System.out.println(s.trim() + " = " + StringUtils.toMachineFriendlyByteSize(s));
     }
 
 }

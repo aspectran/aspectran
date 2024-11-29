@@ -60,7 +60,7 @@ public class InMemoryMultipartFormDataParserFactory {
      * @param maxRequestSize the maximum size of the request
      */
     public void setMaxRequestSize(String maxRequestSize) {
-        this.maxRequestSize = StringUtils.convertToMachineFriendlyByteSize(maxRequestSize);
+        this.maxRequestSize = StringUtils.toMachineFriendlyByteSize(maxRequestSize);
     }
 
     /**
@@ -76,7 +76,7 @@ public class InMemoryMultipartFormDataParserFactory {
      * @param maxFileSize the maximum size of the file
      */
     public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSize = StringUtils.convertToMachineFriendlyByteSize(maxFileSize);
+        this.maxFileSize = StringUtils.toMachineFriendlyByteSize(maxFileSize);
     }
 
     /**

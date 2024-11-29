@@ -36,7 +36,9 @@ public class ToStringBuilder {
 
     private final StringBuilder buffer;
 
-    private final int start;
+    private boolean braced = false;
+
+    private int start = -1;
 
     public ToStringBuilder() {
         this(null);
@@ -51,21 +53,33 @@ public class ToStringBuilder {
     }
 
     public ToStringBuilder(String name, int capacity) {
-        buffer = new StringBuilder(capacity);
-        if (name != null) {
-            buffer.append(name).append(" ");
-            this.start = buffer.length() + 1;
-        } else {
-            this.start = 1;
-        }
-        buffer.append("{");
+        this.buffer = new StringBuilder(capacity);
+        labeling(name, true);
     }
 
-    public ToStringBuilder(String name, Parameters parameters) {
-        this(name, 128);
-        if (parameters != null) {
-            append(parameters);
+    public ToStringBuilder(Object value) {
+        this(null, value);
+    }
+
+    public ToStringBuilder(String name, Object value) {
+        this.buffer = new StringBuilder(128);
+        if (name != null) {
+            labeling(name, false);
         }
+        if (value != null) {
+            append(value);
+        }
+    }
+
+    private void labeling(String name, boolean braced) {
+        if (name != null) {
+            buffer.append(name).append(" ");
+        }
+        if (braced) {
+            buffer.append("{");
+        }
+        this.braced = braced;
+        this.start = buffer.length();
     }
 
     public ToStringBuilder append(String name, Object value) {
@@ -145,11 +159,11 @@ public class ToStringBuilder {
     }
 
     private void appendName(Object name) {
-        appendName(name, this.start);
+        appendName(name, start);
     }
 
-    private void appendName(Object name, int start) {
-        if (buffer.length() > start) {
+    private void appendName(Object name, int index) {
+        if (buffer.length() > index) {
             appendComma();
         }
         buffer.append(name).append("=");
@@ -160,9 +174,7 @@ public class ToStringBuilder {
     }
 
     private void append(Object object) {
-        if (object == null) {
-            buffer.append((Object)null);
-        } else if (object instanceof CharSequence charSequence) {
+        if (object instanceof CharSequence charSequence) {
             buffer.append(charSequence);
         } else if (object instanceof Map<?, ?> map) {
             append(map);
@@ -170,24 +182,10 @@ public class ToStringBuilder {
             append(collection);
         } else if (object instanceof Enumeration<?> enumeration) {
             append(enumeration);
-        } else if (object.getClass().isArray()) {
-            buffer.append("[");
-            int len = Array.getLength(object);
-            for (int i = 0; i < len; i++) {
-                Object value = Array.get(object, i);
-                checkCircularReference(object, value);
-                if (i > 0) {
-                    appendComma();
-                }
-                append(value);
-            }
-            buffer.append("]");
         } else if (object instanceof Parameters parameters) {
-            buffer.append("{");
             append(parameters);
-            buffer.append("}");
-        } else if (object instanceof ToStringBuilder toStringBuilder) {
-            buffer.append(toStringBuilder.getBuffer());
+        } else if (object.getClass().isArray()) {
+            appendArray(object);
         } else {
             buffer.append(object);
         }
@@ -195,12 +193,13 @@ public class ToStringBuilder {
 
     private void append(@NonNull Map<?, ?> map) {
         buffer.append("{");
-        int len = buffer.length();
+        int index = buffer.length();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
             if (value != null) {
-                appendName(key, len);
+                checkCircularReference(map, value);
+                appendName(key, index);
                 append(value);
             }
         }
@@ -209,21 +208,24 @@ public class ToStringBuilder {
 
     private void append(@NonNull Collection<?> list) {
         buffer.append("[");
-        int len = buffer.length();
-        for (Object o : list) {
-            if (buffer.length() > len) {
+        int index = buffer.length();
+        for (Object value : list) {
+            checkCircularReference(list, value);
+            if (buffer.length() > index) {
                 appendComma();
             }
-            append(o);
+            append(value);
         }
         buffer.append("]");
     }
 
-    private void append(@NonNull Enumeration<?> en) {
+    private void append(@NonNull Enumeration<?> enumeration) {
         buffer.append("[");
-        while (en.hasMoreElements()) {
-            append(en.nextElement());
-            if (en.hasMoreElements()) {
+        while (enumeration.hasMoreElements()) {
+            Object value = enumeration.nextElement();
+            checkCircularReference(enumeration, value);
+            append(value);
+            if (enumeration.hasMoreElements()) {
                 appendComma();
             }
         }
@@ -231,16 +233,33 @@ public class ToStringBuilder {
     }
 
     private void append(@NonNull Parameters parameters) {
-        int len = buffer.length();
+        buffer.append("{");
+        int index = buffer.length();
         Map<String, ParameterValue> params = parameters.getParameterValueMap();
         for (Parameter p : params.values()) {
             String name = p.getName();
             Object value = p.getValue();
             if (value != null) {
-                appendName(name, len);
+                checkCircularReference(parameters, value);
+                appendName(name, index);
                 append(value);
             }
         }
+        buffer.append("}");
+    }
+
+    private void appendArray(Object object) {
+        buffer.append("[");
+        int len = Array.getLength(object);
+        for (int i = 0; i < len; i++) {
+            Object value = Array.get(object, i);
+            checkCircularReference(object, value);
+            if (i > 0) {
+                appendComma();
+            }
+            append(value);
+        }
+        buffer.append("]");
     }
 
     private void append(@NonNull Method method) {
@@ -253,34 +272,33 @@ public class ToStringBuilder {
             if (i > 0) {
                 appendComma();
             }
-            append(types[i].getTypeName());
+            buffer.append(types[i].getTypeName());
         }
         buffer.append(')');
     }
 
     @Override
     public String toString() {
-        buffer.append("}");
-        return buffer.toString();
-    }
-
-    public static String toString(Parameters parameters) {
-        return toString(null, parameters);
-    }
-
-    public static String toString(String name, Parameters parameters) {
-        return new ToStringBuilder(name, parameters).toString();
-    }
-
-    protected StringBuilder getBuffer() {
-        return buffer;
-    }
-
-    private void checkCircularReference(@NonNull Object wrapper, Object member) {
-        if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("Serialization Failure: A circular reference was detected " +
-                    "while converting a member object [" + member + "] in [" + wrapper + "]");
+        if (braced) {
+            return buffer + "}";
+        } else {
+            return buffer.toString();
         }
+    }
+
+    private static void checkCircularReference(@NonNull Object wrapper, Object member) {
+        if (wrapper == member) {
+            throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +
+                "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);
+        }
+    }
+
+    public static String toString(Object object) {
+        return toString(null, object);
+    }
+
+    public static String toString(String name, Object object) {
+        return new ToStringBuilder(name, object).toString();
     }
 
 }

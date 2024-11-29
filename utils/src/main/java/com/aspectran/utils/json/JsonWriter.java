@@ -141,19 +141,19 @@ public class JsonWriter {
     public <T extends JsonWriter> T write(Object object) throws IOException {
         if (object == null) {
             writeNull();
-        } else if (object instanceof String) {
-            writeValue(object.toString());
+        } else if (object instanceof String string) {
+            writeValue(string);
         } else if (object instanceof JsonString) {
             writeJson(object.toString());
         } else if (object instanceof Character) {
-            writeValue(String.valueOf(((char)object)));
-        } else if (object instanceof Boolean) {
-            writeValue((Boolean)object);
-        } else if (object instanceof Number) {
-            writeValue((Number)object);
-        } else if (object instanceof Parameters) {
+            writeValue(String.valueOf(object));
+        } else if (object instanceof Boolean bool) {
+            writeValue(bool);
+        } else if (object instanceof Number number) {
+            writeValue(number);
+        } else if (object instanceof Parameters parameters) {
             beginObject();
-            Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
+            Map<String, ParameterValue> params = parameters.getParameterValueMap();
             for (Parameter p : params.values()) {
                 String name = p.getName();
                 Object value = p.getValue();
@@ -161,18 +161,18 @@ public class JsonWriter {
                 write(object, value);
             }
             endObject();
-        } else if (object instanceof Map<?, ?>) {
+        } else if (object instanceof Map<?, ?> map) {
             beginObject();
-            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 writeName(name);
                 write(object, value);
             }
             endObject();
-        } else if (object instanceof Collection<?>) {
+        } else if (object instanceof Collection<?> collection) {
             beginArray();
-            for (Object value : (Collection<Object>)object) {
+            for (Object value : collection) {
                 if (value != null) {
                     write(object, value);
                 } else {
@@ -192,24 +192,24 @@ public class JsonWriter {
                 }
             }
             endArray();
-        } else if (object instanceof Date) {
+        } else if (object instanceof Date date) {
             if (dateTimeFormat != null) {
                 SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
-                writeValue(dt.format((Date)object));
+                writeValue(dt.format(date));
             } else {
                 writeValue(object.toString());
             }
-        } else if (object instanceof LocalDate) {
+        } else if (object instanceof LocalDate localDate) {
             if (dateFormat != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                writeValue(((LocalDate)object).format(formatter));
+                writeValue(localDate.format(formatter));
             } else {
                 writeValue(object.toString());
             }
-        } else if (object instanceof LocalDateTime) {
+        } else if (object instanceof LocalDateTime localDateTime) {
             if (dateTimeFormat != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-                writeValue(((LocalDateTime)object).format(formatter));
+                writeValue(localDateTime.format(formatter));
             } else {
                 writeValue(object.toString());
             }

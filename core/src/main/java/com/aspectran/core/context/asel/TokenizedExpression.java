@@ -7,12 +7,12 @@ import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
-import ognl.OgnlOps;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -165,8 +165,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
                     Object tokenValue = ognlContext.get(tokenVarName);
                     String replacement;
                     if (tokenValue != null) {
-                        // TODO stringify
-                        replacement = (String)OgnlOps.convertValue(tokenValue, String.class, true);
+                        replacement = ToStringBuilder.toString(tokenValue);
                     } else {
                         replacement = StringUtils.EMPTY;
                     }

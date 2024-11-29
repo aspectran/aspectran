@@ -100,7 +100,7 @@ public class SimpleFileUploadActivity {
             uploadedFile.setKey(key);
             uploadedFile.setFileName(fileParameter.getFileName());
             uploadedFile.setFileSize(fileParameter.getFileSize());
-            uploadedFile.setHumanFileSize(StringUtils.convertToHumanFriendlyByteSize(fileParameter.getFileSize()));
+            uploadedFile.setHumanFileSize(StringUtils.toHumanFriendlyByteSize(fileParameter.getFileSize()));
             uploadedFile.setFileType((fileParameter.getContentType()));
             uploadedFile.setUrl("/examples/file-upload/files/" + key);
             uploadedFile.setBytes(fileParameter.getBytes());

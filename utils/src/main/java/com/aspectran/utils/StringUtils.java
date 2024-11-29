@@ -412,11 +412,27 @@ public abstract class StringUtils {
     public static String replaceLast(@NonNull String str, @NonNull String searchStr, @NonNull String replacement) {
         int pos = str.lastIndexOf(searchStr);
         if (pos > -1) {
-            return str.substring(0, pos) + replacement +
-                    str.substring(pos + searchStr.length());
+            return str.substring(0, pos) + replacement + str.substring(pos + searchStr.length());
         } else {
             return str;
         }
+    }
+
+    /**
+     * Returns padding using the specified delimiter repeated to a given length.
+     * @param ch character to repeat
+     * @param repeat number of times to repeat char, negative treated as zero
+     * @return String with repeated character
+     */
+    public static String repeat(char ch, final int repeat) {
+        if (repeat <= 0) {
+            return EMPTY;
+        }
+        char[] buf = new char[repeat];
+        for (int i = repeat - 1; i >= 0; i--) {
+            buf[i] = ch;
+        }
+        return new String(buf);
     }
 
     /**
@@ -699,7 +715,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert a comma delimited list (e.g., a row from a CSV file) into an
+     * Convert a comma-delimited list (e.g., a row from a CSV file) into an
      * array of strings.
      * @param str the input {@code String}
      * @return an array of strings, or the empty array in case of empty input
@@ -737,7 +753,7 @@ public abstract class StringUtils {
      */
     public static String[] toStringArray(Collection<String> collection) {
         return (collection != null && !collection.isEmpty() ?
-            collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
+                collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -752,28 +768,12 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns padding using the specified delimiter repeated to a given length.
-     * @param ch character to repeat
-     * @param repeat number of times to repeat char, negative treated as zero
-     * @return String with repeated character
-     */
-    public static String repeat(char ch, final int repeat) {
-        if (repeat <= 0) {
-            return EMPTY;
-        }
-        char[] buf = new char[repeat];
-        for (int i = repeat - 1; i >= 0; i--) {
-            buf[i] = ch;
-        }
-        return new String(buf);
-    }
-
-    /**
      * Convert byte size into human friendly format.
      * @param bytes the number of bytes
      * @return a human friendly byte size (includes units)
      */
-    public static String convertToHumanFriendlyByteSize(long bytes) {
+    @NonNull
+    public static String toHumanFriendlyByteSize(long bytes) {
         if (bytes < 1024 && bytes > -1024) {
             return bytes + " B";
         }
@@ -795,7 +795,7 @@ public abstract class StringUtils {
      * @throws NumberFormatException if failed parse given size
      */
     @SuppressWarnings("fallthrough")
-    public static long convertToMachineFriendlyByteSize(@NonNull String bytes) {
+    public static long toMachineFriendlyByteSize(@NonNull String bytes) {
         double d;
         try {
             d = Double.parseDouble(bytes.replaceAll("[GMK]?B?$", EMPTY));

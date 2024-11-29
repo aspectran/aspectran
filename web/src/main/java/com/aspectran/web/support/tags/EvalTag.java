@@ -16,7 +16,7 @@
 package com.aspectran.web.support.tags;
 
 import com.aspectran.core.context.asel.value.ValueExpression;
-import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
@@ -144,12 +144,14 @@ public class EvalTag extends HtmlEscapingAwareTag {
             } else {
                 try {
                     Object result = ValueExpression.evaluate(this.expression, getCurrentActivity());
-                    String str = ObjectUtils.getDisplayString(result);
-                    str = htmlEscape(str);
-                    if (this.javaScriptEscape) {
-                        str = JavaScriptUtils.javaScriptEscape(str);
+                    if (result != null) {
+                        String str = ToStringBuilder.toString(result);
+                        str = htmlEscape(str);
+                        if (this.javaScriptEscape) {
+                            str = JavaScriptUtils.javaScriptEscape(str);
+                        }
+                        super.pageContext.getOut().print(str);
                     }
-                    super.pageContext.getOut().print(str);
                 } catch (IOException ex) {
                     throw new JspException(ex);
                 }
