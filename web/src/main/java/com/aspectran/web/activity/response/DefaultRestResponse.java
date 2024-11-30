@@ -16,13 +16,14 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.response.transform.AponTransformResponse;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
 import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.ObjectToAponConverter;
 import com.aspectran.utils.apon.Parameters;
@@ -149,32 +150,9 @@ public class DefaultRestResponse extends AbstractRestResponse {
             writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
         }
         if (getName() != null || getData() != null) {
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            formattingContext.setPretty(isPrettyPrint());
-            if (isPrettyPrint() && indent > -1) {
-                formattingContext.setIndentSize(indent);
-            }
-
+            StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
             JsonWriter jsonWriter = new JsonWriter(writer);
-            if (formattingContext.getDateFormat() != null) {
-                jsonWriter.dateFormat(formattingContext.getDateFormat());
-            }
-            if (formattingContext.getDateTimeFormat() != null) {
-                jsonWriter.dateTimeFormat(formattingContext.getDateTimeFormat());
-            }
-            if (formattingContext.getNullWritable() != null) {
-                jsonWriter.nullWritable(formattingContext.getNullWritable());
-            }
-            if (formattingContext.isPretty()) {
-                String indentString = formattingContext.makeIndentString();
-                if (indentString != null) {
-                    jsonWriter.indentString(indentString);
-                } else {
-                    jsonWriter.prettyPrint(true);
-                }
-            } else {
-                jsonWriter.prettyPrint(false);
-            }
+            jsonWriter.applyStringifyContext(stringifyContext);
             if (getName() != null) {
                 jsonWriter.beginObject();
                 jsonWriter.writeName(getName());
@@ -193,23 +171,14 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
-
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            formattingContext.setPretty(isPrettyPrint());
-            if (isPrettyPrint() && indent > -1) {
-                formattingContext.setIndentSize(indent);
-            }
+            StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
             ObjectToAponConverter aponConverter = new ObjectToAponConverter();
-            if (formattingContext.getDateFormat() != null) {
-                aponConverter.setDateFormat(formattingContext.getDateFormat());
-            }
-            if (formattingContext.getDateTimeFormat() != null) {
-                aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
-            }
+            aponConverter.applyStringyContext(stringifyContext);
+
             Parameters parameters = aponConverter.toParameters(getName(), getData());
 
-            AponTransformResponse.transform(parameters, writer, formattingContext);
+            AponTransformResponse.transform(parameters, writer, stringifyContext);
         }
     }
 
@@ -217,19 +186,15 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
+            StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            formattingContext.setPretty(isPrettyPrint());
-            if (isPrettyPrint() && indent > -1) {
-                formattingContext.setIndentSize(indent);
-            }
-
+            Object data;
             if (getName() != null) {
-                XmlTransformResponse.transform(Collections.singletonMap(getName(), getData()),
-                        writer, encoding, formattingContext);
+                data = Collections.singletonMap(getName(), getData());
             } else {
-                XmlTransformResponse.transform(getData(), writer, encoding, formattingContext);
+                data = getData();
             }
+            XmlTransformResponse.transform(data, writer, encoding, stringifyContext);
         }
     }
 
@@ -237,14 +202,22 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
-            if (getName() != null) {
-                writer.write(getName());
-                writer.write(": ");
-            }
             if (getData() != null) {
-                writer.write(getData().toString());
+                writer.write(ToStringBuilder.toString(getName() + ":", getData()));
             }
         }
+    }
+
+    @NonNull
+    private StringifyContext resolveStringifyContext(@NonNull Activity activity, int indent) {
+        StringifyContext stringifyContext = activity.getStringifyContext().clone();
+        if (hasPrettyPrint()) {
+            stringifyContext.setPretty(isPrettyPrint());
+        }
+        if (isPrettyPrint() && indent > -1) {
+            stringifyContext.setIndentSize(indent);
+        }
+        return stringifyContext;
     }
 
     private int parseIndent(@NonNull MediaType contentType) {
@@ -252,12 +225,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
             String indent = contentType.getParameter("indent");
             if (indent != null) {
                 int depth = Integer.parseInt(indent);
-                if (depth >= 0) {
-                    if (depth > MAX_INDENT) {
-                        depth = MAX_INDENT;
-                    }
-                    return depth;
-                }
+                return (Math.min(depth, MAX_INDENT));
             }
         } catch (NumberFormatException e) {
             // ignore

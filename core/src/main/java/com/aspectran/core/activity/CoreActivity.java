@@ -214,7 +214,7 @@ public class CoreActivity extends AdviceActivity {
                 throw new RequestMethodNotAllowedException(allowedMethod);
             }
 
-            prepareAspectAdviceRule(transletRule, transletRule.getName());
+            prepareAspectAdviceRules(transletRule, transletRule.getName());
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }

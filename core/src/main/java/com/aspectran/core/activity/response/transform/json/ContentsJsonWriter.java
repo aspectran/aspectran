@@ -43,8 +43,8 @@ public class ContentsJsonWriter extends JsonWriter {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T write(Object object) throws IOException {
-        if (object instanceof ProcessResult) {
-            write((ProcessResult)object);
+        if (object instanceof ProcessResult processResult) {
+            write(processResult);
         } else {
             super.write(object);
         }

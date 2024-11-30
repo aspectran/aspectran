@@ -15,7 +15,10 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Array;
@@ -48,6 +51,16 @@ public class ObjectToAponConverter {
 
     public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
+    }
+
+    public void applyStringyContext(StringifyContext stringifyContext) {
+        Assert.notNull(stringifyContext, "stringifyContext must not be null");
+        if (stringifyContext.getDateFormat() != null) {
+            setDateFormat(stringifyContext.getDateFormat());
+        }
+        if (stringifyContext.getDateTimeFormat() != null) {
+            setDateTimeFormat(stringifyContext.getDateTimeFormat());
+        }
     }
 
     public ObjectToAponConverter dateFormat(String dateFormat) {
@@ -136,8 +149,7 @@ public class ObjectToAponConverter {
                 putValue(ps, name, value);
             }
             return ps;
-        } else if (object instanceof Collection<?> ||
-                object.getClass().isArray()) {
+        } else if (object instanceof Collection<?> || object.getClass().isArray()) {
             return object.toString();
         } else if (object instanceof Date date) {
             if (dateTimeFormat != null) {
@@ -182,9 +194,9 @@ public class ObjectToAponConverter {
     }
 
     private void checkCircularReference(@NonNull Object wrapper, Object member) {
-        if (wrapper.equals(member)) {
-            throw new InvalidParameterValueException("APON Serialization Failure: A circular reference was detected " +
-                    "while converting a member object [" + member + "] in [" + wrapper + "]");
+        if (wrapper == member) {
+            throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +
+                    "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);
         }
     }
 

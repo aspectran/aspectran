@@ -17,6 +17,7 @@ package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
@@ -43,7 +44,7 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     private Object data;
 
-    private boolean prettyPrint = true;
+    private Boolean prettyPrint;
 
     private boolean favorPathExtension = true;
 
@@ -101,9 +102,13 @@ public abstract class AbstractRestResponse implements RestResponse {
         return this;
     }
 
+    protected boolean hasPrettyPrint() {
+        return (prettyPrint != null);
+    }
+
     @Override
     public boolean isPrettyPrint() {
-        return prettyPrint;
+        return BooleanUtils.toBoolean(prettyPrint);
     }
 
     @Override

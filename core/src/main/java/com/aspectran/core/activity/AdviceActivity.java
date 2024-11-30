@@ -36,13 +36,11 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,8 +53,6 @@ import java.util.Set;
 public abstract class AdviceActivity extends AbstractActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(AdviceActivity.class);
-
-    private Map<String, Object> settings;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -78,7 +74,29 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
-    protected void prepareAspectAdviceRule(@NonNull TransletRule transletRule, String requestName) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> V getSetting(String name) {
+        V value = super.getSetting(name);
+        if (value != null) {
+            return value;
+        }
+        if (aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getSettingsAdviceRuleList() != null) {
+            for (SettingsAdviceRule settingsAdviceRule : aspectAdviceRuleRegistry.getSettingsAdviceRuleList()) {
+                value = settingsAdviceRule.getSetting(name);
+                if (value != null && isAcceptable(settingsAdviceRule.getAspectRule())) {
+                    if (value instanceof String str) {
+                        return (V)TokenEvaluator.evaluate(str, this);
+                    } else {
+                        return value;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    protected void prepareAspectAdviceRules(@NonNull TransletRule transletRule, String requestName) {
         AspectAdviceRuleRegistry aarr;
         if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
@@ -413,41 +431,6 @@ public abstract class AdviceActivity extends AbstractActivity {
         } else {
             return null;
         }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <V> V getSetting(String name) {
-        if (settings != null) {
-            Object value = settings.get(name);
-            if (value != null) {
-                return (V)value;
-            }
-        }
-        if (aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getSettingsAdviceRuleList() != null) {
-            for (SettingsAdviceRule settingsAdviceRule : aspectAdviceRuleRegistry.getSettingsAdviceRuleList()) {
-                Object value = settingsAdviceRule.getSetting(name);
-                if (value != null && isAcceptable(settingsAdviceRule.getAspectRule())) {
-                    if (value instanceof String str) {
-                        return (V)TokenEvaluator.evaluate(str, this);
-                    } else {
-                        return (V)value;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void putSetting(String name, Object value) {
-        if (StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("Setting name must not be null or empty");
-        }
-        if (settings == null) {
-            settings = new LinkedHashMap<>();
-        }
-        settings.put(name, value);
     }
 
     /**

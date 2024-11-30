@@ -279,7 +279,7 @@ public class ContentsXMLReader implements XMLReader {
             }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
-            if (readablePropertyNames != null && readablePropertyNames.length > 0) {
+            if (readablePropertyNames != null) {
                 for (String name : readablePropertyNames) {
                     Object value;
                     try {

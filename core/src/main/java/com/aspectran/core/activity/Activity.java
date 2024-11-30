@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.utils.StringifyContext;
 
 import java.util.List;
 
@@ -67,12 +68,6 @@ public interface Activity {
      * @return the environment
      */
     Environment getEnvironment();
-
-    TemplateRenderer getTemplateRenderer();
-
-    TokenEvaluator getTokenEvaluator();
-
-    ItemEvaluator getItemEvaluator();
 
     /**
      * Gets the application adapter.
@@ -262,6 +257,14 @@ public interface Activity {
      * @param value the setting value
      */
     void putSetting(String name, Object value);
+
+    StringifyContext getStringifyContext();
+
+    TemplateRenderer getTemplateRenderer();
+
+    TokenEvaluator getTokenEvaluator();
+
+    ItemEvaluator getItemEvaluator();
 
     /**
      * Gets the aspect advice bean.

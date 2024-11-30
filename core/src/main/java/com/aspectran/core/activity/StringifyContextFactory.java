@@ -17,6 +17,7 @@ package com.aspectran.core.activity;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -24,13 +25,17 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * <p>Created: 2019-07-06</p>
  */
-public class FormattingContext {
+public class StringifyContextFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(FormattingContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringifyContextFactory.class);
 
     private static final int MAX_INDENT_SIZE = 8;
 
-    private static final String FORMAT_INDENT_TAB = "format.indentTab";
+    private static final String FORMAT_PRETTY = "format.pretty";
+
+    private static final String FORMAT_INDENT_STYLE = "format.indentStyle";
+
+    private static final String FORMAT_INDENT_STYLE_TAB = "tab";
 
     private static final String FORMAT_INDENT_SIZE = "format.indentSize";
 
@@ -40,88 +45,24 @@ public class FormattingContext {
 
     private static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
 
-    private boolean pretty;
-
-    private int indentSize;
-
-    private boolean indentTab;
-
-    private String dateFormat;
-
-    private String dateTimeFormat;
-
-    private Boolean nullWritable;
-
-    public FormattingContext() {
-    }
-
-    public boolean isPretty() {
-        return pretty;
-    }
-
-    public void setPretty(boolean pretty) {
-        this.pretty = pretty;
-    }
-
-    public int getIndentSize() {
-        return indentSize;
-    }
-
-    public void setIndentSize(int indentSize) {
-        this.indentSize = indentSize;
-    }
-
-    public void setIndentTab(boolean indentTab) {
-        this.indentTab = indentTab;
-    }
-
-    public String makeIndentString() {
-        if (pretty) {
-            if (indentTab) {
-                return "\t";
-            } else if (indentSize > 0) {
-                return StringUtils.repeat(' ', indentSize);
-            } else {
-                return StringUtils.EMPTY;
-            }
-        }
-        return null;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
-    }
-
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    public Boolean getNullWritable() {
-        return nullWritable;
-    }
-
-    public void setNullWritable(Boolean nullWritable) {
-        this.nullWritable = nullWritable;
-    }
-
     @NonNull
-    public static FormattingContext parse(@NonNull Activity activity) {
-        String indentStyle = activity.getSetting(FORMAT_INDENT_TAB);
+    static StringifyContext create(@NonNull Activity activity) {
+        String indentStyle = activity.getSetting(FORMAT_INDENT_STYLE);
         String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
         String dateTimeFormat = activity.getSetting(FORMAT_DATETIME_FORMAT);
 
+        Object pretty = activity.getSetting(FORMAT_PRETTY);
+        Boolean prettyToUse = null;
+        if (pretty instanceof Boolean prettyInBool) {
+            prettyToUse = prettyInBool;
+        } else if (pretty != null) {
+            prettyToUse = BooleanUtils.toBooleanObject(pretty.toString());
+        }
+
         Object indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
-        Integer indentSizeToUse = null;
-        if (indentSize instanceof Integer indentSizeInInt) {
-            indentSizeToUse = indentSizeInInt;
+        int indentSizeToUse = 0;
+        if (indentSize instanceof Number number) {
+            indentSizeToUse = number.intValue();
         } else if (indentSize != null) {
             indentSizeToUse = parseIndentSize(indentSize.toString());
         }
@@ -134,24 +75,31 @@ public class FormattingContext {
             nullWritableToUse = BooleanUtils.toBooleanObject(nullWritable.toString());
         }
 
-        FormattingContext formattingContext = new FormattingContext();
-        if ("tab".equalsIgnoreCase(indentStyle)) {
-            formattingContext.setPretty(true);
-            formattingContext.setIndentTab(true);
-        } else if (indentSizeToUse != null && indentSizeToUse > 0) {
-            formattingContext.setPretty(true);
-            formattingContext.setIndentSize(indentSizeToUse);
+        StringifyContext stringifyContext = new StringifyContext();
+        if (prettyToUse != null) {
+            stringifyContext.setPretty(prettyToUse);
+        }
+        if (FORMAT_INDENT_STYLE_TAB.equalsIgnoreCase(indentStyle)) {
+            stringifyContext.setIndentTab(true);
+            stringifyContext.setIndentSize(1);
+        } else if (indentSizeToUse > 0) {
+            stringifyContext.setIndentSize(indentSizeToUse);
+        }
+        if (prettyToUse != null) {
+            stringifyContext.setPretty(prettyToUse);
+        } else if (stringifyContext.getIndentSize() > 0) {
+            stringifyContext.setPretty(true);
         }
         if (StringUtils.hasLength(dateFormat)) {
-            formattingContext.setDateFormat(dateFormat);
+            stringifyContext.setDateFormat(dateFormat);
         }
         if (StringUtils.hasLength(dateTimeFormat)) {
-            formattingContext.setDateTimeFormat(dateTimeFormat);
+            stringifyContext.setDateTimeFormat(dateTimeFormat);
         }
         if (nullWritableToUse != null) {
-            formattingContext.setNullWritable(nullWritableToUse);
+            stringifyContext.setNullWritable(nullWritableToUse);
         }
-        return formattingContext;
+        return stringifyContext;
     }
 
     private static int parseIndentSize(String indentSize) {

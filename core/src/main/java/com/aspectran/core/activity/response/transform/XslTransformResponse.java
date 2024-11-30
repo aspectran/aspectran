@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
@@ -25,6 +24,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import javax.xml.transform.OutputKeys;
@@ -94,14 +94,14 @@ public class XslTransformResponse extends TransformResponse {
 
         Writer writer = responseAdapter.getWriter();
         ProcessResult processResult = activity.getProcessResult();
+        StringifyContext stringifyContext = activity.getStringifyContext();
 
         ContentsXMLReader xmlReader = new ContentsXMLReader();
-        FormattingContext formattingContext = FormattingContext.parse(activity);
-        if (formattingContext.getDateFormat() != null) {
-            xmlReader.setDateFormat(formattingContext.getDateFormat());
+        if (stringifyContext.hasDateFormat()) {
+            xmlReader.setDateFormat(stringifyContext.getDateFormat());
         }
-        if (formattingContext.getDateTimeFormat() != null) {
-            xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
+        if (stringifyContext.hasDateTimeFormat()) {
+            xmlReader.setDateTimeFormat(stringifyContext.getDateTimeFormat());
         }
 
         ContentsInputSource inputSource = new ContentsInputSource(processResult);
@@ -116,8 +116,7 @@ public class XslTransformResponse extends TransformResponse {
         return new XslTransformResponse(getTransformRule().replicate());
     }
 
-    private void loadTemplate(Activity activity)
-            throws TransformerConfigurationException, IOException {
+    private void loadTemplate(Activity activity) throws TransformerConfigurationException, IOException {
         String templateFile = templateRule.getFile();
         String templateResource = templateRule.getResource();
         String templateUrl = templateRule.getUrl();

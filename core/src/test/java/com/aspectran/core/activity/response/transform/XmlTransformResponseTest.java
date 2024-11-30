@@ -15,16 +15,16 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.utils.StringifyContext;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.TransformerException;
 import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * <p>Created: 2019-01-12</p>
@@ -59,17 +59,18 @@ class XmlTransformResponseTest {
         contentResult.addActionResult(r3);
 
         ActionResult r4 = new ActionResult();
-        r4.setResultValue("action4", new Object[] {new Date(), LocalDateTime.now()});
+        r4.setResultValue("action4", new Object[] {LocalDate.now(), LocalDateTime.now()});
         contentResult.addActionResult(r4);
 
         StringWriter writer = new StringWriter();
         XmlTransformResponse.transform(processResult, writer, null, null);
 
-        FormattingContext formattingContext = new FormattingContext();
-        formattingContext.setDateFormat("yyyy-MM-dd");
-        formattingContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setPretty(true);
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 
-        XmlTransformResponse.transform(processResult, writer, null, formattingContext);
+        XmlTransformResponse.transform(processResult, writer, null, stringifyContext);
 
         System.out.println(writer);
     }

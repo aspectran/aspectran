@@ -15,7 +15,9 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
@@ -35,13 +37,13 @@ public class AponWriter extends AponFormat implements Flushable {
 
     private final Writer writer;
 
-    private boolean autoFlush;
+    private boolean prettyPrint = true;
 
-    private boolean prettyPrint;
-
-    private String indentString;
+    private String indentString = DEFAULT_INDENT_STRING;
 
     private boolean nullWritable = true;
+
+    private boolean autoFlush;
 
     private boolean valueTypeHintEnabled;
 
@@ -75,36 +77,36 @@ public class AponWriter extends AponFormat implements Flushable {
      */
     public AponWriter(Writer writer) {
         this.writer = writer;
-        this.prettyPrint = true;
-        setIndentString(DEFAULT_INDENT_STRING);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T autoFlush(boolean autoFlush) {
-        this.autoFlush = autoFlush;
-        return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
-            setIndentString(DEFAULT_INDENT_STRING);
+            if (this.indentString == null) {
+                this.indentString = DEFAULT_INDENT_STRING;
+            }
         } else {
-            setIndentString(null);
+            this.indentString = null;
         }
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T indentString(String indentString) {
-        setIndentString(indentString);
+        this.indentString = indentString;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T nullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T autoFlush(boolean autoFlush) {
+        this.autoFlush = autoFlush;
         return (T)this;
     }
 
@@ -118,12 +120,17 @@ public class AponWriter extends AponFormat implements Flushable {
         return (T)this;
     }
 
-    /**
-     * Specifies the indent string.
-     * @param indentString the indentation string, by default "  " (two blanks).
-     */
-    public void setIndentString(String indentString) {
-        this.indentString = indentString;
+    public void applyStringifyContext(StringifyContext stringifyContext) {
+        Assert.notNull(stringifyContext, "stringifyContext must not be null");
+        if (stringifyContext.hasPretty()) {
+            prettyPrint(stringifyContext.isPretty());
+        }
+        if (stringifyContext.hasIndentSize()) {
+            indentString(stringifyContext.getIndentString());
+        }
+        if (stringifyContext.hasNullWritable()) {
+            nullWritable(stringifyContext.isNullWritable());
+        }
     }
 
     /**
@@ -136,8 +143,8 @@ public class AponWriter extends AponFormat implements Flushable {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
-        if (parameters instanceof ArrayParameters) {
-            for (Parameters ps : ((ArrayParameters)parameters).getParametersList()) {
+        if (parameters instanceof ArrayParameters arrayParameters) {
+            for (Parameters ps : arrayParameters.getParametersList()) {
                 beginBlock();
                 for (Parameter pv : ps.getParameterValueMap().values()) {
                     if (nullWritable || pv.isAssigned()) {
@@ -507,7 +514,7 @@ public class AponWriter extends AponFormat implements Flushable {
     }
 
     private void indent() throws IOException {
-        if (indentString != null) {
+        if (indentString != null && !indentString.isEmpty()) {
             for (int i = 0; i < indentDepth; i++) {
                 writer.write(indentString);
             }
@@ -515,13 +522,13 @@ public class AponWriter extends AponFormat implements Flushable {
     }
 
     private void increaseIndent() {
-        if (indentString != null) {
+        if (indentString != null && !indentString.isEmpty()) {
             indentDepth++;
         }
     }
 
     private void decreaseIndent() {
-        if (indentString != null) {
+        if (indentString != null && !indentString.isEmpty()) {
             indentDepth--;
         }
     }

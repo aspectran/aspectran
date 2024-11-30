@@ -71,6 +71,7 @@ public class NodeTracker implements Cloneable {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public NodeTracker clone() {
         NodeTracker tracker = new NodeTracker();
         tracker.setName(name);
@@ -81,16 +82,14 @@ public class NodeTracker implements Cloneable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<");
-        sb.append(name);
-        sb.append(">");
-        sb.append(" [lineNumber: ");
-        sb.append(lineNumber);
-        sb.append(", columnNumber: ");
-        sb.append(columnNumber);
-        sb.append("]");
-        return sb.toString();
+        return "<" +
+            name +
+            ">" +
+            " [lineNumber: " +
+            lineNumber +
+            ", columnNumber: " +
+            columnNumber +
+            "]";
     }
 
 }

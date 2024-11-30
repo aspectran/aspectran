@@ -23,6 +23,7 @@ import com.aspectran.utils.apon.Parameters;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class ToStringBuilder {
             labeling(name, false);
         }
         if (value != null) {
-            append(value);
+            appendValue(value);
         }
     }
 
@@ -76,7 +77,7 @@ public class ToStringBuilder {
             buffer.append(name).append(" ");
         }
         if (braced) {
-            buffer.append("{");
+            appendOpenBrace();
         }
         this.braced = braced;
         this.start = buffer.length();
@@ -85,15 +86,21 @@ public class ToStringBuilder {
     public ToStringBuilder append(String name, Object value) {
         if (value != null) {
             appendName(name);
-            append(value);
+            appendValue(value);
         }
+        return this;
+    }
+
+    public ToStringBuilder appendForce(String name, Object value) {
+        appendName(name);
+        appendValue(value);
         return this;
     }
 
     public ToStringBuilder append(String name, Class<?> clazz) {
         if (clazz != null) {
             appendName(name);
-            append(clazz.getTypeName());
+            appendValue(clazz.getTypeName());
         }
         return this;
     }
@@ -101,14 +108,8 @@ public class ToStringBuilder {
     public ToStringBuilder append(String name, Method method) {
         if (method != null) {
             appendName(name);
-            append(method);
+            appendValue(method);
         }
-        return this;
-    }
-
-    public ToStringBuilder appendForce(String name, Object value) {
-        appendName(name);
-        append(value);
         return this;
     }
 
@@ -129,7 +130,7 @@ public class ToStringBuilder {
     public ToStringBuilder appendEqual(String name, Object value, Object compare) {
         if (value != null && value.equals(compare)) {
             appendName(name);
-            append(value);
+            appendValue(value);
         }
         return this;
     }
@@ -137,7 +138,7 @@ public class ToStringBuilder {
     public ToStringBuilder appendNotEqual(String name, Object value, Object compare) {
         if (value != null && !value.equals(compare)) {
             appendName(name);
-            append(value);
+            appendValue(value);
         }
         return this;
     }
@@ -149,6 +150,8 @@ public class ToStringBuilder {
                 buffer.append(map.size());
             } else if (object instanceof Collection<?> collection) {
                 buffer.append(collection.size());
+            } else if (object instanceof Enumeration<?> enumeration) {
+                buffer.append(Collections.list(enumeration).size());
             } else if (object.getClass().isArray()) {
                 buffer.append(Array.getLength(object));
             } else if (object instanceof CharSequence charSequence) {
@@ -156,6 +159,26 @@ public class ToStringBuilder {
             }
         }
         return this;
+    }
+
+    private void appendOpenBrace() {
+        buffer.append("{");
+    }
+
+    private void appendCloseBrace() {
+        buffer.append("}");
+    }
+
+    private void appendOpenBracket() {
+        buffer.append("[");
+    }
+
+    private void appendCloseBracket() {
+        buffer.append("]");
+    }
+
+    private void appendComma() {
+        buffer.append(", ");
     }
 
     private void appendName(Object name) {
@@ -169,30 +192,26 @@ public class ToStringBuilder {
         buffer.append(name).append("=");
     }
 
-    private void appendComma() {
-        buffer.append(", ");
-    }
-
-    private void append(Object object) {
+    private void appendValue(Object object) {
         if (object instanceof CharSequence charSequence) {
             buffer.append(charSequence);
         } else if (object instanceof Map<?, ?> map) {
-            append(map);
+            appendValue(map);
         } else if (object instanceof Collection<?> collection) {
-            append(collection);
+            appendValue(collection);
         } else if (object instanceof Enumeration<?> enumeration) {
-            append(enumeration);
+            appendValue(enumeration);
         } else if (object instanceof Parameters parameters) {
-            append(parameters);
+            appendValue(parameters);
         } else if (object.getClass().isArray()) {
-            appendArray(object);
+            appendArrayValue(object);
         } else {
             buffer.append(object);
         }
     }
 
-    private void append(@NonNull Map<?, ?> map) {
-        buffer.append("{");
+    private void appendValue(@NonNull Map<?, ?> map) {
+        appendOpenBrace();
         int index = buffer.length();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
@@ -200,40 +219,40 @@ public class ToStringBuilder {
             if (value != null) {
                 checkCircularReference(map, value);
                 appendName(key, index);
-                append(value);
+                appendValue(value);
             }
         }
-        buffer.append("}");
+        appendCloseBrace();
     }
 
-    private void append(@NonNull Collection<?> list) {
-        buffer.append("[");
+    private void appendValue(@NonNull Collection<?> list) {
+        appendOpenBracket();
         int index = buffer.length();
         for (Object value : list) {
             checkCircularReference(list, value);
             if (buffer.length() > index) {
                 appendComma();
             }
-            append(value);
+            appendValue(value);
         }
-        buffer.append("]");
+        appendCloseBracket();
     }
 
-    private void append(@NonNull Enumeration<?> enumeration) {
-        buffer.append("[");
+    private void appendValue(@NonNull Enumeration<?> enumeration) {
+        appendOpenBracket();
         while (enumeration.hasMoreElements()) {
             Object value = enumeration.nextElement();
             checkCircularReference(enumeration, value);
-            append(value);
+            appendValue(value);
             if (enumeration.hasMoreElements()) {
                 appendComma();
             }
         }
-        buffer.append("]");
+        appendCloseBracket();
     }
 
-    private void append(@NonNull Parameters parameters) {
-        buffer.append("{");
+    private void appendValue(@NonNull Parameters parameters) {
+        appendOpenBrace();
         int index = buffer.length();
         Map<String, ParameterValue> params = parameters.getParameterValueMap();
         for (Parameter p : params.values()) {
@@ -242,14 +261,14 @@ public class ToStringBuilder {
             if (value != null) {
                 checkCircularReference(parameters, value);
                 appendName(name, index);
-                append(value);
+                appendValue(value);
             }
         }
-        buffer.append("}");
+        appendCloseBrace();
     }
 
-    private void appendArray(Object object) {
-        buffer.append("[");
+    private void appendArrayValue(Object object) {
+        appendOpenBracket();
         int len = Array.getLength(object);
         for (int i = 0; i < len; i++) {
             Object value = Array.get(object, i);
@@ -257,12 +276,12 @@ public class ToStringBuilder {
             if (i > 0) {
                 appendComma();
             }
-            append(value);
+            appendValue(value);
         }
-        buffer.append("]");
+        appendCloseBracket();
     }
 
-    private void append(@NonNull Method method) {
+    private void appendValue(@NonNull Method method) {
         buffer.append(method.getDeclaringClass().getTypeName());
         buffer.append('.');
         buffer.append(method.getName());
@@ -286,7 +305,7 @@ public class ToStringBuilder {
         }
     }
 
-    private static void checkCircularReference(@NonNull Object wrapper, Object member) {
+    private static void checkCircularReference(Object wrapper, Object member) {
         if (wrapper == member) {
             throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +
                 "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);

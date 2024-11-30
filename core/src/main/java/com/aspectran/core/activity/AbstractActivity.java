@@ -28,7 +28,12 @@ import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The Class AbstractActivity.
@@ -48,6 +53,10 @@ public abstract class AbstractActivity implements Activity {
     private ResponseAdapter responseAdapter;
 
     private Throwable raisedException;
+
+    private Map<String, Object> settings;
+
+    private StringifyContext stringifyContext;
 
     private TokenEvaluator tokenEvaluator;
 
@@ -88,27 +97,6 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public Environment getEnvironment() {
         return context.getEnvironment();
-    }
-
-    @Override
-    public TemplateRenderer getTemplateRenderer() {
-        return context.getTemplateRenderer();
-    }
-
-    @Override
-    public TokenEvaluator getTokenEvaluator() {
-        if (tokenEvaluator == null) {
-            tokenEvaluator = new TokenEvaluation(this);
-        }
-        return tokenEvaluator;
-    }
-
-    @Override
-    public ItemEvaluator getItemEvaluator() {
-        if (itemEvaluator == null) {
-            itemEvaluator = new ItemEvaluation(getTokenEvaluator());
-        }
-        return itemEvaluator;
     }
 
     /**
@@ -232,6 +220,58 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void terminate(String cause) throws ActivityTerminatedException {
         throw new ActivityTerminatedException(cause);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> V getSetting(String name) {
+        if (settings != null) {
+            Object value = settings.get(name);
+            if (value != null) {
+                return (V)value;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void putSetting(String name, Object value) {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Setting name must not be null or empty");
+        }
+        if (settings == null) {
+            settings = new LinkedHashMap<>();
+        }
+        settings.put(name, value);
+    }
+
+    @Override
+    public StringifyContext getStringifyContext() {
+        if (stringifyContext == null) {
+            stringifyContext = StringifyContextFactory.create(this);
+        }
+        return stringifyContext;
+    }
+
+    @Override
+    public TemplateRenderer getTemplateRenderer() {
+        return context.getTemplateRenderer();
+    }
+
+    @Override
+    public TokenEvaluator getTokenEvaluator() {
+        if (tokenEvaluator == null) {
+            tokenEvaluator = new TokenEvaluation(this);
+        }
+        return tokenEvaluator;
+    }
+
+    @Override
+    public ItemEvaluator getItemEvaluator() {
+        if (itemEvaluator == null) {
+            itemEvaluator = new ItemEvaluation(getTokenEvaluator());
+        }
+        return itemEvaluator;
     }
 
     //---------------------------------------------------------------------

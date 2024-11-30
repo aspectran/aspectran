@@ -16,8 +16,11 @@
 package com.aspectran.utils.json;
 
 import com.aspectran.utils.ArrayStack;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
@@ -56,9 +59,9 @@ public class JsonWriter {
 
     private final Writer out;
 
-    private boolean prettyPrint;
+    private boolean prettyPrint = true;
 
-    private String indentString;
+    private String indentString = DEFAULT_INDENT_STRING;
 
     private String dateFormat;
 
@@ -89,39 +92,36 @@ public class JsonWriter {
      */
     public JsonWriter(Writer out) {
         this.out = out;
-        setIndentString(DEFAULT_INDENT_STRING);
         writtenFlags.push(false);
-    }
-
-    private void setIndentString(String indentString) {
-        this.prettyPrint = (indentString != null);
-        this.indentString = indentString;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T prettyPrint(boolean prettyPrint) {
+        this.prettyPrint = prettyPrint;
         if (prettyPrint) {
-            setIndentString(DEFAULT_INDENT_STRING);
+            if (this.indentString == null) {
+                this.indentString = DEFAULT_INDENT_STRING;
+            }
         } else {
-            setIndentString(null);
+            this.indentString = null;
         }
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T indentString(String indentString) {
-        setIndentString(indentString);
+    public <T extends JsonWriter> T indentString(@Nullable String indentString) {
+        this.indentString = indentString;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T dateFormat(String dateFormat) {
+    public <T extends JsonWriter> T dateFormat(@Nullable String dateFormat) {
         this.dateFormat = dateFormat;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T dateTimeFormat(String dateTimeFormat) {
+    public <T extends JsonWriter> T dateTimeFormat(@Nullable String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
         return (T)this;
     }
@@ -130,6 +130,25 @@ public class JsonWriter {
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
         return (T)this;
+    }
+
+    public void applyStringifyContext(StringifyContext stringifyContext) {
+        Assert.notNull(stringifyContext, "stringifyContext must not be null");
+        if (stringifyContext.hasPretty()) {
+            prettyPrint(stringifyContext.isPretty());
+        }
+        if (stringifyContext.hasIndentSize()) {
+            indentString(stringifyContext.getIndentString());
+        }
+        if (stringifyContext.hasDateFormat()) {
+            dateFormat(stringifyContext.getDateFormat());
+        }
+        if (stringifyContext.hasDateTimeFormat()) {
+            dateTimeFormat(stringifyContext.getDateTimeFormat());
+        }
+        if (stringifyContext.hasNullWritable()) {
+            nullWritable(stringifyContext.isNullWritable());
+        }
     }
 
     /**
@@ -437,7 +456,7 @@ public class JsonWriter {
      * @throws IOException if an I/O error has occurred
      */
     private void indent() throws IOException {
-        if (prettyPrint) {
+        if (prettyPrint && indentString != null && !indentString.isEmpty()) {
             for (int i = 0; i < indentDepth; i++) {
                 out.write(indentString);
             }

@@ -132,8 +132,8 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      */
     @SuppressWarnings("unchecked")
     private LinkedCaseInsensitiveMap(@NonNull LinkedCaseInsensitiveMap<V> other) {
-        this.targetMap = (LinkedHashMap<String, V>) other.targetMap.clone();
-        this.caseInsensitiveKeys = (HashMap<String, String>) other.caseInsensitiveKeys.clone();
+        this.targetMap = (LinkedHashMap<String, V>)other.targetMap.clone();
+        this.caseInsensitiveKeys = (HashMap<String, String>)other.caseInsensitiveKeys.clone();
         this.locale = other.locale;
     }
 

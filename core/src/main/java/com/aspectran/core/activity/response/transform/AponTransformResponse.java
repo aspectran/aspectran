@@ -16,13 +16,14 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.apon.ContentsToAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -72,13 +73,15 @@ public class AponTransformResponse extends TransformResponse {
 
         ProcessResult processResult = activity.getProcessResult();
         if (processResult != null && !processResult.isEmpty()) {
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            if (pretty != null) {
-                formattingContext.setPretty(pretty);
-            }
-
             Writer writer = responseAdapter.getWriter();
-            transform(processResult, writer, formattingContext);
+            StringifyContext stringifyContext = activity.getStringifyContext();
+
+            ContentsToAponConverter aponConverter = new ContentsToAponConverter();
+            aponConverter.applyStringyContext(stringifyContext);
+
+            Parameters parameters = aponConverter.toParameters(processResult);
+
+            transform(parameters, writer, stringifyContext, pretty);
         }
     }
 
@@ -88,38 +91,21 @@ public class AponTransformResponse extends TransformResponse {
         return new AponTransformResponse(transformRule);
     }
 
-    private static void transform(ProcessResult processResult, Writer writer, FormattingContext formattingContext)
+    public static void transform(
+            Parameters parameters, Writer writer, @Nullable StringifyContext stringifyContext)
             throws IOException {
-        ContentsToAponConverter aponConverter = new ContentsToAponConverter();
-        if (formattingContext != null) {
-            if (formattingContext.getDateFormat() != null) {
-                aponConverter.setDateFormat(formattingContext.getDateFormat());
-            }
-            if (formattingContext.getDateTimeFormat() != null) {
-                aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
-            }
-        }
-        Parameters parameters = aponConverter.toParameters(processResult);
-        transform(parameters, writer, formattingContext);
+        transform(parameters, writer, stringifyContext, null);
     }
 
-    public static void transform(Parameters parameters, Writer writer, FormattingContext formattingContext)
+    private static void transform(
+            Parameters parameters, Writer writer, @Nullable StringifyContext stringifyContext, Boolean prettyForce)
             throws IOException {
         AponWriter aponWriter = new AponWriter(writer);
-        if (formattingContext != null) {
-            if (formattingContext.getNullWritable() != null) {
-                aponWriter.nullWritable(formattingContext.getNullWritable());
-            }
-            if (formattingContext.isPretty()) {
-                String indentString = formattingContext.makeIndentString();
-                if (indentString != null) {
-                    aponWriter.indentString(indentString);
-                } else {
-                    aponWriter.prettyPrint(true);
-                }
-            } else {
-                aponWriter.prettyPrint(false);
-            }
+        if (stringifyContext != null) {
+            aponWriter.applyStringifyContext(stringifyContext);
+        }
+        if (prettyForce != null) {
+            aponWriter.prettyPrint(prettyForce);
         }
         aponWriter.write(parameters);
     }

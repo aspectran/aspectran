@@ -16,14 +16,15 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -91,12 +92,13 @@ public class XmlTransformResponse extends TransformResponse {
         ProcessResult processResult = activity.getProcessResult();
         Writer writer = responseAdapter.getWriter();
 
-        FormattingContext formattingContext = FormattingContext.parse(activity);
-        if (pretty != null) {
-            formattingContext.setPretty(pretty);
+        StringifyContext stringifyContext = activity.getStringifyContext();
+        if (pretty != null && stringifyContext.isPretty() != pretty) {
+            stringifyContext = stringifyContext.clone();
+            stringifyContext.setPretty(pretty);
         }
 
-        transform(processResult, writer, encoding, formattingContext);
+        transform(processResult, writer, encoding, stringifyContext, pretty);
     }
 
     @Override
@@ -104,19 +106,24 @@ public class XmlTransformResponse extends TransformResponse {
         return new XmlTransformResponse(getTransformRule().replicate());
     }
 
-    public static void transform(Object object, Writer writer, String encoding, FormattingContext formattingContext)
-            throws TransformerException {
+    public static void transform(
+            Object object, Writer writer, String encoding,
+            @Nullable StringifyContext stringifyContext) throws TransformerException {
+        transform(object, writer, encoding, stringifyContext, null);
+    }
+
+    private static void transform(
+            Object object, Writer writer, String encoding,
+            @Nullable StringifyContext stringifyContext, Boolean prettyForce) throws TransformerException {
+        boolean pretty = (prettyForce != null ? prettyForce : (stringifyContext == null || stringifyContext.isPretty()));
+
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        if (formattingContext != null) {
-            if (formattingContext.isPretty()) {
-                if (formattingContext.getIndentSize() > 0) {
-                    transformerFactory.setAttribute(INDENT_NUMBER_KEY, formattingContext.getIndentSize());
-                } else {
-                    transformerFactory.setAttribute(INDENT_NUMBER_KEY, DEFAULT_INDENT_SIZE);
-                }
+        if (pretty) {
+            if (stringifyContext != null && stringifyContext.hasIndentSize()) {
+                transformerFactory.setAttribute(INDENT_NUMBER_KEY, stringifyContext.getIndentSize());
+            } else {
+                transformerFactory.setAttribute(INDENT_NUMBER_KEY, DEFAULT_INDENT_SIZE);
             }
-        } else {
-            transformerFactory.setAttribute(INDENT_NUMBER_KEY, DEFAULT_INDENT_SIZE);
         }
 
         Transformer transformer = transformerFactory.newTransformer();
@@ -124,18 +131,18 @@ public class XmlTransformResponse extends TransformResponse {
         if (encoding != null) {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         }
-        if (formattingContext == null || formattingContext.isPretty()) {
+        if (pretty) {
             transformer.setOutputProperty(OutputKeys.INDENT, YES);
             transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, YES);
         }
 
         ContentsXMLReader xmlReader = new ContentsXMLReader();
-        if (formattingContext != null) {
-            if (formattingContext.getDateFormat() != null) {
-                xmlReader.setDateFormat(formattingContext.getDateFormat());
+        if (stringifyContext != null) {
+            if (stringifyContext.hasDateFormat()) {
+                xmlReader.setDateFormat(stringifyContext.getDateFormat());
             }
-            if (formattingContext.getDateTimeFormat() != null) {
-                xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            if (stringifyContext.hasDateTimeFormat()) {
+                xmlReader.setDateTimeFormat(stringifyContext.getDateTimeFormat());
             }
         }
 

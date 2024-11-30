@@ -16,15 +16,14 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -77,56 +76,29 @@ public class JsonTransformResponse extends TransformResponse {
 
         Writer writer = responseAdapter.getWriter();
         ProcessResult processResult = activity.getProcessResult();
-
-        FormattingContext formattingContext = FormattingContext.parse(activity);
-        if (pretty != null) {
-            formattingContext.setPretty(pretty);
-        }
+        StringifyContext stringifyContext = activity.getStringifyContext();
 
         // support for jsonp
         String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
-
-        transform(processResult, callback, writer, formattingContext);
-    }
-
-    @Override
-    public Response replicate() {
-        return new JsonTransformResponse(getTransformRule().replicate());
-    }
-
-    private void transform(ProcessResult processResult, String callback, Writer writer,
-                           FormattingContext formattingContext) throws IOException {
         if (callback != null) {
             writer.write(callback + ROUND_BRACKET_OPEN);
         }
 
         ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer);
-        if (formattingContext != null) {
-            if (formattingContext.getDateFormat() != null) {
-                jsonWriter.dateFormat(formattingContext.getDateFormat());
-            }
-            if (formattingContext.getDateTimeFormat() != null) {
-                jsonWriter.dateTimeFormat(formattingContext.getDateTimeFormat());
-            }
-            if (formattingContext.getNullWritable() != null) {
-                jsonWriter.nullWritable(formattingContext.getNullWritable());
-            }
-            if (formattingContext.isPretty()) {
-                String indentString = formattingContext.makeIndentString();
-                if (indentString != null) {
-                    jsonWriter.indentString(indentString);
-                } else {
-                    jsonWriter.prettyPrint(true);
-                }
-            } else {
-                jsonWriter.prettyPrint(false);
-            }
+        jsonWriter.applyStringifyContext(stringifyContext);
+        if (pretty != null) {
+            jsonWriter.prettyPrint(pretty);
         }
         jsonWriter.write(processResult);
 
         if (callback != null) {
             writer.write(ROUND_BRACKET_CLOSE);
         }
+    }
+
+    @Override
+    public Response replicate() {
+        return new JsonTransformResponse(getTransformRule().replicate());
     }
 
 }

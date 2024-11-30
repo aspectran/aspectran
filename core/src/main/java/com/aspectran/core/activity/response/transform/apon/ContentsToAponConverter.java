@@ -45,8 +45,8 @@ public class ContentsToAponConverter extends ObjectToAponConverter {
                 ActionResult actionResult = contentResult.get(0);
                 if (actionResult.getActionId() == null) {
                     Object resultValue = actionResult.getResultValue();
-                    if (resultValue instanceof Parameters) {
-                        return (Parameters)resultValue;
+                    if (resultValue instanceof Parameters parameters) {
+                        return parameters;
                     }
                 }
             }

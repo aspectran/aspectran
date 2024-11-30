@@ -73,8 +73,8 @@ public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
         if (value == null) {
             return false;
         }
-        if (value instanceof Boolean) {
-            return (Boolean)value;
+        if (value instanceof Boolean bool) {
+            return bool;
         } else {
             return Boolean.parseBoolean(value.toString());
         }

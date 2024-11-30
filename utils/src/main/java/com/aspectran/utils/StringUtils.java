@@ -428,6 +428,9 @@ public abstract class StringUtils {
         if (repeat <= 0) {
             return EMPTY;
         }
+        if (repeat == 1) {
+            return String.valueOf(ch);
+        }
         char[] buf = new char[repeat];
         for (int i = repeat - 1; i >= 0; i--) {
             buf[i] = ch;
