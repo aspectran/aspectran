@@ -248,7 +248,7 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public StringifyContext getStringifyContext() {
         if (stringifyContext == null) {
-            stringifyContext = StringifyContextFactory.create(this);
+            stringifyContext = new ActivityStringifyContext(this);
         }
         return stringifyContext;
     }

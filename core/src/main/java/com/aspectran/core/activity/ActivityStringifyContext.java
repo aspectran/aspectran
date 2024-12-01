@@ -25,31 +25,33 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * <p>Created: 2019-07-06</p>
  */
-public class StringifyContextFactory {
+class ActivityStringifyContext extends StringifyContext {
 
-    private static final Logger logger = LoggerFactory.getLogger(StringifyContextFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityStringifyContext.class);
 
-    private static final int MAX_INDENT_SIZE = 8;
+    static final int MAX_INDENT_SIZE = 8;
 
-    private static final String FORMAT_PRETTY = "format.pretty";
+    static final String FORMAT_PRETTY = "format.pretty";
 
-    private static final String FORMAT_INDENT_STYLE = "format.indentStyle";
+    static final String FORMAT_INDENT_STYLE = "format.indentStyle";
 
-    private static final String FORMAT_INDENT_STYLE_TAB = "tab";
+    static final String FORMAT_INDENT_STYLE_TAB = "tab";
 
-    private static final String FORMAT_INDENT_SIZE = "format.indentSize";
+    static final String FORMAT_INDENT_SIZE = "format.indentSize";
 
-    private static final String FORMAT_DATE_FORMAT = "format.dateFormat";
+    static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
 
-    private static final String FORMAT_DATETIME_FORMAT = "format.dateTimeFormat";
+    static final String FORMAT_DATETIME_FORMAT = "format.dateTimeFormat";
 
-    private static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
+    static final String FORMAT_DATE_FORMAT = "format.dateFormat";
 
-    @NonNull
-    static StringifyContext create(@NonNull Activity activity) {
+    static final String FORMAT_TIME_FORMAT = "format.timeFormat";
+
+    ActivityStringifyContext(@NonNull Activity activity) {
         String indentStyle = activity.getSetting(FORMAT_INDENT_STYLE);
-        String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
         String dateTimeFormat = activity.getSetting(FORMAT_DATETIME_FORMAT);
+        String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
+        String timeFormat = activity.getSetting(FORMAT_TIME_FORMAT);
 
         Object pretty = activity.getSetting(FORMAT_PRETTY);
         Boolean prettyToUse = null;
@@ -75,31 +77,32 @@ public class StringifyContextFactory {
             nullWritableToUse = BooleanUtils.toBooleanObject(nullWritable.toString());
         }
 
-        StringifyContext stringifyContext = new StringifyContext();
-        if (prettyToUse != null) {
-            stringifyContext.setPretty(prettyToUse);
-        }
         if (FORMAT_INDENT_STYLE_TAB.equalsIgnoreCase(indentStyle)) {
-            stringifyContext.setIndentTab(true);
-            stringifyContext.setIndentSize(1);
+            setIndentTab(true);
+            setIndentSize(1);
         } else if (indentSizeToUse > 0) {
-            stringifyContext.setIndentSize(indentSizeToUse);
+            setIndentSize(indentSizeToUse);
         }
         if (prettyToUse != null) {
-            stringifyContext.setPretty(prettyToUse);
-        } else if (stringifyContext.getIndentSize() > 0) {
-            stringifyContext.setPretty(true);
-        }
-        if (StringUtils.hasLength(dateFormat)) {
-            stringifyContext.setDateFormat(dateFormat);
-        }
-        if (StringUtils.hasLength(dateTimeFormat)) {
-            stringifyContext.setDateTimeFormat(dateTimeFormat);
+            setPretty(prettyToUse);
+        } else if (getIndentSize() > 0) {
+            setPretty(true);
         }
         if (nullWritableToUse != null) {
-            stringifyContext.setNullWritable(nullWritableToUse);
+            setNullWritable(nullWritableToUse);
         }
-        return stringifyContext;
+        if (StringUtils.hasLength(dateTimeFormat)) {
+            setDateTimeFormat(dateTimeFormat);
+        }
+        if (StringUtils.hasLength(dateFormat)) {
+            setDateFormat(dateFormat);
+        }
+        if (StringUtils.hasLength(timeFormat)) {
+            setTimeFormat(timeFormat);
+        }
+        if (activity.getRequestAdapter() != null) {
+            setLocale(activity.getRequestAdapter().getLocale());
+        }
     }
 
     private static int parseIndentSize(String indentSize) {
