@@ -95,25 +95,24 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public Object setAttribute(String name, Object value) {
-        Object old;
-        try (AutoLock ignored = autoLock.lock()) {
-            // if session is not valid, don't accept the set
-            checkValidForWrite();
-            old = sessionData.setAttribute(name, value);
-        }
-        if (value == null && old == null) {
-            return null; // if same as remove attribute but attribute was already removed, no change
-        }
-        fireSessionAttributeListeners(name, old, value);
-        return old;
-    }
-
-    @Override
     public Set<String> getAttributeNames() {
         try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return sessionData.getKeys();
+        }
+    }
+
+    @Override
+    public Object setAttribute(String name, Object value) {
+        try (AutoLock ignored = autoLock.lock()) {
+            // if session is not valid, don't accept the set
+            checkValidForWrite();
+            Object old = sessionData.setAttribute(name, value);
+            if (value == null && old == null) {
+                return null; // if same as remove attribute but attribute was already removed, no change
+            }
+            fireSessionAttributeListeners(name, old, value);
+            return old;
         }
     }
 

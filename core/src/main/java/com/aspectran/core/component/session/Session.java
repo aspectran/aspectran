@@ -28,9 +28,9 @@ public interface Session {
 
     <T> T getAttribute(String name);
 
-    Object setAttribute(String name, Object value);
-
     Set<String> getAttributeNames();
+
+    Object setAttribute(String name, Object value);
 
     Object removeAttribute(String name);
 
