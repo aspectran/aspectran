@@ -144,7 +144,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
         try {
             preProcess(activity, ognlContext);
             Object value = Ognl.getValue(getParsedExpression(), ognlContext, root, resultType);
-            return postProcess(ognlContext, value);
+            return postProcess(activity, ognlContext, value);
         } catch (Exception e) {
             throw new ExpressionEvaluationException(getExpressionString(), e);
         }
@@ -157,7 +157,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
         }
     }
 
-    private Object postProcess(OgnlContext ognlContext, Object value) {
+    private Object postProcess(Activity activity, OgnlContext ognlContext, Object value) {
         if (getTokenVarNames() != null && value instanceof String str) {
             for (String tokenVarName : getTokenVarNames()) {
                 String tokenVarRefName = createTokenVarRefName(tokenVarName);
@@ -165,7 +165,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
                     Object tokenValue = ognlContext.get(tokenVarName);
                     String replacement;
                     if (tokenValue != null) {
-                        replacement = ToStringBuilder.toString(tokenValue);
+                        replacement = ToStringBuilder.toString(tokenValue, activity.getStringifyContext());
                     } else {
                         replacement = StringUtils.EMPTY;
                     }

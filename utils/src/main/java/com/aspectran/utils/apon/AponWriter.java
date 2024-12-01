@@ -43,9 +43,9 @@ public class AponWriter extends AponFormat implements Flushable {
 
     private boolean nullWritable = true;
 
-    private boolean autoFlush;
-
     private boolean valueTypeHintEnabled;
+
+    private boolean autoFlush;
 
     private int indentDepth;
 
@@ -76,11 +76,31 @@ public class AponWriter extends AponFormat implements Flushable {
      * @param writer the character-output stream
      */
     public AponWriter(Writer writer) {
+        Assert.notNull(writer, "Writer must not be null");
         this.writer = writer;
     }
 
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        if (stringifyContext != null) {
+            if (stringifyContext.hasPretty()) {
+                prettyPrint(stringifyContext.isPretty());
+            }
+            if (stringifyContext.hasIndentSize()) {
+                indentString(stringifyContext.getIndentString());
+            }
+            if (stringifyContext.hasNullWritable()) {
+                nullWritable(stringifyContext.isNullWritable());
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
+    public <T extends AponWriter> T apply(StringifyContext stringifyContext) {
+        setStringifyContext(stringifyContext);
+        return (T)this;
+    }
+
+    public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
             if (this.indentString == null) {
@@ -89,25 +109,36 @@ public class AponWriter extends AponFormat implements Flushable {
         } else {
             this.indentString = null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
+        setPrettyPrint(prettyPrint);
         return (T)this;
+    }
+
+    public void setIndentString(String indentString) {
+        this.indentString = indentString;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T indentString(String indentString) {
-        this.indentString = indentString;
+        setIndentString(indentString);
         return (T)this;
+    }
+
+    public void setNullWritable(boolean nullWritable) {
+        this.nullWritable = nullWritable;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T nullWritable(boolean nullWritable) {
-        this.nullWritable = nullWritable;
+        setNullWritable(nullWritable);
         return (T)this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T autoFlush(boolean autoFlush) {
-        this.autoFlush = autoFlush;
-        return (T)this;
+    public void setEnableValueTypeHints(boolean valueTypeHintEnabled) {
+        this.valueTypeHintEnabled = valueTypeHintEnabled;
     }
 
     /**
@@ -116,21 +147,18 @@ public class AponWriter extends AponFormat implements Flushable {
      */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T enableValueTypeHints(boolean valueTypeHintEnabled) {
-        this.valueTypeHintEnabled = valueTypeHintEnabled;
+        setEnableValueTypeHints(valueTypeHintEnabled);
         return (T)this;
     }
 
-    public void applyStringifyContext(StringifyContext stringifyContext) {
-        Assert.notNull(stringifyContext, "stringifyContext must not be null");
-        if (stringifyContext.hasPretty()) {
-            prettyPrint(stringifyContext.isPretty());
-        }
-        if (stringifyContext.hasIndentSize()) {
-            indentString(stringifyContext.getIndentString());
-        }
-        if (stringifyContext.hasNullWritable()) {
-            nullWritable(stringifyContext.isNullWritable());
-        }
+    public void setAutoFlush(boolean autoFlush) {
+        this.autoFlush = autoFlush;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T autoFlush(boolean autoFlush) {
+        setAutoFlush(autoFlush);
+        return (T)this;
     }
 
     /**

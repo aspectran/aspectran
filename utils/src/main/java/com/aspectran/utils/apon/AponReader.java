@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 
@@ -485,12 +486,14 @@ public class AponReader extends AponFormat implements Closeable {
         }
     }
 
-    private AponParseException syntaxError(String line,  String tline, String message) throws AponParseException {
+    private AponParseException syntaxError(
+            String line,  String tline, String message) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, message);
     }
 
-    private AponParseException syntaxError(String line,  String tline, ParameterValue parameterValue,
-                                    ValueType expectedValueType) throws AponParseException {
+    private AponParseException syntaxError(
+            String line,  String tline, ParameterValue parameterValue,
+            ValueType expectedValueType) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, parameterValue, expectedValueType);
     }
 
@@ -519,12 +522,8 @@ public class AponReader extends AponFormat implements Closeable {
      * @throws AponParseException if reading APON format document fails
      */
     public static <T extends Parameters> T parse(String text, T parameters) throws AponParseException {
-        if (text == null) {
-            throw new IllegalArgumentException("text must not be null");
-        }
-        if (parameters == null) {
-            throw new IllegalArgumentException("parameters must not be null");
-        }
+        Assert.notNull(text, "text must not be null");
+        Assert.notNull(parameters, "parameters must not be null");
         if (StringUtils.isEmpty(text)) {
             return parameters;
         }
@@ -558,9 +557,7 @@ public class AponReader extends AponFormat implements Closeable {
      * @throws AponParseException if reading APON format document fails
      */
     public static Parameters parse(File file, String encoding) throws AponParseException {
-        if (file == null) {
-            throw new IllegalArgumentException("file must not be null");
-        }
+        Assert.notNull(file, "file must not be null");
         Parameters parameters = new VariableParameters();
         return parse(file, encoding, parameters);
     }
@@ -588,12 +585,8 @@ public class AponReader extends AponFormat implements Closeable {
      */
     public static <T extends Parameters> T parse(File file, String encoding, T parameters)
             throws AponParseException {
-        if (file == null) {
-            throw new IllegalArgumentException("file must not be null");
-        }
-        if (parameters == null) {
-            throw new IllegalArgumentException("parameters must not be null");
-        }
+        Assert.notNull(file, "file must not be null");
+        Assert.notNull(parameters, "parameters must not be null");
         AponReader aponReader = null;
         try {
             if (encoding == null) {
@@ -605,7 +598,7 @@ public class AponReader extends AponFormat implements Closeable {
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Failed to parse string with APON format", e);
+            throw new AponParseException("Failed to read APON Object from file " + file, e);
         } finally {
             if (aponReader != null) {
                 try {
@@ -624,9 +617,7 @@ public class AponReader extends AponFormat implements Closeable {
      * @throws AponParseException if reading APON format document fails
      */
     public static Parameters parse(Reader reader) throws AponParseException {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must not be null");
-        }
+        Assert.notNull(reader, "reader must not be null");
         AponReader aponReader = new AponReader(reader);
         return aponReader.read();
     }

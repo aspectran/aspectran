@@ -23,7 +23,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -77,7 +76,7 @@ public class AponTransformResponse extends TransformResponse {
             StringifyContext stringifyContext = activity.getStringifyContext();
 
             ContentsToAponConverter aponConverter = new ContentsToAponConverter();
-            aponConverter.applyStringyContext(stringifyContext);
+            aponConverter.setStringifyContext(stringifyContext);
 
             Parameters parameters = aponConverter.toParameters(processResult);
 
@@ -92,20 +91,18 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     public static void transform(
-            Parameters parameters, Writer writer, @Nullable StringifyContext stringifyContext)
+            Parameters parameters, Writer writer, StringifyContext stringifyContext)
             throws IOException {
         transform(parameters, writer, stringifyContext, null);
     }
 
     private static void transform(
-            Parameters parameters, Writer writer, @Nullable StringifyContext stringifyContext, Boolean prettyForce)
-            throws IOException {
+            Parameters parameters, Writer writer, StringifyContext stringifyContext,
+            Boolean prettyForce) throws IOException {
         AponWriter aponWriter = new AponWriter(writer);
-        if (stringifyContext != null) {
-            aponWriter.applyStringifyContext(stringifyContext);
-        }
+        aponWriter.setStringifyContext(stringifyContext);
         if (prettyForce != null) {
-            aponWriter.prettyPrint(prettyForce);
+            aponWriter.setPrettyPrint(prettyForce);
         }
         aponWriter.write(parameters);
     }

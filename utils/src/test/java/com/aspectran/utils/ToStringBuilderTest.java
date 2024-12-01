@@ -4,9 +4,13 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,9 +55,9 @@ class ToStringBuilderTest {
         map.put("key1", "value1");
         map.put("key2", "value2");
 
-        ToStringBuilder toStringBuilder = new ToStringBuilder(map);
+        String result = ToStringBuilder.toString(map);
 
-        assertEquals("{key1=value1, key2=value2}", ToStringBuilder.toString(toStringBuilder));
+        assertEquals("{key1=value1, key2=value2}", result);
     }
 
     @Test
@@ -91,6 +95,21 @@ class ToStringBuilderTest {
     }
 
     @Test
+    void testDateFormat() throws ParseException {
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
+        SimpleDateFormat formatter = new SimpleDateFormat(stringifyContext.getDateTimeFormat(), Locale.ENGLISH);
+        Date date1 = formatter.parse("2024-12-01 10:39:24");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("key1", date1);
+
+        String result = ToStringBuilder.toString("Variable", map, stringifyContext);
+        assertEquals("Variable {key1=2024-12-01 10:39:24}", result);
+    }
+
+    @Test
     void testVariable() {
         Map<String, Object> map = new HashMap<>();
         map.put("key1", "value1");
@@ -101,8 +120,8 @@ class ToStringBuilderTest {
         parameters.putValue("key2", "value2");
         map.put("parameters", parameters);
 
-        ToStringBuilder tsb = new ToStringBuilder("Variable", map);
-        assertEquals("Variable {key1=value1, key2=value2, parameters={key1=value1, key2=value2}}", tsb.toString());
+        String result = ToStringBuilder.toString("Variable", map);
+        assertEquals("Variable {key1=value1, key2=value2, parameters={key1=value1, key2=value2}}", result);
     }
 
 }

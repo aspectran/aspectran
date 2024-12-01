@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.apon.AponFormat;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
@@ -62,10 +63,13 @@ class JsonWriterTest {
         map.put("null", null);
         map.put("null2", null);
 
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
         String result = new JsonWriter()
+                .apply(stringifyContext)
                 .nullWritable(false)
-                .dateFormat("yyyy-MM-dd")
-                .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
                 .write(map)
                 .toString();
 
@@ -93,10 +97,13 @@ class JsonWriterTest {
         parameters.putValue("item3", parameters2);
         parameters.putValue("null", null);
 
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
         String result = new JsonWriter()
+                .apply(stringifyContext)
                 .nullWritable(false)
-                .dateFormat("yyyy-MM-dd")
-                .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
                 .write(parameters)
                 .toString();
 
@@ -118,9 +125,11 @@ class JsonWriterTest {
         map.put("localDate", date);
         map.put("localDateTime", dateTime);
 
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
         String result = new JsonWriter()
-                .dateFormat("yyyy-MM-dd")
-                .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
                 .write(map)
                 .toString();
 

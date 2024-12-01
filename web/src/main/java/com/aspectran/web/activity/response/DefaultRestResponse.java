@@ -152,7 +152,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (getName() != null || getData() != null) {
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
             JsonWriter jsonWriter = new JsonWriter(writer);
-            jsonWriter.applyStringifyContext(stringifyContext);
+            jsonWriter.setStringifyContext(stringifyContext);
             if (getName() != null) {
                 jsonWriter.beginObject();
                 jsonWriter.writeName(getName());
@@ -174,7 +174,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
             ObjectToAponConverter aponConverter = new ObjectToAponConverter();
-            aponConverter.applyStringyContext(stringifyContext);
+            aponConverter.setStringifyContext(stringifyContext);
 
             Parameters parameters = aponConverter.toParameters(getName(), getData());
 

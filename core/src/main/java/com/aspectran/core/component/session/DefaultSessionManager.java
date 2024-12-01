@@ -105,7 +105,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
             setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("Initializing " + new ToStringBuilder(getComponentName(), sessionManagerConfig));
+                logger.debug("Initializing " + ToStringBuilder.toString(getComponentName(), sessionManagerConfig));
             }
             if (sessionManagerConfig.isClusterEnabled()) {
                 clusterEnabled = true;

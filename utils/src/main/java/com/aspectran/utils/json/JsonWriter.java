@@ -32,10 +32,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -59,13 +58,11 @@ public class JsonWriter {
 
     private final Writer out;
 
+    private StringifyContext stringifyContext;
+
     private boolean prettyPrint = true;
 
     private String indentString = DEFAULT_INDENT_STRING;
-
-    private String dateFormat;
-
-    private String dateTimeFormat;
 
     private boolean nullWritable = true;
 
@@ -91,8 +88,30 @@ public class JsonWriter {
      * @param out the character-output stream
      */
     public JsonWriter(Writer out) {
+        Assert.notNull(out, "out must not be null");
         this.out = out;
         writtenFlags.push(false);
+    }
+
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        this.stringifyContext = stringifyContext;
+        if (stringifyContext != null) {
+            if (stringifyContext.hasPretty()) {
+                prettyPrint(stringifyContext.isPretty());
+            }
+            if (stringifyContext.hasIndentSize()) {
+                indentString(stringifyContext.getIndentString());
+            }
+            if (stringifyContext.hasNullWritable()) {
+                nullWritable(stringifyContext.isNullWritable());
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T apply(StringifyContext stringifyContext) {
+        setStringifyContext(stringifyContext);
+        return (T)this;
     }
 
     @SuppressWarnings("unchecked")
@@ -115,40 +134,9 @@ public class JsonWriter {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T dateFormat(@Nullable String dateFormat) {
-        this.dateFormat = dateFormat;
-        return (T)this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T dateTimeFormat(@Nullable String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-        return (T)this;
-    }
-
-    @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
         return (T)this;
-    }
-
-    public void applyStringifyContext(StringifyContext stringifyContext) {
-        Assert.notNull(stringifyContext, "stringifyContext must not be null");
-        if (stringifyContext.hasPretty()) {
-            prettyPrint(stringifyContext.isPretty());
-        }
-        if (stringifyContext.hasIndentSize()) {
-            indentString(stringifyContext.getIndentString());
-        }
-        if (stringifyContext.hasDateFormat()) {
-            dateFormat(stringifyContext.getDateFormat());
-        }
-        if (stringifyContext.hasDateTimeFormat()) {
-            dateTimeFormat(stringifyContext.getDateTimeFormat());
-        }
-        if (stringifyContext.hasNullWritable()) {
-            nullWritable(stringifyContext.isNullWritable());
-        }
     }
 
     /**
@@ -211,26 +199,29 @@ public class JsonWriter {
                 }
             }
             endArray();
-        } else if (object instanceof Date date) {
-            if (dateTimeFormat != null) {
-                SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
-                writeValue(dt.format(date));
+        } else if (object instanceof LocalDateTime localDateTime) {
+            if (stringifyContext != null) {
+                writeValue(stringifyContext.toString(localDateTime));
             } else {
-                writeValue(object.toString());
+                writeValue(localDateTime.toString());
             }
         } else if (object instanceof LocalDate localDate) {
-            if (dateFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                writeValue(localDate.format(formatter));
+            if (stringifyContext != null) {
+                writeValue(stringifyContext.toString(localDate));
             } else {
-                writeValue(object.toString());
+                writeValue(localDate.toString());
             }
-        } else if (object instanceof LocalDateTime localDateTime) {
-            if (dateTimeFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-                writeValue(localDateTime.format(formatter));
+        } else if (object instanceof LocalTime localTime) {
+            if (stringifyContext != null) {
+                writeValue(stringifyContext.toString(localTime));
             } else {
-                writeValue(object.toString());
+                writeValue(localTime.toString());
+            }
+        } else if (object instanceof Date date) {
+            if (stringifyContext != null) {
+                writeValue(stringifyContext.toString(date));
+            } else {
+                writeValue(date.toString());
             }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);

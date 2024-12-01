@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.apon.test.Customer;
 import org.junit.jupiter.api.Test;
 
@@ -68,9 +69,12 @@ class ObjectToAponConverterTest {
 
         map.put("customers", customerList);
 
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
         Parameters parameters = new ObjectToAponConverter()
-                .dateFormat("yyyy-MM-dd")
-                .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
+                .apply(stringifyContext)
                 .toParameters(map);
 
         return new AponWriter()

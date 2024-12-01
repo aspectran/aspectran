@@ -24,7 +24,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -108,13 +107,13 @@ public class XmlTransformResponse extends TransformResponse {
 
     public static void transform(
             Object object, Writer writer, String encoding,
-            @Nullable StringifyContext stringifyContext) throws TransformerException {
+            StringifyContext stringifyContext) throws TransformerException {
         transform(object, writer, encoding, stringifyContext, null);
     }
 
     private static void transform(
             Object object, Writer writer, String encoding,
-            @Nullable StringifyContext stringifyContext, Boolean prettyForce) throws TransformerException {
+            StringifyContext stringifyContext, Boolean prettyForce) throws TransformerException {
         boolean pretty = (prettyForce != null ? prettyForce : (stringifyContext == null || stringifyContext.isPretty()));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();

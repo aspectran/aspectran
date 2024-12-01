@@ -15,7 +15,6 @@
  */
 package com.aspectran.utils.apon;
 
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
@@ -23,10 +22,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -38,38 +36,17 @@ import java.util.Map;
  */
 public class ObjectToAponConverter {
 
-    private String dateFormat;
-
-    private String dateTimeFormat;
+    private StringifyContext stringifyContext;
 
     public ObjectToAponConverter() {
     }
 
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        this.stringifyContext = stringifyContext;
     }
 
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    public void applyStringyContext(StringifyContext stringifyContext) {
-        Assert.notNull(stringifyContext, "stringifyContext must not be null");
-        if (stringifyContext.getDateFormat() != null) {
-            setDateFormat(stringifyContext.getDateFormat());
-        }
-        if (stringifyContext.getDateTimeFormat() != null) {
-            setDateTimeFormat(stringifyContext.getDateTimeFormat());
-        }
-    }
-
-    public ObjectToAponConverter dateFormat(String dateFormat) {
-        setDateFormat(dateFormat);
-        return this;
-    }
-
-    public ObjectToAponConverter dateTimeFormat(String dateTimeFormat) {
-        setDateTimeFormat(dateTimeFormat);
+    public ObjectToAponConverter apply(StringifyContext stringifyContext) {
+        setStringifyContext(stringifyContext);
         return this;
     }
 
@@ -151,26 +128,29 @@ public class ObjectToAponConverter {
             return ps;
         } else if (object instanceof Collection<?> || object.getClass().isArray()) {
             return object.toString();
-        } else if (object instanceof Date date) {
-            if (dateTimeFormat != null) {
-                SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
-                return dt.format(date);
+        } else if (object instanceof LocalDateTime localDateTime) {
+            if (stringifyContext != null) {
+                return stringifyContext.toString(localDateTime);
             } else {
-                return object.toString();
+                return localDateTime.toString();
             }
         } else if (object instanceof LocalDate localDate) {
-            if (dateFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                return localDate.format(formatter);
+            if (stringifyContext != null) {
+                return stringifyContext.toString(localDate);
             } else {
-                return object.toString();
+                return localDate.toString();
             }
-        } else if (object instanceof LocalDateTime localDateTime) {
-            if (dateTimeFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-                return localDateTime.format(formatter);
+        } else if (object instanceof LocalTime localTime) {
+            if (stringifyContext != null) {
+                return stringifyContext.toString(localTime);
             } else {
-                return object.toString();
+                return localTime.toString();
+            }
+        } else if (object instanceof Date date) {
+            if (stringifyContext != null) {
+                return stringifyContext.toString(date);
+            } else {
+                return date.toString();
             }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);

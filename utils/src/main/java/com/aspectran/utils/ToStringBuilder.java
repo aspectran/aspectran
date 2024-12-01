@@ -22,13 +22,17 @@ import com.aspectran.utils.apon.Parameters;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * This class enables a good and consistent toString() to be built for any class or object.
+ * This class enables a good and consistent toString() to be built for any object.
  *
  * @author Juho Jeong
  * @since 2016. 2. 11.
@@ -36,6 +40,8 @@ import java.util.Map;
 public class ToStringBuilder {
 
     private final StringBuilder buffer;
+
+    private StringifyContext stringifyContext;
 
     private boolean braced = false;
 
@@ -58,12 +64,13 @@ public class ToStringBuilder {
         labeling(name, true);
     }
 
-    public ToStringBuilder(Object value) {
-        this(null, value);
+    private ToStringBuilder(Object value, StringifyContext stringifyContext) {
+        this(null, value, stringifyContext);
     }
 
-    public ToStringBuilder(String name, Object value) {
+    private ToStringBuilder(String name, Object value, StringifyContext stringifyContext) {
         this.buffer = new StringBuilder(128);
+        setStringifyContext(stringifyContext);
         if (name != null) {
             labeling(name, false);
         }
@@ -81,6 +88,15 @@ public class ToStringBuilder {
         }
         this.braced = braced;
         this.start = buffer.length();
+    }
+
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        this.stringifyContext = stringifyContext;
+    }
+
+    public ToStringBuilder apply(StringifyContext stringifyContext) {
+        setStringifyContext(stringifyContext);
+        return this;
     }
 
     public ToStringBuilder append(String name, Object value) {
@@ -154,8 +170,8 @@ public class ToStringBuilder {
                 buffer.append(Collections.list(enumeration).size());
             } else if (object.getClass().isArray()) {
                 buffer.append(Array.getLength(object));
-            } else if (object instanceof CharSequence charSequence) {
-                buffer.append(charSequence.length());
+            } else {
+                buffer.append(object.toString().length());
             }
         }
         return this;
@@ -205,6 +221,30 @@ public class ToStringBuilder {
             appendValue(parameters);
         } else if (object.getClass().isArray()) {
             appendArrayValue(object);
+        } else if (object instanceof LocalDateTime localDateTime) {
+            if (stringifyContext != null) {
+                buffer.append(stringifyContext.toString(localDateTime));
+            } else {
+                buffer.append(localDateTime);
+            }
+        } else if (object instanceof LocalDate localDate) {
+            if (stringifyContext != null) {
+                buffer.append(stringifyContext.toString(localDate));
+            } else {
+                buffer.append(localDate);
+            }
+        } else if (object instanceof LocalTime localTime) {
+            if (stringifyContext != null) {
+                buffer.append(stringifyContext.toString(localTime));
+            } else {
+                buffer.append(localTime);
+            }
+        } else if (object instanceof Date date) {
+            if (stringifyContext != null) {
+                buffer.append(stringifyContext.toString(date));
+            } else {
+                buffer.append(date);
+            }
         } else {
             buffer.append(object);
         }
@@ -313,11 +353,19 @@ public class ToStringBuilder {
     }
 
     public static String toString(Object object) {
-        return toString(null, object);
+        return toString(object, null);
     }
 
     public static String toString(String name, Object object) {
-        return new ToStringBuilder(name, object).toString();
+        return toString(name, object, null);
+    }
+
+    public static String toString(Object object, StringifyContext stringifyContext) {
+        return new ToStringBuilder(object, stringifyContext).toString();
+    }
+
+    public static String toString(String name, Object object, StringifyContext stringifyContext) {
+        return new ToStringBuilder(name, object, stringifyContext).toString();
     }
 
 }

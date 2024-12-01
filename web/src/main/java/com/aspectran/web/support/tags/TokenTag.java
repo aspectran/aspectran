@@ -166,13 +166,13 @@ public class TokenTag extends HtmlEscapingAwareTag {
             }
             Token[] tokens = TokenParser.parse(Token.format(tokenType, this.expression));
             if (this.var != null) {
-                Object result = tokenEvaluator.evaluate(tokens);
-                super.pageContext.setAttribute(this.var, result, this.scope);
+                Object value = tokenEvaluator.evaluate(tokens);
+                super.pageContext.setAttribute(this.var, value, this.scope);
             } else {
                 try {
-                    Object result = tokenEvaluator.evaluate(tokens);
-                    if (result != null) {
-                        String str = ToStringBuilder.toString(result);
+                    Object value = tokenEvaluator.evaluate(tokens);
+                    if (value != null) {
+                        String str = ToStringBuilder.toString(value, getCurrentActivity().getStringifyContext());
                         str = htmlEscape(str);
                         if (this.javaScriptEscape) {
                             str = JavaScriptUtils.javaScriptEscape(str);

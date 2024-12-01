@@ -201,7 +201,7 @@ public class ParameterValue implements Parameter {
     public void putValue(Object value) {
         if (value != null) {
             if (valueTypeFixed) {
-                value = determineValue(value);
+                value = resolveValue(value);
             } else {
                 determineValueType(value);
             }
@@ -469,7 +469,7 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private Object determineValue(Object value) {
+    private Object resolveValue(Object value) {
         if (valueType == ValueType.STRING || valueType == ValueType.TEXT) {
             return value.toString();
         } else if (valueType == ValueType.BOOLEAN) {

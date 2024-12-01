@@ -139,13 +139,13 @@ public class EvalTag extends HtmlEscapingAwareTag {
     public int doEndTag() throws JspException {
         try {
             if (this.var != null) {
-                Object result = ValueExpression.evaluate(this.expression, getCurrentActivity());
-                super.pageContext.setAttribute(this.var, result, this.scope);
+                Object value = ValueExpression.evaluate(this.expression, getCurrentActivity());
+                super.pageContext.setAttribute(this.var, value, this.scope);
             } else {
                 try {
-                    Object result = ValueExpression.evaluate(this.expression, getCurrentActivity());
-                    if (result != null) {
-                        String str = ToStringBuilder.toString(result);
+                    Object value = ValueExpression.evaluate(this.expression, getCurrentActivity());
+                    if (value != null) {
+                        String str = ToStringBuilder.toString(value, getCurrentActivity().getStringifyContext());
                         str = htmlEscape(str);
                         if (this.javaScriptEscape) {
                             str = JavaScriptUtils.javaScriptEscape(str);

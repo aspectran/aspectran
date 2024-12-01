@@ -85,7 +85,7 @@ public class JsonTransformResponse extends TransformResponse {
         }
 
         ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer);
-        jsonWriter.applyStringifyContext(stringifyContext);
+        jsonWriter.setStringifyContext(stringifyContext);
         if (pretty != null) {
             jsonWriter.prettyPrint(pretty);
         }
