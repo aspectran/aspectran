@@ -20,11 +20,12 @@ final class OgnlContextPropertyAccessor implements PropertyAccessor {
     public Object getProperty(OgnlContext ognlContext, Object target, Object name) throws OgnlException {
         if (!(target instanceof IContext context)) {
             throw new IllegalStateException(
-                "Wrong target type. This property accessor is only usable for " + IContext.class.getName() + " implementations, and " +
+                    "Wrong target type. This property accessor is only usable for " + IContext.class.getName() + " implementations, and " +
                     "in this case the target object is " + (target == null? "null" : ("of class " + target.getClass().getName())));
         }
 
-        if (REQUEST_PARAMETERS_RESTRICTED_VARIABLE_NAME.equals(name) && ognlContext != null && ognlContext.containsKey(RESTRICT_REQUEST_PARAMETERS)) {
+        if (REQUEST_PARAMETERS_RESTRICTED_VARIABLE_NAME.equals(name) &&
+                ognlContext != null && ognlContext.containsKey(RESTRICT_REQUEST_PARAMETERS)) {
             throw new OgnlException(
                     "Access to variable \"" + name + "\" is forbidden in this context. Note some restrictions apply to " +
                     "variable access. For example, direct access to request parameters is forbidden in preprocessing and " +

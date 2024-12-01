@@ -25,27 +25,27 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * <p>Created: 2019-07-06</p>
  */
-class ActivityStringifyContext extends StringifyContext {
+public class ActivityStringifyContext extends StringifyContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ActivityStringifyContext.class);
 
     static final int MAX_INDENT_SIZE = 8;
 
-    static final String FORMAT_PRETTY = "format.pretty";
+    public static final String FORMAT_PRETTY = "format.pretty";
 
-    static final String FORMAT_INDENT_STYLE = "format.indentStyle";
+    public static final String FORMAT_INDENT_STYLE = "format.indentStyle";
 
-    static final String FORMAT_INDENT_STYLE_TAB = "tab";
+    private static final String FORMAT_INDENT_STYLE_TAB = "tab";
 
-    static final String FORMAT_INDENT_SIZE = "format.indentSize";
+    public static final String FORMAT_INDENT_SIZE = "format.indentSize";
 
-    static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
+    public static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
 
-    static final String FORMAT_DATETIME_FORMAT = "format.dateTimeFormat";
+    public static final String FORMAT_DATETIME_FORMAT = "format.dateTimeFormat";
 
-    static final String FORMAT_DATE_FORMAT = "format.dateFormat";
+    public static final String FORMAT_DATE_FORMAT = "format.dateFormat";
 
-    static final String FORMAT_TIME_FORMAT = "format.timeFormat";
+    public static final String FORMAT_TIME_FORMAT = "format.timeFormat";
 
     ActivityStringifyContext(@NonNull Activity activity) {
         String indentStyle = activity.getSetting(FORMAT_INDENT_STYLE);

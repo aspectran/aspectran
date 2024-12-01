@@ -94,9 +94,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     private void setHeader(HttpString name, String value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Header name must not be null");
-        }
+        Assert.notNull(name, "Header name must not be null");
         if (name.equals(Headers.CONTENT_TYPE)) {
             setContentType(value);
         } else {
@@ -109,10 +107,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         addHeader(HttpString.tryFromString(name), value);
     }
 
-    private void addHeader(final HttpString name, final String value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Header name must not be null");
-        }
+    private void addHeader(HttpString name, String value) {
+        Assert.notNull(name, "Header name must not be null");
         if (name.equals(Headers.CONTENT_TYPE) &&
                 !getHttpServerExchange().getResponseHeaders().contains(Headers.CONTENT_TYPE)) {
             setContentType(value);

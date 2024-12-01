@@ -118,13 +118,11 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
             Set<String> markupSelectors = FragmentExpression.resolveFragments(fragment);
 
             Map<String, Object> nameFragmentParameters = fragment.getFragmentParameters();
-            if (nameFragmentParameters != null) {
-                if (fragment.hasSyntheticParameters()) {
-                    // We cannot allow synthetic parameters because there is no way to specify them at the template
-                    // engine execution!
-                    throw new IllegalArgumentException(
+            if (nameFragmentParameters != null && fragment.hasSyntheticParameters()) {
+                // We cannot allow synthetic parameters because there is no way to specify them at the template
+                // engine execution!
+                throw new IllegalArgumentException(
                         "Parameters in a view specification must be named (non-synthetic): '" + templateName + "'");
-                }
             }
 
             templateSpec = new TemplateSpec(templateNameToUse, markupSelectors, contentType, nameFragmentParameters);

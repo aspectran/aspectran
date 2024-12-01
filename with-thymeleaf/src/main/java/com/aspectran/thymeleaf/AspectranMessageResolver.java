@@ -40,7 +40,7 @@ public class AspectranMessageResolver extends AbstractMessageResolver {
         if (origin != null) {
             // We will be disabling template-based resolution when delegating in order to use only origin-based
             return standardMessageResolver.resolveMessage(context, origin, key, messageParameters,
-                false, true, true);
+                    false, true, true);
         }
 
         /*

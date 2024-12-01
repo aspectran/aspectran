@@ -92,10 +92,8 @@ public class TowActivity extends CoreActivity {
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
             return requestMethod + " " + requestName;
-        } else if (requestName != null) {
-            return requestName;
         } else {
-            return StringUtils.EMPTY;
+            return (requestName != null ? requestName : StringUtils.EMPTY);
         }
     }
 
