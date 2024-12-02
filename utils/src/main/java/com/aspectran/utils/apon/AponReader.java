@@ -29,10 +29,28 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.FALSE;
+import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
+import static com.aspectran.utils.apon.AponFormat.NO_CONTROL_CHAR;
+import static com.aspectran.utils.apon.AponFormat.NULL;
+import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
+import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.TRUE;
+
 /**
  * Converts a string in APON format to a Parameters object.
  */
-public class AponReader extends AponFormat implements Closeable {
+public class AponReader implements Closeable {
 
     private final BufferedReader reader;
 
@@ -51,9 +69,7 @@ public class AponReader extends AponFormat implements Closeable {
      * @param reader the character stream capable of parsing content into APON
      */
     public AponReader(Reader reader) {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must not be null");
-        }
+        Assert.notNull(reader, "reader must not be null");
         if (reader instanceof BufferedReader bufferedReader) {
             this.reader = bufferedReader;
         } else {
@@ -79,9 +95,7 @@ public class AponReader extends AponFormat implements Closeable {
      * @throws AponParseException if reading APON format document fails
      */
     public <T extends Parameters> T read(T parameters) throws AponParseException {
-        if (parameters == null) {
-            throw new IllegalArgumentException("parameters must not be null");
-        }
+        Assert.notNull(parameters, "parameters must not be null");
         try {
             if (parameters instanceof ArrayParameters) {
                 readArray(parameters);

@@ -254,7 +254,7 @@ public abstract class AbstractParameters implements Parameters {
     public void putAll(Parameters parameters) {
         Assert.notNull(parameters, "parameters must not be null");
         if (structureFixed) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Not allowed in fixed structures");
         }
         for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
             parameterValue.setContainer(this);
@@ -265,11 +265,13 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void putValue(String name, Object value) {
         Parameter p = getParameter(name);
-        if (p == null) {
-            p = newParameterValue(name, ValueType.determineValueType(value));
-        }
         if (value != null && value.getClass().isArray()) {
             checkArrayType(p);
+            if (p == null) {
+                //TODO
+                ValueType valueType = ValueType.determineValueType(value);
+                p = newParameterValue(name, valueType, true);
+            }
             int len = Array.getLength(value);
             for (int i = 0; i < len; i++) {
                 Object obj = Array.get(value, i);
@@ -277,18 +279,29 @@ public abstract class AbstractParameters implements Parameters {
             }
         } else if (value instanceof Collection<?> collection) {
             checkArrayType(p);
+            if (p == null) {
+                //TODO
+                ValueType valueType = ValueType.determineValueType(value);
+                p = newParameterValue(name, valueType, true);
+            }
             for (Object obj : collection) {
                 putValue(p, name, obj);
             }
         } else if (value instanceof Enumeration<?> enumeration) {
-            if (structureFixed && !p.isArray()) {
-                throw new IllegalStateException("Not an array type parameter: " + p);
+            checkArrayType(p);
+            if (p == null) {
+                //TODO
+                ValueType valueType = ValueType.determineValueType(value);
+                p = newParameterValue(name, valueType, true);
             }
             while (enumeration.hasMoreElements()) {
                 Object obj = enumeration.nextElement();
                 putValue(p, name, obj);
             }
         } else {
+            if (p == null) {
+                p = newParameterValue(name, ValueType.determineValueType(value));
+            }
             putValue(p, name, value);
         }
     }
@@ -833,7 +846,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private void checkArrayType(Parameter parameter) {
         if (structureFixed && !parameter.isArray()) {
-            throw new IllegalStateException("Not an array type parameter: " + parameter);
+            throw new IllegalArgumentException("Not an array type parameter: " + parameter);
         }
     }
 

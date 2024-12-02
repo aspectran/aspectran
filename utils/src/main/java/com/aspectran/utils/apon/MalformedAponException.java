@@ -21,7 +21,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * This exception is raised when attempting to read (or write) a malformed APON element.
+ * This exception is raised when attempting to read (or write) a malformed APON Format string.
  */
 public class MalformedAponException extends AponParseException {
 

@@ -29,11 +29,31 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
+import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.DEFAULT_INDENT_STRING;
+import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
+import static com.aspectran.utils.apon.AponFormat.NEW_LINE;
+import static com.aspectran.utils.apon.AponFormat.NEW_LINE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.NULL;
+import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.SPACE;
+import static com.aspectran.utils.apon.AponFormat.SPACE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
+import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
+
 /**
  * Writes an APON object to an output source.
  * <p>By default, the indentation string is "  " (two blanks)</p>
  */
-public class AponWriter extends AponFormat implements Flushable {
+public class AponWriter implements Flushable {
 
     private final Writer writer;
 
@@ -76,7 +96,7 @@ public class AponWriter extends AponFormat implements Flushable {
      * @param writer the character-output stream
      */
     public AponWriter(Writer writer) {
-        Assert.notNull(writer, "Writer must not be null");
+        Assert.notNull(writer, "writer must not be null");
         this.writer = writer;
     }
 
@@ -168,9 +188,7 @@ public class AponWriter extends AponFormat implements Flushable {
      */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T write(Parameters parameters) throws IOException {
-        if (parameters == null) {
-            throw new IllegalArgumentException("parameters must not be null");
-        }
+        Assert.notNull(parameters, "parameters must not be null");
         if (parameters instanceof ArrayParameters arrayParameters) {
             for (Parameters ps : arrayParameters.getParametersList()) {
                 beginBlock();
@@ -198,9 +216,7 @@ public class AponWriter extends AponFormat implements Flushable {
      */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T write(Parameter parameter) throws IOException {
-        if (parameter == null) {
-            throw new IllegalArgumentException("parameter must not be null");
-        }
+        Assert.notNull(parameter, "parameter must not be null");
         if (parameter.getValueType() == ValueType.PARAMETERS) {
             if (parameter.isArray()) {
                 List<Parameters> list = parameter.getValueAsParametersList();
@@ -449,7 +465,7 @@ public class AponWriter extends AponFormat implements Flushable {
                 value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
                 value.startsWith(SPACE) ||
                 value.endsWith(SPACE) ||
-                value.contains(AponFormat.NEW_LINE)) {
+                value.contains(NEW_LINE)) {
             writer.write(DOUBLE_QUOTE_CHAR);
             writer.write(escape(value));
             writer.write(DOUBLE_QUOTE_CHAR);

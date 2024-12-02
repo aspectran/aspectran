@@ -211,14 +211,14 @@ public class ContentsXMLReader implements XMLReader {
         if (object == null) {
             return;
         }
-        if (object instanceof ProcessResult) {
-            parseProcessResult((ProcessResult)object);
+        if (object instanceof ProcessResult processResult) {
+            parseProcessResult(processResult);
         } else if (object instanceof String
                 || object instanceof Number
                 || object instanceof Boolean) {
             parseString(object.toString());
-        } else if (object instanceof Parameters) {
-            Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
+        } else if (object instanceof Parameters parameters) {
+            Map<String, ParameterValue> params = parameters.getParameterValueMap();
             for (Parameter p: params.values()) {
                 String name = p.getName();
                 Object value = p.getValue();
@@ -227,8 +227,8 @@ public class ContentsXMLReader implements XMLReader {
                 parseObject(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
-        } else if (object instanceof Map<?, ?>) {
-            for (Map.Entry<?, ?> entry : ((Map<?, ?>)object).entrySet()) {
+        } else if (object instanceof Map<?, ?> map) {
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
@@ -236,9 +236,9 @@ public class ContentsXMLReader implements XMLReader {
                 parseObject(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
-        } else if (object instanceof Collection<?>) {
+        } else if (object instanceof Collection<?> collection) {
             handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
-            for (Object value : ((Collection<?>) object)) {
+            for (Object value : collection) {
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
                 parseObject(value);

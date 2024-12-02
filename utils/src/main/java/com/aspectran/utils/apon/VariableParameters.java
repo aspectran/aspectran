@@ -15,8 +15,6 @@
  */
 package com.aspectran.utils.apon;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,24 +42,6 @@ public class VariableParameters extends AbstractParameters implements Serializab
     public VariableParameters(ParameterKey[] parameterKeys, String apon) throws AponParseException {
         super(parameterKeys);
         readFrom(apon);
-    }
-
-    @Override
-    public void putValue(String name, Object value) {
-        Parameter p = touchParameterValue(name, value);
-        p.putValue(value);
-    }
-
-    @NonNull
-    private Parameter touchParameterValue(String name, Object value) {
-        Parameter p = getParameterValueMap().get(name);
-        if (p == null && !isStructureFixed()) {
-            p = newParameterValue(name, ValueType.determineValueType(value));
-        }
-        if (p == null) {
-            throw new UnknownParameterException(name, this);
-        }
-        return p;
     }
 
 }

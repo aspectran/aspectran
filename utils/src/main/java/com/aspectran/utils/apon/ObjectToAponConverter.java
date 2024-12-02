@@ -15,18 +15,19 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -51,26 +52,27 @@ public class ObjectToAponConverter {
     }
 
     public Parameters toParameters(Object object) {
-        return toParameters(null, object);
+        Parameters container = new VariableParameters();
+        putValue(container, object);
+        return container;
     }
 
     public Parameters toParameters(String name, Object object) {
+        Assert.notNull(name, "name must not be null");
         Parameters container = new VariableParameters();
         putValue(container, name, object);
         return container;
     }
 
-    public void putValue(Parameters container, Object value) {
-        putValue(container, null, value);
+    private void putValue(Parameters container, Object value) {
+        Object o = valuelize(value);
+        if (o instanceof Parameters parameters) {
+            container.putAll(parameters);
+        }
     }
 
-    public void putValue(Parameters container, String name, Object value) {
-        if (name == null) {
-            Object o = valuelize(value);
-            if (o instanceof Parameters parameters) {
-                container.putAll(parameters);
-            }
-        } else if (value == null) {
+    protected void putValue(@NonNull Parameters container, @NonNull String name, Object value) {
+        if (value == null) {
             if (container.hasParameter(name)) {
                 container.removeValue(name);
             }
@@ -79,28 +81,17 @@ public class ObjectToAponConverter {
             if (container.hasParameter(name)) {
                 container.removeValue(name);
             }
-            for (Object o : collection) {
-                if (o != null) {
-                    putValue(container, name, o);
-                }
+            container.putValue(name, collection);
+        } else if (value instanceof Enumeration<?> enumeration) {
+            if (container.hasParameter(name)) {
+                container.removeValue(name);
             }
-            if (!container.hasParameter(name)) {
-                container.putValue(name, null);
-            }
+            container.putValue(name, enumeration);
         } else if (value.getClass().isArray()) {
             if (container.hasParameter(name)) {
                 container.removeValue(name);
             }
-            int len = Array.getLength(value);
-            for (int i = 0; i < len; i++) {
-                Object o = Array.get(value, i);
-                if (o != null) {
-                    putValue(container, name, o);
-                }
-            }
-            if (!container.hasParameter(name)) {
-                container.putValue(name, null);
-            }
+            container.putValue(name, value);
         } else {
             container.putValue(name, valuelize(value));
         }

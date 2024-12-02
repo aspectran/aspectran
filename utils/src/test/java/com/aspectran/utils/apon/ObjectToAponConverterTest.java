@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,150 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ObjectToAponConverterTest {
 
     @Test
-    void test() throws IOException, ParseException {
-        String converted = convert();
-        String expected = "intro: Start Testing Now!\n" + "one: 1\n" + "two: 2\n" + "three: 3\n" + "null: null\n" + "nullArray: null\n" + "date: 1998-12-31 11:12:13\n" + "localDate: 2016-08-16\n" + "localDateTime: 2016-03-04 10:15:30\n" + "customers: [\n" + "  {\n" + "    id: guest-1\n" + "    name: Guest1\n" + "    age: 21\n" + "    episode: (\n" + "      |His individual skills are outstanding.\n" + "      |I don't know as how he is handsome\n" + "    )\n" + "    approved: true\n" + "  }\n" + "  {\n" + "    id: guest-2\n" + "    name: Guest2\n" + "    age: 22\n" + "    episode: (\n" + "      |His individual skills are outstanding.\n" + "      |I don't know as how he is handsome\n" + "    )\n" + "    approved: true\n" + "  }\n" + "]\n";
-        assertEquals(converted, expected.replace("\n", AponFormat.SYSTEM_NEW_LINE));
+    void testConvert1() throws IOException {
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add(null);
+        list.add("3");
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("array", list.toArray(new String[0]));
+        map.put("list", list);
+        map.put("enum", Collections.enumeration(list));
+
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
+        Parameters parameters = new ObjectToAponConverter()
+            .apply(stringifyContext)
+            .toParameters(map);
+
+        String expected = """
+            array: [
+              1
+              2
+              null
+              3
+            ]
+            list: [
+              1
+              2
+              null
+              3
+            ]
+            enum: [
+              1
+              2
+              null
+              3
+            ]
+            """;
+
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String converted = new AponWriter()
+            .nullWritable(true)
+            .write(parameters)
+            .toString();
+        assertEquals(expected, converted);
     }
 
-    public static String convert() throws IOException, ParseException {
+    @Test
+    void testConvert2() throws IOException {
+        List<Customer> customerList = new ArrayList<>();
+        for (int i = 1; i <= 2; i++) {
+            Customer customer = new Customer();
+            customer.putValue(Customer.id, "guest-" + i);
+            customerList.add(customer);
+        }
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("customers", customerList);
+
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
+        Parameters parameters = new ObjectToAponConverter()
+            .apply(stringifyContext)
+            .toParameters(map);
+
+        String expected = """
+            customers: [
+              {
+                id: guest-1
+                name: Guest1
+                age: 21
+                episode: (
+                  |His individual skills are outstanding.
+                  |I don't know as how he is handsome
+                )
+                approved: true
+              }
+              {
+                id: guest-2
+                name: Guest2
+                age: 22
+                episode: (
+                  |His individual skills are outstanding.
+                  |I don't know as how he is handsome
+                )
+                approved: true
+              }
+            ]
+            """;
+
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String converted = new AponWriter()
+            .nullWritable(true)
+            .write(parameters)
+            .toString();
+//        assertEquals(expected, converted);
+        System.out.println(parameters);
+    }
+
+    @Test
+    void testConvert3() throws IOException, ParseException {
+        String expected = """
+            intro: Start Testing Now!
+            one: 1
+            two: 2
+            three: 3
+            null: null
+            nullArray: null
+            date: 1998-12-31 11:12:13
+            localDate: 2016-08-16
+            localDateTime: 2016-03-04 10:15:30
+            customers: [
+              {
+                id: guest-1
+                name: Guest1
+                age: 21
+                episode: (
+                  |His individual skills are outstanding.
+                  |I don't know as how he is handsome
+                )
+                approved: true
+              }
+              {
+                id: guest-2
+                name: Guest2
+                age: 22
+                episode: (
+                  |His individual skills are outstanding.
+                  |I don't know as how he is handsome
+                )
+                approved: true
+              }
+            ]
+            """;
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String converted = convert();
+        assertEquals(expected, converted);
+    }
+
+    static String convert() throws IOException, ParseException {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("intro", "Start Testing Now!");
         map.put("one", 1);
@@ -56,7 +194,6 @@ class ObjectToAponConverterTest {
         map.put("localDateTime", LocalDateTime.parse("2016-03-04T10:15:30"));
 
         List<Customer> customerList = new ArrayList<>();
-
         for (int i = 1; i <= 2; i++) {
             Customer customer = new Customer();
             customer.putValue(Customer.id, "guest-" + i);
@@ -81,15 +218,6 @@ class ObjectToAponConverterTest {
                 .nullWritable(true)
                 .write(parameters)
                 .toString();
-    }
-
-    public static void main(String[] args) {
-        try {
-            String result = convert();
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

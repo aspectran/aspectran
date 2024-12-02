@@ -176,7 +176,12 @@ public class DefaultRestResponse extends AbstractRestResponse {
             ObjectToAponConverter aponConverter = new ObjectToAponConverter();
             aponConverter.setStringifyContext(stringifyContext);
 
-            Parameters parameters = aponConverter.toParameters(getName(), getData());
+            Parameters parameters;
+            if (getName() != null) {
+                parameters = aponConverter.toParameters(getName(), getData());
+            } else {
+                parameters = aponConverter.toParameters(getData());
+            }
 
             AponTransformResponse.transform(parameters, writer, stringifyContext);
         }
