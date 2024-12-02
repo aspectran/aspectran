@@ -45,7 +45,8 @@ public class ContextProfilesConfig extends AbstractParameters {
     }
 
     public ContextProfilesConfig setActiveProfiles(String[] activeProfiles) {
-        setValue(ContextProfilesConfig.activeProfiles, activeProfiles);
+        removeValue(ContextProfilesConfig.activeProfiles);
+        putValue(ContextProfilesConfig.activeProfiles, activeProfiles);
         return this;
     }
 
@@ -59,7 +60,8 @@ public class ContextProfilesConfig extends AbstractParameters {
     }
 
     public ContextProfilesConfig setDefaultProfiles(String[] defaultProfiles) {
-        setValue(ContextProfilesConfig.defaultProfiles, defaultProfiles);
+        removeValue(ContextProfilesConfig.defaultProfiles);
+        putValue(ContextProfilesConfig.defaultProfiles, defaultProfiles);
         return this;
     }
 

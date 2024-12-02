@@ -53,6 +53,7 @@ class ObjectToAponConverterTest {
         StringifyContext stringifyContext = new StringifyContext();
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        stringifyContext.setNullWritable(true);
 
         Parameters parameters = new ObjectToAponConverter()
             .apply(stringifyContext)
@@ -95,6 +96,7 @@ class ObjectToAponConverterTest {
             customer.putValue(Customer.id, "guest-" + i);
             customerList.add(customer);
         }
+        customerList.add(null);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("customers", customerList);
@@ -102,6 +104,7 @@ class ObjectToAponConverterTest {
         StringifyContext stringifyContext = new StringifyContext();
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        stringifyContext.setNullWritable(false);
 
         Parameters parameters = new ObjectToAponConverter()
             .apply(stringifyContext)
@@ -111,33 +114,19 @@ class ObjectToAponConverterTest {
             customers: [
               {
                 id: guest-1
-                name: Guest1
-                age: 21
-                episode: (
-                  |His individual skills are outstanding.
-                  |I don't know as how he is handsome
-                )
-                approved: true
               }
               {
                 id: guest-2
-                name: Guest2
-                age: 22
-                episode: (
-                  |His individual skills are outstanding.
-                  |I don't know as how he is handsome
-                )
-                approved: true
               }
             ]
             """;
 
         expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String converted = new AponWriter()
-            .nullWritable(true)
+            .nullWritable(false)
             .write(parameters)
             .toString();
-//        assertEquals(expected, converted);
+        assertEquals(expected, converted);
         System.out.println(parameters);
     }
 
@@ -149,10 +138,15 @@ class ObjectToAponConverterTest {
             two: 2
             three: 3
             null: null
-            nullArray: null
+            nullArray: [
+              null
+              null
+              null
+            ]
             date: 1998-12-31 11:12:13
             localDate: 2016-08-16
             localDateTime: 2016-03-04 10:15:30
+            char: A
             customers: [
               {
                 id: guest-1
@@ -192,6 +186,7 @@ class ObjectToAponConverterTest {
         map.put("date", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("31/12/1998 11:12:13"));
         map.put("localDate", LocalDate.parse("2016-08-16"));
         map.put("localDateTime", LocalDateTime.parse("2016-03-04T10:15:30"));
+        map.put("char", 'A');
 
         List<Customer> customerList = new ArrayList<>();
         for (int i = 1; i <= 2; i++) {
@@ -209,6 +204,7 @@ class ObjectToAponConverterTest {
         StringifyContext stringifyContext = new StringifyContext();
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        stringifyContext.setNullWritable(true);
 
         Parameters parameters = new ObjectToAponConverter()
                 .apply(stringifyContext)

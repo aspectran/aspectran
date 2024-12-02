@@ -101,7 +101,8 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public ContextConfig setContextRules(String[] contextRules) {
-        setValue(rules, contextRules);
+        removeValue(rules);
+        putValue(rules, contextRules);
         return this;
     }
 
@@ -124,7 +125,8 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public ContextConfig setResourceLocations(String[] resourceLocations) {
-        setValue(resources, resourceLocations);
+        removeValue(resources);
+        putValue(resources, resourceLocations);
         return this;
     }
 
@@ -138,7 +140,8 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public ContextConfig setBasePackage(String[] basePackages) {
-        setValue(scan, basePackages);
+        removeValue(scan);
+        putValue(scan, basePackages);
         return this;
     }
 

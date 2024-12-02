@@ -183,7 +183,7 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String apon = "key1: value1\nkey2: value2\n" + "key3: value3";
+        String apon = "key1: value1\nkey2: value2\nkey3: value3";
 
         String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();

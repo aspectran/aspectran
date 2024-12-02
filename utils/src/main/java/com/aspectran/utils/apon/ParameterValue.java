@@ -436,10 +436,10 @@ public class ParameterValue implements Parameter {
             }
         }
         try {
-            T p = (T)ClassUtils.createInstance(parametersClass);
-            p.setProprietor(identifier);
-            putValue(p);
-            return p;
+            T ps = (T)ClassUtils.createInstance(parametersClass);
+            ps.setProprietor(identifier);
+            putValue(ps);
+            return ps;
         } catch (Exception e) {
             throw new InvalidParameterValueException("Failed to instantiate " + parametersClass, e);
         }

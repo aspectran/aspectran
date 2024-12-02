@@ -28,7 +28,6 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
-import com.aspectran.utils.apon.Parameters;
 
 public class AspectranParameters extends AbstractParameters {
 
@@ -103,8 +102,7 @@ public class AspectranParameters extends AbstractParameters {
 
     public AspectranParameters addTypeAlias(String alias, String type) {
         TypeAliasesParameters typeAliasesParameters = touchParameters(typeAliases);
-        Parameters parameters = typeAliasesParameters.touchParameters(TypeAliasesParameters.typeAlias);
-        parameters.setValue(alias, type);
+        typeAliasesParameters.putTypeAlias(alias, type);
         return this;
     }
 

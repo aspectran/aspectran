@@ -52,9 +52,12 @@ public class ObjectToAponConverter {
     }
 
     public Parameters toParameters(Object object) {
-        Parameters container = new VariableParameters();
-        putValue(container, object);
-        return container;
+        Object value = valuelize(object);
+        if (value instanceof Parameters parameters) {
+            return parameters;
+        } else {
+            return new VariableParameters();
+        }
     }
 
     public Parameters toParameters(String name, Object object) {
@@ -64,50 +67,32 @@ public class ObjectToAponConverter {
         return container;
     }
 
-    private void putValue(Parameters container, Object value) {
-        Object o = valuelize(value);
-        if (o instanceof Parameters parameters) {
+    protected void putValue(@NonNull Parameters container, @NonNull String name, Object value) {
+        if (isNullWritable()) {
+            container.putValue(name, valuelize(value));
+        } else {
+            container.putValueIfNotNull(name, valuelize(value));
+        }
+    }
+
+    protected void putValue(@NonNull Parameters container, Object value) {
+        Object obj = valuelize(value);
+        if (obj instanceof Parameters parameters) {
             container.putAll(parameters);
         }
     }
 
-    protected void putValue(@NonNull Parameters container, @NonNull String name, Object value) {
-        if (value == null) {
-            if (container.hasParameter(name)) {
-                container.removeValue(name);
-            }
-            container.putValue(name, null);
-        } else if (value instanceof Collection<?> collection) {
-            if (container.hasParameter(name)) {
-                container.removeValue(name);
-            }
-            container.putValue(name, collection);
-        } else if (value instanceof Enumeration<?> enumeration) {
-            if (container.hasParameter(name)) {
-                container.removeValue(name);
-            }
-            container.putValue(name, enumeration);
-        } else if (value.getClass().isArray()) {
-            if (container.hasParameter(name)) {
-                container.removeValue(name);
-            }
-            container.putValue(name, value);
-        } else {
-            container.putValue(name, valuelize(value));
-        }
-    }
-
     private Object valuelize(Object object) {
-        if (object == null) {
-            return null;
-        }
-        if (object instanceof Parameters ||
+        if (object == null ||
+                object instanceof Parameters ||
                 object instanceof String ||
                 object instanceof Number ||
-                object instanceof Boolean ) {
+                object instanceof Boolean ||
+                object instanceof Character ||
+                object instanceof Collection<?> ||
+                object instanceof Enumeration<?> ||
+                object.getClass().isArray()) {
             return object;
-        } else if (object instanceof Character) {
-           return String.valueOf(((char)object));
         } else if (object instanceof Map<?, ?> map) {
             Parameters ps = new VariableParameters();
             for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -117,8 +102,6 @@ public class ObjectToAponConverter {
                 putValue(ps, name, value);
             }
             return ps;
-        } else if (object instanceof Collection<?> || object.getClass().isArray()) {
-            return object.toString();
         } else if (object instanceof LocalDateTime localDateTime) {
             if (stringifyContext != null) {
                 return stringifyContext.toString(localDateTime);
@@ -162,6 +145,10 @@ public class ObjectToAponConverter {
                 return object.toString();
             }
         }
+    }
+
+    private boolean isNullWritable() {
+        return (stringifyContext == null || stringifyContext.isNullWritable());
     }
 
     private void checkCircularReference(@NonNull Object wrapper, Object member) {

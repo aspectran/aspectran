@@ -239,18 +239,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void setValue(String name, Object value) {
-        removeValue(name);
-        putValue(name, value);
-    }
-
-    @Override
-    public void setValue(ParameterKey key, Object value) {
-        removeValue(key);
-        putValue(key, value);
-    }
-
-    @Override
     public void putAll(Parameters parameters) {
         Assert.notNull(parameters, "parameters must not be null");
         if (structureFixed) {
@@ -264,54 +252,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public void putValue(String name, Object value) {
-        Parameter p = getParameter(name);
-        if (value != null && value.getClass().isArray()) {
-            checkArrayType(p);
-            if (p == null) {
-                //TODO
-                ValueType valueType = ValueType.determineValueType(value);
-                p = newParameterValue(name, valueType, true);
-            }
-            int len = Array.getLength(value);
-            for (int i = 0; i < len; i++) {
-                Object obj = Array.get(value, i);
-                putValue(p, name, obj);
-            }
-        } else if (value instanceof Collection<?> collection) {
-            checkArrayType(p);
-            if (p == null) {
-                //TODO
-                ValueType valueType = ValueType.determineValueType(value);
-                p = newParameterValue(name, valueType, true);
-            }
-            for (Object obj : collection) {
-                putValue(p, name, obj);
-            }
-        } else if (value instanceof Enumeration<?> enumeration) {
-            checkArrayType(p);
-            if (p == null) {
-                //TODO
-                ValueType valueType = ValueType.determineValueType(value);
-                p = newParameterValue(name, valueType, true);
-            }
-            while (enumeration.hasMoreElements()) {
-                Object obj = enumeration.nextElement();
-                putValue(p, name, obj);
-            }
-        } else {
-            if (p == null) {
-                p = newParameterValue(name, ValueType.determineValueType(value));
-            }
-            putValue(p, name, value);
-        }
-    }
-
-    private void putValue(@NonNull Parameter p, String name, Object value) {
-        p.putValue(value);
-        if (value instanceof Parameters parameters) {
-            parameters.setActualName(name);
-            parameters.updateContainer(this);
-        }
+        putValue(name, value, false);
     }
 
     @Override
@@ -321,17 +262,102 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putValueNonNull(String name, Object value) {
-        if (value != null) {
-            putValue(name, value);
-        }
+    public void putValueIfNotNull(String name, Object value) {
+        putValue(name, value, true);
     }
 
     @Override
-    public void putValueNonNull(ParameterKey key, Object value) {
+    public void putValueIfNotNull(ParameterKey key, Object value) {
         checkKey(key);
-        if (value != null) {
-            putValue(key.getName(), value);
+        putValueIfNotNull(key.getName(), value);
+    }
+
+    private void putValue(String name, Object value, boolean notNullOnly) {
+        if (value == null && notNullOnly) {
+            return;
+        }
+        if (value != null && value.getClass().isArray()) {
+            int len = Array.getLength(value);
+            int affected = 0;
+            for (int i = 0; i < len; i++) {
+                Object obj = Array.get(value, i);
+                if (obj != null || !notNullOnly) {
+                    putArrayValue(name, obj);
+                    affected++;
+                }
+            }
+            if (affected == 0 && !notNullOnly) {
+                putArrayValue(name, null);
+            }
+        } else if (value instanceof Collection<?> collection) {
+            int affected = 0;
+            for (Object obj : collection) {
+                if (obj != null || !notNullOnly) {
+                    putArrayValue(name, obj);
+                    affected++;
+                }
+            }
+            if (affected == 0 && !notNullOnly) {
+                putArrayValue(name, null);
+            }
+        } else if (value instanceof Enumeration<?> enumeration) {
+            int affected = 0;
+            while (enumeration.hasMoreElements()) {
+                Object obj = enumeration.nextElement();
+                if (obj != null || !notNullOnly) {
+                    putArrayValue(name, obj);
+                    affected++;
+                }
+            }
+            if (affected == 0 && !notNullOnly) {
+                putArrayValue(name, null);
+            }
+        } else if (value instanceof Map<?, ?> map) {
+            int affected = 0;
+            Parameters ps = touchParameters(name);
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                Object obj = entry.getValue();
+                if (obj != null || !notNullOnly) {
+                    ps.putValue(entry.getKey().toString(), obj);
+                    affected++;
+                }
+            }
+            if (affected == 0) {
+                if (notNullOnly) {
+                    removeValue(name);
+                } else {
+                    putValue(name, null, false);
+                }
+            }
+        } else {
+            Parameter p = getParameter(name);
+            if (p == null) {
+                ValueType valueType = ValueType.determineValueType(value);
+                p = newParameterValue(name, valueType);
+            }
+            putValue(p, name, value);
+        }
+    }
+
+    private void putArrayValue(String name, Object value) {
+        Parameter p = getParameter(name);
+        if (p == null) {
+            ValueType valueType = ValueType.determineValueType(value);
+            p = newParameterValue(name, valueType, true);
+        }
+        checkArrayType(p);
+        if (value != null && value.getClass().isArray()) {
+            putValue(p, name, value.toString());
+        } else {
+            putValue(p, name, value);
+        }
+    }
+
+    private void putValue(@NonNull Parameter p, String name, Object value) {
+        p.putValue(value);
+        if (value instanceof Parameters parameters) {
+            parameters.setActualName(name);
+            parameters.updateContainer(this);
         }
     }
 
@@ -662,7 +688,7 @@ public abstract class AbstractParameters implements Parameters {
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T getParameters(String name) {
         Parameter p = getParameter(name);
-        return (p != null ? (T)p.getValue() : null);
+        return (p != null ? (T)p.getValueAsParameters() : null);
     }
 
     @Override
@@ -704,9 +730,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
-        if (structureFixed) {
-            throw new IllegalStateException("Unknown parameter: " + name);
-        }
+        Assert.isTrue(!structureFixed, "Unknown parameter: " + name);
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);

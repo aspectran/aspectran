@@ -49,12 +49,12 @@ public class DescriptionParameters extends AbstractParameters {
 
     public DescriptionParameters(@NonNull DescriptionRule descriptionRule) {
         super(parameterKeys);
-        putValueNonNull(profile, descriptionRule.getProfile());
-        putValueNonNull(style, descriptionRule.getContentStyle());
+        putValueIfNotNull(profile, descriptionRule.getProfile());
+        putValueIfNotNull(style, descriptionRule.getContentStyle());
         if (descriptionRule.getContentStyle() == TextStyleType.APON) {
-            putValueNonNull(content, TextStyler.stripAponStyle(descriptionRule.getContent()));
+            putValueIfNotNull(content, TextStyler.stripAponStyle(descriptionRule.getContent()));
         } else {
-            putValueNonNull(content, descriptionRule.getContent());
+            putValueIfNotNull(content, descriptionRule.getContent());
         }
     }
 

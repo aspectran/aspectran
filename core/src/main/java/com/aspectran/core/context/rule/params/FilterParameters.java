@@ -54,7 +54,8 @@ public class FilterParameters extends AbstractParameters {
     }
 
     public FilterParameters setExcludePattern(String[] excludePatterns) {
-        setValue(exclude, excludePatterns);
+        removeValue(exclude);
+        putValue(exclude, excludePatterns);
         return this;
     }
 

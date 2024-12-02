@@ -60,7 +60,8 @@ public class JoinpointParameters extends AbstractParameters {
     }
 
     public void setMethods(String[] methods) {
-        setValue(JoinpointParameters.methods, methods);
+        removeValue(JoinpointParameters.methods);
+        putValue(JoinpointParameters.methods, methods);
     }
 
     public void addMethod(String method) {
@@ -68,7 +69,8 @@ public class JoinpointParameters extends AbstractParameters {
     }
 
     public void setHeaders(String[] headers) {
-        setValue(JoinpointParameters.headers, headers);
+        removeValue(JoinpointParameters.headers);
+        putValue(JoinpointParameters.headers, headers);
     }
 
     public void addHeaders(String header) {

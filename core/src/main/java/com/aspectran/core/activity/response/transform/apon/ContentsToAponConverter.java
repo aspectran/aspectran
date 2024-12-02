@@ -68,10 +68,14 @@ public class ContentsToAponConverter extends ObjectToAponConverter {
         for (ActionResult actionResult : contentResult) {
             String name = actionResult.getActionId();
             Object value = actionResult.getResultValue();
-            if (container.hasParameter(name)) {
-                container.removeValue(name);
+            if (name != null) {
+                if (container.hasParameter(name)) {
+                    container.removeValue(name);
+                }
+                putValue(container, name, value);
+            } else {
+                putValue(container, value);
             }
-            putValue(container, name, value);
         }
     }
 

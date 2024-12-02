@@ -175,22 +175,6 @@ public interface Parameters {
      */
     Object getValue(ParameterKey key);
 
-    /**
-     * Put a value into the Parameter with the specified name.
-     * If there is an existing value, remove it and put it.
-     * @param name the parameter name
-     * @param value the value of parameter
-     */
-    void setValue(String name, Object value);
-
-    /**
-     * Put a value into the Parameter with the specified parameter definition.
-     * If there is an existing value, remove it and put it.
-     * @param key the parameter definition
-     * @param value the value of parameter
-     */
-    void setValue(ParameterKey key, Object value);
-
     void putAll(Parameters parameters);
 
     /**
@@ -213,7 +197,7 @@ public interface Parameters {
      * @param name the parameter name
      * @param value the value of parameter
      */
-    void putValueNonNull(String name, Object value);
+    void putValueIfNotNull(String name, Object value);
 
     /**
      * Put a value of the parameter corresponding to the given parameter definition.
@@ -221,7 +205,7 @@ public interface Parameters {
      * @param key the parameter definition
      * @param value the value of parameter
      */
-    void putValueNonNull(ParameterKey key, Object value);
+    void putValueIfNotNull(ParameterKey key, Object value);
 
     /**
      * Remove the value of this parameter.
