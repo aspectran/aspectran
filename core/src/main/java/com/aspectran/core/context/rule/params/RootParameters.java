@@ -47,7 +47,7 @@ public class RootParameters extends AbstractParameters {
 
     public RootParameters(Reader reader) throws AponParseException {
         this();
-        AponReader.parse(reader, this);
+        readFrom(reader);
     }
 
 }

@@ -46,9 +46,9 @@ public class PBTokenIssuer {
         try {
             String payload = PBEncryptionUtils.decrypt(token);
             if (payloadType != null) {
-                return AponReader.parse(payload, payloadType);
+                return AponReader.from(payload, payloadType);
             } else {
-                return (T)AponReader.parse(payload);
+                return (T)AponReader.from(payload);
             }
         } catch (Exception e) {
             throw new InvalidPBTokenException(token, e);

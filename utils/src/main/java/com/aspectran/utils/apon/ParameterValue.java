@@ -511,7 +511,7 @@ public class ParameterValue implements Parameter {
         } else if (valueType == ValueType.PARAMETERS) {
             if (!(value instanceof Parameters)) {
                 try {
-                    value = AponReader.parse(value.toString(), parametersClass);
+                    value = AponReader.from(value.toString(), parametersClass);
                 } catch (AponParseException e) {
                     throw new ValueTypeMismatchException(value.getClass(), parametersClass, e);
                 }

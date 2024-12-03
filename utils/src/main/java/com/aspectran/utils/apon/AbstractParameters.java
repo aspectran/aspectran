@@ -786,7 +786,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void readFrom(String apon) throws AponParseException {
         if (apon != null) {
-            AponReader.parse(apon, this);
+            AponReader.from(apon, this);
         }
     }
 
@@ -800,21 +800,21 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void readFrom(File file) throws AponParseException {
         if (file != null) {
-            AponReader.parse(file, this);
+            AponReader.from(file, this);
         }
     }
 
     @Override
     public void readFrom(File file, String encoding) throws AponParseException {
         if (file != null) {
-            AponReader.parse(file, encoding, this);
+            AponReader.from(file, encoding, this);
         }
     }
 
     @Override
     public void readFrom(Reader reader) throws AponParseException {
         if (reader != null) {
-            AponReader.parse(reader, this);
+            AponReader.from(reader, this);
         }
     }
 

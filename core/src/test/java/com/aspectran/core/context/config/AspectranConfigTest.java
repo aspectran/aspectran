@@ -16,6 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.AponWriterCloseable;
 import com.aspectran.utils.apon.Parameters;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * <p>Created: 2016. 9. 7.</p>
  */
@@ -36,14 +39,27 @@ class AspectranConfigTest {
     void aspectranConfigTest() throws IOException {
         File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AponReader.parse(file, aspectranConfig);
+        AponReader.from(file, aspectranConfig);
 
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
-
         try (AponWriterCloseable aponWriter = new AponWriterCloseable(outputFile)) {
             aponWriter.nullWritable(false);
             aponWriter.write(aspectranConfig);
         }
+
+        String expected = readAllCharactersOneByOne(new FileReader(outputFile));
+        String actual = AponReader.from(outputFile).toString();
+
+        assertEquals(expected, actual);
+    }
+
+    static String readAllCharactersOneByOne(@NonNull Reader reader) throws IOException {
+        StringBuilder content = new StringBuilder();
+        int nextChar;
+        while ((nextChar = reader.read()) != -1) {
+            content.append((char) nextChar);
+        }
+        return String.valueOf(content);
     }
 
     public static void main(String[] args) {

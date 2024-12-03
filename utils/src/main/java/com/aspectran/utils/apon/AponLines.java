@@ -141,7 +141,7 @@ public class AponLines extends AponFormat {
     }
 
     public String format() throws AponParseException {
-        return AponReader.parse(toString()).toString();
+        return AponReader.from(toString()).toString();
     }
 
     private void checkName(String name) {

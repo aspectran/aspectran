@@ -29,7 +29,7 @@ class AponReadWriteTest {
     @Test
     void writeTest() throws IOException {
         File file = ResourceUtils.getResourceAsFile("config/apon/apon-test.apon");
-        Parameters parameters = AponReader.parse(file);
+        Parameters parameters = AponReader.from(file);
 
         File outputFile = new File(ResourceUtils.getResourceAsFile("config/apon"), "apon-test-output.apon");
 

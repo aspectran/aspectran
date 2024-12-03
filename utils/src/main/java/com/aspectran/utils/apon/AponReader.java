@@ -58,10 +58,10 @@ public class AponReader implements Closeable {
 
     /**
      * Instantiates a new AponReader.
-     * @param text the APON formatted string
+     * @param apon the APON formatted string
      */
-    public AponReader(String text) {
-        this(new StringReader(text));
+    public AponReader(String apon) {
+        this(new StringReader(apon));
     }
 
     /**
@@ -150,8 +150,9 @@ public class AponReader implements Closeable {
      * @param valueTypeHinted whether the value type is hinted
      * @throws IOException if an invalid parameter is detected or I/O error occurs
      */
-    private void read(Parameters container, char openedBracket, String name, ParameterValue parameterValue,
-                      ValueType valueType, boolean valueTypeHinted) throws IOException {
+    private void read(
+            Parameters container, char openedBracket, String name, ParameterValue parameterValue,
+            ValueType valueType, boolean valueTypeHinted) throws IOException {
         String line;
         String value;
         String tline;
@@ -513,36 +514,36 @@ public class AponReader implements Closeable {
 
     /**
      * Converts an APON formatted string into a Parameters object.
-     * @param text the APON formatted string
+     * @param apon the APON formatted string
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(String text) throws AponParseException {
+    public static Parameters from(String apon) throws AponParseException {
         Parameters parameters = new VariableParameters();
-        return parse(text, parameters);
+        return from(apon, parameters);
     }
 
-    public static <T extends Parameters> T parse(String text, Class<T> requiredType) throws AponParseException {
+    public static <T extends Parameters> T from(String apon, Class<T> requiredType) throws AponParseException {
         T parameters = ClassUtils.createInstance(requiredType);
-        return parse(text, parameters);
+        return from(apon, parameters);
     }
 
     /**
      * Converts an APON formatted string into a given Parameters object.
      * @param <T> the generic type
-     * @param text the APON formatted string
+     * @param apon the APON formatted string
      * @param parameters the Parameters object
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(String text, T parameters) throws AponParseException {
-        Assert.notNull(text, "text must not be null");
+    public static <T extends Parameters> T from(String apon, T parameters) throws AponParseException {
+        Assert.notNull(apon, "text must not be null");
         Assert.notNull(parameters, "parameters must not be null");
-        if (StringUtils.isEmpty(text)) {
+        if (StringUtils.isEmpty(apon)) {
             return parameters;
         }
         try {
-            AponReader aponReader = new AponReader(text);
+            AponReader aponReader = new AponReader(apon);
             aponReader.read(parameters);
             aponReader.close();
             return parameters;
@@ -559,8 +560,8 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file) throws AponParseException {
-        return parse(file, (String)null);
+    public static Parameters from(File file) throws AponParseException {
+        return from(file, (String)null);
     }
 
     /**
@@ -570,10 +571,10 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file, String encoding) throws AponParseException {
+    public static Parameters from(File file, String encoding) throws AponParseException {
         Assert.notNull(file, "file must not be null");
         Parameters parameters = new VariableParameters();
-        return parse(file, encoding, parameters);
+        return from(file, encoding, parameters);
     }
 
     /**
@@ -584,8 +585,8 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(File file, T parameters) throws AponParseException {
-        return parse(file, null, parameters);
+    public static <T extends Parameters> T from(File file, T parameters) throws AponParseException {
+        return from(file, null, parameters);
     }
 
     /**
@@ -597,7 +598,7 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(File file, String encoding, T parameters)
+    public static <T extends Parameters> T from(File file, String encoding, T parameters)
             throws AponParseException {
         Assert.notNull(file, "file must not be null");
         Assert.notNull(parameters, "parameters must not be null");
@@ -630,7 +631,7 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(Reader reader) throws AponParseException {
+    public static Parameters from(Reader reader) throws AponParseException {
         Assert.notNull(reader, "reader must not be null");
         AponReader aponReader = new AponReader(reader);
         return aponReader.read();
@@ -644,7 +645,7 @@ public class AponReader implements Closeable {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(Reader reader, T parameters) throws AponParseException {
+    public static <T extends Parameters> T from(Reader reader, T parameters) throws AponParseException {
         AponReader aponReader = new AponReader(reader);
         aponReader.read(parameters);
         return parameters;
