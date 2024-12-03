@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2019-07-08</p>
  */
-class XmlToAponTest {
+class XmlToParametersTest {
 
     @Test
     void test() throws IOException, ParseException {
@@ -60,7 +60,7 @@ class XmlToAponTest {
                 "  </item4>\n" +
                 "</container>";
 
-        Parameters ps = XmlToApon.from(xml);
+        Parameters ps = XmlToParameters.from(xml);
         return ps.toString();
     }
 

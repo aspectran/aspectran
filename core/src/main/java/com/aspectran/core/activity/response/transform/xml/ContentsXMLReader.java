@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterValue;
@@ -37,10 +38,9 @@ import org.xml.sax.helpers.AttributesImpl;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -62,11 +62,9 @@ public class ContentsXMLReader implements XMLReader {
 
     private static final Attributes NULL_ATTRS = new AttributesImpl();
 
+    private StringifyContext stringifyContext;
+
     private ContentHandler handler;
-
-    private String dateFormat;
-
-    private String dateTimeFormat;
 
     /**
      * Instantiates a new ContentsXMLReader.
@@ -74,12 +72,8 @@ public class ContentsXMLReader implements XMLReader {
     public ContentsXMLReader() {
     }
 
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        this.stringifyContext = stringifyContext;
     }
 
     @Override
@@ -256,26 +250,29 @@ public class ContentsXMLReader implements XMLReader {
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
-        } else if (object instanceof Date) {
-            if (dateTimeFormat != null) {
-                SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
-                parseString(dt.format((Date)object));
+        } else if (object instanceof LocalDateTime localDateTime) {
+            if (stringifyContext != null) {
+                parseString(stringifyContext.toString(localDateTime));
             } else {
-                parseString(object.toString());
+                parseString(localDateTime.toString());
             }
-        } else if (object instanceof LocalDate) {
-            if (dateFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                parseString(((LocalDate)object).format(formatter));
+        } else if (object instanceof LocalDate localDate) {
+            if (stringifyContext != null) {
+                parseString(stringifyContext.toString(localDate));
             } else {
-                parseString(object.toString());
+                parseString(localDate.toString());
             }
-        } else if (object instanceof LocalDateTime) {
-            if (dateTimeFormat != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-                parseString(((LocalDateTime)object).format(formatter));
+        } else if (object instanceof LocalTime localTime) {
+            if (stringifyContext != null) {
+                parseString(stringifyContext.toString(localTime));
             } else {
-                parseString(object.toString());
+                parseString(localTime.toString());
+            }
+        } else if (object instanceof Date date) {
+            if (stringifyContext != null) {
+                parseString(stringifyContext.toString(date));
+            } else {
+                parseString(date.toString());
             }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);

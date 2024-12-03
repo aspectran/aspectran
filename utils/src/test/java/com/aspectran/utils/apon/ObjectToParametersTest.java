@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2019-07-07</p>
  */
-class ObjectToAponConverterTest {
+class ObjectToParametersTest {
 
     @Test
     void testConvert1() throws IOException {
@@ -55,9 +55,9 @@ class ObjectToAponConverterTest {
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
         stringifyContext.setNullWritable(true);
 
-        Parameters parameters = new ObjectToAponConverter()
+        Parameters parameters = new ObjectToParameters()
             .apply(stringifyContext)
-            .toParameters(map);
+            .read(map);
 
         String expected = """
             array: [
@@ -106,9 +106,9 @@ class ObjectToAponConverterTest {
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
         stringifyContext.setNullWritable(false);
 
-        Parameters parameters = new ObjectToAponConverter()
+        Parameters parameters = new ObjectToParameters()
             .apply(stringifyContext)
-            .toParameters(map);
+            .read(map);
 
         String expected = """
             customers: [
@@ -206,9 +206,9 @@ class ObjectToAponConverterTest {
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
         stringifyContext.setNullWritable(true);
 
-        Parameters parameters = new ObjectToAponConverter()
+        Parameters parameters = new ObjectToParameters()
                 .apply(stringifyContext)
-                .toParameters(map);
+                .read(map);
 
         return new AponWriter()
                 .nullWritable(true)

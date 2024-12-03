@@ -25,7 +25,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.ObjectToAponConverter;
+import com.aspectran.utils.apon.ObjectToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.json.JsonWriter;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -173,14 +173,11 @@ public class DefaultRestResponse extends AbstractRestResponse {
             Writer writer = responseAdapter.getWriter();
             StringifyContext stringifyContext = resolveStringifyContext(activity, indent);
 
-            ObjectToAponConverter aponConverter = new ObjectToAponConverter();
-            aponConverter.setStringifyContext(stringifyContext);
-
             Parameters parameters;
             if (getName() != null) {
-                parameters = aponConverter.toParameters(getName(), getData());
+                parameters = ObjectToParameters.from(getName(), getData(), stringifyContext);
             } else {
-                parameters = aponConverter.toParameters(getData());
+                parameters = ObjectToParameters.from(getData(), stringifyContext);
             }
 
             AponTransformResponse.transform(parameters, writer, stringifyContext);

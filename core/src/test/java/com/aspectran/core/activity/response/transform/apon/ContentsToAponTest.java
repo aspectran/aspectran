@@ -42,7 +42,7 @@ class ContentsToAponTest {
         actionResult2.setResultValue("action1.result2", "value2");
         contentResult.addActionResult(actionResult2);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "action1: {\n  result1: value1\n  result2: value2\n}";
 
@@ -73,7 +73,7 @@ class ContentsToAponTest {
         r3.setResultValue("action1", "value3");
         contentResult.addActionResult(r3);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "action0: value0\naction1: value3";
 
@@ -105,7 +105,7 @@ class ContentsToAponTest {
         actionResult3.setResultValue("action3", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
 
@@ -156,7 +156,7 @@ class ContentsToAponTest {
         r13.setResultValue("action3", "value3");
         contentResult2.addActionResult(r13);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}\n" + "content2: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
 
@@ -181,7 +181,7 @@ class ContentsToAponTest {
         actionResult1.setResultValue(null, map);
         contentResult.addActionResult(actionResult1);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "key1: value1\nkey2: value2\nkey3: value3";
 
@@ -215,7 +215,7 @@ class ContentsToAponTest {
         actionResult3.setResultValue("action2", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
+        Parameters ps = ContentsToParameters.from(processResult);
 
         String apon = "content1: {\n  key1: value1\n  key2: value2\n  key3: value3\n  action1: {\n    result2: value2\n  }\n  action2: value3\n}";
 

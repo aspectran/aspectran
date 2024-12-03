@@ -136,14 +136,7 @@ public class XmlTransformResponse extends TransformResponse {
         }
 
         ContentsXMLReader xmlReader = new ContentsXMLReader();
-        if (stringifyContext != null) {
-            if (stringifyContext.hasDateFormat()) {
-                xmlReader.setDateFormat(stringifyContext.getDateFormat());
-            }
-            if (stringifyContext.hasDateTimeFormat()) {
-                xmlReader.setDateTimeFormat(stringifyContext.getDateTimeFormat());
-            }
-        }
+        xmlReader.setStringifyContext(stringifyContext);
 
         ContentsInputSource inputSource = new ContentsInputSource(object);
         Source source = new SAXSource(xmlReader, inputSource);

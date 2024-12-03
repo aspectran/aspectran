@@ -26,9 +26,9 @@ import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.apon.JsonToApon;
+import com.aspectran.utils.apon.JsonToParameters;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.XmlToApon;
+import com.aspectran.utils.apon.XmlToParameters;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
@@ -109,7 +109,7 @@ public abstract class WebRequestBodyParser {
             return parseURLEncodedBodyAsParameters(requestAdapter, requiredType);
         } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
             try {
-                return JsonToApon.from(requestAdapter.getBody(), requiredType);
+                return JsonToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
                 throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
                         requiredType.getName() + "]", e);
@@ -118,7 +118,7 @@ public abstract class WebRequestBodyParser {
             return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
         } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
             try {
-                return XmlToApon.from(requestAdapter.getBody(), requiredType);
+                return XmlToParameters.from(requestAdapter.getBody(), requiredType);
             } catch (IOException e) {
                 throw new RequestParseException("Failed to parse request body of XML format to required type [" +
                         requiredType.getName() + "]", e);

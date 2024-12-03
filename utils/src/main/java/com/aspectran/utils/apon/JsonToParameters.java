@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonReader;
@@ -28,49 +29,38 @@ import java.io.StringReader;
  *
  * @since 6.2.0
  */
-public abstract class JsonToApon {
+public class JsonToParameters {
 
-    @NonNull
-    public static Parameters from(String json) throws IOException {
-        return from(json, new VariableParameters());
+    private final Class<? extends Parameters> requiredType;
+
+    public JsonToParameters() {
+        this.requiredType = null;
     }
 
-    @NonNull
-    public static <T extends Parameters> T from(String json, Class<T> requiredType) throws IOException {
-        T container = ClassUtils.createInstance(requiredType);
-        from(json, container);
+    public JsonToParameters(final Class<? extends Parameters> requiredType) {
+        Assert.notNull(requiredType, "requiredType must not be null");
+        this.requiredType = requiredType;
+    }
+
+    public <T extends Parameters> T read(String json) throws IOException {
+        T container = createContainer();
+        return read(json, container);
+    }
+
+    public <T extends Parameters> T read(String json, T container) throws IOException {
+        Assert.notNull(json, "json must not be null");
+        read(new StringReader(json), container);
         return container;
     }
 
-    @NonNull
-    public static <T extends Parameters> T from(String json, T container) throws IOException {
-        if (json == null) {
-            throw new IllegalArgumentException("json must not be null");
-        }
-        return from(new StringReader(json), container);
+    public <T extends Parameters> T read(Reader reader) throws IOException {
+        T container = createContainer();
+        return read(reader, container);
     }
 
-    @NonNull
-    public static Parameters from(Reader reader) throws IOException {
-        return from(reader, new VariableParameters());
-    }
-
-    @NonNull
-    public static <T extends Parameters> T from(Reader reader, Class<T> requiredType) throws IOException {
-        T container = ClassUtils.createInstance(requiredType);
-        from(reader, container);
-        return container;
-    }
-
-    @NonNull
-    public static <T extends Parameters> T from(Reader reader, T container) throws IOException {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must not be null");
-        }
-        if (container == null) {
-            throw new IllegalArgumentException("container must not be null");
-        }
-
+    public <T extends Parameters> T read(Reader reader, T container) throws IOException {
+        Assert.notNull(reader, "reader must not be null");
+        Assert.notNull(container, "container must not be null");
         try {
             JsonReader jsonReader = new JsonReader(reader);
             String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
@@ -78,11 +68,22 @@ public abstract class JsonToApon {
         } catch (Exception e) {
             throw new IOException("Failed to convert JSON to APON", e);
         }
-
         return container;
     }
 
-    private static void read(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
+    @NonNull
+    @SuppressWarnings("unchecked")
+    private <T extends Parameters> T createContainer() {
+        Parameters container;
+        if (requiredType != null) {
+            container = ClassUtils.createInstance(requiredType);
+        } else {
+            container = new VariableParameters();
+        }
+        return (T)container;
+    }
+
+    private void read(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
@@ -128,6 +129,26 @@ public abstract class JsonToApon {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @NonNull
+    public static Parameters from(String json) throws IOException {
+        return new JsonToParameters().read(json);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(String json, Class<? extends Parameters> requiredType) throws IOException {
+        return new JsonToParameters(requiredType).read(json);
+    }
+
+    @NonNull
+    public static Parameters from(Reader reader) throws IOException {
+        return new JsonToParameters().read(reader);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType) throws IOException {
+        return new JsonToParameters(requiredType).read(reader);
     }
 
 }

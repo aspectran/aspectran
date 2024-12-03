@@ -19,12 +19,15 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.apon.AponFormat;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.TransformerException;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2019-01-12</p>
@@ -59,20 +62,41 @@ class XmlTransformResponseTest {
         contentResult.addActionResult(r3);
 
         ActionResult r4 = new ActionResult();
-        r4.setResultValue("action4", new Object[] {LocalDate.now(), LocalDateTime.now()});
+        r4.setResultValue("action4", new Object[] {LocalDate.parse("2016-08-16"), LocalDateTime.parse("2016-03-04T10:15:30")});
         contentResult.addActionResult(r4);
-
-        StringWriter writer = new StringWriter();
-        XmlTransformResponse.transform(processResult, writer, null, null);
 
         StringifyContext stringifyContext = new StringifyContext();
         stringifyContext.setPretty(true);
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 
+        StringWriter writer = new StringWriter();
         XmlTransformResponse.transform(processResult, writer, null, stringifyContext);
 
-        System.out.println(writer);
+        String expected = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <wrap1>
+              <subwrap>
+                <action0>value0</action0>
+                <action1>
+                  <result1>value1</result1>
+                  <result2>value2</result2>
+                </action1>
+                <action1>value3</action1>
+                <action4>
+                  <rows>
+                    <row>2016-08-16</row>
+                    <row>2016-03-04 10:15:30</row>
+                  </rows>
+                </action4>
+              </subwrap>
+            </wrap1>
+            """;
+
+        expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String actual = writer.toString();
+
+        assertEquals(expected, actual);
     }
 
 }

@@ -16,7 +16,7 @@
 package com.aspectran.demo.chat.codec;
 
 import com.aspectran.demo.chat.model.ChatMessage;
-import com.aspectran.utils.apon.JsonToApon;
+import com.aspectran.utils.apon.JsonToParameters;
 import jakarta.websocket.DecodeException;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.EndpointConfig;
@@ -33,7 +33,7 @@ public class ChatMessageDecoder implements Decoder.Text<ChatMessage> {
     @Override
     public ChatMessage decode(String s) throws DecodeException {
         try {
-            return JsonToApon.from(s, ChatMessage.class);
+            return JsonToParameters.from(s, ChatMessage.class);
         } catch (IOException e) {
             throw new DecodeException(s, "Badly formatted message", e);
         }

@@ -75,15 +75,38 @@ class JsonWriterTest {
 
         // System.out.println(result);
 
-        String expected = "{\n" + "  \"intro\": \"Start Testing Now!\",\n" + "  \"one\": 1,\n" + "  \"two\": 2,\n" +
-                "  \"three\": 3,\n" + "  \"nullArray\": [\n" + "    null,\n" + "    null\n" + "  ],\n" +
-                "  \"customers\": [\n" + "    {\n" + "      \"id\": \"guest-1\",\n" +
-                "      \"name\": \"Guest1\",\n" + "      \"age\": 21,\n" + "      \"approved\": true\n" + "    },\n" +
-                "    {\n" + "      \"id\": \"guest-2\",\n" + "      \"name\": \"Guest2\",\n" + "      \"age\": 22,\n" +
-                "      \"approved\": true\n" + "    }\n" + "  ],\n" + "  \"emptyMap\": {\n" + "  }\n" + "}"
-                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String expected = """
+            {
+              "intro": "Start Testing Now!",
+              "one": 1,
+              "two": 2,
+              "three": 3,
+              "nullArray": [
+                null,
+                null
+              ],
+              "customers": [
+                {
+                  "id": "guest-1",
+                  "name": "Guest1",
+                  "age": 21,
+                  "approved": true
+                },
+                {
+                  "id": "guest-2",
+                  "name": "Guest2",
+                  "age": 22,
+                  "approved": true
+                }
+              ],
+              "emptyMap": {
+              }
+            }
+            """;
 
-        assertEquals(expected, result.trim());
+        expected = expected.trim();
+
+        assertEquals(expected, result);
     }
 
     @Test

@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponWriter;
-import com.aspectran.utils.apon.XmlToApon;
+import com.aspectran.utils.apon.XmlToParameters;
 import org.xml.sax.EntityResolver;
 
 import java.io.File;
@@ -76,13 +76,13 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters;
                 if (appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
-                    rootParameters = XmlToApon.from(fileRuleAppender.getFile(), RootParameters.class, getEntityResolver());
+                    rootParameters = XmlToParameters.from(fileRuleAppender.getFile(), RootParameters.class, getEntityResolver());
                     if (isDebugMode()) {
                         saveAsAponFile(fileRuleAppender, rootParameters);
                     }
                 } else {
                     try (Reader reader = appender.getReader(encoding)) {
-                        rootParameters = XmlToApon.from(reader, RootParameters.class, getEntityResolver());
+                        rootParameters = XmlToParameters.from(reader, RootParameters.class, getEntityResolver());
                     }
                 }
                 convertToRules(rootParameters);

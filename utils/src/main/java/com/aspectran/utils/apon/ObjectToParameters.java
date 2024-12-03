@@ -17,10 +17,12 @@ package com.aspectran.utils.apon;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,54 +37,92 @@ import java.util.Map;
  *
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
-public class ObjectToAponConverter {
+public class ObjectToParameters {
+
+    private final Class<? extends Parameters> requiredType;
 
     private StringifyContext stringifyContext;
 
-    public ObjectToAponConverter() {
+    public ObjectToParameters() {
+        this.requiredType = null;
+    }
+
+    public ObjectToParameters(final Class<? extends Parameters> requiredType) {
+        Assert.notNull(requiredType, "requiredType must not be null");
+        this.requiredType = requiredType;
     }
 
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
     }
 
-    public ObjectToAponConverter apply(StringifyContext stringifyContext) {
+    public ObjectToParameters apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return this;
     }
 
-    public Parameters toParameters(Object object) {
-        Object value = valuelize(object);
-        if (value instanceof Parameters parameters) {
-            return parameters;
-        } else {
-            return new VariableParameters();
-        }
+    public <T extends Parameters> T read(Object object) {
+        return createContainer(object);
     }
 
-    public Parameters toParameters(String name, Object object) {
+    public <T extends Parameters> T read(String name, Object object) {
+        T container = createContainer();
+        return read(name, object, container);
+    }
+
+    public <T extends Parameters> T read(String name, Object object, T container) {
         Assert.notNull(name, "name must not be null");
-        Parameters container = new VariableParameters();
+        Assert.notNull(object, "object must not be null");
+        Assert.notNull(container, "container must not be null");
         putValue(container, name, object);
         return container;
     }
 
+    @NonNull
+    @SuppressWarnings("unchecked")
+    private <T extends Parameters> T createContainer() {
+        Parameters container;
+        if (requiredType != null) {
+            container = ClassUtils.createInstance(requiredType);
+        } else {
+            container = new VariableParameters();
+        }
+        return (T)container;
+    }
+
+    @NonNull
+    protected <T extends Parameters> T createContainer(Object object) {
+        Assert.notNull(object, "object must not be null");
+        if (object instanceof Map<?, ?> map) {
+            T ps = createContainer();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                String name = entry.getKey().toString();
+                Object value = entry.getValue();
+                checkCircularReference(map, value);
+                putValue(ps, name, value);
+            }
+            return ps;
+        } else {
+            return createContainer();
+        }
+    }
+
     protected void putValue(@NonNull Parameters container, @NonNull String name, Object value) {
         if (isNullWritable()) {
-            container.putValue(name, valuelize(value));
+            container.putValue(name, normalize(value));
         } else {
-            container.putValueIfNotNull(name, valuelize(value));
+            container.putValueIfNotNull(name, normalize(value));
         }
     }
 
     protected void putValue(@NonNull Parameters container, Object value) {
-        Object obj = valuelize(value);
+        Object obj = normalize(value);
         if (obj instanceof Parameters parameters) {
             container.putAll(parameters);
         }
     }
 
-    private Object valuelize(Object object) {
+    private Object normalize(Object object) {
         if (object == null ||
                 object instanceof Parameters ||
                 object instanceof String ||
@@ -156,6 +196,46 @@ public class ObjectToAponConverter {
             throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +
                     "while serializing object " + ObjectUtils.identityToString(wrapper) + " " + wrapper);
         }
+    }
+
+    @NonNull
+    public static Parameters from(Object object) throws IOException {
+        return new ObjectToParameters().read(object);
+    }
+
+    @NonNull
+    public static Parameters from(Object object, StringifyContext stringifyContext) throws IOException {
+        return new ObjectToParameters().apply(stringifyContext).read(object);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType) throws IOException {
+        return new ObjectToParameters(requiredType).read(object);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext) throws IOException {
+        return new ObjectToParameters(requiredType).apply(stringifyContext).read(object);
+    }
+
+    @NonNull
+    public static Parameters from(String name, Object object) throws IOException {
+        return new ObjectToParameters().read(name, object);
+    }
+
+    @NonNull
+    public static Parameters from(String name, Object object, StringifyContext stringifyContext) throws IOException {
+        return new ObjectToParameters().apply(stringifyContext).read(name, object);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(String name, Object object, Class<? extends Parameters> requiredType) throws IOException {
+        return new ObjectToParameters(requiredType).read(name, object);
+    }
+
+    @NonNull
+    public static <T extends Parameters> T from(String name, Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext) throws IOException {
+        return new ObjectToParameters(requiredType).apply(stringifyContext).read(name, object);
     }
 
 }

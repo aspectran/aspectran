@@ -97,12 +97,7 @@ public class XslTransformResponse extends TransformResponse {
         StringifyContext stringifyContext = activity.getStringifyContext();
 
         ContentsXMLReader xmlReader = new ContentsXMLReader();
-        if (stringifyContext.hasDateFormat()) {
-            xmlReader.setDateFormat(stringifyContext.getDateFormat());
-        }
-        if (stringifyContext.hasDateTimeFormat()) {
-            xmlReader.setDateTimeFormat(stringifyContext.getDateTimeFormat());
-        }
+        xmlReader.setStringifyContext(stringifyContext);
 
         ContentsInputSource inputSource = new ContentsInputSource(processResult);
         Source source = new SAXSource(xmlReader, inputSource);

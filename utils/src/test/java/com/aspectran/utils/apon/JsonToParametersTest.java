@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2019-06-29</p>
  */
-class JsonToAponTest {
+class JsonToParametersTest {
 
     @Test
     void testConvertJsonToApon() throws IOException {
@@ -43,7 +43,7 @@ class JsonToAponTest {
 
         String apon = "{\n" + "  param1: 111\n" + "  param2: 222\n" + "}\n" + "{\n" + "  param3: 333\n" + "  param4: 444\n" + "}";
 
-        Parameters ps = JsonToApon.from(sb.toString(), new ArrayParameters());
+        Parameters ps = JsonToParameters.from(sb.toString(), ArrayParameters.class);
 
         String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
@@ -56,7 +56,7 @@ class JsonToAponTest {
         String json = "{\n" + "    \"glossary\": {\n" + "        \"title\": \"example glossary\",\n" + "\t\t\"GlossDiv\": {\n" + "            \"title\": \"S\",\n" + "\t\t\t\"GlossList\": {\n" + "                \"GlossEntry\": {\n" + "                    \"ID\": \"SGML\",\n" + "\t\t\t\t\t\"SortAs\": \"SGML\",\n" + "\t\t\t\t\t\"GlossTerm\": \"Standard Generalized Markup Language\",\n" + "\t\t\t\t\t\"Acronym\": \"SGML\",\n" + "\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n" + "\t\t\t\t\t\"GlossDef\": {\n" + "                        \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\",\n" + "\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n" + "                    },\n" + "\t\t\t\t\t\"GlossSee\": \"markup\"\n" + "                }\n" + "            }\n" + "        }\n" + "    }\n" + "}";
         String apon = "glossary: {\n" + "  title: example glossary\n" + "  GlossDiv: {\n" + "    title: S\n" + "    GlossList: {\n" + "      GlossEntry: {\n" + "        ID: SGML\n" + "        SortAs: SGML\n" + "        GlossTerm: Standard Generalized Markup Language\n" + "        Acronym: SGML\n" + "        Abbrev: ISO 8879:1986\n" + "        GlossDef: {\n" + "          para: A meta-markup language, used to create markup languages such as DocBook.\n" + "          GlossSeeAlso: [\n" + "            GML\n" + "            XML\n" + "          ]\n" + "        }\n" + "        GlossSee: markup\n" + "      }\n" + "    }\n" + "  }\n" + "}";
 
-        Parameters ps = JsonToApon.from(json);
+        Parameters ps = JsonToParameters.from(json);
 
         String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
@@ -68,7 +68,7 @@ class JsonToAponTest {
     void testConvertJsonToApon3() throws IOException {
         String json = "{\"message\": \"11\\n22\"}";
 
-        Parameters messagePayload = JsonToApon.from(json, MessagePayload.class);
+        Parameters messagePayload = JsonToParameters.from(json, MessagePayload.class);
         String result1 = messagePayload.toString();
 
         MessagePayload messagePayload2 = new MessagePayload();
