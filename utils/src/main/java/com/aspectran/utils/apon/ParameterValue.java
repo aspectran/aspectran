@@ -207,7 +207,7 @@ public class ParameterValue implements Parameter {
                 adjustValueType(value);
             }
         }
-        if (!valueTypeFixed && !array && this.value != null) {
+        if (!valueTypeFixed && !array && assigned) {
             addValue(this.value);
             addValue(value);
             this.value = null;

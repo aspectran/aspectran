@@ -130,13 +130,18 @@ class JsonWriterTest {
                 .write(parameters)
                 .toString();
 
-        // System.out.println(result);
+        String expected = """
+            {
+              "item1": 1,
+              "item2": 2,
+              "item3": {
+                "item11": 11,
+                "item22": 22
+              }
+            }
+            """.trim();
 
-        String expected = "{\n" + "  \"item1\": 1,\n" + "  \"item2\": 2,\n" + "  \"item3\": {\n" +
-                "    \"item11\": 11,\n" + "    \"item22\": 22\n" + "  }\n" + "}"
-                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
-
-        assertEquals(expected, result.trim());
+        assertEquals(expected, result);
     }
 
     @Test

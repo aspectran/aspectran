@@ -15,12 +15,13 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Arrays;
 
 /**
@@ -188,7 +189,7 @@ import java.util.Arrays;
  *
  * @author Jesse Wilson
  */
-public class JsonReader implements Closeable {
+public class JsonReader {
 
     /**
      * An array with no elements requires no separators or newlines before
@@ -271,7 +272,7 @@ public class JsonReader implements Closeable {
     private static final int NUMBER_CHAR_EXP_DIGIT = 7;
 
     /** The input JSON. */
-    private final Reader in;
+    private final Reader reader;
 
     /** True to accept non-spec compliant JSON */
     private boolean lenient = false;
@@ -333,11 +334,17 @@ public class JsonReader implements Closeable {
     /**
      * Creates a new instance that reads a JSON-encoded stream from {@code in}.
      */
-    public JsonReader(Reader in) {
-        if (in == null) {
-            throw new NullPointerException("in == null");
-        }
-        this.in = in;
+    public JsonReader(String json) {
+        Assert.notNull(json, "json must not be null");
+        this.reader = new StringReader(json);
+    }
+
+    /**
+     * Creates a new instance that reads a JSON-encoded stream from {@code in}.
+     */
+    public JsonReader(Reader reader) {
+        Assert.notNull(reader, "reader must not be null");
+        this.reader = reader;
     }
 
     /**
@@ -724,14 +731,12 @@ public class JsonReader implements Closeable {
                         continue;
                     }
                     return PEEKED_NONE;
-
                 case '+':
                     if (last == NUMBER_CHAR_EXP_E) {
                         last = NUMBER_CHAR_EXP_SIGN;
                         continue;
                     }
                     return PEEKED_NONE;
-
                 case 'e':
                 case 'E':
                     if (last == NUMBER_CHAR_DIGIT || last == NUMBER_CHAR_FRACTION_DIGIT) {
@@ -739,14 +744,12 @@ public class JsonReader implements Closeable {
                         continue;
                     }
                     return PEEKED_NONE;
-
                 case '.':
                     if (last == NUMBER_CHAR_DIGIT) {
                         last = NUMBER_CHAR_DECIMAL;
                         continue;
                     }
                     return PEEKED_NONE;
-
                 default:
                     if (c < '0' || c > '9') {
                         if (!isLiteral(c)) {
@@ -774,12 +777,15 @@ public class JsonReader implements Closeable {
         }
 
         // We've read a complete number. Decide if it's a PEEKED_LONG or a PEEKED_NUMBER.
-        if (last == NUMBER_CHAR_DIGIT && fitsInLong && (value != Long.MIN_VALUE || negative) && (value != 0 || !negative)) {
+        if (last == NUMBER_CHAR_DIGIT && fitsInLong &&
+                (value != Long.MIN_VALUE || negative) &&
+                (value != 0 || !negative)) {
             peekedLong = negative ? value : -value;
             pos += i;
             return peeked = PEEKED_LONG;
-        } else if (last == NUMBER_CHAR_DIGIT || last == NUMBER_CHAR_FRACTION_DIGIT
-            || last == NUMBER_CHAR_EXP_DIGIT) {
+        } else if (last == NUMBER_CHAR_DIGIT ||
+                last == NUMBER_CHAR_FRACTION_DIGIT ||
+                last == NUMBER_CHAR_EXP_DIGIT) {
             peekedNumberLength = i;
             return peeked = PEEKED_NUMBER;
         } else {
@@ -813,10 +819,8 @@ public class JsonReader implements Closeable {
     }
 
     /**
-     * Returns the next token, a {@link JsonToken#NAME property name}, and
-     * consumes it.
-     * @throws IOException if the next token in the stream is not a property
-     *     name.
+     * Returns the next token, a {@link JsonToken#NAME property name}, and consumes it.
+     * @throws IOException if the next token in the stream is not a property name.
      */
     public String nextName() throws IOException {
         int p = peeked;
@@ -840,8 +844,7 @@ public class JsonReader implements Closeable {
 
     /**
      * Returns the {@link JsonToken#STRING string} value of the next token,
-     * consuming it. If the next token is a number, this method will return its
-     * string form.
+     * consuming it. If the next token is a number, this method will return its string form.
      * @throws IllegalStateException if the next token is not a string or if
      *     this reader is closed.
      */
@@ -950,7 +953,7 @@ public class JsonReader implements Closeable {
         double result = Double.parseDouble(peekedString); // don't catch this NumberFormatException.
         if (!lenient && (Double.isNaN(result) || Double.isInfinite(result))) {
             throw new MalformedJsonException(
-                "JSON forbids NaN and infinities: " + result + locationString());
+                    "JSON forbids NaN and infinities: " + result + locationString());
         }
         peekedString = null;
         peeked = PEEKED_NONE;
@@ -1018,8 +1021,7 @@ public class JsonReader implements Closeable {
      * should have already been read. This consumes the closing quote, but does
      * not include it in the returned string.
      * @param quote either ' or ".
-     * @throws NumberFormatException if any unicode escape sequences are
-     *     malformed.
+     * @throws NumberFormatException if any unicode escape sequences are malformed.
      */
     @NonNull
     private String nextQuotedValue(char quote) throws IOException {
@@ -1248,16 +1250,6 @@ public class JsonReader implements Closeable {
     }
 
     /**
-     * Closes this JSON reader and the underlying {@link java.io.Reader}.
-     */
-    public void close() throws IOException {
-        peeked = PEEKED_NONE;
-        stack[0] = CLOSED;
-        stackSize = 1;
-        in.close();
-    }
-
-    /**
      * Skips the next value recursively. If it is an object or array, all nested
      * elements are skipped. This method is intended for use when the JSON token
      * stream contains unrecognized or unhandled values.
@@ -1297,6 +1289,20 @@ public class JsonReader implements Closeable {
         pathNames[stackSize - 1] = "null";
     }
 
+    /**
+     * Closes this JSON reader and the underlying {@link java.io.Reader}.
+     */
+    public void close() {
+        peeked = PEEKED_NONE;
+        stack[0] = CLOSED;
+        stackSize = 1;
+        try {
+            reader.close();
+        } catch (IOException e) {
+            // ignore
+        }
+    }
+
     private void push(int newTop) {
         if (stackSize == stack.length) {
             int newLength = stackSize * 2;
@@ -1309,8 +1315,7 @@ public class JsonReader implements Closeable {
 
     /**
      * Returns true once {@code limit - pos >= minimum}. If the data is
-     * exhausted before that many characters are available, this returns
-     * false.
+     * exhausted before that many characters are available, this returns false.
      */
     private boolean fillBuffer(int minimum) throws IOException {
         char[] buffer = this.buffer;
@@ -1324,7 +1329,7 @@ public class JsonReader implements Closeable {
 
         pos = 0;
         int total;
-        while ((total = in.read(buffer, limit, buffer.length - limit)) != -1) {
+        while ((total = reader.read(buffer, limit, buffer.length - limit)) != -1) {
             limit += total;
 
             // if this is the first read, consume an optional byte order mark (BOM) if it exists

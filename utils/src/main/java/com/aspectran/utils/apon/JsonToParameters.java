@@ -19,6 +19,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonReader;
+import com.aspectran.utils.json.JsonReaderCloseable;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -61,9 +62,8 @@ public class JsonToParameters {
     public <T extends Parameters> T read(Reader reader, T container) throws IOException {
         Assert.notNull(reader, "reader must not be null");
         Assert.notNull(container, "container must not be null");
-        try {
-            JsonReader jsonReader = new JsonReader(reader);
-            String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
+        String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
+        try (JsonReaderCloseable jsonReader = new JsonReaderCloseable(reader)) {
             read(jsonReader, container, name);
         } catch (Exception e) {
             throw new IOException("Failed to convert JSON to APON", e);

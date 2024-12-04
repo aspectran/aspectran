@@ -56,7 +56,7 @@ public class JsonWriter {
 
     private final ArrayStack<Boolean> writtenFlags = new ArrayStack<>();
 
-    private final Writer out;
+    private final Writer writer;
 
     private StringifyContext stringifyContext;
 
@@ -85,11 +85,11 @@ public class JsonWriter {
      * Instantiates a new JsonWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     * @param out the character-output stream
+     * @param writer the character-output stream
      */
-    public JsonWriter(Writer out) {
-        Assert.notNull(out, "out must not be null");
-        this.out = out;
+    public JsonWriter(Writer writer) {
+        Assert.notNull(writer, "out must not be null");
+        this.writer = writer;
         writtenFlags.push(false);
     }
 
@@ -267,10 +267,10 @@ public class JsonWriter {
         }
         if (pendedName != null) {
             indent();
-            out.write(escape(pendedName));
-            out.write(":");
+            writer.write(escape(pendedName));
+            writer.write(":");
             if (prettyPrint) {
-                out.write(" ");
+                writer.write(" ");
             }
             pendedName = null;
         } else {
@@ -291,7 +291,7 @@ public class JsonWriter {
     public void writeValue(String value) throws IOException {
         if (nullWritable || value != null) {
             writePendedName();
-            out.write(escape(value));
+            writer.write(escape(value));
             writtenFlags.update(true);
         } else {
             clearPendedName();
@@ -306,7 +306,7 @@ public class JsonWriter {
     public void writeValue(Boolean value) throws IOException {
         if (nullWritable || value != null) {
             writePendedName();
-            out.write(value.toString());
+            writer.write(value.toString());
             writtenFlags.update(true);
         } else {
             clearPendedName();
@@ -321,7 +321,7 @@ public class JsonWriter {
     public void writeValue(Number value) throws IOException {
         if (nullWritable || value != null) {
             writePendedName();
-            out.write(value.toString());
+            writer.write(value.toString());
             writtenFlags.update(true);
         } else {
             clearPendedName();
@@ -344,7 +344,7 @@ public class JsonWriter {
     public void writeNull(boolean force) throws IOException {
         if (nullWritable || force) {
             writePendedName();
-            out.write(NULL_STRING);
+            writer.write(NULL_STRING);
             writtenFlags.update(true);
         } else {
             clearPendedName();
@@ -369,11 +369,11 @@ public class JsonWriter {
                         nextLine();
                         indent();
                     }
-                    out.write(line);
+                    writer.write(line);
                     first = false;
                 }
             } else {
-                out.write(NULL_STRING);
+                writer.write(NULL_STRING);
             }
             writtenFlags.update(true);
         } else {
@@ -386,7 +386,7 @@ public class JsonWriter {
      * @throws IOException if an I/O error has occurred
      */
     private void writeComma() throws IOException {
-        out.write(",");
+        writer.write(",");
         nextLine();
     }
 
@@ -396,7 +396,7 @@ public class JsonWriter {
      */
     public void beginObject() throws IOException {
         writePendedName();
-        out.write("{");
+        writer.write("{");
         nextLine();
         indentDepth++;
         writtenFlags.push(false);
@@ -412,7 +412,7 @@ public class JsonWriter {
             nextLine();
         }
         indent();
-        out.write("}");
+        writer.write("}");
         writtenFlags.update(true);
     }
 
@@ -422,7 +422,7 @@ public class JsonWriter {
      */
     public void beginArray() throws IOException {
         writePendedName();
-        out.write("[");
+        writer.write("[");
         nextLine();
         indentDepth++;
         writtenFlags.push(false);
@@ -438,7 +438,7 @@ public class JsonWriter {
             nextLine();
         }
         indent();
-        out.write("]");
+        writer.write("]");
         writtenFlags.update(true);
     }
 
@@ -449,7 +449,7 @@ public class JsonWriter {
     private void indent() throws IOException {
         if (prettyPrint && indentString != null && !indentString.isEmpty()) {
             for (int i = 0; i < indentDepth; i++) {
-                out.write(indentString);
+                writer.write(indentString);
             }
         }
     }
@@ -460,7 +460,7 @@ public class JsonWriter {
      */
     private void nextLine() throws IOException {
         if (prettyPrint) {
-            out.write("\n");
+            writer.write("\n");
         }
     }
 
@@ -470,16 +470,16 @@ public class JsonWriter {
      * @throws IOException if an I/O error has occurred
      */
     public void flush() throws IOException {
-        out.flush();
+        writer.flush();
     }
 
     public void close() throws IOException {
-        out.close();
+        writer.close();
     }
 
     @Override
     public String toString() {
-        return out.toString();
+        return writer.toString();
     }
 
     private void checkCircularReference(Object object, Object member) throws IOException {

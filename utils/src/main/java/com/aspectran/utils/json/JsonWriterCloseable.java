@@ -39,10 +39,10 @@ public class JsonWriterCloseable extends JsonWriter implements Closeable {
      * Instantiates a new JsonWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     * @param out the character-output stream
+     * @param writer the character-output stream
      */
-    public JsonWriterCloseable(Writer out) {
-        super(out);
+    public JsonWriterCloseable(Writer writer) {
+        super(writer);
     }
 
 }

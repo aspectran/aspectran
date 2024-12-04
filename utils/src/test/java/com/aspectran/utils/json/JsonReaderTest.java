@@ -15,6 +15,9 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.apon.AponFormat;
+import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.ValueType;
@@ -22,7 +25,6 @@ import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,14 +35,85 @@ class JsonReaderTest {
 
     @Test
     void test1() throws IOException {
-        JsonReader reader = new JsonReader(new StringReader("{\"name\":\"she's\"}"));
+        JsonReader reader = new JsonReader("{\"name\":\"she's\"}");
         Parameters parameters = new VariableParameters();
-        convert(reader, parameters, null);
-        //System.out.println(parameters.toString());
-        assertEquals("name: \"she's\"", parameters.toString().trim());
+        convertToParameters(reader, parameters, null);
+        String expected = "name: \"she's\"";
+        String actual = parameters.toString().trim();
+        assertEquals(expected, actual);
     }
 
-    private static void convert(JsonReader reader, Parameters container, String name) throws IOException {
+    @Test
+    void test2() throws IOException {
+        String json = """
+            {
+              "intro": "Start Testing Now!",
+              "one": 1,
+              "two": 2,
+              "three": 3,
+              "nullArray": [
+                null,
+                null
+              ],
+              "customers": [
+                {
+                  "id": "guest-1",
+                  "name": "Guest1",
+                  "age": 21,
+                  "approved": true
+                },
+                {
+                  "id": "guest-2",
+                  "name": "Guest2",
+                  "age": 22,
+                  "approved": true
+                }
+              ],
+              "emptyMap": {
+              }
+            }
+            """;
+
+        String expected = """
+            intro: Start Testing Now!
+            one: 1
+            two: 2
+            three: 3
+            nullArray: [
+              null
+              null
+            ]
+            customers: [
+              {
+                id: guest-1
+                name: Guest1
+                age: 21
+                approved: true
+              }
+              {
+                id: guest-2
+                name: Guest2
+                age: 22
+                approved: true
+              }
+            ]
+            emptyMap: {
+            }
+            """.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+
+        JsonReader reader = new JsonReader(json);
+        Parameters parameters = new VariableParameters();
+        convertToParameters(reader, parameters, null);
+
+        String actual = new AponWriter()
+            .nullWritable(true)
+            .write(parameters)
+            .toString();
+
+        assertEquals(expected, actual);
+    }
+
+    static void convertToParameters(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
@@ -48,14 +121,14 @@ class JsonReaderTest {
                     container = container.newParameters(name);
                 }
                 while (reader.hasNext()) {
-                    convert(reader, container, reader.nextName());
+                    convertToParameters(reader, container, reader.nextName());
                 }
                 reader.endObject();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
                 while (reader.hasNext()) {
-                    convert(reader, container, name);
+                    convertToParameters(reader, container, name);
                 }
                 reader.endArray();
                 return;
