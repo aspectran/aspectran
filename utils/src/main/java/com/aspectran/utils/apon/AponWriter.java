@@ -620,9 +620,7 @@ public class AponWriter implements Flushable {
     }
 
     public void close() throws IOException {
-        if (writer != null) {
-            writer.close();
-        }
+        writer.close();
     }
 
     @Override

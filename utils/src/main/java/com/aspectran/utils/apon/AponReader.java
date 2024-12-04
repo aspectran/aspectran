@@ -494,12 +494,10 @@ public class AponReader {
     }
 
     public void close() {
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                // ignore
-            }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            // ignore
         }
     }
 
