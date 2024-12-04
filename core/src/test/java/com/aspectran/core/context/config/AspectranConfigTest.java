@@ -39,7 +39,7 @@ class AspectranConfigTest {
     void aspectranConfigTest() throws IOException {
         File file = ResourceUtils.getResourceAsFile("config/aspectran-config-test.apon");
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AponReader.from(file, aspectranConfig);
+        AponReader.read(file, aspectranConfig);
 
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
         try (AponWriterCloseable aponWriter = new AponWriterCloseable(outputFile)) {
@@ -48,7 +48,7 @@ class AspectranConfigTest {
         }
 
         String expected = readAllCharactersOneByOne(new FileReader(outputFile));
-        String actual = AponReader.from(outputFile).toString();
+        String actual = AponReader.read(outputFile).toString();
 
         assertEquals(expected, actual);
     }

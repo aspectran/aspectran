@@ -156,10 +156,11 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             AponWriter aponWriter;
             if (encoding != null) {
                 OutputStream outputStream = new FileOutputStream(aponFile);
-                aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding)).nullWritable(false);
+                aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
             } else {
-                aponWriter = new AponWriter(new FileWriter(aponFile)).nullWritable(false);
+                aponWriter = new AponWriter(new FileWriter(aponFile));
             }
+            aponWriter.nullWritable(false);
 
             try {
                 aponWriter.comment(xmlFile.getAbsolutePath());

@@ -111,7 +111,7 @@ public class AbstractDaemon implements Daemon {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {
             try {
-                AponReader.from(aspectranConfigFile, aspectranConfig);
+                AponReader.read(aspectranConfigFile, aspectranConfig);
             } catch (AponParseException e) {
                 throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                     aspectranConfigFile, e);

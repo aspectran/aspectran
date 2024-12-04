@@ -137,7 +137,8 @@ public class JsonToParameters {
     }
 
     @NonNull
-    public static <T extends Parameters> T from(String json, Class<? extends Parameters> requiredType) throws IOException {
+    public static <T extends Parameters> T from(String json, Class<? extends Parameters> requiredType)
+            throws IOException {
         return new JsonToParameters(requiredType).read(json);
     }
 
@@ -147,7 +148,8 @@ public class JsonToParameters {
     }
 
     @NonNull
-    public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType) throws IOException {
+    public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType)
+            throws IOException {
         return new JsonToParameters(requiredType).read(reader);
     }
 

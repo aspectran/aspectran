@@ -209,12 +209,15 @@ public class ObjectToParameters {
     }
 
     @NonNull
-    public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType) throws IOException {
+    public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType)
+            throws IOException {
         return new ObjectToParameters(requiredType).read(object);
     }
 
     @NonNull
-    public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext) throws IOException {
+    public static <T extends Parameters> T from(
+            Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext)
+            throws IOException {
         return new ObjectToParameters(requiredType).apply(stringifyContext).read(object);
     }
 
@@ -229,12 +232,15 @@ public class ObjectToParameters {
     }
 
     @NonNull
-    public static <T extends Parameters> T from(String name, Object object, Class<? extends Parameters> requiredType) throws IOException {
+    public static <T extends Parameters> T from(
+            String name, Object object, Class<? extends Parameters> requiredType) throws IOException {
         return new ObjectToParameters(requiredType).read(name, object);
     }
 
     @NonNull
-    public static <T extends Parameters> T from(String name, Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext) throws IOException {
+    public static <T extends Parameters> T from(
+            String name, Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext)
+            throws IOException {
         return new ObjectToParameters(requiredType).apply(stringifyContext).read(name, object);
     }
 

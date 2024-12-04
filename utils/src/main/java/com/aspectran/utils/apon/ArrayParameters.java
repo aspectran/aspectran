@@ -30,8 +30,7 @@ import java.util.List;
  *
  * @since 6.2.0
  */
-public class ArrayParameters extends AbstractParameters
-        implements Iterable<Parameters>, Serializable {
+public class ArrayParameters extends AbstractParameters implements Iterable<Parameters>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2058392199376865356L;

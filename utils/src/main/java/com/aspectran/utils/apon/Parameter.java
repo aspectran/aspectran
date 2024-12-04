@@ -38,14 +38,14 @@ public interface Parameter {
     String getQualifiedName();
 
     /**
-     * Returns the parameter value type.
-     * @return the parameter value type
+     * Returns the value type of the parameter.
+     * @return the value type of the parameter
      */
     ValueType getValueType();
 
     /**
-     * Sets the parameter value type.
-     * @param valueType the parameter value type
+     * Sets the value type of the parameter.
+     * @param valueType the value type to set
      */
     void setValueType(ValueType valueType);
 

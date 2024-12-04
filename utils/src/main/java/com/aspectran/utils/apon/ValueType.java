@@ -50,13 +50,15 @@ public enum ValueType {
     /**
      * Returns a ValueType with a value represented by the specified String.
      * @param alias the specified String
-     * @return the parameter value type
+     * @return the value type of the parameter
      */
     @Nullable
     public static ValueType resolve(String alias) {
-        for (ValueType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ValueType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;
@@ -64,12 +66,12 @@ public enum ValueType {
 
     @Nullable
     public static ValueType resolveByHint(@NonNull String name) {
-        int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
-        if (hintStartIndex > 0) {
-            int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
-            if (hintEndIndex > hintStartIndex) {
-                String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
-                return resolve(typeHint);
+        int start = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
+        if (start > 0) {
+            int end = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
+            if (end > start) {
+                String hintedType = name.substring(start + 1, end);
+                return resolve(hintedType);
             }
         }
         return null;
@@ -84,7 +86,10 @@ public enum ValueType {
         return name;
     }
 
-    public static ValueType determineValueType(Object value) {
+    public static ValueType resolveFrom(Object value) {
+        if (value == null) {
+            return ValueType.OBJECT;
+        }
         ValueType type;
         if (value instanceof CharSequence) {
             if (value.toString().contains(AponFormat.NEW_LINE)) {

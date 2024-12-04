@@ -332,7 +332,7 @@ public abstract class AbstractParameters implements Parameters {
         } else {
             Parameter p = getParameter(name);
             if (p == null) {
-                ValueType valueType = ValueType.determineValueType(value);
+                ValueType valueType = ValueType.resolveFrom(value);
                 p = newParameterValue(name, valueType);
             }
             putValue(p, name, value);
@@ -342,7 +342,7 @@ public abstract class AbstractParameters implements Parameters {
     private void putArrayValue(String name, Object value) {
         Parameter p = getParameter(name);
         if (p == null) {
-            ValueType valueType = ValueType.determineValueType(value);
+            ValueType valueType = ValueType.resolveFrom(value);
             p = newParameterValue(name, valueType, true);
         }
         checkArrayType(p);
@@ -730,7 +730,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
-        Assert.isTrue(!structureFixed, "Unknown parameter: " + name);
+        Assert.state(!structureFixed, "Unknown parameter: " + name);
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);
@@ -786,7 +786,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void readFrom(String apon) throws AponParseException {
         if (apon != null) {
-            AponReader.from(apon, this);
+            AponReader.read(apon, this);
         }
     }
 
@@ -800,21 +800,21 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void readFrom(File file) throws AponParseException {
         if (file != null) {
-            AponReader.from(file, this);
+            AponReader.read(file, this);
         }
     }
 
     @Override
     public void readFrom(File file, String encoding) throws AponParseException {
         if (file != null) {
-            AponReader.from(file, encoding, this);
+            AponReader.read(file, encoding, this);
         }
     }
 
     @Override
     public void readFrom(Reader reader) throws AponParseException {
         if (reader != null) {
-            AponReader.from(reader, this);
+            AponReader.read(reader, this);
         }
     }
 

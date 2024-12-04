@@ -32,7 +32,7 @@ public class AponReaderTest {
             String text = new AponWriter().write(customer).toString();
 
             Customer customer2 = new Customer();
-            AponReader.from(text, customer2);
+            AponReader.read(text, customer2);
 
             String text2 = new AponWriter().write(customer2).toString();
 

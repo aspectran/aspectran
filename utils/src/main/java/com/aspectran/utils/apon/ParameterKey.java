@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 
 /**
@@ -54,8 +55,9 @@ public class ParameterKey {
         this(name, null, valueType, array, noBrackets);
     }
 
-    public ParameterKey(String name, String[] altNames, ValueType valueType, boolean array,
-                        boolean noBrackets) {
+    public ParameterKey(String name, String[] altNames, ValueType valueType, boolean array, boolean noBrackets) {
+        Assert.notNull(name, "Parameter name must not be null");
+        Assert.notNull(valueType, "Parameter value type must not be null");
         this.name = name;
         this.altNames = altNames;
         this.valueType = valueType;
@@ -88,6 +90,8 @@ public class ParameterKey {
 
     public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
                         boolean array, boolean noBrackets) {
+        Assert.notNull(name, "Parameter name must not be null");
+        Assert.notNull(parametersClass, "parametersClass must not be null");
         this.name = name;
         this.altNames = altNames;
         this.valueType = ValueType.PARAMETERS;

@@ -15,19 +15,27 @@
  */
 package com.aspectran.utils.apon;
 
-import java.io.Serial;
+import java.io.Closeable;
+import java.io.Reader;
 
 /**
- * The Class IncompatibleValueTypeException.
+ * Converts a string in APON format to a Parameters object.
+ * <p>By default, the indentation string is "  " (two blanks)</p>
+ * <p>Useful with Java 7 for example :
+ * <pre>{@code
+ *   try(AponReaderCloseable aponReader = AponReaderCloseable(reader)) {
+ *     ....
+ *   }
+ * }</pre></p>
  */
-public class IncompatibleValueTypeException extends InvalidParameterValueException {
+public class AponReaderCloseable extends AponReader implements Closeable {
 
-    @Serial
-    private static final long serialVersionUID = 1557599183505068164L;
-
-    public IncompatibleValueTypeException(ParameterValue parameterValue, ValueType expectedValueType) {
-        super("Incompatible value type with expected value type '" + expectedValueType +
-                "' for the specified parameter " + parameterValue);
+    /**
+     * Instantiates a new AponReader.
+     * @param reader the character stream capable of parsing content into APON
+     */
+    public AponReaderCloseable(Reader reader) {
+        super(reader);
     }
 
 }

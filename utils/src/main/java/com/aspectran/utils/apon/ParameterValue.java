@@ -56,13 +56,14 @@ public class ParameterValue implements Parameter {
         this(name, valueType, array, false);
     }
 
-    public ParameterValue(String name, ValueType valueType, boolean array,
-                          boolean noBracket) {
+    public ParameterValue(String name, ValueType valueType, boolean array, boolean noBracket) {
         this(name, valueType, array, noBracket, false);
     }
 
     protected ParameterValue(String name, ValueType valueType, boolean array,
                              boolean noBracket, boolean valueTypeFixed) {
+        Assert.notNull(name, "Parameter name must not be null");
+        Assert.notNull(valueType, "Parameter value type must not be null");
         this.name = name;
         this.valueType = valueType;
         this.originValueType = valueType;
@@ -121,7 +122,7 @@ public class ParameterValue implements Parameter {
         }
         Parameter prototype = container.getProprietor();
         if (prototype != null) {
-            return prototype.getQualifiedName() + "." + name;
+            return (prototype.getQualifiedName() + "." + name);
         }
         return name;
     }
@@ -201,9 +202,9 @@ public class ParameterValue implements Parameter {
     public void putValue(Object value) {
         if (value != null) {
             if (valueTypeFixed) {
-                value = resolveValue(value);
+                value = resolveValueByType(value);
             } else {
-                determineValueType(value);
+                adjustValueType(value);
             }
         }
         if (!valueTypeFixed && !array && this.value != null) {
@@ -222,7 +223,7 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private synchronized void addValue(Object value) {
+    private void addValue(Object value) {
         if (list == null) {
             list = new ArrayList<>();
             assigned = true;
@@ -271,21 +272,16 @@ public class ParameterValue implements Parameter {
         if (array) {
             List<?> list = getValueList();
             if (list != null) {
-                String[] s = new String[list.size()];
-                for (int i = 0; i < s.length; i++) {
-                    s[i] = list.get(i).toString();
+                String[] arr = new String[list.size()];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = list.get(i).toString();
                 }
-                return s;
-            } else {
-                return null;
+                return arr;
             }
-        } else {
-            if (value != null) {
-                return new String[] { value.toString() };
-            } else {
-                return null;
-            }
+        } else if (value != null) {
+            return new String[] { value.toString() };
         }
+        return null;
     }
 
     @Override
@@ -293,17 +289,16 @@ public class ParameterValue implements Parameter {
     public List<String> getValueAsStringList() {
         if (valueType == ValueType.STRING) {
             return (List<String>)getValueList();
-        } else {
-            List<?> list1 = getValueList();
-            if (list1 != null) {
-                List<String> list2 = new ArrayList<>();
-                for (Object o : list1) {
-                    list2.add(o.toString());
-                }
-                return list2;
-            } else {
-                return null;
+        }
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<String> list2 = new ArrayList<>();
+            for (Object o : list1) {
+                list2.add(o.toString());
             }
+            return list2;
+        } else {
+            return null;
         }
     }
 
@@ -451,7 +446,7 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private void determineValueType(Object value) {
+    private void adjustValueType(Object value) {
         if (valueType == ValueType.STRING) {
             if (value.toString().contains(AponFormat.NEW_LINE)) {
                 valueType = ValueType.TEXT;
@@ -469,7 +464,7 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private Object resolveValue(Object value) {
+    private Object resolveValueByType(Object value) {
         if (valueType == ValueType.STRING || valueType == ValueType.TEXT) {
             return value.toString();
         } else if (valueType == ValueType.BOOLEAN) {
@@ -511,7 +506,7 @@ public class ParameterValue implements Parameter {
         } else if (valueType == ValueType.PARAMETERS) {
             if (!(value instanceof Parameters)) {
                 try {
-                    value = AponReader.from(value.toString(), parametersClass);
+                    value = AponReader.read(value.toString(), parametersClass);
                 } catch (AponParseException e) {
                     throw new ValueTypeMismatchException(value.getClass(), parametersClass, e);
                 }
