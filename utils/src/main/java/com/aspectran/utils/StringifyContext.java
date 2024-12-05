@@ -313,11 +313,11 @@ public class StringifyContext implements Cloneable {
             tsb.append("indentSize", indentSize);
         }
         tsb.append("indentTab", indentTab);
+        tsb.append("nullWritable", nullWritable);
         tsb.append("dateTimeFormat", dateTimeFormat);
         tsb.append("dateFormat", dateFormat);
         tsb.append("timeFormat", timeFormat);
         tsb.append("locale", locale);
-        tsb.append("nullWritable", nullWritable);
         return tsb.toString();
     }
 

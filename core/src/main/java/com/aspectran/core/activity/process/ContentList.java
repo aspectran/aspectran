@@ -44,9 +44,10 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         this.explicit = explicit;
     }
 
-    protected ContentList(ContentList contentList) {
+    private ContentList(ContentList contentList) {
         super(contentList);
         this.explicit = contentList.isExplicit();
+        this.name = contentList.getName();
     }
 
     public boolean isExplicit() {
@@ -79,9 +80,7 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 
     @Override
     public ContentList replicate() {
-        ContentList contentList = new ContentList(this);
-        contentList.setName(name);
-        return contentList;
+        return new ContentList(this);
     }
 
     @Override
