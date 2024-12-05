@@ -32,6 +32,7 @@ import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
@@ -43,10 +44,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -157,7 +157,8 @@ public class AnnotatedAction implements Executable {
                 Exception thrown = null;
                 try {
                     if (translet != null) {
-                        args[i] = resolveArgument(translet, type, name, format);
+                        StringifyContext stringifyContext = activity.getStringifyContext();
+                        args[i] = resolveArgumentWithTranslet(translet, type, name, stringifyContext, format);
                     } else {
                         args[i] = resolveArgument(activity, type, name);
                     }
@@ -205,7 +206,8 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object resolveArgument(Translet translet, Class<?> type, String name, String format)
+    private static Object resolveArgumentWithTranslet(
+            Translet translet, Class<?> type, String name, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException, RequestParseException {
         Object result;
         if (type == Translet.class) {
@@ -216,7 +218,7 @@ public class AnnotatedAction implements Executable {
                 result = new Translet[] { translet };
             } else {
                 String[] values = translet.getParameterValues(name);
-                result = resolveValue(type, values, format);
+                result = resolveValue(type, values, stringifyContext, format);
                 if (result == NO_VALUE) {
                     result = null;
                 }
@@ -270,7 +272,7 @@ public class AnnotatedAction implements Executable {
             return parameters;
         } else {
             String value = translet.getParameter(name);
-            result = resolveValue(type, value, format);
+            result = resolveValue(type, value, stringifyContext, format);
             if (result == NO_VALUE) {
                 if (type.isAnnotationPresent(Component.class)) {
                     try {
@@ -279,7 +281,7 @@ public class AnnotatedAction implements Executable {
                         result = translet.getBean(type, name);
                     }
                 } else {
-                    result = parseModel(translet, type);
+                    result = parseModel(translet, type, stringifyContext);
                 }
             }
         }
@@ -304,7 +306,7 @@ public class AnnotatedAction implements Executable {
     }
 
     @NonNull
-    private static Object parseModel(Translet translet, Class<?> type) {
+    private static Object parseModel(Translet translet, Class<?> type, StringifyContext stringifyContext) {
         Object model = ClassUtils.createInstance(type);
         BeanDescriptor bd = BeanDescriptor.getInstance(type);
         List<String> missingProperties = new ArrayList<>();
@@ -316,15 +318,17 @@ public class AnnotatedAction implements Executable {
                 String paramName = (qualifierAnno != null ? qualifierAnno.value() : name);
                 Format formatAnno = bd.getSetterAnnotation(method, Format.class);
                 String format = (formatAnno != null ? formatAnno.value() : null);
-                Object value;
+                Object result;
                 if (setterType.isArray()) {
                     setterType = setterType.getComponentType();
-                    value = resolveValue(setterType, translet.getParameterValues(paramName), format);
+                    String[] values = translet.getParameterValues(paramName);
+                    result = resolveValue(setterType, values, stringifyContext, format);
                 } else {
-                    value = resolveValue(setterType, translet.getParameter(paramName), format);
+                    String value = translet.getParameter(paramName);
+                    result = resolveValue(setterType, value, stringifyContext, format);
                 }
-                if (value != null && value != NO_VALUE) {
-                    BeanUtils.setProperty(model, name, value);
+                if (result != null && result != NO_VALUE) {
+                    BeanUtils.setProperty(model, name, result);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     missingProperties.add(name);
                 }
@@ -341,7 +345,7 @@ public class AnnotatedAction implements Executable {
         return model;
     }
 
-    private static Object resolveValue(Class<?> type, String value, String format)
+    private static Object resolveValue(Class<?> type, String value, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
@@ -356,20 +360,6 @@ public class AnnotatedAction implements Executable {
             } else if (type == Character.class) {
                 if (value != null && !value.isEmpty()) {
                     result = value.charAt(0);
-                }
-            } else if (type == Date.class) {
-                if (value != null) {
-                    result = new SimpleDateFormat(format).parse(value);
-                }
-            } else if (type == LocalDate.class) {
-                if (value != null) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                    result = LocalDate.parse(value, formatter);
-                }
-            } else if (type == LocalDateTime.class) {
-                if (value != null) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                    result = LocalDateTime.parse(value, formatter);
                 }
             } else if (type == boolean.class) {
                 result = Boolean.valueOf(value);
@@ -445,6 +435,22 @@ public class AnnotatedAction implements Executable {
                 if (value != null) {
                     result = new BigDecimal(value);
                 }
+            } else if (type == LocalDateTime.class) {
+                if (value != null) {
+                    result = stringifyContext.toLocalDateTime(value, format);
+                }
+            } else if (type == LocalDate.class) {
+                if (value != null) {
+                    result = stringifyContext.toLocalDate(value, format);
+                }
+            } else if (type == LocalTime.class) {
+                if (value != null) {
+                    result = stringifyContext.toLocalTime(value, format);
+                }
+            } else if (type == Date.class) {
+                if (value != null) {
+                    result = stringifyContext.toDate(value, format);
+                }
             } else {
                 result = NO_VALUE;
             }
@@ -454,7 +460,7 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object resolveValue(Class<?> type, String[] values, String format)
+    private static Object resolveValue(Class<?> type, String[] values, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
@@ -483,32 +489,6 @@ public class AnnotatedAction implements Executable {
                         } else {
                             arr[i] = null;
                         }
-                    }
-                    result = arr;
-                }
-            } else if (type == Date.class) {
-                if (values != null) {
-                    Date[] arr = new Date[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = new SimpleDateFormat(format).parse(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == LocalDate.class) {
-                if (values != null) {
-                    LocalDate[] arr = new LocalDate[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                        arr[i] = LocalDate.parse(values[i], formatter);
-                    }
-                    result = arr;
-                }
-            } else if (type == LocalDateTime.class) {
-                if (values != null) {
-                    LocalDateTime[] arr = new LocalDateTime[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                        arr[i] = LocalDateTime.parse(values[i], formatter);
                     }
                     result = arr;
                 }
@@ -651,6 +631,38 @@ public class AnnotatedAction implements Executable {
                     BigDecimal[] arr = new BigDecimal[values.length];
                     for (int i = 0; i < values.length; i++) {
                         arr[i] = new BigDecimal(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == LocalDateTime.class) {
+                if (values != null) {
+                    LocalDateTime[] arr = new LocalDateTime[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = stringifyContext.toLocalDateTime(values[i], format);
+                    }
+                    result = arr;
+                }
+            } else if (type == LocalDate.class) {
+                if (values != null) {
+                    LocalDate[] arr = new LocalDate[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = stringifyContext.toLocalDate(values[i], format);
+                    }
+                    result = arr;
+                }
+            } else if (type == LocalTime.class) {
+                if (values != null) {
+                    LocalTime[] arr = new LocalTime[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = stringifyContext.toLocalTime(values[i], format);
+                    }
+                    result = arr;
+                }
+            } else if (type == Date.class) {
+                if (values != null) {
+                    Date[] arr = new Date[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = stringifyContext.toDate(values[i], format);
                     }
                     result = arr;
                 }

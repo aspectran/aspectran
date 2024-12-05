@@ -43,6 +43,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -233,6 +235,26 @@ public class ContentsXMLReader implements XMLReader {
         } else if (object instanceof Collection<?> collection) {
             handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
             for (Object value : collection) {
+                checkCircularReference(object, value);
+                handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
+                parseObject(value);
+                handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
+            }
+            handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else if (object instanceof Iterator<?> iterator) {
+            handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
+            while (iterator.hasNext()) {
+                Object value = iterator.next();
+                checkCircularReference(object, value);
+                handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
+                parseObject(value);
+                handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
+            }
+            handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else if (object instanceof Enumeration<?> enumeration) {
+            handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
+            while (enumeration.hasMoreElements()) {
+                Object value = enumeration.nextElement();
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
                 parseObject(value);

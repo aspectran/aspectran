@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -292,6 +293,18 @@ public abstract class AbstractParameters implements Parameters {
         } else if (value instanceof Collection<?> collection) {
             int affected = 0;
             for (Object obj : collection) {
+                if (obj != null || !notNullOnly) {
+                    putArrayValue(name, obj);
+                    affected++;
+                }
+            }
+            if (affected == 0 && !notNullOnly) {
+                putArrayValue(name, null);
+            }
+        } else if (value instanceof Iterator<?> iterator) {
+            int affected = 0;
+            while (iterator.hasNext()) {
+                Object obj = iterator.next();
                 if (obj != null || !notNullOnly) {
                     putArrayValue(name, obj);
                     affected++;

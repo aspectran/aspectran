@@ -37,6 +37,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -165,7 +167,7 @@ public class JsonWriter {
                 String name = p.getName();
                 Object value = p.getValue();
                 writeName(name);
-                write(object, value);
+                write(value, object);
             }
             endObject();
         } else if (object instanceof Map<?, ?> map) {
@@ -174,14 +176,36 @@ public class JsonWriter {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 writeName(name);
-                write(object, value);
+                write(value, object);
             }
             endObject();
         } else if (object instanceof Collection<?> collection) {
             beginArray();
             for (Object value : collection) {
                 if (value != null) {
-                    write(object, value);
+                    write(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object instanceof Iterator<?> iterator) {
+            beginArray();
+            while (iterator.hasNext()) {
+                Object value = iterator.next();
+                if (value != null) {
+                    write(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object instanceof Enumeration<?> enumeration) {
+            beginArray();
+            while (enumeration.hasMoreElements()) {
+                Object value = enumeration.nextElement();
+                if (value != null) {
+                    write(value, object);
                 } else {
                     writeNull(true);
                 }
@@ -193,7 +217,7 @@ public class JsonWriter {
             for (int i = 0; i < len; i++) {
                 Object value = Array.get(object, i);
                 if (value != null) {
-                    write(object, value);
+                    write(value, object);
                 } else {
                     writeNull(true);
                 }
@@ -235,7 +259,7 @@ public class JsonWriter {
                         throw new IOException(e);
                     }
                     writeName(propertyName);
-                    write(object, value);
+                    write(value, object);
                 }
                 endObject();
             } else {
@@ -245,10 +269,10 @@ public class JsonWriter {
         return (T)this;
     }
 
-    private void write(Object object, Object member) throws IOException {
-        checkCircularReference(object, member);
-        this.upperObject = object;
-        write(member);
+    private void write(Object object, Object container) throws IOException {
+        checkCircularReference(container, object);
+        this.upperObject = container;
+        write(object);
         this.upperObject = null;
     }
 

@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -122,6 +126,27 @@ class ToStringBuilderTest {
 
         String result = ToStringBuilder.toString("Variable", map);
         assertEquals("Variable {key1=value1, key2=value2, parameters={key1=value1, key2=value2}}", result);
+    }
+
+    @Test
+    void testAppendSize() {
+        Vector<String> list = new Vector<>();
+        list.add("value1");
+        list.add("value2");
+        Map<String, Object> map = Map.of("key1", "value1", "key2", "value2");
+        Iterator<String> iterator = list.iterator();
+        Enumeration<String> enumeration = list.elements();
+
+        ToStringBuilder tsb = new ToStringBuilder("Size");
+        tsb.appendSize("size1", list);
+        tsb.appendSize("size2", map);
+        tsb.appendSize("size2", iterator);
+        tsb.appendSize("size2", enumeration);
+
+        String actual = tsb.toString();
+        String expected = "Size {size1=2, size2=2, size2=2, size2=2}";
+
+        assertEquals(expected, actual);
     }
 
 }

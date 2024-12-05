@@ -26,9 +26,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -166,8 +166,20 @@ public class ToStringBuilder {
                 buffer.append(map.size());
             } else if (object instanceof Collection<?> collection) {
                 buffer.append(collection.size());
+            } else if (object instanceof Iterator<?> iterator) {
+                int count = 0;
+                while (iterator.hasNext()) {
+                    count++;
+                    iterator.next();
+                }
+                buffer.append(count);
             } else if (object instanceof Enumeration<?> enumeration) {
-                buffer.append(Collections.list(enumeration).size());
+                int count = 0;
+                while (enumeration.hasMoreElements()) {
+                    count++;
+                    enumeration.nextElement();
+                }
+                buffer.append(count);
             } else if (object.getClass().isArray()) {
                 buffer.append(Array.getLength(object));
             } else {
@@ -215,6 +227,8 @@ public class ToStringBuilder {
             appendValue(map);
         } else if (object instanceof Collection<?> collection) {
             appendValue(collection);
+        } else if (object instanceof Iterator<?> iterator) {
+            appendValue(iterator);
         } else if (object instanceof Enumeration<?> enumeration) {
             appendValue(enumeration);
         } else if (object instanceof Parameters parameters) {
@@ -274,6 +288,19 @@ public class ToStringBuilder {
                 appendComma();
             }
             appendValue(value);
+        }
+        appendCloseBracket();
+    }
+
+    private void appendValue(@NonNull Iterator<?> iterator) {
+        appendOpenBracket();
+        while (iterator.hasNext()) {
+            Object value = iterator.next();
+            checkCircularReference(iterator, value);
+            appendValue(value);
+            if (iterator.hasNext()) {
+                appendComma();
+            }
         }
         appendCloseBracket();
     }

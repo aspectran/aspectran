@@ -30,6 +30,7 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -130,6 +131,7 @@ public class ObjectToParameters {
                 object instanceof Boolean ||
                 object instanceof Character ||
                 object instanceof Collection<?> ||
+                object instanceof Iterator<?> ||
                 object instanceof Enumeration<?> ||
                 object.getClass().isArray()) {
             return object;

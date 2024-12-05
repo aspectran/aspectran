@@ -1,7 +1,10 @@
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -148,76 +151,149 @@ public class StringifyContext implements Cloneable {
     }
 
     public String toString(LocalDateTime localDateTime) {
+        return toString(localDateTime, null);
+    }
+
+    public String toString(LocalDateTime localDateTime, String format) {
         Assert.notNull(localDateTime, "localDateTime must not be null");
-        DateTimeFormatter dataTimeFormatter = getDateTimeFormatter();
-        if (dataTimeFormatter != null) {
-            return localDateTime.format(dataTimeFormatter);
+        DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
+        if (dateTimeFormatter != null) {
+            return localDateTime.format(dateTimeFormatter);
         } else {
             return localDateTime.toString();
         }
     }
 
     public String toString(LocalDate localDate) {
+        return toString(localDate, null);
+    }
+
+    public String toString(LocalDate localDate, String format) {
         Assert.notNull(localDate, "localDate must not be null");
-        DateTimeFormatter dateFormatter = getDateFormatter();
-        if (dateFormatter != null) {
-            return localDate.format(dateFormatter);
+        DateTimeFormatter dateTimeFormatter = touchDateFormatter(format);
+        if (dateTimeFormatter != null) {
+            return localDate.format(dateTimeFormatter);
         } else {
             return localDate.toString();
         }
     }
 
     public String toString(LocalTime localTime) {
+        return toString(localTime, null);
+    }
+
+    public String toString(LocalTime localTime, String format) {
         Assert.notNull(localTime, "localTime must not be null");
-        DateTimeFormatter timeFormatter = getTimeFormatter();
-        if (timeFormatter != null) {
-            return localTime.format(timeFormatter);
+        DateTimeFormatter dateTimeFormatter = touchTimeFormatter(format);
+        if (dateTimeFormatter != null) {
+            return localTime.format(dateTimeFormatter);
         } else {
             return localTime.toString();
         }
     }
 
     public String toString(Date date) {
+        return toString(date, null);
+    }
+
+    public String toString(Date date, String format) {
         Assert.notNull(date, "date must not be null");
-        if (dateTimeFormat != null) {
+        DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
+        if (dateTimeFormatter != null) {
             LocalDateTime ldt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            return toString(ldt);
+            return ldt.format(dateTimeFormatter);
         } else {
             return date.toString();
         }
     }
 
-    private DateTimeFormatter getDateTimeFormatter() {
-        if (dateTimeFormat != null && dateTimeFormatter == null) {
-            if (locale != null) {
-                dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat, locale);
-            } else {
-                dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-            }
+    public LocalDateTime toLocalDateTime(String dateTime) {
+        return toLocalDateTime(dateTime, null);
+    }
+
+    public LocalDateTime toLocalDateTime(String dateTime, String format) {
+        Assert.notNull(dateTime, "dateTime must not be null");
+        DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
+        return LocalDateTime.parse(dateTime, dateTimeFormatter);
+    }
+
+    public LocalDate toLocalDate(String date) {
+        return toLocalDate(date, null);
+    }
+
+    public LocalDate toLocalDate(String date, String format) {
+        Assert.notNull(date, "date must not be null");
+        DateTimeFormatter dateTimeFormatter = touchDateFormatter(format);
+        return LocalDate.parse(date, dateTimeFormatter);
+    }
+
+    public LocalTime toLocalTime(String time) {
+        return toLocalTime(time, null);
+    }
+
+    public LocalTime toLocalTime(String time, String format) {
+        Assert.notNull(time, "time must not be null");
+        DateTimeFormatter dateTimeFormatter = touchTimeFormatter(format);
+        return LocalTime.parse(time, dateTimeFormatter);
+    }
+
+    public Date toDate(String date) throws ParseException {
+        return toDate(date, null);
+    }
+
+    public Date toDate(String date, String format) throws ParseException {
+        Assert.notNull(date, "date must not be null");
+        if (format != null) {
+            return createSimpleDateFormat(format, locale).parse(date);
+        } else {
+            return createSimpleDateFormat(dateTimeFormat, locale).parse(date);
+        }
+    }
+
+    private DateTimeFormatter touchDateTimeFormatter(String format) {
+        if (format != null) {
+            return createDateTimeFormatter(format, locale);
+        } else if (dateTimeFormat != null && dateTimeFormatter == null) {
+            dateTimeFormatter = createDateTimeFormatter(dateTimeFormat, locale);
         }
         return dateTimeFormatter;
     }
 
-    private DateTimeFormatter getDateFormatter() {
-        if (dateFormat != null && dateFormatter == null) {
-            if (locale != null) {
-                dateFormatter = DateTimeFormatter.ofPattern(dateFormat, locale);
-            } else {
-                dateFormatter = DateTimeFormatter.ofPattern(dateFormat);
-            }
+    private DateTimeFormatter touchDateFormatter(String format) {
+        if (format != null) {
+            return createDateTimeFormatter(format, locale);
+        } else if (dateFormat != null && dateFormatter == null) {
+            dateFormatter = createDateTimeFormatter(dateFormat, locale);
         }
         return dateFormatter;
     }
 
-    private DateTimeFormatter getTimeFormatter() {
-        if (timeFormat != null && timeFormatter == null) {
-            if (locale != null) {
-                timeFormatter = DateTimeFormatter.ofPattern(timeFormat, locale);
-            } else {
-                timeFormatter = DateTimeFormatter.ofPattern(timeFormat);
-            }
+    private DateTimeFormatter touchTimeFormatter(String format) {
+        if (format != null) {
+            return createDateTimeFormatter(format, locale);
+        } else if (timeFormat != null && timeFormatter == null) {
+            timeFormatter = createDateTimeFormatter(timeFormat, locale);
         }
         return timeFormatter;
+    }
+
+    @NonNull
+    private DateTimeFormatter createDateTimeFormatter(String format, Locale locale) {
+        if (locale != null) {
+            return DateTimeFormatter.ofPattern(format, locale);
+        } else {
+            return DateTimeFormatter.ofPattern(format);
+        }
+    }
+
+    @NonNull
+    private SimpleDateFormat createSimpleDateFormat(String format, Locale locale) {
+        Assert.notNull(format, "format must not be null");
+        if (locale != null) {
+            return new SimpleDateFormat(format, locale);
+        } else {
+            return new SimpleDateFormat(format);
+        }
     }
 
     @Override
