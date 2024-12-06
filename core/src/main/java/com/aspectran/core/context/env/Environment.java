@@ -17,6 +17,8 @@ package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
 
+import java.util.Iterator;
+
 /**
  * Interface representing the environment in which the current application is running.
  * Models two key aspects of the application environment: <em>profiles</em> and <em>properties</em>.
@@ -127,5 +129,7 @@ public interface Environment {
      * @return the value of the property on environment
      */
     <T> T getProperty(String name, Activity activity);
+
+    Iterator<String> getPropertyNames();
 
 }

@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.resource.InvalidResourceException;
-import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.CoreService;
 
@@ -79,11 +79,7 @@ public interface ActivityContextBuilder {
 
     void setDefaultProfiles(String... defaultProfiles);
 
-    ItemRuleMap getPropertyItemRuleMap();
-
-    void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
-
-    void addPropertyItemRule(ItemRuleMap propertyItemRuleMap);
+    void putPropertyItemRule(ItemRule propertyItemRule);
 
     /**
      * Returns whether to reload all Java classes, resources,

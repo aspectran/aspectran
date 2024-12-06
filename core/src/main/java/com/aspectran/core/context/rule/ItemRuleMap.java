@@ -43,12 +43,8 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
         super();
     }
 
-    public ItemRuleMap(ItemRuleMap itemRuleMap) {
-        super(itemRuleMap);
-    }
-
     /**
-     * Adds a item rule.
+     * Adds an item rule.
      * @param itemRule the item rule
      * @return the item rule
      */
@@ -65,7 +61,9 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
      * @param itemRule the item rule
      */
     private void autoNaming(@NonNull ItemRule itemRule) {
-        itemRule.setName("item#" + size());
+        if (itemRule.getName() == null) {
+            itemRule.setName("item#" + size());
+        }
     }
 
     public String getProfile() {

@@ -23,7 +23,6 @@ import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -51,15 +50,12 @@ class ActivityEnvironmentTest {
     @BeforeAll
     void ready() throws ActivityContextBuilderException {
         ItemRule itemRule1 = new ItemRule();
-        itemRule1.setName("item1");
+        itemRule1.setName("property1");
         itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
-
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        itemRuleMap.putItemRule(itemRule1);
 
         builder = new HybridActivityContextBuilder();
         builder.setActiveProfiles("profile-1", "profile-2", "profile-3");
-        builder.setPropertyItemRuleMap(itemRuleMap);
+        builder.putPropertyItemRule(itemRule1);
         context = builder.build();
         environment = context.getEnvironment();
     }
@@ -69,6 +65,24 @@ class ActivityEnvironmentTest {
         if (builder != null) {
             builder.destroy();
         }
+    }
+
+    @Test
+    void testEnvironmentProperties() throws ActivityPerformException {
+        ParameterMap parameterMap = new ParameterMap();
+        parameterMap.setParameter("param1", "Apple");
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("attr1", "Strawberry");
+
+        InstantActivity activity = new InstantActivity(context);
+        activity.setParameterMap(parameterMap);
+        activity.setAttributeMap(attributes);
+        activity.perform(() -> {
+            assertEquals("Apple, Tomato, Strawberry, Melon",
+                environment.getProperty("property1", activity).toString());
+            return null;
+        });
     }
 
     @Test
@@ -88,7 +102,7 @@ class ActivityEnvironmentTest {
         activity.setAttributeMap(attributes);
         activity.perform(() -> {
             assertEquals("Apple, Tomato, Strawberry, Melon",
-                    environment.getProperty("item1", activity).toString());
+                    environment.getProperty("property1", activity).toString());
             return null;
         });
     }
@@ -99,24 +113,6 @@ class ActivityEnvironmentTest {
         assertFalse(environment.matchesProfiles("(profile-1, profile-x)"));
         assertTrue(environment.matchesProfiles("[profile-1, profile-z]"));
         assertTrue(environment.matchesProfiles("(profile-1, [profile-2, profile-z])"));
-    }
-
-    @Test
-    void testEnvironmentProperties() throws ActivityPerformException {
-        ParameterMap parameterMap = new ParameterMap();
-        parameterMap.setParameter("param1", "Apple");
-
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("attr1", "Strawberry");
-
-        InstantActivity activity = new InstantActivity(context);
-        activity.setParameterMap(parameterMap);
-        activity.setAttributeMap(attributes);
-        activity.perform(() -> {
-            assertEquals("Apple, Tomato, Strawberry, Melon",
-                environment.getProperty("item1", activity).toString());
-            return null;
-        });
     }
 
 }

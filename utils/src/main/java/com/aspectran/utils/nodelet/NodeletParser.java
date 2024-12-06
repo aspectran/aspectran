@@ -262,7 +262,7 @@ public class NodeletParser {
                         }
                     }
 
-                    if (textBuffer.length() > 0) {
+                    if (!textBuffer.isEmpty()) {
                         textBuffer.delete(0, textBuffer.length());
                     }
                 }
@@ -278,7 +278,7 @@ public class NodeletParser {
                     path.remove();
 
                     String text = null;
-                    if (textBuffer.length() > 0) {
+                    if (!textBuffer.isEmpty()) {
                         text = textBuffer.toString();
                         textBuffer.delete(0, textBuffer.length());
                     }

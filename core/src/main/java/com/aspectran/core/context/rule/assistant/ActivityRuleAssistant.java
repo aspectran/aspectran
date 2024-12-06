@@ -71,6 +71,8 @@ import java.util.Set;
  */
 public class ActivityRuleAssistant {
 
+    private final boolean shallow;
+
     private final ClassLoader classLoader;
 
     private final ApplicationAdapter applicationAdapter;
@@ -100,6 +102,7 @@ public class ActivityRuleAssistant {
     private RuleAppendHandler ruleAppendHandler;
 
     protected ActivityRuleAssistant() {
+        this.shallow = true;
         this.classLoader = null;
         this.applicationAdapter = null;
         this.environmentProfiles = null;
@@ -108,6 +111,10 @@ public class ActivityRuleAssistant {
     public ActivityRuleAssistant(ClassLoader classLoader,
                                  ApplicationAdapter applicationAdapter,
                                  EnvironmentProfiles environmentProfiles) {
+        Assert.notNull(classLoader, "classLoader must not be null");
+        Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
+        Assert.notNull(environmentProfiles, "environmentProfiles must not be null");
+        this.shallow = false;
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.environmentProfiles = environmentProfiles;
@@ -119,7 +126,7 @@ public class ActivityRuleAssistant {
         typeAliases = new HashMap<>();
         assistantLocal = new AssistantLocal(this);
 
-        if (applicationAdapter != null) {
+        if (!shallow) {
             aspectRuleRegistry = new AspectRuleRegistry();
 
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
@@ -143,7 +150,7 @@ public class ActivityRuleAssistant {
         typeAliases = null;
         assistantLocal = null;
 
-        if (applicationAdapter != null) {
+        if (!shallow) {
             scheduleRuleRegistry.setAssistantLocal(null);
             transletRuleRegistry.setAssistantLocal(null);
             templateRuleRegistry.setAssistantLocal(null);
@@ -862,15 +869,13 @@ public class ActivityRuleAssistant {
         if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
             if (getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles())) {
                 return mergeItemRuleMap(newIrm, oldIrm);
+            } else if (oldIrm == null) {
+                ItemRuleMap irm = new ItemRuleMap();
+                irm.addCandidate(newIrm);
+                return irm;
             } else {
-                if (oldIrm == null) {
-                    ItemRuleMap irm = new ItemRuleMap();
-                    irm.addCandidate(newIrm);
-                    return irm;
-                } else {
-                    oldIrm.addCandidate(newIrm);
-                    return oldIrm;
-                }
+                oldIrm.addCandidate(newIrm);
+                return oldIrm;
             }
         } else {
             return mergeItemRuleMap(newIrm, oldIrm);
@@ -881,7 +886,8 @@ public class ActivityRuleAssistant {
         if (oldIrm == null) {
             return newIrm;
         }
-        ItemRuleMap irm = new ItemRuleMap(oldIrm);
+        ItemRuleMap irm = new ItemRuleMap();
+        irm.putAll(oldIrm);
         irm.putAll(newIrm);
         if (oldIrm.getCandidates() == null) {
             irm.addCandidate(oldIrm);

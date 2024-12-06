@@ -130,12 +130,12 @@ public class AppendRule {
         } else if (StringUtils.hasText(url)) {
             appendRule.setUrl(url);
         } else {
-            throw new IllegalRuleException("The 'append' element requires either a 'file' or a 'resource' or a 'url' attribute");
+            throw new IllegalRuleException("The 'append' element requires either a 'file', 'resource' or 'url' attribute");
         }
 
         AppendableFileFormatType appendableFileFormatType = AppendableFileFormatType.resolve(format);
         if (format != null && appendableFileFormatType == null) {
-            throw new IllegalRuleException("No such appendable file format '" + format + "'");
+            throw new IllegalRuleException("Not one of the appendable file formats: '" + format + "'");
         }
         appendRule.setFormat(appendableFileFormatType);
 

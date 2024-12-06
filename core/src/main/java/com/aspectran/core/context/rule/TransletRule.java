@@ -243,17 +243,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     public RequestRule touchRequestRule(boolean explicit) {
-        if (requestRule != null) {
-            return requestRule;
-        } else {
+        if (requestRule == null) {
             requestRule = RequestRule.newInstance(explicit);
-            return requestRule;
         }
+        return requestRule;
     }
 
     /**
      * Gets the content list.
-     *
      * @return the content list
      */
     public ContentList getContentList() {
@@ -262,7 +259,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the content list.
-     *
      * @param contentList the new content list
      */
     public void setContentList(ContentList contentList) {
@@ -271,7 +267,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Returns whether the translet name has tokens for extracting parameters or attributes.
-     *
      * @return true if the translet name has tokens for extracting parameters or attributes
      */
     public boolean hasPathVariables() {
@@ -316,7 +311,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
-     *
      * @return the action list
      */
     private ActionList touchActionList() {
@@ -343,7 +337,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the response rule.
-     *
      * @return the response rule
      */
     public ResponseRule getResponseRule() {
@@ -352,7 +345,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the response rule.
-     *
      * @param responseRule the new response rule
      */
     public void setResponseRule(ResponseRule responseRule) {
@@ -544,7 +536,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
             try {
                 parsedTimeout = Long.parseLong(timeout);
             } catch (NumberFormatException e) {
-                throw new IllegalRuleException("The value of 'timeout' attribute on element 'translet' is not valid for 'long'");
+                throw new IllegalRuleException("Invalid attribute 'timeout' of element 'translet': " + timeout);
             }
         }
         return parsedTimeout;

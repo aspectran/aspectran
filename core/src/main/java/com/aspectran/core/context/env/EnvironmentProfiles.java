@@ -34,14 +34,13 @@ public class EnvironmentProfiles {
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentProfiles.class);
 
     /**
-     * Name of property to set to specify active profiles: {@value}. Value may be comma
-     * delimited.
+     * Name of property to set to specify active profiles: {@value}. Value may be comma-delimited.
      */
     public static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 
     /**
      * Name of property to set to specify profiles active by default: {@value}. Value may
-     * be comma delimited.
+     * be comma-delimited.
      */
     public static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
 

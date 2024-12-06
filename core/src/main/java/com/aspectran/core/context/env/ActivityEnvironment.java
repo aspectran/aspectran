@@ -20,6 +20,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
+import java.util.Iterator;
+
 /**
  * The Class ActivityEnvironment.
  */
@@ -29,7 +31,7 @@ public class ActivityEnvironment implements Environment {
 
     private final EnvironmentProfiles environmentProfiles;
 
-    private ItemRuleMap propertyItemRuleMap;
+    private final ItemRuleMap propertyItemRuleMap = new ItemRuleMap();
 
     public ActivityEnvironment(ActivityContext context, EnvironmentProfiles environmentProfiles) {
         this.context = context;
@@ -76,22 +78,6 @@ public class ActivityEnvironment implements Environment {
         environmentProfiles.addActiveProfile(profile);
     }
 
-    public ItemRuleMap getPropertyItemRuleMap() {
-        return propertyItemRuleMap;
-    }
-
-    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        this.propertyItemRuleMap = propertyItemRuleMap;
-    }
-
-    public void addPropertyItemRule(ItemRuleMap propertyItemRuleMap) {
-        if (this.propertyItemRuleMap == null) {
-            this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
-        } else {
-            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
-        }
-    }
-
     @Override
     public <T> T getProperty(String name) {
         return getProperty(name, context.getAvailableActivity());
@@ -99,15 +85,21 @@ public class ActivityEnvironment implements Environment {
 
     @Override
     public <T> T getProperty(String name, Activity activity) {
-        if (propertyItemRuleMap == null || propertyItemRuleMap.isEmpty()) {
-            return null;
-        }
         ItemRule itemRule = propertyItemRuleMap.get(name);
         if (itemRule != null) {
             return activity.getItemEvaluator().evaluate(itemRule);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Iterator<String> getPropertyNames() {
+        return propertyItemRuleMap.keySet().iterator();
+    }
+
+    protected void putPropertyItemRule(ItemRule propertyItemRule) {
+        this.propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
 }

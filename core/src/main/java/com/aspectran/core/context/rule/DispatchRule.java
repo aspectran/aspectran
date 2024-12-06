@@ -83,13 +83,13 @@ public class DispatchRule implements Replicable<DispatchRule> {
         }
         this.name = name;
         List<Token> tokens = Tokenizer.tokenize(name, true);
-        int tokenCount = 0;
+        int count = 0;
         for (Token t : tokens) {
             if (t.getType() != TokenType.TEXT) {
-                tokenCount++;
+                count++;
             }
         }
-        if (tokenCount > 0) {
+        if (count > 0) {
             this.nameTokens = tokens.toArray(new Token[0]);
         } else {
             this.nameTokens = null;
@@ -234,8 +234,9 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull
-    public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
-                                           String encoding, Boolean defaultResponse) throws IllegalRuleException {
+    public static DispatchRule newInstance(
+            String name, String dispatcherName, String contentType,
+            String encoding, Boolean defaultResponse) throws IllegalRuleException {
         DispatchRule dr = newInstance(name);
         dr.setDispatcherName(dispatcherName);
         dr.setContentType(contentType);

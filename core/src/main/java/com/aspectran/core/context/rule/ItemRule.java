@@ -188,13 +188,12 @@ public class ItemRule {
         }
         if (tokensMap.isEmpty()) {
             return new LinkedHashMap<>();
-        } else {
-            Map<String, String> map = new LinkedHashMap<>();
-            for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-                map.put(entry.getKey(), toValue(entry.getValue()));
-            }
-            return map;
         }
+        Map<String, String> map = new LinkedHashMap<>();
+        for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+            map.put(entry.getKey(), toValue(entry.getValue()));
+        }
+        return map;
     }
 
     /**

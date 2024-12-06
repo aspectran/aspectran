@@ -36,6 +36,7 @@ import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ActivityEnvironment;
+import com.aspectran.core.context.env.ActivityEnvironmentBuilder;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.resource.ResourceManager;
@@ -43,6 +44,7 @@ import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -226,22 +228,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public ItemRuleMap getPropertyItemRuleMap() {
-        return propertyItemRuleMap;
-    }
-
-    @Override
-    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
-        this.propertyItemRuleMap = propertyItemRuleMap;
-    }
-
-    @Override
-    public void addPropertyItemRule(ItemRuleMap propertyItemRuleMap) {
+    public void putPropertyItemRule(ItemRule propertyItemRule) {
         if (this.propertyItemRuleMap == null) {
-            this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
-        } else {
-            this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+            this.propertyItemRuleMap = new ItemRuleMap();
         }
+        this.propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
     @Override
@@ -425,25 +416,23 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @NonNull
-    private ActivityEnvironment createActivityEnvironment(ActivityContext context,
-                                                          @NonNull ActivityRuleAssistant assistant) {
+    private ActivityEnvironment createActivityEnvironment(
+            ActivityContext context, @NonNull ActivityRuleAssistant assistant) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
-        ActivityEnvironment environment = new ActivityEnvironment(context, environmentProfiles);
-        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-            environment.setPropertyItemRuleMap(propertyItemRuleMap);
-        }
+        ActivityEnvironmentBuilder builder = new ActivityEnvironmentBuilder(context, environmentProfiles)
+            .putPropertyItemRules(propertyItemRuleMap);
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             if (environmentProfiles.acceptsProfiles(environmentRule.getProfiles())) {
                 if (environmentRule.getPropertyItemRuleMapList() != null) {
                     for (ItemRuleMap propertyIrm : environmentRule.getPropertyItemRuleMapList()) {
                         if (environmentProfiles.acceptsProfiles(propertyIrm.getProfiles())) {
-                            environment.addPropertyItemRule(propertyIrm);
+                            builder.putPropertyItemRules(propertyIrm);
                         }
                     }
                 }
             }
         }
-        return environment;
+        return builder.build();
     }
 
     /**

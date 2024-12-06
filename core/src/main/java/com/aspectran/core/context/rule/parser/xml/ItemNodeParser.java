@@ -89,7 +89,8 @@ class ItemNodeParser implements SubnodeParser {
                 ItemRule itemRule = parser.peekObject();
 
                 if (itemRule.getValueType() == ItemValueType.BEAN) {
-                    throw new IllegalRuleException("<bean> and <value> elements cannot exist together within an <item> element");
+                    throw new IllegalRuleException(
+                            "<bean> and <value> elements cannot exist together within an <item> element");
                 }
 
                 if (itemRule.isListableType()) {
@@ -125,8 +126,8 @@ class ItemNodeParser implements SubnodeParser {
             ItemRule itemRule = parser.peekObject();
 
             if (itemRule.isMappableType() && itemRule.getValueType() != ItemValueType.BEAN) {
-                boolean isTokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(tokenize),
-                        itemRule.isTokenize());
+                boolean isTokenize = BooleanUtils.toBoolean(
+                        BooleanUtils.toNullableBooleanObject(tokenize), itemRule.isTokenize());
                 Token[] tokens = null;
                 if (value != null) {
                     tokens = TokenParser.makeTokens(value, isTokenize);
