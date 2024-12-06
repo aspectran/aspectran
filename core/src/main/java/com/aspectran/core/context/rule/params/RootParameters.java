@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
-import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.ParameterKey;
 
 import java.io.Reader;
