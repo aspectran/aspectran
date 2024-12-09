@@ -42,7 +42,9 @@ import com.aspectran.utils.StringUtils;
  */
 public class ContextBasedLoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
-    private String key;
+    private static final String DEFAULT_KEY = "LOGGING_GROUP";
+
+    private String key = DEFAULT_KEY;
 
     private String defaultValue;
 
