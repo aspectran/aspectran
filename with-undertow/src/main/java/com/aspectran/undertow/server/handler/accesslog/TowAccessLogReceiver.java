@@ -32,7 +32,7 @@ public class TowAccessLogReceiver implements AccessLogReceiver {
     private final Logger logger;
 
     public TowAccessLogReceiver() {
-        this.logger = LoggerFactory.getLogger(DEFAULT_CATEGORY);
+        this(null);
     }
 
     public TowAccessLogReceiver(String category) {

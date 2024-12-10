@@ -48,12 +48,12 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
             PathHandler pathHandler = new PathHandler();
             for (String deploymentName : servletContainer.listDeployments()) {
                 DeploymentManager manager = servletContainer.getDeployment(deploymentName);
-                DeploymentInfo deploymentInfo = manager.getDeployment().getDeploymentInfo();
+                DeploymentInfo info = manager.getDeployment().getDeploymentInfo();
 
                 HttpHandler handler = manager.start();
-                String contextPath = deploymentInfo.getContextPath();
+                String contextPath = info.getContextPath();
 
-                ResourceManager resourceManager = deploymentInfo.getResourceManager();
+                ResourceManager resourceManager = info.getResourceManager();
                 if (resourceManager != null) {
                     TowResourceHandler resourceHandler = new TowResourceHandler(resourceManager, handler);
                     String pathPrefix = contextPath;

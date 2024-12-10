@@ -40,7 +40,7 @@ public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWra
     @Override
     @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
-        this.classLoader = context.getAvailableActivity().getClassLoader();
+        this.classLoader = context.getClassLoader();
     }
 
     public ClassLoader getClassLoader() {

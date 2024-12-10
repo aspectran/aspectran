@@ -69,7 +69,7 @@ public class TowResourceManager extends PathResourceManager implements Applicati
 
     public TowResourceManager setBase(String base) throws IOException {
         if (!StringUtils.hasText(base)) {
-            throw new IllegalArgumentException("Resource base path must not be null or empty");
+            throw new IllegalArgumentException("Base path must not be null or empty");
         }
         if (applicationAdapter != null) {
             return setBase(applicationAdapter.toRealPathAsFile(base));
