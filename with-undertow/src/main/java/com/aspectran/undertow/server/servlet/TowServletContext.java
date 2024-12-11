@@ -149,6 +149,12 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
+        if (webSocketInitializer != null) {
+            webSocketInitializer.initialize(this);
+        }
+    }
+
     public void setWelcomePages(String[] welcomePages) {
         if (welcomePages != null) {
             addWelcomePages(welcomePages);
@@ -182,12 +188,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
             for (HandlerWrapper wrapper : wrappers) {
                 addOuterHandlerChainWrapper(wrapper);
             }
-        }
-    }
-
-    public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
-        if (webSocketInitializer != null) {
-            webSocketInitializer.initialize(this);
         }
     }
 

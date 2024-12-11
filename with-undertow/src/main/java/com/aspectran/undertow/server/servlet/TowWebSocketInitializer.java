@@ -65,11 +65,11 @@ public class TowWebSocketInitializer  {
             ByteBufferPool byteBufferPool = new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize);
             WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo().setBuffers(byteBufferPool);
             deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, webSocketDeploymentInfo);
-            deploymentInfo.addSessionListener(new WebSocketGracefulUndeployListener());
+            deploymentInfo.addSessionListener(new WebSocketGracefulCloseListener());
         }
     }
 
-    public static class WebSocketGracefulUndeployListener implements SessionListener {
+    public static class WebSocketGracefulCloseListener implements SessionListener {
 
         @Override
         public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
@@ -80,16 +80,22 @@ public class TowWebSocketInitializer  {
 
         @Override
         public void attributeRemoved(Session session, String name, Object oldValue) {
-            closeWebSockets(name, oldValue);
+            if (oldValue != null) {
+                closeWebSockets(name, oldValue);
+            }
         }
 
-        private void closeWebSockets(String name, Object value) {
+        private void closeWebSockets(@NonNull String name, @NonNull Object value) {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
-                CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
-                for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
-                    WebSockets.sendClose(closeMessage, webSocketChannel, null);
+                if (!connections.isEmpty()) {
+                    CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
+                    for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
+                        if (webSocketChannel != null) {
+                            WebSockets.sendClose(closeMessage, webSocketChannel, null);
+                        }
+                    }
                 }
             }
         }

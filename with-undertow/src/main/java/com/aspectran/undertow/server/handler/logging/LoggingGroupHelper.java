@@ -10,14 +10,14 @@ import org.slf4j.MDC;
  */
 public abstract class LoggingGroupHelper {
 
-    public static final String LOGGING_GROUP_KEY = "LOGGING_GROUP";
+    public static final String LOGGING_GROUP = "LOGGING_GROUP";
 
     public static void set(String groupName) {
-        MDC.put(LOGGING_GROUP_KEY, groupName);
+        MDC.put(LOGGING_GROUP, groupName);
     }
 
     public static void clear() {
-        MDC.remove(LOGGING_GROUP_KEY);
+        MDC.remove(LOGGING_GROUP);
     }
 
 }

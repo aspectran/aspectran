@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * <p>Created: 2024. 12. 10.</p>
  */
-public class LoggingGroupHandlerWrapper implements HandlerWrapper {
+public class PathBasedLoggingGroupHandlerWrapper implements HandlerWrapper {
 
     private final Map<String, List<WildcardPattern>> pathPatternsByGroupName = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class LoggingGroupHandlerWrapper implements HandlerWrapper {
         if (handler == null) {
             throw new IllegalArgumentException("handler must not be null");
         }
-        return new LoggingGroupHandler(handler, pathPatternsByGroupName);
+        return new PathBasedLoggingGroupHandler(handler, pathPatternsByGroupName);
     }
 
 }

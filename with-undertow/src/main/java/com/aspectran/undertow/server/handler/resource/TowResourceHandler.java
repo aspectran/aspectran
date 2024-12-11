@@ -63,7 +63,10 @@ public class TowResourceHandler extends ResourceHandler {
         this.next = next;
     }
 
-    public synchronized void setResourcePathPatterns(@NonNull ResourcePathPatterns resourcePathPatterns) {
+    public void setResourcePathPatterns(ResourcePathPatterns resourcePathPatterns) {
+        if (resourcePathPatterns == null) {
+            throw new IllegalArgumentException("resourcePathPatterns must not be null");
+        }
         String[] includePatterns = resourcePathPatterns.getIncludePatterns();
         String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
         this.resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
