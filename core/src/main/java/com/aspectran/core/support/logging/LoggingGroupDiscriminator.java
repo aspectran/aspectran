@@ -21,13 +21,17 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
+import java.util.Map;
 
 /**
  * Discriminates logging events based on the name given to the ActivityContext of the current CoreService.
  * <p>ex)
  * <pre>{@code
  *   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
- *     <discriminator class="com.aspectran.core.context.ContextBasedLoggingGroupDiscriminator">
+ *     <discriminator class="com.aspectran.core.support.logging.LoggingGroupDiscriminator">
  *       <key>LOGGING_GROUP</key>
  *       <defaultValue>app</defaultValue>
  *     </discriminator>
@@ -41,7 +45,7 @@ import com.aspectran.utils.StringUtils;
  * }</pre></p>
  * @see <a href="https://logback.qos.ch/manual/loggingSeparation.html">Logging separation</a>
  */
-public class ContextBasedLoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
+public class LoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
     private static final String DEFAULT_KEY = "LOGGING_GROUP";
 
@@ -55,15 +59,28 @@ public class ContextBasedLoggingGroupDiscriminator extends AbstractDiscriminator
      * property.
      */
     @Override
-    public String getDiscriminatingValue(ILoggingEvent event) {
-        CoreService service = CoreServiceHolder.acquire();
-        if (service != null) {
-            ActivityContext context = service.getActivityContext();
-            if (context != null && context.getName() != null) {
-                return context.getName();
+    public String getDiscriminatingValue(@NonNull ILoggingEvent event) {
+        String groupName = getGroupName(event);
+        if (groupName == null) {
+            CoreService service = CoreServiceHolder.acquire();
+            if (service != null) {
+                ActivityContext context = service.getActivityContext();
+                if (context != null && context.getName() != null) {
+                    groupName = context.getName();
+                }
             }
         }
-        return defaultValue;
+        if (StringUtils.hasText(groupName)) {
+            return groupName;
+        } else {
+            return defaultValue;
+        }
+    }
+
+    @Nullable
+    private String getGroupName(@NonNull ILoggingEvent event) {
+        Map<String, String> mdcMap = event.getMDCPropertyMap();
+        return (mdcMap != null ? mdcMap.get(key) : null);
     }
 
     @Override

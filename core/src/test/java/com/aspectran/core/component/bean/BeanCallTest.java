@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.Aspectran;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -22,7 +23,6 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.call.OrderedBean;
 import com.aspectran.core.sample.call.TotalBean;
-import com.aspectran.core.util.Aspectran;
 import com.aspectran.utils.apon.AponFormat;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

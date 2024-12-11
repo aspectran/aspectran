@@ -19,7 +19,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.context.config.DaemonPollingConfig;
-import com.aspectran.core.util.Aspectran;
+import com.aspectran.core.Aspectran;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommandRegistry;

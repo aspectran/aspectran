@@ -5,7 +5,6 @@ import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.AttachmentKey;
 
 import java.util.List;
 import java.util.Map;
@@ -13,11 +12,9 @@ import java.util.Map;
 /**
  * <p>Created: 2024. 12. 10.</p>
  */
-public class PathBasedLoggingGroupHandler implements HttpHandler  {
+public class PathBasedLoggingGroupHandler implements HttpHandler {
 
-    static final AttachmentKey<String> LOGGING_GROUP = AttachmentKey.create(String.class);
-
-    private final ExchangeCompletionListener exchangeCompletionListener = new PathBasedLoggingGroupCompletionListener();
+    protected final ExchangeCompletionListener exchangeCompletionListener = new LoggingGroupCompletionListener();
 
     private final HttpHandler handler;
 
@@ -30,21 +27,17 @@ public class PathBasedLoggingGroupHandler implements HttpHandler  {
 
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
-        String groupName = resolveGroupName(exchange.getRequestPath());
-        if (groupName != null) {
-            LoggingGroupHelper.set(groupName);
-            exchange.putAttachment(LOGGING_GROUP, groupName);
-        } else {
-            LoggingGroupHelper.clear();
-        }
+        String groupName = resolveGroupName(exchange);
+        ExchangeLoggingGroupHelper.setTo(exchange, groupName);
 
         exchange.addExchangeCompleteListener(exchangeCompletionListener);
         handler.handleRequest(exchange);
     }
 
-    private String resolveGroupName(String requestPath) {
+    protected String resolveGroupName(@NonNull HttpServerExchange exchange) {
         String groupName = null;
         if (pathPatternsByGroupName != null && !pathPatternsByGroupName.isEmpty()) {
+            String requestPath = exchange.getRequestPath();
             for (Map.Entry<String, List<WildcardPattern>> entry : pathPatternsByGroupName.entrySet()) {
                 for (WildcardPattern pattern : entry.getValue()) {
                     if (pattern.matches(requestPath)) {
@@ -55,24 +48,6 @@ public class PathBasedLoggingGroupHandler implements HttpHandler  {
             }
         }
         return groupName;
-    }
-
-    private static class PathBasedLoggingGroupCompletionListener implements ExchangeCompletionListener {
-
-        @Override
-        public void exchangeEvent(@NonNull HttpServerExchange exchange, NextListener nextListener) {
-            try {
-                String groupName = exchange.getAttachment(LOGGING_GROUP);
-                if (groupName != null) {
-                    LoggingGroupHelper.set(groupName);
-                } else {
-                    LoggingGroupHelper.clear();
-                }
-            } finally {
-                nextListener.proceed();
-            }
-        }
-
     }
 
 }

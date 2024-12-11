@@ -136,7 +136,7 @@ version() {
   "$JAVA_BIN" \
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
-    com.aspectran.core.util.Aspectran
+    com.aspectran.core.Aspectran
 }
 
 start_aspectran() {

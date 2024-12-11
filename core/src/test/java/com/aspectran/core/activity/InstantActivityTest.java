@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.Aspectran;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -25,7 +26,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.util.Aspectran;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.junit.jupiter.api.AfterAll;

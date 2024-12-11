@@ -1,5 +1,6 @@
-package com.aspectran.undertow.server.handler.logging;
+package com.aspectran.core.support.logging;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.MDC;
 
 /*
@@ -12,7 +13,7 @@ public abstract class LoggingGroupHelper {
 
     public static final String LOGGING_GROUP = "LOGGING_GROUP";
 
-    public static void set(String groupName) {
+    public static void set(@NonNull String groupName) {
         MDC.put(LOGGING_GROUP, groupName);
     }
 

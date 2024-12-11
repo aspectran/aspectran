@@ -16,10 +16,14 @@ import java.util.Map;
  */
 public class PathBasedLoggingGroupHandlerWrapper implements HandlerWrapper {
 
-    private final Map<String, List<WildcardPattern>> pathPatternsByGroupName = new HashMap<>();
+    private Map<String, List<WildcardPattern>> pathPatternsByGroupName;
+
+    public PathBasedLoggingGroupHandlerWrapper() {
+    }
 
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {
+            Map<String, List<WildcardPattern>> map = new HashMap<>();
             for (Map.Entry<String, String> entry : pathPatternsByGroupName.entrySet()) {
                 String groupName = entry.getKey();
                 String[] arr = StringUtils.tokenize(entry.getValue(), ",;\t\r\n\f", true);
@@ -28,9 +32,12 @@ public class PathBasedLoggingGroupHandlerWrapper implements HandlerWrapper {
                     for (String path : arr) {
                         pathPatterns.add(WildcardPattern.compile(path, ActivityContext.NAME_SEPARATOR_CHAR));
                     }
-                    this.pathPatternsByGroupName.put(groupName, pathPatterns);
+                    map.put(groupName, pathPatterns);
                 }
             }
+            this.pathPatternsByGroupName = (map.isEmpty() ? null : map);
+        } else {
+            this.pathPatternsByGroupName = null;
         }
     }
 

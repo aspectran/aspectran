@@ -188,7 +188,7 @@ aspectran_version() {
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.basePath="$BASE_DIR" \
-    com.aspectran.core.util.Aspectran
+    com.aspectran.core.Aspectran
   return $?
 }
 version() {

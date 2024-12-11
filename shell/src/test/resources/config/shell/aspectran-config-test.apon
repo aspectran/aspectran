@@ -32,7 +32,7 @@ shell: {
         | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
         |=========== /_/ =============================================
         |
-        |Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}
+        |Welcome To Aspectran Shell #{class:com.aspectran.core.Aspectran^version}
         |
         |If you want a list of all supported built-in commands, type 'help'.
         |To get help on a specific command, type 'command_name -h'.

@@ -7,23 +7,17 @@ import io.undertow.server.HttpServerExchange;
 /**
  * <p>Created: 2024. 12. 11.</p>
  */
-public class PathBasedLoggingGroupAssistHandler implements HttpHandler  {
+public class LoggingGroupAssistHandler implements HttpHandler  {
 
     private final HttpHandler handler;
 
-    public PathBasedLoggingGroupAssistHandler(HttpHandler handler) {
+    public LoggingGroupAssistHandler(HttpHandler handler) {
         this.handler = handler;
     }
 
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
-        String groupName = exchange.getAttachment(PathBasedLoggingGroupHandler.LOGGING_GROUP);
-        if (groupName != null) {
-            LoggingGroupHelper.set(groupName);
-        } else {
-            LoggingGroupHelper.clear();
-        }
-
+        ExchangeLoggingGroupHelper.setFrom(exchange);
         handler.handleRequest(exchange);
     }
 
