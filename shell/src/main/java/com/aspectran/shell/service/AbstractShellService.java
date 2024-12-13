@@ -22,13 +22,13 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
-import com.aspectran.core.context.config.AcceptablesConfig;
+import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.DefaultCoreService;
-import com.aspectran.core.service.ServiceAcceptables;
+import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.Assert;
@@ -232,9 +232,9 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     private void configure(@NonNull ShellConfig shellConfig) {
         setVerbose(shellConfig.isVerbose());
         setGreetings(shellConfig.getGreetings());
-        AcceptablesConfig acceptablesConfig = shellConfig.getAcceptablesConfig();
-        if (acceptablesConfig != null) {
-            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
+        AcceptableConfig acceptableConfig = shellConfig.getAcceptableConfig();
+        if (acceptableConfig != null) {
+            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
         }
     }
 

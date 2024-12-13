@@ -16,6 +16,7 @@
 package com.aspectran.utils.wildcard;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Objects;
@@ -188,22 +189,22 @@ public class WildcardPattern {
 
     /**
      * If the pattern matches then returns true.
-     * @param compareString the compare string
+     * @param input the character sequence to be matched
      * @return true, if successful
      */
-    public boolean matches(String compareString) {
-        return WildcardMatcher.matches(this, compareString);
+    public boolean matches(CharSequence input) {
+        return WildcardMatcher.matches(this, input);
     }
 
     /**
      * Erase the characters that corresponds to the wildcard, and
      * returns collect only the remaining characters.
      * In other words, only it remains for the wildcard character.
-     * @param nakedString the naked string
+     * @param input the character sequence to be masked
      * @return the masked string
      */
-    public String mask(String nakedString) {
-        return WildcardMasker.mask(this, nakedString);
+    public String mask(CharSequence input) {
+        return WildcardMasker.mask(this, input);
     }
 
     @Override
@@ -240,13 +241,15 @@ public class WildcardPattern {
         return new WildcardPattern(patternString, separator);
     }
 
-    public static boolean hasWildcards(@NonNull String str) {
-        char[] ca = str.toCharArray();
-        for (char c : ca) {
-            if (c == STAR_CHAR
+    public static boolean hasWildcards(String patternString) {
+        if (StringUtils.hasLength(patternString)) {
+            char[] ca = patternString.toCharArray();
+            for (char c : ca) {
+                if (c == STAR_CHAR
                     || c == QUESTION_CHAR
                     || c == PLUS_CHAR) {
-                return true;
+                    return true;
+                }
             }
         }
         return false;

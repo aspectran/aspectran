@@ -24,7 +24,7 @@ public class SchedulerConfig extends AbstractParameters {
     private static final ParameterKey startDelaySeconds;
     private static final ParameterKey waitOnShutdown;
     private static final ParameterKey enabled;
-    private static final ParameterKey acceptables;
+    private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -32,13 +32,13 @@ public class SchedulerConfig extends AbstractParameters {
         startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
         waitOnShutdown = new ParameterKey("waitOnShutdown", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
-        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
+        acceptable = new ParameterKey("acceptable", AcceptableConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 startDelaySeconds,
                 waitOnShutdown,
                 enabled,
-                acceptables
+                acceptable
         };
     }
 
@@ -73,16 +73,16 @@ public class SchedulerConfig extends AbstractParameters {
         return this;
     }
 
-    public AcceptablesConfig getAcceptablesConfig() {
-        return getParameters(acceptables);
+    public AcceptableConfig getAcceptableConfig() {
+        return getParameters(acceptable);
     }
 
-    public AcceptablesConfig newAcceptablesConfig() {
-        return newParameters(acceptables);
+    public AcceptableConfig newAcceptableConfig() {
+        return newParameters(acceptable);
     }
 
-    public AcceptablesConfig touchAcceptablesConfig() {
-        return touchParameters(acceptables);
+    public AcceptableConfig touchAcceptableConfig() {
+        return touchParameters(acceptable);
     }
 
 }

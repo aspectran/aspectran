@@ -50,7 +50,10 @@ public class FileScanner {
         return scannedFiles;
     }
 
-    public void scan(String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
+    public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
+        if (scannedFiles == null) {
+            throw new IllegalArgumentException("scannedFiles must not be null");
+        }
         scan(filePathPattern, scannedFiles::put);
     }
 
@@ -68,8 +71,9 @@ public class FileScanner {
             String term = matcher.next();
             if (!term.isEmpty()) {
                 if (!WildcardPattern.hasWildcards(term)) {
-                    if (!sb.isEmpty())
+                    if (!sb.isEmpty()) {
                         sb.append(REGULAR_FILE_SEPARATOR_CHAR);
+                    }
                     sb.append(term);
                 } else {
                     break;

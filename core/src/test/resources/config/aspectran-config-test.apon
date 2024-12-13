@@ -44,7 +44,7 @@ shell: {
         |
 
     )
-    acceptables: {
+    acceptable: {
         -: /**
         +: ""
         +: " "
@@ -54,7 +54,7 @@ shell: {
 web: {
     uriDecoding: utf-8
     defaultServletName: none
-    acceptables: {
+    acceptable: {
         +: /**
     }
 }

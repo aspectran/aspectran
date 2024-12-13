@@ -16,11 +16,11 @@
 package com.aspectran.undertow.support;
 
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionListenerRegistration;
 import com.aspectran.undertow.server.TowServer;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * A Bean to register session listener in session manager.
@@ -29,14 +29,11 @@ import com.aspectran.undertow.server.TowServer;
  *
  * @since 6.7.0
  */
-public class SessionListenerRegistrationBean extends InstantActivitySupport
-        implements SessionListenerRegistration, InitializableBean {
+public class SessionListenerRegistrationBean extends InstantActivitySupport implements SessionListenerRegistration {
 
     private final String towServerId;
 
     private final String deploymentName;
-
-    private SessionHandler sessionHandler;
 
     public SessionListenerRegistrationBean(String towServerId, String deploymentName) {
         this.towServerId = towServerId;
@@ -45,25 +42,39 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport
 
     @Override
     public void register(SessionListener listener) {
-        sessionHandler.addSessionListener(listener);
+        getSessionHandler().addSessionListener(listener);
+    }
+
+    @Override
+    public void register(SessionListener listener, String deploymentName) {
+        getSessionHandler(deploymentName).addSessionListener(listener);
     }
 
     @Override
     public void remove(SessionListener listener) {
-        sessionHandler.removeSessionListener(listener);
+        getSessionHandler().removeSessionListener(listener);
+    }
+
+    @Override
+    public void remove(SessionListener listener, String deploymentName) {
+        getSessionHandler(deploymentName).removeSessionListener(listener);
     }
 
     private SessionHandler getSessionHandler() {
+        return getTowServer().getSessionHandler(deploymentName);
+    }
+
+    private SessionHandler getSessionHandler(String deploymentName) {
+        return getTowServer().getSessionHandler(deploymentName);
+    }
+
+    @NonNull
+    private TowServer getTowServer() {
         TowServer towServer = getBeanRegistry().getBean(towServerId);
         if (towServer == null) {
             throw new IllegalArgumentException("No TowServer named '" + towServerId + "'");
         }
-        return towServer.getSessionHandler(deploymentName);
-    }
-
-    @Override
-    public void initialize() throws Exception {
-        sessionHandler = getSessionHandler();
+        return towServer;
     }
 
 }

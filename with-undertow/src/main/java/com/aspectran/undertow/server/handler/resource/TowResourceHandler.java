@@ -19,7 +19,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.wildcard.PluralWildcardPattern;
+import com.aspectran.utils.wildcard.RelativeComplementWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -43,7 +43,7 @@ public class TowResourceHandler extends ResourceHandler {
 
     private final HttpHandler next;
 
-    private volatile PluralWildcardPattern resourcePathPatterns;
+    private volatile RelativeComplementWildcardPatterns pathPatterns;
 
     public TowResourceHandler(ResourceManager resourceManager) {
         this(resourceManager, null);
@@ -63,21 +63,21 @@ public class TowResourceHandler extends ResourceHandler {
         this.next = next;
     }
 
-    public void setResourcePathPatterns(ResourcePathPatterns resourcePathPatterns) {
-        if (resourcePathPatterns == null) {
+    public void setPathPatterns(ResourcePathPatterns pathPatterns) {
+        if (pathPatterns == null) {
             throw new IllegalArgumentException("resourcePathPatterns must not be null");
         }
-        String[] includePatterns = resourcePathPatterns.getIncludePatterns();
-        String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
-        this.resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
+        String[] includePatterns = pathPatterns.getIncludePatterns();
+        String[] excludePatterns = pathPatterns.getExcludePatterns();
+        this.pathPatterns = RelativeComplementWildcardPatterns.of(includePatterns, excludePatterns, '/');
     }
 
     public void autoDetect(String pathPrefix) throws IOException {
         if (getResourceManager() instanceof PathResourceManager pathResourceManager) {
             Set<String> staticResources = findStaticResources(pathResourceManager.getBasePath());
             Set<WildcardPattern> patterns = new LinkedHashSet<>();
-            if (resourcePathPatterns != null && resourcePathPatterns.hasIncludePatterns()) {
-                for (WildcardPattern pattern : resourcePathPatterns.getIncludePatterns()) {
+            if (pathPatterns != null && pathPatterns.hasIncludePatterns()) {
+                for (WildcardPattern pattern : pathPatterns.getIncludePatterns()) {
                     boolean exists = false;
                     for (String resource : staticResources) {
                         if (resource.endsWith("/") && pattern.toString().startsWith(resource)) {
@@ -101,11 +101,11 @@ public class TowResourceHandler extends ResourceHandler {
                 }
             }
             if (patterns.isEmpty()) {
-                resourcePathPatterns = null;
+                pathPatterns = null;
             } else {
                 WildcardPattern[] includePatterns = patterns.toArray(new WildcardPattern[0]);
-                WildcardPattern[] excludePatterns = (resourcePathPatterns != null ? resourcePathPatterns.getExcludePatterns() : null);
-                resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns);
+                WildcardPattern[] excludePatterns = (pathPatterns != null ? pathPatterns.getExcludePatterns() : null);
+                pathPatterns = RelativeComplementWildcardPatterns.of(includePatterns, excludePatterns);
 
                 logger.info("TowResourceHandler includePatterns=" + Arrays.toString(includePatterns));
                 if (excludePatterns != null) {
@@ -157,13 +157,13 @@ public class TowResourceHandler extends ResourceHandler {
     }
 
     public boolean hasPatterns() {
-        return (resourcePathPatterns != null);
+        return (pathPatterns != null);
     }
 
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         String requestPath = exchange.getRequestPath();
-        if (next == null || (resourcePathPatterns != null && resourcePathPatterns.matches(requestPath))) {
+        if (next == null || (pathPatterns != null && pathPatterns.matches(requestPath))) {
             super.handleRequest(exchange);
         } else {
             next.handleRequest(exchange);

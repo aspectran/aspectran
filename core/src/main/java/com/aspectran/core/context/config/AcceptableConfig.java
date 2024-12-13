@@ -19,7 +19,7 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
-public class AcceptablesConfig extends AbstractParameters {
+public class AcceptableConfig extends AbstractParameters {
 
     private static final ParameterKey plus;
     private static final ParameterKey minus;
@@ -36,7 +36,7 @@ public class AcceptablesConfig extends AbstractParameters {
         };
     }
 
-    public AcceptablesConfig() {
+    public AcceptableConfig() {
         super(parameterKeys);
     }
 
@@ -44,7 +44,7 @@ public class AcceptablesConfig extends AbstractParameters {
         return getStringArray(plus);
     }
 
-    public AcceptablesConfig addIncludePattern(String pattern) {
+    public AcceptableConfig addIncludePattern(String pattern) {
         putValue(plus, pattern);
         return this;
     }
@@ -53,7 +53,7 @@ public class AcceptablesConfig extends AbstractParameters {
         return getStringArray(minus);
     }
 
-    public AcceptablesConfig addExcludePattern(String pattern) {
+    public AcceptableConfig addExcludePattern(String pattern) {
         putValue(minus, pattern);
         return this;
     }

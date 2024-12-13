@@ -32,7 +32,10 @@ public class PointcutFactory {
      * @param pointcutRule the pointcut rule
      * @return the pointcut
      */
-    public static Pointcut createPointcut(@NonNull PointcutRule pointcutRule) {
+    public static Pointcut createPointcut(PointcutRule pointcutRule) {
+        if (pointcutRule == null) {
+            throw new IllegalArgumentException("pointcutRule must not be null");
+        }
         if (pointcutRule.getPointcutType() == PointcutType.REGEXP) {
             return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
         } else {

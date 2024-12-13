@@ -17,7 +17,7 @@ package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.AcceptablesConfig;
+import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceLifeCycle;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.service.ServiceAcceptables;
+import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -64,7 +64,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private boolean waitOnShutdown = false;
 
-    private ServiceAcceptables serviceAcceptables;
+    private RequestAcceptor requestAcceptor;
 
     AbstractSchedulerService(CoreService parentService) {
         super(parentService);
@@ -102,11 +102,11 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     public boolean isAcceptable(String requestName) {
-        return (serviceAcceptables == null || serviceAcceptables.isAcceptable(requestName));
+        return (requestAcceptor == null || requestAcceptor.isAcceptable(requestName));
     }
 
-    protected void setServiceAcceptables(ServiceAcceptables serviceAcceptables) {
-        this.serviceAcceptables = serviceAcceptables;
+    protected void setRequestAcceptor(RequestAcceptor requestAcceptor) {
+        this.requestAcceptor = requestAcceptor;
     }
 
     protected Set<Scheduler> getSchedulers() {
@@ -305,9 +305,9 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         }
         setStartDelaySeconds(startDelaySeconds);
 
-        AcceptablesConfig acceptablesConfig = schedulerConfig.getAcceptablesConfig();
-        if (acceptablesConfig != null) {
-            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
+        AcceptableConfig acceptableConfig = schedulerConfig.getAcceptableConfig();
+        if (acceptableConfig != null) {
+            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
         }
     }
 

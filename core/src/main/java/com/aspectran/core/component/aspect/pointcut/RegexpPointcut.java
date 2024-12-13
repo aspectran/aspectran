@@ -36,18 +36,18 @@ public class RegexpPointcut extends AbstractPointcut {
     }
 
     @Override
-    public boolean patternMatches(String regex, String compareString) {
-        if (regex == null) {
+    public boolean patternMatches(String patternString, String compareString) {
+        if (patternString == null) {
             throw new IllegalArgumentException("regex must not be null");
         }
-        Pattern pattern = cache.get(regex);
+        Pattern pattern = cache.get(patternString);
         Matcher matcher = pattern.matcher(compareString);
         return matcher.matches();
     }
 
     @Override
-    public boolean patternMatches(String regex, String compareString, char separator) {
-        return patternMatches(regex, compareString);
+    public boolean patternMatches(String patternString, String compareString, char separator) {
+        return patternMatches(patternString, compareString);
     }
 
     @Override

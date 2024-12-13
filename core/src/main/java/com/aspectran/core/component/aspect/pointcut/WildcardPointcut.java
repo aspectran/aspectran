@@ -38,12 +38,12 @@ public class WildcardPointcut extends AbstractPointcut {
     }
 
     @Override
-    public boolean patternMatches(String pattern, String compareString) {
-        if (pattern == null) {
-            throw new IllegalArgumentException("pattern must not be null");
+    public boolean patternMatches(String patternString, String compareString) {
+        if (patternString == null) {
+            throw new IllegalArgumentException("patternString must not be null");
         }
-        if (pattern.contains(OR_MATCH_DELIMITER)) {
-            StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
+        if (patternString.contains(OR_MATCH_DELIMITER)) {
+            StringTokenizer parser = new StringTokenizer(patternString, OR_MATCH_DELIMITER);
             while (parser.hasMoreTokens()) {
                 if (wildcardPatternMatches(parser.nextToken(), compareString)) {
                     return true;
@@ -51,17 +51,17 @@ public class WildcardPointcut extends AbstractPointcut {
             }
             return false;
         } else {
-            return wildcardPatternMatches(pattern, compareString);
+            return wildcardPatternMatches(patternString, compareString);
         }
     }
 
     @Override
-    public boolean patternMatches(String pattern, String compareString, char separator) {
-        if (pattern == null) {
-            throw new IllegalArgumentException("pattern must not be null");
+    public boolean patternMatches(String patternString, String compareString, char separator) {
+        if (patternString == null) {
+            throw new IllegalArgumentException("patternString must not be null");
         }
-        if (pattern.contains(OR_MATCH_DELIMITER)) {
-            StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
+        if (patternString.contains(OR_MATCH_DELIMITER)) {
+            StringTokenizer parser = new StringTokenizer(patternString, OR_MATCH_DELIMITER);
             while (parser.hasMoreTokens()) {
                 if (wildcardPatternMatches(parser.nextToken(), compareString, separator)) {
                     return true;
@@ -69,19 +69,19 @@ public class WildcardPointcut extends AbstractPointcut {
             }
             return false;
         } else {
-            return wildcardPatternMatches(pattern, compareString, separator);
+            return wildcardPatternMatches(patternString, compareString, separator);
         }
     }
 
-    private boolean wildcardPatternMatches(String pattern, String compareString) {
-        if (!WildcardPattern.hasWildcards(pattern)) {
-            return pattern.equals(compareString);
+    private boolean wildcardPatternMatches(String patternString, String compareString) {
+        if (!WildcardPattern.hasWildcards(patternString)) {
+            return patternString.equals(compareString);
         }
 
-        WildcardPattern wildcardPattern = cache.get(pattern);
+        WildcardPattern wildcardPattern = cache.get(patternString);
         if (wildcardPattern == null) {
-            wildcardPattern = new WildcardPattern(pattern);
-            WildcardPattern existing = cache.putIfAbsent(pattern, wildcardPattern);
+            wildcardPattern = new WildcardPattern(patternString);
+            WildcardPattern existing = cache.putIfAbsent(patternString, wildcardPattern);
             if (existing != null) {
                 wildcardPattern = existing;
             }
@@ -89,15 +89,15 @@ public class WildcardPointcut extends AbstractPointcut {
         return wildcardPattern.matches(compareString);
     }
 
-    private boolean wildcardPatternMatches(@NonNull String pattern, String compareString, char separator) {
-        if (pattern.indexOf(separator) == -1 && !WildcardPattern.hasWildcards(pattern)) {
-            return pattern.equals(compareString);
+    private boolean wildcardPatternMatches(@NonNull String patternString, String compareString, char separator) {
+        if (patternString.indexOf(separator) == -1 && !WildcardPattern.hasWildcards(patternString)) {
+            return patternString.equals(compareString);
         }
 
-        String patternKey = pattern + separator;
+        String patternKey = patternString + separator;
         WildcardPattern wildcardPattern = cache.get(patternKey);
         if (wildcardPattern == null) {
-            wildcardPattern = new WildcardPattern(pattern, separator);
+            wildcardPattern = new WildcardPattern(patternString, separator);
             WildcardPattern existing = cache.putIfAbsent(patternKey, wildcardPattern);
             if (existing != null) {
                 wildcardPattern = existing;

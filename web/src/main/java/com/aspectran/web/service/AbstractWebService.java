@@ -15,12 +15,12 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.context.config.AcceptablesConfig;
+import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.DefaultCoreService;
-import com.aspectran.core.service.ServiceAcceptables;
+import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -122,9 +122,9 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
         setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
 
-        AcceptablesConfig acceptablesConfig = webConfig.getAcceptablesConfig();
-        if (acceptablesConfig != null) {
-            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
+        AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();
+        if (acceptableConfig != null) {
+            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
         }
     }
 

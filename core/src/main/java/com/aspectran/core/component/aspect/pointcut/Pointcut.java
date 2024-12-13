@@ -44,9 +44,9 @@ public interface Pointcut {
 
     boolean exists(PointcutPattern pointcutPattern);
 
-    boolean patternMatches(String pattern, String compareString);
+    boolean patternMatches(String patternString, String compareString);
 
-    boolean patternMatches(String pattern, String compareString, char separator);
+    boolean patternMatches(String patternString, String compareString, char separator);
 
     void clear();
 

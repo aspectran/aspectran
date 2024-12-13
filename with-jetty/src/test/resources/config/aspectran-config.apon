@@ -22,7 +22,7 @@ web: {
     uriDecoding: utf-8
     trailingSlashRedirect: true
     legacyHeadHandling: true
-    acceptables: {
+    acceptable: {
         +: /**
     }
 }

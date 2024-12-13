@@ -31,9 +31,23 @@ public interface SessionListenerRegistration {
     void register(SessionListener listener);
 
     /**
+     * Register a session listener to the session manager.
+     * @param listener the session listener to register
+     * @param deploymentName the deployment name
+     */
+    void register(SessionListener listener, String deploymentName);
+
+    /**
      * Remove a session listener from the session manager.
      * @param listener the session listener to remove
      */
     void remove(SessionListener listener);
+
+    /**
+     * Remove a session listener from the session manager.
+     * @param listener the session listener to remove
+     * @param deploymentName the deployment name
+     */
+    void remove(SessionListener listener, String deploymentName);
 
 }

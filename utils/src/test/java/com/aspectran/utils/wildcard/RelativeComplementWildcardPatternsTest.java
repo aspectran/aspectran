@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PluralWildcardPatternTest {
+class RelativeComplementWildcardPatternsTest {
 
     @Test
     void matches() {
@@ -33,10 +33,10 @@ class PluralWildcardPatternTest {
                 "/aaa/cc*"
         };
 
-        PluralWildcardPattern pattern = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
-        assertTrue(pattern.matches("/aaa/bbb/ccc"));
-        assertFalse(pattern.matches("/aaa/ccc"));
-        assertTrue(pattern.matches("/aaa/bcd/ccc"));
+        RelativeComplementWildcardPatterns patterns = RelativeComplementWildcardPatterns.of(includePatterns, excludePatterns, '/');
+        assertTrue(patterns.matches("/aaa/bbb/ccc"));
+        assertFalse(patterns.matches("/aaa/ccc"));
+        assertTrue(patterns.matches("/aaa/bcd/ccc"));
     }
 
 }

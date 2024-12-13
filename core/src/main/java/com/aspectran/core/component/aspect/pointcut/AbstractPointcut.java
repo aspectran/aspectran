@@ -117,7 +117,10 @@ public abstract class AbstractPointcut implements Pointcut {
     }
 
     @Override
-    public boolean exists(@NonNull PointcutPattern pointcutPattern) {
+    public boolean exists(PointcutPattern pointcutPattern) {
+        if (pointcutPattern == null) {
+            throw new IllegalArgumentException("pointcutPattern must not be null");
+        }
         return exists(pointcutPattern.getTransletNamePattern(), pointcutPattern.getBeanIdPattern(),
                 pointcutPattern.getClassNamePattern(), pointcutPattern.getMethodNamePattern());
     }
@@ -132,8 +135,11 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param methodName the name of the method that is executed in the bean
      * @return true if exists matched; false otherwise
      */
-    protected boolean exists(@NonNull PointcutPatternRule pointcutPatternRule, String transletName,
+    protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName,
                              String beanId, String className, String methodName) {
+        if (pointcutPatternRule == null) {
+            throw new IllegalArgumentException("pointcutPatternRule must not be null");
+        }
         boolean matched = true;
         PointcutPattern pp = pointcutPatternRule.getPointcutPattern();
         if (pp != null && pp.getTransletNamePattern() != null) {

@@ -22,6 +22,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import com.aspectran.utils.wildcard.WildcardPatterns;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.support.util.WebUtils;
@@ -36,8 +37,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Class WebActivityFilter.
@@ -50,7 +49,7 @@ public class WebActivityFilter implements Filter {
 
     private FilterConfig filterConfig;
 
-    private List<WildcardPattern> bypassPatterns;
+    private WildcardPatterns bypassPatterns;
 
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
@@ -62,25 +61,20 @@ public class WebActivityFilter implements Filter {
         if (bypassesParam != null) {
             String[] bypasses = StringUtils.tokenize(bypassesParam, BYPASS_PATTERN_DELIMITERS, true);
             if (bypasses.length > 0) {
-                List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
-                for (String path : bypasses) {
-                    bypassPatterns.add(WildcardPattern.compile(path, ActivityContext.NAME_SEPARATOR_CHAR));
-                }
+                this.bypassPatterns = WildcardPatterns.of(bypasses, ActivityContext.NAME_SEPARATOR_CHAR);
 
                 ServletContext servletContext = filterConfig.getServletContext();
                 WebService webService = WebService.findWebService(servletContext);
                 DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(servletContext, webService);
                 defaultHandler.lookupDefaultServletName();
+                this.defaultServletHttpRequestHandler = defaultHandler;
 
                 if (logger.isDebugEnabled()) {
-                    for (WildcardPattern pattern : bypassPatterns) {
+                    for (WildcardPattern pattern : bypassPatterns.getPatterns()) {
                         logger.debug(pattern + " is bypassed by " + getMyName() + " to servlet '" +
                                 defaultHandler.getDefaultServletName() + "'");
                     }
                 }
-
-                this.bypassPatterns = bypassPatterns;
-                this.defaultServletHttpRequestHandler = defaultHandler;
             }
         }
 
@@ -90,15 +84,12 @@ public class WebActivityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (request instanceof HttpServletRequest httpRequest && response instanceof HttpServletResponse httpResponse) {
-            if (bypassPatterns != null) {
-                String requestName = WebUtils.getRelativePath(httpRequest.getContextPath(), httpRequest.getRequestURI());
-                for (WildcardPattern pattern : bypassPatterns) {
-                    if (pattern.matches(requestName)) {
-                        if (defaultServletHttpRequestHandler.handleRequest(httpRequest, httpResponse)) {
-                            return;
-                        }
-                    }
+        if (bypassPatterns != null && request instanceof HttpServletRequest httpRequest &&
+                response instanceof HttpServletResponse httpResponse) {
+            String requestName = WebUtils.getRelativePath(httpRequest.getContextPath(), httpRequest.getRequestURI());
+            if (bypassPatterns.matches(requestName)) {
+                if (defaultServletHttpRequestHandler.handleRequest(httpRequest, httpResponse)) {
+                    return;
                 }
             }
         }

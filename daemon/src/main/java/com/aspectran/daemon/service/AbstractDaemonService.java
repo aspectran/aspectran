@@ -19,13 +19,13 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
-import com.aspectran.core.context.config.AcceptablesConfig;
+import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.DefaultCoreService;
-import com.aspectran.core.service.ServiceAcceptables;
+import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -95,9 +95,9 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     }
 
     private void configure(@NonNull DaemonConfig daemonConfig) {
-        AcceptablesConfig acceptablesConfig = daemonConfig.getAcceptablesConfig();
-        if (acceptablesConfig != null) {
-            setServiceAcceptables(new ServiceAcceptables(acceptablesConfig));
+        AcceptableConfig acceptableConfig = daemonConfig.getAcceptableConfig();
+        if (acceptableConfig != null) {
+            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
         }
     }
 

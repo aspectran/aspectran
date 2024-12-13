@@ -47,7 +47,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     private SchedulerService schedulerService;
 
-    private ServiceAcceptables serviceAcceptables;
+    private RequestAcceptor requestAcceptor;
 
     public AbstractCoreService() {
         this(null, false);
@@ -193,11 +193,11 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     @Override
     public boolean isAcceptable(String requestName) {
-        return (serviceAcceptables == null || serviceAcceptables.isAcceptable(requestName));
+        return (requestAcceptor == null || requestAcceptor.isAcceptable(requestName));
     }
 
-    protected void setServiceAcceptables(ServiceAcceptables serviceAcceptables) {
-        this.serviceAcceptables = serviceAcceptables;
+    protected void setRequestAcceptor(RequestAcceptor requestAcceptor) {
+        this.requestAcceptor = requestAcceptor;
     }
 
 }

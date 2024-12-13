@@ -28,7 +28,7 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterKey session;
     private static final ParameterKey historyFile;
     private static final ParameterKey verbose;
-    private static final ParameterKey acceptables;
+    private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -40,7 +40,7 @@ public class ShellConfig extends AbstractParameters {
         session = new ParameterKey("session", SessionManagerConfig.class);
         historyFile = new ParameterKey("historyFile", ValueType.STRING);
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
-        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
+        acceptable = new ParameterKey("acceptable", AcceptableConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 style,
@@ -50,7 +50,7 @@ public class ShellConfig extends AbstractParameters {
                 session,
                 historyFile,
                 verbose,
-                acceptables
+                acceptable
         };
     }
 
@@ -133,16 +133,16 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
-    public AcceptablesConfig getAcceptablesConfig() {
-        return getParameters(acceptables);
+    public AcceptableConfig getAcceptableConfig() {
+        return getParameters(acceptable);
     }
 
-    public AcceptablesConfig newAcceptablesConfig() {
-        return newParameters(acceptables);
+    public AcceptableConfig newAcceptableConfig() {
+        return newParameters(acceptable);
     }
 
-    public AcceptablesConfig touchAcceptablesConfig() {
-        return touchParameters(acceptables);
+    public AcceptableConfig touchAcceptableConfig() {
+        return touchParameters(acceptable);
     }
 
 }

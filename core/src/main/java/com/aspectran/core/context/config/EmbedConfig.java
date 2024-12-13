@@ -24,17 +24,17 @@ import com.aspectran.utils.apon.ParameterKey;
 public class EmbedConfig extends AbstractParameters {
 
     private static final ParameterKey session;
-    private static final ParameterKey acceptables;
+    private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         session = new ParameterKey("session", SessionManagerConfig.class);
-        acceptables = new ParameterKey("acceptables", AcceptablesConfig.class);
+        acceptable = new ParameterKey("acceptable", AcceptableConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 session,
-                acceptables
+                acceptable
         };
     }
 
@@ -54,16 +54,16 @@ public class EmbedConfig extends AbstractParameters {
         return touchParameters(session);
     }
 
-    public AcceptablesConfig getAcceptablesConfig() {
-        return getParameters(acceptables);
+    public AcceptableConfig getAcceptableConfig() {
+        return getParameters(acceptable);
     }
 
-    public AcceptablesConfig newAcceptablesConfig() {
-        return newParameters(acceptables);
+    public AcceptableConfig newAcceptableConfig() {
+        return newParameters(acceptable);
     }
 
-    public AcceptablesConfig touchAcceptablesConfig() {
-        return touchParameters(acceptables);
+    public AcceptableConfig touchAcceptableConfig() {
+        return touchParameters(acceptable);
     }
 
 }
