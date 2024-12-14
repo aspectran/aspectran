@@ -89,7 +89,7 @@ public class JsonTransformResponse extends TransformResponse {
         if (pretty != null) {
             jsonWriter.prettyPrint(pretty);
         }
-        jsonWriter.write(processResult);
+        jsonWriter.writeValue(processResult);
 
         if (callback != null) {
             writer.write(ROUND_BRACKET_CLOSE);

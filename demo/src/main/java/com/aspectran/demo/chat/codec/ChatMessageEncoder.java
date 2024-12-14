@@ -16,12 +16,10 @@
 package com.aspectran.demo.chat.codec;
 
 import com.aspectran.demo.chat.model.ChatMessage;
-import com.aspectran.utils.json.JsonWriter;
+import com.aspectran.utils.json.JsonBuilder;
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.Encoder;
 import jakarta.websocket.EndpointConfig;
-
-import java.io.IOException;
 
 /**
  * Encoder for {@link ChatMessage}.
@@ -33,10 +31,12 @@ public class ChatMessageEncoder implements Encoder.Text<ChatMessage> {
     @Override
     public String encode(ChatMessage message) throws EncodeException {
         try {
-            JsonWriter jsonWriter = new JsonWriter();
-            jsonWriter.write(message);
-            return jsonWriter.toString();
-        } catch (IOException e) {
+            return new JsonBuilder()
+                .prettyPrint(false)
+                .nullWritable(false)
+                .put(message)
+                .toString();
+        } catch (Exception e) {
             throw new EncodeException(message, "Badly formatted message", e);
         }
     }

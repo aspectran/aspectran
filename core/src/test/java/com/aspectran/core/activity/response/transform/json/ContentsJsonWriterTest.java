@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ContentsJsonWriterTest {
 
     @Test
-    void testWrite() throws IOException {
+    void testWriteValue() throws IOException {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 
@@ -50,7 +50,7 @@ class ContentsJsonWriterTest {
 
         StringWriter writer = new StringWriter();
         ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer).prettyPrint(false);
-        jsonWriter.write(processResult);
+        jsonWriter.writeValue(processResult);
 
         //System.out.println(writer.toString());
 

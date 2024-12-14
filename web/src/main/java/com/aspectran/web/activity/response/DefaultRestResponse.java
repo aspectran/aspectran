@@ -157,7 +157,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 jsonWriter.beginObject();
                 jsonWriter.writeName(getName());
             }
-            jsonWriter.write(getData());
+            jsonWriter.writeValue(getData());
             if (getName() != null) {
                 jsonWriter.endObject();
             }

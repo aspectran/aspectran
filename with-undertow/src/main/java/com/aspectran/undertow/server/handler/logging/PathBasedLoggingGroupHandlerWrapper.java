@@ -2,14 +2,11 @@ package com.aspectran.undertow.server.handler.logging;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.utils.wildcard.WildcardPatterns;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

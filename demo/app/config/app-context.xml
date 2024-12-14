@@ -39,7 +39,7 @@
 
     <aspect id="defaultTransletSettings">
         <description>
-            Define an aspect to inject the default settings into all translets.
+            Defines an aspect that injects default settings into all translets.
         </description>
         <settings>
             <setting name="format.indentSize" value="2"/>

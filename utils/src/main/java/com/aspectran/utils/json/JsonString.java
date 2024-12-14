@@ -16,7 +16,7 @@
 package com.aspectran.utils.json;
 
 /**
- * Prevent JSON strings from being escaped.
+ * Wrapper class to prevent JSON strings from being escaped.
  *
  * @since 7.3.0
  */

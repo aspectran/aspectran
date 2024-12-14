@@ -23,6 +23,7 @@ import com.aspectran.utils.apon.test.Customer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,10 +68,10 @@ class JsonWriterTest {
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 
-        String result = new JsonWriter()
+        String result = new JsonWriter(new StringWriter())
                 .apply(stringifyContext)
                 .nullWritable(false)
-                .write(map)
+                .value(map)
                 .toString();
 
         // System.out.println(result);
@@ -124,10 +125,10 @@ class JsonWriterTest {
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 
-        String result = new JsonWriter()
+        String result = new JsonWriter(new StringWriter())
                 .apply(stringifyContext)
                 .nullWritable(false)
-                .write(parameters)
+                .value(parameters)
                 .toString();
 
         String expected = """
@@ -157,8 +158,8 @@ class JsonWriterTest {
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 
-        String result = new JsonWriter()
-                .write(map)
+        String result = new JsonWriter(new StringWriter())
+                .value(map)
                 .toString();
 
         // System.out.println(result);
@@ -171,7 +172,7 @@ class JsonWriterTest {
 
     @Test
     void test4() throws IOException {
-        JsonWriter writer2 = new JsonWriter();
+        JsonWriter writer2 = new JsonWriter(new StringWriter());
         writer2.beginObject();
         writer2.writeName("key1");
         writer2.writeValue("value");
@@ -179,7 +180,7 @@ class JsonWriterTest {
         writer2.writeJson("\"1234\"");
         writer2.endObject();
 
-        JsonWriter writer = new JsonWriter();
+        JsonWriter writer = new JsonWriter(new StringWriter());
         writer.beginObject();
         writer.writeName("key1");
         writer.writeValue("value");
@@ -210,8 +211,8 @@ class JsonWriterTest {
         map2.put("map2-1", map1);
 
         try {
-            JsonWriter writer = new JsonWriter();
-            writer.write(map1);
+            JsonWriter writer = new JsonWriter(new StringWriter());
+            writer.writeValue(map1);
         } catch (IOException e) {
             assertEquals("JSON Serialization Failure: A circular reference was detected while converting member 'map2-1'", e.getMessage());
         }
@@ -226,8 +227,8 @@ class JsonWriterTest {
         list1.add(map1);
 
         try {
-            JsonWriter writer = new JsonWriter();
-            writer.write(map1);
+            JsonWriter writer = new JsonWriter(new StringWriter());
+            writer.writeValue(map1);
         } catch (IOException e) {
             assertEquals("JSON Serialization Failure: A circular reference was detected while converting a member", e.getMessage());
         }

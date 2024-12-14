@@ -28,7 +28,6 @@ import com.aspectran.utils.apon.Parameters;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -73,15 +72,6 @@ public class JsonWriter {
     private String pendedName;
 
     private Object upperObject;
-
-    /**
-     * Instantiates a new JsonWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     */
-    public JsonWriter() {
-        this(new StringWriter());
-    }
 
     /**
      * Instantiates a new JsonWriter.
@@ -142,147 +132,83 @@ public class JsonWriter {
     }
 
     /**
-     * Writes an object to the writer.
-     * @param object the object to write to the writer.
-     * @throws IOException if an I/O error has occurred.
+     * Begins encoding a new object.
+     * @throws IOException if an I/O error has occurred
      */
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T write(Object object) throws IOException {
-        if (object == null) {
-            writeNull();
-        } else if (object instanceof String string) {
-            writeValue(string);
-        } else if (object instanceof JsonString) {
-            writeJson(object.toString());
-        } else if (object instanceof Character) {
-            writeValue(String.valueOf(object));
-        } else if (object instanceof Boolean bool) {
-            writeValue(bool);
-        } else if (object instanceof Number number) {
-            writeValue(number);
-        } else if (object instanceof Parameters parameters) {
-            beginObject();
-            Map<String, ParameterValue> params = parameters.getParameterValueMap();
-            for (Parameter p : params.values()) {
-                String name = p.getName();
-                Object value = p.getValue();
-                writeName(name);
-                write(value, object);
-            }
-            endObject();
-        } else if (object instanceof Map<?, ?> map) {
-            beginObject();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                String name = entry.getKey().toString();
-                Object value = entry.getValue();
-                writeName(name);
-                write(value, object);
-            }
-            endObject();
-        } else if (object instanceof Collection<?> collection) {
-            beginArray();
-            for (Object value : collection) {
-                if (value != null) {
-                    write(value, object);
-                } else {
-                    writeNull(true);
-                }
-            }
-            endArray();
-        } else if (object instanceof Iterator<?> iterator) {
-            beginArray();
-            while (iterator.hasNext()) {
-                Object value = iterator.next();
-                if (value != null) {
-                    write(value, object);
-                } else {
-                    writeNull(true);
-                }
-            }
-            endArray();
-        } else if (object instanceof Enumeration<?> enumeration) {
-            beginArray();
-            while (enumeration.hasMoreElements()) {
-                Object value = enumeration.nextElement();
-                if (value != null) {
-                    write(value, object);
-                } else {
-                    writeNull(true);
-                }
-            }
-            endArray();
-        } else if (object.getClass().isArray()) {
-            beginArray();
-            int len = Array.getLength(object);
-            for (int i = 0; i < len; i++) {
-                Object value = Array.get(object, i);
-                if (value != null) {
-                    write(value, object);
-                } else {
-                    writeNull(true);
-                }
-            }
-            endArray();
-        } else if (object instanceof LocalDateTime localDateTime) {
-            if (stringifyContext != null) {
-                writeValue(stringifyContext.toString(localDateTime));
-            } else {
-                writeValue(localDateTime.toString());
-            }
-        } else if (object instanceof LocalDate localDate) {
-            if (stringifyContext != null) {
-                writeValue(stringifyContext.toString(localDate));
-            } else {
-                writeValue(localDate.toString());
-            }
-        } else if (object instanceof LocalTime localTime) {
-            if (stringifyContext != null) {
-                writeValue(stringifyContext.toString(localTime));
-            } else {
-                writeValue(localTime.toString());
-            }
-        } else if (object instanceof Date date) {
-            if (stringifyContext != null) {
-                writeValue(stringifyContext.toString(date));
-            } else {
-                writeValue(date.toString());
-            }
-        } else {
-            String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
-            if (readablePropertyNames != null && readablePropertyNames.length > 0) {
-                beginObject();
-                for (String propertyName : readablePropertyNames) {
-                    Object value;
-                    try {
-                        value = BeanUtils.getProperty(object, propertyName);
-                    } catch (InvocationTargetException e) {
-                        throw new IOException(e);
-                    }
-                    writeName(propertyName);
-                    write(value, object);
-                }
-                endObject();
-            } else {
-                writeValue(object.toString());
-            }
-        }
+    public <T extends JsonWriter> T beginObject() throws IOException {
+        writePendedName();
+        writer.write("{");
+        nextLine();
+        indentDepth++;
+        writtenFlags.push(false);
         return (T)this;
     }
 
-    private void write(Object object, Object container) throws IOException {
-        checkCircularReference(container, object);
-        this.upperObject = container;
-        write(object);
-        this.upperObject = null;
+    /**
+     * Ends encoding the current object.
+     * @throws IOException if an I/O error has occurred
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T endObject() throws IOException {
+        indentDepth--;
+        if (writtenFlags.pop()) {
+            nextLine();
+        }
+        indent();
+        writer.write("}");
+        writtenFlags.update(true);
+        return (T)this;
+    }
+
+    /**
+     * Begins encoding a new array.
+     * @throws IOException if an I/O error has occurred
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T beginArray() throws IOException {
+        writePendedName();
+        writer.write("[");
+        nextLine();
+        indentDepth++;
+        writtenFlags.push(false);
+        return (T)this;
+    }
+
+    /**
+     * Ends encoding the current array.
+     * @throws IOException if an I/O error has occurred
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T endArray() throws IOException {
+        indentDepth--;
+        if (writtenFlags.pop()) {
+            nextLine();
+        }
+        indent();
+        writer.write("]");
+        writtenFlags.update(true);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T name(String name) throws IOException {
+        writeName(name);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T value(Object value) throws IOException {
+        writeValue(value);
+        return (T)this;
     }
 
     /**
      * Writes a key name to the writer.
      * @param name the string to write to the writer
      */
-    public JsonWriter writeName(String name) {
+    public void writeName(String name) {
         pendedName = name;
-        return this;
     }
 
     private void writePendedName() throws IOException {
@@ -307,49 +233,136 @@ public class JsonWriter {
     }
 
     /**
-     * Writes a string to the writer.
-     * If {@code value} is null, write a null string ("").
-     * @param value the string to write to the writer
-     * @throws IOException if an I/O error has occurred
+     * Writes an object to the writer.
+     * @param object the object to write to the writer.
+     * @throws IOException if an I/O error has occurred.
      */
-    public void writeValue(String value) throws IOException {
-        if (nullWritable || value != null) {
-            writePendedName();
-            writer.write(escape(value));
-            writtenFlags.update(true);
+    public void writeValue(Object object) throws IOException {
+        if (object == null) {
+            writeNull();
+        } else if (object instanceof String string) {
+            writeString(string);
+        } else if (object instanceof JsonString) {
+            writeJson(object.toString());
+        } else if (object instanceof Character) {
+            writeString(String.valueOf(object));
+        } else if (object instanceof Boolean bool) {
+            writeBool(bool);
+        } else if (object instanceof Number number) {
+            writeNumber(number);
+        } else if (object instanceof Parameters parameters) {
+            beginObject();
+            Map<String, ParameterValue> params = parameters.getParameterValueMap();
+            for (Parameter p : params.values()) {
+                String name = p.getName();
+                Object value = p.getValue();
+                writeName(name);
+                writeValue(value, object);
+            }
+            endObject();
+        } else if (object instanceof Map<?, ?> map) {
+            beginObject();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                String name = entry.getKey().toString();
+                Object value = entry.getValue();
+                writeName(name);
+                writeValue(value, object);
+            }
+            endObject();
+        } else if (object instanceof Collection<?> collection) {
+            beginArray();
+            for (Object value : collection) {
+                if (value != null) {
+                    writeValue(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object instanceof Iterator<?> iterator) {
+            beginArray();
+            while (iterator.hasNext()) {
+                Object value = iterator.next();
+                if (value != null) {
+                    writeValue(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object instanceof Enumeration<?> enumeration) {
+            beginArray();
+            while (enumeration.hasMoreElements()) {
+                Object value = enumeration.nextElement();
+                if (value != null) {
+                    writeValue(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object.getClass().isArray()) {
+            beginArray();
+            int len = Array.getLength(object);
+            for (int i = 0; i < len; i++) {
+                Object value = Array.get(object, i);
+                if (value != null) {
+                    writeValue(value, object);
+                } else {
+                    writeNull(true);
+                }
+            }
+            endArray();
+        } else if (object instanceof LocalDateTime localDateTime) {
+            if (stringifyContext != null) {
+                writeString(stringifyContext.toString(localDateTime));
+            } else {
+                writeString(localDateTime.toString());
+            }
+        } else if (object instanceof LocalDate localDate) {
+            if (stringifyContext != null) {
+                writeString(stringifyContext.toString(localDate));
+            } else {
+                writeString(localDate.toString());
+            }
+        } else if (object instanceof LocalTime localTime) {
+            if (stringifyContext != null) {
+                writeString(stringifyContext.toString(localTime));
+            } else {
+                writeString(localTime.toString());
+            }
+        } else if (object instanceof Date date) {
+            if (stringifyContext != null) {
+                writeString(stringifyContext.toString(date));
+            } else {
+                writeString(date.toString());
+            }
         } else {
-            clearPendedName();
+            String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
+            if (readablePropertyNames != null && readablePropertyNames.length > 0) {
+                beginObject();
+                for (String propertyName : readablePropertyNames) {
+                    Object value;
+                    try {
+                        value = BeanUtils.getProperty(object, propertyName);
+                    } catch (InvocationTargetException e) {
+                        throw new IOException(e);
+                    }
+                    writeName(propertyName);
+                    writeValue(value, object);
+                }
+                endObject();
+            } else {
+                writeString(object.toString());
+            }
         }
     }
 
-    /**
-     *  Writes a {@code Boolean} object to the writer.
-     * @param value a {@code Boolean} object to write to the writer
-     * @throws IOException if an I/O error has occurred
-     */
-    public void writeValue(Boolean value) throws IOException {
-        if (nullWritable || value != null) {
-            writePendedName();
-            writer.write(value.toString());
-            writtenFlags.update(true);
-        } else {
-            clearPendedName();
-        }
-    }
-
-    /**
-     *  Writes a {@code Number} object to the writer.
-     * @param value a {@code Number} object to write to the writer
-     * @throws IOException if an I/O error has occurred
-     */
-    public void writeValue(Number value) throws IOException {
-        if (nullWritable || value != null) {
-            writePendedName();
-            writer.write(value.toString());
-            writtenFlags.update(true);
-        } else {
-            clearPendedName();
-        }
+    private void writeValue(Object object, Object container) throws IOException {
+        checkCircularReference(container, object);
+        this.upperObject = container;
+        writeValue(object);
+        this.upperObject = null;
     }
 
     /**
@@ -406,64 +419,58 @@ public class JsonWriter {
     }
 
     /**
+     * Writes a string to the writer.
+     * If {@code value} is null, write a null string ("").
+     * @param value the string to write to the writer
+     * @throws IOException if an I/O error has occurred
+     */
+    private void writeString(String value) throws IOException {
+        if (nullWritable || value != null) {
+            writePendedName();
+            writer.write(escape(value));
+            writtenFlags.update(true);
+        } else {
+            clearPendedName();
+        }
+    }
+
+    /**
+     * Writes a {@code Boolean} object to the writer.
+     * @param value a {@code Boolean} object to write to the writer
+     * @throws IOException if an I/O error has occurred
+     */
+    private void writeBool(Boolean value) throws IOException {
+        if (nullWritable || value != null) {
+            writePendedName();
+            writer.write(value.toString());
+            writtenFlags.update(true);
+        } else {
+            clearPendedName();
+        }
+    }
+
+    /**
+     * Writes a {@code Number} object to the writer.
+     * @param value a {@code Number} object to write to the writer
+     * @throws IOException if an I/O error has occurred
+     */
+    private void writeNumber(Number value) throws IOException {
+        if (nullWritable || value != null) {
+            writePendedName();
+            writer.write(value.toString());
+            writtenFlags.update(true);
+        } else {
+            clearPendedName();
+        }
+    }
+
+    /**
      * Writes a comma character to the writer.
      * @throws IOException if an I/O error has occurred
      */
     private void writeComma() throws IOException {
         writer.write(",");
         nextLine();
-    }
-
-    /**
-     * Begins encoding a new object.
-     * @throws IOException if an I/O error has occurred
-     */
-    public void beginObject() throws IOException {
-        writePendedName();
-        writer.write("{");
-        nextLine();
-        indentDepth++;
-        writtenFlags.push(false);
-    }
-
-    /**
-     * Ends encoding the current object.
-     * @throws IOException if an I/O error has occurred
-     */
-    public void endObject() throws IOException {
-        indentDepth--;
-        if (writtenFlags.pop()) {
-            nextLine();
-        }
-        indent();
-        writer.write("}");
-        writtenFlags.update(true);
-    }
-
-    /**
-     * Begins encoding a new array.
-     * @throws IOException if an I/O error has occurred
-     */
-    public void beginArray() throws IOException {
-        writePendedName();
-        writer.write("[");
-        nextLine();
-        indentDepth++;
-        writtenFlags.push(false);
-    }
-
-    /**
-     * Ends encoding the current array.
-     * @throws IOException if an I/O error has occurred
-     */
-    public void endArray() throws IOException {
-        indentDepth--;
-        if (writtenFlags.pop()) {
-            nextLine();
-        }
-        indent();
-        writer.write("]");
-        writtenFlags.update(true);
     }
 
     /**

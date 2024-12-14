@@ -19,7 +19,6 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonWriter;
 
 import java.io.IOException;
@@ -41,14 +40,12 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T write(Object object) throws IOException {
+    public void writeValue(Object object) throws IOException {
         if (object instanceof ProcessResult processResult) {
-            write(processResult);
+            writeValue(processResult);
         } else {
-            super.write(object);
+            super.writeValue(object);
         }
-        return (T)this;
     }
 
     /**
@@ -56,7 +53,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param processResult the {@code ProcessResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
-    public void write(ProcessResult processResult) throws IOException {
+    private void writeValue(ProcessResult processResult) throws IOException {
         Assert.notNull(processResult, "processResult must not be null");
         if (processResult.getName() != null) {
             beginObject();
@@ -65,11 +62,11 @@ public class ContentsJsonWriter extends JsonWriter {
         if (processResult.isEmpty()) {
             writeNull(processResult.getName() == null);
         } else if (processResult.size() == 1) {
-            write(processResult.get(0));
+            writeValue(processResult.get(0));
         } else {
             beginArray();
             for (ContentResult contentResult : processResult) {
-                write(contentResult);
+                writeValue(contentResult);
             }
             endArray();
         }
@@ -83,7 +80,8 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param contentResult the {@code ContentResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
-    private void write(@NonNull ContentResult contentResult) throws IOException {
+    private void writeValue(ContentResult contentResult) throws IOException {
+        Assert.notNull(contentResult, "contentResult must not be null");
         if (contentResult.getName() != null) {
             beginObject();
             writeName(contentResult.getName());
@@ -95,17 +93,17 @@ public class ContentsJsonWriter extends JsonWriter {
             if (actionResult.getActionId() != null) {
                 beginObject();
                 writeName(actionResult.getActionId());
-                write(actionResult.getResultValue());
+                writeValue(actionResult.getResultValue());
                 endObject();
             } else {
-                write(actionResult.getResultValue());
+                writeValue(actionResult.getResultValue());
             }
         } else {
             beginObject();
             for (String actionId : contentResult.getActionIds()) {
                 ActionResult actionResult = contentResult.getActionResult(actionId);
                 writeName(actionResult.getActionId());
-                write(actionResult.getResultValue());
+                writeValue(actionResult.getResultValue());
             }
             endObject();
         }

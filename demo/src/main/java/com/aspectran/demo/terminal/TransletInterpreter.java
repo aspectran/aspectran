@@ -68,62 +68,51 @@ public class TransletInterpreter extends InstantActivitySupport {
                 logger.debug("No translet " + requestName);
             }
 
-            JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
-            jsonWriter.beginObject();
-            jsonWriter.writeName("translet");
-            jsonWriter.writeNull();
-            jsonWriter.writeName("request");
-            jsonWriter.writeNull();
-            jsonWriter.writeName("response");
-            jsonWriter.writeNull();
-            jsonWriter.endObject();
+            new JsonWriter(translet.getResponseAdapter().getWriter())
+                .beginObject()
+                .name("translet").value(null)
+                .name("request").value(null)
+                .name("response").value(null)
+                .endObject();
             return;
         }
 
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
         ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
 
-        JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
-        jsonWriter.beginObject();
-        jsonWriter.writeName("translet");
-        jsonWriter.beginObject();
-        jsonWriter.writeName("name");
-        jsonWriter.write(transletRule.getName());
+        JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter())
+            .beginObject()
+            .name("translet")
+            .beginObject()
+            .name("name").value(transletRule.getName());
         if (transletRule.getDescriptionRule() != null) {
             String description = DescriptionRule.render(transletRule.getDescriptionRule(), getCurrentActivity());
-            jsonWriter.writeName("description");
-            jsonWriter.write(description);
+            jsonWriter.name("description").value(description);
         }
-        jsonWriter.endObject();
-        jsonWriter.writeName("request");
-        jsonWriter.beginObject();
+        jsonWriter.endObject()
+            .name("request")
+            .beginObject();
         if (parameterItemRuleMap != null) {
-            jsonWriter.writeName("parameters");
-            jsonWriter.beginObject();
-            jsonWriter.writeName("items");
-            jsonWriter.write(toListForItems(parameterItemRuleMap.values()));
-            jsonWriter.writeName("tokens");
-            jsonWriter.write(toListForTokens(parameterItemRuleMap.values()));
-            jsonWriter.endObject();
+            jsonWriter.name("parameters")
+                .beginObject()
+                .name("items").value(toListForItems(parameterItemRuleMap.values()))
+                .name("tokens").value(toListForTokens(parameterItemRuleMap.values()))
+                .endObject();
         }
         if (attributeItemRuleMap != null) {
-            jsonWriter.writeName("attributes");
-            jsonWriter.beginObject();
-            jsonWriter.writeName("items");
-            jsonWriter.write(toListForItems(attributeItemRuleMap.values()));
-            jsonWriter.writeName("tokens");
-            jsonWriter.write(toListForTokens(attributeItemRuleMap.values()));
-            jsonWriter.endObject();
+            jsonWriter.name("attributes")
+                .beginObject()
+                .name("items").value(toListForItems(attributeItemRuleMap.values()))
+                .name("tokens").value(toListForTokens(attributeItemRuleMap.values()))
+                .endObject();
         }
-        jsonWriter.endObject();
-        jsonWriter.writeName("response");
-        jsonWriter.beginObject();
+        jsonWriter.endObject()
+            .name("response")
+            .beginObject();
         if (transletRule.getResponseRule().getResponse() != null) {
-            jsonWriter.writeName("contentType");
-            jsonWriter.writeValue(transletRule.getResponseRule().getResponse().getContentType());
+            jsonWriter.name("contentType").value(transletRule.getResponseRule().getResponse().getContentType());
         }
-        jsonWriter.endObject();
-        jsonWriter.endObject();
+        jsonWriter.endObject().endObject();
     }
 
     @RequestToPost("/exec/@{_translet_}")

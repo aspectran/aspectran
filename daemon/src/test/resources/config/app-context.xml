@@ -20,7 +20,7 @@
 
     <aspect id="activityDataAccessibility">
         <description>
-            Each translet's activity data can be referenced as a "data" attribute.
+            The activity data of each translet can be referenced with the "data" attribute.
         </description>
         <advice>
             <before>

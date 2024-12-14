@@ -141,11 +141,7 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
                     public void run() {
                         SessionStatsPayload newStats = getUndertowSessionStatsPayload();
                         if (first || !newStats.equals(oldStats)) {
-                            try {
-                                broadcast(newStats.toJson());
-                            } catch (IOException e) {
-                                logger.warn(e);
-                            }
+                            broadcast(newStats.toJson());
                             oldStats = newStats;
                             if (first) {
                                 first = false;
