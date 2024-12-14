@@ -320,8 +320,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     private boolean addCandidateSessionIdForExpiry(String id) {
         if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
             candidateSessionIdsForExpiry.add(id);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Session " + id + " is candidate for expiry");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Session " + id + " is candidate for expiry");
             }
             return true;
         } else {
