@@ -144,13 +144,13 @@ public interface SessionHandler extends Component {
      * @param oldValue previous value of the attribute
      * @throws IllegalStateException if no session manager can be found
      */
-    void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue);
+    void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue);
 
     /**
      * Call the session lifecycle listeners.
      * @param session the session on which to call the lifecycle listeners
      */
-    void fireSessionDestroyedListeners(Session session);
+    void onSessionDestroyed(Session session);
 
     /**
      * @return the identifiers of those sessions that are active on this node, excluding passivated sessions

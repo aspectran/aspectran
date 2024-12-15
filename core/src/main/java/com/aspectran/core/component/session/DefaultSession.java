@@ -111,7 +111,7 @@ public class DefaultSession implements Session {
             if (value == null && old == null) {
                 return null; // if same as remove attribute but attribute was already removed, no change
             }
-            fireSessionAttributeListeners(name, old, value);
+            onSessionAttributeUpdate(name, old, value);
             return old;
         }
     }
@@ -306,7 +306,7 @@ public class DefaultSession implements Session {
                         if (getDestroyedReason() == null) {
                             setDestroyedReason(DestroyedReason.INVALIDATED);
                         }
-                        sessionHandler.fireSessionDestroyedListeners(this);
+                        sessionHandler.onSessionDestroyed(this);
                     }
                 } catch (Exception e) {
                     logger.warn("Error during Session destroy listener", e);
@@ -358,7 +358,7 @@ public class DefaultSession implements Session {
                         for (String key : keys) {
                             Object old = sessionData.setAttribute(key, null);
                             if (old != null) {
-                                fireSessionAttributeListeners(key, old, null);
+                                onSessionAttributeUpdate(key, old, null);
                             }
                         }
                     } while (!keys.isEmpty());
@@ -439,7 +439,7 @@ public class DefaultSession implements Session {
      * @param oldValue previous value of the attribute
      * @throws IllegalStateException if no session manager can be find
      */
-    protected void fireSessionAttributeListeners(String name, Object oldValue, Object newValue) {
+    protected void onSessionAttributeUpdate(String name, Object oldValue, Object newValue) {
         if (newValue == null || !newValue.equals(oldValue)) {
             if (oldValue != null) {
                 unbindValue(name, oldValue);
@@ -448,7 +448,7 @@ public class DefaultSession implements Session {
                 bindValue(name, newValue);
             }
         }
-        sessionHandler.fireSessionAttributeListeners(this, name, oldValue, newValue);
+        sessionHandler.onSessionAttributeUpdate(this, name, oldValue, newValue);
     }
 
     /**

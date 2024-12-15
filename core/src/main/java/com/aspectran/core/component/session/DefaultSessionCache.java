@@ -153,7 +153,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                                     old = session.getSessionData().setAttribute(name, null);
                                 }
                                 if (old != null) {
-                                    session.fireSessionAttributeListeners(name, old, null);
+                                    session.onSessionAttributeUpdate(name, old, null);
                                 }
                             } catch (Exception e) {
                                 logger.warn("Failed to remove non-persistent attribute: " + name, e);

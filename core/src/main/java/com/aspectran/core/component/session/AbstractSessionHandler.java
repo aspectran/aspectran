@@ -169,7 +169,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         try {
             DefaultSession session = sessionCache.add(id, now, maxInactiveInterval);
             getStatistics().sessionCreated();
-            fireSessionCreatedListeners(session);
+            onSessionCreated(session);
             return session;
         } catch (MaxSessionsExceededException e) {
             throw e;
@@ -232,7 +232,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                                 if (reason != null) {
                                     session.setDestroyedReason(reason);
                                 }
-                                fireSessionDestroyedListeners(session);
+                                onSessionDestroyed(session);
                             }
                         } catch (Exception e) {
                             logger.warn("Error during Session destroy listener", e);
@@ -408,7 +408,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue) {
+    public void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue) {
         if (session != null) {
             for (SessionListener listener : sessionListeners) {
                 if (oldValue == null) {
@@ -423,7 +423,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void fireSessionDestroyedListeners(Session session) {
+    public void onSessionDestroyed(Session session) {
         if (session != null && !sessionListeners.isEmpty()) {
             // We need to create our own snapshot to safely iterate over a concurrent list in reverse
             List<SessionListener> listeners = new ArrayList<>(sessionListeners);
@@ -437,11 +437,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * Call the session lifecycle listeners.
      * @param session the session on which to call the lifecycle listeners
      */
-    private void fireSessionCreatedListeners(Session session) {
-        if (session != null) {
-            for (SessionListener listener : sessionListeners) {
-                listener.sessionCreated(session);
-            }
+    private void onSessionCreated(Session session) {
+        for (SessionListener listener : sessionListeners) {
+            listener.sessionCreated(session);
         }
     }
 

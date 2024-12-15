@@ -171,4 +171,8 @@ public class JsonBuilder {
         return jsonWriter.toString();
     }
 
+    public JsonString toJsonString() {
+        return new JsonString(jsonWriter.toString());
+    }
+
 }
