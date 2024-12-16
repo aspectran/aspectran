@@ -43,7 +43,7 @@ public class NonActivity extends CoreActivity {
 
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
-        throw new UnsupportedOperationException("This activity cannot be performed");
+        throw new UnsupportedOperationException("NonActivity does not support being performed");
     }
 
 }

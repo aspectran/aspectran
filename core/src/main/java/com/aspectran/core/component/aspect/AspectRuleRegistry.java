@@ -70,14 +70,12 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (aspectRule == null) {
             throw new IllegalArgumentException("aspectRule must not be null");
         }
-        AspectRule old = aspectRuleMap.put(aspectRule.getId(), aspectRule);
-        if (old != null) {
-            throw new IllegalRuleException("Cannot add AspectRule due to duplicate Aspect ID: " +
-                    aspectRule.getId());
-        }
-
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule " + aspectRule);
+        }
+        AspectRule old = aspectRuleMap.put(aspectRule.getId(), aspectRule);
+        if (old != null) {
+            throw new IllegalRuleException("Duplicate AspectRule ID: " + aspectRule.getId());
         }
     }
 
