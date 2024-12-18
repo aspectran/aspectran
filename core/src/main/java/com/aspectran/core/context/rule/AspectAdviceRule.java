@@ -53,7 +53,13 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     private ExceptionThrownRule exceptionThrownRule;
 
-    public AspectAdviceRule(@NonNull AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+    public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+        if (aspectRule == null) {
+            throw new IllegalArgumentException("aspectRule must not be null");
+        }
+        if (aspectAdviceType == null) {
+            throw new IllegalArgumentException("aspectAdviceType must not be null");
+        }
         this.aspectRule = aspectRule;
         this.aspectId = aspectRule.getId();
         this.adviceBeanId = aspectRule.getAdviceBeanId();

@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class PointcutRule {
 
     private List<PointcutPatternRule> pointcutPatternRuleList;
 
-    public PointcutRule(PointcutType pointcutType) {
+    public PointcutRule(@Nullable PointcutType pointcutType) {
         this.pointcutType = pointcutType;
     }
 
@@ -46,7 +47,10 @@ public class PointcutRule {
         return pointcutPatternRuleList;
     }
 
-    public void addPointcutPatternRule(@NonNull PointcutPatternRule pointcutPatternRule) {
+    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
+        if (pointcutPatternRule == null) {
+            throw new IllegalArgumentException("pointcutPatternRule must not be null");
+        }
         pointcutPatternRule.setPointcutType(pointcutType);
         touchPointcutPatternRuleList().add(pointcutPatternRule);
     }

@@ -28,9 +28,10 @@ import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.aspectran.utils.ConcurrentReferenceHashMap.ReferenceType;
 
@@ -49,13 +50,15 @@ public class AspectRuleRegistry extends AbstractComponent {
     private final Cache<PointcutPattern, RelevantAspectRuleHolder> weakCache =
             new ConcurrentReferenceCache<>(ReferenceType.WEAK, this::createRelevantAspectRuleHolder);
 
-    private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
+    private final Map<String, AspectRule> aspectRuleMap = new ConcurrentHashMap<>();
+
+    private final List<AspectRule> aspectRules = new CopyOnWriteArrayList<>();
 
     public AspectRuleRegistry() {
     }
 
     public Collection<AspectRule> getAspectRules() {
-        return aspectRuleMap.values();
+        return aspectRules;
     }
 
     public AspectRule getAspectRule(String aspectId) {
@@ -73,9 +76,21 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule " + aspectRule);
         }
-        AspectRule old = aspectRuleMap.put(aspectRule.getId(), aspectRule);
-        if (old != null) {
+        AspectRule existing = aspectRuleMap.get(aspectRule.getId());
+        if (existing == null) {
+            existing = aspectRuleMap.putIfAbsent(aspectRule.getId(), aspectRule);
+        }
+        if (existing == null) {
+            aspectRules.add(aspectRule);
+        } else {
             throw new IllegalRuleException("Duplicate AspectRule ID: " + aspectRule.getId());
+        }
+    }
+
+    public void removeAspectRule(String aspectId) {
+        AspectRule existing = aspectRuleMap.remove(aspectId);
+        if (existing != null) {
+            aspectRules.remove(existing);
         }
     }
 

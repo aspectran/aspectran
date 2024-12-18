@@ -31,6 +31,9 @@ public class ScheduledJobRule {
     private Boolean disabled;
 
     public ScheduledJobRule(ScheduleRule scheduleRule) {
+        if (scheduleRule == null) {
+            throw new IllegalArgumentException("scheduleRule must not be null");
+        }
         this.scheduleRule = scheduleRule;
     }
 

@@ -60,9 +60,10 @@ public class AspectranShell {
             commander.run();
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
-            if (cause instanceof InsufficientEnvironmentException) {
-                System.err.println(((InsufficientEnvironmentException)cause).getPrettyMessage());
+            if (cause instanceof InsufficientEnvironmentException that) {
+                System.err.println(that.getPrettyMessage());
             } else {
+                System.err.println(cause.getMessage());
                 e.printStackTrace(System.err);
             }
             exitStatus = 1;

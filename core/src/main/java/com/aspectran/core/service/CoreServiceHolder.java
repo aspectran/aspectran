@@ -109,4 +109,22 @@ public abstract class CoreServiceHolder {
         return (service != null ? service.getActivityContext() : null);
     }
 
+    @Nullable
+    public static ActivityContext findActivityContext(String contextName) {
+        Assert.notNull(contextName, "contextName must not be null");
+        for (CoreService service : servicesByLoader.values()) {
+            ActivityContext activityContext = service.getActivityContext();
+            if (activityContext != null && contextName.equals(activityContext.getName())) {
+                return activityContext;
+            }
+        }
+        for (CoreService service : servicesByClass.values()) {
+            ActivityContext activityContext = service.getActivityContext();
+            if (activityContext != null && contextName.equals(activityContext.getName())) {
+                return activityContext;
+            }
+        }
+        return null;
+    }
+
 }

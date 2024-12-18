@@ -38,6 +38,9 @@ public class SettingsAdviceRule {
     private Map<String, Object> settings;
 
     public SettingsAdviceRule(AspectRule aspectRule) {
+        if (aspectRule == null) {
+            throw new IllegalArgumentException("aspectRule must not be null");
+        }
         this.aspectRule = aspectRule;
     }
 

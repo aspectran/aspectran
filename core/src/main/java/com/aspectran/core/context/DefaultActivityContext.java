@@ -264,26 +264,19 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     protected void doInitialize() throws Exception {
+        Assert.state(aspectRuleRegistry != null, "AspectRuleRegistry is not set");
+        Assert.state(defaultBeanRegistry != null, "BeanRegistry is not set");
+        Assert.state(defaultTemplateRenderer != null, "TemplateRenderer is not set");
+        Assert.state(scheduleRuleRegistry != null, "ScheduleRuleRegistry is not set");
+        Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
         ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
         try {
-            if (aspectRuleRegistry != null) {
-                aspectRuleRegistry.initialize();
-            }
-            if (defaultBeanRegistry != null) {
-                defaultBeanRegistry.initialize();
-            }
-            if (defaultTemplateRenderer != null) {
-                defaultTemplateRenderer.initialize();
-            }
-            if (scheduleRuleRegistry != null) {
-                scheduleRuleRegistry.initialize();
-            }
-            if (transletRuleRegistry != null) {
-                transletRuleRegistry.initialize();
-            }
-            if (defaultBeanRegistry != null) {
-                resolveMessageSource();
-            }
+            aspectRuleRegistry.initialize();
+            defaultBeanRegistry.initialize();
+            defaultTemplateRenderer.initialize();
+            scheduleRuleRegistry.initialize();
+            transletRuleRegistry.initialize();
+            resolveMessageSource();
         } finally {
             ClassUtils.restoreThreadContextClassLoader(origClassLoader);
         }

@@ -53,9 +53,9 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     public void setExpression(String expression) throws IllegalRuleException {
-        expression = (StringUtils.hasText(expression) ? expression.trim() : null);
-        if (expression != null) {
-            this.booleanEvaluation = new BooleanExpression(expression);
+        String expressionToUse = (StringUtils.hasText(expression) ? expression.trim() : null);
+        if (expressionToUse != null) {
+            this.booleanEvaluation = new BooleanExpression(expressionToUse);
         } else {
             this.booleanEvaluation = null;
         }
