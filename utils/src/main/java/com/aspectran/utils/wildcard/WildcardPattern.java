@@ -245,10 +245,10 @@ public class WildcardPattern {
         if (StringUtils.hasLength(patternString)) {
             char[] ca = patternString.toCharArray();
             for (char c : ca) {
-                if (c == STAR_CHAR
-                    || c == QUESTION_CHAR
-                    || c == PLUS_CHAR) {
-                    return true;
+                switch (c) {
+                    case STAR_CHAR, QUESTION_CHAR, PLUS_CHAR -> {
+                        return true;
+                    }
                 }
             }
         }

@@ -54,6 +54,8 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private final List<AspectRule> aspectRules = new CopyOnWriteArrayList<>();
 
+    private final List<String> newAspectRules = new CopyOnWriteArrayList<>();
+
     public AspectRuleRegistry() {
     }
 
@@ -82,6 +84,9 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
         if (existing == null) {
             aspectRules.add(aspectRule);
+            if (isInitialized()) {
+                newAspectRules.add(aspectRule.getId());
+            }
         } else {
             throw new IllegalRuleException("Duplicate AspectRule ID: " + aspectRule.getId());
         }
@@ -90,8 +95,16 @@ public class AspectRuleRegistry extends AbstractComponent {
     public void removeAspectRule(String aspectId) {
         AspectRule existing = aspectRuleMap.remove(aspectId);
         if (existing != null) {
-            aspectRules.remove(existing);
+            if (aspectRules.remove(existing)) {
+                if (isInitialized()) {
+                    newAspectRules.remove(aspectId);
+                }
+            }
         }
+    }
+
+    public boolean hasNewAspectRules() {
+        return !newAspectRules.isEmpty();
     }
 
     @Override

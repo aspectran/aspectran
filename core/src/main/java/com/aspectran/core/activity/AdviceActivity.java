@@ -98,7 +98,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     protected void prepareAspectAdviceRules(@NonNull TransletRule transletRule, String requestName) {
         AspectAdviceRuleRegistry aarr;
-        if (transletRule.hasPathVariables()) {
+        if (transletRule.hasPathVariables() || getActivityContext().getAspectRuleRegistry().hasNewAspectRules()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
                 if (!aspectRule.isBeanRelevant()) {
