@@ -35,6 +35,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -67,7 +68,7 @@ public class AnnotatedAction implements Executable {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedAction.class);
 
-    private static final Object NO_VALUE = new Object();
+    private static final Object NONE = new Object();
 
     private final AnnotatedActionRule annotatedActionRule;
 
@@ -75,32 +76,33 @@ public class AnnotatedAction implements Executable {
      * Instantiates a new AnnotatedMethodAction.
      * @param annotatedActionRule the annotated method action rule
      */
-    public AnnotatedAction(@NonNull AnnotatedActionRule annotatedActionRule) {
+    public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
         this.annotatedActionRule = annotatedActionRule;
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
         try {
-            Object bean = null;
-            if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
-                bean = activity.getBean(annotatedActionRule.getBeanClass());
+            Object bean = resolveBean(activity);
+            Method method = annotatedActionRule.getMethod();
+            ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
+            if (method.getReturnType() == Void.TYPE) {
+                invokeMethod(activity, bean, method, parameterBindingRules);
+                return Void.TYPE;
+            } else {
+                return invokeMethod(activity, bean, method, parameterBindingRules);
             }
-            return execute(activity, bean);
         } catch (Exception e) {
             throw new ActionExecutionException(this, e);
         }
     }
 
-    protected Object execute(Activity activity, Object bean) throws Exception {
-        Method method = annotatedActionRule.getMethod();
-        ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
-        if (method.getReturnType() == Void.TYPE) {
-            invokeMethod(activity, bean, method, parameterBindingRules);
-            return Void.TYPE;
-        } else {
-            return invokeMethod(activity, bean, method, parameterBindingRules);
+    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+        Object bean = null;
+        if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
+            bean = activity.getBean(annotatedActionRule.getBeanClass());
         }
+        return bean;
     }
 
     /**
@@ -127,20 +129,17 @@ public class AnnotatedAction implements Executable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)getAnnotatedActionRule();
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("annotated", annotatedActionRule);
         return tsb.toString();
     }
 
-    public static Object invokeMethod(Activity activity, Object bean, Method method,
-                                      ParameterBindingRule[] parameterBindingRules) throws Exception {
+    public static Object invokeMethod(
+            @NonNull Activity activity,
+            @Nullable Object bean,
+            @NonNull Method method,
+            @Nullable ParameterBindingRule[] parameterBindingRules) throws Exception {
         ParameterBindingRule parameterBindingRule = null;
         try {
             if (parameterBindingRules == null) {
@@ -219,7 +218,7 @@ public class AnnotatedAction implements Executable {
             } else {
                 String[] values = translet.getParameterValues(name);
                 result = resolveValue(type, values, stringifyContext, format);
-                if (result == NO_VALUE) {
+                if (result == NONE) {
                     result = null;
                 }
             }
@@ -273,7 +272,7 @@ public class AnnotatedAction implements Executable {
         } else {
             String value = translet.getParameter(name);
             result = resolveValue(type, value, stringifyContext, format);
-            if (result == NO_VALUE) {
+            if (result == NONE) {
                 if (type.isAnnotationPresent(Component.class)) {
                     try {
                         result = translet.getBean(type);
@@ -327,7 +326,7 @@ public class AnnotatedAction implements Executable {
                     String value = translet.getParameter(paramName);
                     result = resolveValue(setterType, value, stringifyContext, format);
                 }
-                if (result != null && result != NO_VALUE) {
+                if (result != null && result != NONE) {
                     BeanUtils.setProperty(model, name, result);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     missingProperties.add(name);
@@ -452,7 +451,7 @@ public class AnnotatedAction implements Executable {
                     result = stringifyContext.toDate(value, format);
                 }
             } else {
-                result = NO_VALUE;
+                result = NONE;
             }
             return result;
         } catch (Exception e) {
@@ -667,7 +666,7 @@ public class AnnotatedAction implements Executable {
                     result = arr;
                 }
             } else {
-                result = NO_VALUE;
+                result = NONE;
             }
             return result;
         } catch (Exception e) {

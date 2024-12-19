@@ -16,11 +16,9 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.AdviceAction;
-import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
-import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -47,7 +45,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     private final AspectAdviceType aspectAdviceType;
 
-    private Executable action;
+    private Executable adviceAction;
 
     private ExceptionRule exceptionRule;
 
@@ -58,7 +56,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
             throw new IllegalArgumentException("aspectRule must not be null");
         }
         if (aspectAdviceType == null) {
-            throw new IllegalArgumentException("aspectAdviceType must not be null");
+            throw new IllegalArgumentException("adviceType must not be null");
         }
         this.aspectRule = aspectRule;
         this.aspectId = aspectRule.getId();
@@ -89,27 +87,24 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule);
-        this.action = action;
-        return action;
+        adviceAction = new HeaderAction(headerActionRule);
+        return adviceAction;
     }
 
     @Override
     public Executable applyActionRule(EchoActionRule echoActionRule) {
-        Executable action = new EchoAction(echoActionRule);
-        this.action = action;
-        return action;
+        adviceAction = new EchoAction(echoActionRule);
+        return adviceAction;
     }
 
     @Override
     public Executable applyActionRule(InvokeActionRule invokeActionRule) {
         if (adviceBeanId == null && adviceBeanClass == null &&
-            invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
-            throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
+                invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
+            throw new IllegalStateException("Cannot resolve advice bean for " + invokeActionRule + " in " + this);
         }
-        InvokeAction action = new AdviceAction(invokeActionRule, this);
-        this.action = action;
-        return action;
+        adviceAction = new AdviceAction(this, invokeActionRule);
+        return adviceAction;
     }
 
     @Override
@@ -132,16 +127,16 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         throw new UnsupportedOperationException();
     }
 
-    public Executable getExecutableAction() {
-        return action;
+    public Executable getAdviceAction() {
+        return adviceAction;
     }
 
-    public void setExecutableAction(AnnotatedAction action) {
-        this.action = action;
+    public void setAdviceAction(Executable adviceAction) {
+        this.adviceAction = adviceAction;
     }
 
     public ActionType getActionType() {
-        return (action != null ? action.getActionType() : null);
+        return (adviceAction != null ? adviceAction.getActionType() : null);
     }
 
     public ExceptionRule getExceptionRule() {
@@ -165,8 +160,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", aspectAdviceType);
         tsb.append("bean", adviceBeanId);
-        tsb.append("bean", adviceBeanClass);
-        tsb.append("action", action);
+        if (adviceBeanId == null) {
+            tsb.append("bean", adviceBeanClass);
+        }
+        tsb.append("action", adviceAction);
         return tsb.toString();
     }
 

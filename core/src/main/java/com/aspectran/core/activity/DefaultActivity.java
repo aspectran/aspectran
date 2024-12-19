@@ -128,4 +128,24 @@ public class DefaultActivity extends AbstractActivity {
         return null;
     }
 
+    @Override
+    public <V> V getBeforeAdviceResult(String aspectId) {
+        return null;
+    }
+
+    @Override
+    public <V> V getAfterAdviceResult(String aspectId) {
+        return null;
+    }
+
+    @Override
+    public <V> V getAroundAdviceResult(String aspectId) {
+        return null;
+    }
+
+    @Override
+    public <V> V getFinallyAdviceResult(String aspectId) {
+        return null;
+    }
+
 }

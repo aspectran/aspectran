@@ -77,7 +77,6 @@ public class AnnotatedActionRule {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", actionId);
         tsb.append("method", method);
-        tsb.append("parameterBindingRules", parameterBindingRules);
         return tsb.toString();
     }
 

@@ -143,7 +143,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
                 throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
             }
-            action = new AdviceAction(invokeActionRule, aspectAdviceRule);
+            action = new AdviceAction(aspectAdviceRule, invokeActionRule);
         } else {
             if (invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
                 throw new IllegalStateException("Unknown action bean for " + invokeActionRule);

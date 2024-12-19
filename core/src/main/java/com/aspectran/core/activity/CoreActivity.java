@@ -290,7 +290,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             try {
-                setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
+                setCurrentAdviceType(AspectAdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList(), true);
 
                 if (translet != null) {
@@ -315,21 +315,21 @@ public class CoreActivity extends AdviceActivity {
                         result = instantAction.execute();
                     }
 
-                    setCurrentAspectAdviceType(AspectAdviceType.AFTER);
+                    setCurrentAdviceType(AspectAdviceType.AFTER);
                     executeAdvice(getAfterAdviceRuleList(), true);
                 }
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
                 if (!forwarding) {
-                    setCurrentAspectAdviceType(AspectAdviceType.FINALLY);
+                    setCurrentAdviceType(AspectAdviceType.FINALLY);
                     executeAdvice(getFinallyAdviceRuleList(), false);
                 }
             }
 
             if (!forwarding) {
                 if (isExceptionRaised()) {
-                    setCurrentAspectAdviceType(AspectAdviceType.THROWN);
+                    setCurrentAdviceType(AspectAdviceType.THROWN);
                     exception();
                     if (translet != null) {
                         response();
@@ -339,7 +339,7 @@ public class CoreActivity extends AdviceActivity {
                     }
                 }
 
-                setCurrentAspectAdviceType(null);
+                setCurrentAdviceType(null);
             }
         } catch (ActivityTerminatedException e) {
             throw e;

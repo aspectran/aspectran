@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * {@code AdviceAction} that invokes a method for Aspect Advice.
@@ -31,10 +32,10 @@ public class AdviceAction extends InvokeAction {
 
     /**
      * Instantiates a new AdviceAction.
-     * @param invokeActionRule the invoke action rule
      * @param aspectAdviceRule the aspect advice rule
+     * @param invokeActionRule the invoke action rule
      */
-    public AdviceAction(InvokeActionRule invokeActionRule, AspectAdviceRule aspectAdviceRule) {
+    public AdviceAction(AspectAdviceRule aspectAdviceRule, InvokeActionRule invokeActionRule) {
         super(invokeActionRule);
         this.aspectAdviceRule = aspectAdviceRule;
     }
@@ -48,30 +49,37 @@ public class AdviceAction extends InvokeAction {
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
-        if (getInvokeActionRule().getBeanId() != null) {
-            return super.execute(activity);
-        }  else {
-            Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-            if (bean == null) {
-                throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
-            }
-            return execute(activity, bean);
+    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+        if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
+            return super.resolveBean(activity);
         }
+        Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+        if (bean == null) {
+            throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
+        }
+        return bean;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", aspectAdviceRule.getAspectAdviceType());
-        tsb.append("bean", aspectAdviceRule.getAdviceBeanId());
-        tsb.append("bean", aspectAdviceRule.getAdviceBeanClass());
-        if (getInvokeActionRule().getMethod() != null) {
-            tsb.append("method", getInvokeActionRule().getMethod());
+        if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
+            tsb.append("invoke", getInvokeActionRule());
         } else {
-            tsb.append("method", getInvokeActionRule().getMethodName());
+            if (getInvokeActionRule().getMethod() != null) {
+                tsb.append("method", getInvokeActionRule().getMethod());
+            } else {
+                tsb.append("bean", aspectAdviceRule.getAdviceBeanId());
+                if (aspectAdviceRule.getAdviceBeanId() == null) {
+                    tsb.append("bean", aspectAdviceRule.getAdviceBeanClass());
+                }
+                tsb.append("method", getInvokeActionRule().getMethodName());
+            }
         }
-        tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        if (aspectAdviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
+            tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        }
         return tsb.toString();
     }
 

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * {@code AnnotatedAdviceAction} that invokes a method for Annotated Aspect Advice.
@@ -31,10 +32,10 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     /**
      * Instantiates a new AdviceAction.
-     * @param annotatedActionRule the annotated method action rule
      * @param aspectAdviceRule the aspect advice rule
+     * @param annotatedActionRule the annotated method action rule
      */
-    public AnnotatedAdviceAction(AnnotatedActionRule annotatedActionRule, AspectAdviceRule aspectAdviceRule) {
+    public AnnotatedAdviceAction(AspectAdviceRule aspectAdviceRule, AnnotatedActionRule annotatedActionRule) {
         super(annotatedActionRule);
         this.aspectAdviceRule = aspectAdviceRule;
     }
@@ -48,31 +49,22 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
-        try {
-            Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-            if (bean == null) {
-                throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
-            }
-            return execute(activity, bean);
-        } catch (Exception e) {
-            throw new ActionExecutionException(this, e);
+    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+        Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+        if (bean == null) {
+            throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
         }
-    }
-
-    @Override
-    public String getActionId() {
-        return getAnnotatedActionRule().getActionId();
+        return bean;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", aspectAdviceRule.getAspectAdviceType());
-        tsb.append("bean", aspectAdviceRule.getAdviceBeanId());
-        tsb.append("bean", aspectAdviceRule.getAdviceBeanClass());
         tsb.append("annotated", getAnnotatedActionRule());
-        tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        if (aspectAdviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
+            tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        }
         return tsb.toString();
     }
 

@@ -93,7 +93,7 @@ public class AspectAdviceResult {
         finallyAdviceResultMap.put(aspectId, actionResult);
     }
 
-    public void putAdviceResult(@NonNull AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+    public void putAspectAdviceResult(@NonNull AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
         if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
             putBeforeAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
         } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {

@@ -18,7 +18,6 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.annotation.Annotation;
@@ -37,7 +36,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public <V> V getBean(@NonNull String id) {
+    public <V> V getBean(String id) {
         BeanRule beanRule = getBeanRuleRegistry().getBeanRule(id);
         if (beanRule == null) {
             BeanRegistry parent = getParentBeanRegistry();
@@ -50,12 +49,12 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public <V> V getBean(@NonNull Class<V> type) {
+    public <V> V getBean(Class<V> type) {
         return getBean(type, null);
     }
 
     @Override
-    public <V> V getBean(@NonNull Class<V> type, @Nullable String id) {
+    public <V> V getBean(Class<V> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
             BeanRule beanRule = getBeanRuleRegistry().getBeanRuleForConfig(type);
@@ -111,7 +110,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <V> V[] getBeansOfType(@NonNull Class<V> type) {
+    public <V> V[] getBeansOfType(Class<V> type) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules != null) {
             Object arr = Array.newInstance(type, beanRules.length);
@@ -130,7 +129,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public boolean containsBean(@NonNull String id) {
+    public boolean containsBean(String id) {
         if (getBeanRuleRegistry().containsBeanRule(id)) {
             return true;
         }
@@ -142,7 +141,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public boolean containsBean(@NonNull Class<?> type) {
+    public boolean containsBean(Class<?> type) {
         if (getBeanRuleRegistry().containsBeanRule(type)) {
             return true;
         }
@@ -154,7 +153,7 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public boolean containsBean(@NonNull Class<?> type, @Nullable String id) {
+    public boolean containsBean(Class<?> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
             BeanRegistry parent = getParentBeanRegistry();

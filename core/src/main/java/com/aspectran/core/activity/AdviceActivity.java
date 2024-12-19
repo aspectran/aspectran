@@ -58,11 +58,11 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     private Set<AspectRule> relevantAspectRules;
 
-    private Set<AspectAdviceRule> executedAspectAdviceRules;
+    private Set<AspectAdviceRule> executedAdviceRules;
 
-    private AspectAdviceType currentAspectAdviceType;
+    private AspectAdviceType currentAdviceType;
 
-    private AspectAdviceRule currentAspectAdviceRule;
+    private AspectAdviceRule currentAdviceRule;
 
     private AspectAdviceResult aspectAdviceResult;
 
@@ -121,14 +121,14 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    protected void setCurrentAspectAdviceType(AspectAdviceType aspectAdviceType) {
-        this.currentAspectAdviceType = aspectAdviceType;
+    protected void setCurrentAdviceType(AspectAdviceType aspectAdviceType) {
+        this.currentAdviceType = aspectAdviceType;
     }
 
     @Override
     public void registerAspectAdviceRule(AspectRule aspectRule)
             throws AdviceConstraintViolationException, AspectAdviceException {
-        if (currentAspectAdviceType == null) {
+        if (currentAdviceType == null) {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at an UNKNOWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
@@ -136,7 +136,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             throw ex;
         }
 
-        if (currentAspectAdviceType == AspectAdviceType.THROWN) {
+        if (currentAdviceType == AspectAdviceType.THROWN) {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at the THROWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
@@ -153,12 +153,12 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
         if (aspectAdviceRuleList != null) {
-            if (currentAspectAdviceType == AspectAdviceType.FINALLY) {
+            if (currentAdviceType == AspectAdviceType.FINALLY) {
                 // Exception thrown when registering BEFORE or AFTER advice in the FINALLY activity phase
                 AdviceConstraintViolationException ex = null;
-                for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-                    AspectAdviceType aspectAdviceType = aspectAdviceRule.getAspectAdviceType();
-                    if (aspectAdviceType == AspectAdviceType.BEFORE || aspectAdviceType == AspectAdviceType.AFTER) {
+                for (AspectAdviceRule adviceRule : aspectAdviceRuleList) {
+                    AspectAdviceType adviceType = adviceRule.getAspectAdviceType();
+                    if (adviceType == AspectAdviceType.BEFORE || adviceType == AspectAdviceType.AFTER) {
                         if (ex == null) {
                             ex = new AdviceConstraintViolationException();
                         }
@@ -173,8 +173,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                     throw ex;
                 }
             }
-            if (currentAspectAdviceRule != null) {
-                AspectAdviceRule adviceRule1 = currentAspectAdviceRule;
+            if (currentAdviceRule != null) {
+                AspectAdviceRule adviceRule1 = currentAdviceRule;
                 AspectAdviceType adviceType1 = adviceRule1.getAspectAdviceType();
                 for (AspectAdviceRule adviceRule2 : aspectAdviceRuleList) {
                     AspectAdviceType adviceType2 = adviceRule2.getAspectAdviceType();
@@ -219,11 +219,11 @@ public abstract class AdviceActivity extends AbstractActivity {
         if (aspectAdviceRuleList != null && !aspectAdviceRuleList.isEmpty()) {
             while (true) {
                 AspectAdviceRule target = null;
-                if (executedAspectAdviceRules == null) {
+                if (executedAdviceRules == null) {
                     target = aspectAdviceRuleList.get(0);
                 } else {
                     for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-                        if (!executedAspectAdviceRules.contains(aspectAdviceRule)) {
+                        if (!executedAdviceRules.contains(aspectAdviceRule)) {
                             target = aspectAdviceRule;
                             break;
                         }
@@ -265,40 +265,28 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         touchExecutedAspectAdviceRules().add(aspectAdviceRule);
 
-        Executable action = aspectAdviceRule.getExecutableAction();
+        Executable action = aspectAdviceRule.getAdviceAction();
         if (action != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Advice " + action);
             }
 
-            AspectAdviceRule oldAspectAdviceRule = currentAspectAdviceRule;
-            currentAspectAdviceRule = aspectAdviceRule;
+            AspectAdviceRule oldAdviceRule = currentAdviceRule;
+            currentAdviceRule = aspectAdviceRule;
             try {
-                if (action.getActionType() == ActionType.ACTION) {
-                    // If Aspect Advice Bean ID is specified
-                    if (aspectAdviceRule.getAdviceBeanId() != null) {
-                        Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
-                        if (adviceBean == null) {
-                            if (aspectAdviceRule.getAdviceBeanClass() != null) {
-                                adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
-                            } else {
-                                adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
-                            }
-                            putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
-                        }
-                    }
-                } else if (action.getActionType() == ActionType.ACTION_ANNOTATED) {
-                    // If Annotated Aspect
-                    Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
-                    if (adviceBean == null) {
+                Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
+                if (adviceBean == null) {
+                    if (aspectAdviceRule.getAdviceBeanClass() != null) {
                         adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
-                        putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+                    } else if (aspectAdviceRule.getAdviceBeanId() != null) {
+                        adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
                     }
+                    putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                 }
 
                 Object resultValue = action.execute(this);
                 if (!action.isHidden() && resultValue != null && resultValue != Void.TYPE) {
-                    putAdviceResult(aspectAdviceRule, resultValue);
+                    putAspectAdviceResult(aspectAdviceRule, resultValue);
                     if (action.getActionType() == ActionType.ECHO) {
                         if (action.getActionId() != null) {
                             getRequestAdapter().setAttribute(action.getActionId(), resultValue);
@@ -324,7 +312,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                 }
             } finally {
-                currentAspectAdviceRule = oldAspectAdviceRule;
+                currentAdviceRule = oldAdviceRule;
             }
         }
     }
@@ -463,6 +451,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @return the before advice result
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <V> V getBeforeAdviceResult(String aspectId) {
         return (aspectAdviceResult != null ? (V)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
@@ -474,6 +463,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @return the after advice result
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <V> V getAfterAdviceResult(String aspectId) {
         return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
@@ -485,6 +475,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @return the around advice result
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <V> V getAroundAdviceResult(String aspectId) {
         return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAroundAdviceResult(aspectId) : null);
@@ -496,6 +487,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @return the result of the final advice
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <V> V getFinallyAdviceResult(String aspectId) {
         return (aspectAdviceResult != null ? (V)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
@@ -506,11 +498,11 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectAdviceRule the aspect advice rule
      * @param adviceActionResult the advice action result
      */
-    protected void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+    protected void putAspectAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
         if (aspectAdviceResult == null) {
             aspectAdviceResult = new AspectAdviceResult();
         }
-        aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
+        aspectAdviceResult.putAspectAdviceResult(aspectAdviceRule, adviceActionResult);
     }
 
     private AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
@@ -528,10 +520,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     private Set<AspectAdviceRule> touchExecutedAspectAdviceRules() {
-        if (executedAspectAdviceRules == null) {
-            executedAspectAdviceRules = new HashSet<>();
+        if (executedAdviceRules == null) {
+            executedAdviceRules = new HashSet<>();
         }
-        return executedAspectAdviceRules;
+        return executedAdviceRules;
     }
 
 }

@@ -35,12 +35,12 @@ public class EchoAction implements Executable {
      * Instantiates a new EchoAction.
      * @param echoActionRule the echo action rule
      */
-    public EchoAction(@NonNull EchoActionRule echoActionRule) {
+    public EchoAction(EchoActionRule echoActionRule) {
         this.echoActionRule = echoActionRule;
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
         ItemRuleMap itemRuleMap = echoActionRule.getEchoItemRuleMap();
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return Void.TYPE;
@@ -73,12 +73,6 @@ public class EchoAction implements Executable {
     @Override
     public ActionType getActionType() {
         return ActionType.ECHO;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)echoActionRule;
     }
 
     @Override

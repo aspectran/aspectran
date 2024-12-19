@@ -50,12 +50,17 @@ public class InvokeAction implements Executable {
      * Instantiates a new InvokeAction.
      * @param invokeActionRule the invoke action rule
      */
-    public InvokeAction(@NonNull InvokeActionRule invokeActionRule) {
+    public InvokeAction(InvokeActionRule invokeActionRule) {
         this.invokeActionRule = invokeActionRule;
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
+        Object bean = resolveBean(activity);
+        return execute(activity, bean);
+    }
+
+    protected Object resolveBean(@NonNull Activity activity) throws Exception {
         Object bean = null;
         if (invokeActionRule.getBeanClass() != null) {
             bean = activity.getBean(invokeActionRule.getBeanClass());
@@ -65,10 +70,10 @@ public class InvokeAction implements Executable {
         if (bean == null) {
             throw new ActionExecutionException("No bean found for " + invokeActionRule);
         }
-        return execute(activity, bean);
+        return bean;
     }
 
-    protected Object execute(Activity activity, Object bean) throws Exception {
+    private Object execute(Activity activity, Object bean) throws Exception {
         try {
             ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
             ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
@@ -144,12 +149,6 @@ public class InvokeAction implements Executable {
     @Override
     public ActionType getActionType() {
         return ActionType.ACTION;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)invokeActionRule;
     }
 
     @Override

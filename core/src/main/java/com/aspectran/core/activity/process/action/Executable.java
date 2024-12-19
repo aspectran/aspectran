@@ -20,16 +20,10 @@ import com.aspectran.core.context.rule.type.ActionType;
 
 /**
  * The Interface Executable.
- * 
+ *
  * <p>Created: 2008. 03. 23 AM 10:38:29</p>
  */
 public interface Executable {
-
-    /**
-     * Gets the action id.
-     * @return the action id
-     */
-    String getActionId();
 
     /**
      * Execute this action.
@@ -40,22 +34,27 @@ public interface Executable {
     Object execute(Activity activity) throws Exception;
 
     /**
+     * Gets the action id.
+     * @return the action id
+     */
+    default String getActionId() {
+        return null;
+    }
+
+    /**
      * Returns whether this action is hidden.
      * @return true, if is hidden action
      */
-    boolean isHidden();
+    default boolean isHidden() {
+        return false;
+    }
 
     /**
      * Gets the Action Type.
      * @return the Action Type
      */
-    ActionType getActionType();
-
-    /**
-     * Gets the action rule.
-     * @param <T> the generic type
-     * @return the action rule
-     */
-    <T> T getActionRule();
+    default ActionType getActionType() {
+        return null;
+    }
 
 }

@@ -40,12 +40,7 @@ public class ChooseAction implements Executable {
     }
 
     @Override
-    public String getActionId() {
-        return null;
-    }
-
-    @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
         if (chooseWhenRules != null) {
             for (ChooseWhenRule chooseWhenRule : chooseWhenRules) {
                 BooleanExpression booleanEvaluation = chooseWhenRule.getBooleanExpression();
@@ -55,6 +50,15 @@ public class ChooseAction implements Executable {
             }
         }
         return Void.TYPE;
+    }
+
+    public ChooseRule getChooseRule() {
+        return chooseRule;
+    }
+
+    @Override
+    public String getActionId() {
+        return null;
     }
 
     @Override
@@ -68,15 +72,9 @@ public class ChooseAction implements Executable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)chooseRule;
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("chooseRule", chooseRule);
+        tsb.append("choose", chooseRule);
         return tsb.toString();
     }
 

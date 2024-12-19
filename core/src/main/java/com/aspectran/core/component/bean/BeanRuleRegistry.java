@@ -34,7 +34,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.StringUtils;
@@ -96,11 +95,16 @@ public class BeanRuleRegistry {
     }
 
     public BeanRule getBeanRule(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         return idBasedBeanRuleMap.get(id);
     }
 
     public BeanRule[] getBeanRules(String name) throws ClassNotFoundException {
-        Assert.notNull(name, "name must not be null");
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         if (name.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = name.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             Class<?> type = classLoader.loadClass(className);
@@ -116,6 +120,9 @@ public class BeanRuleRegistry {
     }
 
     public BeanRule[] getBeanRules(Class<?> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
         Set<BeanRule> list = typeBasedBeanRuleMap.get(type);
         if (list != null && !list.isEmpty()) {
             return list.toArray(new BeanRule[0]);
@@ -125,27 +132,24 @@ public class BeanRuleRegistry {
     }
 
     public BeanRule getBeanRuleForConfig(Class<?> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
         return configurableBeanRuleMap.get(type);
     }
 
     public boolean containsBeanRule(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         return idBasedBeanRuleMap.containsKey(id);
     }
 
     public boolean containsBeanRule(Class<?> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
         return typeBasedBeanRuleMap.containsKey(type);
-    }
-
-    public Map<String, BeanRule> getIdBasedBeanRuleMap() {
-        return idBasedBeanRuleMap;
-    }
-
-    public Map<Class<?>, Set<BeanRule>> getTypeBasedBeanRuleMap() {
-        return typeBasedBeanRuleMap;
-    }
-
-    public Map<Class<?>, BeanRule> getConfigurableBeanRuleMap() {
-        return configurableBeanRuleMap;
     }
 
     public Collection<BeanRule> getIdBasedBeanRules() {
@@ -161,6 +165,9 @@ public class BeanRuleRegistry {
     }
 
     public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
+        if (annotationType == null) {
+            throw new IllegalArgumentException("annotationType must not be null");
+        }
         List<Class<?>> result = new ArrayList<>();
         for (BeanRule beanRule : configurableBeanRuleMap.values()) {
             Class<?> targetBeanClass = beanRule.getTargetBeanClass();
@@ -266,7 +273,7 @@ public class BeanRuleRegistry {
         return scanner;
     }
 
-    private void dissectBeanRule(BeanRule beanRule) throws BeanRuleException {
+    private void dissectBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
@@ -288,7 +295,7 @@ public class BeanRuleRegistry {
         }
     }
 
-    private void saveBeanRule(String beanId, BeanRule beanRule) throws BeanRuleException {
+    private void saveBeanRule(@NonNull String beanId, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (importantBeanIdSet.contains(beanId)) {
             throw new BeanRuleException("Already exists an ID-based bean that can not be overridden; Duplicated bean",
                     beanRule);
@@ -347,7 +354,9 @@ public class BeanRuleRegistry {
     }
 
     public void addInnerBeanRule(BeanRule beanRule) throws BeanRuleException {
-        Assert.notNull(beanRule, "beanRule must not be null");
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule cannot be null");
+        }
         if (!beanRule.isInnerBean()) {
             throw new BeanRuleException("Not an inner bean", beanRule);
         }
@@ -358,6 +367,9 @@ public class BeanRuleRegistry {
     }
 
     public void postProcess(ActivityRuleAssistant assistant) throws IllegalRuleException {
+        if (assistant == null) {
+            throw new IllegalArgumentException("assistant cannot be null");
+        }
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
                 if (!beanRule.isInnerBean() && beanRule.getId() != null) {
@@ -386,7 +398,7 @@ public class BeanRuleRegistry {
         parseAnnotatedConfig(assistant);
     }
 
-    private void parseAnnotatedConfig(ActivityRuleAssistant assistant) throws IllegalRuleException {
+    private void parseAnnotatedConfig(@NonNull ActivityRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relate(Class<?> targetBeanClass, @NonNull BeanRule beanRule) throws IllegalRuleException {

@@ -98,7 +98,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -114,24 +114,24 @@ public class AnnotatedConfigParser {
 
     private final EnvironmentProfiles environmentProfiles;
 
-    private final Map<String, BeanRule> idBasedBeanRuleMap;
+    private final Collection<BeanRule> idBasedBeanRules;
 
-    private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap;
+    private final Collection<Set<BeanRule>> typeBasedBeanRules;
 
-    private final Map<Class<?>, BeanRule> configurableBeanRuleMap;
+    private final Collection<BeanRule> configurableBeanRules;
 
-    private final AnnotatedConfigRelater configRelater;
+    private final AnnotatedConfigRelater relater;
 
-    public AnnotatedConfigParser(@NonNull ActivityRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
+    public AnnotatedConfigParser(@NonNull ActivityRuleAssistant assistant, AnnotatedConfigRelater relater) {
         this.environmentProfiles = assistant.getEnvironmentProfiles();
-        this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
-        this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
-        this.configurableBeanRuleMap = assistant.getBeanRuleRegistry().getConfigurableBeanRuleMap();
-        this.configRelater = configRelater;
+        this.idBasedBeanRules = assistant.getBeanRuleRegistry().getIdBasedBeanRules();
+        this.typeBasedBeanRules = assistant.getBeanRuleRegistry().getTypeBasedBeanRules();
+        this.configurableBeanRules = assistant.getBeanRuleRegistry().getConfigurableBeanRules();
+        this.relater = relater;
     }
 
     public void parse() throws IllegalRuleException {
-        if (configurableBeanRuleMap.isEmpty() && idBasedBeanRuleMap.isEmpty() && typeBasedBeanRuleMap.isEmpty()) {
+        if (configurableBeanRules.isEmpty() && idBasedBeanRules.isEmpty() && typeBasedBeanRules.isEmpty()) {
             return;
         }
 
@@ -139,11 +139,11 @@ public class AnnotatedConfigParser {
             logger.debug("Now trying to parse annotated configurations");
         }
 
-        if (!configurableBeanRuleMap.isEmpty()) {
+        if (!configurableBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing bean rules for annotated configurations: " + configurableBeanRuleMap.size());
+                logger.debug("Parsing bean rules for annotated configurations: " + configurableBeanRules.size());
             }
-            for (BeanRule beanRule : configurableBeanRuleMap.values()) {
+            for (BeanRule beanRule : configurableBeanRules) {
                 if (logger.isTraceEnabled()) {
                     logger.trace("configurableBeanRule " + beanRule);
                 }
@@ -156,11 +156,11 @@ public class AnnotatedConfigParser {
             }
         }
 
-        if (!idBasedBeanRuleMap.isEmpty()) {
+        if (!idBasedBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing for ID-based bean rules: " + idBasedBeanRuleMap.size());
+                logger.debug("Parsing for ID-based bean rules: " + idBasedBeanRules.size());
             }
-            for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
+            for (BeanRule beanRule : idBasedBeanRules) {
                 if (logger.isTraceEnabled()) {
                     logger.trace("idBasedBeanRule " + beanRule);
                 }
@@ -172,11 +172,11 @@ public class AnnotatedConfigParser {
             }
         }
 
-        if (!typeBasedBeanRuleMap.isEmpty()) {
+        if (!typeBasedBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing for type-based bean rules: " + typeBasedBeanRuleMap.size());
+                logger.debug("Parsing for type-based bean rules: " + typeBasedBeanRules.size());
             }
-            for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
+            for (Set<BeanRule> set : typeBasedBeanRules) {
                 for (BeanRule beanRule : set) {
                     if (!beanRule.isFactoryOffered()) {
                         if (logger.isTraceEnabled()) {
@@ -261,7 +261,7 @@ public class AnnotatedConfigParser {
             AutowireRule autowireRule = createAutowireRuleForConstructor(candidate);
             if (autowireRule != null) {
                 beanRule.setConstructorAutowireRule(autowireRule);
-                configRelater.relate(autowireRule);
+                relater.relate(autowireRule);
             }
         }
     }
@@ -278,12 +278,12 @@ public class AnnotatedConfigParser {
                 if (field.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForField(field);
                     beanRule.addAutowireRule(autowireRule);
-                    configRelater.relate(autowireRule);
+                    relater.relate(autowireRule);
                 } else if (field.isAnnotationPresent(Value.class)) {
                     AutowireRule autowireRule = createAutowireRuleForFieldValue(field);
                     if (autowireRule != null) {
                         beanRule.addAutowireRule(autowireRule);
-                        configRelater.relate(autowireRule);
+                        relater.relate(autowireRule);
                     }
                 }
             }
@@ -304,7 +304,7 @@ public class AnnotatedConfigParser {
                     AutowireRule autowireRule = createAutowireRuleForMethod(method);
                     if (autowireRule != null) {
                         beanRule.addAutowireRule(autowireRule);
-                        configRelater.relate(autowireRule);
+                        relater.relate(autowireRule);
                     }
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
@@ -392,16 +392,16 @@ public class AnnotatedConfigParser {
             String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.value()) : null);
             if (method.isAnnotationPresent(Before.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
+                aspectAdviceRule.setAdviceAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
+                aspectAdviceRule.setAdviceAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Around.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
+                aspectAdviceRule.setAdviceAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(Finally.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
-                aspectAdviceRule.setExecutableAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
+                aspectAdviceRule.setAdviceAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 Class<? extends Throwable>[] types = exceptionThrownAnno.value();
@@ -433,7 +433,7 @@ public class AnnotatedConfigParser {
             aspectRule.setDescriptionRule(descriptionRule);
         }
 
-        configRelater.relate(aspectRule);
+        relater.relate(aspectRule);
     }
 
     private void parseBeanRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
@@ -476,7 +476,7 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-        configRelater.relate(targetBeanClass, beanRule);
+        relater.relate(targetBeanClass, beanRule);
     }
 
     private void parseFactoryBeanRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
@@ -529,7 +529,7 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-        configRelater.relate(targetBeanClass, beanRule);
+        relater.relate(targetBeanClass, beanRule);
     }
 
     private void parseScheduleRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
@@ -576,7 +576,7 @@ public class AnnotatedConfigParser {
             scheduleRule.setDescriptionRule(descriptionRule);
         }
 
-        configRelater.relate(scheduleRule);
+        relater.relate(scheduleRule);
     }
 
     private void parseTransletRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
@@ -717,7 +717,7 @@ public class AnnotatedConfigParser {
             transletRule.setDescriptionRule(descriptionRule);
         }
 
-        configRelater.relate(transletRule);
+        relater.relate(transletRule);
     }
 
     @NonNull
@@ -967,7 +967,7 @@ public class AnnotatedConfigParser {
         annotatedActionRule.setBeanClass(beanClass);
         annotatedActionRule.setMethod(method);
         annotatedActionRule.setParameterBindingRules(createParameterBindingRules(method));
-        return new AnnotatedAdviceAction(annotatedActionRule, aspectAdviceRule);
+        return new AnnotatedAdviceAction(aspectAdviceRule, annotatedActionRule);
     }
 
     @Nullable

@@ -40,12 +40,12 @@ public class IncludeAction implements Executable {
      * Instantiates a new IncludeAction.
      * @param includeActionRule the process call action rule
      */
-    public IncludeAction(@NonNull IncludeActionRule includeActionRule) {
+    public IncludeAction(IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
         try {
             InstantActivity instantActivity = new InstantActivity(activity);
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
@@ -88,12 +88,6 @@ public class IncludeAction implements Executable {
     @Override
     public ActionType getActionType() {
         return ActionType.INCLUDE;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)getIncludeActionRule();
     }
 
     @Override

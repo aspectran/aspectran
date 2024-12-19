@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class HeaderAction implements Executable {
     }
 
     @Override
-    public Object execute(Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws Exception {
         ItemRuleMap itemRuleMap = headerActionRule.getHeaderItemRuleMap();
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return Void.TYPE;
@@ -95,15 +96,9 @@ public class HeaderAction implements Executable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)getHeaderActionRule();
-    }
-
-    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("headerActionRule", headerActionRule);
+        tsb.append("header", headerActionRule);
         return tsb.toString();
     }
 

@@ -274,6 +274,14 @@ public interface Activity {
      */
     <V> V getAspectAdviceBean(String aspectId);
 
+    <V> V getBeforeAdviceResult(String aspectId);
+
+    <V> V getAfterAdviceResult(String aspectId);
+
+    <V> V getAroundAdviceResult(String aspectId);
+
+    <V> V getFinallyAdviceResult(String aspectId);
+
     /**
      * Returns an instance of the bean that matches the given id.
      * @param <V> the type of bean object retrieved

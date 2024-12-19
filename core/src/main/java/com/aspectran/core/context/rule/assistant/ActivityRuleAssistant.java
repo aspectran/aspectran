@@ -128,16 +128,13 @@ public class ActivityRuleAssistant {
 
         if (!shallow) {
             aspectRuleRegistry = new AspectRuleRegistry();
-
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
-
             transletRuleRegistry = new TransletRuleRegistry(getBasePath(), classLoader);
-            transletRuleRegistry.setAssistantLocal(assistantLocal);
-
             scheduleRuleRegistry = new ScheduleRuleRegistry();
-            scheduleRuleRegistry.setAssistantLocal(assistantLocal);
-
             templateRuleRegistry = new TemplateRuleRegistry();
+
+            transletRuleRegistry.setAssistantLocal(assistantLocal);
+            scheduleRuleRegistry.setAssistantLocal(assistantLocal);
             templateRuleRegistry.setAssistantLocal(assistantLocal);
 
             beanReferenceInspector = new BeanReferenceInspector();
