@@ -71,7 +71,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
     public void setCurrentActivity(@NonNull Activity activity) {
         Assert.state(this.activity == null, "Current activity already injected");
         this.activity = activity;
-        if (activity.getTranslet() != null && attributeName != null) {
+        if (activity.hasTranslet() && attributeName != null) {
             activity.getTranslet().setAttribute(attributeName, activity.getActivityData());
         }
     }

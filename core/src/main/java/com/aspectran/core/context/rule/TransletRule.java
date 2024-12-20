@@ -84,7 +84,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the translet name.
-     *
      * @return the translet name
      */
     public String getName() {
@@ -92,9 +91,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     /**
-     * Sets the name.
-     *
-     * @param name the new name
+     * Sets the translet name.
+     * @param name the new translet name
      */
     public void setName(String name) {
         this.name = name;
@@ -102,7 +100,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Returns the array of methods allowed on the requested resource.
-     *
      * @return the allowed methods
      */
     public MethodType[] getAllowedMethods() {
@@ -111,7 +108,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the array of methods allowed on the requested resource.
-     *
      * @param allowedMethods the allowed methods
      */
     public void setAllowedMethods(MethodType[] allowedMethods) {
@@ -120,7 +116,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the name pattern.
-     *
      * @return the name pattern
      */
     public WildcardPattern getNamePattern() {
@@ -129,7 +124,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the name pattern.
-     *
      * @param namePattern the new name pattern
      */
     public void setNamePattern(WildcardPattern namePattern) {
@@ -138,7 +132,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the name tokens.
-     *
      * @return the name tokens
      */
     public Token[] getNameTokens() {
@@ -147,7 +140,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the name tokens.
-     *
      * @param nameTokens the new name tokens
      */
     public void setNameTokens(Token[] nameTokens) {
@@ -156,7 +148,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the scan path.
-     *
      * @return the scan path
      */
     public String getScanPath() {
@@ -165,7 +156,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the scan path.
-     *
      * @param scanPath the new scan path
      */
     public void setScanPath(String scanPath) {
@@ -174,7 +164,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the mask pattern.
-     *
      * @return the mask pattern
      */
     public String getMaskPattern() {
@@ -183,7 +172,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the mask pattern.
-     *
      * @param maskPattern the new mask pattern
      */
     public void setMaskPattern(String maskPattern) {
@@ -192,7 +180,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the filter parameters.
-     *
      * @return the filter parameters
      */
     public FilterParameters getFilterParameters() {
@@ -201,7 +188,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the filter parameters.
-     *
      * @param filterParameters the new filter parameters
      */
     public void setFilterParameters(FilterParameters filterParameters) {
@@ -226,7 +212,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the request rule.
-     *
      * @return the request rule
      */
     public RequestRule getRequestRule() {
@@ -235,7 +220,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the request rule.
-     *
      * @param requestRule the new request rule
      */
     public void setRequestRule(RequestRule requestRule) {
@@ -459,12 +443,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("async", async);
         tsb.append("timeout", timeout);
         if (requestRule != null &&
-                (requestRule.getAllowedMethod() != null || requestRule.getEncoding() != null ||
-                        requestRule.getParameterItemRuleMap() != null || requestRule.getAttributeItemRuleMap() != null)) {
+                (requestRule.getAllowedMethod() != null ||
+                    requestRule.getEncoding() != null ||
+                    requestRule.getParameterItemRuleMap() != null ||
+                    requestRule.getAttributeItemRuleMap() != null)) {
             tsb.append("requestRule", requestRule);
         }
         if (responseRule != null &&
-                (responseRule.getEncoding() != null || responseRule.getResponse() != null)) {
+                (responseRule.getEncoding() != null ||
+                    responseRule.getResponse() != null)) {
             tsb.append("responseRule", responseRule);
         }
         tsb.append("exceptionRule", exceptionRule);
@@ -472,32 +459,37 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @NonNull
-    public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method,
-                                           Boolean async, String timeout) throws IllegalRuleException {
+    public static TransletRule newInstance(
+            String name, String scanPath, String maskPattern, String method,
+            Boolean async, String timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, parseTimeout(timeout));
     }
 
     @NonNull
-    public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method,
-                                           Boolean async, Long timeout) throws IllegalRuleException {
+    public static TransletRule newInstance(
+            String name, String scanPath, String maskPattern, String method,
+            Boolean async, Long timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, timeout);
     }
 
     @NonNull
-    public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
-                                           Boolean async, String timeout) throws IllegalRuleException {
+    public static TransletRule newInstance(
+            String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
+            Boolean async, String timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, allowedMethods, async, parseTimeout(timeout));
     }
 
     @NonNull
-    public static TransletRule newInstance(String name, MethodType[] allowedMethods, Boolean async, Long timeout)
+    public static TransletRule newInstance(
+            String name, MethodType[] allowedMethods, Boolean async, Long timeout)
             throws IllegalRuleException {
         return newInstance(name, null, null, allowedMethods, async, timeout);
     }
 
     @NonNull
-    private static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
-                                            Boolean async, Long timeout) throws IllegalRuleException {
+    private static TransletRule newInstance(
+            String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
+            Boolean async, Long timeout) throws IllegalRuleException {
         if (name == null && scanPath == null) {
             throw new IllegalRuleException("The 'translet' element requires a 'name' attribute");
         }

@@ -99,7 +99,7 @@ public class InstantActivity extends CoreActivity {
             setSessionAdapter(getParentActivity().getSessionAdapter());
         }
         if (getRequestAdapter() == null) {
-            MethodType requestMethod = (getTranslet() != null ? getTranslet().getRequestMethod() : null);
+            MethodType requestMethod = (hasTranslet() ? getTranslet().getRequestMethod() : null);
             DefaultRequestAdapter requestAdapter = new DefaultRequestAdapter(requestMethod);
             setRequestAdapter(requestAdapter);
         }

@@ -65,7 +65,12 @@ public class DefaultActivity extends AbstractActivity {
 
     @Override
     public Translet getTranslet() {
-        return null;
+        throw new UnsupportedOperationException("No Translet");
+    }
+
+    @Override
+    public boolean hasTranslet() {
+        return false;
     }
 
     @Override

@@ -319,7 +319,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     private boolean isAcceptable(@NonNull AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
-            if (getTranslet() == null) {
+            if (!hasTranslet()) {
                 return false;
             }
             MethodType requestMethod = getTranslet().getRequestMethod();
@@ -358,9 +358,9 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                     try {
                         Object resultValue = action.execute(this);
-                        if (getTranslet() != null && !action.isHidden() && resultValue != Void.TYPE) {
-                            if (resultValue instanceof ProcessResult) {
-                                getTranslet().setProcessResult((ProcessResult)resultValue);
+                        if (hasTranslet() && !action.isHidden() && resultValue != Void.TYPE) {
+                            if (resultValue instanceof ProcessResult processResult) {
+                                getTranslet().setProcessResult(processResult);
                             } else {
                                 ProcessResult processResult = getTranslet().getProcessResult();
                                 ContentResult contentResult;

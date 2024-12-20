@@ -265,8 +265,8 @@ public class CoreTranslet extends AbstractTranslet {
         if (transformRule == null) {
             throw new IllegalArgumentException("transformRule must not be null");
         }
-        Response res = TransformResponseFactory.create(transformRule);
-        response(res);
+        Response resp = TransformResponseFactory.create(transformRule);
+        response(resp);
     }
 
     @Override
@@ -274,8 +274,8 @@ public class CoreTranslet extends AbstractTranslet {
         if (transformer == null) {
             throw new IllegalArgumentException("transformer must not be null");
         }
-        Response res = new CustomTransformResponse(transformer);
-        response(res);
+        Response resp = new CustomTransformResponse(transformer);
+        response(resp);
     }
 
     @Override
@@ -296,8 +296,8 @@ public class CoreTranslet extends AbstractTranslet {
         if (dispatchRule == null) {
             throw new IllegalArgumentException("transformRule must not be null");
         }
-        Response res = new DispatchResponse(dispatchRule);
-        response(res);
+        Response resp = new DispatchResponse(dispatchRule);
+        response(resp);
     }
 
     @Override
@@ -315,8 +315,8 @@ public class CoreTranslet extends AbstractTranslet {
         if (forwardRule.getTransletName() == null) {
             forwardRule.setTransletName(StringUtils.EMPTY);
         }
-        Response res = new ForwardResponse(forwardRule);
-        response(res);
+        Response resp = new ForwardResponse(forwardRule);
+        response(resp);
     }
 
     @Override
@@ -337,8 +337,8 @@ public class CoreTranslet extends AbstractTranslet {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
         }
-        Response res = new RedirectResponse(redirectRule);
-        response(res);
+        Response resp = new RedirectResponse(redirectRule);
+        response(resp);
     }
 
     @Override

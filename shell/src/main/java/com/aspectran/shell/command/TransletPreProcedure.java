@@ -42,8 +42,6 @@ import static com.aspectran.shell.console.ShellConsole.MASK_CHAR;
 
 public class TransletPreProcedure {
 
-    private final ShellService shellService;
-
     private final ShellConsole console;
 
     private final TransletRule transletRule;
@@ -54,10 +52,9 @@ public class TransletPreProcedure {
 
     private boolean readSimply;
 
-    public TransletPreProcedure(@NonNull ShellService shellService, @NonNull TransletRule transletRule,
+    public TransletPreProcedure(@NonNull ShellConsole console, @NonNull TransletRule transletRule,
                                 @NonNull ParameterMap parameterMap, boolean procedural) {
-        this.shellService = shellService;
-        this.console = shellService.getConsole();
+        this.console = console;
         this.transletRule = transletRule;
         this.parameterMap = parameterMap;
         this.procedural = procedural;

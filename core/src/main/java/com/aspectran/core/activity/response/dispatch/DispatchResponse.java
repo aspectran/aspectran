@@ -150,14 +150,14 @@ public class DispatchResponse implements Response {
             for (ContentResult contentResult : processResult) {
                 for (ActionResult actionResult : contentResult) {
                     Object actionResultValue = actionResult.getResultValue();
-                    if (actionResultValue instanceof ProcessResult) {
-                        saveAttributes(requestAdapter, (ProcessResult)actionResultValue);
+                    if (actionResultValue instanceof ProcessResult result) {
+                        saveAttributes(requestAdapter, result);
                     } else {
                         String actionId = actionResult.getActionId();
                         if (actionId != null) {
                             requestAdapter.setAttribute(actionId, actionResultValue);
-                        } else if (actionResultValue instanceof Map<?, ?>) {
-                            for (Map.Entry<?, ?> entry : ((Map<?, ?>)actionResultValue).entrySet()) {
+                        } else if (actionResultValue instanceof Map<?, ?> valueMap) {
+                            for (Map.Entry<?, ?> entry : valueMap.entrySet()) {
                                 String name = entry.getKey().toString();
                                 Object value = entry.getValue();
                                 requestAdapter.setAttribute(name, value);

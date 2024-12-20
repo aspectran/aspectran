@@ -95,7 +95,7 @@ public class InvokeAction implements Executable {
             } else {
                 String methodName = invokeActionRule.getMethodName();
                 Object result;
-                if (activity.getTranslet() != null) {
+                if (activity.hasTranslet()) {
                     if (requiresTranslet == null) {
                         try {
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, true);

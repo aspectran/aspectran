@@ -56,7 +56,7 @@ public abstract class AbstractBeanProxy {
             throws AdviceConstraintViolationException, AspectAdviceException {
         String requestName;
         boolean literalPattern;
-        if (activity.getTranslet() != null) {
+        if (activity.hasTranslet()) {
             requestName = activity.getTranslet().getRequestName();
             literalPattern = !activity.getTranslet().hasPathVariables();
         } else {

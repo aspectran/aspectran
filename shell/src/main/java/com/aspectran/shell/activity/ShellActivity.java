@@ -194,7 +194,7 @@ public class ShellActivity extends CoreActivity {
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         TransletPreProcedure procedure = new TransletPreProcedure(
-                shellService, getTransletRule(), getParameterMap(), isProcedural());
+                console, getTransletRule(), getParameterMap(), isProcedural());
         procedure.printDescription(this);
         try {
             procedure.proceed();

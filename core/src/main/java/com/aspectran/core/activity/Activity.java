@@ -141,6 +141,8 @@ public interface Activity {
      */
     Translet getTranslet();
 
+    boolean hasTranslet();
+
     /**
      * Returns the process result.
      * @return the process result

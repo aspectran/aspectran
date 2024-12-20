@@ -220,22 +220,11 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    protected boolean isAdapted() {
-        return adapted;
-    }
-
     protected void adapt() throws AdapterException {
         adapted = true;
     }
 
-    protected boolean isRequestParsed() {
-        return requestParsed;
-    }
-
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (translet == null) {
-            throw new IllegalStateException("No Translet");
-        }
         parseDeclaredParameters();
         parseDeclaredAttributes();
         parsePathVariables();
@@ -367,12 +356,12 @@ public class CoreActivity extends AdviceActivity {
     private void produce() throws ActionExecutionException {
         ContentList contentList = getTransletRule().getContentList();
         if (contentList != null) {
-            ProcessResult processResult = translet.getProcessResult();
+            ProcessResult processResult = getTranslet().getProcessResult();
             if (processResult == null) {
                 processResult = new ProcessResult(contentList.size());
                 processResult.setName(contentList.getName());
                 processResult.setExplicit(contentList.isExplicit());
-                translet.setProcessResult(processResult);
+                getTranslet().setProcessResult(processResult);
             }
             for (ActionList actionList : contentList) {
                 execute(actionList);
@@ -396,14 +385,14 @@ public class CoreActivity extends AdviceActivity {
             return null;
         }
 
-        Response res = getResponse();
-        if (res != null) {
-            res.commit(this);
+        Response resp = getResponse();
+        if (resp != null) {
+            resp.commit(this);
             if (isExceptionRaised()) {
                 clearRaisedException();
             }
-            if (res.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse)res;
+            if (resp.getResponseType() == ResponseType.FORWARD) {
+                ForwardResponse forwardResponse = (ForwardResponse)resp;
                 return forwardResponse.getForwardRule();
             }
         }
@@ -424,7 +413,7 @@ public class CoreActivity extends AdviceActivity {
         reserveResponse(null);
         committed = false;
 
-        if (translet != null && getTransletRule().getExceptionRule() != null) {
+        if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
             handleException(getTransletRule().getExceptionRule());
         }
         if (getExceptionRuleList() != null) {
@@ -455,10 +444,10 @@ public class CoreActivity extends AdviceActivity {
 
     protected void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
-            ProcessResult processResult = translet.getProcessResult();
+            ProcessResult processResult = getTranslet().getProcessResult();
             if (processResult == null) {
                 processResult = new ProcessResult(2); // Consider adding one when an exception occurs
-                translet.setProcessResult(processResult);
+                getTranslet().setProcessResult(processResult);
             }
             contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
             if (contentResult == null) {
@@ -487,7 +476,6 @@ public class CoreActivity extends AdviceActivity {
             if (logger.isDebugEnabled()) {
                 logger.debug("Action " + action);
             }
-
             if (action.getActionType() == ActionType.CHOOSE) {
                 Object resultValue = action.execute(this);
                 if (resultValue != Void.TYPE) {
@@ -501,8 +489,8 @@ public class CoreActivity extends AdviceActivity {
             } else {
                 Object resultValue = action.execute(this);
                 if (!action.isHidden() && contentResult != null && resultValue != Void.TYPE) {
-                    if (resultValue instanceof ProcessResult) {
-                        contentResult.addActionResult(action, (ProcessResult)resultValue);
+                    if (resultValue instanceof ProcessResult processResult) {
+                        contentResult.addActionResult(action, processResult);
                     } else {
                         contentResult.addActionResult(action, resultValue);
                     }
@@ -520,7 +508,7 @@ public class CoreActivity extends AdviceActivity {
     @Override
     protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
-        if (translet != null && exceptionThrownRule != null && !isResponseReserved()) {
+        if (hasTranslet() && exceptionThrownRule != null && !isResponseReserved()) {
             Response response = getDesiredResponse();
             String contentType = (response != null ? response.getContentType() : null);
             Response targetResponse = exceptionThrownRule.getResponse(contentType);
@@ -532,43 +520,55 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private Response getResponse() {
-        Response res = this.reservedResponse;
-        if (res == null && !isExceptionRaised()) {
-            res = getDeclaredResponse();
+        Response resp = this.reservedResponse;
+        if (resp == null && !isExceptionRaised()) {
+            resp = getDeclaredResponse();
         }
-        return res;
+        return resp;
+    }
+
+    @Override
+    public Response getDeclaredResponse() {
+        return (getResponseRule() != null ? getResponseRule().getResponse() : null);
     }
 
     protected void reserveResponse(@Nullable Response response) {
-        this.reservedResponse = response;
+        reservedResponse = response;
         if (response != null && !isExceptionRaised()) {
-            this.desiredResponse = response;
+            desiredResponse = response;
         }
     }
 
     protected void reserveResponse() {
-        if (this.reservedResponse == null) {
-            this.reservedResponse = getDeclaredResponse();
+        if (reservedResponse == null) {
+            reservedResponse = getDeclaredResponse();
         }
     }
 
     @Override
     public boolean isResponseReserved() {
-        return (this.reservedResponse != null);
+        return (reservedResponse != null);
     }
 
     protected Response getDesiredResponse() {
-        return (this.desiredResponse != null ? this.desiredResponse : getDeclaredResponse());
+        return (desiredResponse != null ? desiredResponse : getDeclaredResponse());
     }
 
     @Override
     public boolean isCommitted() {
-        return false;
+        return committed;
     }
 
     @Override
-    public Translet getTranslet() {
+    public CoreTranslet getTranslet() {
+        if (translet == null) {
+            throw new IllegalStateException("No Translet");
+        }
         return translet;
+    }
+
+    public boolean hasTranslet() {
+        return (translet != null);
     }
 
     @Override
@@ -578,8 +578,8 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public Object getProcessResult(String actionId) {
-        if (translet != null) {
-            return translet.getProcessResult().getResultValue(actionId);
+        if (getProcessResult() != null) {
+            return getProcessResult().getResultValue(actionId);
         } else {
             return null;
         }
@@ -600,20 +600,15 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected TransletRule getTransletRule() {
-        return translet.getTransletRule();
+        return getTranslet().getTransletRule();
     }
 
     protected RequestRule getRequestRule() {
-        return translet.getRequestRule();
+        return getTranslet().getRequestRule();
     }
 
     protected ResponseRule getResponseRule() {
-        return translet.getResponseRule();
-    }
-
-    @Override
-    public Response getDeclaredResponse() {
-        return (getResponseRule() != null ? getResponseRule().getResponse() : null);
+        return getTranslet().getResponseRule();
     }
 
     /**
@@ -706,9 +701,9 @@ public class CoreActivity extends AdviceActivity {
     private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
-            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRequestName());
+            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, getTranslet().getRequestName());
             if (pathVariables != null) {
-                pathVariables.applyTo(translet);
+                pathVariables.applyTo(getTranslet());
             }
         }
     }
