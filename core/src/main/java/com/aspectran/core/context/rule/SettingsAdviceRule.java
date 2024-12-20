@@ -92,7 +92,7 @@ public class SettingsAdviceRule {
             SettingsParameters settingsParameters = new SettingsParameters();
             try {
                 Parameters parameters = new VariableParameters(apon);
-                for (String name : parameters.getParameterNameSet()) {
+                for (String name : parameters.getParameterNames()) {
                     settingsParameters.putSetting(name, parameters.getValue(name));
                 }
             } catch (IOException e) {

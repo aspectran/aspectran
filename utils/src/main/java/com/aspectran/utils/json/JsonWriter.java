@@ -22,7 +22,6 @@ import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
-import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
 
 import java.io.BufferedReader;
@@ -252,8 +251,7 @@ public class JsonWriter {
             writeNumber(number);
         } else if (object instanceof Parameters parameters) {
             beginObject();
-            Map<String, ParameterValue> params = parameters.getParameterValueMap();
-            for (Parameter p : params.values()) {
+            for (Parameter p : parameters.getParameterValues()) {
                 String name = p.getName();
                 Object value = p.getValue();
                 writeName(name);

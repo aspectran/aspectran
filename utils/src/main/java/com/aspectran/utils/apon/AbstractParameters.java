@@ -65,7 +65,6 @@ public abstract class AbstractParameters implements Parameters {
                 if (pk.getAltNames() != null) {
                     for (String altName : pk.getAltNames()) {
                         altValueMap.put(altName, pv);
-                        parameterNames.add(altName);
                     }
                 }
             }
@@ -161,20 +160,14 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     @NonNull
-    public Map<String, ParameterValue> getParameterValueMap() {
-        return parameterValueMap;
+    public Collection<ParameterValue> getParameterValues() {
+        return parameterValueMap.values();
     }
 
     @Override
     @NonNull
     public String[] getParameterNames() {
-        return getParameterNameSet().toArray(new String[0]);
-    }
-
-    @Override
-    @NonNull
-    public Set<String> getParameterNameSet() {
-        return (parameterNames != null ? parameterNames : parameterValueMap.keySet());
+        return parameterValueMap.keySet().toArray(new String[0]);
     }
 
     @Override
@@ -245,10 +238,10 @@ public abstract class AbstractParameters implements Parameters {
         if (structureFixed) {
             throw new IllegalStateException("Not allowed in fixed structures");
         }
-        for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
+        for (ParameterValue parameterValue : parameters.getParameterValues()) {
             parameterValue.setContainer(this);
+            parameterValueMap.put(parameterValue.getName(), parameterValue);
         }
-        parameterValueMap.putAll(parameters.getParameterValueMap());
     }
 
     @Override
@@ -791,7 +784,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public void updateContainer(@NonNull Parameters container) {
-        for (ParameterValue parameterValue : container.getParameterValueMap().values()) {
+        for (ParameterValue parameterValue : container.getParameterValues()) {
             parameterValue.setContainer(container);
         }
     }

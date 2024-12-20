@@ -17,7 +17,6 @@ package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
-import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
 
 import java.lang.reflect.Array;
@@ -321,8 +320,7 @@ public class ToStringBuilder {
     private void appendValue(@NonNull Parameters parameters) {
         appendOpenBrace();
         int index = buffer.length();
-        Map<String, ParameterValue> params = parameters.getParameterValueMap();
-        for (Parameter p : params.values()) {
+        for (Parameter p : parameters.getParameterValues()) {
             String name = p.getName();
             Object value = p.getValue();
             if (value != null) {

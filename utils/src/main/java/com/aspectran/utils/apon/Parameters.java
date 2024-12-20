@@ -17,9 +17,8 @@ package com.aspectran.utils.apon;
 
 import java.io.File;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The Interface Parameters.
@@ -82,23 +81,13 @@ public interface Parameters {
 
     ParameterValue getParameterValue(ParameterKey key);
 
-    /**
-     * Returns a map of the {@code ParameterValue}s.
-     * @return a map of the {@code ParameterValue}s
-     */
-    Map<String, ParameterValue> getParameterValueMap();
+    Collection<ParameterValue> getParameterValues();
 
     /**
-     * Returns all the parameter names associated with this {@code Parameters}.
+     * Returns all parameter names associated with this {@code Parameters}.
      * @return an array of all parameter names associated with this {@code Parameters}
      */
     String[] getParameterNames();
-
-    /**
-     * Returns all the parameter names associated with this {@code Parameters}.
-     * @return the Set with all parameter names associated with this {@code Parameters}
-     */
-    Set<String> getParameterNameSet();
 
     /**
      * Returns whether this parameter exists.

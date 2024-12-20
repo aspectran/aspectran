@@ -204,7 +204,7 @@ public class AponReader {
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
 
-                parameterValue = container.getParameterValueMap().get(name);
+                parameterValue = container.getParameterValue(name);
 
                 if (parameterValue != null) {
                     valueType = parameterValue.getValueType();
@@ -213,7 +213,7 @@ public class AponReader {
                     if (valueType != null) {
                         valueTypeHinted = true;
                         name = ValueType.stripHint(name);
-                        parameterValue = container.getParameterValueMap().get(name);
+                        parameterValue = container.getParameterValue(name);
                         if (parameterValue != null) {
                             valueType = parameterValue.getValueType();
                         }

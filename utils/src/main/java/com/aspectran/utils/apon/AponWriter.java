@@ -192,7 +192,7 @@ public class AponWriter implements Flushable {
         if (parameters instanceof ArrayParameters arrayParameters) {
             for (Parameters ps : arrayParameters.getParametersList()) {
                 beginBlock();
-                for (Parameter pv : ps.getParameterValueMap().values()) {
+                for (Parameter pv : ps.getParameterValues()) {
                     if (nullWritable || pv.isAssigned()) {
                         write(pv);
                     }
@@ -200,7 +200,7 @@ public class AponWriter implements Flushable {
                 endBlock();
             }
         } else {
-            for (Parameter pv : parameters.getParameterValueMap().values()) {
+            for (Parameter pv : parameters.getParameterValues()) {
                 if (nullWritable || pv.isAssigned()) {
                     write(pv);
                 }
