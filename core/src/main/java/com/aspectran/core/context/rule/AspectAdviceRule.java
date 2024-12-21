@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.AdviceAction;
+import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
@@ -24,6 +25,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Advices are actions taken for a particular join point.
@@ -56,7 +58,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
             throw new IllegalArgumentException("aspectRule must not be null");
         }
         if (aspectAdviceType == null) {
-            throw new IllegalArgumentException("adviceType must not be null");
+            throw new IllegalArgumentException("aspectAdviceType must not be null");
         }
         this.aspectRule = aspectRule;
         this.aspectId = aspectRule.getId();
@@ -163,7 +165,30 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         if (adviceBeanId == null) {
             tsb.append("bean", adviceBeanClass);
         }
-        tsb.append("action", adviceAction);
+        tsb.append("action", toString(adviceAction, null));
+        return tsb.toString();
+    }
+
+    public static String toString(@NonNull Executable adviceAction, @Nullable AspectAdviceRule aspectAdviceRule) {
+        if (adviceAction instanceof AdviceAction || adviceAction instanceof AnnotatedAdviceAction) {
+            return adviceAction.toString();
+        }
+        ToStringBuilder tsb = new ToStringBuilder();
+        if (aspectAdviceRule != null) {
+            tsb.append("type", aspectAdviceRule.getAspectAdviceType());
+        }
+        if (adviceAction.getActionType() != null) {
+            tsb.append("action", adviceAction.toString());
+        } else {
+            tsb.append("instance", adviceAction.toString());
+        }
+        if (aspectAdviceRule != null && aspectAdviceRule.getAspectRule() != null) {
+            int order = aspectAdviceRule.getAspectRule().getOrder();
+            if (order != Integer.MAX_VALUE) {
+                tsb.append("order", order);
+            }
+            tsb.append("isolated", aspectAdviceRule.getAspectRule().getIsolated());
+        }
         return tsb.toString();
     }
 

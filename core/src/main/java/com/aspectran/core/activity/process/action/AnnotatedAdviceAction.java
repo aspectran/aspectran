@@ -61,7 +61,7 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", aspectAdviceRule.getAspectAdviceType());
-        tsb.append("annotated", getAnnotatedActionRule());
+        tsb.append("action", super.toString());
         if (aspectAdviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
             tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
         }

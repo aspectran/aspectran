@@ -268,7 +268,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         Executable action = aspectAdviceRule.getAdviceAction();
         if (action != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Advice " + action);
+                logger.debug("Advice " + AspectAdviceRule.toString(action, aspectAdviceRule));
             }
 
             AspectAdviceRule oldAdviceRule = currentAdviceRule;

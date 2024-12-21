@@ -765,7 +765,7 @@ public class RulesToParameters {
     }
 
     private static void toActionParameters(@NonNull Executable action, Parameters parameters) {
-        if (action.getActionType() == ActionType.ACTION) {
+        if (action.getActionType() == ActionType.INVOKE) {
             InvokeActionRule invokeActionRule = ((InvokeAction)action).getInvokeActionRule();
             if (invokeActionRule.getBeanId() != null) {
                 parameters.putValue("action", toActionParameters(invokeActionRule));

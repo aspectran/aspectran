@@ -57,16 +57,6 @@ public class ChooseAction implements Executable {
     }
 
     @Override
-    public String getActionId() {
-        return null;
-    }
-
-    @Override
-    public boolean isHidden() {
-        return false;
-    }
-
-    @Override
     public ActionType getActionType() {
         return ActionType.CHOOSE;
     }
@@ -74,7 +64,7 @@ public class ChooseAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("choose", chooseRule);
+        tsb.append(getActionType().toString(), chooseRule);
         return tsb.toString();
     }
 

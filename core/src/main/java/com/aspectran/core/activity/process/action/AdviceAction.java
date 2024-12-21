@@ -65,7 +65,7 @@ public class AdviceAction extends InvokeAction {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", aspectAdviceRule.getAspectAdviceType());
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
-            tsb.append("invoke", getInvokeActionRule());
+            tsb.append("action", super.toString());
         } else {
             if (getInvokeActionRule().getMethod() != null) {
                 tsb.append("method", getInvokeActionRule().getMethod());

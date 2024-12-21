@@ -19,15 +19,15 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Supported action types.
- * 
+ *
  * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
 public enum ActionType {
 
     HEADER("header"),
     ECHO("echo"),
-    ACTION("action"),
-    ACTION_ANNOTATED("annotatedAction"),
+    INVOKE("invoke"),
+    INVOKE_ANNOTATED("annotated"),
     INCLUDE("include"),
     CHOOSE("choose");
 

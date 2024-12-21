@@ -119,19 +119,14 @@ public class AnnotatedAction implements Executable {
     }
 
     @Override
-    public boolean isHidden() {
-        return false;
-    }
-
-    @Override
     public ActionType getActionType() {
-        return ActionType.ACTION_ANNOTATED;
+        return ActionType.INVOKE_ANNOTATED;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("annotated", annotatedActionRule);
+        tsb.append(getActionType().toString(), annotatedActionRule);
         return tsb.toString();
     }
 
