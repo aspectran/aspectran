@@ -17,6 +17,7 @@ package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.adapter.AbstractWebRequestAdapter;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
@@ -28,7 +29,6 @@ import io.undertow.util.LocaleUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -91,15 +91,15 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
             getParameterMap().put(name, values);
         }
         String contentType = exchange.getRequestHeaders().getFirst(Headers.CONTENT_TYPE);
-        if (contentType != null) {
-            MediaType mediaType = MediaType.parseMediaType(contentType);
-            setMediaType(mediaType);
-            if (mediaType.getCharset() != null) {
-                try {
+        if (StringUtils.hasLength(contentType)) {
+            try {
+                MediaType mediaType = MediaType.parseMediaType(contentType);
+                setMediaType(mediaType);
+                if (mediaType.getCharset() != null) {
                     setEncoding(mediaType.getCharset().name());
-                } catch (UnsupportedEncodingException e) {
-                    // ignored
                 }
+            } catch (Exception e) {
+                // ignored
             }
         }
         String acceptLanguage = exchange.getRequestHeaders().getFirst(Headers.ACCEPT_LANGUAGE);

@@ -18,6 +18,7 @@ package com.aspectran.web.adapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
@@ -105,15 +106,15 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         }
 
         String contentType = request.getContentType();
-        if (contentType != null) {
-            MediaType mediaType = MediaType.parseMediaType(contentType);
-            setMediaType(mediaType);
-            if (mediaType.getCharset() != null) {
-                try {
+        if (StringUtils.hasLength(contentType)) {
+            try {
+                MediaType mediaType = MediaType.parseMediaType(contentType);
+                setMediaType(mediaType);
+                if (mediaType.getCharset() != null) {
                     setEncoding(mediaType.getCharset().name());
-                } catch (UnsupportedEncodingException e) {
-                    // ignored
                 }
+            } catch (Exception e) {
+                // ignored
             }
         }
 
