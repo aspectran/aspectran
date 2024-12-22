@@ -92,4 +92,6 @@ public interface BeanRegistry {
 
     void destroySingleton(Object bean) throws Exception;
 
+    boolean isAvailable();
+
 }
