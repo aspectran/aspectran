@@ -244,7 +244,7 @@ public abstract class CyclicTimeout implements Destroyable {
                 } else if (timeout.at != MAX_VALUE) {
                     // We have not timed out, but we are set to!
                     // Is the current wakeup good to use? ie before our timeout time?
-                    if (wakeup == null || wakeup.at >= timeout.at) {
+                    if (wakeup == null || wakeup.at > timeout.at) {
                         // No, we need an earlier wakeup.
                         wakeup = newWakeup = new Wakeup(timeout.at, wakeup);
                     }

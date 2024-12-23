@@ -160,7 +160,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public DefaultSession get(String id) throws Exception {
-        AtomicBoolean resident = new AtomicBoolean(true);
+        AtomicBoolean loaded = new AtomicBoolean(false);
         AtomicReference<Exception> thrown = new AtomicReference<>();
         DefaultSession session;
         session = doComputeIfAbsent(id, k -> {
@@ -173,7 +173,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     try (AutoLock ignored = stored.lock()) {
                         stored.setResident(true); // ensure freshly loaded session is resident
                     }
-                    resident.set(false);
+                    loaded.set(true);
                 } else {
                     if (logger.isTraceEnabled()) {
                         logger.trace("Session " + id + " not loaded by store");
@@ -197,14 +197,15 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     }
                     return null;
                 }
-                if (isClusterEnabled() && resident.get() && session.getRequests() <= 0) {
-                    DefaultSession stored = loadSession(id);
-                    if (stored != null) {
+                if (isClusterEnabled() && !loaded.get() && session.getRequests() <= 0) {
+                    session.setResident(false);
+                    DefaultSession restored = loadSession(id);
+                    if (restored != null) {
                         // swap it in instead of the local session
-                        boolean success = doReplace(id, session, stored);
+                        boolean success = doReplace(id, session, restored);
                         if (success) {
                             // successfully swapped with the stored session
-                            session = stored;
+                            session = restored;
                             session.setResident(true);
                         } else {
                             // retry because it was updated by another thread

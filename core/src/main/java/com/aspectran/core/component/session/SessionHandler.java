@@ -106,7 +106,7 @@ public interface SessionHandler extends Component {
      * @param session the default session
      * @param now the time at which to check for expiry
      */
-    void sessionInactivityTimerExpired(DefaultSession session, long now);
+    boolean sessionInactivityTimerExpired(DefaultSession session, long now);
 
     /**
      * Called periodically by the HouseKeeper to handle the list of

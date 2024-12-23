@@ -19,7 +19,6 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
-import com.aspectran.utils.timer.CyclicTimeout;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +67,7 @@ public class DefaultSession implements Session {
             this.sessionData.setDirty(true);
             this.requests = 1;
         }
-        this.sessionInactivityTimer = new SessionInactivityTimer();
+        this.sessionInactivityTimer = new SessionInactivityTimer(this);
     }
 
     public SessionData getSessionData() {
@@ -237,7 +236,7 @@ public class DefaultSession implements Session {
      * @param now the time at which to calculate remaining expiry
      * @return the time remaining before expiry or inactivity timeout
      */
-    private long calculateInactivityTimeout(long now) {
+    protected long calculateInactivityTimeout(long now) {
         long time;
         try (AutoLock ignored = autoLock.lock()) {
             long remaining = sessionData.getExpiry() - now;
@@ -524,70 +523,6 @@ public class DefaultSession implements Session {
             tsb.append("requests", requests);
             tsb.appendForce("resident", resident);
             return tsb.toString();
-        }
-    }
-
-    /**
-     * The Class SessionInactivityTimer.
-     * Each Session has a timer associated with it that fires whenever it has
-     * been idle (ie not accessed by a request) for a configurable amount of
-     * time, or the Session expires.
-     */
-    public class SessionInactivityTimer {
-
-        private final CyclicTimeout timer;
-
-        SessionInactivityTimer() {
-            timer = new CyclicTimeout(getSessionHandler().getScheduler()) {
-                @Override
-                public void onTimeoutExpired() {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Timer expired for session " + getId());
-                    }
-                    long now = System.currentTimeMillis();
-                    // handle what to do with the session after the timer expired
-                    getSessionHandler().sessionInactivityTimerExpired(DefaultSession.this, now);
-                    try (AutoLock ignored = DefaultSession.this.lock()) {
-                        // grab the lock and check what happened to the session: if it didn't get evicted and
-                        // it hasn't expired, we need to reset the timer
-                        if (DefaultSession.this.isResident() && DefaultSession.this.getRequests() <= 0 &&
-                            DefaultSession.this.isValid() && !DefaultSession.this.isExpiredAt(now)) {
-                            // session wasn't expired or evicted, we need to reset the timer
-                            SessionInactivityTimer.this.schedule(DefaultSession.this.calculateInactivityTimeout(now));
-                        }
-                    }
-                }
-            };
-        }
-
-        /**
-         * @param time the timeout to set; -1 means that the timer will not be scheduled
-         */
-        public void schedule(long time) {
-            if (time >= 0) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("(Re)starting timer for session " + getId() + " at " + time + "ms");
-                }
-                timer.schedule(time, TimeUnit.MILLISECONDS);
-            } else {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Not starting timer for session " + getId());
-                }
-            }
-        }
-
-        public void cancel() {
-            timer.cancel();
-            if (logger.isTraceEnabled()) {
-                logger.trace("Cancelled timer for session " + getId());
-            }
-        }
-
-        public void destroy() {
-            timer.destroy();
-            if (logger.isTraceEnabled()) {
-                logger.trace("Destroyed timer for session " + getId());
-            }
         }
     }
 

@@ -269,28 +269,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void sessionInactivityTimerExpired(DefaultSession session, long now) {
+    public boolean sessionInactivityTimerExpired(DefaultSession session, long now) {
         if (session == null) {
-            return;
+            return true;
         }
-
-        // check if the session is:
-        // 1. valid
-        // 2. expired
-        // 3. idle
         try (AutoLock ignored = session.lock()) {
-            if (session.getRequests() > 0) {
-                return; // session can't expire or be idle if there is a request in it
-            }
-            if (logger.isTraceEnabled()) {
-                logger.trace("Inspecting session " + session.getId() + ", valid=" + session.isValid());
-            }
-            if (!session.isValid()) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Session " + session.getId() + " is no longer valid");
-                }
-                return; // do nothing, session is no longer valid
-            }
             if (session.isExpiredAt(now)) {
                 // instead of expiring the session directly here, accumulate a list of
                 // session ids that need to be expired. This is an efficiency measure: as
@@ -300,6 +283,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 if (!addCandidateSessionIdForExpiry(session.getId())) {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
                 }
+                return true;
             } else {
                 // possibly evict the session
                 boolean evicted = sessionCache.checkInactiveSession(session);
@@ -307,6 +291,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                     // for evicted sessions, their expiration is checked from the session store
                     addCandidateSessionIdForExpiry(session.getId());
                 }
+                return false;
             }
         }
     }
