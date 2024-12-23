@@ -20,59 +20,69 @@ import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * <p>Created: 01/10/2019</p>
  */
 public abstract class CoreServiceHolder {
 
-    private static final Map<ClassLoader, CoreService> servicesByLoader = new ConcurrentHashMap<>();
+    private static final Set<CoreService> allServices = new CopyOnWriteArraySet<>();
 
-    private static final Map<Class<?>, CoreService> servicesByClass = new ConcurrentHashMap<>();
+    private static final Map<ClassLoader, CoreService> servicesByLoader = new HashMap<>();
+
+    private static final Map<Class<?>, CoreService> servicesByClass = new HashMap<>();
 
     private static volatile CoreService currentService;
 
-    public static void hold(CoreService service) {
+    public static synchronized void hold(CoreService service) {
         Assert.notNull(service, "service must not be null");
-        Assert.state(service.getActivityContext() != null, "No ActivityContext");
+        Assert.state(service.getActivityContext() != null, "No ActivityContext in service: " + service);
+        Assert.state(!allServices.contains(service), "Already registered service: " + service);
         ClassLoader classLoader = service.getServiceClassLoader();
         if (classLoader != null) {
+            allServices.add(service);
             if (classLoader == CoreServiceHolder.class.getClassLoader()) {
                 currentService = service;
             } else {
                 servicesByLoader.put(classLoader, service);
             }
             if (service.getAltClassLoader() != null) {
-                hold(service, service.getAltClassLoader());
+                hold(service.getAltClassLoader(), service);
             }
         }
     }
 
-    public static void hold(CoreService service, ClassLoader classLoader) {
-        Assert.notNull(service, "service must not be null");
+    public static synchronized void hold(ClassLoader classLoader, CoreService service) {
         Assert.notNull(classLoader, "classLoader must not be null");
-        Assert.state(currentService == service || servicesByLoader.containsValue(service),
-            "Unregistered service: " + service);
+        Assert.notNull(service, "service must not be null");
+        Assert.state(allServices.contains(service), "Not a registered service: " + service);
+        CoreService existing = servicesByLoader.get(classLoader);
+        Assert.state(existing != service, "The classloader is already mapped to another service: " + service);
         servicesByLoader.put(classLoader, service);
     }
 
-    public static void hold(CoreService service, Class<?> clazz) {
-        Assert.notNull(service, "service must not be null");
+    public static synchronized void hold(Class<?> clazz, CoreService service) {
         Assert.notNull(clazz, "clazz must not be null");
-        Assert.state(currentService == service || servicesByLoader.containsValue(service),
-            "Unregistered service: " + service);
+        Assert.notNull(service, "service must not be null");
+        Assert.state(allServices.contains(service), "Not a registered service: " + service);
+        CoreService existing = servicesByClass.get(clazz);
+        Assert.state(existing != service, "The class is already mapped to another service: " + service);
         servicesByClass.put(clazz, service);
     }
 
-    public static void release(CoreService service) {
+    public static synchronized void release(CoreService service) {
         Assert.notNull(service, "service must not be null");
-        servicesByLoader.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
-        servicesByClass.entrySet().removeIf(entry -> (service.equals(entry.getValue())));
+        Assert.state(allServices.contains(service), "Not a registered service: " + service);
+        allServices.remove(service);
         if (currentService != null && currentService == service) {
             currentService = null;
         }
+        servicesByLoader.entrySet().removeIf(entry -> service.equals(entry.getValue()));
+        servicesByClass.entrySet().removeIf(entry -> service.equals(entry.getValue()));
     }
 
     public static CoreService acquire() {
@@ -112,13 +122,7 @@ public abstract class CoreServiceHolder {
     @Nullable
     public static ActivityContext findActivityContext(String contextName) {
         Assert.notNull(contextName, "contextName must not be null");
-        for (CoreService service : servicesByLoader.values()) {
-            ActivityContext activityContext = service.getActivityContext();
-            if (activityContext != null && contextName.equals(activityContext.getName())) {
-                return activityContext;
-            }
-        }
-        for (CoreService service : servicesByClass.values()) {
+        for (CoreService service : allServices) {
             ActivityContext activityContext = service.getActivityContext();
             if (activityContext != null && contextName.equals(activityContext.getName())) {
                 return activityContext;

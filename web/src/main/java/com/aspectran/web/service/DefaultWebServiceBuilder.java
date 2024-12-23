@@ -192,7 +192,7 @@ public class DefaultWebServiceBuilder {
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(webService);
                 if (serverEndpointExporter.hasServerContainer()) {
                     for (Class<?> endpointClass : serverEndpointExporter.registerEndpoints()) {
-                        CoreServiceHolder.hold(webService, endpointClass);
+                        CoreServiceHolder.hold(endpointClass, webService);
                     }
                 }
 
