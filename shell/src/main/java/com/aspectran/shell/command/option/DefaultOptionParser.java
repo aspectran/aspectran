@@ -29,23 +29,23 @@ public class DefaultOptionParser implements OptionParser {
 
     /** The parsed options instance. */
     private ParsedOptions parsedOptions;
-    
+
     /** The current options. */
     private Options options;
 
     /**
      * Flag indicating how unrecognized tokens are handled. {@code true} to stop
      * the parsing and add the remaining tokens to the args list.
-     * {@code false} to throw an exception. 
+     * {@code false} to throw an exception.
      */
     private boolean skipParsingAtNonOption;
 
     /** The token currently processed. */
     private String currentToken;
- 
+
     /** The last option parsed. */
     private Option currentOption;
- 
+
     /** The required options and groups expected to be found when parsing the command line. */
     private List<Object> expectedOpts;
 
@@ -54,8 +54,7 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Creates a new DefaultParser instance with partial matching enabled.
-     *
-     * By "partial matching" we mean that given the following code:
+     * <p>By "partial matching" we mean that given the following code:
      * <pre>
      *     {@code
      *     Options options = new Options();
@@ -63,7 +62,7 @@ public class DefaultOptionParser implements OptionParser {
      *     options.addOption(new Option("e", "extract", false, "Turn on extract."));
      *     options.addOption(new Option("o", "option", true, "Turn on option with argument."));
      *     }
-     * </pre>
+     * </pre></p>
      * with "partial matching" turned on, {@code -de} only matches the
      * {@code "debug"} option. However, with "partial matching" disabled,
      * {@code -de} would enable both {@code debug} as well as

@@ -332,10 +332,12 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Returns an Environment variable that matches the given token.
+     * <p>Example usage:
      * <pre>
-     *   %{classpath:/com/aspectran/sample.properties}
-     *   %{classpath:/com/aspectran/sample.properties^propertyName:defaultValue}
-     * </pre>
+     *   %{classpath:com/aspectran/sample.properties}
+     *   %{classpath:com/aspectran/sample.properties^propertyName:defaultValue}
+     *   %{system:test.url}
+     * </pre></p>
      * @param token the token
      * @return an environment variable
      * @throws IOException if an I/O error has occurred
