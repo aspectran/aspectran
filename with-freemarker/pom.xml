@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <freemarker.version>2.3.33</freemarker.version>
+        <freemarker.version>2.3.34</freemarker.version>
     </properties>
 
     <dependencies>
