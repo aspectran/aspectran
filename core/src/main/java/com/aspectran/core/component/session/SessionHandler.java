@@ -105,6 +105,7 @@ public interface SessionHandler extends Component {
      * need to reset the timer.
      * @param session the default session
      * @param now the time at which to check for expiry
+     * @return true if the session has already expired
      */
     boolean sessionInactivityTimerExpired(DefaultSession session, long now);
 

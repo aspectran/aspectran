@@ -21,7 +21,6 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
-import io.undertow.util.AttachmentKey;
 
 import java.util.Set;
 
@@ -30,17 +29,15 @@ import java.util.Set;
  *
  * <p>Created: 2019-08-11</p>
  */
-final class TowSessionBridge implements io.undertow.server.session.Session {
-
-    private final AttachmentKey<Boolean> FIRST_REQUEST_ACCESSED = AttachmentKey.create(Boolean.class);
-
-    private final Session session;
+public final class TowSession implements io.undertow.server.session.Session {
 
     private final TowSessionManager sessionManager;
 
-    TowSessionBridge(Session session, TowSessionManager sessionManager) {
-        this.session = session;
+    private final Session session;
+
+    TowSession(TowSessionManager sessionManager, Session session) {
         this.sessionManager = sessionManager;
+        this.session = session;
     }
 
     @Override
@@ -49,16 +46,16 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
     }
 
     void requestStarted(@NonNull HttpServerExchange exchange) {
-        Boolean existing = exchange.getAttachment(FIRST_REQUEST_ACCESSED);
-        if (existing == null) {
-            exchange.putAttachment(FIRST_REQUEST_ACCESSED, true);
+        if (sessionManager.checkFirstAccess(exchange)) {
             session.access();
         }
     }
 
     @Override
-    public void requestDone(HttpServerExchange exchange) {
-        session.complete();
+    public void requestDone(@NonNull HttpServerExchange exchange) {
+        if (sessionManager.hasBeenAccessed(exchange)) {
+            session.complete();
+        }
     }
 
     @Override
@@ -104,6 +101,9 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
     @Override
     public void invalidate(HttpServerExchange exchange) {
         session.invalidate();
+        if (exchange != null) {
+            sessionManager.clearSession(exchange, session.getId());
+        }
     }
 
     @Override
@@ -120,11 +120,11 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
             }
             String oldId = session.getId();
             String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
-            String sessionId = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
-            if (sessionId != null) {
-                config.setSessionId(exchange, sessionId);
+            String newIdToUse = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
+            if (newIdToUse != null) {
+                config.setSessionId(exchange, newIdToUse);
             }
-            return sessionId;
+            return newIdToUse;
         }
     }
 

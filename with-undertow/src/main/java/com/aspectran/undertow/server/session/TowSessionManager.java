@@ -16,10 +16,10 @@
 package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.DefaultSession;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManager;
@@ -38,9 +38,11 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
     private static final Logger logger = LoggerFactory.getLogger(TowSessionManager.class);
 
-    private final AttachmentKey<TowSessionBridge> SESSION_BRIDGE = AttachmentKey.create(TowSessionBridge.class);
+    protected final AttachmentKey<TowSession> NEW_SESSION = AttachmentKey.create(TowSession.class);
 
-    private final Map<SessionListener, TowSessionListenerBridge> sessionListenerMappings = new ConcurrentHashMap<>();
+    protected final AttachmentKey<Boolean> FIRST_ACCESS = AttachmentKey.create(Boolean.class);
+
+    private final Map<SessionListener, TowSessionListener> sessionListenerMappings = new ConcurrentHashMap<>();
 
     @Override
     public String getDeploymentName() {
@@ -48,13 +50,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
     }
 
     @Override
-    public Session createSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
-        if (exchange == null) {
-            throw new IllegalArgumentException("exchange must not be null");
-        }
-        if (sessionConfig == null) {
-            throw new IllegalArgumentException("sessionConfig must not be null");
-        }
+    public TowSession createSession(@NonNull HttpServerExchange exchange, @NonNull SessionConfig sessionConfig) {
         String sessionId;
         try {
             sessionId = sessionConfig.findSessionId(exchange);
@@ -65,24 +61,21 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (sessionId == null) {
             sessionId = getSessionManager().createSessionId(hashCode());
         }
+        sessionConfig.setSessionId(exchange, sessionId);
         DefaultSession session = getSessionManager().createSession(sessionId);
-        TowSessionBridge sessionBridge = createTowSessionBridge(session);
-        sessionConfig.setSessionId(exchange, session.getId());
-        exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
-        return sessionBridge;
+        TowSession towSession = wrapSession(session);
+        exchange.putAttachment(NEW_SESSION, towSession);
+        return towSession;
     }
 
     @Override
-    public Session getSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
-        if (exchange == null) {
-            throw new IllegalArgumentException("exchange must not be null");
+    public TowSession getSession(@NonNull HttpServerExchange exchange, SessionConfig sessionConfig) {
+        TowSession newSession = exchange.getAttachment(NEW_SESSION);
+        if (newSession != null) {
+            return newSession;
         }
         if (sessionConfig == null) {
-            throw new IllegalArgumentException("sessionConfig must not be null");
-        }
-        TowSessionBridge bridged = exchange.getAttachment(SESSION_BRIDGE);
-        if (bridged != null) {
-            return bridged;
+            throw new IllegalStateException("Could not find session config in the request");
         }
         String sessionId;
         try {
@@ -91,22 +84,21 @@ public class TowSessionManager extends AbstractSessionManager implements Session
             logger.error("Unable to retrieve session due to failure to find session ID", e);
             return null;
         }
-        TowSessionBridge sessionBridge = (TowSessionBridge)getSession(sessionId);
-        if (sessionBridge != null) {
-            exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
-            sessionBridge.requestStarted(exchange);
+        TowSession towSession = getSession(sessionId);
+        if (towSession != null) {
+            towSession.requestStarted(exchange);
         }
-        return sessionBridge;
+        return towSession;
     }
 
     @Override
-    public Session getSession(String sessionId) {
+    public TowSession getSession(String sessionId) {
         if (sessionId == null) {
             return null;
         }
         DefaultSession session = getSessionManager().getSession(sessionId);
         if (session != null) {
-            return createTowSessionBridge(session);
+            return wrapSession(session);
         } else {
             return null;
         }
@@ -117,9 +109,9 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (listener == null) {
             throw new IllegalArgumentException("listener must not be null");
         }
-        TowSessionListenerBridge sessionListenerBridge = new TowSessionListenerBridge(listener, this);
-        sessionListenerMappings.put(listener, sessionListenerBridge);
-        getSessionManager().addSessionListener(sessionListenerBridge);
+        TowSessionListener towSessionListener = new TowSessionListener(this, listener);
+        sessionListenerMappings.put(listener, towSessionListener);
+        getSessionManager().addSessionListener(towSessionListener);
     }
 
     @Override
@@ -127,9 +119,9 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (listener == null) {
             throw new IllegalArgumentException("listener must not be null");
         }
-        TowSessionListenerBridge sessionListenerBridge = sessionListenerMappings.remove(listener);
-        if (sessionListenerBridge != null) {
-            getSessionManager().removeSessionListener(sessionListenerBridge);
+        TowSessionListener towSessionListener = sessionListenerMappings.remove(listener);
+        if (towSessionListener != null) {
+            getSessionManager().removeSessionListener(towSessionListener);
         }
     }
 
@@ -203,11 +195,31 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         };
     }
 
-    TowSessionBridge createTowSessionBridge(com.aspectran.core.component.session.Session session) {
-        if (session == null) {
-            throw new IllegalArgumentException("session must not be null");
+    TowSession wrapSession(@NonNull com.aspectran.core.component.session.Session session) {
+        return new TowSession(this, session);
+    }
+
+    void clearSession(HttpServerExchange exchange, String sessionId) {
+        if (exchange != null) {
+            SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+            if (sessionConfig != null) {
+                sessionConfig.clearSession(exchange, sessionId);
+            }
+            exchange.removeAttachment(NEW_SESSION);
         }
-        return new TowSessionBridge(session, this);
+    }
+
+    boolean checkFirstAccess(@NonNull HttpServerExchange exchange) {
+        if (exchange.getAttachment(FIRST_ACCESS) == null) {
+            exchange.putAttachment(FIRST_ACCESS, true);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean hasBeenAccessed(@NonNull HttpServerExchange exchange) {
+        return (exchange.getAttachment(FIRST_ACCESS) != null || exchange.getAttachment(NEW_SESSION) != null);
     }
 
 }

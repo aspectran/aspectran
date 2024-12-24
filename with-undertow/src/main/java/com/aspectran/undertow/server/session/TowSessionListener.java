@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.handlers.ServletRequestContext;
@@ -26,63 +27,59 @@ import io.undertow.servlet.handlers.ServletRequestContext;
  *
  * <p>Created: 2019-08-11</p>
  */
-final class TowSessionListenerBridge implements SessionListener {
-
-    private final io.undertow.server.session.SessionListener listener;
+public final class TowSessionListener implements SessionListener {
 
     private final TowSessionManager towSessionManager;
 
-    TowSessionListenerBridge(io.undertow.server.session.SessionListener listener, TowSessionManager towSessionManager) {
-        this.listener = listener;
+    private final io.undertow.server.session.SessionListener listener;
+
+    TowSessionListener(TowSessionManager towSessionManager, io.undertow.server.session.SessionListener listener) {
         this.towSessionManager = towSessionManager;
+        this.listener = listener;
     }
 
     @Override
     public void sessionCreated(Session session) {
-        listener.sessionCreated(wrapSession(session), getCurrentExchange());
+        listener.sessionCreated(towSessionManager.wrapSession(session), getCurrentExchange());
     }
 
     @Override
-    public void sessionDestroyed(Session session) {
+    public void sessionDestroyed(@NonNull Session session) {
         io.undertow.server.session.SessionListener.SessionDestroyedReason reason = null;
-        if (session != null && session.getDestroyedReason() != null) {
+        if (session.getDestroyedReason() != null) {
             reason = switch (session.getDestroyedReason()) {
                 case INVALIDATED -> io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
                 case TIMEOUT -> io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
                 case UNDEPLOY -> io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
             };
         }
-        listener.sessionDestroyed(wrapSession(session), getCurrentExchange(), reason);
+        listener.sessionDestroyed(towSessionManager.wrapSession(session), getCurrentExchange(), reason);
     }
 
     @Override
     public void attributeAdded(Session session, String name, Object value) {
-        listener.attributeAdded(wrapSession(session), name, value);
+        listener.attributeAdded(towSessionManager.wrapSession(session), name, value);
     }
 
     @Override
     public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
-        listener.attributeUpdated(wrapSession(session), name, newValue, oldValue);
+        listener.attributeUpdated(towSessionManager.wrapSession(session), name, newValue, oldValue);
     }
 
     @Override
     public void attributeRemoved(Session session, String name, Object oldValue) {
-        listener.attributeRemoved(wrapSession(session), name, oldValue);
+        listener.attributeRemoved(towSessionManager.wrapSession(session), name, oldValue);
     }
 
     @Override
     public void sessionIdChanged(Session session, String oldSessionId) {
-        listener.sessionIdChanged(wrapSession(session), oldSessionId);
-    }
-
-    private TowSessionBridge wrapSession(com.aspectran.core.component.session.Session session) {
-        return towSessionManager.createTowSessionBridge(session);
+        listener.sessionIdChanged(towSessionManager.wrapSession(session), oldSessionId);
     }
 
     @Nullable
     static HttpServerExchange getCurrentExchange() {
         ServletRequestContext current = ServletRequestContext.current();
-        return current != null ? current.getExchange() : null;
+        return (current != null ? current.getExchange() : null);
     }
 
 }
