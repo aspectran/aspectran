@@ -16,10 +16,13 @@
 package com.aspectran.undertow.server.handler;
 
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
+import com.aspectran.undertow.server.handler.session.SessionAttachmentHandler;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.server.session.SessionConfig;
+import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
@@ -48,12 +51,18 @@ public class DefaultRequestHandlerFactory extends AbstractRequestHandlerFactory 
             PathHandler pathHandler = new PathHandler();
             for (String deploymentName : servletContainer.listDeployments()) {
                 DeploymentManager manager = servletContainer.getDeployment(deploymentName);
-                DeploymentInfo info = manager.getDeployment().getDeploymentInfo();
-
                 HttpHandler handler = manager.start();
-                String contextPath = info.getContextPath();
 
+                SessionManager sessionManager = manager.getDeployment().getSessionManager();
+                if (sessionManager != null) {
+                    SessionConfig sessionConfig = manager.getDeployment().getServletContext().getSessionConfig();
+                    handler = new SessionAttachmentHandler(handler, sessionManager, sessionConfig);
+                }
+
+                DeploymentInfo info = manager.getDeployment().getDeploymentInfo();
+                String contextPath = info.getContextPath();
                 ResourceManager resourceManager = info.getResourceManager();
+
                 if (resourceManager != null) {
                     TowResourceHandler resourceHandler = new TowResourceHandler(resourceManager, handler);
                     String pathPrefix = contextPath;

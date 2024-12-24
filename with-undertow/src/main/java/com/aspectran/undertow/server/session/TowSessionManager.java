@@ -61,7 +61,9 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (sessionId == null) {
             sessionId = getSessionManager().createSessionId(hashCode());
         }
+
         sessionConfig.setSessionId(exchange, sessionId);
+
         DefaultSession session = getSessionManager().createSession(sessionId);
         TowSession towSession = wrapSession(session);
         exchange.putAttachment(NEW_SESSION, towSession);
@@ -74,9 +76,11 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (newSession != null) {
             return newSession;
         }
+
         if (sessionConfig == null) {
             throw new IllegalStateException("Could not find session config in the request");
         }
+
         String sessionId;
         try {
             sessionId = sessionConfig.findSessionId(exchange);
@@ -84,6 +88,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
             logger.error("Unable to retrieve session due to failure to find session ID", e);
             return null;
         }
+
         TowSession towSession = getSession(sessionId);
         if (towSession != null) {
             towSession.requestStarted(exchange);

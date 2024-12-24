@@ -33,9 +33,9 @@ public abstract class AbstractRequestHandlerFactory {
         this.handlerChainWrappers = Arrays.asList(handlerWrappers);
     }
 
-    protected HttpHandler wrapHandler(HttpHandler wrapee) {
+    protected HttpHandler wrapHandler(HttpHandler handler) {
         if (handlerChainWrappers != null) {
-            HttpHandler current = wrapee;
+            HttpHandler current = handler;
             ListIterator<HandlerWrapper> iterator = handlerChainWrappers.listIterator(handlerChainWrappers.size());
             while (iterator.hasPrevious()) {
                 HandlerWrapper wrapper = iterator.previous();
@@ -43,7 +43,7 @@ public abstract class AbstractRequestHandlerFactory {
             }
             return current;
         } else {
-            return wrapee;
+            return handler;
         }
     }
 
