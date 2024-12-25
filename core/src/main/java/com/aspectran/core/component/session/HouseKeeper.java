@@ -37,20 +37,20 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private final AutoLock lock = new AutoLock();
 
-    private final SessionHandler sessionHandler;
+    private final AbstractSessionHandler sessionHandler;
 
     private final Scheduler scheduler;
+
+    private long scavengingInterval;
 
     private Scheduler.Task task; // scavenge task
 
     private Runner runner;
 
-    private long scavengingInterval;
-
     /**
      * @param sessionHandler SessionHandler associated with this scavenger
      */
-    public HouseKeeper(@NonNull SessionHandler sessionHandler) {
+    public HouseKeeper(@NonNull AbstractSessionHandler sessionHandler) {
         this(sessionHandler, DEFAULT_SCAVENGING_INTERVAL);
     }
 
@@ -58,7 +58,7 @@ public class HouseKeeper extends AbstractLifeCycle {
      * @param sessionHandler SessionHandler associated with this scavenger
      * @param scavengingIntervalInSecs the period between scavenge cycles
      */
-    public HouseKeeper(@NonNull SessionHandler sessionHandler, int scavengingIntervalInSecs) {
+    public HouseKeeper(@NonNull AbstractSessionHandler sessionHandler, int scavengingIntervalInSecs) {
         this.sessionHandler = sessionHandler;
         this.scheduler = sessionHandler.getScheduler();
         this.scavengingInterval = scavengingIntervalInSecs * 1000L;
@@ -81,7 +81,7 @@ public class HouseKeeper extends AbstractLifeCycle {
             if (isStarted() || isStarting()) {
                 if (intervalInSecs <= 0) {
                     scavengingInterval = 0L;
-                    logger.info("Scavenging disabled");
+                    logger.info(sessionHandler.getComponentName() + " scavenging disabled");
                     stopScavenging();
                 } else {
                     if (intervalInSecs < 10) {
@@ -175,9 +175,6 @@ public class HouseKeeper extends AbstractLifeCycle {
         }
     }
 
-    /**
-     * Runner
-     */
     private class Runner implements Runnable {
 
         private volatile boolean running = true;
@@ -185,10 +182,10 @@ public class HouseKeeper extends AbstractLifeCycle {
         @Override
         public void run() {
             if (running) {
-                try (AutoLock ignored = lock.lock()) {
-                    try {
-                        scavenge();
-                    } finally {
+                try {
+                    scavenge();
+                } finally {
+                    try (AutoLock ignored = lock.lock()) {
                         if (scheduler != null && scheduler.isRunning()) {
                             // cancel any previous task
                             if (task != null) {

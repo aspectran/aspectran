@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
@@ -41,7 +42,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * The SessionHandler related to this SessionCache
      */
-    private final SessionHandler sessionHandler;
+    private final AbstractSessionHandler sessionHandler;
 
     /**
      * The authoritative source of session data
@@ -52,6 +53,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * Whether to support session clustering
      */
     private final boolean clusterEnabled;
+
+    private final String sessionCacheName;
+
+    private final String sessionStoreName;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -77,10 +82,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clusterEnabled) {
+    public AbstractSessionCache(AbstractSessionHandler sessionHandler, SessionStore sessionStore, boolean clusterEnabled) {
         this.sessionHandler = sessionHandler;
         this.sessionStore = sessionStore;
         this.clusterEnabled = (clusterEnabled && sessionStore != null);
+        this.sessionCacheName = ObjectUtils.simpleIdentityToString(this);
+        this.sessionStoreName = ObjectUtils.simpleIdentityToString(sessionStore);
     }
 
     protected SessionHandler getSessionHandler() {
@@ -176,7 +183,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     loaded.set(true);
                 } else {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + id + " not loaded by store");
+                        logger.trace("Session " + id + " not loaded by " + sessionStoreName);
                     }
                 }
                 return stored;
@@ -193,7 +200,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 if (!session.isResident()) {
                     // session isn't marked as resident in cache
                     if (logger.isTraceEnabled()) {
-                        logger.debug("Non-resident session " + id + " in cache");
+                        logger.trace("Non-resident session " + id + " in " + sessionCacheName);
                     }
                     return null;
                 }
@@ -219,6 +226,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     }
                 }
             }
+            if (session != null && loaded.get()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Residing evicted session id=" + session.getId() + " into " + sessionCacheName);
+                }
+                sessionHandler.onSessionResided(session);
+            }
         }
         return session;
     }
@@ -240,7 +253,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 if (logger.isTraceEnabled()) {
                     logger.trace("Session " + id + " loaded from session store " + sessionStore);
                 }
-                return new DefaultSession(data, sessionHandler, false);
+                return new DefaultSession(sessionHandler, data, false);
             } else {
                 // session doesn't exist
                 return null;
@@ -263,7 +276,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             logger.debug("Create new session id=" + id);
         }
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
-        DefaultSession session = new DefaultSession(data, sessionHandler, true);
+        DefaultSession session = new DefaultSession(sessionHandler, data, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // it's in the cache
             if (sessionStore != null && (isSaveOnCreate() || isClusterEnabled())) {
@@ -271,7 +284,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
             return session;
         } else {
-            throw new IllegalStateException("Session " + id + " already in cache");
+            throw new IllegalStateException("Session " + id + " already in " + sessionCacheName);
         }
     }
 
@@ -287,7 +300,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
             if (sessionStore == null) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Putting into SessionCache only id=" + id);
+                    logger.trace("Putting into " + sessionCacheName + " only id=" + id);
                 }
                 session.setResident(true);
                 doPutIfAbsent(id, session); // ensure it is in our map
@@ -353,7 +366,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
             if (logger.isTraceEnabled()) {
-                logger.trace("Session " + id + " deleted in session data store: " + deleted);
+                logger.trace("Session " + id + " deleted in " + sessionStoreName + ": " + deleted);
             }
         }
         // delete it from the session object store
@@ -502,7 +515,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Evict idle session id=" + session.getId());
+                    logger.debug("Evicting idle session id=" + session.getId() + " to " + sessionStoreName);
                 }
                 // save before evicting
                 if (sessionStore != null && (isClusterEnabled() || isSaveOnInactiveEviction())) {

@@ -90,33 +90,6 @@ public interface SessionHandler extends Component {
     void invalidate(String id, Session.DestroyedReason reason);
 
     /**
-     * Each session has a timer that is configured to go off
-     * when either the session has not been accessed for a
-     * configurable amount of time, or the session itself
-     * has passed its expiry.
-     * <p>
-     * If it has passed its expiry, then we will mark it for
-     * scavenging by next run of the HouseKeeper; if it has
-     * been idle longer than the configured eviction period,
-     * we evict from the cache.
-     * <p>
-     * If none of the above are true, then the System timer
-     * is inconsistent and the caller of this method will
-     * need to reset the timer.
-     * @param session the default session
-     * @param now the time at which to check for expiry
-     * @return true if the session has already expired
-     */
-    boolean sessionInactivityTimerExpired(DefaultSession session, long now);
-
-    /**
-     * Called periodically by the HouseKeeper to handle the list of
-     * sessions that have expired since the last call to scavenge.
-     * @param scavengingInterval the period between scavenge cycles
-     */
-    void scavenge(long scavengingInterval);
-
-    /**
      * Adds an event listener for session-related events.
      * @param listener the session listener
      * @see #removeSessionListener(SessionListener)
@@ -132,26 +105,9 @@ public interface SessionHandler extends Component {
 
     /**
      * Removes all event listeners for session-related events.
-     *
      * @see #removeSessionListener(SessionListener)
      */
     void clearSessionListeners();
-
-    /**
-     * Call binding and attribute listeners based on the new and old values of
-     * the attribute.
-     * @param name name of the attribute
-     * @param newValue new value of the attribute
-     * @param oldValue previous value of the attribute
-     * @throws IllegalStateException if no session manager can be found
-     */
-    void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue);
-
-    /**
-     * Call the session lifecycle listeners.
-     * @param session the session on which to call the lifecycle listeners
-     */
-    void onSessionDestroyed(Session session);
 
     /**
      * @return the identifiers of those sessions that are active on this node, excluding passivated sessions

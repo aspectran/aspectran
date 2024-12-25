@@ -25,16 +25,30 @@ public interface SessionListener {
 
     /**
      * Receives notification that a session has been created.
-     * @param session the new session
+     * @param session the session on which to call the session listeners
      */
     default void sessionCreated(Session session) {
     }
 
     /**
      * Receives notification that a session is about to be invalidated.
-     * @param session the session
+     * @param session the session on which to call the session listeners
      */
     default void sessionDestroyed(Session session) {
+    }
+
+    /**
+     * Receives notification that a session is about to be evicted from the cache.
+     * @param session the session on which to call the session listeners
+     */
+    default void sessionEvicted(Session session) {
+    }
+
+    /**
+     * Receives notification that a stored session is about to be resided in the cache.
+     * @param session the session on which to call the session listeners
+     */
+    default void sessionResided(Session session) {
     }
 
     /**

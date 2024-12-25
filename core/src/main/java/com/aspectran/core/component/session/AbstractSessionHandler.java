@@ -268,7 +268,24 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         removeSession(id, true, reason);
     }
 
-    @Override
+    /**
+     * Each session has a timer that is configured to go off
+     * when either the session has not been accessed for a
+     * configurable amount of time, or the session itself
+     * has passed its expiry.
+     * <p>
+     * If it has passed its expiry, then we will mark it for
+     * scavenging by next run of the HouseKeeper; if it has
+     * been idle longer than the configured eviction period,
+     * we evict from the cache.
+     * <p>
+     * If none of the above are true, then the System timer
+     * is inconsistent and the caller of this method will
+     * need to reset the timer.
+     * @param session the default session
+     * @param now the time at which to check for expiry
+     * @return true if the session has already expired
+     */
     public boolean sessionInactivityTimerExpired(DefaultSession session, long now) {
         if (session == null) {
             return true;
@@ -290,6 +307,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 if (evicted) {
                     // for evicted sessions, their expiration is checked from the session store
                     addCandidateSessionIdForExpiry(session.getId());
+                    onSessionEvicted(session);
                 }
                 return false;
             }
@@ -314,7 +332,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    @Override
+    /**
+     * Called periodically by the HouseKeeper to handle the list of
+     * sessions that have expired since the last call to scavenge.
+     * @param scavengingInterval the period between scavenge cycles
+     */
     public void scavenge(long scavengingInterval) {
         // don't attempt to scavenge if we are shutting down
         if (isDestroying() || isDestroyed()) {
@@ -351,7 +373,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
         } catch (Exception e) {
             logger.warn("Failed to check expiration on [" +
-                StringUtils.joinCommaDelimitedList(candidates) + "]", e);
+                    StringUtils.joinCommaDelimitedList(candidates) + "]", e);
         }
 
         // Periodically but infrequently comb the backing store to delete sessions
@@ -392,8 +414,15 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         sessionListeners.clear();
     }
 
-    @Override
-    public void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue) {
+    /**
+     * Call binding and attribute listeners based on the new and old values of
+     * the attribute.
+     * @param name name of the attribute
+     * @param newValue new value of the attribute
+     * @param oldValue previous value of the attribute
+     * @throws IllegalStateException if no session manager can be found
+     */
+    protected void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue) {
         if (session != null) {
             for (SessionListener listener : sessionListeners) {
                 if (oldValue == null) {
@@ -407,8 +436,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    @Override
-    public void onSessionDestroyed(Session session) {
+    /**
+     * Calls session listeners in the reverse order they were added when a session is destroyed.
+     * @param session the session on which to call the session listeners
+     */
+    protected void onSessionDestroyed(Session session) {
         if (session != null && !sessionListeners.isEmpty()) {
             // We need to create our own snapshot to safely iterate over a concurrent list in reverse
             List<SessionListener> listeners = new ArrayList<>(sessionListeners);
@@ -419,12 +451,32 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     /**
-     * Call the session lifecycle listeners.
-     * @param session the session on which to call the lifecycle listeners
+     * Call the session listeners when a new session is created.
+     * @param session the session on which to call the session listeners
      */
-    private void onSessionCreated(Session session) {
+    protected void onSessionCreated(Session session) {
         for (SessionListener listener : sessionListeners) {
             listener.sessionCreated(session);
+        }
+    }
+
+    /**
+     * Call the session listeners when a session is evicted from the cache.
+     * @param session the session on which to call the session listeners
+     */
+    protected void onSessionEvicted(Session session) {
+        for (SessionListener listener : sessionListeners) {
+            listener.sessionEvicted(session);
+        }
+    }
+
+    /**
+     * Receives notification that a stored session is about to be resided in the cache.
+     * @param session the session on which to call the session listeners
+     */
+    protected void onSessionResided(Session session) {
+        for (SessionListener listener : sessionListeners) {
+            listener.sessionResided(session);
         }
     }
 

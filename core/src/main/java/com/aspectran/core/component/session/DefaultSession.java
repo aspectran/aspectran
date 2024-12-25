@@ -34,9 +34,9 @@ public class DefaultSession implements Session {
 
     private final AutoLock autoLock = new AutoLock();
 
-    private final SessionData sessionData;
+    private final AbstractSessionHandler sessionHandler;
 
-    private final SessionHandler sessionHandler;
+    private final SessionData sessionData;
 
     private final SessionInactivityTimer sessionInactivityTimer;
 
@@ -59,15 +59,15 @@ public class DefaultSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected DefaultSession(SessionData sessionData, SessionHandler sessionHandler, boolean newSession) {
-        this.sessionData = sessionData;
+    protected DefaultSession(AbstractSessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
         this.sessionHandler = sessionHandler;
+        this.sessionData = sessionData;
         this.newSession = newSession;
         if (newSession) {
             this.sessionData.setDirty(true);
             this.requests = 1;
         }
-        this.sessionInactivityTimer = new SessionInactivityTimer(this);
+        this.sessionInactivityTimer = new SessionInactivityTimer(sessionHandler, this);
     }
 
     public SessionData getSessionData() {

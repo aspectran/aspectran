@@ -24,9 +24,9 @@ public class SessionInactivityTimer {
 
     private final CyclicTimeout timer;
 
-    public SessionInactivityTimer(@NonNull DefaultSession session) {
+    public SessionInactivityTimer(@NonNull AbstractSessionHandler sessionHandler, @NonNull DefaultSession session) {
         this.session = session;
-        this.timer = new CyclicTimeout(session.getSessionHandler().getScheduler()) {
+        this.timer = new CyclicTimeout(sessionHandler.getScheduler()) {
             @Override
             public void onTimeoutExpired() {
                 if (logger.isTraceEnabled()) {
@@ -45,7 +45,7 @@ public class SessionInactivityTimer {
                     }
 
                     // handle what to do with the session after the timer expired
-                    boolean expired = session.getSessionHandler().sessionInactivityTimerExpired(session, now);
+                    boolean expired = sessionHandler.sessionInactivityTimerExpired(session, now);
 
                     // grab the lock and check what happened to the session: if it didn't get evicted and
                     // it hasn't expired, we need to reset the timer
