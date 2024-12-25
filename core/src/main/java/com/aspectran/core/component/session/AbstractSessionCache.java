@@ -167,6 +167,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public DefaultSession get(String id) throws Exception {
+        return get(id, false);
+    }
+
+    @Nullable
+    private DefaultSession get(String id, boolean forDeleting) throws Exception {
         AtomicBoolean loaded = new AtomicBoolean(false);
         AtomicReference<Exception> thrown = new AtomicReference<>();
         DefaultSession session;
@@ -195,7 +200,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (thrown.get() != null) {
             throw thrown.get();
         }
-        if (session != null) {
+        if (!forDeleting && session != null) {
             try (AutoLock ignored = session.lock()) {
                 if (!session.isResident()) {
                     // session isn't marked as resident in cache
@@ -361,7 +366,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     @Override
     public DefaultSession delete(String id) throws Exception {
         // get the session, if it's not in memory, this will load it
-        DefaultSession session = get(id);
+        DefaultSession session = get(id, true);
         // Always delete it from the backing data store
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
@@ -515,7 +520,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Evicting idle session id=" + session.getId() + " to " + sessionStoreName);
+                    logger.debug("Evicting idle session id=" + session.getId() + " from " + sessionCacheName);
                 }
                 // save before evicting
                 if (sessionStore != null && (isClusterEnabled() || isSaveOnInactiveEviction())) {
