@@ -212,14 +212,16 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 if (isClusterEnabled() && !loaded.get() && session.getRequests() <= 0) {
                     DefaultSession restored = loadSession(id);
                     if (restored != null) {
+                        // preemptive residency before replacement
+                        restored.setResident(true);
                         // swap it in instead of the local session
                         boolean success = doReplace(id, session, restored);
                         if (!success) {
+                            restored.setResident(false);
                             // retry because it was updated by another thread
                             return get(id, false);
                         }
                         // successfully swapped with the restored session
-                        restored.setResident(true);
                         session.setResident(false);
                         session = restored;
                     } else {
