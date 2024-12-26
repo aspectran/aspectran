@@ -167,12 +167,12 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
         SessionStatistics statistics = sessionHandler.getStatistics();
 
         SessionStatsPayload stats = new SessionStatsPayload();
-        stats.setCreatedSessionCount(statistics.getCreatedSessions());
-        stats.setExpiredSessionCount(statistics.getExpiredSessions());
-        stats.setActiveSessionCount(statistics.getActiveSessions());
-        stats.setHighestActiveSessionCount(statistics.getHighestActiveSessions());
-        stats.setEvictedSessionCount(statistics.getEvictedSessions());
-        stats.setRejectedSessionCount(statistics.getRejectedSessions());
+        stats.setCreatedSessionCount(statistics.getNumberOfCreated());
+        stats.setExpiredSessionCount(statistics.getNumberOfExpired());
+        stats.setActiveSessionCount(statistics.getNumberOfActives());
+        stats.setHighestActiveSessionCount(statistics.getHighestNumberOfActives());
+        stats.setEvictedSessionCount(statistics.getNumberOfUnmanaged());
+        stats.setRejectedSessionCount(statistics.getNumberOfRejected());
         stats.setElapsedTime(formatDuration(statistics.getStartTime()));
 
         // Current Users

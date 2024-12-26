@@ -87,7 +87,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     protected DefaultSession doDelete(String id) {
         DefaultSession session = sessions.remove(id);
         if (session != null) {
-            getStatistics().sessionEvicted();
+            getStatistics().sessionInactivated();
         }
         return session;
     }
@@ -98,7 +98,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     private void checkMaxSessions(String id) {
-        if (maxActiveSessions > 0 && getStatistics().getActiveSessions() >= maxActiveSessions) {
+        if (maxActiveSessions > 0 && getStatistics().getNumberOfActives() >= maxActiveSessions) {
             getStatistics().sessionRejected();
             if (logger.isDebugEnabled()) {
                 logger.debug("Reject session id=" + id + "; Exceeded maximum number of sessions allowed");
@@ -125,11 +125,13 @@ public class DefaultSessionCache extends AbstractSessionCache {
     protected void doInitialize() throws Exception {
         if (getSessionStore() != null) {
             getSessionStore().initialize();
-            int restoredSessions = getSessionStore().getAllSessions().size();
-            if (restoredSessions > 0) {
-                getStatistics().sessionCreated(restoredSessions);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Sessions restored: " + restoredSessions);
+            if (!isClusterEnabled()) {
+                int restoredSessions = getSessionStore().getAllSessions().size();
+                if (restoredSessions > 0) {
+                    getStatistics().sessionCreated(restoredSessions);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Sessions restored: " + restoredSessions);
+                    }
                 }
             }
         }

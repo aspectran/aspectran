@@ -155,7 +155,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         return new SessionManagerStatistics() {
             @Override
             public long getCreatedSessionCount() {
-                return getSessionManager().getStatistics().getCreatedSessions();
+                return getSessionManager().getStatistics().getNumberOfCreated();
             }
 
             @Override
@@ -165,32 +165,32 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
             @Override
             public long getHighestSessionCount() {
-                return getSessionManager().getStatistics().getHighestActiveSessions();
+                return getSessionManager().getStatistics().getHighestNumberOfActives();
             }
 
             @Override
             public long getActiveSessionCount() {
-                return getSessionManager().getStatistics().getActiveSessions();
+                return getSessionManager().getStatistics().getNumberOfActives();
             }
 
             @Override
             public long getExpiredSessionCount() {
-                return getSessionManager().getStatistics().getExpiredSessions();
+                return getSessionManager().getStatistics().getNumberOfExpired();
             }
 
             @Override
             public long getRejectedSessions() {
-                return getSessionManager().getStatistics().getRejectedSessions();
+                return getSessionManager().getStatistics().getNumberOfRejected();
             }
 
             @Override
             public long getMaxSessionAliveTime() {
-                return getSessionManager().getStatistics().getSessionTimeMax();
+                return getSessionManager().getStatistics().getMaxSessionAliveTime();
             }
 
             @Override
             public long getAverageSessionAliveTime() {
-                return getSessionManager().getStatistics().getSessionTimeMean();
+                return getSessionManager().getStatistics().getAverageSessionAliveTime();
             }
 
             @Override

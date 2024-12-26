@@ -77,7 +77,7 @@ class DefaultSessionManagerTest {
 
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             // System.out.println(sessionHandler.getStatistics().getActiveSessions());
-            return sessionHandler.getStatistics().getActiveSessions() == 0;
+            return sessionHandler.getStatistics().getNumberOfActives() == 0;
         });
 
         sessionManager.destroy();

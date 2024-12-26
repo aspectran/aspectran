@@ -73,7 +73,7 @@ class SessionManagerTest {
         agent.complete();
 
         await().atMost(2, TimeUnit.SECONDS).until(()
-            -> sessionHandler.getStatistics().getActiveSessions() == 0);
+            -> sessionHandler.getStatistics().getNumberOfActives() == 0);
 
         sessionManager.destroy();
     }

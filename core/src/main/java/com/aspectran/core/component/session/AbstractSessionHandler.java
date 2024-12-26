@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -366,9 +367,14 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 int before = candidates.size();
                 int after = candidateSessionIdsForExpiry.size();
                 int scavenged = (checkedCandidates != null ? checkedCandidates.size() : 0);
-                if (before != 0 || after != 0 || scavenged != 0) {
-                    logger.debug("Scavenging status for expired sessions {before=" + before + ", after=" +
-                            after + ", scavenged=" + scavenged + "}");
+                int unmanaged = Math.abs(scavenged - before - after);
+                if (before != 0 || after != 0 || scavenged != 0 || unmanaged != 0) {
+                    ToStringBuilder tsb = new ToStringBuilder("Scavenging status for expired sessions");
+                    tsb.append("candidates", before);
+                    tsb.append("remains", after);
+                    tsb.append("unmanaged", unmanaged);
+                    tsb.append("scavenged", scavenged);
+                    logger.debug(tsb.toString());
                 }
             }
         } catch (Exception e) {

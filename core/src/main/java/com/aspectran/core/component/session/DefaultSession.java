@@ -36,9 +36,9 @@ public class DefaultSession implements Session {
 
     private final AbstractSessionHandler sessionHandler;
 
-    private final SessionData sessionData;
-
     private final SessionInactivityTimer sessionInactivityTimer;
+
+    private final SessionData sessionData;
 
     private boolean newSession;
 
@@ -61,13 +61,13 @@ public class DefaultSession implements Session {
 
     protected DefaultSession(AbstractSessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
         this.sessionHandler = sessionHandler;
+        this.sessionInactivityTimer = new SessionInactivityTimer(sessionHandler, this);
         this.sessionData = sessionData;
         this.newSession = newSession;
         if (newSession) {
             this.sessionData.setDirty(true);
             this.requests = 1;
         }
-        this.sessionInactivityTimer = new SessionInactivityTimer(sessionHandler, this);
     }
 
     public SessionData getSessionData() {

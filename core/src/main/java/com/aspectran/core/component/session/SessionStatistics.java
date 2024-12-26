@@ -54,7 +54,7 @@ public class SessionStatistics {
     }
 
     /**
-     * This is called when a session is created.
+     * This is called when a session is expired.
      */
     protected void sessionExpired() {
         expirationCount.incrementAndGet();
@@ -70,7 +70,7 @@ public class SessionStatistics {
     /**
      * This is called when a session is evicted from the cache.
      */
-    protected void sessionEvicted() {
+    protected void sessionInactivated() {
         activationCount.decrement();
     }
 
@@ -106,70 +106,76 @@ public class SessionStatistics {
     /**
      * @return total number of sessions created
      */
-    public long getCreatedSessions() {
+    public long getNumberOfCreated() {
         return creationCount.get();
     }
 
     /**
      * @return the number of expired sessions
      */
-    public long getExpiredSessions() {
+    public long getNumberOfExpired() {
         return expirationCount.get();
     }
 
     /**
-     * @return the number of valid sessions in the session cache
+     * @return the number of valid sessions in the cache
      */
-    public long getActiveSessions() {
+    public long getNumberOfActives() {
         return activationCount.getCurrent();
     }
 
     /**
-     * @return the highest number of sessions that have been active at a single time
+     * @return the highest number of concurrently active sessions
      */
-    public long getHighestActiveSessions() {
+    public long getHighestNumberOfActives() {
         return activationCount.getMax();
-    }
-
-    /**
-     * @return the number of valid sessions temporarily evicted from the session cache
-     */
-    public long getEvictedSessions() {
-        return Math.max(getCreatedSessions() - getExpiredSessions() - getActiveSessions(), 0L);
     }
 
     /**
      * @return the number of rejected sessions
      */
-    public long getRejectedSessions() {
+    public long getNumberOfRejected() {
         return rejectionCount.get();
+    }
+
+    /**
+     * Returns the number of sessions that are not managed by the current session manager.
+     * This number of sessions includes sessions that are inactive or have been transferred
+     * to a session manager on another clustered server.
+     * If this number is positive, it means that there were more sessions transferred from
+     * other servers to the current server, while a negative number means the opposite.
+     * If not in cluster mode, only the number of inactive sessions will be included.
+     * @return the number of sessions that are not managed by the current session manager
+     */
+    public long getNumberOfUnmanaged() {
+        return (getNumberOfCreated() - getNumberOfExpired() - getNumberOfActives());
     }
 
     /**
      * @return the maximum amount of time session remained valid
      */
-    public long getSessionTimeMax() {
+    public long getMaxSessionAliveTime() {
         return timeRecord.getMax();
     }
 
     /**
      * @return the total amount of time all sessions remained valid
      */
-    public long getSessionTimeTotal() {
+    public long getTotalSessionsAliveTime() {
         return timeRecord.getTotal();
     }
 
     /**
      * @return the mean amount of time session remained valid
      */
-    public long getSessionTimeMean() {
+    public long getAverageSessionAliveTime() {
         return Math.round(timeRecord.getMean());
     }
 
     /**
      * @return the standard deviation of amount of time session remained valid
      */
-    public double getSessionTimeStdDev() {
+    public double getStdDevSessionAliveTime() {
         return timeRecord.getStdDev();
     }
 

@@ -64,7 +64,7 @@ class MasterReplicaLettuceSessionStoreFactoryTest {
             agent.complete();
 
             await().atMost(3, TimeUnit.SECONDS).until(()
-                -> sessionHandler.getStatistics().getActiveSessions() == 0);
+                -> sessionHandler.getStatistics().getNumberOfActives() == 0);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
