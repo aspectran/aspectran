@@ -142,16 +142,18 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         try {
             session = sessionCache.get(id);
             if (session != null) {
-                // if the session we got back has expired
-                if (session.isExpiredAt(System.currentTimeMillis())) {
-                    // expire the session
-                    try {
-                        session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
-                        session.invalidate();
-                    } catch (Exception e) {
-                        logger.warn("Invalidating session " + id + " found to be expired when requested", e);
+                try (AutoLock ignored = session.lock()) {
+                    // if the session we got back has expired
+                    if (session.isExpiredAt(System.currentTimeMillis())) {
+                        // expire the session
+                        try {
+                            session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
+                            session.invalidate();
+                        } catch (Exception e) {
+                            logger.warn("Invalidating session " + id + " found to be expired when requested", e);
+                        }
+                        return null;
                     }
-                    return null;
                 }
             }
             return session;
