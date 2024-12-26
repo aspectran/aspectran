@@ -213,15 +213,17 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     session.setResident(false);
                     DefaultSession restored = loadSession(id);
                     if (restored != null) {
-                        // swap it in instead of the local session
-                        boolean success = doReplace(id, session, restored);
-                        if (success) {
-                            // successfully swapped with the stored session
-                            session = restored;
-                            session.setResident(true);
-                        } else {
-                            // retry because it was updated by another thread
-                            return get(id);
+                        try (AutoLock ignored2 = restored.lock()) {
+                            // swap it in instead of the local session
+                            boolean success = doReplace(id, session, restored);
+                            if (success) {
+                                // successfully swapped with the stored session
+                                session = restored;
+                                session.setResident(true);
+                            } else {
+                                // retry because it was updated by another thread
+                                return get(id);
+                            }
                         }
                     } else {
                         // is the session already destroyed? it must be removed from the cache
