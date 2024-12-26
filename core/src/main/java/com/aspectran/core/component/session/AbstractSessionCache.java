@@ -210,7 +210,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     return null;
                 }
                 if (isClusterEnabled() && !loaded.get() && session.getRequests() <= 0) {
-                    session.setResident(false);
                     DefaultSession restored = loadSession(id);
                     if (restored != null) {
                         // swap it in instead of the local session
@@ -218,11 +217,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                         if (success) {
                             // successfully swapped with the restored session
                             restored.setResident(true);
-                            session = restored;
                         } else {
                             // retry because it was updated by another thread
                             return get(id, false);
                         }
+                        session.setResident(false);
+                        session = restored;
                     } else {
                         // is the session already destroyed? it must be removed from the cache
                         doDelete(id);
