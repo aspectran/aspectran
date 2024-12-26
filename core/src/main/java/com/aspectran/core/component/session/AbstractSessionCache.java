@@ -214,13 +214,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     if (restored != null) {
                         // swap it in instead of the local session
                         boolean success = doReplace(id, session, restored);
-                        if (success) {
-                            // successfully swapped with the restored session
-                            restored.setResident(true);
-                        } else {
+                        if (!success) {
                             // retry because it was updated by another thread
                             return get(id, false);
                         }
+                        // successfully swapped with the restored session
+                        restored.setResident(true);
                         session.setResident(false);
                         session = restored;
                     } else {
