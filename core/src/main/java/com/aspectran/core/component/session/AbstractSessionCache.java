@@ -209,21 +209,21 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     }
                     return null;
                 }
-                if (isClusterEnabled() && !loaded.get() && session.getRequests() <= 0) {
+                if (isClusterEnabled() && !loaded.get()) {
                     DefaultSession restored = loadSession(id);
                     if (restored != null) {
-                        // preemptive residency before replacement
-                        restored.setResident(true);
-                        // swap it in instead of the local session
-                        boolean success = doReplace(id, session, restored);
-                        if (!success) {
-                            restored.setResident(false);
-                            // retry because it was updated by another thread
-                            return get(id, false);
+                        try (AutoLock ignored2 = restored.lock()) {
+                            // swap it in instead of the local session
+                            boolean success = doReplace(id, session, restored);
+                            if (!success) {
+                                // retry because it was updated by another thread
+                                return get(id, false);
+                            }
+                            // successfully swapped with the restored session
+                            restored.setResident(true);
+                            session.setResident(false);
+                            session = restored;
                         }
-                        // successfully swapped with the restored session
-                        session.setResident(false);
-                        session = restored;
                     } else {
                         // is the session already destroyed? it must be removed from the cache
                         doDelete(id);

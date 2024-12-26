@@ -42,7 +42,7 @@ public class DefaultSession implements Session {
 
     private boolean newSession;
 
-    private volatile boolean resident;
+    private boolean resident;
 
     private int requests;
 
