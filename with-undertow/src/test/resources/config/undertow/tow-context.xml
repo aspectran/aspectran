@@ -115,7 +115,7 @@
         </properties>
         <properties profile="(!rss-lettuce, !rss-lettuce-masterreplica, !rss-lettuce-cluster)">
             <item name="sessionStore">
-                <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
                     <properties>
                         <item name="storeDir">/work/_sessions/tow</item>
                         <item name="nonPersistentAttributes" type="array">

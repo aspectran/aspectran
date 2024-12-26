@@ -41,7 +41,7 @@ class FileSessionStoreFactoryTest {
         sessionStoreFactory.setStoreDir(storeDir.getCanonicalPath());
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setSessionStore(sessionStoreFactory.getSessionStore());
+        sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();

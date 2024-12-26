@@ -38,7 +38,7 @@ class DefaultLettuceSessionStoreFactoryTest {
         try {
             DefaultLettuceSessionStoreFactory sessionStoreFactory = new DefaultLettuceSessionStoreFactory();
             sessionStoreFactory.setPoolConfig(poolConfig);
-            sessionManager.setSessionStore(sessionStoreFactory.getSessionStore());
+            sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
             sessionManager.initialize();
 
             SessionHandler sessionHandler = sessionManager.getSessionHandler();

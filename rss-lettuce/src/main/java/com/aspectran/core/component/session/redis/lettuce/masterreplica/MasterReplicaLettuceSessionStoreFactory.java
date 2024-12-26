@@ -38,7 +38,7 @@ public class MasterReplicaLettuceSessionStoreFactory extends AbstractSessionStor
     }
 
     @Override
-    public SessionStore getSessionStore() {
+    public MasterReplicaLettuceSessionStore createSessionStore() {
         if (logger.isDebugEnabled()) {
             logger.debug("RedisMasterReplicaConnectionPoolConfig " + poolConfig);
         }

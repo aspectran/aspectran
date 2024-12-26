@@ -43,7 +43,7 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
     }
 
     @Override
-    public SessionStore getSessionStore() throws IOException {
+    public FileSessionStore createSessionStore() throws IOException {
         FileSessionStore sessionStore = new FileSessionStore();
         File storeDirFile;
         if (getStoreDir() != null) {

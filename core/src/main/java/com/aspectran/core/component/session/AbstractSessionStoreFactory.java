@@ -71,9 +71,4 @@ public abstract class AbstractSessionStoreFactory implements SessionStoreFactory
         this.nonPersistentAttributes = nonPersistentAttributes;
     }
 
-    @Override
-    public SessionStore getObject() throws Exception {
-        return getSessionStore();
-    }
-
 }

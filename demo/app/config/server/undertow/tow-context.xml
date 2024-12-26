@@ -117,7 +117,7 @@
         </properties>
         <properties profile="(!rss-lettuce, !rss-lettuce-masterreplica, !rss-lettuce-cluster)">
             <item name="sessionStore">
-                <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
                     <properties>
                         <item name="storeDir">/work/_sessions/tow</item>
                         <item name="nonPersistentAttributes" type="array">
@@ -129,7 +129,7 @@
         </properties>
         <properties profile="rss-lettuce">
             <item name="sessionStore">
-                <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactoryBean">
                     <properties>
                         <item name="poolConfig">
                             <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
@@ -147,7 +147,7 @@
         </properties>
         <properties profile="rss-lettuce-masterreplica">
             <item name="sessionStore">
-                <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactoryBean">
                     <properties>
                         <item name="poolConfig">
                             <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
@@ -165,7 +165,7 @@
         </properties>
         <properties profile="rss-lettuce-cluster">
             <item name="sessionStore">
-                <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.ClusterLettuceSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.ClusterLettuceSessionStoreFactoryBean">
                     <properties>
                         <item name="poolConfig">
                             <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.RedisClusterConnectionPoolConfig">

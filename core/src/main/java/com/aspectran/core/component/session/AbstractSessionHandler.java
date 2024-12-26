@@ -402,7 +402,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void addSessionListener(SessionListener listener) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Registered session listener " + listener);
+            logger.debug("Register session listener " + listener + " in " + getComponentName());
         }
         sessionListeners.add(listener);
     }
@@ -410,7 +410,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void removeSessionListener(SessionListener listener) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Removed session listener " + listener);
+            logger.debug("Remove session listener " + listener + " from " + getComponentName());
         }
         sessionListeners.remove(listener);
     }

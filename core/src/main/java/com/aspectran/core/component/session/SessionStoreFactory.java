@@ -15,19 +15,17 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-
 import java.io.IOException;
 
 /**
  * <p>Created: 2019/12/06</p>
  */
-public interface SessionStoreFactory extends FactoryBean<SessionStore> {
+public interface SessionStoreFactory {
 
     String[] getNonPersistentAttributes();
 
     void setNonPersistentAttributes(String[] nonPersistentAttributes);
 
-    SessionStore getSessionStore() throws IOException;
+    SessionStore createSessionStore() throws IOException;
 
 }

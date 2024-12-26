@@ -39,7 +39,7 @@ class MasterReplicaLettuceSessionStoreFactoryTest {
         try {
             MasterReplicaLettuceSessionStoreFactory sessionStoreFactory = new MasterReplicaLettuceSessionStoreFactory();
             sessionStoreFactory.setPoolConfig(poolConfig);
-            sessionManager.setSessionStore(sessionStoreFactory.getSessionStore());
+            sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
             sessionManager.initialize();
 
             SessionHandler sessionHandler = sessionManager.getSessionHandler();

@@ -38,7 +38,7 @@ class ClusterLettuceSessionStoreFactoryTest {
         try {
             ClusterLettuceSessionStoreFactory sessionStoreFactory = new ClusterLettuceSessionStoreFactory();
             sessionStoreFactory.setPoolConfig(poolConfig);
-            sessionManager.setSessionStore(sessionStoreFactory.getSessionStore());
+            sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
             sessionManager.initialize();
 
             SessionHandler sessionHandler = sessionManager.getSessionHandler();

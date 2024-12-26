@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.handler.logging;
+package com.aspectran.core.component.session.redis.lettuce.cluster;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
 
 /**
- * <p>Created: 2024. 12. 11.</p>
+ * <p>Created: 2024. 12. 26.</p>
  */
-public class LoggingGroupAssistHandler implements HttpHandler  {
-
-    private final HttpHandler handler;
-
-    public LoggingGroupAssistHandler(HttpHandler handler) {
-        this.handler = handler;
-    }
+public class ClusterLettuceSessionStoreFactoryBean
+        extends ClusterLettuceSessionStoreFactory implements FactoryBean<ClusterLettuceSessionStore> {
 
     @Override
-    public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
-        ExchangeLoggingGroupHelper.setFrom(exchange);
-        handler.handleRequest(exchange);
+    public ClusterLettuceSessionStore getObject() throws Exception {
+        return createSessionStore();
     }
 
 }

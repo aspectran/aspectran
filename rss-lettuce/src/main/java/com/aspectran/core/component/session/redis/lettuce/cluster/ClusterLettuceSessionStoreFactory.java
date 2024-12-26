@@ -38,7 +38,7 @@ public class ClusterLettuceSessionStoreFactory extends AbstractSessionStoreFacto
     }
 
     @Override
-    public SessionStore getSessionStore() {
+    public ClusterLettuceSessionStore createSessionStore() {
         if (logger.isDebugEnabled()) {
             logger.debug("RedisClusterConnectionPoolConfig " + poolConfig);
         }

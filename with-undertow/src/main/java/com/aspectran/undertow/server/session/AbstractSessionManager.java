@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * <p>Created: 2024-04-27</p>
  */
-public abstract class AbstractSessionManager implements ApplicationAdapterAware, DisposableBean {
+public abstract class AbstractSessionManager implements ApplicationAdapterAware, InitializableBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionManager.class);
 
@@ -70,15 +71,13 @@ public abstract class AbstractSessionManager implements ApplicationAdapterAware,
         return sessionManager;
     }
 
+    @Override
+    public void initialize() throws Exception {
+        sessionManager.initialize();
+    }
+
     public void start() {
-        int count = startCount.getAndIncrement();
-        if (count == 0 && !sessionManager.isInitialized()) {
-            try {
-                sessionManager.initialize();
-            } catch (Exception e) {
-                throw new RuntimeException("Error initializing TowSessionManager", e);
-            }
-        }
+        startCount.getAndIncrement();
     }
 
     public void stop() {
@@ -87,7 +86,7 @@ public abstract class AbstractSessionManager implements ApplicationAdapterAware,
             try {
                 destroy();
             } catch (Exception e) {
-                logger.error("Error destroying TowSessionManager", e);
+                logger.error(e);
             }
         }
     }
