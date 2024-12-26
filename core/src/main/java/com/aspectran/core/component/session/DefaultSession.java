@@ -396,13 +396,17 @@ public class DefaultSession implements Session {
     }
 
     protected boolean isResident() {
-        return resident;
+        try (AutoLock ignored = autoLock.lock()) {
+            return resident;
+        }
     }
 
     protected void setResident(boolean resident) {
-        this.resident = resident;
-        if (!resident) {
-            sessionInactivityTimer.destroy();
+        try (AutoLock ignored = autoLock.lock()) {
+            this.resident = resident;
+            if (!resident) {
+                sessionInactivityTimer.destroy();
+            }
         }
     }
 
