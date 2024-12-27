@@ -230,23 +230,23 @@ public class SessionData implements Serializable {
 
     /**
      * Save the session data.
-     * @param os the output stream to save to
+     * @param outputStream the output stream to save to
      * @param nonPersistentAttributes the attribute names to be excluded from serialization
      * @throws IOException if an I/O error has occurred
      */
-    public static void serialize(@NonNull SessionData data, OutputStream os,
+    public static void serialize(@NonNull SessionData data, OutputStream outputStream,
                                  Set<String> nonPersistentAttributes) throws IOException {
-        DataOutputStream out = new DataOutputStream(os);
-        out.writeUTF(data.getId());
-        out.writeLong(data.getCreated());
-        out.writeLong(data.getAccessed());
-        out.writeLong(data.getLastAccessed());
-        out.writeLong(data.getExpiry());
-        out.writeLong(data.getInactiveInterval());
+        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+        dataOutputStream.writeUTF(data.getId());
+        dataOutputStream.writeLong(data.getCreated());
+        dataOutputStream.writeLong(data.getAccessed());
+        dataOutputStream.writeLong(data.getLastAccessed());
+        dataOutputStream.writeLong(data.getExpiry());
+        dataOutputStream.writeLong(data.getInactiveInterval());
 
         Set<String> keys = data.getKeys();
         if (keys.isEmpty()) {
-            out.writeInt(0);
+            dataOutputStream.writeInt(0);
             return;
         }
 
@@ -259,60 +259,60 @@ public class SessionData implements Serializable {
             }
         }
 
-        out.writeInt(attrKeys.size());
+        dataOutputStream.writeInt(attrKeys.size());
 
         if (!attrKeys.isEmpty()) {
-            ObjectOutputStream oos = new ObjectOutputStream(out);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(dataOutputStream);
             for (String name : attrKeys) {
                 Object value = data.getAttribute(name);
-                oos.writeUTF(name);
-                oos.writeObject(value);
+                objectOutputStream.writeUTF(name);
+                objectOutputStream.writeObject(value);
             }
         }
     }
 
     /**
      * Load session data from an input stream that contains session data.
-     * @param is the input stream containing session data
+     * @param inputStream the input stream containing session data
      * @return the session data
      * @throws Exception if the session data could not be read from the file
      */
     @NonNull
-    public static SessionData deserialize(InputStream is) throws Exception {
-        DataInputStream dis = new DataInputStream(is);
-        String id = dis.readUTF(); // the actual id from inside the file
-        long created = dis.readLong();
-        long accessed = dis.readLong();
-        long lastAccessed = dis.readLong();
-        long expiry = dis.readLong();
-        long maxInactive = dis.readLong();
-        int entries = dis.readInt();
+    public static SessionData deserialize(InputStream inputStream) throws Exception {
+        DataInputStream dataInputStream = new DataInputStream(inputStream);
+        String id = dataInputStream.readUTF(); // the actual id from inside the file
+        long created = dataInputStream.readLong();
+        long accessed = dataInputStream.readLong();
+        long lastAccessed = dataInputStream.readLong();
+        long expiry = dataInputStream.readLong();
+        long maxInactive = dataInputStream.readLong();
+        int entries = dataInputStream.readInt();
 
         SessionData data = new SessionData(id, created, accessed, lastAccessed, maxInactive);
         data.setExpiry(expiry);
         data.setInactiveInterval(maxInactive);
 
         // Attributes
-        restoreAttributes(dis, entries, data);
+        restoreAttributes(dataInputStream, entries, data);
 
         return data;
     }
 
     /**
      * Load attributes from an input stream that contains session data.
-     * @param is the input stream containing session data
+     * @param inputStream the input stream containing session data
      * @param entries number of attributes
      * @param data the data to restore to
      * @throws Exception if the input stream is invalid or fails to read
      */
-    private static void restoreAttributes(InputStream is, int entries, SessionData data) throws Exception {
+    private static void restoreAttributes(InputStream inputStream, int entries, SessionData data) throws Exception {
         if (entries > 0) {
             // input stream should not be closed here
             Map<String, Object> attributes = new HashMap<>();
-            ObjectInputStream ois =  new CustomObjectInputStream(is);
+            ObjectInputStream objectInputStream =  new CustomObjectInputStream(inputStream);
             for (int i = 0; i < entries; i++) {
-                String key = ois.readUTF();
-                Object value = ois.readObject();
+                String key = objectInputStream.readUTF();
+                Object value = objectInputStream.readObject();
                 attributes.put(key, value);
             }
             data.putAllAttributes(attributes);

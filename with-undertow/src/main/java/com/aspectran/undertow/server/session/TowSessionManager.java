@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server.session;
 
-import com.aspectran.core.component.session.DefaultSession;
+import com.aspectran.core.component.session.ManagedSession;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -64,7 +64,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
         sessionConfig.setSessionId(exchange, sessionId);
 
-        DefaultSession session = getSessionManager().createSession(sessionId);
+        ManagedSession session = getSessionManager().createSession(sessionId);
         TowSession towSession = wrapSession(session);
         exchange.putAttachment(NEW_SESSION, towSession);
         return towSession;
@@ -101,7 +101,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (sessionId == null) {
             return null;
         }
-        DefaultSession session = getSessionManager().getSession(sessionId);
+        ManagedSession session = getSessionManager().getSession(sessionId);
         if (session != null) {
             return wrapSession(session);
         } else {

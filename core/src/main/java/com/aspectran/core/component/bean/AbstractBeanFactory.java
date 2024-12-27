@@ -394,9 +394,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
         if (resultBean == null) {
             throw new FactoryBeanNotInitializedException(
-                            "FactoryBean returned null object: " +
-                            "probably not fully initialized (maybe due to circular bean reference)",
-                            beanRule);
+                        "FactoryBean returned null object: " +
+                        "probably not fully initialized (maybe due to circular bean reference)",
+                        beanRule);
         }
         return resultBean;
     }

@@ -45,16 +45,14 @@ public interface SessionHandler extends Component {
      * @param id the session id
      * @return a Session or null if none exists
      */
-    DefaultSession getSession(String id);
+    ManagedSession getSession(String id);
 
     /**
      * Create an entirely new Session.
      * @param id identity of session to create
      * @return the new session object
      */
-    DefaultSession createSession(String id);
-
-    void releaseSession(DefaultSession session);
+    ManagedSession createSession(String id);
 
     /**
      * Create a new Session ID.
@@ -77,9 +75,9 @@ public interface SessionHandler extends Component {
      * @param invalidate if false, only remove from cache
      * @return if the session was removed
      */
-    DefaultSession removeSession(String id, boolean invalidate);
+    ManagedSession removeSession(String id, boolean invalidate);
 
-    DefaultSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason);
+    ManagedSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason);
 
     /**
      * Called when a session has expired.
@@ -124,7 +122,7 @@ public interface SessionHandler extends Component {
      * session is about to be invalidated.
      * @param session the session whose time to record
      */
-    void recordSessionTime(DefaultSession session);
+    void recordSessionTime(ManagedSession session);
 
     SessionStatistics getStatistics();
 

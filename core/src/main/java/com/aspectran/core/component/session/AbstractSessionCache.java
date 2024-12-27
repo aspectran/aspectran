@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -166,21 +167,24 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     @Override
-    public DefaultSession get(String id) throws Exception {
+    public ManagedSession get(String id) throws Exception {
         return get(id, false);
     }
 
     @Nullable
-    private DefaultSession get(String id, boolean forDeleting) throws Exception {
+    private ManagedSession get(String id, boolean forDeleting) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         AtomicBoolean loaded = new AtomicBoolean(false);
         AtomicReference<Exception> thrown = new AtomicReference<>();
-        DefaultSession session;
+        ManagedSession session;
         session = doComputeIfAbsent(id, k -> {
             if (logger.isTraceEnabled()) {
                 logger.trace("Session " + id + " not found locally in " + this + ", attempting to load");
             }
             try {
-                DefaultSession stored = loadSession(id);
+                ManagedSession stored = loadSession(id);
                 if (stored != null) {
                     try (AutoLock ignored = stored.lock()) {
                         stored.setResident(true); // ensure freshly loaded session is resident
@@ -200,44 +204,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (thrown.get() != null) {
             throw thrown.get();
         }
-        if (!forDeleting && session != null) {
-            try (AutoLock ignored = session.lock()) {
-                if (!session.isResident()) {
-                    // session isn't marked as resident in cache
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Non-resident session " + id + " in " + sessionCacheName);
-                    }
-                    return null;
-                }
-//                if (isClusterEnabled() && !loaded.get() && session.getRequests() <= 0) {
-//                    DefaultSession restored = loadSession(id);
-//                    if (restored != null) {
-//                        try (AutoLock ignored2 = restored.lock()) {
-//                            // swap it in instead of the local session
-//                            boolean success = doReplace(id, session, restored);
-//                            if (!success) {
-//                                // retry because it was updated by another thread
-//                                return get(id, false);
-//                            }
-//                            // successfully swapped with the restored session
-//                            restored.setResident(true);
-//                            session.setResident(false);
-//                            session = restored;
-//                        }
-//                    } else {
-//                        // is the session already destroyed? it must be removed from the cache
-//                        doDelete(id);
-//                        session.setResident(false);
-//                        session = null;
-//                    }
-//                }
+        if (!forDeleting && session != null && loaded.get()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Residing evicted session id=" + session.getId() + " into " + sessionCacheName);
             }
-            if (session != null && loaded.get()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Residing evicted session id=" + session.getId() + " into " + sessionCacheName);
-                }
-                sessionHandler.onSessionResided(session);
-            }
+            sessionHandler.onSessionResided(session);
         }
         return session;
     }
@@ -249,7 +220,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @throws Exception if the session can not be loaded
      */
     @Nullable
-    private DefaultSession loadSession(String id) throws Exception {
+    private ManagedSession loadSession(String id) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         if (sessionStore == null) {
             return null; // can't load it
         }
@@ -259,7 +233,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 if (logger.isTraceEnabled()) {
                     logger.trace("Session " + id + " loaded from session store " + sessionStore);
                 }
-                return new DefaultSession(sessionHandler, data, false);
+                return new ManagedSession(sessionHandler, data, false);
             } else {
                 // session doesn't exist
                 return null;
@@ -274,7 +248,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     @Override
-    public DefaultSession add(String id, long time, long maxInactiveInterval) throws Exception {
+    public ManagedSession add(String id, long time, long maxInactiveInterval) throws Exception {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
         }
@@ -282,7 +256,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             logger.debug("Create new session id=" + id);
         }
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
-        DefaultSession session = new DefaultSession(sessionHandler, data, true);
+        ManagedSession session = new ManagedSession(sessionHandler, data, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // it's in the cache
             if (sessionStore != null && (isSaveOnCreate() || isClusterEnabled())) {
@@ -295,27 +269,55 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     @Override
-    public void release(String id, DefaultSession session) throws Exception {
-        if (id == null || session == null) {
-            throw new IllegalArgumentException("Put key=" + id + " session=" +
-                (session == null ? "null" : session.getId()));
+    public void refresh(ManagedSession session) throws Exception {
+        if (session == null) {
+            throw new IllegalArgumentException("session must not be null");
         }
+        if (!isClusterEnabled() || sessionStore == null) {
+            return;
+        }
+        String id = session.getId();
+        try (AutoLock ignored = session.lock()) {
+            if (session.getRequests() <= 0) {
+                try {
+                    SessionData data = sessionStore.load(id);
+                    if (data != null) {
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Reload session data for session id=" + id + " from " + sessionStoreName);
+                        }
+                        session.setSessionData(data);
+                    }
+                } catch (UnreadableSessionDataException e) {
+                    // can't load the session, delete it
+                    if (isRemoveUnloadableSessions()) {
+                        sessionStore.delete(id);
+                    }
+                    throw e;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void release(ManagedSession session) throws Exception {
+        if (session == null) {
+            throw new IllegalArgumentException("session must not be null");
+        }
+        String id = session.getId();
         try (AutoLock ignored = session.lock()) {
             if (!session.isValid()) {
                 return;
             }
-            if (sessionStore == null) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Putting into " + sessionCacheName + " only id=" + id);
-                }
-                session.setResident(true);
-                doPutIfAbsent(id, session); // ensure it is in our map
-                return;
-            }
             // don't do anything with the session until the last request for it has finished
             if (session.getRequests() <= 0) {
-                // save the session
-                sessionStore.save(id, session.getSessionData());
+                if (sessionStore != null) {
+                    // save the session
+                    sessionStore.save(id, session.getSessionData());
+                } else {
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("No SessionStore, session in " + sessionCacheName + " only id=" + id);
+                    }
+                }
                 // if we evict on session exit, boot it from the cache
                 if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
                     if (logger.isTraceEnabled()) {
@@ -324,24 +326,26 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     doDelete(session.getId());
                     session.setResident(false);
                 } else {
+                    // ensure it is in our map
                     session.setResident(true);
-                    doPutIfAbsent(id, session); // ensure it is in our map
+                    doPutIfAbsent(id, session);
                 }
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Session " + id + " request=" + session.getRequests());
-                }
-                session.setResident(true);
-                doPutIfAbsent(id, session); // ensure it is the map,
+                // ensure it is in our map,
                 // but don't save it to the backing store until the last request exists
+                session.setResident(true);
+                doPutIfAbsent(id, session);
             }
         }
     }
 
     @Override
     public boolean exists(String id) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         if (isClusterEnabled()) {
-            DefaultSession session = get(id);
+            ManagedSession session = get(id);
             if (session != null) {
                 return session.isValid();
             } else {
@@ -349,7 +353,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
         } else {
             // try to find it in the cache first
-            DefaultSession session = doGet(id);
+            ManagedSession session = doGet(id);
             if (session != null) {
                 return session.isValid();
             }
@@ -360,14 +364,17 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public boolean contains(String id) throws Exception {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         // just ask our object cache, not the store
         return (doGet(id) != null);
     }
 
     @Override
-    public DefaultSession delete(String id) throws Exception {
+    public ManagedSession delete(String id) throws Exception {
         // get the session, if it's not in memory, this will load it
-        DefaultSession session = get(id, true);
+        ManagedSession session = get(id, true);
         // Always delete it from the backing data store
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
@@ -387,7 +394,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param id the session id
      * @return the Session object matching the id
      */
-    protected abstract DefaultSession doGet(String id);
+    protected abstract ManagedSession doGet(String id);
 
     /**
      * Put the session into the map if it wasn't already there.
@@ -395,7 +402,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param session the session object
      * @return null if the session wasn't already in the map, or the existing entry otherwise
      */
-    protected abstract DefaultSession doPutIfAbsent(String id, DefaultSession session);
+    protected abstract ManagedSession doPutIfAbsent(String id, ManagedSession session);
 
     /**
      * Compute the mappingFunction to create a Session object if the session
@@ -406,34 +413,27 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param mappingFunction the function to load the data for the session
      * @return an existing Session from the cache
      */
-    protected abstract DefaultSession doComputeIfAbsent(String id, Function<String, DefaultSession> mappingFunction);
-
-    /**
-     * Replace the mapping from id to oldValue with newValue.
-     * @param id the session id
-     * @param oldValue the old value
-     * @param newValue the new value
-     * @return true if replacement was done
-     */
-    protected abstract boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue);
+    protected abstract ManagedSession doComputeIfAbsent(String id, Function<String, ManagedSession> mappingFunction);
 
     /**
      * Remove the session with this identity from the store.
      * @param id the session id
      * @return the Session object if removed; null otherwise
      */
-    protected abstract DefaultSession doDelete(String id);
+    protected abstract ManagedSession doDelete(String id);
 
     @Override
-    public DefaultSession renewSessionId(String oldId, String newId) throws Exception {
+    public ManagedSession renewSessionId(String oldId, String newId) throws Exception {
         if (!StringUtils.hasText(oldId)) {
             throw new IllegalArgumentException("Old session id is null");
         }
-        if (!StringUtils.hasText(oldId)) {
+        if (!StringUtils.hasText(newId)) {
             throw new IllegalArgumentException("New session id is null");
         }
-        DefaultSession session = get(oldId);
-        renewSessionId(session, newId);
+        ManagedSession session = get(oldId);
+        if (session != null) {
+            renewSessionId(session, newId);
+        }
         return session;
     }
 
@@ -443,10 +443,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param newId the new id
      * @throws Exception if there was a failure saving the change
      */
-    protected void renewSessionId(DefaultSession session, String newId) throws Exception {
-        if (session == null) {
-            return;
-        }
+    protected void renewSessionId(@NonNull ManagedSession session, @NonNull String newId) throws Exception {
         try (AutoLock ignored = session.lock()) {
             String oldId = session.getId();
             session.checkValidForWrite(); // can't change id on invalid session
@@ -482,7 +479,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (allCandidates != null) {
             Set<String> sessionsInUse = new HashSet<>();
             for (String id : allCandidates) {
-                DefaultSession session = doGet(id);
+                ManagedSession session = doGet(id);
                 if (session != null && session.getRequests() > 0) {
                     // if the session is in my cache, check it's not in use first
                     sessionsInUse.add(id);
@@ -508,7 +505,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @return true if evicted session, false otherwise
      */
     @Override
-    public boolean checkInactiveSession(DefaultSession session) {
+    public boolean checkInactiveSession(ManagedSession session) {
         if (session == null) {
             return false;
         }

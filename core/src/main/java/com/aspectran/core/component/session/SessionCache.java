@@ -106,7 +106,7 @@ public interface SessionCache {
      * @return the Session if one exists, null otherwise
      * @throws Exception if an error occurs
      */
-    DefaultSession get(String id) throws Exception;
+    ManagedSession get(String id) throws Exception;
 
     /**
      * Add an entirely new session to the cache.
@@ -114,18 +114,24 @@ public interface SessionCache {
      * @param time the timestamp of the session creation
      * @param maxInactiveInterval the max inactive time in milliseconds
      */
-    DefaultSession add(String id, long time, long maxInactiveInterval) throws Exception;
+    ManagedSession add(String id, long time, long maxInactiveInterval) throws Exception;
+
+    /**
+     * Refreshes the data of the session to be used.
+     * @param session the session object
+     * @throws Exception if an error occurs
+     */
+    void refresh(ManagedSession session) throws Exception;
 
     /**
      * Finish using a Session. This is called by the SessionHandler
      * once a request is finished with a Session. SessionCache
      * implementations may want to delay writing out Session contents
      * until the last request exits a Session.
-     * @param id the session id
      * @param session the session object
      * @throws Exception if an error occurs
      */
-    void release(String id, DefaultSession session) throws Exception;
+    void release(ManagedSession session) throws Exception;
 
     /**
      * Check to see if a session exists: WILL consult the
@@ -153,7 +159,7 @@ public interface SessionCache {
      * @return the Session that was removed, null otherwise
      * @throws Exception if an error occurs when deleting a session
      */
-    DefaultSession delete(String id) throws Exception;
+    ManagedSession delete(String id) throws Exception;
 
     /**
      * Change the id of a Session.
@@ -162,7 +168,7 @@ public interface SessionCache {
      * @return the Session after changing its id
      * @throws Exception if any error occurred
      */
-    DefaultSession renewSessionId(String oldId, String newId) throws Exception;
+    ManagedSession renewSessionId(String oldId, String newId) throws Exception;
 
     /**
      * Check a list of session ids that belong to potentially expired
@@ -181,7 +187,7 @@ public interface SessionCache {
      * @param session the session object
      * @return true if evicted session, false otherwise
      */
-    boolean checkInactiveSession(DefaultSession session);
+    boolean checkInactiveSession(ManagedSession session);
 
     /**
      * Remove all unmanaged sessions that expired at or before the given time.

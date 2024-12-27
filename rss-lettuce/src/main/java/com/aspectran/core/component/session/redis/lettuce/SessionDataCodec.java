@@ -52,8 +52,8 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
         try {
             byte[] array = new byte[bytes.remaining()];
             bytes.get(array);
-            ByteArrayInputStream bais = new ByteArrayInputStream(array);
-            return SessionData.deserialize(bais);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(array);
+            return SessionData.deserialize(inputStream);
         } catch (Exception e) {
             throw new SessionDataSerializationException("Error decoding session data", e);
         }
@@ -67,9 +67,9 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
     @Override
     public ByteBuffer encodeValue(SessionData value) {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            SessionData.serialize(value, baos, nonPersistentAttributes);
-            return ByteBuffer.wrap(baos.toByteArray());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            SessionData.serialize(value, outputStream, nonPersistentAttributes);
+            return ByteBuffer.wrap(outputStream.toByteArray());
         } catch (IOException e) {
             throw new SessionDataSerializationException("Error encoding session data", e);
         }

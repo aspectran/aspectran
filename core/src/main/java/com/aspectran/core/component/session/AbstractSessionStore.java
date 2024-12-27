@@ -172,6 +172,10 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     @Override
     public Set<String> getExpired(Set<String> candidates) {
+        if (candidates == null) {
+            throw new IllegalArgumentException("candidates must not be null");
+        }
+
         checkInitialized();
 
         // check the backing store to find other sessions

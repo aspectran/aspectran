@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Created: 2017. 6. 13.</p>
  */
-public class DefaultSession implements Session {
+public class ManagedSession implements Session {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSession.class);
+    private static final Logger logger = LoggerFactory.getLogger(ManagedSession.class);
 
     private final AutoLock autoLock = new AutoLock();
 
@@ -38,7 +38,7 @@ public class DefaultSession implements Session {
 
     private final SessionInactivityTimer sessionInactivityTimer;
 
-    private final SessionData sessionData;
+    private SessionData sessionData;
 
     private boolean newSession;
 
@@ -59,7 +59,7 @@ public class DefaultSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected DefaultSession(AbstractSessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
+    protected ManagedSession(AbstractSessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
         this.sessionHandler = sessionHandler;
         this.sessionInactivityTimer = new SessionInactivityTimer(sessionHandler, this);
         this.sessionData = sessionData;
@@ -70,12 +70,16 @@ public class DefaultSession implements Session {
         }
     }
 
-    public SessionData getSessionData() {
+    public SessionHandler getSessionHandler() {
+        return sessionHandler;
+    }
+
+    protected SessionData getSessionData() {
         return sessionData;
     }
 
-    public SessionHandler getSessionHandler() {
-        return sessionHandler;
+    protected void setSessionData(SessionData sessionData) {
+        this.sessionData = sessionData;
     }
 
     @Override
@@ -177,6 +181,10 @@ public class DefaultSession implements Session {
             if (isExpiredAt(now)) {
                 invalidate();
                 return false;
+            }
+
+            if (requests == 0) {
+                sessionHandler.refreshSession(this);
             }
 
             requests++;

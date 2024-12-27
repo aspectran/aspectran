@@ -35,11 +35,11 @@ public class SessionInactivityTimer {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionInactivityTimer.class);
 
-    private final DefaultSession session;
+    private final ManagedSession session;
 
     private final CyclicTimeout timer;
 
-    public SessionInactivityTimer(@NonNull AbstractSessionHandler sessionHandler, @NonNull DefaultSession session) {
+    public SessionInactivityTimer(@NonNull AbstractSessionHandler sessionHandler, @NonNull ManagedSession session) {
         this.session = session;
         this.timer = new CyclicTimeout(sessionHandler.getScheduler()) {
             @Override

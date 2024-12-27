@@ -137,8 +137,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public DefaultSession getSession(String id) {
-        DefaultSession session = null;
+    public ManagedSession getSession(String id) {
+        ManagedSession session = null;
         try {
             session = sessionCache.get(id);
             if (session != null) {
@@ -164,11 +164,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public DefaultSession createSession(String id) {
+    public ManagedSession createSession(String id) {
         long now = System.currentTimeMillis();
         long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
-            DefaultSession session = sessionCache.add(id, now, maxInactiveInterval);
+            ManagedSession session = sessionCache.add(id, now, maxInactiveInterval);
             getStatistics().sessionCreated();
             onSessionCreated(session);
             return session;
@@ -179,12 +179,19 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    @Override
-    public void releaseSession(DefaultSession session) {
+    protected void refreshSession(ManagedSession session) {
         try {
-            sessionCache.release(session.getId(), session);
+            sessionCache.refresh(session);
         } catch (Exception e) {
-            logger.warn("Session failed to save", e);
+            logger.warn("Session refresh failed", e);
+        }
+    }
+
+    protected void releaseSession(ManagedSession session) {
+        try {
+            sessionCache.release(session);
+        } catch (Exception e) {
+            logger.warn("Session release failed", e);
         }
     }
 
@@ -196,7 +203,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public String renewSessionId(String oldId, String newId) {
         try {
-            DefaultSession session = sessionCache.renewSessionId(oldId, newId);
+            ManagedSession session = sessionCache.renewSessionId(oldId, newId);
             if (session == null) {
                 // session doesn't exist
                 return null;
@@ -212,18 +219,18 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public DefaultSession removeSession(String id, boolean invalidate) {
+    public ManagedSession removeSession(String id, boolean invalidate) {
         return removeSession(id, invalidate, null);
     }
 
     @Override
-    public DefaultSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
+    public ManagedSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
         if (!StringUtils.hasText(id)) {
             return null;
         }
         try {
             // Remove the Session object from the session store and any backing data store
-            DefaultSession session = sessionCache.delete(id);
+            ManagedSession session = sessionCache.delete(id);
             if (invalidate && session != null) {
                 // start invalidating if it is not already begun, and call the listeners
                 try {
@@ -287,7 +294,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param now the time at which to check for expiry
      * @return true if the session has already expired
      */
-    public boolean sessionInactivityTimerExpired(DefaultSession session, long now) {
+    public boolean sessionInactivityTimerExpired(ManagedSession session, long now) {
         if (session == null) {
             return true;
         }
@@ -497,7 +504,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void recordSessionTime(@NonNull DefaultSession session) {
+    public void recordSessionTime(@NonNull ManagedSession session) {
         long now = System.currentTimeMillis();
         getStatistics().recordTime(round((now - session.getSessionData().getCreated()) / 1000.0));
     }

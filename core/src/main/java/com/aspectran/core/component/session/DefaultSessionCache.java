@@ -37,7 +37,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionCache.class);
 
     /** the cache of sessions in a HashMap */
-    private final Map<String, DefaultSession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, ManagedSession> sessions = new ConcurrentHashMap<>();
 
     /** Determines the maximum number of concurrent active sessions allowed. */
     private volatile int maxActiveSessions;
@@ -57,14 +57,14 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    protected DefaultSession doGet(String id) {
+    protected ManagedSession doGet(String id) {
         return (id != null ? sessions.get(id) : null);
     }
 
     @Override
-    protected DefaultSession doPutIfAbsent(String id, DefaultSession session) {
+    protected ManagedSession doPutIfAbsent(String id, ManagedSession session) {
         AtomicBoolean absent = new AtomicBoolean(false);
-        DefaultSession current = doComputeIfAbsent(id, k -> {
+        ManagedSession current = doComputeIfAbsent(id, k -> {
             absent.set(true);
             return session;
         });
@@ -72,10 +72,10 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    protected DefaultSession doComputeIfAbsent(String id, Function<String, DefaultSession> mappingFunction) {
+    protected ManagedSession doComputeIfAbsent(String id, Function<String, ManagedSession> mappingFunction) {
         return sessions.computeIfAbsent(id, k -> {
             checkMaxSessions(id);
-            DefaultSession session = mappingFunction.apply(k);
+            ManagedSession session = mappingFunction.apply(k);
             if (session != null) {
                 getStatistics().sessionActivated();
             }
@@ -84,17 +84,12 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    protected DefaultSession doDelete(String id) {
-        DefaultSession session = sessions.remove(id);
+    protected ManagedSession doDelete(String id) {
+        ManagedSession session = sessions.remove(id);
         if (session != null) {
             getStatistics().sessionInactivated();
         }
         return session;
-    }
-
-    @Override
-    protected boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue) {
-        return sessions.replace(id, oldValue, newValue);
     }
 
     private void checkMaxSessions(String id) {
@@ -143,7 +138,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         // added while we're running
         int loop = 100;
         while (!sessions.isEmpty() && loop-- >= 0) {
-            for (DefaultSession session : sessions.values()) {
+            for (ManagedSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (getSessionStore() != null) {
                     // remove attributes excluded from serialization
