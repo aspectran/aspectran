@@ -30,14 +30,14 @@ public class TemplateEngineFactoryBean extends TemplateEngineFactory
 
     @Override
     public void initialize() {
-        if (this.templateEngine == null) {
-            this.templateEngine = createTemplateEngine();
+        if (templateEngine == null) {
+            templateEngine = createTemplateEngine();
         }
     }
 
     @Override
     public AspectranTemplateEngine getObject() {
-        return this.templateEngine;
+        return templateEngine;
     }
 
 }

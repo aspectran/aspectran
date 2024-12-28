@@ -60,7 +60,6 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     private final boolean applyOgnlShortcuts;
 
     public ASELVariableExpressionEvaluator(boolean applyOgnlShortcuts) {
-        super();
         this.applyOgnlShortcuts = applyOgnlShortcuts;
 
         /*
@@ -131,7 +130,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
             }
         } catch (Exception e) {
             throw new TemplateProcessingException(
-                "Exception evaluating OGNL expression: \"" + expression.getExpression() + "\"", e);
+                    "Exception evaluating OGNL expression: \"" + expression.getExpression() + "\"", e);
         }
     }
 

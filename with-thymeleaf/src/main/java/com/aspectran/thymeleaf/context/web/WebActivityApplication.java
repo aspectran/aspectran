@@ -48,7 +48,6 @@ public class WebActivityApplication implements IServletWebApplication {
         this.servletContext.setAttribute(name, value);
     }
 
-
     @Override
     public InputStream getResourceAsStream(String path) {
         Assert.notNull(path, "Path cannot be null");

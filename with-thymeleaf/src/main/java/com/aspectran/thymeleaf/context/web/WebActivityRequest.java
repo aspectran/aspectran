@@ -17,6 +17,7 @@ package com.aspectran.thymeleaf.context.web;
 
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,20 +64,23 @@ public class WebActivityRequest implements IWebRequest {
     public String getApplicationPath() {
         String contextPath = getHttpServletRequest().getContextPath();
         // This protects against a redirection behaviour in Jetty
-        return (contextPath != null && contextPath.length() == 1 && contextPath.charAt(0) == '/')? "" : contextPath;
+        if (contextPath != null && contextPath.length() == 1 && contextPath.charAt(0) == '/') {
+            contextPath = "";
+        }
+        return contextPath;
     }
 
     @Override
     public String getPathWithinApplication() {
-        final String requestURI = getHttpServletRequest().getRequestURI();
-        final String applicationPath = getApplicationPath();
+        String requestURI = getHttpServletRequest().getRequestURI();
         if (requestURI == null) {
             return null;
         }
-        if (applicationPath == null || applicationPath.isEmpty()) {
+        String applicationPath = getApplicationPath();
+        if (StringUtils.isEmpty(applicationPath)) {
             return requestURI;
         }
-        return (requestURI.substring(applicationPath.length()));
+        return requestURI.substring(applicationPath.length());
     }
 
     @Override
@@ -86,7 +90,7 @@ public class WebActivityRequest implements IWebRequest {
 
     @Override
     public boolean containsHeader(String name) {
-        return getHttpServletRequest().getHeader(name) != null;
+        return (getHttpServletRequest().getHeader(name) != null);
     }
 
     @Override
@@ -145,7 +149,7 @@ public class WebActivityRequest implements IWebRequest {
 
     @Override
     public boolean containsCookie(String name) {
-        Assert.notNull(name, "Name cannot be null");
+        Assert.notNull(name, "name cannot be null");
         Cookie[] cookies = getHttpServletRequest().getCookies();
         if (cookies == null) {
             return false;

@@ -43,7 +43,6 @@ public class ExpressionCache {
     private static final String EXPRESSION_CACHE_TYPE_FRAGMENT_SIGNATURE = "fsig";
 
     private ExpressionCache() {
-        super();
     }
 
     @Nullable

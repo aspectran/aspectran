@@ -62,7 +62,6 @@ public class OgnlShortcutExpression {
     private final String[] expressionLevels;
 
     OgnlShortcutExpression(String[] expressionLevels) {
-        super();
         this.expressionLevels = expressionLevels;
     }
 
