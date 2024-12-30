@@ -75,7 +75,7 @@ class InstantActivityTest {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         sessionManagerConfig.setWorkerName("t0");
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setApplicationAdapter(context.getApplicationAdapter());
+        sessionManager.setActivityContext(context);
         sessionManager.setSessionManagerConfig(sessionManagerConfig);
         sessionManager.initialize();
         return sessionManager;

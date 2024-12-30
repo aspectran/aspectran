@@ -17,11 +17,14 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.ScheduledExecutorScheduler;
@@ -36,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>Created: 2017. 6. 12.</p>
  */
 public class DefaultSessionManager extends AbstractSessionHandler
-        implements SessionManager, ApplicationAdapterAware, DisposableBean {
+        implements SessionManager, ActivityContextAware, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
 
@@ -45,6 +48,8 @@ public class DefaultSessionManager extends AbstractSessionHandler
     private static final AtomicInteger uniqueNumberIssuer = new AtomicInteger();
 
     private ApplicationAdapter applicationAdapter;
+
+    private ClassLoader classLoader;
 
     private SessionManagerConfig sessionManagerConfig;
 
@@ -59,16 +64,34 @@ public class DefaultSessionManager extends AbstractSessionHandler
         setWorkerName(workerName);
     }
 
+    @Override
+    @AvoidAdvice
+    public void setActivityContext(@NonNull ActivityContext context) {
+        checkInitializable();
+        this.applicationAdapter = context.getApplicationAdapter();
+        this.classLoader = context.getClassLoader();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        checkInitializable();
+        this.classLoader = classLoader;
+    }
+
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
 
-    @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public SessionManagerConfig getSessionManagerConfig() {
+        return sessionManagerConfig;
     }
 
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
+        checkInitializable();
         this.sessionManagerConfig = sessionManagerConfig;
     }
 
@@ -83,14 +106,13 @@ public class DefaultSessionManager extends AbstractSessionHandler
     }
 
     public void setSessionStore(SessionStore sessionStore) {
+        checkInitializable();
         this.sessionStore = sessionStore;
     }
 
     @Override
     public SessionHandler getSessionHandler() {
-        if (!isInitialized()) {
-            throw new IllegalStateException("DefaultSessionManager is not yet initialized");
-        }
+        checkAvailable();
         return this;
     }
 
@@ -152,7 +174,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
                 if (fileStoreConfig != null) {
                     FileSessionStoreFactory fileSessionStoreFactory = new FileSessionStoreFactory();
-                    fileSessionStoreFactory.setApplicationAdapter(applicationAdapter);
+                    fileSessionStoreFactory.setApplicationAdapter(getApplicationAdapter());
                     String storeDir = fileStoreConfig.getStoreDir();
                     if (StringUtils.hasText(storeDir)) {
                         fileSessionStoreFactory.setStoreDir(storeDir);

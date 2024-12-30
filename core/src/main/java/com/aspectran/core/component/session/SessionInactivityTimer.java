@@ -19,6 +19,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.utils.timer.CyclicTimeout;
 
 import java.util.concurrent.TimeUnit;
@@ -59,8 +60,15 @@ public class SessionInactivityTimer {
                         return; // do nothing, session is no longer valid
                     }
 
-                    // handle what to do with the session after the timer expired
-                    boolean expired = sessionHandler.sessionInactivityTimerExpired(session, now);
+                    // To help distinguish logging groups
+                    ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(sessionHandler.getClassLoader());
+                    boolean expired;
+                    try {
+                        // handle what to do with the session after the timer expired
+                        expired = sessionHandler.sessionInactivityTimerExpired(session, now);
+                    } finally {
+                        ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
+                    }
 
                     // grab the lock and check what happened to the session: if it didn't get evicted and
                     // it hasn't expired, we need to reset the timer

@@ -40,6 +40,18 @@ public interface Component {
     boolean isAvailable();
 
     /**
+     * Returns whether the component can be initialized.
+     * @return true if the component can be initialized
+     */
+    boolean isInitializable();
+
+    /**
+     * Returns whether the component has being initialized.
+     * @return true if the component has being initialized
+     */
+    boolean isInitializing();
+
+    /**
      * Returns whether the component has been initialized.
      * @return true if the component has been initialized
      */
@@ -56,6 +68,12 @@ public interface Component {
      * @return true if the component has been destroyed
      */
     boolean isDestroyed();
+
+    /**
+     * Checks whether initialization is possible.
+     * @throws IllegalStateException if initialization is not possible
+     */
+    void checkInitializable();
 
     /**
      * Returns the component name.

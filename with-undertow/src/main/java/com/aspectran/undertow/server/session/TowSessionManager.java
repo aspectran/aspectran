@@ -44,6 +44,8 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
     private final Map<SessionListener, TowSessionListener> sessionListenerMappings = new ConcurrentHashMap<>();
 
+    private int defaultSessionTimeout = Integer.MIN_VALUE;
+
     @Override
     public String getDeploymentName() {
         return getSessionManager().getWorkerName();
@@ -132,7 +134,14 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
     @Override
     public void setDefaultSessionTimeout(int timeout) {
-        getSessionManager().setDefaultMaxIdleSecs(timeout);
+        if (defaultSessionTimeout == Integer.MIN_VALUE &&
+                getSessionManagerConfig() != null &&
+                getSessionManagerConfig().hasMaxIdleSeconds()) {
+            defaultSessionTimeout = getSessionManagerConfig().getMaxIdleSeconds();
+        } else {
+            defaultSessionTimeout = timeout;
+            getSessionManager().setDefaultMaxIdleSecs(timeout);
+        }
     }
 
     @Override

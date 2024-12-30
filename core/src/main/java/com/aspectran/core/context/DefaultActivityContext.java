@@ -33,9 +33,9 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.ThreadContextHelper;
 
 /**
  * The Class DefaultActivityContext.
@@ -118,7 +118,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public void setMasterService(CoreService masterService) {
-        Assert.state(!isInitialized(), "ActivityContext is already initialized");
+        checkInitializable();
         this.masterService = masterService;
     }
 
@@ -269,7 +269,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         Assert.state(defaultTemplateRenderer != null, "TemplateRenderer is not set");
         Assert.state(scheduleRuleRegistry != null, "ScheduleRuleRegistry is not set");
         Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
-        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getClassLoader());
         try {
             aspectRuleRegistry.initialize();
             defaultBeanRegistry.initialize();
@@ -278,13 +278,13 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
             transletRuleRegistry.initialize();
             resolveMessageSource();
         } finally {
-            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
+            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 
     @Override
     protected void doDestroy() {
-        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getClassLoader());
+        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getClassLoader());
         try {
             if (transletRuleRegistry != null) {
                 transletRuleRegistry.destroy();
@@ -307,7 +307,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 aspectRuleRegistry = null;
             }
         } finally {
-            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
+            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 

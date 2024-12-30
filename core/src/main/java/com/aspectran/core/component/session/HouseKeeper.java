@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
@@ -22,6 +23,7 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
 import com.aspectran.utils.thread.Scheduler;
+import com.aspectran.utils.thread.ThreadContextHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -140,11 +142,15 @@ public class HouseKeeper extends AbstractLifeCycle {
         if (isStopping() || isStopped()) {
             return;
         }
-        try {
-            sessionHandler.scavenge(scavengingInterval);
-        } catch (Exception e) {
-            logger.warn(e);
-        }
+
+        ThreadContextHelper.run(sessionHandler.getClassLoader(), () -> {
+            try {
+                sessionHandler.scavenge(scavengingInterval);
+            } catch (Exception e) {
+                logger.warn(e);
+            }
+            return null;
+        });
     }
 
     @Override

@@ -15,10 +15,10 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -126,11 +126,11 @@ public class DefaultServletHttpRequestHandler {
     public boolean handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (defaultServletName != null) {
-            ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(webService.getServiceClassLoader());
+            ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(webService.getServiceClassLoader());
             try {
                 dispatch(request, response);
             } finally {
-                ClassUtils.restoreThreadContextClassLoader(origClassLoader);
+                ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
             }
             return true;
         } else {

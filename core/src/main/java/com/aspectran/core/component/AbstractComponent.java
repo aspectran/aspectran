@@ -31,6 +31,8 @@ public abstract class AbstractComponent implements Component {
 
     private final AutoLock lock = new AutoLock();
 
+    private volatile boolean initializing;
+
     private volatile boolean initialized;
 
     private volatile boolean destroying;
@@ -51,7 +53,12 @@ public abstract class AbstractComponent implements Component {
                 throw new IllegalStateException("Already initialized " + getComponentName());
             }
 
-            doInitialize();
+            initializing = true;
+            try {
+                doInitialize();
+            } finally {
+                initializing = false;
+            }
             initialized = true;
 
             if (logger.isDebugEnabled()) {
@@ -70,8 +77,8 @@ public abstract class AbstractComponent implements Component {
                 throw new IllegalStateException("Already destroyed " + getComponentName());
             }
 
+            destroying = true;
             try {
-                destroying = true;
                 doDestroy();
                 if (logger.isDebugEnabled()) {
                     logger.debug("Destroyed " + getComponentName());
@@ -81,7 +88,6 @@ public abstract class AbstractComponent implements Component {
             } finally {
                 destroying = false;
             }
-
             destroyed = true;
         }
     }
@@ -89,6 +95,16 @@ public abstract class AbstractComponent implements Component {
     @Override
     public boolean isAvailable() {
         return (initialized && !destroying && !destroyed);
+    }
+
+    @Override
+    public boolean isInitializable() {
+        return (!initialized && !initializing && !destroying && !destroyed);
+    }
+
+    @Override
+    public boolean isInitializing() {
+        return initializing;
     }
 
     @Override
@@ -104,6 +120,28 @@ public abstract class AbstractComponent implements Component {
     @Override
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    @Override
+    public void checkInitializable() {
+        if (isDestroyed() || isDestroying()) {
+            throw new IllegalStateException("Already destroyed " + getComponentName());
+        }
+        if (isInitializing()) {
+            throw new IllegalStateException("Already initializing " + getComponentName());
+        }
+        if (isInitialized()) {
+            throw new IllegalStateException("Already initialized " + getComponentName());
+        }
+    }
+
+    public void checkAvailable() {
+        if (isDestroyed() || isDestroying()) {
+            throw new IllegalStateException("Already destroyed " + getComponentName());
+        }
+        if (!isInitialized()) {
+            throw new IllegalStateException("Not yet initialized");
+        }
     }
 
     @Override

@@ -15,13 +15,12 @@
  */
 package com.aspectran.undertow.server.session;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionStore;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
@@ -32,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * <p>Created: 2024-04-27</p>
  */
-public abstract class AbstractSessionManager implements ApplicationAdapterAware, InitializableBean, DisposableBean {
+public abstract class AbstractSessionManager implements ActivityContextAware, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionManager.class);
 
@@ -41,8 +40,16 @@ public abstract class AbstractSessionManager implements ApplicationAdapterAware,
     private final AtomicInteger startCount = new AtomicInteger();
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        sessionManager.setApplicationAdapter(applicationAdapter);
+    public void setActivityContext(ActivityContext context) {
+        sessionManager.setActivityContext(context);
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        sessionManager.setClassLoader(classLoader);
+    }
+
+    public SessionManagerConfig getSessionManagerConfig() {
+        return sessionManager.getSessionManagerConfig();
     }
 
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
@@ -71,9 +78,10 @@ public abstract class AbstractSessionManager implements ApplicationAdapterAware,
         return sessionManager;
     }
 
-    @Override
     public void initialize() throws Exception {
-        sessionManager.initialize();
+        if (sessionManager.isInitializable()) {
+            sessionManager.initialize();
+        }
     }
 
     public void start() {

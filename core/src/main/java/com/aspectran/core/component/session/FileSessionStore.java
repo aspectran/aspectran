@@ -53,7 +53,7 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     public void setStoreDir(File storeDir) {
-        checkAlreadyInitialized();
+        checkInitializable();
         this.storeDir = storeDir;
     }
 
@@ -62,7 +62,7 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     public void setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
-        checkAlreadyInitialized();
+        checkInitializable();
         this.deleteUnrestorableFiles = deleteUnrestorableFiles;
     }
 

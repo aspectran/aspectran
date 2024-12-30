@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
@@ -84,7 +85,17 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
-        setSessionManagerFactory(deployment -> sessionManager);
+        setSessionManagerFactory(deployment -> {
+            if (sessionManager instanceof TowSessionManager towSessionManager) {
+                towSessionManager.setClassLoader(getClassLoader());
+                try {
+                    towSessionManager.initialize();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return sessionManager;
+        });
     }
 
     public void setInitParams(Map<String, String> initParams) {

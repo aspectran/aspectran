@@ -32,6 +32,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.util.WebUtils;
@@ -175,7 +176,7 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     private void perform(@NonNull WebActivity activity) {
-        ClassLoader origClassLoader = ClassUtils.overrideThreadContextClassLoader(getServiceClassLoader());
+        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getServiceClassLoader());
         try {
             activity.perform();
         } catch (ActivityTerminatedException e) {
@@ -185,7 +186,7 @@ public class DefaultWebService extends AbstractWebService {
         } catch (Exception e) {
             sendError(activity, e);
         } finally {
-            ClassUtils.restoreThreadContextClassLoader(origClassLoader);
+            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
         }
     }
 

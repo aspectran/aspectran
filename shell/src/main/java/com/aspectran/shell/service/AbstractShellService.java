@@ -170,7 +170,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
             if (sessionManagerConfig != null && sessionManagerConfig.isEnabled()) {
                 try {
                     DefaultSessionManager sessionManager = new DefaultSessionManager();
-                    sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
+                    sessionManager.setActivityContext(getActivityContext());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;

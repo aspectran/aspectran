@@ -68,14 +68,16 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     AbstractSessionHandler() {
     }
 
+    public abstract ClassLoader getClassLoader();
+
     @Override
     public String getWorkerName() {
         return workerName;
     }
 
     protected void setWorkerName(String workerName) {
-        if (isInitialized()) {
-            throw new IllegalStateException("Already initialized");
+        if (this.workerName != null) {
+            throw new IllegalStateException("workerName already set");
         }
         if (workerName != null && workerName.contains(".")) {
             throw new IllegalArgumentException("Worker name cannot contain '.'");

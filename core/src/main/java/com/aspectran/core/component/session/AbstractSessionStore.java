@@ -128,7 +128,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     @Override
     public void save(String id, SessionData data) throws Exception {
-        checkInitialized();
+        checkAvailable();
+
         if (data == null) {
             return;
         }
@@ -176,7 +177,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             throw new IllegalArgumentException("candidates must not be null");
         }
 
-        checkInitialized();
+        checkAvailable();
 
         // check the backing store to find other sessions
         // that expired long ago (ie cannot be actively managed by any node)
@@ -253,20 +254,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     @Override
     public void cleanOrphans(long time) {
-        checkInitialized();
+        checkAvailable();
         doCleanOrphans(time);
-    }
-
-    protected void checkInitialized() throws IllegalStateException {
-        if (!isInitialized()) {
-            throw new IllegalStateException("Not initialized");
-        }
-    }
-
-    protected void checkAlreadyInitialized() throws IllegalStateException {
-        if (isInitialized()) {
-            throw new IllegalStateException("Already initialized");
-        }
     }
 
 }

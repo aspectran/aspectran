@@ -62,7 +62,7 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
             if (sessionManagerConfig != null && sessionManagerConfig.isEnabled()) {
                 try {
                     DefaultSessionManager sessionManager = new DefaultSessionManager();
-                    sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
+                    sessionManager.setActivityContext(getActivityContext());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;

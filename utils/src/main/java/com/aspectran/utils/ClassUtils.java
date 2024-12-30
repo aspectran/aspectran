@@ -232,30 +232,4 @@ public abstract class ClassUtils {
         return cl;
     }
 
-    /**
-     * Override the thread context ClassLoader with the environment's bean ClassLoader
-     * if necessary, i.e. if the bean ClassLoader is not equivalent to the thread
-     * context ClassLoader already.
-     * @param classLoaderToUse the actual ClassLoader to use for the thread context
-     * @return the original thread context ClassLoader, or {@code null} if not overridden
-     */
-    @Nullable
-    public static ClassLoader overrideThreadContextClassLoader(@Nullable ClassLoader classLoaderToUse) {
-        if (classLoaderToUse != null) {
-            Thread currentThread = Thread.currentThread();
-            ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
-            if (!classLoaderToUse.equals(threadContextClassLoader)) {
-                currentThread.setContextClassLoader(classLoaderToUse);
-                return threadContextClassLoader;
-            }
-        }
-        return null;
-    }
-
-    public static void restoreThreadContextClassLoader(@Nullable ClassLoader classLoader) {
-        if (classLoader != null) {
-            Thread.currentThread().setContextClassLoader(classLoader);
-        }
-    }
-
 }
