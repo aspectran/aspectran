@@ -60,14 +60,13 @@ public class SessionInactivityTimer {
                         return; // do nothing, session is no longer valid
                     }
 
-                    // To help distinguish logging groups
-                    ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(sessionHandler.getClassLoader());
-                    boolean expired;
+                    boolean expired = false;
                     try {
-                        // handle what to do with the session after the timer expired
-                        expired = sessionHandler.sessionInactivityTimerExpired(session, now);
-                    } finally {
-                        ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
+                        // To help distinguish logging groups
+                        expired = ThreadContextHelper.call(sessionHandler.getClassLoader(), () ->
+                            sessionHandler.sessionInactivityTimerExpired(session, now));
+                    } catch (Exception e) {
+                        logger.warn(e);
                     }
 
                     // grab the lock and check what happened to the session: if it didn't get evicted and

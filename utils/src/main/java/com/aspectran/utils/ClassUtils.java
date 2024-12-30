@@ -16,7 +16,6 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

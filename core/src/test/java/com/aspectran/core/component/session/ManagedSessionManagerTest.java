@@ -48,7 +48,7 @@ class ManagedSessionManagerTest {
                 .end()
                 .toString());
 
-        DefaultSessionManager sessionManager = new DefaultSessionManager(workerName);
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setSessionManagerConfig(sessionManagerConfig);
         sessionManager.initialize();
 

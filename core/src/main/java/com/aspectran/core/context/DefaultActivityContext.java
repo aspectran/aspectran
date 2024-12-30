@@ -269,23 +269,19 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         Assert.state(defaultTemplateRenderer != null, "TemplateRenderer is not set");
         Assert.state(scheduleRuleRegistry != null, "ScheduleRuleRegistry is not set");
         Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
-        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getClassLoader());
-        try {
+        ThreadContextHelper.runThrowable(getClassLoader(), () -> {
             aspectRuleRegistry.initialize();
             defaultBeanRegistry.initialize();
             defaultTemplateRenderer.initialize();
             scheduleRuleRegistry.initialize();
             transletRuleRegistry.initialize();
             resolveMessageSource();
-        } finally {
-            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
-        }
+        });
     }
 
     @Override
     protected void doDestroy() {
-        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getClassLoader());
-        try {
+        ThreadContextHelper.run(getClassLoader(), () -> {
             if (transletRuleRegistry != null) {
                 transletRuleRegistry.destroy();
                 transletRuleRegistry = null;
@@ -306,9 +302,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 aspectRuleRegistry.destroy();
                 aspectRuleRegistry = null;
             }
-        } finally {
-            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
-        }
+        });
     }
 
 }

@@ -24,7 +24,6 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -176,18 +175,17 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     private void perform(@NonNull WebActivity activity) {
-        ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(getServiceClassLoader());
-        try {
-            activity.perform();
-        } catch (ActivityTerminatedException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Activity terminated: " + e.getMessage());
+        ThreadContextHelper.run(getServiceClassLoader(), () -> {
+            try {
+                activity.perform();
+            } catch (ActivityTerminatedException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Activity terminated: " + e.getMessage());
+                }
+            } catch (Exception e) {
+                sendError(activity, e);
             }
-        } catch (Exception e) {
-            sendError(activity, e);
-        } finally {
-            ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
-        }
+        });
     }
 
     private void transletNotFound(@NonNull WebActivity activity) {

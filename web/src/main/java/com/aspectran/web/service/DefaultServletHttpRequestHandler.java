@@ -126,11 +126,11 @@ public class DefaultServletHttpRequestHandler {
     public boolean handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (defaultServletName != null) {
-            ClassLoader origClassLoader = ThreadContextHelper.overrideThreadContextClassLoader(webService.getServiceClassLoader());
+            ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(webService.getServiceClassLoader());
             try {
                 dispatch(request, response);
             } finally {
-                ThreadContextHelper.restoreThreadContextClassLoader(origClassLoader);
+                ThreadContextHelper.restoreClassLoader(origClassLoader);
             }
             return true;
         } else {
