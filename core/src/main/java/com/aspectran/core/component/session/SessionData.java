@@ -46,6 +46,8 @@ public class SessionData implements Serializable {
     @Serial
     private static final long serialVersionUID = -6253355753257200708L;
 
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+
     private String id;
 
     private final long created;
@@ -65,8 +67,6 @@ public class SessionData implements Serializable {
 
     /** time in ms since last save */
     private long lastSaved;
-
-    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     public SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
         if (id == null) {
@@ -143,8 +143,9 @@ public class SessionData implements Serializable {
     public boolean isExpiredAt(long time) {
         if (inactiveInterval <= 0L) {
             return false; // never expires
+        } else {
+            return (expiry <= time);
         }
-        return (expiry <= time);
     }
 
     /**
@@ -184,6 +185,10 @@ public class SessionData implements Serializable {
         }
         setDirty(true);
         return old;
+    }
+
+    public <T> T removeAttribute(String name) {
+        return setAttribute(name, null);
     }
 
     /**

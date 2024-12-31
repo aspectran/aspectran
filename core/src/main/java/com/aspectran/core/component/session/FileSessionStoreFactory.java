@@ -44,18 +44,17 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     @Override
     public FileSessionStore createSessionStore() throws IOException {
-        FileSessionStore sessionStore = new FileSessionStore();
-        File storeDirFile;
+        File storeDir;
         if (getStoreDir() != null) {
             if (getApplicationAdapter() != null) {
-                storeDirFile = getApplicationAdapter().toRealPathAsFile(getStoreDir());
+                storeDir = getApplicationAdapter().toRealPathAsFile(getStoreDir());
             } else {
-                storeDirFile = new File(getStoreDir());
+                storeDir = new File(getStoreDir());
             }
         } else {
-            storeDirFile = new File(SystemUtils.getJavaIoTmpDir());
+            storeDir = new File(SystemUtils.getJavaIoTmpDir());
         }
-        sessionStore.setStoreDir(storeDirFile);
+        FileSessionStore sessionStore = new FileSessionStore(storeDir);
         sessionStore.setDeleteUnrestorableFiles(isDeleteUnrestorableFiles());
         sessionStore.setGracePeriodSecs(getGracePeriodSecs());
         sessionStore.setSavePeriodSecs(getSavePeriodSecs());

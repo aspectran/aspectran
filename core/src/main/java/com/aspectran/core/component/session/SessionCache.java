@@ -206,6 +206,4 @@ public interface SessionCache {
      */
     Set<String> getAllSessions();
 
-    void destroy();
-
 }

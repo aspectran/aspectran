@@ -48,13 +48,12 @@ public class FileSessionStore extends AbstractSessionStore {
 
     private boolean deleteUnrestorableFiles = true;
 
-    public File getStoreDir() {
-        return storeDir;
+    public FileSessionStore(File storeDir) {
+        this.storeDir = storeDir;
     }
 
-    public void setStoreDir(File storeDir) {
-        checkInitializable();
-        this.storeDir = storeDir;
+    public File getStoreDir() {
+        return storeDir;
     }
 
     public boolean isDeleteUnrestorableFiles() {
@@ -92,16 +91,13 @@ public class FileSessionStore extends AbstractSessionStore {
 
     @Override
     public boolean delete(String id) throws IOException {
-        if (storeDir != null) {
-            // remove from our map
-            String filename = sessionFileMap.remove(id);
-            if (filename == null) {
-                return false;
-            }
-            // remove the file
-            return deleteFile(filename);
+        // remove from our map
+        String filename = sessionFileMap.remove(id);
+        if (filename == null) {
+            return false;
         }
-        return false;
+        // remove the file
+        return deleteFile(filename);
     }
 
     /**
@@ -137,22 +133,20 @@ public class FileSessionStore extends AbstractSessionStore {
 
     @Override
     public void doSave(String id, SessionData data) throws Exception {
-        if (storeDir != null) {
-            try {
-                delete(id);
-            } catch (IOException e) {
-                logger.warn("Failed to delete old data file for session " + id);
-            }
-            // make a fresh file using the latest session expiry
-            String filename = getIdWithExpiry(data);
-            File file = new File(storeDir, filename);
-            try (FileOutputStream fos = new FileOutputStream(file,false)) {
-                SessionData.serialize(data, fos, getNonPersistentAttributes());
-                sessionFileMap.put(id, filename);
-            } catch (Exception e) {
-                file.delete(); // No point keeping the file if we didn't save the whole session
-                throw new UnwritableSessionDataException(id, e);
-            }
+        try {
+            delete(id);
+        } catch (IOException e) {
+            logger.warn("Failed to delete old data file for session " + id);
+        }
+        // make a fresh file using the latest session expiry
+        String filename = getIdWithExpiry(data);
+        File file = new File(storeDir, filename);
+        try (FileOutputStream fos = new FileOutputStream(file,false)) {
+            SessionData.serialize(data, fos, getNonPersistentAttributes());
+            sessionFileMap.put(id, filename);
+        } catch (Exception e) {
+            file.delete(); // No point keeping the file if we didn't save the whole session
+            throw new UnwritableSessionDataException(id, e);
         }
     }
 
@@ -311,10 +305,6 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     private void initializeStore() throws Exception {
-        if (storeDir == null) {
-            throw new IllegalStateException("No file store directory specified");
-        }
-
         if (!storeDir.exists()) {
             storeDir.mkdirs();
             return;

@@ -91,6 +91,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     public void setName(String name) {
+        checkInitializable();
         this.name = name;
     }
 
@@ -99,6 +100,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     public void setDescriptionRule(DescriptionRule descriptionRule) {
+        checkInitializable();
         this.descriptionRule = descriptionRule;
     }
 
@@ -138,6 +140,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     public void setActivityEnvironment(ActivityEnvironment activityEnvironment) {
+        checkInitializable();
         this.activityEnvironment = activityEnvironment;
     }
 
@@ -147,6 +150,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
+        checkInitializable();
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 
@@ -160,6 +164,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * @param defaultBeanRegistry the new default bean registry
      */
     public void setDefaultBeanRegistry(DefaultBeanRegistry defaultBeanRegistry) {
+        checkInitializable();
         this.defaultBeanRegistry = defaultBeanRegistry;
     }
 
@@ -173,6 +178,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * @param defaultTemplateRenderer the new template processor
      */
     public void setDefaultTemplateRenderer(DefaultTemplateRenderer defaultTemplateRenderer) {
+        checkInitializable();
         this.defaultTemplateRenderer = defaultTemplateRenderer;
     }
 
@@ -182,6 +188,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
+        checkInitializable();
         this.scheduleRuleRegistry = scheduleRuleRegistry;
     }
 
@@ -195,6 +202,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * @param transletRuleRegistry the new translet rule registry
      */
     public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
+        checkInitializable();
         this.transletRuleRegistry = transletRuleRegistry;
     }
 

@@ -518,8 +518,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     protected void doInitialize() throws Exception {
+        if (sessionCache instanceof AbstractComponent component && component.isInitializable()) {
+            component.initialize();
+        }
         scheduler.start();
-        if (houseKeeper != null) {
+        if (houseKeeper != null && !houseKeeper.isRunning()) {
             houseKeeper.start();
         }
     }
@@ -530,7 +533,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             houseKeeper.stop();
         }
         scheduler.stop();
-        sessionCache.destroy();
+        if (sessionCache instanceof AbstractComponent component) {
+            component.destroy();
+        }
     }
 
     @Override

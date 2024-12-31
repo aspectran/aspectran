@@ -18,7 +18,6 @@ package com.aspectran.core.component.session;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.thread.AutoLock;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -119,13 +118,15 @@ public class DefaultSessionCache extends AbstractSessionCache {
     @Override
     protected void doInitialize() throws Exception {
         if (getSessionStore() != null) {
-            getSessionStore().initialize();
+            if (getSessionStore().isInitializable()) {
+                getSessionStore().initialize();
+            }
             if (!isClusterEnabled()) {
                 int restoredSessions = getSessionStore().getAllSessions().size();
                 if (restoredSessions > 0) {
                     getStatistics().sessionCreated(restoredSessions);
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Sessions restored: " + restoredSessions);
+                        logger.debug("Restored " + restoredSessions + " sessions from " + getSessionStoreName());
                     }
                 }
             }
@@ -145,16 +146,18 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     if (getSessionStore().getNonPersistentAttributes() != null) {
                         for (String name : getSessionStore().getNonPersistentAttributes()) {
                             try {
-                                Object old;
-                                try (AutoLock ignored = session.lock()) {
-                                    old = session.getSessionData().setAttribute(name, null);
-                                }
-                                if (old != null) {
-                                    session.onSessionAttributeUpdate(name, old, null);
-                                }
+                                session.removeAttribute(name);
                             } catch (Exception e) {
                                 logger.warn("Failed to remove non-persistent attribute: " + name, e);
                             }
+//                            try (AutoLock ignored = session.lock()) {
+//                                Object old = session.getSessionData().removeAttribute(name);
+//                                if (old != null) {
+//                                    session.onSessionAttributeUpdate(name, old, null);
+//                                }
+//                            } catch (Exception e) {
+//                                logger.warn("Failed to remove non-persistent attribute: " + name, e);
+//                            }
                         }
                     }
                     try {
@@ -184,11 +187,12 @@ public class DefaultSessionCache extends AbstractSessionCache {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("maxActiveSessions", maxActiveSessions);
+        tsb.append("maxActiveSessions", getMaxActiveSessions());
         tsb.append("evictionIdleSecs", getEvictionIdleSecs());
         tsb.appendForce("saveOnCreate", isSaveOnCreate());
         tsb.appendForce("saveOnInactiveEviction", isSaveOnInactiveEviction());
         tsb.appendForce("clusterEnabled", isClusterEnabled());
+        tsb.append("store", getSessionStoreName());
         return tsb.toString();
     }
 

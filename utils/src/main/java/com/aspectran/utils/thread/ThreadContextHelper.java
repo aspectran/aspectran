@@ -60,7 +60,7 @@ public abstract class ThreadContextHelper {
         }
     }
 
-    public static void runThrowable(ClassLoader classLoader, @NonNull ThrowingRunnable<Exception> runnable) throws Exception {
+    public static <T extends Throwable> void runThrowable(ClassLoader classLoader, @NonNull ThrowingRunnable<T> runnable) throws T {
         ClassLoader old = overrideClassLoader(classLoader);
         try {
             runnable.run();

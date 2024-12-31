@@ -109,6 +109,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      * @param nonPersistentAttributes the attribute names to exclude from serialization
      */
     public void setNonPersistentAttributes(String... nonPersistentAttributes) {
+        checkInitializable();
         if (nonPersistentAttributes != null && nonPersistentAttributes.length > 0) {
             Set<String> attrNames = new HashSet<>();
             Collections.addAll(attrNames, nonPersistentAttributes);
@@ -118,7 +119,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         }
     }
 
-    public boolean isNonPersistentAttributes(String attrName) {
+    public boolean isNonPersistentAttribute(String attrName) {
         if (nonPersistentAttributes != null) {
             return nonPersistentAttributes.contains(attrName);
         } else {

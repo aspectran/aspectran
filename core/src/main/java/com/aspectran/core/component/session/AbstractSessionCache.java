@@ -55,9 +55,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private final boolean clusterEnabled;
 
-    private final String sessionCacheName;
+    private final String thisName;
 
-    private final String sessionStoreName;
+    private final String storeName;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -87,8 +87,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         this.sessionHandler = sessionHandler;
         this.sessionStore = sessionStore;
         this.clusterEnabled = (clusterEnabled && sessionStore != null);
-        this.sessionCacheName = ObjectUtils.simpleIdentityToString(this);
-        this.sessionStoreName = ObjectUtils.simpleIdentityToString(sessionStore);
+        this.thisName = ObjectUtils.simpleIdentityToString(this);
+        this.storeName = ObjectUtils.simpleIdentityToString(sessionStore);
     }
 
     protected SessionHandler getSessionHandler() {
@@ -97,6 +97,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     protected SessionStore getSessionStore() {
         return sessionStore;
+    }
+
+    protected String getSessionStoreName() {
+        return storeName;
     }
 
     protected SessionStatistics getStatistics() {
@@ -120,6 +124,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     @Override
     public void setEvictionIdleSecs(int evictionTimeout) {
+        checkInitializable();
         this.evictionIdleSecs = evictionTimeout;
     }
 
@@ -130,6 +135,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public void setSaveOnCreate(boolean saveOnCreate) {
+        checkInitializable();
         this.saveOnCreate = saveOnCreate;
     }
 
@@ -145,6 +151,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public void setSaveOnInactiveEviction(boolean saveOnEvict) {
+        checkInitializable();
         this.saveOnInactiveEviction = saveOnEvict;
     }
 
@@ -163,6 +170,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     @Override
     public void setRemoveUnloadableSessions(boolean removeUnloadableSessions) {
+        checkInitializable();
         this.removeUnloadableSessions = removeUnloadableSessions;
     }
 
@@ -192,7 +200,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     loaded.set(true);
                 } else {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + id + " not loaded by " + sessionStoreName);
+                        logger.trace("Session " + id + " not loaded by " + storeName);
                     }
                 }
                 return stored;
@@ -206,7 +214,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         }
         if (!forDeleting && session != null && loaded.get()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Residing evicted session id=" + session.getId() + " into " + sessionCacheName);
+                logger.debug("Residing evicted session id=" + session.getId() + " into " + thisName);
             }
             sessionHandler.onSessionResided(session);
         }
@@ -264,7 +272,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
             return session;
         } else {
-            throw new IllegalStateException("Session " + id + " already in " + sessionCacheName);
+            throw new IllegalStateException("Session " + id + " already in " + thisName);
         }
     }
 
@@ -283,7 +291,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     SessionData data = sessionStore.load(id);
                     if (data != null) {
                         if (logger.isTraceEnabled()) {
-                            logger.trace("Reload session data for session id=" + id + " from " + sessionStoreName);
+                            logger.trace("Reload session data for session id=" + id + " from " + storeName);
                         }
                         session.setSessionData(data);
                     }
@@ -315,7 +323,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     sessionStore.save(id, session.getSessionData());
                 } else {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("No SessionStore, session in " + sessionCacheName + " only id=" + id);
+                        logger.trace("No SessionStore, session in " + thisName + " only id=" + id);
                     }
                 }
                 // if we evict on session exit, boot it from the cache
@@ -379,7 +387,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
             if (logger.isTraceEnabled()) {
-                logger.trace("Session " + id + " deleted in " + sessionStoreName + ": " + deleted);
+                logger.trace("Session " + id + " deleted in " + storeName + ": " + deleted);
             }
         }
         // delete it from the session object store
@@ -518,7 +526,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Evicting idle session id=" + session.getId() + " from " + sessionCacheName);
+                    logger.debug("Evicting idle session id=" + session.getId() + " from " + thisName);
                 }
                 // save before evicting
                 if (sessionStore != null && (isClusterEnabled() || isSaveOnInactiveEviction())) {
