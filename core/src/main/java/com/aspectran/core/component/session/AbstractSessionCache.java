@@ -353,7 +353,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw new IllegalArgumentException("id must not be null");
         }
         if (isClusterEnabled()) {
-            ManagedSession session = get(id);
+            ManagedSession session = get(id, false);
             if (session != null) {
                 return session.isValid();
             } else {
@@ -438,7 +438,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (!StringUtils.hasText(newId)) {
             throw new IllegalArgumentException("New session id is null");
         }
-        ManagedSession session = get(oldId);
+        ManagedSession session = get(oldId, false);
         if (session != null) {
             renewSessionId(session, newId);
         }
