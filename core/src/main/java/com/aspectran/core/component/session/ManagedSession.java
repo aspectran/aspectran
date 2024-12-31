@@ -93,7 +93,7 @@ public class ManagedSession implements Session {
     public <T> T getAttribute(String name) {
         try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
-            return sessionData.getAttribute(name);
+            return NonPersistentValue.unwrap(sessionData.getAttribute(name));
         }
     }
 
@@ -114,8 +114,10 @@ public class ManagedSession implements Session {
             if (value == null && old == null) {
                 return null; // if same as remove attribute but attribute was already removed, no change
             }
-            onSessionAttributeUpdate(name, old, value);
-            return old;
+            Object newValue = NonPersistentValue.unwrap(value);
+            Object oldValue = NonPersistentValue.unwrap(old);
+            onSessionAttributeUpdate(name, oldValue, newValue);
+            return oldValue;
         }
     }
 

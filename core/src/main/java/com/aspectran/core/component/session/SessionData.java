@@ -259,7 +259,7 @@ public class SessionData implements Serializable {
         for (String key : keys) {
             // Remove all attributes specified to be excluded from serialization
             if ((nonPersistentAttributes == null || !nonPersistentAttributes.contains(key)) &&
-                !(data.getAttribute(key) instanceof NonPersistent)) {
+                    !(data.getAttribute(key) instanceof NonPersistent)) {
                 attrKeys.add(key);
             }
         }

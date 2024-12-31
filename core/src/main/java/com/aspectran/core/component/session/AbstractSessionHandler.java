@@ -377,7 +377,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 int after = candidateSessionIdsForExpiry.size();
                 int scavenged = (checkedCandidates != null ? checkedCandidates.size() : 0);
                 int unmanaged = scavenged - before + after;
-                if (before != 0 || after != 0 || scavenged != 0 || unmanaged != 0) {
+                if (scavenged != 0 || unmanaged != 0) {
                     ToStringBuilder tsb = new ToStringBuilder("Scavenging status for expired sessions");
                     tsb.append("candidates", before);
                     tsb.append("remains", after);

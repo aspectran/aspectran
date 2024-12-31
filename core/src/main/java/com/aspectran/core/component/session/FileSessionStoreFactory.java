@@ -58,7 +58,9 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
         sessionStore.setDeleteUnrestorableFiles(isDeleteUnrestorableFiles());
         sessionStore.setGracePeriodSecs(getGracePeriodSecs());
         sessionStore.setSavePeriodSecs(getSavePeriodSecs());
-        sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
+        if (getNonPersistentAttributes() != null && getNonPersistentAttributes().length > 0) {
+            sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
+        }
         return sessionStore;
     }
 

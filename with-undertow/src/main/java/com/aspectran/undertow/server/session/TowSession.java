@@ -15,7 +15,9 @@
  */
 package com.aspectran.undertow.server.session;
 
+import com.aspectran.core.component.session.NonPersistentValue;
 import com.aspectran.core.component.session.Session;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
@@ -90,7 +92,12 @@ public final class TowSession implements io.undertow.server.session.Session {
 
     @Override
     public Object setAttribute(String name, Object value) {
-        return session.setAttribute(name, value);
+        Assert.notNull(name, "name must not be null");
+        if (isNonPersistent(name)) {
+            return session.setAttribute(name, NonPersistentValue.wrap(value));
+        } else {
+            return session.setAttribute(name, value);
+        }
     }
 
     @Override
@@ -126,6 +133,10 @@ public final class TowSession implements io.undertow.server.session.Session {
             }
             return newIdToUse;
         }
+    }
+
+    private boolean isNonPersistent(@NonNull String name) {
+        return name.startsWith("io.undertow.");
     }
 
 }

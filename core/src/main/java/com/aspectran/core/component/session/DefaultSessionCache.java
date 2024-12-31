@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.AutoLock;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -150,14 +151,23 @@ public class DefaultSessionCache extends AbstractSessionCache {
                             } catch (Exception e) {
                                 logger.warn("Failed to remove non-persistent attribute: " + name, e);
                             }
-//                            try (AutoLock ignored = session.lock()) {
-//                                Object old = session.getSessionData().removeAttribute(name);
-//                                if (old != null) {
-//                                    session.onSessionAttributeUpdate(name, old, null);
-//                                }
-//                            } catch (Exception e) {
-//                                logger.warn("Failed to remove non-persistent attribute: " + name, e);
-//                            }
+                        }
+                    }
+                    try (AutoLock ignored = session.lock()) {
+                        for (Map.Entry<String, Object> entry : session.getSessionData().getAllAttributes().entrySet()) {
+                            String name = entry.getKey();
+                            Object value = entry.getValue();
+                            if (value instanceof NonPersistent) {
+                                try {
+                                    Object old = session.getSessionData().removeAttribute(name);
+                                    if (old != null) {
+                                        Object oldValue = NonPersistentValue.unwrap(old);
+                                        session.onSessionAttributeUpdate(name, oldValue, null);
+                                    }
+                                } catch (Exception e) {
+                                    logger.warn("Failed to remove non-persistent attribute: " + name, e);
+                                }
+                            }
                         }
                     }
                     try {
