@@ -168,6 +168,7 @@ public class JettySessionStatsEndpoint extends InstantActivitySupport {
         return null;
     }
 
+    @NonNull
     private static String formatDuration(@NonNull Duration duration) {
         long seconds = duration.getSeconds();
         return String.format(

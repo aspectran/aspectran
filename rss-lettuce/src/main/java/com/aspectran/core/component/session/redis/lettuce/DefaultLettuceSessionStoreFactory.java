@@ -16,7 +16,6 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStoreFactory;
-import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 

@@ -27,7 +27,6 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;

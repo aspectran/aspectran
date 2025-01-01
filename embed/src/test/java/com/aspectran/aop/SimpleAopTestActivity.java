@@ -18,6 +18,7 @@ package com.aspectran.aop;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class SimpleAopTestActivity {
     private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestActivity.class);
 
     @Request("aop/test/action1")
-    public void action1(Translet translet) {
+    public void action1(@NonNull Translet translet) {
         logger.debug("===> Action1: [SimpleAopTestActivity]=== Action Result (Action-1)");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         sampleAnnotatedAspect.foo();
@@ -46,7 +47,7 @@ public class SimpleAopTestActivity {
     }
 
     @Request("aop/test/action3-${param1}")
-    public String action3(Translet translet, String param1) throws IOException {
+    public String action3(@NonNull Translet translet, String param1) throws IOException {
         logger.debug("===> Action3: [SimpleAopTestActivity]=== Action Result (Action-3)");
         logger.debug("===> Action3: (PathVariable)param1: " + param1);
         translet.getResponseAdapter().getWriter().write(param1);

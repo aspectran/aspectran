@@ -26,6 +26,7 @@ import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.embed.sample.custom.TestCustomTransformer;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 
 import java.math.BigDecimal;
@@ -195,7 +196,7 @@ public class AnnotatedActivity {
     }
 
     @Request("/action-9")
-    public void action9(TestModel model) {
+    public void action9(@NonNull TestModel model) {
         assertEquals("Apple", model.getString());
         assertArrayEquals(new String[] { "Orange", "Grape", "Melon" }, model.getStrings());
 
@@ -243,7 +244,7 @@ public class AnnotatedActivity {
     }
 
     @Request("/action-10")
-    public void action10(ParameterMap params) {
+    public void action10(@NonNull ParameterMap params) {
         assertArrayEquals(new String[] {"1"}, params.getParameterValues("one"));
         assertArrayEquals(new String[] {"2"}, params.getParameterValues("two"));
         assertArrayEquals(new String[] {"3"}, params.getParameterValues("three"));
@@ -251,12 +252,12 @@ public class AnnotatedActivity {
     }
 
     @Request("/action-11")
-    public void action11(List<String> list) {
+    public void action11(@NonNull List<String> list) {
         assertArrayEquals(new String[] {"1", "2", "3"}, list.toArray(new String[0]));
     }
 
     @Request("/action-12")
-    public void action12(Parameters parameters) {
+    public void action12(@NonNull Parameters parameters) {
         assertEquals(1234, parameters.getInt("p1"));
         assertEquals(5678, parameters.getInt("p2"));
     }
@@ -284,7 +285,7 @@ public class AnnotatedActivity {
     }
 
     @Request("/forwarded")
-    public void forwarded(Translet translet) {
+    public void forwarded(@NonNull Translet translet) {
         String attr1 = translet.getAttribute("attr1");
         String attr2 = translet.getAttribute("attr2");
         assertEquals("Strawberry", attr1);

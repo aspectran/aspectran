@@ -195,6 +195,7 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
         return date.toString();
     }
 
+    @NonNull
     private static String formatDuration(long startTime) {
         Instant start = Instant.ofEpochMilli(startTime);
         Instant end = Instant.now();
