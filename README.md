@@ -63,6 +63,8 @@ Aspectran consists of the following major packages:
   Add-on package for using Freemarker as the templating engine
 * **com.aspectran.pebble**  
   Add-on package for using Pebble as the templating engine
+* **com.aspectran.thymeleaf**  
+  Add-on package for using Thymeleaf as the templating engine
 
 ## Building
 
