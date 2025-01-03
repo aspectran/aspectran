@@ -85,4 +85,8 @@ public class JoinpointParameters extends AbstractParameters {
         return touchParameters(pointcut);
     }
 
+    public void setPointcutParameters(PointcutParameters pointcutParameters) {
+        putValue(JoinpointParameters.pointcut, pointcutParameters);
+    }
+
 }

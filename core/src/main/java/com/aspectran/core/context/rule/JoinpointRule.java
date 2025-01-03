@@ -99,7 +99,7 @@ public class JoinpointRule {
             if (joinpointTargetType != null) {
                 joinpointParameters.putValue(JoinpointParameters.target, joinpointTargetType.toString());
             } else {
-                joinpointParameters.putValue(JoinpointParameters.target, null);
+                joinpointParameters.removeValue(JoinpointParameters.target);
             }
         }
     }

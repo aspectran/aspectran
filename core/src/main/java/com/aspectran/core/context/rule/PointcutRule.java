@@ -83,7 +83,7 @@ public class PointcutRule {
         return new PointcutRule(pointcutType);
     }
 
-    public static PointcutRule newInstance(String[] patterns) {
+    public static PointcutRule newInstance(String[] patterns) throws IllegalRuleException {
         if (patterns == null || patterns.length == 0) {
             return null;
         }
@@ -93,22 +93,16 @@ public class PointcutRule {
         for (String pattern : patterns) {
             if (pattern != null) {
                 pattern = pattern.trim();
-                if (pattern.startsWith("-")) {
-                    if (pattern.startsWith("-:")) {
-                        pattern = pattern.substring(2).trim();
-                    } else {
-                        pattern = pattern.substring(1).trim();
-                    }
+                if (pattern.startsWith("-:")) {
+                    pattern = pattern.substring(2).trim();
                     PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
                     excludePointcutPatternRuleList.add(pointcutPatternRule);
-                } else {
-                    if (pattern.startsWith("+:")) {
-                        pattern = pattern.substring(2).trim();
-                    } else if (pattern.startsWith("+")) {
-                        pattern = pattern.substring(1).trim();
-                    }
+                } else if (pattern.startsWith("+:")) {
+                    pattern = pattern.substring(2).trim();
                     PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
                     pointcutPatternRuleList.add(pointcutPatternRule);
+                } else {
+                    throw new IllegalRuleException("Invalid pointcut pattern: " + pattern);
                 }
             }
         }
