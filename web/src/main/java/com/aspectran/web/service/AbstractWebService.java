@@ -34,13 +34,13 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
+    private boolean sessionAdaptable = true;
+
     private String uriDecoding;
 
     private boolean trailingSlashRedirect;
 
     private boolean legacyHeadHandling;
-
-    private boolean sessionsEnabled = true;
 
     AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
         super(parentService, derived);
@@ -62,6 +62,15 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
     @NonNull
     public DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {
         return defaultServletHttpRequestHandler;
+    }
+
+    @Override
+    public boolean isSessionAdaptable() {
+        return sessionAdaptable;
+    }
+
+    public void setSessionAdaptable(boolean sessionAdaptable) {
+        this.sessionAdaptable = sessionAdaptable;
     }
 
     public String getUriDecoding() {
@@ -86,18 +95,6 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     protected void setLegacyHeadHandling(boolean legacyHeadHandling) {
         this.legacyHeadHandling = legacyHeadHandling;
-    }
-
-    @Override
-    public boolean isSessionsEnabled() {
-        return sessionsEnabled;
-    }
-
-    public void disableSessions() {
-        if (!sessionsEnabled) {
-            throw new IllegalStateException("sessions is already disabled");
-        }
-        sessionsEnabled = false;
     }
 
     @Override

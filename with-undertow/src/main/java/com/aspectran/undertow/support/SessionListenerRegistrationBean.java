@@ -21,7 +21,9 @@ import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionListenerRegistration;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * A Bean to register session listener in session manager.
@@ -32,9 +34,15 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class SessionListenerRegistrationBean extends InstantActivitySupport implements SessionListenerRegistration {
 
+    private static final Logger logger = LoggerFactory.getLogger(SessionListenerRegistrationBean.class);
+
     private final String towServerId;
 
     private final String deploymentName;
+
+    public SessionListenerRegistrationBean(String towServerId) {
+        this(towServerId, null);
+    }
 
     public SessionListenerRegistrationBean(String towServerId, String deploymentName) {
         this.towServerId = towServerId;
@@ -43,23 +51,25 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
 
     @Override
     public void register(SessionListener listener) {
-        Assert.notNull(listener, "listener must not be null");
-        getSessionHandler().addSessionListener(listener);
+        register(listener, deploymentName);
     }
 
     @Override
     public void register(SessionListener listener, String deploymentName) {
         Assert.notNull(listener, "listener must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
-        getSessionHandler(deploymentName).addSessionListener(listener);
+        SessionHandler sessionHandler = getSessionHandler(deploymentName);
+        if (sessionHandler != null) {
+            sessionHandler.addSessionListener(listener);
+        } else {
+            logger.warn("Unable to register " + ObjectUtils.simpleIdentityToString(listener) +
+                    ". Cause: No session handler found for deployment '" + deploymentName + "'");
+        }
     }
 
     @Override
     public void remove(SessionListener listener) {
-        Assert.notNull(listener, "listener must not be null");
-        if (getBeanRegistry().isAvailable()) {
-            getSessionHandler().removeSessionListener(listener);
-        }
+        remove(listener, deploymentName);
     }
 
     @Override
@@ -67,36 +77,24 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
         Assert.notNull(listener, "listener must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
         if (getBeanRegistry().isAvailable()) {
-            getSessionHandler(deploymentName).removeSessionListener(listener);
+            SessionHandler sessionHandler = getSessionHandler(deploymentName);
+            if (sessionHandler != null) {
+                sessionHandler.removeSessionListener(listener);
+            } else {
+                logger.warn("Unable to remove " + ObjectUtils.simpleIdentityToString(listener) +
+                    ". Cause: No session handler found for deployment '" + deploymentName + "'");
+            }
         }
     }
 
-    @NonNull
-    private SessionHandler getSessionHandler() {
-        SessionHandler sessionHandler = getTowServer().getSessionHandler(deploymentName);
-        if (sessionHandler == null) {
-            throw new IllegalStateException("No session handler found for deployment: " + deploymentName);
-        }
-        return sessionHandler;
-    }
-
-    @NonNull
     private SessionHandler getSessionHandler(String deploymentName) {
+        Assert.notNull(towServerId, "towServerId must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
-        SessionHandler sessionHandler = getTowServer().getSessionHandler(deploymentName);
-        if (sessionHandler == null) {
-            throw new IllegalStateException("No session handler found for deployment: " + deploymentName);
-        }
-        return sessionHandler;
-    }
-
-    @NonNull
-    private TowServer getTowServer() {
         TowServer towServer = getBeanRegistry().getBean(towServerId);
         if (towServer == null) {
             throw new IllegalStateException("No TowServer named '" + towServerId + "'");
         }
-        return towServer;
+        return towServer.getSessionHandler(deploymentName);
     }
 
 }

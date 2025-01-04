@@ -209,11 +209,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         if (deploymentManager == null) {
             throw new IllegalStateException("Deployment named '" + deploymentName + "' not found");
         }
-        SessionHandler sessionHandler = getSessionHandler(deploymentManager);
-        if (sessionHandler == null) {
-            throw new IllegalStateException("No SessionHandler for the deployment named '" + deploymentName + "'");
-        }
-        return sessionHandler;
+        return getSessionHandler(deploymentManager);
     }
 
     @Override
@@ -222,11 +218,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         if (deploymentManager == null) {
             throw new IllegalStateException("Deployment with path '" + path + "' not found");
         }
-        SessionHandler sessionHandler = getSessionHandler(deploymentManager);
-        if (sessionHandler == null) {
-            throw new IllegalStateException("No SessionHandler for the deployment with path " + path + "'");
-        }
-        return sessionHandler;
+        return getSessionHandler(deploymentManager);
     }
 
     @Nullable

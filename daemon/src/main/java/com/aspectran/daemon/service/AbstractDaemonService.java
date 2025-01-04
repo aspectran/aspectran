@@ -55,7 +55,8 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     }
 
     protected void createSessionManager() {
-        Assert.state(this.sessionManager == null, "Session Manager is already exists for daemon service");
+        Assert.state(this.sessionManager == null,
+                "Session Manager is already exists for " + getServiceName());
         DaemonConfig daemonConfig = getAspectranConfig().getDaemonConfig();
         if (daemonConfig != null) {
             SessionManagerConfig sessionManagerConfig = daemonConfig.getSessionManagerConfig();
@@ -68,7 +69,7 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new CoreServiceException("Failed to create session manager for daemon service", e);
+                    throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
                 }
             }
         }

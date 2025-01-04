@@ -168,7 +168,7 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (webService.isSessionsEnabled()) {
+            if (webService.isSessionAdaptable()) {
                 SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
                 setSessionAdapter(sessionAdapter);
             }

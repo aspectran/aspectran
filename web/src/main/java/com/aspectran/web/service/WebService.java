@@ -52,7 +52,7 @@ public interface WebService extends CoreService {
      */
     ServletContext getServletContext();
 
-    boolean isSessionsEnabled();
+    boolean isSessionAdaptable();
 
     /**
      * Executes web activity.

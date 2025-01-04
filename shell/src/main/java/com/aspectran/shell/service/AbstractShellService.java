@@ -163,7 +163,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
 
     protected void createSessionManager() {
         Assert.state(this.sessionManager == null,
-                "Session Manager is already exists for shell service");
+                "Session Manager is already exists for " + getServiceName());
         ShellConfig shellConfig = getAspectranConfig().getShellConfig();
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();
@@ -176,7 +176,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new CoreServiceException("Failed to create session manager for shell service", e);
+                    throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
                 }
             }
         }

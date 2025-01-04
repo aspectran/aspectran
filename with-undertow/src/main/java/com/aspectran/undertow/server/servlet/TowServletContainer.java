@@ -35,7 +35,7 @@ public class TowServletContainer extends ServletContainerImpl {
                 ServletContext servletContext = deployment.getServletContext();
                 DefaultWebService rootWebService = towServletContext.createRootWebService(servletContext);
                 if (towServletContext.getSessionManager() == null) {
-                    rootWebService.disableSessions();
+                    rootWebService.setSessionAdaptable(false);
                 }
             }
         }

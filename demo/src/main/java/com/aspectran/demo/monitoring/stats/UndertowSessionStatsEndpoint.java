@@ -23,6 +23,7 @@ import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionStatistics;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
@@ -140,11 +141,13 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
                     @Override
                     public void run() {
                         SessionStatsPayload newStats = getUndertowSessionStatsPayload();
-                        if (first || !newStats.equals(oldStats)) {
-                            broadcast(newStats.toJson());
-                            oldStats = newStats;
-                            if (first) {
-                                first = false;
+                        if (newStats != null) {
+                            if (first || !newStats.equals(oldStats)) {
+                                broadcast(newStats.toJson());
+                                oldStats = newStats;
+                                if (first) {
+                                    first = false;
+                                }
                             }
                         }
                     }
@@ -160,10 +163,13 @@ public class UndertowSessionStatsEndpoint extends InstantActivitySupport {
         }
     }
 
-    @NonNull
+    @Nullable
     private SessionStatsPayload getUndertowSessionStatsPayload() {
         TowServer towServer = getBeanRegistry().getBean("tow.server");
         SessionHandler sessionHandler = towServer.getSessionHandler("root.war");
+        if (sessionHandler == null) {
+            return null;
+        }
         SessionStatistics statistics = sessionHandler.getStatistics();
 
         SessionStatsPayload stats = new SessionStatsPayload();

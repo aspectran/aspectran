@@ -56,7 +56,7 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
 
     protected void createSessionManager() {
         Assert.state(this.sessionManager == null,
-                "Session Manager is already exists for embedded aspectran");
+                "Session Manager is already exists for " + getServiceName());
         EmbedConfig embedConfig = getAspectranConfig().getEmbedConfig();
         if (embedConfig != null) {
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();
@@ -69,7 +69,7 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new CoreServiceException("Failed to create session manager for embedded aspectran", e);
+                    throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
                 }
             }
         }
