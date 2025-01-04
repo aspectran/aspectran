@@ -201,7 +201,7 @@ public class ActivityData extends HashMap<String, Object> {
      * @see SessionAdapter#getAttribute
      */
     public Object getSessionAttributeWithoutCache(String name) {
-        if (activity.getSessionAdapter() != null) {
+        if (activity.hasSessionAdapter()) {
             return activity.getSessionAdapter().getAttribute(name);
         } else {
             return null;
@@ -220,7 +220,7 @@ public class ActivityData extends HashMap<String, Object> {
                 }
             }
         }
-        if (activity.getSessionAdapter() != null) {
+        if (activity.hasSessionAdapter()) {
             Enumeration<String> enumer = activity.getSessionAdapter().getAttributeNames();
             if (enumer != null) {
                 while (enumer.hasMoreElements()) {

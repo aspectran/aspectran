@@ -48,6 +48,8 @@ import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUES
  */
 public class TowActivity extends CoreActivity {
 
+    private final TowService towService;
+
     private final HttpServerExchange exchange;
 
     private String requestName;
@@ -56,11 +58,12 @@ public class TowActivity extends CoreActivity {
 
     /**
      * Instantiates a new tow service
-     * @param service the tow service
+     * @param towService the tow service
      * @param exchange the adaptee object
      */
-    public TowActivity(@NonNull TowService service, HttpServerExchange exchange) {
-        super(service.getActivityContext());
+    public TowActivity(@NonNull TowService towService, HttpServerExchange exchange) {
+        super(towService.getActivityContext());
+        this.towService = towService;
         this.exchange = exchange;
     }
 
@@ -125,14 +128,16 @@ public class TowActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getParentActivity() == null) {
-                SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
-                SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
-                if (sessionManager != null && sessionConfig != null) {
-                    setSessionAdapter(new TowSessionAdapter(exchange));
+            if (towService.isSessionsEnabled()) {
+                if (getParentActivity() == null) {
+                    SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+                    SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+                    if (sessionManager != null && sessionConfig != null) {
+                        setSessionAdapter(new TowSessionAdapter(exchange));
+                    }
+                } else if (getParentActivity().hasSessionAdapter()){
+                    setSessionAdapter(getParentActivity().getSessionAdapter());
                 }
-            } else {
-                setSessionAdapter(getParentActivity().getSessionAdapter());
             }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);

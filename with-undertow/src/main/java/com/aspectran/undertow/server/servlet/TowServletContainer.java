@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.web.service.DefaultWebService;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.core.ServletContainerImpl;
@@ -32,7 +33,10 @@ public class TowServletContainer extends ServletContainerImpl {
                 manager.deploy();
                 Deployment deployment = manager.getDeployment();
                 ServletContext servletContext = deployment.getServletContext();
-                towServletContext.createRootWebService(servletContext);
+                DefaultWebService rootWebService = towServletContext.createRootWebService(servletContext);
+                if (towServletContext.getSessionManager() == null) {
+                    rootWebService.disableSessions();
+                }
             }
         }
     }

@@ -50,6 +50,8 @@ import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUES
  */
 public class WebActivity extends CoreActivity {
 
+    private final WebService webService;
+
     private final String reverseContextPath;
 
     private final HttpServletRequest request;
@@ -73,6 +75,7 @@ public class WebActivity extends CoreActivity {
     public WebActivity(@NonNull WebService webService, String contextPath, String reverseContextPath,
                        HttpServletRequest request, HttpServletResponse response) {
         super(webService.getActivityContext(), contextPath);
+        this.webService = webService;
         this.reverseContextPath = reverseContextPath;
         this.request = request;
         this.response = response;
@@ -165,8 +168,10 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
-            setSessionAdapter(sessionAdapter);
+            if (webService.isSessionsEnabled()) {
+                SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
+                setSessionAdapter(sessionAdapter);
+            }
 
             HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(
                     getTranslet().getRequestMethod(), request);

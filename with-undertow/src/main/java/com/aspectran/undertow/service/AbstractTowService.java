@@ -34,6 +34,8 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
     private boolean trailingSlashRedirect;
 
+    private boolean sessionsEnabled = true;
+
     AbstractTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
     }
@@ -52,6 +54,18 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
     protected void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         this.trailingSlashRedirect = trailingSlashRedirect;
+    }
+
+    @Override
+    public boolean isSessionsEnabled() {
+        return sessionsEnabled;
+    }
+
+    public void disableSessions() {
+        if (!sessionsEnabled) {
+            throw new IllegalStateException("sessions is already disabled");
+        }
+        sessionsEnabled = false;
     }
 
     @Override

@@ -130,7 +130,7 @@ public class WebActivityExchange implements IWebExchange {
         Assert.notNull(activity, "activity must not be null");
         if (activity instanceof WebActivity webActivity) {
             WebActivityRequest request = new WebActivityRequest(webActivity.getRequestAdapter());
-            WebActivitySession session = new WebActivitySession(webActivity.getSessionAdapter());
+            WebActivitySession session = (webActivity.hasSessionAdapter() ? new WebActivitySession(webActivity.getSessionAdapter()) : null);
             WebActivityApplication application = new WebActivityApplication(webActivity.getRequest().getServletContext());
             return new WebActivityExchange(activity, request, session, application);
         } else {

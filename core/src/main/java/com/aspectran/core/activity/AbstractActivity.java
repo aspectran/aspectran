@@ -143,7 +143,15 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public boolean hasSessionAdapter() {
+        return (sessionAdapter != null);
+    }
+
+    @Override
     public SessionAdapter getSessionAdapter() {
+        if (sessionAdapter == null) {
+            throw new UnsupportedOperationException("Session is not enabled");
+        }
         return sessionAdapter;
     }
 

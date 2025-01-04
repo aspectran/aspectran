@@ -23,7 +23,6 @@ import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import jakarta.servlet.Servlet;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.http.HttpServlet;
@@ -32,8 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.Serial;
-
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * The Class WebActivityServlet.
@@ -61,14 +58,15 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     @Override
     public void init() throws ServletException {
         try {
-            ServletContext servletContext = getServletContext();
-            Object attr = servletContext.getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
+            DefaultWebService rootWebService = null;
+            try {
+                rootWebService = WebService.findWebService(getServletContext());
+            } catch (IllegalStateException e) {
+                // ignored
+            }
+
             DefaultWebService newWebService;
-            if (attr != null) {
-                if (!(attr instanceof DefaultWebService rootWebService)) {
-                    throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
-                            WebService.class.getName() + "]");
-                }
+            if (rootWebService != null) {
                 newWebService = DefaultWebServiceBuilder.build(this, rootWebService);
                 if (newWebService == null) {
                     this.webService = rootWebService;

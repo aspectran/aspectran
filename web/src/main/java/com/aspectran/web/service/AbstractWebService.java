@@ -40,6 +40,8 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     private boolean legacyHeadHandling;
 
+    private boolean sessionsEnabled = true;
+
     AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
         super(parentService, derived);
         this.contextPath = StringUtils.emptyToNull(servletContext.getContextPath());
@@ -84,6 +86,18 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     protected void setLegacyHeadHandling(boolean legacyHeadHandling) {
         this.legacyHeadHandling = legacyHeadHandling;
+    }
+
+    @Override
+    public boolean isSessionsEnabled() {
+        return sessionsEnabled;
+    }
+
+    public void disableSessions() {
+        if (!sessionsEnabled) {
+            throw new IllegalStateException("sessions is already disabled");
+        }
+        sessionsEnabled = false;
     }
 
     @Override

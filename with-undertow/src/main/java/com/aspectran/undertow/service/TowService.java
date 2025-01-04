@@ -25,6 +25,8 @@ import java.io.IOException;
  */
 public interface TowService extends CoreService {
 
+    boolean isSessionsEnabled();
+
     /**
      * Executes web activity.
      * @param exchange the HTTP request/response exchange

@@ -52,6 +52,8 @@ public interface WebService extends CoreService {
      */
     ServletContext getServletContext();
 
+    boolean isSessionsEnabled();
+
     /**
      * Executes web activity.
      * @param request current HTTP servlet request

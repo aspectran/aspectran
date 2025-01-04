@@ -58,7 +58,9 @@ public class InstantActivity extends CoreActivity {
     public InstantActivity(@NonNull Activity activity, boolean inheritResponseAdapter) {
         super(activity.getActivityContext());
         this.mode = activity.getMode();
-        setSessionAdapter(activity.getSessionAdapter());
+        if (activity.hasSessionAdapter()) {
+            setSessionAdapter(activity.getSessionAdapter());
+        }
         setRequestAdapter(activity.getRequestAdapter());
         if (inheritResponseAdapter) {
             setResponseAdapter(activity.getResponseAdapter());
@@ -95,7 +97,7 @@ public class InstantActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        if (getSessionAdapter() == null && getParentActivity() != null) {
+        if (!hasSessionAdapter() && getParentActivity() != null && getParentActivity().hasSessionAdapter()) {
             setSessionAdapter(getParentActivity().getSessionAdapter());
         }
         if (getRequestAdapter() == null) {
@@ -122,14 +124,16 @@ public class InstantActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+        if (!hasParentActivity() && hasSessionAdapter() &&
+                getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().access();
         }
     }
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+        if (!hasParentActivity() && hasSessionAdapter() &&
+                getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().complete();
         }
 

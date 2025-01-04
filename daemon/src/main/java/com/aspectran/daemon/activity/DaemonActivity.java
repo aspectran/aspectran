@@ -126,14 +126,16 @@ public class DaemonActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+        if (!hasParentActivity() && hasSessionAdapter() &&
+                getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().access();
         }
     }
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
+        if (!hasParentActivity() && hasSessionAdapter() &&
+                getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().complete();
         }
 

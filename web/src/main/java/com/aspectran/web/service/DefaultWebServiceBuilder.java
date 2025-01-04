@@ -112,7 +112,11 @@ public class DefaultWebServiceBuilder {
         if (rootWebService == null || aspectranConfigParam != null) {
             ServletContext servletContext = servlet.getServletContext();
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            return doBuild(servletContext, rootWebService, aspectranConfig);
+            DefaultWebService derivedWebService = doBuild(servletContext, rootWebService, aspectranConfig);
+            if (rootWebService != null && !rootWebService.isSessionsEnabled()) {
+                derivedWebService.disableSessions();
+            }
+            return derivedWebService;
         } else {
             return null;
         }

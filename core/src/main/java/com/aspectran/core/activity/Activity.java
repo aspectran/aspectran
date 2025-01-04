@@ -75,6 +75,8 @@ public interface Activity {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    boolean hasSessionAdapter();
+
     /**
      * Gets the session adapter.
      * @return the session adapter
