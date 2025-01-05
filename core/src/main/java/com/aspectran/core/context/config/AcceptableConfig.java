@@ -15,47 +15,12 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
-import com.aspectran.utils.apon.ParameterKey;
-import com.aspectran.utils.apon.ValueType;
+import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 
-public class AcceptableConfig extends AbstractParameters {
-
-    private static final ParameterKey plus;
-    private static final ParameterKey minus;
-
-    private static final ParameterKey[] parameterKeys;
-
-    static {
-        plus = new ParameterKey("+", ValueType.STRING, true, true);
-        minus = new ParameterKey("-", ValueType.STRING, true, true);
-
-        parameterKeys = new ParameterKey[] {
-                plus,
-                minus
-        };
-    }
+public class AcceptableConfig extends IncludeExcludeParameters {
 
     public AcceptableConfig() {
-        super(parameterKeys);
-    }
-
-    public String[] getIncludePatterns() {
-        return getStringArray(plus);
-    }
-
-    public AcceptableConfig addIncludePattern(String pattern) {
-        putValue(plus, pattern);
-        return this;
-    }
-
-    public String[] getExcludePatterns() {
-        return getStringArray(minus);
-    }
-
-    public AcceptableConfig addExcludePattern(String pattern) {
-        putValue(minus, pattern);
-        return this;
+        super();
     }
 
 }

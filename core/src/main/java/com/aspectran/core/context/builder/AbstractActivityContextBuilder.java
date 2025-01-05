@@ -21,7 +21,6 @@ import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
-import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
@@ -47,7 +46,6 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.assistant.BeanReferenceException;
 import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
@@ -443,14 +441,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
-
-        for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            PointcutRule pointcutRule = aspectRule.getPointcutRule();
-            if (pointcutRule != null) {
-                Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
-                aspectRule.setPointcut(pointcut);
-            }
-        }
 
         boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
 

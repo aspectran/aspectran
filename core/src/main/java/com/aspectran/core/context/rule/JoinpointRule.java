@@ -151,7 +151,7 @@ public class JoinpointRule {
         return new JoinpointRule();
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, String apon)
+    static void updateJoinpoint(JoinpointRule joinpointRule, String apon)
             throws IllegalRuleException {
         if (StringUtils.hasText(apon)) {
             JoinpointParameters joinpointParameters;
@@ -164,7 +164,7 @@ public class JoinpointRule {
         }
     }
 
-    public static void updateJoinpoint(@NonNull JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
+    static void updateJoinpoint(@NonNull JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
             throws IllegalRuleException {
         if (joinpointRule.getJoinpointTargetType() == null) {
             String target = joinpointParameters.getString(JoinpointParameters.target);
@@ -176,7 +176,7 @@ public class JoinpointRule {
         joinpointRule.setJoinpointParameters(joinpointParameters);
     }
 
-    public static void updateJoinpointTargetType(@NonNull JoinpointRule joinpointRule, String target) {
+    static void updateJoinpointTargetType(@NonNull JoinpointRule joinpointRule, String target) {
         if (target != null) {
             JoinpointTargetType joinpointTargetType = JoinpointTargetType.resolve(target);
             if (joinpointTargetType == null) {
@@ -246,8 +246,8 @@ public class JoinpointRule {
     }
 
     @Nullable
-    private static List<PointcutPatternRule> mergePointcutPatternRules(List<String> patternStringList,
-                                                                       List<PointcutQualifierParameters> qualifierParametersList) {
+    private static List<PointcutPatternRule> mergePointcutPatternRules(
+            List<String> patternStringList, List<PointcutQualifierParameters> qualifierParametersList) {
         int patternStringSize = (patternStringList != null ? patternStringList.size() : 0);
         int qualifierParametersSize = (qualifierParametersList != null ? qualifierParametersList.size() : 0);
         if (patternStringSize == 0 && qualifierParametersSize == 0) {

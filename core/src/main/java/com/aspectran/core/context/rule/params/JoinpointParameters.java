@@ -89,4 +89,8 @@ public class JoinpointParameters extends AbstractParameters {
         putValue(JoinpointParameters.pointcut, pointcutParameters);
     }
 
+    public void setPointcutParameters(String apon) throws AponParseException {
+        putValue(JoinpointParameters.pointcut, new PointcutParameters(apon));
+    }
+
 }

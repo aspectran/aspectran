@@ -16,7 +16,7 @@
 package com.aspectran.undertow.server.handler.logging;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.wildcard.WildcardPatterns;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -32,9 +32,9 @@ public class PathBasedLoggingGroupHandler implements HttpHandler {
 
     private final HttpHandler handler;
 
-    private final Map<String, WildcardPatterns> pathPatternsByGroupName;
+    private final Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
-    public PathBasedLoggingGroupHandler(HttpHandler handler, Map<String, WildcardPatterns> pathPatternsByGroupName) {
+    public PathBasedLoggingGroupHandler(HttpHandler handler, Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName) {
         this.handler = handler;
         this.pathPatternsByGroupName = pathPatternsByGroupName;
     }
@@ -52,8 +52,8 @@ public class PathBasedLoggingGroupHandler implements HttpHandler {
         String groupName = null;
         if (pathPatternsByGroupName != null && !pathPatternsByGroupName.isEmpty()) {
             String requestPath = exchange.getRequestPath();
-            for (Map.Entry<String, WildcardPatterns> entry : pathPatternsByGroupName.entrySet()) {
-                WildcardPatterns patterns = entry.getValue();
+            for (Map.Entry<String, IncludeExcludeWildcardPatterns> entry : pathPatternsByGroupName.entrySet()) {
+                IncludeExcludeWildcardPatterns patterns = entry.getValue();
                 if (patterns.matches(requestPath)) {
                     groupName = entry.getKey();
                     break;

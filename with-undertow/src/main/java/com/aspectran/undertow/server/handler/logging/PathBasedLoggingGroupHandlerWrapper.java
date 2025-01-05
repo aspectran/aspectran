@@ -15,9 +15,10 @@
  */
 package com.aspectran.undertow.server.handler.logging;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.wildcard.WildcardPatterns;
+import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.wildcard.IncludeExcludeParameters;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
@@ -29,21 +30,26 @@ import java.util.Map;
  */
 public class PathBasedLoggingGroupHandlerWrapper implements HandlerWrapper {
 
-    private Map<String, WildcardPatterns> pathPatternsByGroupName;
+    private Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
     public PathBasedLoggingGroupHandlerWrapper() {
     }
 
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {
-            Map<String, WildcardPatterns> map = new HashMap<>();
-            for (Map.Entry<String, String> entry : pathPatternsByGroupName.entrySet()) {
-                String groupName = entry.getKey();
-                String[] arr = StringUtils.tokenize(entry.getValue(), ",;\t\r\n\f", true);
-                if (arr.length > 0) {
-                    WildcardPatterns pathPatterns = WildcardPatterns.of(arr, ActivityContext.NAME_SEPARATOR_CHAR);
-                    map.put(groupName, pathPatterns);
+            Map<String, IncludeExcludeWildcardPatterns> map = new HashMap<>();
+            try {
+                for (Map.Entry<String, String> entry : pathPatternsByGroupName.entrySet()) {
+                    String groupName = entry.getKey();
+                    String apon = entry.getValue();
+                    if (StringUtils.hasText(apon)) {
+                        IncludeExcludeParameters includeExcludeParameters = new IncludeExcludeParameters(apon);
+                        IncludeExcludeWildcardPatterns pathPatterns = IncludeExcludeWildcardPatterns.of(includeExcludeParameters, '/');
+                        map.put(groupName, pathPatterns);
+                    }
                 }
+            } catch (AponParseException e) {
+                throw new IllegalArgumentException("Include/Exclude patterns do not conform to the format", e);
             }
             this.pathPatternsByGroupName = (map.isEmpty() ? null : map);
         } else {

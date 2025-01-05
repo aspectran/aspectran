@@ -18,23 +18,19 @@ package com.aspectran.core.service;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.wildcard.RelativeComplementWildcardPatterns;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 
 /**
  * <p>Created: 4/21/24</p>
  */
 public class RequestAcceptor {
 
-    private final RelativeComplementWildcardPatterns acceptableRequestNamePatterns;
+    private final IncludeExcludeWildcardPatterns acceptableRequestNamePatterns;
 
     public RequestAcceptor(AcceptableConfig acceptableConfig) {
         Assert.notNull(acceptableConfig, "acceptableConfig must not be null");
-        String[] includePatterns = acceptableConfig.getIncludePatterns();
-        String[] excludePatterns = acceptableConfig.getExcludePatterns();
-        if ((includePatterns != null && includePatterns.length > 0) ||
-                excludePatterns != null && excludePatterns.length > 0) {
-            acceptableRequestNamePatterns = RelativeComplementWildcardPatterns.of(
-                    includePatterns, excludePatterns, ActivityContext.NAME_SEPARATOR_CHAR);
+        if (acceptableConfig.hasPatterns()) {
+            acceptableRequestNamePatterns = IncludeExcludeWildcardPatterns.of(acceptableConfig, ActivityContext.NAME_SEPARATOR_CHAR);
         } else {
             acceptableRequestNamePatterns = null;
         }

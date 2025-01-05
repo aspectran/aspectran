@@ -19,7 +19,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.wildcard.RelativeComplementWildcardPatterns;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -43,7 +43,7 @@ public class TowResourceHandler extends ResourceHandler {
 
     private final HttpHandler next;
 
-    private volatile RelativeComplementWildcardPatterns pathPatterns;
+    private volatile IncludeExcludeWildcardPatterns pathPatterns;
 
     public TowResourceHandler(ResourceManager resourceManager) {
         this(resourceManager, null);
@@ -65,11 +65,9 @@ public class TowResourceHandler extends ResourceHandler {
 
     public void setPathPatterns(ResourcePathPatterns pathPatterns) {
         if (pathPatterns == null) {
-            throw new IllegalArgumentException("resourcePathPatterns must not be null");
+            throw new IllegalArgumentException("pathPatterns must not be null");
         }
-        String[] includePatterns = pathPatterns.getIncludePatterns();
-        String[] excludePatterns = pathPatterns.getExcludePatterns();
-        this.pathPatterns = RelativeComplementWildcardPatterns.of(includePatterns, excludePatterns, '/');
+        this.pathPatterns = IncludeExcludeWildcardPatterns.of(pathPatterns, '/');
     }
 
     public void autoDetect(String pathPrefix) throws IOException {
@@ -105,7 +103,7 @@ public class TowResourceHandler extends ResourceHandler {
             } else {
                 WildcardPattern[] includePatterns = patterns.toArray(new WildcardPattern[0]);
                 WildcardPattern[] excludePatterns = (pathPatterns != null ? pathPatterns.getExcludePatterns() : null);
-                pathPatterns = RelativeComplementWildcardPatterns.of(includePatterns, excludePatterns);
+                pathPatterns = IncludeExcludeWildcardPatterns.of(includePatterns, excludePatterns);
 
                 logger.info("TowResourceHandler includePatterns=" + Arrays.toString(includePatterns));
                 if (excludePatterns != null) {

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
+import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -161,6 +162,12 @@ public class AspectRule implements BeanReferenceable {
 
     public void setJoinpointRule(JoinpointRule joinpointRule) {
         this.joinpointRule = joinpointRule;
+        if (joinpointRule != null && joinpointRule.getPointcutRule() != null) {
+            Pointcut pointcut = PointcutFactory.createPointcut(joinpointRule.getPointcutRule());
+            setPointcut(pointcut);
+        } else {
+            setPointcut(null);
+        }
     }
 
     public JoinpointTargetType getJoinpointTargetType() {
@@ -183,7 +190,7 @@ public class AspectRule implements BeanReferenceable {
         return pointcut;
     }
 
-    public void setPointcut(Pointcut pointcut) {
+    private void setPointcut(Pointcut pointcut) {
         this.pointcut = pointcut;
     }
 
