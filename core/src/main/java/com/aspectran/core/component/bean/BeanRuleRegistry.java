@@ -44,6 +44,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -189,20 +190,21 @@ public class BeanRuleRegistry {
         }
 
         logger.info("Auto-scanning of components in specified packages [" +
-            StringUtils.joinCommaDelimitedList(basePackages) + "]");
+                StringUtils.joinCommaDelimitedList(basePackages) + "]");
 
         for (String basePackage : basePackages) {
+            final Set<Class<?>> beanClasses = new HashSet<>();
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
-            List<BeanRule> beanRules = new ArrayList<>();
             scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
                 if (targetClass.isAnnotationPresent(Component.class)) {
-                    BeanRule beanRule = new BeanRule();
-                    beanRule.setBeanClass(targetClass);
-                    beanRule.setScopeType(ScopeType.SINGLETON);
-                    beanRules.add(beanRule);
+                    beanClasses.add(targetClass);
                 }
             });
-            for (BeanRule beanRule : beanRules) {
+            for (Class<?> beanClass : beanClasses) {
+                BeanRule beanRule = new BeanRule();
+                beanRule.setBeanClass(beanClass);
+                beanRule.setScopeType(ScopeType.SINGLETON);
+
                 saveConfigurableBeanRule(beanRule);
                 saveBeanRuleWithInterfaces(beanRule.getBeanClass(), beanRule);
             }
@@ -221,9 +223,15 @@ public class BeanRuleRegistry {
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
             PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(beanRule.getId());
-            List<BeanRule> scannedBeanRules = new ArrayList<>();
+            final Map<Class<?>, String> beanClasses = new HashMap<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
+                beanClasses.putIfAbsent(targetClass, resourceName);
+            });
+            for (Map.Entry<Class<?>, String> entry : beanClasses.entrySet()) {
+                Class<?> beanClass = entry.getKey();
+                String resourceName = entry.getValue();
+
                 BeanRule replicated = beanRule.replicate();
                 if (prefixSuffixPattern != null) {
                     replicated.setId(prefixSuffixPattern.enclose(resourceName));
@@ -234,11 +242,9 @@ public class BeanRuleRegistry {
                         replicated.setId(resourceName);
                     }
                 }
-                replicated.setBeanClass(targetClass);
-                scannedBeanRules.add(replicated);
-            });
-            for (BeanRule scannedBeanRule : scannedBeanRules) {
-                dissectBeanRule(scannedBeanRule);
+                replicated.setBeanClass(beanClass);
+
+                dissectBeanRule(replicated);
             }
         } else {
             dissectBeanRule(beanRule);
