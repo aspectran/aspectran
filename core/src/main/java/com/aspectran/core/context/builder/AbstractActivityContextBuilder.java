@@ -391,9 +391,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
         context.setAspectRuleRegistry(aspectRuleRegistry);
-        context.setDefaultBeanRegistry(defaultBeanRegistry);
+        context.setBeanRegistry(defaultBeanRegistry);
         context.setScheduleRuleRegistry(scheduleRuleRegistry);
-        context.setDefaultTemplateRenderer(defaultTemplateRenderer);
+        context.setTemplateRenderer(defaultTemplateRenderer);
         context.setTransletRuleRegistry(transletRuleRegistry);
         return context;
     }

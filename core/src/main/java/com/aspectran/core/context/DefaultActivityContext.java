@@ -62,11 +62,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private ActivityEnvironment activityEnvironment;
 
+    private DefaultBeanRegistry beanRegistry;
+
+    private DefaultTemplateRenderer templateRenderer;
+
     private AspectRuleRegistry aspectRuleRegistry;
-
-    private DefaultBeanRegistry defaultBeanRegistry;
-
-    private DefaultTemplateRenderer defaultTemplateRenderer;
 
     private ScheduleRuleRegistry scheduleRuleRegistry;
 
@@ -136,6 +136,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public Environment getEnvironment() {
+        checkNotDestroyed();
         return activityEnvironment;
     }
 
@@ -145,7 +146,38 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
+    public BeanRegistry getBeanRegistry() {
+        checkNotDestroyed();
+        return beanRegistry;
+    }
+
+    /**
+     * Sets the default bean registry.
+     * @param beanRegistry the new default bean registry
+     */
+    public void setBeanRegistry(DefaultBeanRegistry beanRegistry) {
+        checkInitializable();
+        this.beanRegistry = beanRegistry;
+    }
+
+    @Override
+    public TemplateRenderer getTemplateRenderer() {
+        checkNotDestroyed();
+        return templateRenderer;
+    }
+
+    /**
+     * Sets the template processor.
+     * @param templateRenderer the new template processor
+     */
+    public void setTemplateRenderer(DefaultTemplateRenderer templateRenderer) {
+        checkInitializable();
+        this.templateRenderer = templateRenderer;
+    }
+
+    @Override
     public AspectRuleRegistry getAspectRuleRegistry() {
+        checkNotDestroyed();
         return aspectRuleRegistry;
     }
 
@@ -155,35 +187,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
-    public BeanRegistry getBeanRegistry() {
-        return defaultBeanRegistry;
-    }
-
-    /**
-     * Sets the default bean registry.
-     * @param defaultBeanRegistry the new default bean registry
-     */
-    public void setDefaultBeanRegistry(DefaultBeanRegistry defaultBeanRegistry) {
-        checkInitializable();
-        this.defaultBeanRegistry = defaultBeanRegistry;
-    }
-
-    @Override
-    public TemplateRenderer getTemplateRenderer() {
-        return defaultTemplateRenderer;
-    }
-
-    /**
-     * Sets the template processor.
-     * @param defaultTemplateRenderer the new template processor
-     */
-    public void setDefaultTemplateRenderer(DefaultTemplateRenderer defaultTemplateRenderer) {
-        checkInitializable();
-        this.defaultTemplateRenderer = defaultTemplateRenderer;
-    }
-
-    @Override
     public ScheduleRuleRegistry getScheduleRuleRegistry() {
+        checkNotDestroyed();
         return scheduleRuleRegistry;
     }
 
@@ -194,6 +199,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public TransletRuleRegistry getTransletRuleRegistry() {
+        checkNotDestroyed();
         return transletRuleRegistry;
     }
 
@@ -208,6 +214,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public MessageSource getMessageSource() {
+        checkNotDestroyed();
         if (messageSource == null) {
             resolveMessageSource();
         }
@@ -229,7 +236,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     public Activity getCurrentActivity() {
         Activity activity = currentActivityHolder.get();
         if (activity == null) {
-            throw new InactivityStateException();
+            throw new NoActivityStateException();
         }
         return activity;
     }
@@ -254,8 +261,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * Use parent's if none defined in this context.
      */
     private void resolveMessageSource() {
-        if (defaultBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
-            messageSource = defaultBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
+        if (beanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
+            messageSource = beanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
             if (logger.isDebugEnabled()) {
                 logger.debug("Using MessageSource [" + messageSource + "]");
             }
@@ -272,15 +279,15 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     protected void doInitialize() throws Exception {
+        Assert.state(beanRegistry != null, "BeanRegistry is not set");
+        Assert.state(templateRenderer != null, "TemplateRenderer is not set");
         Assert.state(aspectRuleRegistry != null, "AspectRuleRegistry is not set");
-        Assert.state(defaultBeanRegistry != null, "BeanRegistry is not set");
-        Assert.state(defaultTemplateRenderer != null, "TemplateRenderer is not set");
         Assert.state(scheduleRuleRegistry != null, "ScheduleRuleRegistry is not set");
         Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
         ThreadContextHelper.runThrowable(getClassLoader(), () -> {
+            beanRegistry.initialize();
+            templateRenderer.initialize();
             aspectRuleRegistry.initialize();
-            defaultBeanRegistry.initialize();
-            defaultTemplateRenderer.initialize();
             scheduleRuleRegistry.initialize();
             transletRuleRegistry.initialize();
             resolveMessageSource();
@@ -298,17 +305,17 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 scheduleRuleRegistry.destroy();
                 scheduleRuleRegistry = null;
             }
-            if (defaultTemplateRenderer != null) {
-                defaultTemplateRenderer.destroy();
-                defaultTemplateRenderer = null;
-            }
-            if (defaultBeanRegistry != null) {
-                defaultBeanRegistry.destroy();
-                defaultBeanRegistry = null;
-            }
             if (aspectRuleRegistry != null) {
                 aspectRuleRegistry.destroy();
                 aspectRuleRegistry = null;
+            }
+            if (templateRenderer != null) {
+                templateRenderer.destroy();
+                templateRenderer = null;
+            }
+            if (beanRegistry != null) {
+                beanRegistry.destroy();
+                beanRegistry = null;
             }
         });
     }

@@ -125,7 +125,7 @@ public abstract class AbstractComponent implements Component {
     @Override
     public void checkInitializable() {
         if (isDestroyed() || isDestroying()) {
-            throw new IllegalStateException("Already destroyed " + getComponentName());
+            throw new UnavailableException("Already destroyed " + getComponentName());
         }
         if (isInitializing()) {
             throw new IllegalStateException("Already initializing " + getComponentName());
@@ -137,10 +137,16 @@ public abstract class AbstractComponent implements Component {
 
     public void checkAvailable() {
         if (isDestroyed() || isDestroying()) {
-            throw new IllegalStateException("Already destroyed " + getComponentName());
+            throw new UnavailableException("Already destroyed " + getComponentName());
         }
         if (!isInitialized()) {
-            throw new IllegalStateException("Not yet initialized");
+            throw new UnavailableException("Not yet initialized");
+        }
+    }
+
+    public void checkNotDestroyed() {
+        if (isDestroyed()) {
+            throw new UnavailableException("Already destroyed " + getComponentName());
         }
     }
 

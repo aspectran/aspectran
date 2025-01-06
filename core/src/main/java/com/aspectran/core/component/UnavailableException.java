@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context;
+package com.aspectran.core.component;
 
 import java.io.Serial;
 
 /**
  * Exception occurs when there is no current activity.
  */
-public class InactivityStateException extends IllegalStateException {
+public class UnavailableException extends IllegalStateException {
 
     @Serial
-    private static final long serialVersionUID = 8373382682956966522L;
+    private static final long serialVersionUID = -7917663896173904952L;
 
     /**
-     * Constructs a InactivityStateException.
+     * Constructs a NoActivityStateException.
      */
-    public InactivityStateException() {
-        super("No activity");
+    public UnavailableException(String message) {
+        super(message);
     }
 
 }

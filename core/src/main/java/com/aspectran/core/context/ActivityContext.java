@@ -146,7 +146,7 @@ public interface ActivityContext {
     /**
      * Gets the current activity.
      * @return the current activity
-     * @throws InactivityStateException if there is no current activity
+     * @throws NoActivityStateException if there is no current activity
      */
     Activity getCurrentActivity();
 
