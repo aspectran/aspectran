@@ -36,7 +36,7 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
-import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -189,8 +189,9 @@ public class BeanRuleRegistry {
             return;
         }
 
-        logger.info("Auto-scanning of components in specified packages [" +
-                StringUtils.joinCommaDelimitedList(basePackages) + "]");
+        ToStringBuilder tsb = new ToStringBuilder("Auto Components Scanning");
+        tsb.append("basePackages", basePackages);
+        logger.info(tsb.toString());
 
         for (String basePackage : basePackages) {
             final Set<Class<?>> beanClasses = new HashSet<>();
