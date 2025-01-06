@@ -66,6 +66,8 @@ public class BeanRuleRegistry {
 
     private final Map<Class<?>, BeanRule> configurableBeanRuleMap = new LinkedHashMap<>();
 
+    private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
+
     private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
     private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
@@ -79,8 +81,8 @@ public class BeanRuleRegistry {
     public BeanRuleRegistry(ClassLoader classLoader) {
         this.classLoader = classLoader;
 
-        ignoreDependencyInterface(DisposableBean.class);
         ignoreDependencyInterface(FactoryBean.class);
+        ignoreDependencyInterface(DisposableBean.class);
         ignoreDependencyInterface(InitializableBean.class);
         ignoreDependencyInterface(ActivityContextAware.class);
         ignoreDependencyInterface(ApplicationAdapterAware.class);
@@ -93,6 +95,14 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.lang.constant.ConstantDesc.class);
         ignoreDependencyInterface(java.io.Serializable.class);
         ignoreDependencyInterface(java.io.Closeable.class);
+    }
+
+    public void ignoreDependencyType(Class<?> type) {
+        this.ignoredDependencyTypes.add(type);
+    }
+
+    public void ignoreDependencyInterface(Class<?> ifc) {
+        this.ignoredDependencyInterfaces.add(ifc);
     }
 
     public BeanRule getBeanRule(String id) {
@@ -323,8 +333,10 @@ public class BeanRuleRegistry {
                 importantBeanTypeSet.add(beanClass);
             }
         }
-        Set<BeanRule> set = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
-        set.add(beanRule);
+        if (beanRule.getId() == null || !ignoredDependencyTypes.contains(beanClass)) {
+            Set<BeanRule> set = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
+            set.add(beanRule);
+        }
     }
 
     private void saveBeanRuleWithInterfaces(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
@@ -332,8 +344,7 @@ public class BeanRuleRegistry {
         if (beanClass.isInterface()) {
             Class<?>[] ifcs = beanClass.getInterfaces();
             for (Class<?> ifc : ifcs) {
-                if (!ignoredDependencyInterfaces.contains(ifc) &&
-                        ClassUtils.isVisible(ifc, classLoader)) {
+                if (!ignoredDependencyInterfaces.contains(ifc) && ClassUtils.isVisible(ifc, classLoader)) {
                     saveBeanRule(ifc, beanRule);
                 }
             }
@@ -342,8 +353,7 @@ public class BeanRuleRegistry {
             while (current != null) {
                 Class<?>[] ifcs = current.getInterfaces();
                 for (Class<?> ifc : ifcs) {
-                    if (!ignoredDependencyInterfaces.contains(ifc) &&
-                            ClassUtils.isVisible(ifc, classLoader)) {
+                    if (!ignoredDependencyInterfaces.contains(ifc) && ClassUtils.isVisible(ifc, classLoader)) {
                         saveBeanRule(ifc, beanRule);
                         saveBeanRuleWithInterfaces(ifc, beanRule);
                     }
@@ -470,10 +480,6 @@ public class BeanRuleRegistry {
                     "another offered factory bean; Caller bean ", beanRule);
         }
         return offeredFactoryBeanRule.getTargetBeanClass();
-    }
-
-    public void ignoreDependencyInterface(Class<?> ifc) {
-        this.ignoredDependencyInterfaces.add(ifc);
     }
 
 }
