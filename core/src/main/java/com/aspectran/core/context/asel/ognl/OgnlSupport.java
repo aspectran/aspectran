@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.asel.ognl;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import ognl.DefaultTypeConverter;
 import ognl.Node;
@@ -46,7 +47,7 @@ public abstract class OgnlSupport {
     public static OgnlContext createDefaultContext(Map<String, Object> contextVariables) {
         OgnlContext ognlContext = createDefaultContext();
         if (contextVariables != null) {
-            ognlContext.putAll(contextVariables);
+            ognlContext.setValues(contextVariables);
         }
         return ognlContext;
     }
@@ -56,6 +57,8 @@ public abstract class OgnlSupport {
     }
 
     public static Object getValue(Object tree, OgnlContext ognlContext, Object root, Class<?> resultType) throws OgnlException {
+        Assert.notNull(tree, "tree must not be null");
+        Assert.notNull(ognlContext, "ognlContext must not be null");
         Object result;
         Node node = (Node)tree;
         if (node.getAccessor() != null) {
