@@ -280,16 +280,16 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     @Override
     protected void doInitialize() throws Exception {
         Assert.state(beanRegistry != null, "BeanRegistry is not set");
-        Assert.state(templateRenderer != null, "TemplateRenderer is not set");
         Assert.state(aspectRuleRegistry != null, "AspectRuleRegistry is not set");
         Assert.state(scheduleRuleRegistry != null, "ScheduleRuleRegistry is not set");
         Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
+        Assert.state(templateRenderer != null, "TemplateRenderer is not set");
         ThreadContextHelper.runThrowable(getClassLoader(), () -> {
             beanRegistry.initialize();
-            templateRenderer.initialize();
             aspectRuleRegistry.initialize();
             scheduleRuleRegistry.initialize();
             transletRuleRegistry.initialize();
+            templateRenderer.initialize();
             resolveMessageSource();
         });
     }
@@ -297,6 +297,14 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     @Override
     protected void doDestroy() {
         ThreadContextHelper.run(getClassLoader(), () -> {
+            if (beanRegistry != null) {
+                beanRegistry.destroy();
+                beanRegistry = null;
+            }
+            if (templateRenderer != null) {
+                templateRenderer.destroy();
+                templateRenderer = null;
+            }
             if (transletRuleRegistry != null) {
                 transletRuleRegistry.destroy();
                 transletRuleRegistry = null;
@@ -308,14 +316,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
             if (aspectRuleRegistry != null) {
                 aspectRuleRegistry.destroy();
                 aspectRuleRegistry = null;
-            }
-            if (templateRenderer != null) {
-                templateRenderer.destroy();
-                templateRenderer = null;
-            }
-            if (beanRegistry != null) {
-                beanRegistry.destroy();
-                beanRegistry = null;
             }
         });
     }
