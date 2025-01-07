@@ -16,7 +16,11 @@
 package com.aspectran.core.context.asel.ognl;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import ognl.DefaultTypeConverter;
+import ognl.Node;
 import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.TypeConverter;
 
 import java.util.Map;
 
@@ -29,11 +33,13 @@ public abstract class OgnlSupport {
 
     public static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
 
+    public static final TypeConverter TYPE_CONVERTER = new DefaultTypeConverter();
+
     public static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
     @NonNull
     public static OgnlContext createDefaultContext() {
-        return new OgnlContext(CLASS_RESOLVER, null, MEMBER_ACCESS);
+        return new OgnlContext(CLASS_RESOLVER, TYPE_CONVERTER, MEMBER_ACCESS);
     }
 
     @NonNull
@@ -43,6 +49,24 @@ public abstract class OgnlSupport {
             ognlContext.putAll(contextVariables);
         }
         return ognlContext;
+    }
+
+    public static Object getValue(Object tree, OgnlContext ognlContext, Object root) throws OgnlException {
+        return getValue(tree, ognlContext, root, null);
+    }
+
+    public static Object getValue(Object tree, OgnlContext ognlContext, Object root, Class<?> resultType) throws OgnlException {
+        Object result;
+        Node node = (Node)tree;
+        if (node.getAccessor() != null) {
+            result = node.getAccessor().get(ognlContext, root);
+        } else {
+            result = node.getValue(ognlContext, root);
+        }
+        if (resultType != null && ognlContext.getTypeConverter() != null) {
+            result = ognlContext.getTypeConverter().convertValue(ognlContext, root, null, null, result, resultType);
+        }
+        return result;
     }
 
 }

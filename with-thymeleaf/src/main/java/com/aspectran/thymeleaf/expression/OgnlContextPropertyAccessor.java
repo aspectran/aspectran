@@ -48,7 +48,7 @@ final class OgnlContextPropertyAccessor implements PropertyAccessor {
                     "in some specific attribute processors.");
         }
 
-        String propertyName = (name == null? null : name.toString());
+        String propertyName = (name == null ? null : name.toString());
 
         /*
          * NOTE we do not check here whether we are being asked for the 'locale', 'request', 'response', etc.

@@ -72,16 +72,16 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     @Override
     public Object evaluate(
             IExpressionContext context, IStandardVariableExpression expression,
-            StandardExpressionExecutionContext exeContext) {
-        return evaluate(context, expression, exeContext, applyOgnlShortcuts);
+            StandardExpressionExecutionContext execContext) {
+        return evaluate(context, expression, execContext, applyOgnlShortcuts);
     }
 
     private static Object evaluate(
            IExpressionContext context, IStandardVariableExpression expression,
-           StandardExpressionExecutionContext exeContext, boolean applyOgnlShortcuts) {
+           StandardExpressionExecutionContext execContext, boolean applyOgnlShortcuts) {
         if (logger.isTraceEnabled()) {
             logger.trace("[THYMELEAF][" + TemplateEngine.threadIndex() +
-                "] AspectranEL expression: evaluating expression \"" + expression.getExpression() + "\" on target");
+                    "] AspectranEL expression: evaluating expression \"" + expression.getExpression() + "\" on target");
         }
 
         try {
@@ -95,9 +95,9 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
             boolean useSelectionAsRoot = expression.getUseSelectionAsRoot();
 
             ComputedOgnlExpression parsedExpression = obtainComputedOgnlExpression(
-                    activity, configuration, expression, expressionStr, exeContext, applyOgnlShortcuts);
+                    activity, configuration, expression, expressionStr, execContext, applyOgnlShortcuts);
 
-            OgnlContext contextVariables = resolveContextVariables(context, exeContext, parsedExpression);
+            OgnlContext contextVariables = resolveContextVariables(context, execContext, parsedExpression);
 
             // The root object on which we will evaluate expressions will depend on whether a selection target is
             // active or not...
@@ -119,10 +119,10 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
                 // an OGNL (non-shortcut) parsed expression will already be cached and this exception will not be
                 // thrown again
                 invalidateComputedOgnlExpression(configuration, expression, expressionStr);
-                return evaluate(context, expression, exeContext, false);
+                return evaluate(context, expression, execContext, false);
             }
 
-            if (exeContext.getPerformTypeConversion()) {
+            if (execContext.getPerformTypeConversion()) {
                 IStandardConversionService conversionService = StandardExpressions.getConversionService(configuration);
                 return conversionService.convert(context, result, String.class);
             } else {
@@ -137,7 +137,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     @NonNull
     private static OgnlContext resolveContextVariables(
             IExpressionContext context,
-            StandardExpressionExecutionContext exeContext,
+            StandardExpressionExecutionContext execContext,
             @NonNull ComputedOgnlExpression parsedExpression) {
         OgnlContext contextVariables;
         if (parsedExpression.mightNeedExpressionObjects) {
@@ -158,7 +158,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
         // can actually communicate with the PropertyAccessor, (OGNLVariablesMapPropertyAccessor), which is the
         // agent in charge of applying such restrictions, is by adding a context variable that the property accessor
         // can later lookup during evaluation.
-        if (exeContext.getRestrictVariableAccess()) {
+        if (execContext.getRestrictVariableAccess()) {
             contextVariables.put(RESTRICT_REQUEST_PARAMETERS, RESTRICT_REQUEST_PARAMETERS);
         }
 
@@ -168,17 +168,17 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
     private static ComputedOgnlExpression obtainComputedOgnlExpression(
             Activity activity, IEngineConfiguration configuration,
             IStandardVariableExpression expression, String expressionStr,
-            @NonNull StandardExpressionExecutionContext exeContext,
+            @NonNull StandardExpressionExecutionContext execContext,
             boolean applyOgnlShortcuts) throws ExpressionParserException {
         // If restrictions apply, we want to avoid applying shortcuts so that we delegate to OGNL validation
         // of method calls and references to allowed classes.
         boolean doApplyOgnlShortcuts = applyOgnlShortcuts &&
-                !exeContext.getRestrictVariableAccess() && !exeContext.getRestrictInstantiationAndStatic();
+                !execContext.getRestrictVariableAccess() && !execContext.getRestrictInstantiationAndStatic();
 
-        if (exeContext.getRestrictInstantiationAndStatic() &&
+        if (execContext.getRestrictInstantiationAndStatic() &&
                 StandardExpressionUtils.containsOGNLInstantiationOrStaticOrParam(expressionStr)) {
             throw new TemplateProcessingException(
-                "Instantiation of new objects and access to static classes or parameters is forbidden in this context");
+                    "Instantiation of new objects and access to static classes or parameters is forbidden in this context");
         }
 
         if (expression instanceof VariableExpression ve) {
@@ -269,7 +269,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
         if (activity != null && parsedExpression instanceof TokenizedExpression te) {
             return te.evaluate(activity, contextVariables, contextVariables.getRoot());
         } else {
-            return Ognl.getValue(parsedExpression, contextVariables, contextVariables.getRoot());
+            return OgnlSupport.getValue(parsedExpression, contextVariables, contextVariables.getRoot());
         }
     }
 

@@ -16,7 +16,6 @@
 package com.aspectran.thymeleaf.context;
 
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import ognl.OgnlContext;
 import org.thymeleaf.expression.IExpressionObjects;
 
@@ -28,7 +27,7 @@ public final class UtilizedOgnlContext extends OgnlContext {
     private final IExpressionObjects expressionObjects;
 
     public UtilizedOgnlContext(IExpressionObjects expressionObjects) {
-        super(OgnlSupport.CLASS_RESOLVER, null, OgnlSupport.MEMBER_ACCESS);
+        super(OgnlSupport.CLASS_RESOLVER, OgnlSupport.TYPE_CONVERTER, OgnlSupport.MEMBER_ACCESS);
         this.expressionObjects = expressionObjects;
     }
 
@@ -42,7 +41,10 @@ public final class UtilizedOgnlContext extends OgnlContext {
     }
 
     @Override
-    public Object get(@NonNull Object key) {
+    public Object get(Object key) {
+        if (key == null) {
+            return null;
+        }
         Object value = super.get(key);
         if (value == null && expressionObjects.containsObject(key.toString())) {
             value = expressionObjects.getObject(key.toString());
@@ -53,20 +55,20 @@ public final class UtilizedOgnlContext extends OgnlContext {
 
     @Override
     public Object put(String key, Object value) {
-        if (expressionObjects.containsObject(key)) {
+        if (key != null && expressionObjects.containsObject(key)) {
             throw new IllegalArgumentException(
-                "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: key matches the " +
-                    "name of one of the expression objects");
+                    "Cannot put entry with key \"" + key + "\" into Expression Objects wrapper map: " +
+                    "key matches the name of one of the expression objects");
         }
         return super.put(key, value);
     }
 
     @Override
-    public Object remove(@NonNull Object key) {
-        if (expressionObjects.containsObject(key.toString())) {
+    public Object remove(Object key) {
+        if (key != null && expressionObjects.containsObject(key.toString())) {
             throw new IllegalArgumentException(
-                "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: key matches the " +
-                    "name of one of the expression objects");
+                    "Cannot remove entry with key \"" + key + "\" from Expression Objects wrapper map: " +
+                    "key matches the name of one of the expression objects");
         }
         return super.remove(key);
     }

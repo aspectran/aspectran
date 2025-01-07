@@ -22,6 +22,7 @@ import com.aspectran.core.context.asel.ExpressionParserException;
 import com.aspectran.core.context.asel.TokenizedExpression;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.OgnlContext;
@@ -64,9 +65,7 @@ public class ValueExpression implements ValueEvaluator {
     @Override
     @SuppressWarnings("unchecked")
     public <V> V evaluate(Activity activity, Class<V> resultType) {
-        if (activity == null) {
-            throw new IllegalArgumentException("activity must not be null");
-        }
+        Assert.notNull(activity, "activity must not be null");
         if (getParsedExpression() == null) {
             return null;
         }

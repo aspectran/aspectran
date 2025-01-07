@@ -16,6 +16,7 @@
 package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
@@ -158,7 +159,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
         }
         try {
             preProcess(activity, ognlContext);
-            Object value = Ognl.getValue(getParsedExpression(), ognlContext, root, resultType);
+            Object value = OgnlSupport.getValue(getParsedExpression(), ognlContext, root, resultType);
             return postProcess(activity, ognlContext, value);
         } catch (Exception e) {
             throw new ExpressionEvaluationException(getExpressionString(), e);
