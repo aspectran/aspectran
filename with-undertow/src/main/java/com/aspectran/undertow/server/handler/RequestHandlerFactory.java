@@ -15,26 +15,18 @@
  */
 package com.aspectran.undertow.server.handler;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
 import io.undertow.server.HttpHandler;
+import io.undertow.servlet.api.ServletContainer;
 
 /**
- * <p>Created: 06/10/2019</p>
+ * <p>Created: 2025-01-08</p>
  */
-public class LightRequestHandlerFactoryBean extends LightRequestHandlerFactory
-        implements InitializableBean, FactoryBean<HttpHandler> {
+public interface RequestHandlerFactory {
 
-    private volatile HttpHandler handler;
+    HttpHandler createHandler() throws Exception;
 
-    @Override
-    public void initialize() throws Exception {
-        handler = createHandler();
-    }
+    ServletContainer getServletContainer();
 
-    @Override
-    public HttpHandler getObject() throws Exception {
-        return handler;
-    }
+    void destroyServletContainer() throws Exception;
 
 }

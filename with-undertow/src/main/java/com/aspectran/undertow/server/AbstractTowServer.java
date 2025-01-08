@@ -16,16 +16,20 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.session.SessionHandler;
+import com.aspectran.undertow.server.handler.RequestHandlerFactory;
 import com.aspectran.undertow.server.session.TowSessionManager;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
-import io.undertow.servlet.api.ServletContainer;
 import org.xnio.Option;
 import org.xnio.OptionMap;
 
@@ -36,18 +40,55 @@ import java.io.IOException;
  */
 public abstract class AbstractTowServer extends AbstractLifeCycle implements TowServer {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractTowServer.class);
+
     private final Undertow.Builder builder = Undertow.builder();
-
-    private ServletContainer servletContainer;
-
-    private HttpHandler handler;
 
     private boolean autoStart;
 
+    private boolean shutdownGracefully = true;
+
     private int shutdownTimeoutSecs;
 
-    public Undertow.Builder getBuilder() {
-        return builder;
+    private RequestHandlerFactory requestHandlerFactory;
+
+    private HttpHandler handler;
+
+    /**
+     * Returns whether the server starts automatically.
+     * @return true if the server should be started
+     */
+    @Override
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
+    /**
+     * Specifies whether the server should start automatically.
+     * @param autoStart if the server should be started
+     */
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
+    }
+
+    protected boolean isShutdownGracefully() {
+        return shutdownGracefully;
+    }
+
+    public void setShutdownGracefully(boolean shutdownGracefully) {
+        this.shutdownGracefully = shutdownGracefully;
+    }
+
+    protected int getShutdownTimeoutSecs() {
+        return shutdownTimeoutSecs;
+    }
+
+    public void setShutdownTimeoutSecs(int shutdownTimeoutSecs) {
+        this.shutdownTimeoutSecs = shutdownTimeoutSecs;
+    }
+
+    public void setSystemProperty(String key, String value) {
+        System.setProperty(key, value);
     }
 
     public void setHttpListeners(HttpListenerConfig... httpListenerConfigs) {
@@ -135,72 +176,67 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         }
     }
 
-    public HttpHandler getHandler() {
+    protected RequestHandlerFactory getRequestHandlerFactory() {
+        Assert.state(requestHandlerFactory != null, "requestHandlerFactory is not set");
+        return requestHandlerFactory;
+    }
+
+    public void setRequestHandlerFactory(RequestHandlerFactory requestHandlerFactory) {
+        this.requestHandlerFactory = requestHandlerFactory;
+    }
+
+    protected Undertow buildServer() throws Exception {
+        HttpHandler handler = getRequestHandlerFactory().createHandler();
+        if (isShutdownGracefully()) {
+            handler = new GracefulShutdownHandler(handler);
+        }
+
+        this.handler = handler;
+
+        builder.setHandler(handler);
+        return builder.build();
+    }
+
+    protected HttpHandler getHandler() {
+        Assert.state(handler != null, "handler is not set");
         return handler;
     }
 
-    public void setHandler(HttpHandler handler) {
-        this.handler = handler;
-        builder.setHandler(handler);
-    }
-
-    public ServletContainer getServletContainer() {
-        return servletContainer;
-    }
-
-    public void setServletContainer(ServletContainer servletContainer) {
-        this.servletContainer = servletContainer;
-    }
-
-    /**
-     * Returns whether the server starts automatically.
-     * @return true if the server should be started
-     */
-    @Override
-    public boolean isAutoStart() {
-        return autoStart;
-    }
-
-    /**
-     * Specifies whether the server should start automatically.
-     * @param autoStart if the server should be started
-     */
-    public void setAutoStart(boolean autoStart) {
-        this.autoStart = autoStart;
-    }
-
-    public int getShutdownTimeoutSecs() {
-        return shutdownTimeoutSecs;
-    }
-
-    public void setShutdownTimeoutSecs(int shutdownTimeoutSecs) {
-        this.shutdownTimeoutSecs = shutdownTimeoutSecs;
-    }
-
-    public void setSystemProperty(String key, String value) {
-        System.setProperty(key, value);
+    protected void shutdown() throws Exception {
+        if (getHandler() instanceof GracefulShutdownHandler shutdownHandler) {
+            shutdownHandler.shutdown();
+            try {
+                if (getShutdownTimeoutSecs() > 0) {
+                    // Wait "30" seconds before make a force shutdown
+                    boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
+                    if (!result) {
+                        logger.warn("Undertow server did not shut down gracefully within " +
+                            getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
+                    }
+                } else {
+                    shutdownHandler.awaitShutdown();
+                }
+            } catch (Exception ex) {
+                logger.error("Unable to gracefully stop Undertow server");
+            }
+        }
+        getRequestHandlerFactory().destroyServletContainer();
     }
 
     @Override
     public DeploymentManager getDeploymentManager(String deploymentName) {
-        if (getServletContainer() == null) {
-            throw new IllegalStateException("servletContainer is not set");
-        }
         if (deploymentName == null) {
             throw new IllegalArgumentException("deploymentName must not be null");
         }
-        return getServletContainer().getDeployment(deploymentName);
+        return getRequestHandlerFactory().getServletContainer().getDeployment(deploymentName);
     }
 
     @Override
     public DeploymentManager getDeploymentManagerByPath(String path) {
-        if (getServletContainer() == null) {
-            throw new IllegalStateException("servletContainer is not set");
-        }
         if (path == null) {
             throw new IllegalArgumentException("path must not be null");
         }
-        return getServletContainer().getDeploymentByPath(path);
+        return getRequestHandlerFactory().getServletContainer().getDeploymentByPath(path);
     }
 
     @Override

@@ -20,8 +20,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.Undertow;
-import io.undertow.server.handlers.GracefulShutdownHandler;
-import io.undertow.servlet.api.DeploymentManager;
 
 /**
  * The Undertow Server managed by Aspectran.
@@ -38,7 +36,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
     @Override
     public void doStart() throws Exception {
         try {
-            server = getBuilder().build();
+            server = buildServer();
             server.start();
             logger.info("Undertow " + TowServer.getVersion() + " started");
         } catch (Exception e) {
@@ -58,32 +56,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
     public void doStop() {
         if (server != null) {
             try {
-                if (getHandler() instanceof GracefulShutdownHandler shutdownHandler) {
-                    shutdownHandler.shutdown();
-                    try {
-                        if (getShutdownTimeoutSecs() > 0) {
-                            // Wait "30" seconds before make a force shutdown
-                            boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
-                            if (!result) {
-                                logger.warn("Undertow server did not shut down gracefully within " +
-                                    getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
-                            }
-                        } else {
-                            shutdownHandler.awaitShutdown();
-                        }
-                    } catch (Exception ex) {
-                        logger.error("Unable to gracefully stop Undertow server");
-                    }
-                }
-                if (getServletContainer() != null) {
-                    for (String deploymentName : getServletContainer().listDeployments()) {
-                        DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
-                        if (manager != null) {
-                            manager.stop();
-                            manager.undeploy();
-                        }
-                    }
-                }
+                shutdown();
                 server.stop();
                 server = null;
                 logger.info("Undertow " + TowServer.getVersion() + " stopped");

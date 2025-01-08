@@ -19,7 +19,6 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
-import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
 import java.util.HashMap;
@@ -28,7 +27,7 @@ import java.util.Map;
 /**
  * <p>Created: 2024. 12. 10.</p>
  */
-public class PathBasedLoggingGroupHandlerWrapper implements HandlerWrapper {
+public class PathBasedLoggingGroupHandlerWrapper implements LoggingGroupHandlerWrapper {
 
     private Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 

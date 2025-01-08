@@ -15,6 +15,12 @@
  */
 package com.aspectran.undertow.server.handler;
 
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.undertow.server.handler.logging.LoggingGroupHandlerWrapper;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
@@ -22,15 +28,38 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
-public abstract class AbstractRequestHandlerFactory {
+public abstract class AbstractRequestHandlerFactory implements ActivityContextAware {
+
+    private ActivityContext context;
 
     private List<HandlerWrapper> handlerChainWrappers;
+
+    @NonNull
+    protected ActivityContext getActivityContext() {
+        Assert.state(context != null, "No ActivityContext injected");
+        return context;
+    }
+
+    @Override
+    @AvoidAdvice
+    public void setActivityContext(@NonNull ActivityContext context) {
+        this.context = context;
+    }
 
     public void setHandlerChainWrappers(HandlerWrapper[] handlerWrappers) {
         if (handlerWrappers == null || handlerWrappers.length == 0) {
             throw new IllegalArgumentException("handlerWrappers must not be null or empty");
         }
         this.handlerChainWrappers = Arrays.asList(handlerWrappers);
+    }
+
+    protected boolean hasLoggingGroupHandlerWrapper() {
+        for (HandlerWrapper handlerWrapper : handlerChainWrappers) {
+            if (handlerWrapper instanceof LoggingGroupHandlerWrapper) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected HttpHandler wrapHandler(HttpHandler handler) {

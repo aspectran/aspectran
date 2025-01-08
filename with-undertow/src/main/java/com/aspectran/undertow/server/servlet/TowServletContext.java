@@ -19,12 +19,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.service.DefaultWebService;
-import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.SessionManager;
@@ -34,7 +31,6 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
-import jakarta.servlet.ServletContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -202,13 +198,13 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
-    DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
-        CoreService masterService = getActivityContext().getMasterService();
-        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
-        if (rootWebService.isOrphan()) {
-            rootWebService.getServiceLifeCycle().start();
-        }
-        return rootWebService;
-    }
+//    DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
+//        CoreService masterService = getActivityContext().getMasterService();
+//        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
+//        if (rootWebService.isOrphan()) {
+//            rootWebService.getServiceLifeCycle().start();
+//        }
+//        return rootWebService;
+//    }
 
 }

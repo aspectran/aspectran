@@ -16,8 +16,6 @@
 package com.aspectran.undertow.server.handler;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
@@ -27,18 +25,19 @@ import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.service.DefaultTowServiceBuilder;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
+import io.undertow.servlet.api.ServletContainer;
+import jakarta.servlet.ServletException;
 
 /**
  * <p>Created: 06/10/2019</p>
  */
 public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
-    implements ActivityContextAware, DisposableBean {
+        implements RequestHandlerFactory, DisposableBean {
 
     private ActivityContext context;
 
@@ -53,17 +52,6 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
     private AspectranConfig aspectranConfig;
 
     private TowService towService;
-
-    @NonNull
-    public ActivityContext getActivityContext() {
-        return context;
-    }
-
-    @Override
-    @AvoidAdvice
-    public void setActivityContext(@NonNull ActivityContext context) {
-        this.context = context;
-    }
 
     public void setTowServer(TowServer towServer) {
         this.towServer = towServer;
@@ -104,6 +92,16 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
         }
 
         return wrapHandler(rootHandler);
+    }
+
+    @Override
+    public ServletContainer getServletContainer() {
+        throw new UnsupportedOperationException("Not support servlet container");
+    }
+
+    @Override
+    public void destroyServletContainer() throws ServletException {
+        throw new UnsupportedOperationException("Not support servlet container");
     }
 
     private TowService createTowService() throws Exception {
