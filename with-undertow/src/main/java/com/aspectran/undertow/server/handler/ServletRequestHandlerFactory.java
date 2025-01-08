@@ -30,7 +30,6 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
-import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
@@ -52,7 +51,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
     }
 
     public HttpHandler createHandler() throws Exception {
-        servletContainer = createServletContainer();
+        createServletContainer();
 
         PathHandler pathHandler = new PathHandler();
         for (String deploymentName : servletContainer.listDeployments()) {
@@ -83,6 +82,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
             pathHandler.addPrefixPath(contextPath, handler);
         }
+
         return wrapHandler(pathHandler);
     }
 
@@ -93,7 +93,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
     }
 
     @Override
-    public void destroyServletContainer() throws Exception {
+    public void dispose() throws Exception {
         for (String deploymentName : getServletContainer().listDeployments()) {
             DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
             if (manager != null) {
@@ -104,8 +104,8 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
     }
 
     @NonNull
-    private ServletContainer createServletContainer() throws Exception {
-        ServletContainerImpl servletContainer = new ServletContainerImpl();
+    private void createServletContainer() throws Exception {
+        servletContainer = new ServletContainerImpl();
         if (towServletContexts != null) {
             for (TowServletContext towServletContext : towServletContexts) {
                 ClassLoader webServiceClassLoader = new WebServiceClassLoader(getActivityContext().getClassLoader());
@@ -117,16 +117,14 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
                 DeploymentManager manager = servletContainer.addDeployment(towServletContext);
                 manager.deploy();
-                Deployment deployment = manager.getDeployment();
-                ServletContext servletContext = deployment.getServletContext();
 
+                ServletContext servletContext = manager.getDeployment().getServletContext();
                 DefaultWebService rootWebService = createRootWebService(servletContext);
                 if (towServletContext.getSessionManager() == null) {
                     rootWebService.setSessionAdaptable(false);
                 }
             }
         }
-        return servletContainer;
     }
 
     @NonNull

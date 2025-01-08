@@ -29,8 +29,6 @@ public interface TowServer extends LifeCycle {
         return Version.getVersionString();
     }
 
-    boolean isAutoStart();
-
     DeploymentManager getDeploymentManager(String deploymentName);
 
     DeploymentManager getDeploymentManagerByPath(String path);

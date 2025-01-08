@@ -197,7 +197,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setFailed(Throwable th) {
         state = STATE_FAILED;
-        logger.warn("Failed " + this + ": " + th, th);
+        logger.warn(this + " - " + th, th);
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);
         }

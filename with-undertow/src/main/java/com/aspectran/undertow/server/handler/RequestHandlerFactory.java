@@ -27,6 +27,6 @@ public interface RequestHandlerFactory {
 
     ServletContainer getServletContainer();
 
-    void destroyServletContainer() throws Exception;
+    void dispose() throws Exception;
 
 }

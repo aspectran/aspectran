@@ -31,7 +31,6 @@ import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.ServletContainer;
-import jakarta.servlet.ServletException;
 
 /**
  * <p>Created: 06/10/2019</p>
@@ -100,8 +99,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
     }
 
     @Override
-    public void destroyServletContainer() throws ServletException {
-        throw new UnsupportedOperationException("Not support servlet container");
+    public void dispose() throws Exception {
     }
 
     private TowService createTowService() throws Exception {

@@ -128,9 +128,9 @@ public interface LifeCycle {
      * @throws RuntimeException if the call to start throws an exception
      */
     static void start(Object object) {
-        if (object instanceof LifeCycle) {
+        if (object instanceof LifeCycle lifeCycle) {
             try {
-                ((LifeCycle)object).start();
+                lifeCycle.start();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -144,9 +144,9 @@ public interface LifeCycle {
      * @throws RuntimeException if the call to stop throws an exception
      */
     static void stop(Object object) {
-        if (object instanceof LifeCycle) {
+        if (object instanceof LifeCycle lifeCycle) {
             try {
-                ((LifeCycle)object).stop();
+                lifeCycle.stop();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

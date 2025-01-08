@@ -58,8 +58,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * Returns whether the server starts automatically.
      * @return true if the server should be started
      */
-    @Override
-    public boolean isAutoStart() {
+    protected boolean isAutoStart() {
         return autoStart;
     }
 
@@ -92,27 +91,21 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
     }
 
     public void setHttpListeners(HttpListenerConfig... httpListenerConfigs) {
-        if (httpListenerConfigs == null) {
-            throw new IllegalArgumentException("httpListenerConfigs must not be null");
-        }
+        Assert.notNull(httpListenerConfigs, "httpListenerConfigs must not be null");
         for (HttpListenerConfig listenerConfig : httpListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
     }
 
     public void setHttpsListeners(HttpsListenerConfig... httpsListenerConfigs) throws IOException {
-        if (httpsListenerConfigs == null) {
-            throw new IllegalArgumentException("httpsListenerConfigs must not be null");
-        }
+        Assert.notNull(httpsListenerConfigs, "httpsListenerConfigs must not be null");
         for (HttpsListenerConfig listenerConfig : httpsListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
     }
 
     public void setAjpListeners(AjpListenerConfig... ajpListenerConfigs) {
-        if (ajpListenerConfigs == null) {
-            throw new IllegalArgumentException("ajpListenerConfigs must not be null");
-        }
+        Assert.notNull(ajpListenerConfigs, "ajpListenerConfigs must not be null");
         for (AjpListenerConfig listenerConfig : ajpListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
@@ -207,11 +200,10 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
             shutdownHandler.shutdown();
             try {
                 if (getShutdownTimeoutSecs() > 0) {
-                    // Wait "30" seconds before make a force shutdown
                     boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
                     if (!result) {
                         logger.warn("Undertow server did not shut down gracefully within " +
-                            getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
+                                getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
                     }
                 } else {
                     shutdownHandler.awaitShutdown();
@@ -220,40 +212,32 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
                 logger.error("Unable to gracefully stop Undertow server");
             }
         }
-        getRequestHandlerFactory().destroyServletContainer();
+        getRequestHandlerFactory().dispose();
     }
 
     @Override
     public DeploymentManager getDeploymentManager(String deploymentName) {
-        if (deploymentName == null) {
-            throw new IllegalArgumentException("deploymentName must not be null");
-        }
+        Assert.notNull(deploymentName, "deploymentName must not be null");
         return getRequestHandlerFactory().getServletContainer().getDeployment(deploymentName);
     }
 
     @Override
     public DeploymentManager getDeploymentManagerByPath(String path) {
-        if (path == null) {
-            throw new IllegalArgumentException("path must not be null");
-        }
+        Assert.notNull(path, "path must not be null");
         return getRequestHandlerFactory().getServletContainer().getDeploymentByPath(path);
     }
 
     @Override
     public SessionHandler getSessionHandler(String deploymentName) {
         DeploymentManager deploymentManager = getDeploymentManager(deploymentName);
-        if (deploymentManager == null) {
-            throw new IllegalStateException("Deployment named '" + deploymentName + "' not found");
-        }
+        Assert.state(deploymentManager != null, "Deployment named '" + deploymentName + "' not found");
         return getSessionHandler(deploymentManager);
     }
 
     @Override
     public SessionHandler getSessionHandlerByPath(String path) {
         DeploymentManager deploymentManager = getDeploymentManagerByPath(path);
-        if (deploymentManager == null) {
-            throw new IllegalStateException("Deployment with path '" + path + "' not found");
-        }
+        Assert.state(deploymentManager != null, "Deployment with path '\" + path + \"' not found");
         return getSessionHandler(deploymentManager);
     }
 

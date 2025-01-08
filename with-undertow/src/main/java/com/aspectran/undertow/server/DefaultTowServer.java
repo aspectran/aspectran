@@ -40,13 +40,13 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
             server.start();
             logger.info("Undertow " + TowServer.getVersion() + " started");
         } catch (Exception e) {
-            try {
-                if (server != null) {
+            if (server != null) {
+                try {
                     server.stop();
-                    server = null;
+                } catch (Exception ex) {
+                    // ignore
                 }
-            } catch (Exception ex) {
-                // ignore
+                server = null;
             }
             throw new Exception("Unable to start Undertow server", e);
         }
@@ -54,15 +54,19 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
 
     @Override
     public void doStop() {
+        try {
+            shutdown();
+        } catch (Exception e) {
+            logger.error("TowServer shutdown failed", e);
+        }
         if (server != null) {
             try {
-                shutdown();
                 server.stop();
-                server = null;
                 logger.info("Undertow " + TowServer.getVersion() + " stopped");
             } catch (Exception e) {
                 logger.error("Unable to stop Undertow server", e);
             }
+            server = null;
         }
     }
 

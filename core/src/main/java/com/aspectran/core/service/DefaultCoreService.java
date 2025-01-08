@@ -109,7 +109,8 @@ public class DefaultCoreService extends AbstractCoreService {
         try {
             ((Component)activityContext).initialize();
         } catch (Exception e) {
-            throw new ActivityContextBuilderException("Failed to initialize ActivityContext", e);
+            throw new ActivityContextBuilderException("Failed to initialize " +
+                    ((Component)activityContext).getComponentName(), e);
         }
     }
 
