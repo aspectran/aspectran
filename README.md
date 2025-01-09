@@ -68,26 +68,24 @@ Aspectran consists of the following major packages:
 
 ## Building
 
-Requirements
+- Requirements
+  * Maven 3.6.3+ (prefer included maven-wrapper)
+  * Java 17+
 
-* Maven 3.6.3+ (prefer included maven-wrapper)
-* Java 17+
-
-Check out and build:
-
-```sh
-git clone git://github.com/aspectran/aspectran.git
-cd aspectran
-./build rebuild
-```
+- Check out and build:
+  ```sh
+  git clone https://github.com/aspectran/aspectran.git
+  cd aspectran
+  ./build rebuild
+  ```
 
 ## Running the demo
 
-To run the demo, simply use the following command after having build `Aspectran`
-
-```sh
-./build demo
-```
+1) To run the demo, use the following command after building:
+   ```sh
+   ./build demo
+   ```
+2) Access in your browser at http://localhost:8080
 
 ## Continuous Integration
 
@@ -96,7 +94,7 @@ To run the demo, simply use the following command after having build `Aspectran`
 ## Links
 
 * [Official Website](https://aspectran.com/)
-* [Aspectran Demo Site](https://demo.aspectran.com/)
+* [Aspectran Demo Site](https://public.aspectran.com/)
 * [API Reference](https://javadoc.io/doc/com.aspectran/aspectran-all)
 
 ## Thanks
