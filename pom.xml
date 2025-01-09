@@ -61,14 +61,17 @@
         <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
     <issueManagement>
         <system>GitHub Issue Management</system>
         <url>https://github.com/aspectran/aspectran/issues</url>
     </issueManagement>
+
     <ciManagement>
         <system>GitHub Workflows</system>
         <url>https://github.com/aspectran/aspectran/actions</url>
     </ciManagement>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -79,6 +82,27 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <modules>
+        <module>all</module>
+        <module>bom</module>
+        <module>core</module>
+        <module>daemon</module>
+        <module>embed</module>
+        <module>rss-lettuce</module>
+        <module>shell</module>
+        <module>shell-jline</module>
+        <module>utils</module>
+        <module>web</module>
+        <module>with-freemarker</module>
+        <module>with-jetty</module>
+        <module>with-logback</module>
+        <module>with-mybatis</module>
+        <module>with-pebble</module>
+        <module>with-thymeleaf</module>
+        <module>with-undertow</module>
+        <module>demo</module>
+    </modules>
 
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
@@ -101,27 +125,6 @@
         <jsp.impl.version>10.1.25</jsp.impl.version>
         <taglibs-standard.version>10.0.2</taglibs-standard.version>
     </properties>
-
-    <modules>
-        <module>all</module>
-        <module>bom</module>
-        <module>core</module>
-        <module>daemon</module>
-        <module>embed</module>
-        <module>rss-lettuce</module>
-        <module>shell</module>
-        <module>shell-jline</module>
-        <module>utils</module>
-        <module>web</module>
-        <module>with-freemarker</module>
-        <module>with-jetty</module>
-        <module>with-logback</module>
-        <module>with-mybatis</module>
-        <module>with-pebble</module>
-        <module>with-thymeleaf</module>
-        <module>with-undertow</module>
-        <module>demo</module>
-    </modules>
 
     <dependencyManagement>
         <dependencies>
