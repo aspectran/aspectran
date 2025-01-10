@@ -113,7 +113,7 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
-    private void findResource(File file) throws InvalidResourceException {
+    private void findResource(@NonNull File file) throws InvalidResourceException {
         try {
             if (file.isDirectory()) {
                 List<File> jarFileList = new ArrayList<>();
@@ -127,7 +127,7 @@ public class LocalResourceManager extends ResourceManager {
                 findResourceFromJAR(file);
             }
         } catch (Exception e) {
-            throw new InvalidResourceException("Failed to find resource from [" + resourceLocation + "]", e);
+            throw new InvalidResourceException("Failed to find resource from [" + file + "]", e);
         }
     }
 

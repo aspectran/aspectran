@@ -94,7 +94,7 @@ public final class SiblingClassLoader extends ClassLoader {
     }
 
     public SiblingClassLoader(String name, ClassLoader parent, String[] resourceLocations)
-        throws InvalidResourceException {
+            throws InvalidResourceException {
         this(name, parent != null ? parent : ClassUtils.getDefaultClassLoader());
         if (resourceLocations != null) {
             createChildren(resourceLocations);
@@ -102,7 +102,7 @@ public final class SiblingClassLoader extends ClassLoader {
     }
 
     private SiblingClassLoader(String name, @NonNull SiblingClassLoader parent, String resourceLocation)
-        throws InvalidResourceException {
+            throws InvalidResourceException {
         super(name, parent);
 
         int numOfChildren = parent.addChild(this);
@@ -421,10 +421,10 @@ public final class SiblingClassLoader extends ClassLoader {
         ToStringBuilder tsb = new ToStringBuilder(thisName);
         tsb.append("id", id);
         tsb.append("name", getName());
-        if (getParent() instanceof SiblingClassLoader) {
-            tsb.append("parent", ((SiblingClassLoader)getParent()).getId());
-        } else {
-            tsb.append("parent", getParent().getClass().getName());
+        if (getParent() instanceof SiblingClassLoader parent) {
+            tsb.append("parent", parent.getId());
+        } else if (getParent() != null) {
+            tsb.append("parent", ObjectUtils.simpleIdentityToString(getParent()));
         }
         tsb.append("root", this == root);
         tsb.append("firstborn", firstborn);

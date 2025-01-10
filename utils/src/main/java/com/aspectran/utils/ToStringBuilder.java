@@ -220,6 +220,10 @@ public class ToStringBuilder {
     }
 
     private void appendValue(Object object) {
+        if (object == null) {
+            buffer.append((Object)null);
+            return;
+        }
         if (object instanceof CharSequence charSequence) {
             buffer.append(charSequence);
         } else if (object instanceof Map<?, ?> map) {
