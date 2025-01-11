@@ -205,7 +205,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
             Writer writer = responseAdapter.getWriter();
             if (getData() != null) {
-                writer.write(ToStringBuilder.toString(getName() + ":", getData()));
+                writer.write(ToStringBuilder.toString(getName(), getData()));
             }
         }
     }
@@ -230,7 +230,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 return (Math.min(depth, MAX_INDENT));
             }
         } catch (NumberFormatException e) {
-            // ignore
+            // ignored
         }
         return -1;
     }

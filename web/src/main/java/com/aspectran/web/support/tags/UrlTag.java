@@ -367,7 +367,9 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      */
     private enum UrlType {
 
-        CONTEXT_RELATIVE, RELATIVE, ABSOLUTE
+        CONTEXT_RELATIVE,
+        RELATIVE,
+        ABSOLUTE
 
     }
 
