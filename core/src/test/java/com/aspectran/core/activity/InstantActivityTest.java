@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.Aspectran;
+import com.aspectran.core.AboutMe;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -109,10 +109,10 @@ class InstantActivityTest {
         activity.setParameterMap(parameterMap);
         activity.prepare(transletName);
         String result = activity.perform(() -> {
-            activity.getSessionAdapter().setAttribute("aspectran", Aspectran.POWERED_BY);
+            activity.getSessionAdapter().setAttribute("aspectran", AboutMe.POWERED_BY);
             return activity.getSessionAdapter().getAttribute("aspectran");
         });
-        assertEquals(Aspectran.POWERED_BY, result);
+        assertEquals(AboutMe.POWERED_BY, result);
         Writer writer = activity.getResponseAdapter().getWriter();
         return writer.toString();
     }
@@ -137,10 +137,10 @@ class InstantActivityTest {
         activity.setSessionAdapter(sessionAdapter);
         activity.prepare(transletName);
         String result = activity.perform(() -> {
-            activity.getSessionAdapter().setAttribute("aspectran", Aspectran.POWERED_BY);
+            activity.getSessionAdapter().setAttribute("aspectran", AboutMe.POWERED_BY);
             return activity.getSessionAdapter().getAttribute("aspectran");
         });
-        assertEquals(Aspectran.POWERED_BY, result);
+        assertEquals(AboutMe.POWERED_BY, result);
         Writer writer = activity.getResponseAdapter().getWriter();
         return writer.toString();
     }

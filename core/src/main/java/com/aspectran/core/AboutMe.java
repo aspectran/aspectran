@@ -16,7 +16,6 @@
 package com.aspectran.core;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.PrintStream;
 
@@ -24,7 +23,7 @@ import java.io.PrintStream;
  * Class that exposes the build information of Aspectran.
  * Fetches the "Implementation-Version" manifest attribute from the jar file.
  */
-public abstract class Aspectran {
+public abstract class AboutMe {
 
     public static final String VERSION;
 
@@ -35,7 +34,7 @@ public abstract class Aspectran {
     public static final boolean STABLE;
 
     static {
-        Package pkg = Aspectran.class.getPackage();
+        Package pkg = AboutMe.class.getPackage();
         if (pkg != null && "The Aspectran Project".equals(pkg.getImplementationVendor()) &&
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
@@ -47,7 +46,7 @@ public abstract class Aspectran {
         POWERED_BY_LINK = "<a href=\"https://aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
 
         // Show warning when RC# or M# is in version string
-        STABLE = !VERSION.matches("^.*\\.(RC|M)[0-9]+$");
+        STABLE = !VERSION.matches("^.*[.-](RC|M|SNAPSHOT)[0-9]?$");
     }
 
     public static String getVersion() {
@@ -66,7 +65,7 @@ public abstract class Aspectran {
      * Prints Aspectran information to the specified print stream.
      * @param output a {@link PrintStream} object to print
      */
-    public static void printAboutMe(PrintStream output) {
+    public static void print(PrintStream output) {
         Assert.notNull(output, "output must not be null");
         output.println("Aspectran: " + VERSION);
         output.println("JVM: " + System.getProperty("java.vm.name") + " (build " +
@@ -79,7 +78,7 @@ public abstract class Aspectran {
      * Prints Aspectran information to the specified print stream.
      * @param output a {@link PrintStream} object to print
      */
-    public static void printPrettyAboutMe(@NonNull PrintStream output) {
+    public static void printPretty(PrintStream output) {
         Assert.notNull(output, "output must not be null");
         output.println("---------------------------------------------------------------------");
         output.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
@@ -95,7 +94,7 @@ public abstract class Aspectran {
      * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {
-        printPrettyAboutMe(System.out);
+        printPretty(System.out);
     }
 
 }

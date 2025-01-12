@@ -181,7 +181,7 @@
                     <p>Copyright © 2018-2025 The Aspectran Project</p>
                 </section>
                 <section id="subfooter-right" class="medium-6 cell social-icons text-right">
-                    <%= com.aspectran.core.Aspectran.POWERED_BY_LINK %>
+                    <%= com.aspectran.core.AboutMe.POWERED_BY_LINK %>
                 </section>
             </nav>
         </div>

@@ -32,6 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <automatic.module.name>com.aspectran.all</automatic.module.name>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
 
         <!-- plugins configuration -->

@@ -32,6 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <automatic.module.name>com.aspectran.undertow</automatic.module.name>
         <undertow.version>2.3.18.Final</undertow.version>
     </properties>
 

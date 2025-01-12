@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.Aspectran;
+import com.aspectran.core.AboutMe;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -94,7 +94,7 @@ class BeanCallTest {
         assertEquals("line-1line-2line-3", result6);
 
         String result7 = templateRenderer.render("aspectranVersion");
-        assertEquals(Aspectran.getVersion(), result7);
+        assertEquals(AboutMe.getVersion(), result7);
     }
 
 }

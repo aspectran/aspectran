@@ -32,6 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <automatic.module.name>com.aspectran.core</automatic.module.name>
     </properties>
 
     <dependencies>

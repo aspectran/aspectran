@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.Aspectran;
+import com.aspectran.core.AboutMe;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
@@ -80,7 +80,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     }
 
     protected void consoleReady() {
-        Aspectran.printPrettyAboutMe(console.getOutput());
+        AboutMe.printPretty(console.getOutput());
         console.getOutput().flush();
     }
 

@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.core.Aspectran;
+import com.aspectran.core.AboutMe;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
@@ -130,7 +130,7 @@ public class AbstractDaemon implements Daemon {
     }
 
     private void initDaemon(DaemonConfig daemonConfig) throws Exception {
-        Aspectran.printPrettyAboutMe(System.out);
+        AboutMe.printPretty(System.out);
 
         try {
             DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
