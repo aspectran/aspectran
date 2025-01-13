@@ -56,6 +56,12 @@ public interface BeanRegistry {
      */
     <V> V getBean(Class<V> type, String id);
 
+    /**
+     * Returns instances of beans that match the given object type.
+     * @param <V> the type of bean object retrieved
+     * @param type type the bean must match; can be an interface or superclass
+     * @return an array of instances of beans
+     */
     <V> V[] getBeansOfType(Class<V> type);
 
     <V> V getPrototypeScopeBean(BeanRule beanRule);

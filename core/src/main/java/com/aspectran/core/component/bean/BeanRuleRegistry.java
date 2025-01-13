@@ -134,9 +134,9 @@ public class BeanRuleRegistry {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
-        Set<BeanRule> list = typeBasedBeanRuleMap.get(type);
-        if (list != null && !list.isEmpty()) {
-            return list.toArray(new BeanRule[0]);
+        Set<BeanRule> beanRules = typeBasedBeanRuleMap.get(type);
+        if (beanRules != null && !beanRules.isEmpty()) {
+            return beanRules.toArray(new BeanRule[0]);
         } else {
             return null;
         }

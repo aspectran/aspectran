@@ -106,6 +106,9 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
     @NonNull
     private void createServletContainer() throws Exception {
         servletContainer = new ServletContainerImpl();
+        if (towServletContexts == null) {
+            towServletContexts = getActivityContext().getBeanRegistry().getBeansOfType(TowServletContext.class);
+        }
         if (towServletContexts != null) {
             for (TowServletContext towServletContext : towServletContexts) {
                 ClassLoader webServiceClassLoader = new WebServiceClassLoader(getActivityContext().getClassLoader());
