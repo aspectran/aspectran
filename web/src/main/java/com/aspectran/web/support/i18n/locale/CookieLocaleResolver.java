@@ -71,8 +71,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     public CookieGenerator getLocaleCookieGenerator() {
         if (localeCookieGenerator == null) {
-            localeCookieGenerator = new CookieGenerator();
-            localeCookieGenerator.setCookieName(LOCALE_COOKIE_NAME);
+            localeCookieGenerator = new CookieGenerator(LOCALE_COOKIE_NAME);
         }
         return localeCookieGenerator;
     }
@@ -83,8 +82,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     public CookieGenerator getTimeZoneCookieGenerator() {
         if (timeZoneCookieGenerator == null) {
-            timeZoneCookieGenerator = new CookieGenerator();
-            timeZoneCookieGenerator.setCookieName(TIME_ZONE_COOKIE_NAME);
+            timeZoneCookieGenerator = new CookieGenerator(TIME_ZONE_COOKIE_NAME);
         }
         return timeZoneCookieGenerator;
     }

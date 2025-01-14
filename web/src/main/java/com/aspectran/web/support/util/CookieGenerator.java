@@ -53,6 +53,13 @@ public class CookieGenerator {
 
     private boolean cookieHttpOnly = false;
 
+    public CookieGenerator() {
+    }
+
+    public CookieGenerator(@Nullable String cookieName) {
+        this.cookieName = cookieName;
+    }
+
     /**
      * Use the given name for cookies created by this generator.
      *
