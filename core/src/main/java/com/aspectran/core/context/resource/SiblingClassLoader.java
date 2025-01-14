@@ -283,6 +283,13 @@ public final class SiblingClassLoader extends ClassLoader {
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 try {
+                    // First, search from local repositories
+                    c = findClass(name);
+                } catch (ClassNotFoundException e) {
+                    // ignored
+                }
+                if (c == null) {
+                    // If not found locally, from parent classloader
                     ClassLoader parent = root.getParent();
                     if (parent != null) {
                         c = Class.forName(name, false, parent);
@@ -290,13 +297,6 @@ public final class SiblingClassLoader extends ClassLoader {
                         // Try loading the class with the system class loader
                         c = findSystemClass(name);
                     }
-                } catch (ClassNotFoundException e) {
-                    // ClassNotFoundException thrown if class not found
-                    // from the non-null parent class loader
-                }
-                if (c == null) {
-                    // Search from local repositories
-                    c = findClass(name);
                 }
             }
             if (resolve) {
@@ -356,16 +356,15 @@ public final class SiblingClassLoader extends ClassLoader {
 
     @Override
     public URL getResource(String name) {
-        ClassLoader parent = root.getParent();
-        URL url;
-        if (parent != null) {
-            url = parent.getResource(name);
-        } else {
-            url = getSystemClassLoader().getResource(name);
-        }
+        // Search from local repositories
+        URL url = findResource(name);
         if (url == null) {
-            // Search from local repositories
-            url = findResource(name);
+            ClassLoader parent = root.getParent();
+            if (parent != null) {
+                url = parent.getResource(name);
+            } else {
+                url = getSystemClassLoader().getResource(name);
+            }
         }
         return url;
     }
