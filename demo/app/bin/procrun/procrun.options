@@ -1,7 +1,7 @@
 # Variables required for execution can be explicitly specified here.
-SERVICE_NAME=AspectranDaemon
-DISPLAY_NAME=Aspectran Daemon
-DESCRIPTION=Aspectran Daemon for Windows Service
+SERVICE_NAME=Aspectow
+DISPLAY_NAME=Aspectow powered by Aspectran 8
+DESCRIPTION=Aspectow for Windows Service
 #JAVA_HOME=
 #JVM_MS=256
 #JVM_MX=1024
