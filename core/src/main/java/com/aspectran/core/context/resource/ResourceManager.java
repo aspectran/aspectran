@@ -78,7 +78,7 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> findResources(final Iterator<SiblingClassLoader> owners) {
+    public static Enumeration<URL> findResources(final Iterator<SiblingClassLoader> siblings) {
         return new Enumeration<>() {
             private Iterator<URL> iter;
             private URL next;
@@ -86,10 +86,10 @@ public class ResourceManager {
             private boolean hasNext() {
                 while (true) {
                     if (iter == null) {
-                        if (!owners.hasNext()) {
+                        if (!siblings.hasNext()) {
                             return false;
                         }
-                        iter = owners.next().getResourceManager().getResources();
+                        iter = siblings.next().getResourceManager().getResources();
                     }
                     if (iter.hasNext()) {
                         next = iter.next();
@@ -100,12 +100,12 @@ public class ResourceManager {
             }
 
             @Override
-            public synchronized boolean hasMoreElements() {
+            public boolean hasMoreElements() {
                 return (next != null || hasNext());
             }
 
             @Override
-            public synchronized URL nextElement() {
+            public URL nextElement() {
                 if (next == null) {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
@@ -119,14 +119,14 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> findResources(String name, final Iterator<SiblingClassLoader> owners) {
-        return findResources(name, owners, null);
+    public static Enumeration<URL> findResources(String name, final Iterator<SiblingClassLoader> siblings) {
+        return findResources(name, siblings, null);
     }
 
     @NonNull
     public static Enumeration<URL> findResources(
-            String name, final Iterator<SiblingClassLoader> owners, final Enumeration<URL> parentResources) {
-        if (owners == null || name == null) {
+            String name, final Iterator<SiblingClassLoader> siblings, final Enumeration<URL> parentResources) {
+        if (name == null || siblings == null) {
             return Collections.emptyEnumeration();
         }
 
@@ -142,8 +142,8 @@ public class ResourceManager {
 
             private boolean hasNext() {
                 do {
-                    if (owners.hasNext()) {
-                        next = owners.next().getResourceManager().getResource(nameToSearch);
+                    if (siblings.hasNext()) {
+                        next = siblings.next().getResourceManager().getResource(nameToSearch);
                     } else {
                         return false;
                     }

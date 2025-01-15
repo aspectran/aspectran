@@ -41,35 +41,15 @@
                     </properties>
                 </bean>
             </item>
-            <item name="servletContainer">
-                <bean class="com.aspectran.undertow.server.servlet.TowServletContainer">
+            <item name="requestHandlerFactory">
+                <bean class="com.aspectran.undertow.server.handler.ServletRequestHandlerFactory">
                     <properties>
-                        <item name="servletContexts" type="array">
-                            <value>#{tow.context.root.servletContext}</value>
+                        <item name="handlerChainWrappers" type="array">
+                            <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
+                            <value>#{tow.server.handler.encodingHandlerWrapper}</value>
                         </item>
                     </properties>
                 </bean>
-            </item>
-            <item name="handler">
-                <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
-                    <arguments>
-                        <item>#{tow.server.handler.requestHandler}</item>
-                    </arguments>
-                </bean>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.server.handler.requestHandler"
-          class="com.aspectran.undertow.server.handler.DefaultRequestHandlerFactoryBean"
-          scope="prototype">
-        <properties>
-            <item name="servletContainer">#{tow.server^servletContainer}</item>
-        </properties>
-        <properties>
-            <item name="handlerChainWrappers" type="array">
-                <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
-                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
             </item>
         </properties>
     </bean>

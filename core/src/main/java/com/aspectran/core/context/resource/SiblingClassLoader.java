@@ -53,7 +53,7 @@ public final class SiblingClassLoader extends ClassLoader {
 
     private final ResourceManager resourceManager;
 
-    private final List<SiblingClassLoader> children = new LinkedList<>();
+    private final List<SiblingClassLoader> siblings = new LinkedList<>();
 
     private Set<String> excludeClassNames;
 
@@ -95,7 +95,7 @@ public final class SiblingClassLoader extends ClassLoader {
             throws InvalidResourceException {
         this(name, parent != null ? parent : ClassUtils.getDefaultClassLoader());
         if (resourceLocations != null) {
-            createChildren(resourceLocations);
+            createSibling(resourceLocations);
         }
     }
 
@@ -103,33 +103,33 @@ public final class SiblingClassLoader extends ClassLoader {
             throws InvalidResourceException {
         super(name, parent);
 
-        int numOfChildren = parent.addChild(this);
+        int numOfSiblings = parent.addSibling(this);
 
-        this.id = (Math.abs(parent.getId() / 1000) + 1) * 1000 + numOfChildren;
+        this.id = (Math.abs(parent.getId() / 1000) + 1) * 1000 + numOfSiblings;
         this.root = parent.getRoot();
-        this.firstborn = (numOfChildren == 1);
+        this.firstborn = (numOfSiblings == 1);
         this.resourceLocation = resourceLocation;
         this.resourceManager = new LocalResourceManager(this, resourceLocation);
     }
 
     void joinSibling(String resourceLocation) throws InvalidResourceException {
         SiblingClassLoader parent = (SiblingClassLoader)getParent();
-        parent.createChild(resourceLocation);
+        parent.createSibling(resourceLocation);
     }
 
-    private void createChildren(@NonNull String[] resourceLocations) throws InvalidResourceException {
+    private void createSibling(@NonNull String[] resourceLocations) throws InvalidResourceException {
         SiblingClassLoader scl = this;
         for (String resourceLocation : resourceLocations) {
             if (resourceLocation != null && !resourceLocation.isEmpty()) {
-                scl = scl.createChild(resourceLocation);
+                scl = scl.createSibling(resourceLocation);
             }
         }
     }
 
     @NonNull
-    private SiblingClassLoader createChild(String resourceLocation) throws InvalidResourceException {
+    private SiblingClassLoader createSibling(String resourceLocation) throws InvalidResourceException {
         if (!firstborn) {
-            throw new IllegalStateException("Only the first among siblings can create a child");
+            throw new IllegalStateException("Only the firstborn can create other siblings");
         }
         return new SiblingClassLoader(getName(), this, resourceLocation);
     }
@@ -205,19 +205,19 @@ public final class SiblingClassLoader extends ClassLoader {
         return (this == root);
     }
 
-    public List<SiblingClassLoader> getChildren() {
-        return children;
+    public List<SiblingClassLoader> getSiblings() {
+        return siblings;
     }
 
-    private int addChild(SiblingClassLoader child) {
-        synchronized (children) {
-            children.add(child);
-            return children.size();
+    private int addSibling(SiblingClassLoader sibling) {
+        synchronized (siblings) {
+            siblings.add(sibling);
+            return siblings.size();
         }
     }
 
-    public boolean hasChildren() {
-        return !children.isEmpty();
+    public boolean hasSiblings() {
+        return !siblings.isEmpty();
     }
 
     public boolean isFirstborn() {
@@ -245,11 +245,11 @@ public final class SiblingClassLoader extends ClassLoader {
 
         SiblingClassLoader firstborn = null;
         List<SiblingClassLoader> siblings = new ArrayList<>();
-        for (SiblingClassLoader child : self.getChildren()) {
-            if (child.isFirstborn()) {
-                firstborn = child;
+        for (SiblingClassLoader sibling : self.getSiblings()) {
+            if (sibling.isFirstborn()) {
+                firstborn = sibling;
             } else {
-                siblings.add(child);
+                siblings.add(sibling);
             }
         }
         if (!siblings.isEmpty()) {
@@ -270,7 +270,7 @@ public final class SiblingClassLoader extends ClassLoader {
             if (rm != null) {
                 rm.release();
             }
-            children.remove(sibling);
+            this.siblings.remove(sibling);
         }
     }
 
@@ -326,7 +326,7 @@ public final class SiblingClassLoader extends ClassLoader {
         }
 
         String resourceName = ResourceManager.classNameToResourceName(className);
-        Enumeration<URL> res = ResourceManager.findResources(resourceName, getAllMembers());
+        Enumeration<URL> res = ResourceManager.findResources(resourceName, getAllSiblings());
         URL url = null;
         if (res.hasMoreElements()) {
             url = res.nextElement();
@@ -376,14 +376,14 @@ public final class SiblingClassLoader extends ClassLoader {
         if (parent != null) {
             parentResources = parent.getResources(name);
         }
-        return ResourceManager.findResources(name, getAllMembers(), parentResources);
+        return ResourceManager.findResources(name, getAllSiblings(), parentResources);
     }
 
     @Override
     public URL findResource(String name) {
         Objects.requireNonNull(name);
         URL url = null;
-        Enumeration<URL> res = ResourceManager.findResources(name, getAllMembers());
+        Enumeration<URL> res = ResourceManager.findResources(name, getAllSiblings());
         if (res.hasMoreElements()) {
             url = res.nextElement();
         }
@@ -394,17 +394,17 @@ public final class SiblingClassLoader extends ClassLoader {
     @NonNull
     public Enumeration<URL> findResources(String name) {
         Objects.requireNonNull(name);
-        return ResourceManager.findResources(name, getAllMembers());
+        return ResourceManager.findResources(name, getAllSiblings());
     }
 
     @NonNull
     public Enumeration<URL> getAllResources() {
-        return ResourceManager.findResources(getAllMembers());
+        return ResourceManager.findResources(getAllSiblings());
     }
 
     @NonNull
-    public Iterator<SiblingClassLoader> getAllMembers() {
-        return getMembers(root);
+    public Iterator<SiblingClassLoader> getAllSiblings() {
+        return getSiblings(root);
     }
 
     @Override
@@ -422,17 +422,17 @@ public final class SiblingClassLoader extends ClassLoader {
         tsb.append("firstborn", firstborn);
         tsb.append("resourceLocation", resourceLocation);
         tsb.append("numberOfResources", resourceManager.getNumberOfResources());
-        tsb.appendSize("numberOfChildren", children);
+        tsb.appendSize("numberOfSiblings", siblings);
         tsb.append("reloadedCount", reloadedCount);
         return tsb.toString();
     }
 
     @NonNull
-    public static Iterator<SiblingClassLoader> getMembers(@NonNull final SiblingClassLoader root) {
+    private static Iterator<SiblingClassLoader> getSiblings(@NonNull final SiblingClassLoader root) {
         return new Iterator<>() {
             private SiblingClassLoader next = root;
-            private Iterator<SiblingClassLoader> children = root.getChildren().iterator();
-            private SiblingClassLoader firstChild;
+            private Iterator<SiblingClassLoader> iter = root.getSiblings().iterator();
+            private SiblingClassLoader first;
 
             @Override
             public boolean hasNext() {
@@ -444,19 +444,18 @@ public final class SiblingClassLoader extends ClassLoader {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
-
                 SiblingClassLoader current = next;
-                if (children.hasNext()) {
-                    next = children.next();
-                    if (firstChild == null) {
-                        firstChild = next;
+                if (iter.hasNext()) {
+                    next = iter.next();
+                    if (first == null) {
+                        first = next;
                     }
                 } else {
-                    if (firstChild != null) {
-                        children = firstChild.getChildren().iterator();
-                        if (children.hasNext()) {
-                            next = children.next();
-                            firstChild = next;
+                    if (first != null) {
+                        iter = first.getSiblings().iterator();
+                        if (iter.hasNext()) {
+                            next = iter.next();
+                            first = next;
                         } else {
                             next = null;
                         }
