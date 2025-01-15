@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.jar.JarEntry;
@@ -54,25 +53,49 @@ public class ResourceManager {
         return resourceEntries.get(name);
     }
 
+    protected Iterator<URL> getResources() {
+        return resourceEntries.values().iterator();
+    }
+
+    public int getNumberOfResources() {
+        return resourceEntries.size();
+    }
+
+    protected void putResource(String resourceName, File file) throws InvalidResourceException {
+        resourceEntries.putResource(resourceName, file);
+    }
+
+    protected void putResource(File file, JarEntry entry) throws InvalidResourceException {
+        resourceEntries.putResource(file, entry);
+    }
+
+    public void reset() throws InvalidResourceException {
+        release();
+    }
+
+    public void release() {
+        resourceEntries.clear();
+    }
+
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners) {
+    public static Enumeration<URL> findResources(final Iterator<SiblingClassLoader> owners) {
         return new Enumeration<>() {
-            private Iterator<URL> values;
+            private Iterator<URL> iter;
             private URL next;
 
             private boolean hasNext() {
                 while (true) {
-                    if (values == null) {
+                    if (iter == null) {
                         if (!owners.hasNext()) {
                             return false;
                         }
-                        values = owners.next().getResourceManager().getResourceEntries().values().iterator();
+                        iter = owners.next().getResourceManager().getResources();
                     }
-                    if (values.hasNext()) {
-                        next = values.next();
+                    if (iter.hasNext()) {
+                        next = iter.next();
                         return true;
                     }
-                    values = null;
+                    iter = null;
                 }
             }
 
@@ -96,13 +119,13 @@ public class ResourceManager {
     }
 
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners, String name) {
-        return getResources(owners, name, null);
+    public static Enumeration<URL> findResources(String name, final Iterator<SiblingClassLoader> owners) {
+        return findResources(name, owners, null);
     }
 
     @NonNull
-    public static Enumeration<URL> getResources(final Iterator<SiblingClassLoader> owners, String name,
-                                                final Enumeration<URL> inherited) {
+    public static Enumeration<URL> findResources(
+            String name, final Iterator<SiblingClassLoader> owners, final Enumeration<URL> parentResources) {
         if (owners == null || name == null) {
             return Collections.emptyEnumeration();
         }
@@ -131,7 +154,7 @@ public class ResourceManager {
             @Override
             public boolean hasMoreElements() {
                 if (!noMore) {
-                    if (inherited != null && inherited.hasMoreElements()) {
+                    if (parentResources != null && parentResources.hasMoreElements()) {
                         return true;
                     } else {
                         noMore = true;
@@ -143,8 +166,8 @@ public class ResourceManager {
             @Override
             public URL nextElement() {
                 if (!noMore) {
-                    if (inherited != null && inherited.hasMoreElements()) {
-                        return inherited.nextElement();
+                    if (parentResources != null && parentResources.hasMoreElements()) {
+                        return parentResources.nextElement();
                     }
                 }
                 if (next == null) {
@@ -157,102 +180,6 @@ public class ResourceManager {
                 return current;
             }
         };
-    }
-
-    @NonNull
-    public static Enumeration<URL> searchResources(final Iterator<SiblingClassLoader> owners, String name) {
-        return searchResources(owners, name, null);
-    }
-
-    @NonNull
-    public static Enumeration<URL> searchResources(final Iterator<SiblingClassLoader> owners, String name,
-                                                   final Enumeration<URL> inherited) {
-        if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
-            name = name.substring(0, name.length() - 1);
-        }
-
-        final String nameToSearch = name;
-
-        return new Enumeration<>() {
-            private Iterator<Map.Entry<String, URL>> current;
-            private Map.Entry<String, URL> entry;
-            private boolean noMore; //for parent
-
-            private boolean hasNext() {
-                while (true) {
-                    if (current == null) {
-                        if (!owners.hasNext()) {
-                            return false;
-                        }
-                        current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
-                    }
-                    while (current.hasNext()) {
-                        Map.Entry<String, URL> entry2 = current.next();
-                        if (entry2.getKey().equals(nameToSearch)) {
-                            entry = entry2;
-                            return true;
-                        }
-                    }
-                    current = null;
-                }
-            }
-
-            @Override
-            public synchronized boolean hasMoreElements() {
-                if (entry != null) {
-                    return true;
-                }
-                if (!noMore) {
-                    if (inherited != null && inherited.hasMoreElements()) {
-                        return true;
-                    } else {
-                        noMore = true;
-                    }
-                }
-                return hasNext();
-            }
-
-            @Override
-            public synchronized URL nextElement() {
-                if (entry == null) {
-                    if (!noMore) {
-                        if (inherited != null && inherited.hasMoreElements()) {
-                            return inherited.nextElement();
-                        }
-                    }
-                    if (!hasNext()) {
-                        throw new NoSuchElementException();
-                    }
-                }
-                URL url = entry.getValue();
-                entry = null;
-                return url;
-            }
-        };
-    }
-
-    protected ResourceEntries getResourceEntries() {
-        return resourceEntries;
-    }
-
-    public int getNumberOfResources() {
-        return resourceEntries.size();
-    }
-
-    protected void putResource(String resourceName, File file) throws InvalidResourceException {
-        resourceEntries.putResource(resourceName, file);
-    }
-
-    protected void putResource(File file, JarEntry entry) throws InvalidResourceException {
-        resourceEntries.putResource(file, entry);
-    }
-
-    public void reset() throws InvalidResourceException {
-        release();
-    }
-
-    public void release() {
-        resourceEntries.clear();
     }
 
     @NonNull

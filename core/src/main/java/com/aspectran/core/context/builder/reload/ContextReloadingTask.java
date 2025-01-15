@@ -31,9 +31,9 @@ import java.util.TimerTask;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
 import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
-public class ContextReloadingTimerTask extends TimerTask {
+public class ContextReloadingTask extends TimerTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimerTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTask.class);
 
     private final ServiceLifeCycle serviceLifeCycle;
 
@@ -41,7 +41,7 @@ public class ContextReloadingTimerTask extends TimerTask {
 
     private boolean modified = false;
 
-    public ContextReloadingTimerTask(ServiceLifeCycle serviceLifeCycle) {
+    public ContextReloadingTask(ServiceLifeCycle serviceLifeCycle) {
         this.serviceLifeCycle = serviceLifeCycle;
     }
 

@@ -45,14 +45,14 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         super();
     }
 
-    public void putResource(String resourceName, @NonNull File file) throws InvalidResourceException {
+    public void putResource(String name, @NonNull File file) throws InvalidResourceException {
         URL url;
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);
         }
-        put(resourceName, url);
+        put(name, url);
     }
 
     public void putResource(@NonNull File file, @NonNull JarEntry entry) throws InvalidResourceException {
@@ -68,12 +68,12 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
     }
 
     @Override
-    public URL put(String resourceName, URL url) {
-        resourceName = resourceName.replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
-        if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
-            resourceName = resourceName.substring(0, resourceName.length() - 1);
+    public URL put(String name, URL url) {
+        name = name.replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
+        if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
+            name = name.substring(0, name.length() - 1);
         }
-        return super.put(resourceName, url);
+        return super.put(name, url);
     }
 
 }

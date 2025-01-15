@@ -15,12 +15,11 @@
  */
 package com.aspectran.core.context.builder.reload;
 
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.service.ServiceLifeCycle;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Timer;
 
 /**
@@ -30,20 +29,17 @@ public class ContextReloadingTimer {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimer.class);
 
-    private final ServiceLifeCycle serviceLifeCycle;
+    private final SiblingClassLoader classLoader;
 
-    private Enumeration<URL> resources;
+    private final ServiceLifeCycle serviceLifeCycle;
 
     private volatile Timer timer;
 
-    private ContextReloadingTimerTask timerTask;
+    private ContextReloadingTask task;
 
-    public ContextReloadingTimer(ServiceLifeCycle serviceLifeCycle) {
+    public ContextReloadingTimer(SiblingClassLoader classLoader, ServiceLifeCycle serviceLifeCycle) {
+        this.classLoader = classLoader;
         this.serviceLifeCycle = serviceLifeCycle;
-    }
-
-    public void setResources(Enumeration<URL> resources) {
-        this.resources = resources;
     }
 
     public void start(int scanIntervalInSeconds) {
@@ -53,11 +49,11 @@ public class ContextReloadingTimer {
             logger.debug("Starting ContextReloadingTimer...");
         }
 
-        timerTask = new ContextReloadingTimerTask(serviceLifeCycle);
-        timerTask.setResources(resources);
+        task = new ContextReloadingTask(serviceLifeCycle);
+        task.setResources(classLoader.getAllResources());
 
         timer = new Timer("ContextReloading");
-        timer.schedule(timerTask, 0, scanIntervalInSeconds * 1000L);
+        timer.schedule(task, 0, scanIntervalInSeconds * 1000L);
     }
 
     public void stop() {
@@ -69,8 +65,8 @@ public class ContextReloadingTimer {
             timer.cancel();
             timer = null;
 
-            timerTask.cancel();
-            timerTask = null;
+            task.cancel();
+            task = null;
         }
     }
 

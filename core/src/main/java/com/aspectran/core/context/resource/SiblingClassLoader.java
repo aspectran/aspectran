@@ -27,11 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -328,7 +326,7 @@ public final class SiblingClassLoader extends ClassLoader {
         }
 
         String resourceName = ResourceManager.classNameToResourceName(className);
-        Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), resourceName);
+        Enumeration<URL> res = ResourceManager.findResources(resourceName, getAllMembers());
         URL url = null;
         if (res.hasMoreElements()) {
             url = res.nextElement();
@@ -378,14 +376,14 @@ public final class SiblingClassLoader extends ClassLoader {
         if (parent != null) {
             parentResources = parent.getResources(name);
         }
-        return ResourceManager.getResources(getAllMembers(), name, parentResources);
+        return ResourceManager.findResources(name, getAllMembers(), parentResources);
     }
 
     @Override
     public URL findResource(String name) {
         Objects.requireNonNull(name);
         URL url = null;
-        Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
+        Enumeration<URL> res = ResourceManager.findResources(name, getAllMembers());
         if (res.hasMoreElements()) {
             url = res.nextElement();
         }
@@ -396,22 +394,17 @@ public final class SiblingClassLoader extends ClassLoader {
     @NonNull
     public Enumeration<URL> findResources(String name) {
         Objects.requireNonNull(name);
-        Set<URL> urls = new LinkedHashSet<>();
-        Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
-        if (res.hasMoreElements()) {
-            urls.add(res.nextElement());
-        }
-        return Collections.enumeration(urls);
+        return ResourceManager.findResources(name, getAllMembers());
+    }
+
+    @NonNull
+    public Enumeration<URL> getAllResources() {
+        return ResourceManager.findResources(getAllMembers());
     }
 
     @NonNull
     public Iterator<SiblingClassLoader> getAllMembers() {
         return getMembers(root);
-    }
-
-    @NonNull
-    public Enumeration<URL> getAllResources() {
-        return ResourceManager.getResources(getAllMembers());
     }
 
     @Override
