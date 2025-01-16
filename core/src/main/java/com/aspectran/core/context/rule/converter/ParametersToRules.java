@@ -1059,6 +1059,7 @@ public class ParametersToRules {
         }
 
         responseRuleApplicable.applyResponseRule(redirectRule);
+        assistant.resolveBeanClass(redirectRule.getPathTokens());
     }
 
     private void toTemplateRule(@NonNull TemplateParameters templateParameters) throws IllegalRuleException {

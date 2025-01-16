@@ -1,0 +1,65 @@
+endpoint: {
+    name: endpoint-1
+    title: Server-1
+    url: /appmon/server/endpoint
+    resident: true
+    polling: {
+        pollingInterval: 3000
+        sessionTimeout: 10000
+        initialBufferSize: 9999
+        enabled: true
+    }
+}
+group: {
+    name: root
+    title: Root
+    event: {
+        name: request
+        reader: com.aspectran.aspectow.appmon.exporter.event.request.RequestEventReader
+        target: root
+    }
+    event: {
+        name: session
+        title: Root App Session Statistics
+        reader: com.aspectran.aspectow.appmon.exporter.event.session.SessionEventReader
+        target: tow.server/root
+        sampleInterval: 5000
+    }
+    log: {
+        name: app
+        title: Root App
+        file: /logs/root.log
+        lastLines: 1000
+        sampleInterval: 300
+    }
+    log: {
+        name: access
+        title: Root Access
+        file: /logs/root-access.log
+        lastLines: 1000
+        sampleInterval: 300
+    }
+}
+group: {
+    name: appmon
+    title: AppMon
+    event: {
+        name: request
+        reader: com.aspectran.aspectow.appmon.exporter.event.request.RequestEventReader
+        target: appmon
+    }
+    log: {
+        name: appmon
+        title: AppMon
+        file: /logs/appmon.log
+        lastLines: 1000
+        sampleInterval: 300
+    }
+    log: {
+        name: access
+        title: AppMon Access
+        file: /logs/appmon-access.log
+        lastLines: 1000
+        sampleInterval: 300
+    }
+}

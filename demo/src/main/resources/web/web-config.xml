@@ -34,6 +34,7 @@
     </aspect>
 
     <append resource="web/home/main.xml"/>
+    <append resource="web/home/monitoring.xml"/>
     <append resource="web/examples/hello-world.xml"/>
     <append resource="web/examples/gs-rest-service.xml"/>
     <append resource="web/examples/file-upload.xml"/>
@@ -41,6 +42,5 @@
     <append resource="web/terminal/terminal-commands.xml"/>
     <append resource="web/skylark/skylark.xml"/>
     <append resource="web/chat/chat.xml"/>
-    <append resource="web/monitoring/monitoring.xml"/>
 
 </aspectran>

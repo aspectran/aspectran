@@ -1,0 +1,278 @@
+.endpoint-box.stacked .group.tabs {
+    display: none;
+}
+.endpoint-box .group-box .tabs {
+    display: none;
+}
+.endpoint-box.stacked .group-box .tabs {
+    display: block;
+}
+.endpoint-box.stacked .group-box.available {
+    display: block !important;
+    margin-bottom: 30px;
+}
+.endpoint-box .options {
+    font-size: 90%;
+    text-align: right;
+}
+.endpoint-box ul.layout-options {
+    float: right;
+    list-style-type: none;
+    margin: 0;
+}
+.endpoint-box ul.layout-options li {
+    float: left;
+    margin-left: .3em;
+    border: 1px solid #ccc;
+    padding: 0 .5em;
+    border-radius: 5px;
+    color: #777;
+}
+.endpoint-box ul.layout-options li a {
+    color: #777;
+}
+.endpoint-box ul.layout-options li.on {
+    background-color: #748fa0;
+    color: #fff;
+}
+.endpoint-box ul.layout-options li.on a {
+    color: #fff;
+}
+.endpoint-box ul.speed-options {
+    float: right;
+    list-style-type: none;
+    margin: 0;
+    display: none;
+}
+.endpoint-box ul.speed-options li {
+    float: left;
+    margin-left: .3em;
+    border: 1px solid #ccc;
+    padding: 0 .5em;
+    border-radius: 5px;
+    color: #777;
+    cursor: pointer;
+}
+.endpoint-box ul.speed-options li.on {
+    background-color: #748fa0;
+    color: #fff;
+}
+
+.track-box {
+    position: relative;
+    height: 120px;
+    background-color: #0d1939;
+    overflow: hidden;
+    display: none;
+}
+.track-box .track-stack {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 120px;
+    background-color: red;
+    opacity: .15;
+}
+@keyframes bulletAnimation {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 210px);
+    }
+}
+.track-box .bullet {
+    position: absolute;
+    top: 40%;
+    right: 10px;
+    width: 200px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(to right, rgba(9, 17, 39, 0) 27%, rgba(17, 213, 57, 0.66) 100%);
+    animation-name: bulletAnimation;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-duration: .9s;
+    z-index: 100;
+    display: none;
+}
+.track-box .bullet.arrive {
+    background: #29bf9c;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    width: 200px;
+    height: 10px;
+    margin: 2px 0;
+    opacity: .3;
+}
+.track-stack .req-num {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #0cf418;
+    font-size: 3em;
+    text-align: center;
+}
+
+.log-box .status-bar {
+    background-color: #677278;
+    color: #eee;
+    overflow: auto;
+    padding : 0 7px 0 10px;
+    height: 29px;
+    box-shadow: -20px 20px 20px -20px #394e59 inset;
+}
+.log-box .status-bar.on {
+    background-color: #709185;
+}
+.log-box .status-bar h4 {
+    float: left;
+    width: 70%;
+    height: 29px;
+    line-height: 29px;
+    font-size: .9em;
+    font-weight: normal;
+    margin: 0;
+}
+.log-box .status-bar a {
+    float: right;
+    line-height: 29px;
+    margin-left: 10px;
+    color: #fff;
+}
+.log-box .status-bar a:hover {
+    color: red;
+}
+.log-box .status-bar a.on {
+    color: #980000;
+}
+.log-box .status-bar .tailing-switch {
+    line-height: 26px;
+}
+.log-box .status-bar .tailing-switch .tailing-status {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    border-radius: 50%;
+    position: relative;
+}
+.log-box .status-bar .tailing-switch .tailing-status::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    display: block;
+    height: 10px;
+    width: 10px;
+    background: #f1f1f1;
+    border-radius: 50%;
+}
+.log-box .status-bar .tailing-switch .tailing-status.on {
+    background-color: #39aa56;
+}
+.log-box .log-console {
+    clear: both;
+    margin: 0;
+    padding: 10px;
+    overflow: auto;
+    height: 500px;
+    color: #f1f1f1;
+    background-color: #222;
+    border: none;
+    border-radius: 0;
+    box-shadow: -20px 20px 60px -20px #0d1939 inset;
+}
+.log-box .log-console p {
+    font-size: 12px;
+    line-height: 16px;
+    white-space: nowrap;
+    color: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+.log-box .log-console p:hover {
+    color: #fafafa;
+    background-color: #333;
+}
+.log-box .log-console p.event {
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(186, 254, 230, 0.53);
+    padding: 3px 6px;
+    margin: 4px 0;
+    color: #fff;
+    background-color: #333;
+}
+.log-box .log-console p.event.error {
+    background-color: palevioletred;
+    border: 1px solid palevioletred;
+    color: yellow;
+}
+
+.display-box {
+    display: none;
+}
+.display-box .panel {
+    border: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    height: 260px;
+}
+.display-box dl.session-statistics dt {
+    float: left;
+    clear: left;
+    padding: 0;
+    margin: 0;
+    height: 30px;
+    font-size: 1em;
+}
+.display-box dl.session-statistics dd {
+    text-align: right;
+    font-weight: bold;
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+    height: 30px;
+}
+.sessions-box {
+    overflow-y: auto;
+    list-style-type: none;
+}
+.sessions-box ul.sessions {
+    margin-left: 0;
+}
+.sessions-box ul.sessions li {
+    list-style-type: none;
+    white-space: nowrap;
+}
+.sessions-box ul.sessions li.inactive {
+    opacity: .4;
+}
+.sessions-box ul.sessions li.hidden {
+    display: none;
+}
+.sessions-box ul.sessions li .indicator {
+    background-color: #13CF13;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+.sessions-box ul.sessions li .indicator.logged-out {
+    background-color: #ccc;
+}
+.sessions-box ul.sessions li .flag {
+    max-width: 30px;
+    height: 18px;
+    border-radius: 0;
+    vertical-align: middle;
+    margin-right: 3px;
+}

@@ -2,22 +2,30 @@
 <included>
 
     <!-- Undertow Access Logging -->
-    <appender name="FILE-UNDERTOW-ACCESSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${aspectran.basePath:-app}/logs/undertow-access.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/undertow-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>1GB</totalSizeCap>
-        </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <charset>UTF-8</charset>
-            <pattern>%msg%n</pattern>
-        </encoder>
+    <appender name="SIFT-ACCESSLOG" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator class="com.aspectran.core.support.logging.LoggingGroupDiscriminator">
+            <key>LOGGING_GROUP</key>
+            <defaultValue>root</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-ACCESSLOG-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${aspectran.basePath:-app}/logs/${LOGGING_GROUP}-access.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                    <fileNamePattern>${aspectran.basePath:-app}/logs/archived/${LOGGING_GROUP}-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                    <maxFileSize>10MB</maxFileSize>
+                    <maxHistory>30</maxHistory>
+                    <totalSizeCap>1GB</totalSizeCap>
+                </rollingPolicy>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <charset>UTF-8</charset>
+                    <pattern>%msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
     </appender>
 
     <logger name="io.undertow.accesslog" level="info" additivity="false">
-        <appender-ref ref="FILE-UNDERTOW-ACCESSLOG"/>
+        <appender-ref ref="SIFT-ACCESSLOG"/>
     </logger>
 
 </included>
