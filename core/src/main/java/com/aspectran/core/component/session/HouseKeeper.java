@@ -38,7 +38,7 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private final AutoLock lock = new AutoLock();
 
-    private final AbstractSessionHandler sessionHandler;
+    private final AbstractSessionManager sessionManager;
 
     private final Scheduler scheduler;
 
@@ -49,19 +49,19 @@ public class HouseKeeper extends AbstractLifeCycle {
     private Runner runner;
 
     /**
-     * @param sessionHandler SessionHandler associated with this scavenger
+     * @param sessionManager SessionManager associated with this scavenger
      */
-    public HouseKeeper(@NonNull AbstractSessionHandler sessionHandler) {
-        this(sessionHandler, DEFAULT_SCAVENGING_INTERVAL);
+    public HouseKeeper(@NonNull AbstractSessionManager sessionManager) {
+        this(sessionManager, DEFAULT_SCAVENGING_INTERVAL);
     }
 
     /**
-     * @param sessionHandler SessionHandler associated with this scavenger
+     * @param sessionManager SessionManager associated with this scavenger
      * @param scavengingIntervalInSecs the period between scavenge cycles
      */
-    public HouseKeeper(@NonNull AbstractSessionHandler sessionHandler, int scavengingIntervalInSecs) {
-        this.sessionHandler = sessionHandler;
-        this.scheduler = sessionHandler.getScheduler();
+    public HouseKeeper(@NonNull AbstractSessionManager sessionManager, int scavengingIntervalInSecs) {
+        this.sessionManager = sessionManager;
+        this.scheduler = sessionManager.getScheduler();
         this.scavengingInterval = scavengingIntervalInSecs * 1000L;
     }
 
@@ -82,7 +82,7 @@ public class HouseKeeper extends AbstractLifeCycle {
             if (isStarted() || isStarting()) {
                 if (intervalInSecs <= 0) {
                     scavengingInterval = 0L;
-                    logger.info(sessionHandler.getComponentName() + " scavenging disabled");
+                    logger.info(sessionManager.getComponentName() + " scavenging disabled");
                     stopScavenging();
                 } else {
                     if (intervalInSecs < 10) {
@@ -143,9 +143,9 @@ public class HouseKeeper extends AbstractLifeCycle {
         }
 
         // To help distinguish logging groups
-        ThreadContextHelper.run(sessionHandler.getClassLoader(), () -> {
+        ThreadContextHelper.run(sessionManager.getClassLoader(), () -> {
             try {
-                sessionHandler.scavenge(scavengingInterval);
+                sessionManager.scavenge(scavengingInterval);
             } catch (Exception e) {
                 logger.warn(e);
             }
@@ -174,7 +174,7 @@ public class HouseKeeper extends AbstractLifeCycle {
         if (isStopped()) {
             ToStringBuilder tsb = new ToStringBuilder(super.toString());
             tsb.append("scavengingInterval", scavengingInterval);
-            return tsb + " used by " + sessionHandler.getComponentName();
+            return tsb + " used by " + sessionManager.getComponentName();
         } else {
             return super.toString();
         }

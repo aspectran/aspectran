@@ -40,9 +40,9 @@ public class SessionInactivityTimer {
 
     private final CyclicTimeout timer;
 
-    public SessionInactivityTimer(@NonNull AbstractSessionHandler sessionHandler, @NonNull ManagedSession session) {
+    public SessionInactivityTimer(@NonNull AbstractSessionManager sessionManager, @NonNull ManagedSession session) {
         this.session = session;
-        this.timer = new CyclicTimeout(sessionHandler.getScheduler()) {
+        this.timer = new CyclicTimeout(sessionManager.getScheduler()) {
             @Override
             public void onTimeoutExpired() {
                 if (logger.isTraceEnabled()) {
@@ -63,8 +63,8 @@ public class SessionInactivityTimer {
                     boolean expired = false;
                     try {
                         // To help distinguish logging groups
-                        expired = ThreadContextHelper.call(sessionHandler.getClassLoader(), () ->
-                            sessionHandler.sessionInactivityTimerExpired(session, now));
+                        expired = ThreadContextHelper.call(sessionManager.getClassLoader(), () ->
+                            sessionManager.sessionInactivityTimerExpired(session, now));
                     } catch (Exception e) {
                         logger.warn(e);
                     }

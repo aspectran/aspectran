@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>Created: 2017. 6. 12.</p>
  */
-public class DefaultSessionManager extends AbstractSessionHandler
+public class DefaultSessionManager extends AbstractSessionManager
         implements SessionManager, ActivityContextAware, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
@@ -108,12 +108,6 @@ public class DefaultSessionManager extends AbstractSessionHandler
     public void setSessionStore(SessionStore sessionStore) {
         checkInitializable();
         this.sessionStore = sessionStore;
-    }
-
-    @Override
-    public SessionHandler getSessionHandler() {
-        checkAvailable();
-        return this;
     }
 
     @Override

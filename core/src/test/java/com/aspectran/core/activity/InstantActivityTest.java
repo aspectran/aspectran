@@ -59,7 +59,7 @@ class InstantActivityTest {
         context = builder.build("/config/activity/instant-activity-config.xml");
 
         SessionManager sessionManager = createSessionManager();
-        SessionAgent sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
+        SessionAgent sessionAgent = new SessionAgent(sessionManager);
         sessionAdapter = new DefaultSessionAdapter(sessionAgent);
     }
 

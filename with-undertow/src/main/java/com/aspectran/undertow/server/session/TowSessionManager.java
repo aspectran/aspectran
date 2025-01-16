@@ -15,14 +15,20 @@
  */
 package com.aspectran.undertow.server.session;
 
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.ManagedSession;
+import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.component.session.SessionStore;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionListener;
-import io.undertow.server.session.SessionManager;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
 
@@ -30,25 +36,97 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>Created: 2019-08-07</p>
  */
-public class TowSessionManager extends AbstractSessionManager implements SessionManager {
+public class TowSessionManager implements ActivityContextAware, DisposableBean, io.undertow.server.session.SessionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(TowSessionManager.class);
 
-    protected final AttachmentKey<TowSession> NEW_SESSION = AttachmentKey.create(TowSession.class);
+    private final AttachmentKey<TowSession> NEW_SESSION = AttachmentKey.create(TowSession.class);
 
-    protected final AttachmentKey<Boolean> FIRST_ACCESS = AttachmentKey.create(Boolean.class);
+    private final AttachmentKey<Boolean> FIRST_ACCESS = AttachmentKey.create(Boolean.class);
+
+    private final DefaultSessionManager sessionManager = new DefaultSessionManager();
 
     private final Map<SessionListener, TowSessionListener> sessionListenerMappings = new ConcurrentHashMap<>();
+
+    private final AtomicInteger startCount = new AtomicInteger();
 
     private int defaultSessionTimeout = Integer.MIN_VALUE;
 
     @Override
+    public void setActivityContext(ActivityContext context) {
+        sessionManager.setActivityContext(context);
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        sessionManager.setClassLoader(classLoader);
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public SessionManagerConfig getSessionManagerConfig() {
+        return sessionManager.getSessionManagerConfig();
+    }
+
+    public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
+        sessionManager.setSessionManagerConfig(sessionManagerConfig);
+    }
+
+    public void setSessionStore(SessionStore sessionStore) {
+        sessionManager.setSessionStore(sessionStore);
+    }
+
+    public void initialize() throws Exception {
+        if (sessionManager.isInitializable()) {
+            sessionManager.initialize();
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (sessionManager.isAvailable()) {
+            try {
+                sessionManager.destroy();
+            } catch (Exception e) {
+                throw new RuntimeException("Error destroying TowSessionManager", e);
+            }
+        }
+    }
+
+    @Override
     public String getDeploymentName() {
-        return getSessionManager().getWorkerName();
+        return sessionManager.getWorkerName();
+    }
+
+    @Override
+    public void start() {
+        startCount.getAndIncrement();
+    }
+
+    @Override
+    public void stop() {
+        int count = startCount.decrementAndGet();
+        if (count == 0) {
+            try {
+                destroy();
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        }
+    }
+
+    public String createSessionId(long seedTerm) {
+        return sessionManager.createSessionId(seedTerm);
+    }
+
+    public String renewSessionId(String oldId, String newId) {
+        return sessionManager.renewSessionId(oldId, newId);
     }
 
     @Override
@@ -61,12 +139,12 @@ public class TowSessionManager extends AbstractSessionManager implements Session
             return null;
         }
         if (sessionId == null) {
-            sessionId = getSessionManager().createSessionId(hashCode());
+            sessionId = sessionManager.createSessionId(hashCode());
         }
 
         sessionConfig.setSessionId(exchange, sessionId);
 
-        ManagedSession session = getSessionManager().createSession(sessionId);
+        ManagedSession session = sessionManager.createSession(sessionId);
         TowSession towSession = wrapSession(session);
         exchange.putAttachment(NEW_SESSION, towSession);
         return towSession;
@@ -103,7 +181,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         if (sessionId == null) {
             return null;
         }
-        ManagedSession session = getSessionManager().getSession(sessionId);
+        ManagedSession session = sessionManager.getSession(sessionId);
         if (session != null) {
             return wrapSession(session);
         } else {
@@ -118,7 +196,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         }
         TowSessionListener towSessionListener = new TowSessionListener(this, listener);
         sessionListenerMappings.put(listener, towSessionListener);
-        getSessionManager().addSessionListener(towSessionListener);
+        sessionManager.addSessionListener(towSessionListener);
     }
 
     @Override
@@ -128,7 +206,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         }
         TowSessionListener towSessionListener = sessionListenerMappings.remove(listener);
         if (towSessionListener != null) {
-            getSessionManager().removeSessionListener(towSessionListener);
+            sessionManager.removeSessionListener(towSessionListener);
         }
     }
 
@@ -140,7 +218,7 @@ public class TowSessionManager extends AbstractSessionManager implements Session
             defaultSessionTimeout = getSessionManagerConfig().getMaxIdleSeconds();
         } else {
             defaultSessionTimeout = timeout;
-            getSessionManager().setDefaultMaxIdleSecs(timeout);
+            sessionManager.setDefaultMaxIdleSecs(timeout);
         }
     }
 
@@ -151,12 +229,12 @@ public class TowSessionManager extends AbstractSessionManager implements Session
 
     @Override
     public Set<String> getActiveSessions() {
-        return getSessionHandler().getActiveSessions();
+        return sessionManager.getActiveSessions();
     }
 
     @Override
     public Set<String> getAllSessions() {
-        return getSessionHandler().getAllSessions();
+        return sessionManager.getAllSessions();
     }
 
     @Override
@@ -164,47 +242,47 @@ public class TowSessionManager extends AbstractSessionManager implements Session
         return new SessionManagerStatistics() {
             @Override
             public long getCreatedSessionCount() {
-                return getSessionManager().getStatistics().getNumberOfCreated();
+                return sessionManager.getStatistics().getNumberOfCreated();
             }
 
             @Override
             public long getMaxActiveSessions() {
-                return getSessionManager().getSessionCache().getMaxActiveSessions();
+                return sessionManager.getSessionCache().getMaxActiveSessions();
             }
 
             @Override
             public long getHighestSessionCount() {
-                return getSessionManager().getStatistics().getHighestNumberOfActives();
+                return sessionManager.getStatistics().getHighestNumberOfActives();
             }
 
             @Override
             public long getActiveSessionCount() {
-                return getSessionManager().getStatistics().getNumberOfActives();
+                return sessionManager.getStatistics().getNumberOfActives();
             }
 
             @Override
             public long getExpiredSessionCount() {
-                return getSessionManager().getStatistics().getNumberOfExpired();
+                return sessionManager.getStatistics().getNumberOfExpired();
             }
 
             @Override
             public long getRejectedSessions() {
-                return getSessionManager().getStatistics().getNumberOfRejected();
+                return sessionManager.getStatistics().getNumberOfRejected();
             }
 
             @Override
             public long getMaxSessionAliveTime() {
-                return getSessionManager().getStatistics().getMaxSessionAliveTime();
+                return sessionManager.getStatistics().getMaxSessionAliveTime();
             }
 
             @Override
             public long getAverageSessionAliveTime() {
-                return getSessionManager().getStatistics().getAverageSessionAliveTime();
+                return sessionManager.getStatistics().getAverageSessionAliveTime();
             }
 
             @Override
             public long getStartTime() {
-                return getSessionManager().getStatistics().getStartTime();
+                return sessionManager.getStatistics().getStartTime();
             }
         };
     }

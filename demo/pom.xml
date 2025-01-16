@@ -33,6 +33,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.demo</automatic.module.name>
+        <aspectow.appmon.version>1.0.0-SNAPSHOT</aspectow.appmon.version>
     </properties>
 
     <dependencies>
@@ -67,6 +68,16 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-rss-lettuce</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectow-appmon-backend</artifactId>
+            <version>${aspectow.appmon.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectow-appmon-front</artifactId>
+            <version>${aspectow.appmon.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.sociaal</groupId>

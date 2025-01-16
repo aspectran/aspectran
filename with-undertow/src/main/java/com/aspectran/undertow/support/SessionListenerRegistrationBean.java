@@ -16,9 +16,9 @@
 package com.aspectran.undertow.support;
 
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionListenerRegistration;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
@@ -58,12 +58,12 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
     public void register(SessionListener listener, String deploymentName) {
         Assert.notNull(listener, "listener must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
-        SessionHandler sessionHandler = getSessionHandler(deploymentName);
-        if (sessionHandler != null) {
-            sessionHandler.addSessionListener(listener);
+        SessionManager sessionManager = getSessionManager(deploymentName);
+        if (sessionManager != null) {
+            sessionManager.addSessionListener(listener);
         } else {
             logger.warn("Unable to register " + ObjectUtils.simpleIdentityToString(listener) +
-                    ". Cause: No session handler found for deployment '" + deploymentName + "'");
+                    ". Cause: No session manager found for deployment '" + deploymentName + "'");
         }
     }
 
@@ -77,9 +77,9 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
         Assert.notNull(listener, "listener must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
         if (getBeanRegistry().isAvailable()) {
-            SessionHandler sessionHandler = getSessionHandler(deploymentName);
-            if (sessionHandler != null) {
-                sessionHandler.removeSessionListener(listener);
+            SessionManager sessionManager = getSessionManager(deploymentName);
+            if (sessionManager != null) {
+                sessionManager.removeSessionListener(listener);
             } else {
                 logger.warn("Unable to remove " + ObjectUtils.simpleIdentityToString(listener) +
                     ". Cause: No session handler found for deployment '" + deploymentName + "'");
@@ -87,14 +87,14 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
         }
     }
 
-    private SessionHandler getSessionHandler(String deploymentName) {
+    private SessionManager getSessionManager(String deploymentName) {
         Assert.notNull(towServerId, "towServerId must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
         TowServer towServer = getBeanRegistry().getBean(towServerId);
         if (towServer == null) {
             throw new IllegalStateException("No TowServer named '" + towServerId + "'");
         }
-        return towServer.getSessionHandler(deploymentName);
+        return towServer.getSessionManager(deploymentName);
     }
 
 }

@@ -94,6 +94,7 @@ public class LogTailer extends AbstractLifeCycle {
         return list.toArray(new String[0]);
     }
 
+    @Override
     protected void doStart() throws Exception {
         if (tailerListener == null) {
             throw new IllegalStateException("No TailerListener configured");
@@ -106,6 +107,7 @@ public class LogTailer extends AbstractLifeCycle {
                 .get();
     }
 
+    @Override
     protected void doStop() throws Exception {
         if (tailer != null) {
             tailer.close();

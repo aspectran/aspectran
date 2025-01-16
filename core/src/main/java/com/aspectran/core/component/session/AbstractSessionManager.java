@@ -36,13 +36,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static java.lang.Math.round;
 
 /**
- * Abstract Implementation of SessionHandler.
+ * Abstract Implementation of SessionManager.
  *
  * <p>Created: 2017. 6. 12.</p>
  */
-public abstract class AbstractSessionHandler extends AbstractComponent implements SessionHandler {
+public abstract class AbstractSessionManager extends AbstractComponent implements SessionManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSessionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSessionManager.class);
 
     private final SessionStatistics statistics = new SessionStatistics();
 
@@ -65,7 +65,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
 
-    AbstractSessionHandler() {
+    AbstractSessionManager() {
     }
 
     public abstract ClassLoader getClassLoader();
@@ -133,7 +133,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 logger.debug("Sessions created by this manager are immortal (default maxInactiveInterval="
                         + defaultMaxIdleSecs + ")");
             } else {
-                logger.debug("SessionHandler default maxInactiveInterval=" + defaultMaxIdleSecs);
+                logger.debug("SessionManager default maxInactiveInterval=" + defaultMaxIdleSecs);
             }
         }
     }

@@ -124,7 +124,7 @@ public interface SessionCache {
     void refresh(ManagedSession session) throws Exception;
 
     /**
-     * Finish using a Session. This is called by the SessionHandler
+     * Finish using a Session. This is called by the SessionManager
      * once a request is finished with a Session. SessionCache
      * implementations may want to delay writing out Session contents
      * until the last request exits a Session.

@@ -63,8 +63,7 @@ class SessionManagerTest {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.initialize();
 
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(1);
+        sessionManager.setDefaultMaxIdleSecs(1);
 
         SessionAgent agent = new SessionAgent(sessionManager);
 
@@ -73,7 +72,7 @@ class SessionManagerTest {
         agent.complete();
 
         await().atMost(2, TimeUnit.SECONDS).until(()
-            -> sessionHandler.getStatistics().getNumberOfActives() == 0);
+            -> sessionManager.getStatistics().getNumberOfActives() == 0);
 
         sessionManager.destroy();
     }

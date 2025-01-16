@@ -18,7 +18,6 @@ package com.aspectran.shell.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
@@ -48,7 +47,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
 
     private final ShellConsole console;
 
-    private SessionManager sessionManager;
+    private DefaultSessionManager sessionManager;
 
     private SessionAgent sessionAgent;
 
@@ -174,7 +173,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;
-                    this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
+                    this.sessionAgent = new SessionAgent(sessionManager);
                 } catch (Exception e) {
                     throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
                 }

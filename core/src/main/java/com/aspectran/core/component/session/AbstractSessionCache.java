@@ -41,9 +41,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionCache.class);
 
     /**
-     * The SessionHandler related to this SessionCache
+     * The SessionManager related to this SessionCache
      */
-    private final AbstractSessionHandler sessionHandler;
+    private final AbstractSessionManager sessionManager;
 
     /**
      * The authoritative source of session data
@@ -83,16 +83,16 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(AbstractSessionHandler sessionHandler, SessionStore sessionStore, boolean clusterEnabled) {
-        this.sessionHandler = sessionHandler;
+    public AbstractSessionCache(AbstractSessionManager sessionManager, SessionStore sessionStore, boolean clusterEnabled) {
+        this.sessionManager = sessionManager;
         this.sessionStore = sessionStore;
         this.clusterEnabled = (clusterEnabled && sessionStore != null);
         this.thisName = ObjectUtils.simpleIdentityToString(this);
         this.storeName = ObjectUtils.simpleIdentityToString(sessionStore);
     }
 
-    protected SessionHandler getSessionHandler() {
-        return sessionHandler;
+    protected SessionManager getSessionManager() {
+        return sessionManager;
     }
 
     protected SessionStore getSessionStore() {
@@ -104,7 +104,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     protected SessionStatistics getStatistics() {
-        return sessionHandler.getStatistics();
+        return sessionManager.getStatistics();
     }
 
     @Override
@@ -216,7 +216,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             if (logger.isDebugEnabled()) {
                 logger.debug("Residing evicted session id=" + session.getId() + " into " + thisName);
             }
-            sessionHandler.onSessionResided(session);
+            sessionManager.onSessionResided(session);
         }
         return session;
     }
@@ -241,7 +241,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 if (logger.isTraceEnabled()) {
                     logger.trace("Session " + id + " loaded from session store " + sessionStore);
                 }
-                return new ManagedSession(sessionHandler, data, false);
+                return new ManagedSession(sessionManager, data, false);
             } else {
                 // session doesn't exist
                 return null;
@@ -264,7 +264,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             logger.debug("Create new session id=" + id);
         }
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
-        ManagedSession session = new ManagedSession(sessionHandler, data, true);
+        ManagedSession session = new ManagedSession(sessionManager, data, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // it's in the cache
             if (sessionStore != null && (isSaveOnCreate() || isClusterEnabled())) {

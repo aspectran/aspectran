@@ -18,7 +18,6 @@ package com.aspectran.daemon.service;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
@@ -37,7 +36,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public abstract class AbstractDaemonService extends DefaultCoreService implements DaemonService {
 
-    private SessionManager sessionManager;
+    private DefaultSessionManager sessionManager;
 
     private SessionAgent sessionAgent;
 
@@ -67,7 +66,7 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;
-                    this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
+                    this.sessionAgent = new SessionAgent(sessionManager);
                 } catch (Exception e) {
                     throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
                 }

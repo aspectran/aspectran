@@ -17,7 +17,6 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.component.session.SessionHandler;
 
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +40,9 @@ class DefaultLettuceSessionStoreFactoryTest {
             sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
             sessionManager.initialize();
 
-            SessionHandler sessionHandler = sessionManager.getSessionHandler();
-            sessionHandler.setDefaultMaxIdleSecs(1);
+            sessionManager.setDefaultMaxIdleSecs(1);
 
-            SessionAgent agent = new SessionAgent(sessionHandler);
+            SessionAgent agent = new SessionAgent(sessionManager);
 
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j <= i; j++) {
@@ -63,7 +61,7 @@ class DefaultLettuceSessionStoreFactoryTest {
             agent.complete();
 
             await().atMost(3, TimeUnit.SECONDS).until(()
-                -> sessionHandler.getStatistics().getNumberOfActives() == 0);
+                -> sessionManager.getStatistics().getNumberOfActives() == 0);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

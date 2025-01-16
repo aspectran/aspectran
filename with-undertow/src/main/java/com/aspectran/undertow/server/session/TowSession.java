@@ -126,8 +126,8 @@ public final class TowSession implements io.undertow.server.session.Session {
                 return null;
             }
             String oldId = session.getId();
-            String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
-            String newIdToUse = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
+            String newId = sessionManager.createSessionId(hashCode());
+            String newIdToUse = sessionManager.renewSessionId(oldId, newId);
             if (newIdToUse != null) {
                 config.setSessionId(exchange, newIdToUse);
             }

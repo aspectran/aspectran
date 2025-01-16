@@ -44,8 +44,7 @@ class FileSessionStoreFactoryTest {
         sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
         sessionManager.initialize();
 
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(1);
+        sessionManager.setDefaultMaxIdleSecs(1);
 
         SessionAgent agent = new SessionAgent(sessionManager);
         try {
@@ -68,7 +67,7 @@ class FileSessionStoreFactoryTest {
         }
 
         await().atMost(3, TimeUnit.SECONDS).until(()
-            -> sessionHandler.getStatistics().getNumberOfActives() == 0);
+            -> sessionManager.getStatistics().getNumberOfActives() == 0);
 
         sessionManager.destroy();
     }

@@ -44,7 +44,7 @@ public class FileSessionStore extends AbstractSessionStore {
 
     private final Map<String, String> sessionFileMap = new ConcurrentHashMap<>();
 
-    private File storeDir;
+    private final File storeDir;
 
     private boolean deleteUnrestorableFiles = true;
 

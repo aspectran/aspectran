@@ -25,12 +25,12 @@ import java.util.Enumeration;
  */
 public class SessionAgent {
 
-    private final SessionHandler sessionHandler;
+    private final SessionManager sessionManager;
 
     private volatile String sessionId;
 
-    public SessionAgent(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
+    public SessionAgent(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
     public String getId() {
@@ -85,7 +85,7 @@ public class SessionAgent {
             return null;
         }
         if (sessionId != null) {
-            Session session = sessionHandler.getSession(sessionId);
+            Session session = sessionManager.getSession(sessionId);
             if (session == null && create) {
                 session = createSession();
             }
@@ -96,8 +96,8 @@ public class SessionAgent {
     }
 
     private Session createSession() {
-        sessionId = sessionHandler.createSessionId(hashCode());
-        return sessionHandler.createSession(sessionId);
+        sessionId = sessionManager.createSessionId(hashCode());
+        return sessionManager.createSession(sessionId);
     }
 
     public void invalidate() {

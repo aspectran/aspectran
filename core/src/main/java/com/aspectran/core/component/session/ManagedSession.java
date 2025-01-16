@@ -34,7 +34,7 @@ public class ManagedSession implements Session {
 
     private final AutoLock autoLock = new AutoLock();
 
-    private final AbstractSessionHandler sessionHandler;
+    private final AbstractSessionManager sessionManager;
 
     private final SessionInactivityTimer sessionInactivityTimer;
 
@@ -59,9 +59,9 @@ public class ManagedSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected ManagedSession(AbstractSessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
-        this.sessionHandler = sessionHandler;
-        this.sessionInactivityTimer = new SessionInactivityTimer(sessionHandler, this);
+    protected ManagedSession(AbstractSessionManager sessionManager, SessionData sessionData, boolean newSession) {
+        this.sessionManager = sessionManager;
+        this.sessionInactivityTimer = new SessionInactivityTimer(sessionManager, this);
         this.sessionData = sessionData;
         this.newSession = newSession;
         if (newSession) {
@@ -70,8 +70,8 @@ public class ManagedSession implements Session {
         }
     }
 
-    public SessionHandler getSessionHandler() {
-        return sessionHandler;
+    public SessionManager getSessionManager() {
+        return sessionManager;
     }
 
     protected SessionData getSessionData() {
@@ -186,7 +186,7 @@ public class ManagedSession implements Session {
             }
 
             if (requests == 0) {
-                sessionHandler.refreshSession(this);
+                sessionManager.refreshSession(this);
             }
 
             requests++;
@@ -222,7 +222,7 @@ public class ManagedSession implements Session {
                 long now = System.currentTimeMillis();
                 sessionData.calcAndSetExpiry(now);
                 sessionData.setLastAccessed(sessionData.getAccessed());
-                sessionHandler.releaseSession(this);
+                sessionManager.releaseSession(this);
                 sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
             }
         }
@@ -251,7 +251,7 @@ public class ManagedSession implements Session {
         try (AutoLock ignored = autoLock.lock()) {
             long remaining = sessionData.getExpiry() - now;
             long maxInactive = sessionData.getInactiveInterval();
-            int evictionIdleSecs = sessionHandler.getSessionCache().getEvictionIdleSecs();
+            int evictionIdleSecs = sessionManager.getSessionCache().getEvictionIdleSecs();
             if (maxInactive <= 0L) {
                 // sessions are immortal, they never expire
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
@@ -315,14 +315,14 @@ public class ManagedSession implements Session {
                         if (getDestroyedReason() == null) {
                             setDestroyedReason(DestroyedReason.INVALIDATED);
                         }
-                        sessionHandler.onSessionDestroyed(this);
+                        sessionManager.onSessionDestroyed(this);
                     }
                 } catch (Exception e) {
                     logger.warn("Error during Session destroy listener", e);
                 } finally {
                     // call the attribute removed listeners and finally mark it as invalid
                     finishInvalidate();
-                    sessionHandler.removeSession(sessionData.getId(), false);
+                    sessionManager.removeSession(sessionData.getId(), false);
                 }
             } catch (Exception e) {
                 logger.warn("Unable to invalidate session " + this, e);
@@ -375,8 +375,8 @@ public class ManagedSession implements Session {
             } finally {
                 // mark as invalid
                 state = State.INVALID;
-                sessionHandler.getStatistics().sessionExpired();
-                sessionHandler.recordSessionTime(this);
+                sessionManager.getStatistics().sessionExpired();
+                sessionManager.recordSessionTime(this);
             }
         }
     }
@@ -457,7 +457,7 @@ public class ManagedSession implements Session {
                 bindValue(name, newValue);
             }
         }
-        sessionHandler.onSessionAttributeUpdate(this, name, oldValue, newValue);
+        sessionManager.onSessionAttributeUpdate(this, name, oldValue, newValue);
     }
 
     /**

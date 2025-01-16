@@ -52,8 +52,7 @@ class ManagedSessionManagerTest {
         sessionManager.setSessionManagerConfig(sessionManagerConfig);
         sessionManager.initialize();
 
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(1);
+        sessionManager.setDefaultMaxIdleSecs(1);
 
         SessionAgent agent = new SessionAgent(sessionManager);
         try {
@@ -76,8 +75,8 @@ class ManagedSessionManagerTest {
         }
 
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
-            // System.out.println(sessionHandler.getStatistics().getActiveSessions());
-            return sessionHandler.getStatistics().getNumberOfActives() == 0;
+            // System.out.println(sessionManager.getStatistics().getActiveSessions());
+            return sessionManager.getStatistics().getNumberOfActives() == 0;
         });
 
         sessionManager.destroy();

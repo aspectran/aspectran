@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server;
 
-import com.aspectran.core.component.session.SessionHandler;
+import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.undertow.server.handler.RequestHandlerFactory;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
@@ -27,7 +27,6 @@ import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
-import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import org.xnio.Option;
@@ -228,26 +227,26 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
     }
 
     @Override
-    public SessionHandler getSessionHandler(String deploymentName) {
+    public SessionManager getSessionManager(String deploymentName) {
         DeploymentManager deploymentManager = getDeploymentManager(deploymentName);
         Assert.state(deploymentManager != null, "Deployment named '" + deploymentName + "' not found");
-        return getSessionHandler(deploymentManager);
+        return getSessionManager(deploymentManager);
     }
 
     @Override
-    public SessionHandler getSessionHandlerByPath(String path) {
+    public SessionManager getSessionManagerByPath(String path) {
         DeploymentManager deploymentManager = getDeploymentManagerByPath(path);
         Assert.state(deploymentManager != null, "Deployment with path '\" + path + \"' not found");
-        return getSessionHandler(deploymentManager);
+        return getSessionManager(deploymentManager);
     }
 
     @Nullable
-    private SessionHandler getSessionHandler(@NonNull DeploymentManager deploymentManager) {
+    private SessionManager getSessionManager(@NonNull DeploymentManager deploymentManager) {
         Deployment deployment = deploymentManager.getDeployment();
         if (deployment != null) {
-            SessionManager sessionManager = deployment.getSessionManager();
+            io.undertow.server.session.SessionManager sessionManager = deployment.getSessionManager();
             if (sessionManager instanceof TowSessionManager towSessionManager) {
-                return towSessionManager.getSessionHandler();
+                return towSessionManager.getSessionManager();
             }
         }
         return null;
