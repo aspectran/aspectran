@@ -3,16 +3,14 @@
         "http://aspectran.github.io/dtd/aspectran-8.dtd">
 <aspectran>
 
-    <description>
-        This demo app uses the Undertow server by default.
-        To use the Jetty server, activate the "jetty" profile.
-    </description>
-
+    <!-- Undertow 8080 -->
     <append file="/config/server/undertow/tow-server.xml"/>
     <append file="/config/server/undertow/tow-context-root.xml"/>
-    <append file="/config/server/jetty/jetty-server.xml"/>
-    <append file="/config/server/jetty/jetty-context-root.xml"/>
     <append resource="com/aspectran/aspectow/appmon/context/tow-context-appmon.xml"/>
     <append file="/config/server/undertow/tow-support.xml"/>
+
+    <!-- Jetty 8081 -->
+    <append file="/config/server/jetty/jetty-server.xml"/>
+    <append file="/config/server/jetty/jetty-context-root.xml"/>
 
 </aspectran>

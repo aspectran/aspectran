@@ -46,11 +46,11 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
-    private boolean shutdownGracefully;
+    private boolean shutdownGracefully = true;
 
     private GracefulShutdown gracefulShutdown;
 
-    private boolean autoStart;
+    private boolean autoStart = true;
 
     public JettyServer() {
         super();

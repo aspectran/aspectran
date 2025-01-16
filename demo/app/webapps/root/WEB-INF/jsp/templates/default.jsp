@@ -66,9 +66,11 @@
             </div>
             <div class="top-bar-right">
                 <ul class="dropdown menu" data-dropdown-menu>
+                    <% if (request.getServerPort() == 8080) { %>
                     <li>
                         <a href="/monitoring/">Monitoring</a>
                     </li>
+                    <% } %>
                     <li>
                         <a title="Demo Applications made with Aspectran">More Demo Apps</a>
                         <ul class="submenu menu vertical" data-submenu>

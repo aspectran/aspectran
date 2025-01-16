@@ -9,8 +9,6 @@
 
     <environment>
         <properties>
-            <item name="jetty.server.startup" value="true" valueType="boolean"/>
-            <item name="jetty.server.shutdownGracefully" value="true" valueType="boolean"/>
             <item name="jetty.server.port" value="8081" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
@@ -34,8 +32,6 @@
             </item>
         </arguments>
         <properties>
-            <item name="autoStart">%{jetty.server.startup}</item>
-            <item name="shutdownGracefully">%{jetty.server.shutdownGracefully}</item>
             <item name="maxConnections">%{jetty.server.maxConnections}</item>
             <item name="connectors" type="array">
                 <value>#{jetty.server.serverConnector}</value>

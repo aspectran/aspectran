@@ -76,8 +76,8 @@ public class JettyJasperInitializer extends JasperInitializer implements Activit
     }
 
     @Override
-    protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware,
-                                       boolean validate, boolean blockExternal) {
+    protected TldScanner newTldScanner(
+            ServletContext context, boolean namespaceAware, boolean validate, boolean blockExternal) {
         JettyTldScanner tldScanner = new JettyTldScanner(context, namespaceAware, validate, blockExternal);
         tldScanner.setClassLoader(context.getClassLoader());
         tldScanner.setTldResources(tldResources);

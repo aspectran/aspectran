@@ -2,7 +2,7 @@ system: {
     properties: {
         aspectran.encryption.password: demo!
         com.aspectran.core.context.builder.debugMode: false
-        com.aspectran.core.context.builder.useAponToLoadXml: true
+        com.aspectran.core.context.builder.useAponToLoadXml: false
     }
 }
 context: {
