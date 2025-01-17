@@ -34,7 +34,6 @@
     </aspect>
 
     <append resource="web/home/main.xml"/>
-    <append resource="web/home/monitoring.xml"/>
     <append resource="web/examples/hello-world.xml"/>
     <append resource="web/examples/gs-rest-service.xml"/>
     <append resource="web/examples/file-upload.xml"/>
