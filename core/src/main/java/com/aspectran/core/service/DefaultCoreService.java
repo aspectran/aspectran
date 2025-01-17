@@ -54,10 +54,8 @@ public class DefaultCoreService extends AbstractCoreService {
     }
 
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        Assert.state(!isDerived(),
-            "Must not be called for derived services");
-        Assert.state(!hasActivityContextBuilder(),
-            "prepare() method can be called only once");
+        Assert.state(!isDerived(), "Must not be called for derived services");
+        Assert.state(!hasActivityContextBuilder(), "prepare() method can be called only once");
 
         try {
             setAspectranConfig(aspectranConfig);
@@ -84,6 +82,7 @@ public class DefaultCoreService extends AbstractCoreService {
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.configure(contextConfig);
             setActivityContextBuilder(activityContextBuilder);
+
             if (getBasePath() == null) {
                 setBasePath(activityContextBuilder.getBasePath());
             }

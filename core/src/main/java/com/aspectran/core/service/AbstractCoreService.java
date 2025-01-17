@@ -118,8 +118,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     protected void setActivityContextBuilder(ActivityContextBuilder activityContextBuilder) {
-        Assert.state(!hasActivityContextBuilder(),
-            "ActivityContextBuilder is already configured");
+        Assert.state(!hasActivityContextBuilder(), "ActivityContextBuilder is already configured");
         this.activityContextBuilder = activityContextBuilder;
     }
 

@@ -280,8 +280,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
             ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
             if (profilesConfig != null) {
-                setActiveProfiles(profilesConfig.getActiveProfiles());
-                setDefaultProfiles(profilesConfig.getDefaultProfiles());
+                configure(profilesConfig);
+            } else if (getMasterService() != null) {
+                for (CoreService parentService = getMasterService().getParentService();
+                     parentService != null; parentService = parentService.getParentService()) {
+                    if (parentService.getAspectranConfig().hasContextConfig()) {
+                        ContextConfig parentContextConfig = parentService.getAspectranConfig().getContextConfig();
+                        if (parentContextConfig.hasProfilesConfig()) {
+                            configure(parentContextConfig.getProfilesConfig());
+                            break;
+                        }
+                    }
+                }
             }
 
             ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
@@ -305,6 +315,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 }
             }
         }
+    }
+
+    private void configure(@NonNull ContextProfilesConfig profilesConfig) {
+        setActiveProfiles(profilesConfig.getActiveProfiles());
+        setDefaultProfiles(profilesConfig.getDefaultProfiles());
     }
 
     protected boolean isUseAponToLoadXml() {

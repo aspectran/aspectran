@@ -183,6 +183,10 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(daemon);
     }
 
+    public boolean hasWebConfig() {
+        return hasValue(web);
+    }
+
     public WebConfig getWebConfig() {
         return getParameters(web);
     }

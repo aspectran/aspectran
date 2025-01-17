@@ -99,7 +99,6 @@ public interface ActivityContextBuilder {
 
     ActivityContext build(String... contextRules) throws ActivityContextBuilderException;
 
-
     ActivityContext build() throws ActivityContextBuilderException;
 
     void destroy();

@@ -112,11 +112,7 @@ public class DefaultWebServiceBuilder {
         if (rootWebService == null || aspectranConfigParam != null) {
             ServletContext servletContext = servlet.getServletContext();
             AspectranConfig aspectranConfig = makeAspectranConfig(servletContext, aspectranConfigParam);
-            DefaultWebService derivedWebService = doBuild(servletContext, rootWebService, aspectranConfig);
-            if (rootWebService != null) {
-                derivedWebService.setSessionAdaptable(rootWebService.isSessionAdaptable());
-            }
-            return derivedWebService;
+            return doBuild(servletContext, rootWebService, aspectranConfig);
         } else {
             return null;
         }
@@ -144,10 +140,14 @@ public class DefaultWebServiceBuilder {
      * @return the instance of {@code DefaultWebService}
      */
     @NonNull
-    private static DefaultWebService doBuild(ServletContext servletContext,
-                                             @Nullable CoreService parentService,
-                                             @NonNull AspectranConfig aspectranConfig) {
+    private static DefaultWebService doBuild(
+            ServletContext servletContext,
+            @Nullable CoreService parentService,
+            @NonNull AspectranConfig aspectranConfig) {
         DefaultWebService webService = new DefaultWebService(servletContext, parentService, false);
+        if (parentService instanceof WebService parentWebService) {
+            webService.setSessionAdaptable(parentWebService.isSessionAdaptable());
+        }
         webService.configure(aspectranConfig);
         setServiceStateListener(webService);
         return webService;

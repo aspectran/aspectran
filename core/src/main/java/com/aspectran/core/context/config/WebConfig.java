@@ -67,6 +67,10 @@ public class WebConfig extends AbstractParameters {
         return this;
     }
 
+    public boolean hasTrailingSlashRedirect() {
+        return hasValue(trailingSlashRedirect);
+    }
+
     public boolean isTrailingSlashRedirect() {
         return getBoolean(trailingSlashRedirect, false);
     }
@@ -74,6 +78,10 @@ public class WebConfig extends AbstractParameters {
     public WebConfig setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         putValue(WebConfig.trailingSlashRedirect, trailingSlashRedirect);
         return this;
+    }
+
+    public boolean hasLegacyHeadHandling() {
+        return hasValue(legacyHeadHandling);
     }
 
     public boolean isLegacyHeadHandling() {

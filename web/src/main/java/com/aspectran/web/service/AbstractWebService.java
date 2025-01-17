@@ -26,6 +26,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractWebService extends DefaultCoreService implements WebService {
 
     private final String contextPath;
@@ -38,9 +41,9 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     private String uriDecoding;
 
-    private boolean trailingSlashRedirect;
+    private boolean trailingSlashRedirect = true;
 
-    private boolean legacyHeadHandling;
+    private boolean legacyHeadHandling = true;
 
     AbstractWebService(@NonNull ServletContext servletContext, @Nullable CoreService parentService, boolean derived) {
         super(parentService, derived);
@@ -112,13 +115,21 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
             super.configure(aspectranConfig);
         }
 
-        WebConfig webConfig = aspectranConfig.getWebConfig();
-        if (webConfig != null) {
+        List<WebConfig> webConfigList = new ArrayList<>();
+        if (aspectranConfig.hasWebConfig()) {
+            webConfigList.add(aspectranConfig.getWebConfig());
+        }
+        for (CoreService parentService = getParentService();
+             parentService != null; parentService = parentService.getParentService()) {
+            webConfigList.add(0, parentService.getAspectranConfig().getWebConfig());
+        }
+        for (WebConfig webConfig : webConfigList) {
             configure(webConfig);
         }
 
         if (getParentService() != null && isDerived()) {
-            setServiceClassLoader(new WebServiceClassLoader(getParentService().getActivityContext().getClassLoader()));
+            ClassLoader parentClassLoader = getParentService().getActivityContext().getClassLoader();
+            setServiceClassLoader(new WebServiceClassLoader(parentClassLoader));
         }
     }
 
@@ -130,8 +141,13 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
             this.defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);
         }
 
-        setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
-        setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
+        if (webConfig.hasTrailingSlashRedirect()) {
+            setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        }
+
+        if (webConfig.isLegacyHeadHandling()) {
+            setLegacyHeadHandling(webConfig.isLegacyHeadHandling());
+        }
 
         AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();
         if (acceptableConfig != null) {
