@@ -8,12 +8,12 @@
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
   PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-  SYSTEM "http://aspectran.github.io/dtd/aspectran-8.dtd">
+  SYSTEM "https://aspectran.com/dtd/aspectran-8.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
   <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-          "http://aspectran.github.io/dtd/aspectran-8.dtd">
+          "https://aspectran.com/dtd/aspectran-8.dtd">
 -->
 
 <!ELEMENT aspectran (
