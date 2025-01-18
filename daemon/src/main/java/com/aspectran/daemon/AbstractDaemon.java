@@ -229,7 +229,10 @@ public class AbstractDaemon implements Daemon {
             fileCommander = null;
         }
         if (daemonService != null) {
-            daemonService.stop();
+            if (daemonService.isActive()) {
+                daemonService.stop();
+            }
+            daemonService.withdraw();
             daemonService = null;
         }
     }

@@ -198,13 +198,4 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
-//    DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
-//        CoreService masterService = getActivityContext().getMasterService();
-//        DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
-//        if (rootWebService.isOrphan()) {
-//            rootWebService.getServiceLifeCycle().start();
-//        }
-//        return rootWebService;
-//    }
-
 }

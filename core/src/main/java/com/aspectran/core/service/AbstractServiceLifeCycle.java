@@ -34,7 +34,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     private final Object lock = new Object();
 
-    private final List<ServiceLifeCycle> derivedServices = new ArrayList<>();
+    private final List<ServiceLifeCycle> subServices = new ArrayList<>();
 
     private final CoreService rootService;
 
@@ -49,7 +49,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         this.parentService = parentService;
         if (parentService != null) {
             this.rootService = parentService.getRootService();
-            this.rootService.getServiceLifeCycle().joinDerivedService(this);
+            this.parentService.getServiceLifeCycle().addService(this);
         } else {
             this.rootService = (CoreService)this;
         }
@@ -87,26 +87,22 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     }
 
     @Override
-    public void joinDerivedService(ServiceLifeCycle serviceLifeCycle) {
-        derivedServices.add(serviceLifeCycle);
+    public void addService(ServiceLifeCycle serviceLifeCycle) {
+        subServices.add(serviceLifeCycle);
     }
 
     @Override
-    public void withdrawDerivedService(@NonNull ServiceLifeCycle serviceLifeCycle) {
-        Assert.state(serviceLifeCycle.isDerived(), "Not derived service: " + serviceLifeCycle);
+    public void removeService(@NonNull ServiceLifeCycle serviceLifeCycle) {
+        Assert.state(!serviceLifeCycle.isRootService(), "Root service cannot be withdrawn");
         Assert.state(!serviceLifeCycle.isActive(), "Not yet stopped service: " + serviceLifeCycle);
-        derivedServices.remove(serviceLifeCycle);
+        subServices.remove(serviceLifeCycle);
     }
 
     @Override
-    public void leaveFromRootService() {
-        if (isDerived()) {
-            getRootService().getServiceLifeCycle().withdrawDerivedService(this);
+    public void withdraw() {
+        if (getParentService() != null) {
+            getParentService().getServiceLifeCycle().removeService(this);
         }
-    }
-
-    protected void clearDerivedServices() {
-        derivedServices.clear();
     }
 
     protected Object getLock() {
@@ -128,7 +124,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
             logger.info("Started " + getServiceName());
 
-            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.start();
             }
 
@@ -159,7 +155,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 }
             }
 
-            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.stop();
             }
 
@@ -189,7 +185,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused();
             }
 
-            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.stop();
             }
 
@@ -209,7 +205,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
             logger.info("Restarted " + getServiceName());
 
-            for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.start();
             }
 
@@ -232,10 +228,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            if (!isDerived()) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.pause();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                serviceLifeCycle.pause();
             }
 
             if (serviceStateListener != null) {
@@ -254,10 +248,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            if (!isDerived()) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.pause(timeout);
-                }
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                serviceLifeCycle.pause(timeout);
             }
 
             if (serviceStateListener != null) {
@@ -276,10 +268,8 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            if (!isDerived()) {
-                for (ServiceLifeCycle serviceLifeCycle : derivedServices) {
-                    serviceLifeCycle.resume();
-                }
+            for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                serviceLifeCycle.resume();
             }
 
             if (serviceStateListener != null) {

@@ -15,17 +15,14 @@
  */
 package com.aspectran.undertow.server.handler;
 
-import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.undertow.server.TowServer;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
+import com.aspectran.undertow.server.session.TowSessionManager;
+import com.aspectran.undertow.service.DefaultTowService;
 import com.aspectran.undertow.service.DefaultTowServiceBuilder;
-import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
@@ -35,12 +32,7 @@ import io.undertow.servlet.api.ServletContainer;
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
-        implements RequestHandlerFactory, DisposableBean {
-
-    private ActivityContext context;
-
-    private TowServer towServer;
+public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory implements RequestHandlerFactory {
 
     private ResourceManager resourceManager;
 
@@ -50,11 +42,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
 
     private AspectranConfig aspectranConfig;
 
-    private TowService towService;
-
-    public void setTowServer(TowServer towServer) {
-        this.towServer = towServer;
-    }
+    private DefaultTowService towService;
 
     public void setResourceManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
@@ -72,11 +60,21 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
         this.aspectranConfig = aspectranConfig;
     }
 
+    @Override
     public HttpHandler createHandler() throws Exception {
-        TowService towService = createTowService();
+        createTowService();
 
         if (sessionManager != null) {
+            if (sessionManager instanceof TowSessionManager towSessionManager) {
+                try {
+                    towSessionManager.initialize();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
             sessionManager.start();
+        } else {
+            towService.setSessionAdaptable(false);
         }
 
         LightRequestHandler requestHandler = new LightRequestHandler(towService, sessionManager, sessionConfig);
@@ -100,9 +98,13 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
 
     @Override
     public void dispose() throws Exception {
+        destroyTowService();
+        if (sessionManager != null) {
+            sessionManager.stop();
+        }
     }
 
-    private TowService createTowService() throws Exception {
+    private void createTowService() throws Exception {
         Assert.state(towService == null, "TowService is already configured");
         CoreService masterService = getActivityContext().getMasterService();
         if (aspectranConfig == null) {
@@ -118,34 +120,17 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory
             towService = DefaultTowServiceBuilder.build(masterService, aspectranConfig);
         }
         if (towService.isOrphan()) {
-            towService.getServiceLifeCycle().start();
+            towService.start();
         }
-        if (towServer != null) {
-            towServer.addLifeCycleListener(new LifeCycle.Listener() {
-                @Override
-                public void lifeCycleStopping(LifeCycle event) {
-                    destroyTowService();
-                }
-            });
-        }
-        return towService;
     }
 
     private void destroyTowService() {
         if (towService != null) {
-            if (towService.getServiceLifeCycle().isActive()) {
-                towService.getServiceLifeCycle().stop();
-                towService.getServiceLifeCycle().leaveFromRootService();
+            if (towService.isActive()) {
+                towService.stop();
+                towService.withdraw();
             }
             towService = null;
-        }
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        destroyTowService();
-        if (sessionManager != null) {
-            sessionManager.stop();
         }
     }
 

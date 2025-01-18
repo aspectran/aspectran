@@ -24,6 +24,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
+import com.aspectran.web.service.WebService;
 import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
@@ -94,17 +95,12 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
     @Override
     public void dispose() throws Exception {
-        for (String deploymentName : getServletContainer().listDeployments()) {
-            DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
-            if (manager != null) {
-                manager.stop();
-                manager.undeploy();
-            }
-        }
+        disposeServletContainer();
     }
 
     @NonNull
     private void createServletContainer() throws Exception {
+        Assert.state(servletContainer == null, "ServletContainer is already configured");
         servletContainer = new ServletContainerImpl();
         if (towServletContexts == null) {
             towServletContexts = getActivityContext().getBeanRegistry().getBeansOfType(TowServletContext.class);
@@ -130,14 +126,35 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         }
     }
 
+    private void disposeServletContainer() throws Exception {
+        for (String deploymentName : getServletContainer().listDeployments()) {
+            DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
+            if (manager != null) {
+                ServletContext servletContext = manager.getDeployment().getServletContext();
+                disposeRootWebService(servletContext);
+                manager.stop();
+                manager.undeploy();
+            }
+        }
+        servletContainer = null;
+    }
+
     @NonNull
     private DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
         CoreService masterService = getActivityContext().getMasterService();
         DefaultWebService rootWebService = DefaultWebServiceBuilder.build(servletContext, masterService);
         if (rootWebService.isOrphan()) {
-            rootWebService.getServiceLifeCycle().start();
+            rootWebService.start();
         }
         return rootWebService;
+    }
+
+    private void disposeRootWebService(ServletContext servletContext) {
+        DefaultWebService webService = WebService.findWebService(servletContext);
+        if (webService.isActive()) {
+            webService.stop();
+        }
+        webService.withdraw();
     }
 
 }

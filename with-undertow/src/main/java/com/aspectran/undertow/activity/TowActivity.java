@@ -128,7 +128,7 @@ public class TowActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (towService.isSessionsEnabled()) {
+            if (towService.isSessionAdaptable()) {
                 if (getParentActivity() == null) {
                     SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
                     SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);

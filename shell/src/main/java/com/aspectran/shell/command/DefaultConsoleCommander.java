@@ -252,7 +252,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
 
     public void release() {
         if (shellService != null) {
-            shellService.stop();
+            if (shellService.isActive()) {
+                shellService.stop();
+            }
+            shellService.withdraw();
             shellService = null;
         }
     }

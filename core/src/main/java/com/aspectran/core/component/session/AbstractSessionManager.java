@@ -518,6 +518,9 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     @Override
     protected void doInitialize() throws Exception {
+        if (sessionCache == null) {
+            throw new IllegalStateException("SessionCache is not set");
+        }
         if (sessionCache instanceof AbstractComponent component && component.isInitializable()) {
             component.initialize();
         }

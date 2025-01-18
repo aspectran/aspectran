@@ -23,6 +23,9 @@ import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Abstract base class for {@code TowService} implementations.
  *
@@ -34,10 +37,19 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
     private boolean trailingSlashRedirect;
 
-    private boolean sessionsEnabled = true;
+    private boolean sessionAdaptable = true;
 
     AbstractTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
+    }
+
+    @Override
+    public boolean isSessionAdaptable() {
+        return sessionAdaptable;
+    }
+
+    public void setSessionAdaptable(boolean sessionAdaptable) {
+        this.sessionAdaptable = sessionAdaptable;
     }
 
     public String getUriDecoding() {
@@ -57,29 +69,29 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
     }
 
     @Override
-    public boolean isSessionsEnabled() {
-        return sessionsEnabled;
-    }
-
-    public void disableSessions() {
-        if (!sessionsEnabled) {
-            throw new IllegalStateException("sessions is already disabled");
-        }
-        sessionsEnabled = false;
-    }
-
-    @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
-        WebConfig webConfig = aspectranConfig.getWebConfig();
-        if (webConfig != null) {
+        super.configure(aspectranConfig);
+
+        List<WebConfig> webConfigList = new ArrayList<>();
+        if (aspectranConfig.hasWebConfig()) {
+            webConfigList.add(aspectranConfig.getWebConfig());
+        }
+        for (CoreService parentService = getParentService();
+             parentService != null; parentService = parentService.getParentService()) {
+            webConfigList.add(0, parentService.getAspectranConfig().getWebConfig());
+        }
+        for (WebConfig webConfig : webConfigList) {
             configure(webConfig);
         }
-        super.configure(aspectranConfig);
     }
 
     protected void configure(@NonNull WebConfig webConfig) {
         setUriDecoding(webConfig.getUriDecoding());
-        setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+
+        if (webConfig.hasTrailingSlashRedirect()) {
+            setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        }
+
         AcceptableConfig acceptableConfig = webConfig.getAcceptableConfig();
         if (acceptableConfig != null) {
             setRequestAcceptor(new RequestAcceptor(acceptableConfig));

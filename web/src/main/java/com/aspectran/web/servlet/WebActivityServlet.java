@@ -118,7 +118,10 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         super.destroy();
 
         if (standalone) {
-            webService.stop();
+            if (webService.isActive()) {
+                webService.stop();
+            }
+            webService.withdraw();
         }
 
         logger.info("Destroyed " + getMyName());

@@ -146,7 +146,6 @@ public class DefaultCoreService extends AbstractCoreService {
     @Override
     protected void doStop() {
         if (!isDerived()) {
-            clearDerivedServices();
             beforeContextDestroy();
             destroyActivityContext();
         }

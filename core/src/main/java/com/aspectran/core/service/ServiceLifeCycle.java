@@ -47,15 +47,15 @@ public interface ServiceLifeCycle {
     void setServiceStateListener(ServiceStateListener serviceStateListener);
 
     /**
-     * Add a derived core service.
+     * Add a sub-service.
      * Derived services follow the life cycle of the root service.
      * @param serviceLifeCycle the service life cycle
      */
-    void joinDerivedService(ServiceLifeCycle serviceLifeCycle);
+    void addService(ServiceLifeCycle serviceLifeCycle);
 
-    void withdrawDerivedService(ServiceLifeCycle serviceLifeCycle);
+    void removeService(ServiceLifeCycle serviceLifeCycle);
 
-    void leaveFromRootService();
+    void withdraw();
 
     /**
      * Starts the service.
