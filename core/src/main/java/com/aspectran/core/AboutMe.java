@@ -39,13 +39,13 @@ public abstract class AboutMe {
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
         } else {
-            VERSION = System.getProperty("aspectran.version", "8.2.x");
+            VERSION = System.getProperty("aspectran.version", "8.3.x");
         }
 
         POWERED_BY = "Powered by Aspectran " + VERSION;
         POWERED_BY_LINK = "<a href=\"https://aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
 
-        // Show warning when RC# or M# is in version string
+        // Show warning when RC# or M# or -SNAPSHOT is in version string
         STABLE = !VERSION.matches("^.*[.-](RC|M|SNAPSHOT)[0-9]?$");
     }
 
