@@ -535,7 +535,7 @@ public abstract class ResourceUtils {
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
     @NonNull
-    public static Reader getReader(final File file, String encoding) throws IOException {
+    public static Reader getReader(File file, String encoding) throws IOException {
         Assert.notNull(file, "Resource file must not be null");
         InputStream stream = new FileInputStream(file);
         Reader reader;
@@ -555,7 +555,7 @@ public abstract class ResourceUtils {
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
     @NonNull
-    public static Reader getReader(final URL url, String encoding) throws IOException {
+    public static Reader getReader(URL url, String encoding) throws IOException {
         Assert.notNull(url, "Resource URL must not be null");
         URLConnection connection = url.openConnection();
         connection.setUseCaches(false); // disable caches to get fresh data for reloading
@@ -613,7 +613,7 @@ public abstract class ResourceUtils {
      */
     @NonNull
     public static String read(@NonNull Reader reader) throws IOException {
-        final char[] buffer = new char[1024];
+        char[] buffer = new char[1024];
         StringBuilder sb = new StringBuilder();
         int len;
         while ((len = reader.read(buffer)) != -1) {

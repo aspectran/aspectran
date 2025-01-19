@@ -17,6 +17,8 @@ package com.aspectran.core.adapter;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
 
 /**
@@ -53,6 +55,8 @@ public interface ApplicationAdapter {
      *      of the existence of the file.
      */
     File toRealPathAsFile(String filePath) throws IOException;
+
+    URI toRealPathAsURI(String filePath) throws IOException, URISyntaxException;
 
     /**
      * Returns the value for an attribute with the given name.

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
@@ -58,11 +59,10 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
     @Override
     public File toRealPathAsFile(String filePath) throws IOException {
         Assert.notNull(filePath, "filePath must not be null");
-        File file;
         if (filePath.startsWith(FILE_URL_PREFIX)) {
             // Using url fully qualified paths
             URI uri = URI.create(filePath);
-            file = new File(uri);
+            return new File(uri);
         } else if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
             // Using classpath relative resources
             String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
@@ -70,13 +70,29 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             if (!URL_PROTOCOL_FILE.equals(url.getProtocol())) {
                 throw new FileNotFoundException("Could not find resource file for given classpath: " + path);
             }
-            file = new File(url.getFile());
+            return new File(url.getFile());
         } else if (StringUtils.hasText(basePath)) {
-            file = new File(basePath, filePath);
+            return new File(basePath, filePath);
         } else {
-            file = new File(filePath);
+            return new File(filePath);
         }
-        return file;
+    }
+
+    @Override
+    public URI toRealPathAsURI(String filePath) throws IOException, URISyntaxException {
+        Assert.notNull(filePath, "filePath must not be null");
+        if (filePath.startsWith(FILE_URL_PREFIX)) {
+            // Using url fully qualified paths
+            return URI.create(filePath);
+        } else if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
+            // Using classpath relative resources
+            String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
+            return ResourceUtils.getResource(path).toURI();
+        } else if (StringUtils.hasText(basePath)) {
+            return new File(basePath, filePath).toURI();
+        } else {
+            return new File(filePath).toURI();
+        }
     }
 
 }
