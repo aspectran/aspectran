@@ -186,6 +186,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
                 logger.error("Unable to stop embedded Jetty server", e);
             }
         }
+        for (Handler handler : getHandlers()) {
+            handleDeferredDispose(handler);
+        }
     }
 
     private void handleDeferredInitialize(Handler handler) {
@@ -201,6 +204,22 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     private void handleDeferredInitialize(@NonNull List<Handler> handlers) {
         for (Handler handler : handlers) {
             handleDeferredInitialize(handler);
+        }
+    }
+
+    private void handleDeferredDispose(Handler handler) {
+        if (handler instanceof JettyWebAppContext jettyWebAppContext) {
+            jettyWebAppContext.deferredDispose();
+        } else if (handler instanceof Handler.Wrapper handlerWrapper) {
+            handleDeferredDispose(handlerWrapper.getHandler());
+        } else if (handler instanceof Handler.Collection handlerCollection) {
+            handleDeferredDispose(handlerCollection.getHandlers());
+        }
+    }
+
+    private void handleDeferredDispose(@NonNull List<Handler> handlers) {
+        for (Handler handler : handlers) {
+            handleDeferredDispose(handler);
         }
     }
 

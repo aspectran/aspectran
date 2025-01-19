@@ -24,6 +24,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
 import jakarta.servlet.ServletContainerInitializer;
@@ -78,25 +79,22 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     public void setWar(String war) {
-        File warFile = null;
         try {
-            warFile = new File(war);
+            File warFile = new File(war);
             if (warFile.isDirectory()) {
                 if (!warFile.exists() && !warFile.mkdirs()) {
-                    throw new IOException("Unable to create war directory: " + warFile);
+                    throw new IOException("Unable to create WAR directory: " + warFile);
                 }
-                setExtractWAR(true);
             }
             super.setWar(warFile.getCanonicalPath());
         } catch (Exception e) {
-            logger.error("Failed to establish Scratch directory: " + warFile, e);
+            logger.error("Failed to establish WAR of the webapp: " + war, e);
         }
     }
 
     public void setTempDirectory(String tempDirectory) {
-        File tempDir = null;
         try {
-            tempDir = new File(tempDirectory);
+            File tempDir = new File(tempDirectory);
             if (!tempDir.exists()) {
                 if (!tempDir.mkdirs()) {
                     throw new IOException("Unable to create scratch directory: " + tempDir);
@@ -104,7 +102,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             }
             super.setTempDirectory(tempDir.getCanonicalFile());
         } catch (Exception e) {
-            logger.error("Failed to establish Scratch directory: " + tempDir, e);
+            logger.error("Failed to establish scratch directory: " + tempDirectory, e);
         }
     }
 
@@ -264,6 +262,14 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                 }
             });
         }
+    }
+
+    public void deferredDispose() {
+        DefaultWebService webService = WebService.findWebService(getServletContext());
+        if (webService.isActive()) {
+            webService.stop();
+        }
+        webService.withdraw();
     }
 
 }

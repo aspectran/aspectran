@@ -66,7 +66,7 @@
                     <properties>
                         <item name="tldResources" type="array">
                             <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                            <value>/webapps/root/WEB-INF/taglibs/</value>
+                            <value>/webapps/%{jetty.context.root.name}/WEB-INF/taglibs/</value>
                         </item>
                     </properties>
                 </bean>
