@@ -47,7 +47,7 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
         File storeDir;
         if (getStoreDir() != null) {
             if (getApplicationAdapter() != null) {
-                storeDir = getApplicationAdapter().toRealPathAsFile(getStoreDir());
+                storeDir = getApplicationAdapter().getRealPath(getStoreDir()).toFile();
             } else {
                 storeDir = new File(getStoreDir());
             }

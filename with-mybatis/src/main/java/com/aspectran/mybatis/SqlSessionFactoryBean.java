@@ -96,7 +96,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
                 is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()));
             } else {
-                is = new FileInputStream(applicationAdapter.toRealPathAsFile(configLocation));
+                is = new FileInputStream(applicationAdapter.getRealPath(configLocation).toFile());
             }
             sqlSessionFactory = buildSqlSessionFactory(is);
         }

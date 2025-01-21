@@ -20,7 +20,7 @@
           class="com.aspectran.undertow.server.servlet.TowServletContext"
           scope="prototype">
         <properties>
-            <item name="deploymentName">%{tow.context.root.name}.war</item>
+            <item name="deploymentName">%{tow.context.root.name}</item>
             <item name="contextPath">%{tow.context.root.path}</item>
             <item name="resourceManager">
                 <bean class="com.aspectran.undertow.server.handler.resource.TowResourceManager">

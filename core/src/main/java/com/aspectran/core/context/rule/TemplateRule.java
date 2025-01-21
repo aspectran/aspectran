@@ -296,7 +296,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
     private String loadTemplateSource(ActivityContext context) throws IOException {
         String templateSource = null;
         if (this.file != null) {
-            File file = context.getApplicationAdapter().toRealPathAsFile(this.file);
+            File file = context.getApplicationAdapter().getRealPath(this.file).toFile();
             templateSource = ResourceUtils.read(file, this.encoding);
         } else if (this.resource != null) {
             ClassLoader classLoader = context.getAvailableActivity().getClassLoader();
@@ -311,7 +311,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
 
     private void loadCachedTemplateSource(ActivityContext context) throws IOException {
         if (this.file != null) {
-            File file = context.getApplicationAdapter().toRealPathAsFile(this.file);
+            File file = context.getApplicationAdapter().getRealPath(this.file).toFile();
             long time1 = this.lastModifiedTime;
             long time2 = file.lastModified();
             if (time2 > time1) {

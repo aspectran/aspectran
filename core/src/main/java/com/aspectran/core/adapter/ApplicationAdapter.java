@@ -15,10 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Enumeration;
 
 /**
@@ -30,33 +27,17 @@ public interface ApplicationAdapter {
 
     /**
      * Returns the base path that the current application is mapped to.
-     * @return the base path for this application
+     * @return the base path for the current application
      */
     String getBasePath();
 
     /**
-     * Returns the real path of the existing file as a canonical pathname string.
-     * @param filePath the relative path or classpath of the file to find
-     * @return the canonical pathname string of the found file
-     * @throws IOException If there is no file corresponding to the classpath,
-     *      an exception is thrown, and if it is not the classpath, no exception
-     *      is thrown because the {@link File} instance is returned regardless
-     *      of the existence of the file.
+     * Returns the real file system path for a given virtual path relative
+     * to the base path of the current application.
+     * @param path the virtual path to be translated to a real path
+     * @return the real path
      */
-    String toRealPath(String filePath) throws IOException;
-
-    /**
-     * Returns the real path of an existing file.
-     * @param filePath the relative path or classpath of the file to find
-     * @return the real path of the found file
-     * @throws IOException If there is no file corresponding to the classpath,
-     *      an exception is thrown, and if it is not the classpath, no exception
-     *      is thrown because the {@link File} instance is returned regardless
-     *      of the existence of the file.
-     */
-    File toRealPathAsFile(String filePath) throws IOException;
-
-    URI toRealPathAsURI(String filePath) throws IOException, URISyntaxException;
+    Path getRealPath(String path);
 
     /**
      * Returns the value for an attribute with the given name.

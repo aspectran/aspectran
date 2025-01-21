@@ -26,7 +26,6 @@ import jakarta.servlet.ServletContext;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -89,8 +88,7 @@ public class TowJasperInitializer extends JasperInitializer implements ActivityC
             if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
                 return ResourceUtils.getURL(resourceLocation, context.getClassLoader());
             } else {
-                File file = context.getApplicationAdapter().toRealPathAsFile(resourceLocation);
-                return file.toURI().toURL();
+                return context.getApplicationAdapter().getRealPath(resourceLocation).toUri().toURL();
             }
         } catch (IOException ex) {
             throw new FileNotFoundException("In TLD scanning, the supplied resource '" +

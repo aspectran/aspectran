@@ -1,19 +1,5 @@
 context: {
     rules: classpath:config/root-context.xml
-    resources: [
-    ]
-    profiles: {
-    }
-    autoReload: {
-        scanIntervalSeconds: 5
-        enabled: false
-    }
-    singleton: false
-}
-scheduler: {
-    startDelaySeconds: 3
-    waitOnShutdown: true
-    enabled: false
 }
 web: {
     uriDecoding: utf-8

@@ -16,19 +16,11 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.StringUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.file.Path;
 
-import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
-import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_FILE;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -37,61 +29,37 @@ import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_FILE;
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
-    private final String basePath;
+    private final Path basePath;
 
     /**
      * Instantiates a new AbstractApplicationAdapter.
      */
     public AbstractApplicationAdapter(String basePath) {
-        this.basePath = basePath;
+        this.basePath = (basePath != null ? Path.of(basePath).normalize().toAbsolutePath() : null);
     }
 
     @Override
     public String getBasePath() {
-        return basePath;
+        return (basePath != null ? basePath.toString() : null);
     }
 
     @Override
-    public String toRealPath(String filePath) throws IOException {
-        return toRealPathAsFile(filePath).getCanonicalPath();
-    }
-
-    @Override
-    public File toRealPathAsFile(String filePath) throws IOException {
-        Assert.notNull(filePath, "filePath must not be null");
-        if (filePath.startsWith(FILE_URL_PREFIX)) {
+    public Path getRealPath(String path) {
+        Assert.notNull(path, "path must not be null");
+        if (path.startsWith(FILE_URL_PREFIX)) {
             // Using url fully qualified paths
-            URI uri = URI.create(filePath);
-            return new File(uri);
-        } else if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
-            // Using classpath relative resources
-            String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
-            URL url = ResourceUtils.getResource(path);
-            if (!URL_PROTOCOL_FILE.equals(url.getProtocol())) {
-                throw new FileNotFoundException("Could not find resource file for given classpath: " + path);
+            return Path.of(URI.create(path));
+        } else {
+            Path pathToUse = Path.of(path).normalize();
+            if (basePath != null) {
+                if (pathToUse.toAbsolutePath().startsWith(basePath)) {
+                    return pathToUse;
+                } else {
+                    return Path.of(basePath.toString(), pathToUse.toString()).toAbsolutePath();
+                }
+            } else {
+                return pathToUse;
             }
-            return new File(url.getFile());
-        } else if (StringUtils.hasText(basePath)) {
-            return new File(basePath, filePath);
-        } else {
-            return new File(filePath);
-        }
-    }
-
-    @Override
-    public URI toRealPathAsURI(String filePath) throws IOException, URISyntaxException {
-        Assert.notNull(filePath, "filePath must not be null");
-        if (filePath.startsWith(FILE_URL_PREFIX)) {
-            // Using url fully qualified paths
-            return URI.create(filePath);
-        } else if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
-            // Using classpath relative resources
-            String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
-            return ResourceUtils.getResource(path).toURI();
-        } else if (StringUtils.hasText(basePath)) {
-            return new File(basePath, filePath).toURI();
-        } else {
-            return new File(filePath).toURI();
         }
     }
 

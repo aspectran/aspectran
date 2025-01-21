@@ -44,10 +44,11 @@ public abstract class PathUtils {
         int separatorIndex = path.lastIndexOf(REGULAR_FILE_SEPARATOR_CHAR);
         if (separatorIndex != -1) {
             String newPath = path.substring(0, separatorIndex);
-            if (!relativePath.startsWith(REGULAR_FILE_SEPARATOR)) {
-                newPath += REGULAR_FILE_SEPARATOR_CHAR;
+            if (relativePath.startsWith(REGULAR_FILE_SEPARATOR)) {
+                return newPath + relativePath;
+            } else {
+                return (newPath + REGULAR_FILE_SEPARATOR_CHAR + relativePath);
             }
-            return newPath + relativePath;
         } else {
             return relativePath;
         }
@@ -132,7 +133,7 @@ public abstract class PathUtils {
             pathElements.addFirst(CURRENT_PATH);
         }
 
-        final String joined = StringUtils.toDelimitedString(pathElements, REGULAR_FILE_SEPARATOR);
+        String joined = StringUtils.toDelimitedString(pathElements, REGULAR_FILE_SEPARATOR);
         // avoid string concatenation with empty prefix
         return prefix.isEmpty() ? joined : prefix + joined;
     }

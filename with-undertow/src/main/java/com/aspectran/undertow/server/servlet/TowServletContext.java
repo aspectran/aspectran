@@ -32,8 +32,9 @@ import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -68,11 +69,9 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     }
 
     public void setScratchDir(String scratchDir) throws IOException {
-        File dir = getApplicationAdapter().toRealPathAsFile(scratchDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        setTempDir(getApplicationAdapter().toRealPathAsFile(scratchDir));
+        Path dir = getApplicationAdapter().getRealPath(scratchDir);
+        Files.createDirectories(dir);
+        setTempDir(dir);
     }
 
     public SessionManager getSessionManager() {

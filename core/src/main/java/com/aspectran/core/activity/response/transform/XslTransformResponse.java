@@ -118,7 +118,7 @@ public class XslTransformResponse extends TransformResponse {
         boolean noCache = templateRule.isNoCache();
 
         if (templateFile != null) {
-            File file = activity.getApplicationAdapter().toRealPathAsFile(templateFile);
+            File file = activity.getApplicationAdapter().getRealPath(templateFile).toFile();
             if (noCache) {
                 this.templates = createTemplates(file);
                 determineOutputStyle();

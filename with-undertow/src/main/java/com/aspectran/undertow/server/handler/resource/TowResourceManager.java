@@ -22,7 +22,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
-import java.io.IOException;
 
 public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
@@ -67,12 +66,12 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         return super.getBasePath().toString();
     }
 
-    public TowResourceManager setBase(String base) throws IOException {
+    public TowResourceManager setBase(String base) {
         if (!StringUtils.hasText(base)) {
             throw new IllegalArgumentException("Base path must not be null or empty");
         }
         if (applicationAdapter != null) {
-            return setBase(applicationAdapter.toRealPathAsFile(base));
+            return setBase(applicationAdapter.getRealPath(base).toFile());
         } else {
             return setBase(new File(base));
         }
