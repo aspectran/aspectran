@@ -114,7 +114,7 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
             if (contextConfig != null) {
                 String basePath = contextConfig.getBasePath();
                 if (basePath == null) {
-                    contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePath());
+                    contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePathString());
                 }
             }
             towService = DefaultTowServiceBuilder.build(masterService, aspectranConfig);

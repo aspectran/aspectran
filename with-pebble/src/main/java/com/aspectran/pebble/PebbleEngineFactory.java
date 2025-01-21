@@ -174,7 +174,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
             loader.setPrefix(prefix);
             return loader;
         } else {
-            File file = new File(context.getApplicationAdapter().getBasePath(), templateLoaderPath);
+            File file = new File(context.getApplicationAdapter().getBasePathString(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
             if (logger.isDebugEnabled()) {
                 logger.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");

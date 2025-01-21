@@ -31,15 +31,17 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     private final Path basePath;
 
-    /**
-     * Instantiates a new AbstractApplicationAdapter.
-     */
     public AbstractApplicationAdapter(String basePath) {
         this.basePath = (basePath != null ? Path.of(basePath).normalize().toAbsolutePath() : null);
     }
 
     @Override
-    public String getBasePath() {
+    public Path getBasePath() {
+        return basePath;
+    }
+
+    @Override
+    public String getBasePathString() {
         return (basePath != null ? basePath.toString() : null);
     }
 

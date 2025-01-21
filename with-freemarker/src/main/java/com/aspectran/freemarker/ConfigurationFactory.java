@@ -339,7 +339,7 @@ public class ConfigurationFactory implements ActivityContextAware {
             }
             return new FileTemplateLoader(file);
         } else {
-            File file = new File(context.getApplicationAdapter().getBasePath(), templateLoaderPath);
+            File file = new File(context.getApplicationAdapter().getBasePathString(), templateLoaderPath);
             if (logger.isDebugEnabled()) {
                 logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to file path [" + file.getAbsolutePath() + "]");

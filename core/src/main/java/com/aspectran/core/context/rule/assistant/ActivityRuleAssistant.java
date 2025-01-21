@@ -173,7 +173,7 @@ public class ActivityRuleAssistant {
 
     public String getBasePath() {
         if (applicationAdapter != null) {
-            return applicationAdapter.getBasePath();
+            return applicationAdapter.getBasePathString();
         } else {
             return null;
         }

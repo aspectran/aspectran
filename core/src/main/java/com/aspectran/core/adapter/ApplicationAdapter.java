@@ -29,7 +29,13 @@ public interface ApplicationAdapter {
      * Returns the base path that the current application is mapped to.
      * @return the base path for the current application
      */
-    String getBasePath();
+    Path getBasePath();
+
+    /**
+     * Returns the base path that the current application is mapped to.
+     * @return the base path for the current application
+     */
+    String getBasePathString();
 
     /**
      * Returns the real file system path for a given virtual path relative
