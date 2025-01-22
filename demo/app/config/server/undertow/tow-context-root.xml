@@ -10,9 +10,6 @@
     <environment>
         <properties>
             <item name="tow.context.root.name">root</item>
-            <item name="tow.context.root.path">/</item>
-            <item name="tow.context.root.baseDir">/webapps/root</item>
-            <item name="tow.context.root.scratchDir">/work/_webapps/root</item>
         </properties>
     </environment>
 
@@ -21,15 +18,15 @@
           scope="prototype">
         <properties>
             <item name="deploymentName">%{tow.context.root.name}</item>
-            <item name="contextPath">%{tow.context.root.path}</item>
+            <item name="contextPath">/</item>
             <item name="resourceManager">
                 <bean class="com.aspectran.undertow.server.handler.resource.TowResourceManager">
                     <properties>
-                        <item name="base">%{tow.context.root.baseDir}</item>
+                        <item name="base">/webapps/%{tow.context.root.name}</item>
                     </properties>
                 </bean>
             </item>
-            <item name="scratchDir">%{tow.context.root.scratchDir}</item>
+            <item name="scratchDir">/work/_webapps/%{tow.context.root.name}</item>
             <item name="sessionManager">#{tow.context.root.sessionManager}</item>
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig">
@@ -81,7 +78,7 @@
                     <properties>
                         <item name="tldResources" type="array">
                             <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                            <value>%{tow.context.root.baseDir}/WEB-INF/taglibs/</value>
+                            <value>/webapps/%{tow.context.root.name}/WEB-INF/taglibs/</value>
                         </item>
                     </properties>
                 </bean>

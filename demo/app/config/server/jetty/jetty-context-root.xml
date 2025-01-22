@@ -10,11 +10,6 @@
     <environment>
         <properties>
             <item name="jetty.context.root.name">root</item>
-            <item name="jetty.context.root.path">/</item>
-            <item name="jetty.context.root.baseDir">#{basePath}/webapps/root</item>
-            <item name="jetty.context.root.scratchDir">#{basePath}/work/_webapps/root</item>
-            <item name="jetty.context.root.sessionStoreDir">#{basePath}/work/_sessions/jetty</item>
-            <item name="jetty.context.root.defaultsDescriptor">#{basePath}/config/server/jetty/webdefault-ee10.xml</item>
         </properties>
     </environment>
 
@@ -22,11 +17,11 @@
           class="com.aspectran.jetty.server.servlet.JettyWebAppContext"
           scope="prototype">
         <properties>
-            <item name="contextPath">%{jetty.context.root.path}</item>
-            <item name="war">%{jetty.context.root.baseDir}</item>
-            <item name="tempDirectory">%{jetty.context.root.scratchDir}</item>
+            <item name="contextPath">/</item>
+            <item name="war">/webapps/%{jetty.context.root.name}</item>
+            <item name="tempDirectory">/work/_webapps/%{jetty.context.root.name}</item>
             <item name="tempDirectoryPersistent" valueType="boolean">true</item>
-            <item name="defaultsDescriptor">%{jetty.context.root.defaultsDescriptor}</item>
+            <item name="defaultsDescriptor">/config/server/jetty/webdefault-ee10.xml</item>
             <item name="sessionHandler">#{jetty.context.root.sessionHandler}</item>
             <item name="servlets" type="array">
                 <bean class="com.aspectran.jetty.server.servlet.JettyServlet">
@@ -86,9 +81,9 @@
           scope="prototype">
         <properties>
             <item name="sessionDataStore">
-                <bean class="org.eclipse.jetty.session.FileSessionDataStoreFactory">
+                <bean class="com.aspectran.jetty.server.session.JettyFileSessionDataStoreFactory">
                     <properties>
-                        <item name="storeDir" valueType="file">%{jetty.context.root.sessionStoreDir}</item>
+                        <item name="storeDir">/work/_sessions/%{jetty.context.root.name}</item>
                         <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
                     </properties>
                 </bean>

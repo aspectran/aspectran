@@ -10,9 +10,6 @@
     <environment>
         <properties>
             <item name="tow.context.root.name">root</item>
-            <item name="tow.context.root.path">/</item>
-            <item name="tow.context.root.baseDir">/webroot</item>
-            <item name="tow.context.root.scratchDir">/work/_webroot</item>
         </properties>
     </environment>
 
@@ -21,15 +18,15 @@
           scope="prototype">
         <properties>
             <item name="deploymentName">%{tow.context.root.name}</item>
-            <item name="contextPath">%{tow.context.root.path}</item>
+            <item name="contextPath">/</item>
             <item name="resourceManager">
                 <bean class="com.aspectran.undertow.server.handler.resource.TowResourceManager">
                     <properties>
-                        <item name="base">%{tow.context.root.baseDir}</item>
+                        <item name="base">/webroot</item>
                     </properties>
                 </bean>
             </item>
-            <item name="scratchDir">%{tow.context.root.scratchDir}</item>
+            <item name="scratchDir">/work/_webroot/%{tow.context.root.name}</item>
             <item name="sessionManager">#{tow.context.root.sessionManager}</item>
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig">

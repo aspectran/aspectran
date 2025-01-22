@@ -188,7 +188,7 @@ public class LocalResourceManager extends ResourceManager {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
         if (workPath != null) {
             Path workDir = Path.of(workPath);
-            if (Files.isDirectory(workDir)) {
+            if (Files.isDirectory(workDir) && Files.exists(workDir)) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Sweeping " + workDir.toAbsolutePath() + File.separatorChar +
                             WORK_RESOURCE_DIRNAME_PREFIX + "* for old resource files");

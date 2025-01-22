@@ -45,10 +45,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
+
+import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * The Class JettyWebAppContext.
@@ -80,13 +84,14 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     @Override
     public void setWar(String war) {
         try {
-            File warFile = new File(war);
-            if (warFile.isDirectory()) {
-                if (!warFile.exists() && !warFile.mkdirs()) {
-                    throw new IOException("Unable to create WAR directory: " + warFile);
+            Path path = getActivityContext().getApplicationAdapter().getRealPath(war);
+            if (Files.isDirectory(path)) {
+                Files.createDirectories(path);
+                if (!Files.exists(path)) {
+                    throw new IOException("Unable to create WAR directory: " + path);
                 }
             }
-            super.setWar(warFile.getCanonicalPath());
+            super.setWar(path.toString());
         } catch (Exception e) {
             logger.error("Failed to establish WAR of the webapp: " + war, e);
         }
@@ -94,13 +99,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     public void setTempDirectory(String tempDirectory) {
         try {
-            File tempDir = new File(tempDirectory);
-            if (!tempDir.exists()) {
-                if (!tempDir.mkdirs()) {
-                    throw new IOException("Unable to create scratch directory: " + tempDir);
-                }
+            Path path = getActivityContext().getApplicationAdapter().getRealPath(tempDirectory);
+            Files.createDirectories(path);
+            if (!Files.isDirectory(path) || !Files.isWritable(path)) {
+                throw new IOException("Unable to create scratch directory: " + path);
             }
-            super.setTempDirectory(tempDir.getCanonicalFile());
+            super.setTempDirectory(path.toFile());
         } catch (Exception e) {
             logger.error("Failed to establish scratch directory: " + tempDirectory, e);
         }
@@ -108,31 +112,34 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     public void setDefaultsDescriptor(String defaultsDescriptor) {
-        if (StringUtils.hasLength(defaultsDescriptor)) {
-            Resource dftResource;
+        Assert.notNull(defaultsDescriptor, "defaultsDescriptor must not be null");
+        String resourcePath = defaultsDescriptor;
+        Resource resource;
+        if (resourcePath.startsWith(CLASSPATH_URL_PREFIX)) {
+            resourcePath = resourcePath.substring(CLASSPATH_URL_PREFIX.length());
             try {
-                dftResource = getResourceFactory().newClassLoaderResource(defaultsDescriptor);
-                if (Resources.missing(dftResource)) {
+                resource = getResourceFactory().newClassLoaderResource(resourcePath);
+                if (Resources.missing(resource)) {
                     String pkg = WebXmlConfiguration.class.getPackageName().replace(".", "/") + "/";
-                    if (defaultsDescriptor.startsWith(pkg)) {
-                        URL url = WebXmlConfiguration.class.getResource(defaultsDescriptor.substring(pkg.length()));
+                    if (resourcePath.startsWith(pkg)) {
+                        URL url = WebXmlConfiguration.class.getResource(resourcePath.substring(pkg.length()));
                         if (url != null) {
                             URI uri = url.toURI();
-                            dftResource = getResourceFactory().newResource(uri);
+                            resource = getResourceFactory().newResource(uri);
                         }
-                    }
-                    if (Resources.missing(dftResource)) {
-                        dftResource = newResource(defaultsDescriptor);
                     }
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException("Invalid default descriptor: " + defaultsDescriptor, e);
             }
-            if (Resources.isReadableFile(dftResource)) {
-                super.setDefaultsDescriptor(defaultsDescriptor);
-            } else {
-                throw new IllegalArgumentException("Unable to locate default descriptor: " + defaultsDescriptor);
-            }
+        } else {
+            Path path = getActivityContext().getApplicationAdapter().getRealPath(resourcePath);
+            resource = newResource(path.toString());
+        }
+        if (Resources.isReadableFile(resource)) {
+            super.setDefaultsDescriptor(resourcePath);
+        } else {
+            throw new IllegalArgumentException("Unable to locate default descriptor: " + defaultsDescriptor);
         }
     }
 
