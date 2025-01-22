@@ -36,6 +36,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonsMultipartFormDataParser.class);
 
-    private String tempDirectoryPath;
+    private String tempFileDir;
 
     private long maxRequestSize = -1L;
 
@@ -66,18 +67,28 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     }
 
     @Override
-    public String getTempDirectoryPath() {
-        return tempDirectoryPath;
+    public String getTempFileDir() {
+        return tempFileDir;
     }
 
     @Override
-    public void setTempDirectoryPath(String tempDirectoryPath) {
-        File tempDirectory = new File(tempDirectoryPath);
-        if (!tempDirectory.exists() && !tempDirectory.mkdirs()) {
-            throw new IllegalArgumentException("Given tempDirectoryPath [" +
-                    tempDirectoryPath + "] could not be created");
+    public void setTempFileDir(String tempFileDir) throws IOException {
+        if (tempFileDir == null) {
+            throw new IllegalArgumentException("tempFileDir must not be null");
         }
-        this.tempDirectoryPath = tempDirectoryPath;
+        File dir = new File(tempFileDir);
+        if (dir.exists()) {
+            if (!dir.isDirectory()) {
+                throw new IOException("Given tempFileDir [" + tempFileDir +
+                        "] exists but is not a directory");
+            }
+        } else {
+            if (!dir.mkdirs()) {
+                throw new IOException("Given tempFileDir [" + tempFileDir +
+                        "] could not be created");
+            }
+        }
+        this.tempFileDir = tempFileDir;
     }
 
     @Override
@@ -113,13 +124,13 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                 factory.setSizeThreshold(maxInMemorySize);
             }
 
-            if (tempDirectoryPath != null) {
-                File repository = new File(tempDirectoryPath);
-                if (!repository.exists() && !repository.mkdirs()) {
-                    throw new IllegalArgumentException("Given tempDirectoryPath [" +
-                            tempDirectoryPath + "] could not be created");
+            if (tempFileDir != null) {
+                File dir = new File(tempFileDir);
+                if (!dir.exists() && !dir.mkdirs()) {
+                    throw new IllegalArgumentException("Given tempFileDir [" +
+                            tempFileDir + "] could not be created");
                 }
-                factory.setRepository(repository);
+                factory.setRepository(dir);
             }
 
             FileUpload upload = new ServletFileUpload(factory);

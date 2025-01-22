@@ -66,12 +66,12 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
     }
 
     @Override
-    public String getTempDirectoryPath() {
+    public String getTempFileDir() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setTempDirectoryPath(String tempDirectoryPath) {
+    public void setTempFileDir(String tempFileDir) {
         throw new UnsupportedOperationException();
     }
 

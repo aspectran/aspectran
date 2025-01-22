@@ -19,6 +19,8 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
+import java.io.IOException;
+
 /**
  * The Class CommonsMultipartFormDataParserFactory.
  *
@@ -26,7 +28,7 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  */
 public class CommonsMultipartFormDataParserFactory {
 
-    private String tempDirectoryPath;
+    private String tempFileDir;
 
     private long maxRequestSize = -1L;
 
@@ -45,19 +47,19 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Gets the temporary file path.
-     * @return the temporary file path
+     * Gets the directory path used to temporarily files.
+     * @return the directory path used for temporary files
      */
-    public String getTempDirectoryPath() {
-        return tempDirectoryPath;
+    public String getTempFileDir() {
+        return tempFileDir;
     }
 
     /**
-     * Sets the temporary directory path.
-     * @param tempDirectoryPath the temporary directory path
+     * Sets the directory path used to temporarily files.
+     * @param tempFileDir the directory path used for temporary files
      */
-    public void setTempDirectoryPath(String tempDirectoryPath) {
-        this.tempDirectoryPath = tempDirectoryPath;
+    public void setTempFileDir(String tempFileDir) {
+        this.tempFileDir = tempFileDir;
     }
 
     /**
@@ -161,12 +163,12 @@ public class CommonsMultipartFormDataParserFactory {
      * Creates a new MultipartFormDataParser object.
      * @return the multipart form data parser
      */
-    public MultipartFormDataParser createMultipartFormDataParser() {
+    public MultipartFormDataParser createMultipartFormDataParser() throws IOException {
         MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
-        if (tempDirectoryPath != null) {
-            parser.setTempDirectoryPath(tempDirectoryPath);
+        if (tempFileDir != null) {
+            parser.setTempFileDir(tempFileDir);
         } else {
-            parser.setTempDirectoryPath(SystemUtils.getJavaIoTmpDir());
+            parser.setTempFileDir(SystemUtils.getJavaIoTmpDir());
         }
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);

@@ -82,10 +82,7 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         if (base == null) {
             throw new IllegalArgumentException("Base path must not be null");
         }
-        if (!base.exists()) {
-            base.mkdirs();
-        }
-        if (!base.isDirectory()) {
+        if (!base.exists() && !base.mkdirs()) {
             throw new IllegalArgumentException("Base path '" + base + "' is not resolved");
         }
         super.setBase(base);

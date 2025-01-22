@@ -63,7 +63,7 @@ public abstract class FileCopyUtils {
      * @throws IOException          if an IO error occurs during copying
      * @see #copyFile(File, File, boolean)
      */
-    public static void copyFileToDirectory(final File srcFile, final File destDir) throws IOException {
+    public static void copyFileToDirectory(File srcFile, File destDir) throws IOException {
         copyFileToDirectory(srcFile, destDir, true);
     }
 
@@ -89,15 +89,15 @@ public abstract class FileCopyUtils {
      * @throws IOException          if an IO error occurs during copying
      * @see #copyFile(File, File, boolean)
      */
-    public static void copyFileToDirectory(final File srcFile, final File destDir, final boolean preserveFileDate)
-        throws IOException {
+    public static void copyFileToDirectory(File srcFile, File destDir, boolean preserveFileDate)
+            throws IOException {
         if (destDir == null) {
             throw new NullPointerException("Destination must not be null");
         }
         if (destDir.exists() && !destDir.isDirectory()) {
             throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
         }
-        final File destFile = new File(destDir, srcFile.getName());
+        File destFile = new File(destDir, srcFile.getName());
         copyFile(srcFile, destFile, preserveFileDate);
     }
 
@@ -121,7 +121,7 @@ public abstract class FileCopyUtils {
      * @see #copyFileToDirectory(File, File)
      * @see #copyFile(File, File, boolean)
      */
-    public static void copyFile(final File srcFile, final File destFile) throws IOException {
+    public static void copyFile(File srcFile, File destFile) throws IOException {
         copyFile(srcFile, destFile, true);
     }
 
@@ -148,8 +148,7 @@ public abstract class FileCopyUtils {
      * @see #copyFileToDirectory(File, File, boolean)
      * @see #doCopyFile(File, File, boolean)
      */
-    public static void copyFile(final File srcFile, final File destFile,
-                                final boolean preserveFileDate) throws IOException {
+    public static void copyFile(File srcFile, File destFile, boolean preserveFileDate) throws IOException {
         checkFileRequirements(srcFile, destFile);
         if (srcFile.isDirectory()) {
             throw new IOException("Source '" + srcFile + "' exists but is a directory");
@@ -157,11 +156,9 @@ public abstract class FileCopyUtils {
         if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath())) {
             throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
         }
-        final File parentFile = destFile.getParentFile();
-        if (parentFile != null) {
-            if (!parentFile.mkdirs() && !parentFile.isDirectory()) {
-                throw new IOException("Destination '" + parentFile + "' directory cannot be created");
-            }
+        File parentFile = destFile.getParentFile();
+        if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
+            throw new IOException("Destination '" + parentFile + "' directory cannot be created");
         }
         if (destFile.exists() && !destFile.canWrite()) {
             throw new IOException("Destination '" + destFile + "' exists but is read-only");
@@ -177,7 +174,7 @@ public abstract class FileCopyUtils {
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
      */
-    public static long copyFile(final File input, final OutputStream output) throws IOException {
+    public static long copyFile(File input, OutputStream output) throws IOException {
         try (FileInputStream fis = new FileInputStream(input)) {
             return copyLarge(fis, output);
         }
@@ -197,8 +194,7 @@ public abstract class FileCopyUtils {
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
      */
-    private static long copyLarge(@NonNull final InputStream input, final OutputStream output)
-        throws IOException {
+    private static long copyLarge(@NonNull InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
         int n;
@@ -221,15 +217,14 @@ public abstract class FileCopyUtils {
      * @param preserveFileDate whether to preserve the file date
      * @throws IOException     if an error occurs
      */
-    private static void doCopyFile(@NonNull final File srcFile, @NonNull final File destFile,
-                                   final boolean preserveFileDate)
-        throws IOException {
+    private static void doCopyFile(@NonNull File srcFile, @NonNull File destFile,
+                                   boolean preserveFileDate) throws IOException {
         if (destFile.exists() && destFile.isDirectory()) {
             throw new IOException("Destination '" + destFile + "' exists but is a directory");
         }
         Path srcPath = srcFile.toPath();
         Path destPath = destFile.toPath();
-        final long newLastModified = preserveFileDate ? srcFile.lastModified() : destFile.lastModified();
+        long newLastModified = preserveFileDate ? srcFile.lastModified() : destFile.lastModified();
         Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
         destFile.setLastModified(newLastModified);
     }
@@ -255,7 +250,7 @@ public abstract class FileCopyUtils {
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
      */
-    public static void copyDirectory(final File srcDir, final File destDir) throws IOException {
+    public static void copyDirectory(File srcDir, File destDir) throws IOException {
         copyDirectory(srcDir, destDir, true);
     }
 
@@ -282,8 +277,8 @@ public abstract class FileCopyUtils {
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
      */
-    public static void copyDirectory(final File srcDir, final File destDir,
-                                     final boolean preserveFileDate) throws IOException {
+    public static void copyDirectory(File srcDir, File destDir, boolean preserveFileDate)
+            throws IOException {
         copyDirectory(srcDir, destDir, null, preserveFileDate);
     }
 
@@ -327,8 +322,8 @@ public abstract class FileCopyUtils {
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
      */
-    public static void copyDirectory(final File srcDir, final File destDir,
-                                     final FileFilter filter) throws IOException {
+    public static void copyDirectory(File srcDir, File destDir, FileFilter filter)
+            throws IOException {
         copyDirectory(srcDir, destDir, filter, true);
     }
 
@@ -356,8 +351,8 @@ public abstract class FileCopyUtils {
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
      */
-    public static void copyDirectory(final File srcDir, final File destDir,
-                                     final FileFilter filter, final boolean preserveFileDate) throws IOException {
+    public static void copyDirectory(File srcDir, File destDir, FileFilter filter, boolean preserveFileDate)
+            throws IOException {
         checkFileRequirements(srcDir, destDir);
         if (!srcDir.isDirectory()) {
             throw new IOException("Source '" + srcDir + "' exists but is not a directory");
@@ -368,11 +363,11 @@ public abstract class FileCopyUtils {
         // Cater for destination being directory within the source directory (see IO-141)
         List<String> exclusionList = null;
         if (destDir.getCanonicalPath().startsWith(srcDir.getCanonicalPath())) {
-            final File[] srcFiles = filter == null ? srcDir.listFiles() : srcDir.listFiles(filter);
+            File[] srcFiles = (filter == null ? srcDir.listFiles() : srcDir.listFiles(filter));
             if (srcFiles != null && srcFiles.length > 0) {
                 exclusionList = new ArrayList<>(srcFiles.length);
-                for (final File srcFile : srcFiles) {
-                    final File copiedFile = new File(destDir, srcFile.getName());
+                for (File srcFile : srcFiles) {
+                    File copiedFile = new File(destDir, srcFile.getName());
                     exclusionList.add(copiedFile.getCanonicalPath());
                 }
             }
@@ -386,7 +381,7 @@ public abstract class FileCopyUtils {
      * @param dest the destination
      * @throws FileNotFoundException if the destination does not exist
      */
-    private static void checkFileRequirements(final File src, final File dest) throws FileNotFoundException {
+    private static void checkFileRequirements(File src, File dest) throws FileNotFoundException {
         if (src == null) {
             throw new NullPointerException("Source must not be null");
         }
@@ -407,11 +402,11 @@ public abstract class FileCopyUtils {
      * @param exclusionList    list of files and directories to exclude from the copy, may be null
      * @throws IOException     if an error occurs
      */
-    private static void doCopyDirectory(final File srcDir, final File destDir, final FileFilter filter,
-                                        final boolean preserveFileDate, final List<String> exclusionList)
-        throws IOException {
+    private static void doCopyDirectory(
+            File srcDir, File destDir, FileFilter filter,
+            boolean preserveFileDate, List<String> exclusionList) throws IOException {
         // recurse
-        final File[] srcFiles = (filter == null ? srcDir.listFiles() : srcDir.listFiles(filter));
+        File[] srcFiles = (filter == null ? srcDir.listFiles() : srcDir.listFiles(filter));
         if (srcFiles == null) {  // null if abstract pathname does not denote a directory, or if an I/O error occurs
             throw new IOException("Failed to list contents of " + srcDir);
         }
@@ -420,15 +415,15 @@ public abstract class FileCopyUtils {
                 throw new IOException("Destination '" + destDir + "' exists but is not a directory");
             }
         } else {
-            if (!destDir.mkdirs() && !destDir.isDirectory()) {
+            if (!destDir.mkdirs()) {
                 throw new IOException("Destination '" + destDir + "' directory cannot be created");
             }
         }
         if (!destDir.canWrite()) {
             throw new IOException("Destination '" + destDir + "' cannot be written to");
         }
-        for (final File srcFile : srcFiles) {
-            final File dstFile = new File(destDir, srcFile.getName());
+        for (File srcFile : srcFiles) {
+            File dstFile = new File(destDir, srcFile.getName());
             if (exclusionList == null || !exclusionList.contains(srcFile.getCanonicalPath())) {
                 if (srcFile.isDirectory()) {
                     doCopyDirectory(srcFile, dstFile, filter, preserveFileDate, exclusionList);

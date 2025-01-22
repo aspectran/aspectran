@@ -16,6 +16,7 @@
 package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
@@ -23,13 +24,19 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  *
  * @since 5.1.0
  */
-public class InMemoryMultipartFormDataParserFactoryBean
-        extends InMemoryMultipartFormDataParserFactory
-        implements FactoryBean<MultipartFormDataParser> {
+public class InMemoryMultipartFormDataParserFactoryBean extends InMemoryMultipartFormDataParserFactory
+        implements InitializableBean, FactoryBean<MultipartFormDataParser> {
+
+    private MultipartFormDataParser parser;
+
+    @Override
+    public void initialize() {
+        parser = createMultipartFormDataParser();
+    }
 
     @Override
     public MultipartFormDataParser getObject() {
-        return createMultipartFormDataParser();
+        return parser;
     }
 
 }

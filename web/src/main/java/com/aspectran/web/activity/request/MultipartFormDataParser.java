@@ -17,6 +17,8 @@ package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
 
+import java.io.IOException;
+
 /**
  * Multi-part form data parser.
  */
@@ -26,13 +28,13 @@ public interface MultipartFormDataParser {
      * Returns the directory path used for temporary files.
      * @return the directory path used for temporary files
      */
-    String getTempDirectoryPath();
+    String getTempFileDir();
 
     /**
      * Sets the directory path used to temporarily files.
-     * @param tempDirectoryPath the directory path used for temporary files
+     * @param tempFileDir the directory path used for temporary files
      */
-    void setTempDirectoryPath(String tempDirectoryPath);
+    void setTempFileDir(String tempFileDir) throws IOException;
 
     /**
      * Sets the maximum length of HTTP GET Request

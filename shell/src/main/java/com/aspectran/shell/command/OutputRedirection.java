@@ -115,7 +115,7 @@ public class OutputRedirection {
      */
     @Nullable
     public static PrintWriter determineOutputWriter(List<OutputRedirection> redirectionList, ShellConsole console)
-            throws FileNotFoundException, UnsupportedEncodingException {
+            throws IOException {
         Writer[] redirectionWriters = getRedirectionWriters(redirectionList, console);
         PrintWriter outputWriter = null;
         if (redirectionWriters != null) {
@@ -129,7 +129,7 @@ public class OutputRedirection {
     }
 
     private static Writer[] getRedirectionWriters(List<OutputRedirection> redirectionList, ShellConsole console)
-            throws FileNotFoundException, UnsupportedEncodingException {
+            throws IOException {
         if (redirectionList != null && !redirectionList.isEmpty()) {
             List<Writer> writers = new ArrayList<>(redirectionList.size());
             for (OutputRedirection redirection : redirectionList) {
@@ -146,7 +146,9 @@ public class OutputRedirection {
                     file = new File(redirection.getOperand());
                 }
                 if (file.getParentFile() != null) {
-                    file.getParentFile().mkdirs();
+                    if (!file.getParentFile().mkdirs()) {
+                        throw new IOException("Could not create directory for output file");
+                    }
                 }
                 boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
                 OutputStream stream = new FileOutputStream(file, append);
@@ -228,7 +230,7 @@ public class OutputRedirection {
                 }
             }
             if (unclosed > 0) {
-                throw new IOException("Failed to close the multi-writer");
+                throw new IOException("Failed to close multi-writer");
             }
         }
 

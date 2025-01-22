@@ -15,7 +15,10 @@
  */
 package com.aspectran.web.support.multipart.commons;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
@@ -23,13 +26,35 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  *
  * @since 2.0.0
  */
-public class CommonsMultipartFormDataParserFactoryBean
-        extends CommonsMultipartFormDataParserFactory
-        implements FactoryBean<MultipartFormDataParser> {
+public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartFormDataParserFactory
+        implements ApplicationAdapterAware, InitializableBean, FactoryBean<MultipartFormDataParser> {
+
+    private ApplicationAdapter applicationAdapter;
+
+    private MultipartFormDataParser parser;
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
+
+    @Override
+    public void setTempFileDir(String tempFileDir) {
+        if (applicationAdapter != null) {
+            super.setTempFileDir(applicationAdapter.getRealPath(tempFileDir).toString());
+        } else {
+            super.setTempFileDir(tempFileDir);
+        }
+    }
+
+    @Override
+    public void initialize() throws Exception {
+        parser = createMultipartFormDataParser();
+    }
 
     @Override
     public MultipartFormDataParser getObject() {
-        return createMultipartFormDataParser();
+        return parser;
     }
 
 }

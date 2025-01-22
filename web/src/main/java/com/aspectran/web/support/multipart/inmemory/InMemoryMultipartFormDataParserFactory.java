@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 

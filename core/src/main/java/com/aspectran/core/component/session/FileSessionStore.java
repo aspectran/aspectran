@@ -306,7 +306,9 @@ public class FileSessionStore extends AbstractSessionStore {
 
     private void initializeStore() throws Exception {
         if (!storeDir.exists()) {
-            storeDir.mkdirs();
+            if (!storeDir.mkdirs()) {
+                throw new IOException("Given storeDir [" + storeDir + "] could not be created");
+            }
             return;
         }
 
