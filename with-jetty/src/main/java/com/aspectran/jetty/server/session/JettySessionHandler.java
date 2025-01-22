@@ -15,11 +15,11 @@
  */
 package com.aspectran.jetty.server.session;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.Assert;
 import org.eclipse.jetty.ee10.servlet.SessionHandler;
 import org.eclipse.jetty.session.DefaultSessionCache;
 import org.eclipse.jetty.session.SessionCache;
-import org.eclipse.jetty.session.SessionCacheFactory;
+import org.eclipse.jetty.session.SessionDataStore;
 import org.eclipse.jetty.session.SessionDataStoreFactory;
 
 /**
@@ -31,17 +31,14 @@ public class JettySessionHandler extends SessionHandler {
         super();
     }
 
-    public void setSessionCache(@NonNull SessionCacheFactory sessionCacheFactory) {
-        setSessionCache(sessionCacheFactory.getSessionCache(this));
-    }
-
     public void setSessionDataStore(SessionDataStoreFactory sessionDataStoreFactory) throws Exception {
-        SessionCache sessionCache = getSessionCache();
-        if (sessionCache != null) {
-            sessionCache.setSessionDataStore(sessionDataStoreFactory.getSessionDataStore(this));
+        Assert.notNull(sessionDataStoreFactory, "sessionDataStoreFactory must not be null");
+        SessionDataStore sessionDataStore = sessionDataStoreFactory.getSessionDataStore(this);
+        if (getSessionCache() != null) {
+            getSessionCache().setSessionDataStore(sessionDataStore);
         } else {
-            sessionCache = new DefaultSessionCache(this);
-            sessionCache.setSessionDataStore(sessionDataStoreFactory.getSessionDataStore(this));
+            SessionCache sessionCache = new DefaultSessionCache(this);
+            sessionCache.setSessionDataStore(sessionDataStore);
             setSessionCache(sessionCache);
         }
     }
