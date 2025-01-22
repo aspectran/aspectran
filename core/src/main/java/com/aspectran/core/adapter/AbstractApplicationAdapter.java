@@ -52,15 +52,16 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             // Using url fully qualified paths
             return Path.of(URI.create(path));
         } else {
-            Path pathToUse = Path.of(path).normalize();
+            Path normalized = Path.of(path).normalize();
+            Path absolutePath = normalized.toAbsolutePath();
             if (basePath != null) {
-                if (pathToUse.toAbsolutePath().startsWith(basePath)) {
-                    return pathToUse;
+                if (absolutePath.startsWith(basePath)) {
+                    return absolutePath;
                 } else {
-                    return Path.of(basePath.toString(), pathToUse.toString()).toAbsolutePath();
+                    return Path.of(basePath.toString(), normalized.toString()).toAbsolutePath();
                 }
             } else {
-                return pathToUse;
+                return absolutePath;
             }
         }
     }

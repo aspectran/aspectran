@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2025. 1. 21.</p>
@@ -41,6 +41,10 @@ class DefaultApplicationAdapterTest {
         Path path3 = applicationAdapter.getRealPath("sub-path1");
         Path path4 = applicationAdapter.getRealPath(applicationAdapter.getBasePath().resolve("sub-path1").toString());
         assertEquals(path3, path4);
+
+        Path path5 = applicationAdapter.getRealPath("/aaa/bbb/../ccc/./123");
+        Path path6 = Path.of(applicationAdapter.getBasePath().toString(), "/aaa/ccc/123");
+        assertEquals(path5, path6);
     }
 
 }
