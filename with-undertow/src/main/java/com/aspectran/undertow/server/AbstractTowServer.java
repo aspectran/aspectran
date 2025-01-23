@@ -194,9 +194,16 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
         return handler;
     }
 
-    protected void shutdown() throws Exception {
+    protected void shutdown() {
         if (getHandler() instanceof GracefulShutdownHandler shutdownHandler) {
             shutdownHandler.shutdown();
+            shutdownHandler.addShutdownListener(shutdownSuccessful -> {
+                try {
+                    getRequestHandlerFactory().dispose();
+                } catch (Exception e) {
+                    logger.error("TowServer shutdown failed", e);
+                }
+            });
             try {
                 if (getShutdownTimeoutSecs() > 0) {
                     boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
@@ -210,8 +217,13 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
             } catch (Exception ex) {
                 logger.error("Unable to gracefully stop Undertow server");
             }
+        } else {
+            try {
+                getRequestHandlerFactory().dispose();
+            } catch (Exception e) {
+                logger.error("TowServer shutdown failed", e);
+            }
         }
-        getRequestHandlerFactory().dispose();
     }
 
     @Override

@@ -50,6 +50,9 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private SessionManager sessionManager;
 
+    public TowServletContext() {
+    }
+
     @NonNull
     public ActivityContext getActivityContext() {
         return context;

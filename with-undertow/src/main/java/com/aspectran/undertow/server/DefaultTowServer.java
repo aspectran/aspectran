@@ -54,11 +54,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
 
     @Override
     public void doStop() {
-        try {
-            shutdown();
-        } catch (Exception e) {
-            logger.error("TowServer shutdown failed", e);
-        }
+        shutdown();
         if (server != null) {
             try {
                 server.stop();

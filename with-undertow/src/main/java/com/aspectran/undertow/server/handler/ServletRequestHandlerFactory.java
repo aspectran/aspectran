@@ -20,6 +20,7 @@ import com.aspectran.undertow.server.handler.logging.LoggingGroupAssistHandlerWr
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.server.handler.session.SessionAttachmentHandler;
 import com.aspectran.undertow.server.servlet.TowServletContext;
+import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
@@ -121,6 +122,10 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 DefaultWebService rootWebService = createRootWebService(servletContext);
                 if (towServletContext.getSessionManager() == null) {
                     rootWebService.setSessionAdaptable(false);
+                } else {
+                    if (towServletContext.getSessionManager() instanceof TowSessionManager towSessionManager) {
+                        towSessionManager.start(); // for lazy stop
+                    }
                 }
             }
         }
@@ -131,9 +136,15 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
             DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
             if (manager != null) {
                 ServletContext servletContext = manager.getDeployment().getServletContext();
-                disposeRootWebService(servletContext);
+                SessionManager sessionManager = manager.getDeployment().getSessionManager();
+                DefaultWebService webService = WebService.findWebService(servletContext);
+                webService.pause();
                 manager.stop();
                 manager.undeploy();
+                disposeRootWebService(webService);
+                if (sessionManager instanceof TowSessionManager towSessionManager) {
+                    towSessionManager.stop(); // for lazy stop
+                }
             }
         }
         servletContainer = null;
@@ -149,8 +160,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         return rootWebService;
     }
 
-    private void disposeRootWebService(ServletContext servletContext) {
-        DefaultWebService webService = WebService.findWebService(servletContext);
+    private void disposeRootWebService(@NonNull DefaultWebService webService) {
         if (webService.isActive()) {
             webService.stop();
         }
