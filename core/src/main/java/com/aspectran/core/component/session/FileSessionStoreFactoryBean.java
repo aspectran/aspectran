@@ -15,17 +15,26 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
  * <p>Created: 2024. 12. 26.</p>
  */
 public class FileSessionStoreFactoryBean
-        extends FileSessionStoreFactory implements FactoryBean<FileSessionStore> {
+        extends FileSessionStoreFactory implements InitializableFactoryBean<FileSessionStore> {
+
+    private FileSessionStore fileSessionStore;
+
+    @Override
+    public void initialize() throws Exception {
+        if (fileSessionStore == null) {
+            fileSessionStore = createSessionStore();
+        }
+    }
 
     @Override
     public FileSessionStore getObject() throws Exception {
-        return createSessionStore();
+        return fileSessionStore;
     }
 
 }

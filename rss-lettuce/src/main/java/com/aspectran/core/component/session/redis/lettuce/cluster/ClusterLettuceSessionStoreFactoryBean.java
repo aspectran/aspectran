@@ -15,17 +15,26 @@
  */
 package com.aspectran.core.component.session.redis.lettuce.cluster;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
  * <p>Created: 2024. 12. 26.</p>
  */
-public class ClusterLettuceSessionStoreFactoryBean
-        extends ClusterLettuceSessionStoreFactory implements FactoryBean<ClusterLettuceSessionStore> {
+public class ClusterLettuceSessionStoreFactoryBean extends ClusterLettuceSessionStoreFactory
+        implements InitializableFactoryBean<ClusterLettuceSessionStore> {
+
+    private ClusterLettuceSessionStore sessionStore;
 
     @Override
-    public ClusterLettuceSessionStore getObject() throws Exception {
-        return createSessionStore();
+    public void initialize() throws Exception {
+        if (sessionStore == null) {
+            sessionStore = createSessionStore();
+        }
+    }
+
+    @Override
+    public ClusterLettuceSessionStore getObject() {
+        return sessionStore;
     }
 
 }

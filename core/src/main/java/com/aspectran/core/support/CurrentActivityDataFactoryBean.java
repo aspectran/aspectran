@@ -20,7 +20,6 @@ import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
@@ -69,7 +68,9 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     @Override
     public void setCurrentActivity(@NonNull Activity activity) {
-        Assert.state(this.activity == null, "Current activity already injected");
+        if (this.activity != null) {
+            throw new IllegalStateException("activity is already set");
+        }
         this.activity = activity;
         if (activity.hasTranslet() && attributeName != null) {
             activity.getTranslet().setAttribute(attributeName, activity.getActivityData());

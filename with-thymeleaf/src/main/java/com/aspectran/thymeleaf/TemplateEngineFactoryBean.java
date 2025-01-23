@@ -15,8 +15,7 @@
  */
 package com.aspectran.thymeleaf;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
  * The Class TemplateEngineFactoryBean.
@@ -24,7 +23,7 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
  * <p>Created: 2024. 11. 18.</p>
  */
 public class TemplateEngineFactoryBean extends TemplateEngineFactory
-        implements InitializableBean, FactoryBean<AspectranTemplateEngine> {
+        implements InitializableFactoryBean<AspectranTemplateEngine> {
 
     private AspectranTemplateEngine templateEngine;
 

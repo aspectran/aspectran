@@ -15,8 +15,7 @@
  */
 package com.aspectran.freemarker;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import freemarker.template.Configuration;
 
 /**
@@ -27,7 +26,7 @@ import freemarker.template.Configuration;
  * <p>Created: 2016. 1. 9.</p>
  */
 public class ConfigurationFactoryBean extends ConfigurationFactory
-        implements InitializableBean, FactoryBean<Configuration> {
+        implements InitializableFactoryBean<Configuration> {
 
     private Configuration configuration;
 
@@ -38,14 +37,14 @@ public class ConfigurationFactoryBean extends ConfigurationFactory
      */
     @Override
     public void initialize() throws Exception {
-        if (this.configuration == null) {
-            this.configuration = createConfiguration();
+        if (configuration == null) {
+            configuration = createConfiguration();
         }
     }
 
     @Override
     public Configuration getObject() {
-        return this.configuration;
+        return configuration;
     }
 
 }

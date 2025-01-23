@@ -16,8 +16,7 @@
 package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
@@ -27,7 +26,7 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
  * @since 2.0.0
  */
 public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartFormDataParserFactory
-        implements ApplicationAdapterAware, InitializableBean, FactoryBean<MultipartFormDataParser> {
+        implements ApplicationAdapterAware, InitializableFactoryBean<MultipartFormDataParser> {
 
     private ApplicationAdapter applicationAdapter;
 
@@ -49,7 +48,9 @@ public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartF
 
     @Override
     public void initialize() throws Exception {
-        parser = createMultipartFormDataParser();
+        if (parser == null) {
+            parser = createMultipartFormDataParser();
+        }
     }
 
     @Override

@@ -41,7 +41,6 @@ import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.Resources;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -113,16 +112,16 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     @Override
     public void setDefaultsDescriptor(String defaultsDescriptor) {
         Assert.notNull(defaultsDescriptor, "defaultsDescriptor must not be null");
-        String resourcePath = defaultsDescriptor;
+        String path = defaultsDescriptor;
         Resource resource;
-        if (resourcePath.startsWith(CLASSPATH_URL_PREFIX)) {
-            resourcePath = resourcePath.substring(CLASSPATH_URL_PREFIX.length());
+        if (path.startsWith(CLASSPATH_URL_PREFIX)) {
+            path = path.substring(CLASSPATH_URL_PREFIX.length());
             try {
-                resource = getResourceFactory().newClassLoaderResource(resourcePath);
+                resource = getResourceFactory().newClassLoaderResource(path);
                 if (Resources.missing(resource)) {
                     String pkg = WebXmlConfiguration.class.getPackageName().replace(".", "/") + "/";
-                    if (resourcePath.startsWith(pkg)) {
-                        URL url = WebXmlConfiguration.class.getResource(resourcePath.substring(pkg.length()));
+                    if (path.startsWith(pkg)) {
+                        URL url = WebXmlConfiguration.class.getResource(path.substring(pkg.length()));
                         if (url != null) {
                             URI uri = url.toURI();
                             resource = getResourceFactory().newResource(uri);
@@ -133,11 +132,11 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                 throw new IllegalArgumentException("Invalid default descriptor: " + defaultsDescriptor, e);
             }
         } else {
-            Path path = getActivityContext().getApplicationAdapter().getRealPath(resourcePath);
-            resource = newResource(path.toString());
+            path = getActivityContext().getApplicationAdapter().getRealPath(path).toString();
+            resource = newResource(path);
         }
         if (Resources.isReadableFile(resource)) {
-            super.setDefaultsDescriptor(resourcePath);
+            super.setDefaultsDescriptor(path);
         } else {
             throw new IllegalArgumentException("Unable to locate default descriptor: " + defaultsDescriptor);
         }

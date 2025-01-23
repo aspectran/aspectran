@@ -34,10 +34,9 @@ public class BasePathFactoryBean implements ApplicationAdapterAware, FactoryBean
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        if (basePath != null) {
-            throw new IllegalArgumentException("basePath is already set");
+        if (basePath == null) {
+            basePath = applicationAdapter.getBasePathString();
         }
-        basePath = applicationAdapter.getBasePathString();
     }
 
     @Override

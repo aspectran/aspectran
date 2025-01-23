@@ -19,7 +19,6 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.utils.Assert;
 
 /**
  * {@link CurrentEnvironmentFactoryBean} that returns the {@link Environment}.
@@ -35,7 +34,9 @@ public class CurrentEnvironmentFactoryBean implements EnvironmentAware, FactoryB
 
     @Override
     public void setEnvironment(Environment environment) {
-        Assert.state(this.environment == null, "Environment already injected");
+        if (this.environment != null) {
+            throw new IllegalStateException("environment is already set");
+        }
         this.environment = environment;
     }
 

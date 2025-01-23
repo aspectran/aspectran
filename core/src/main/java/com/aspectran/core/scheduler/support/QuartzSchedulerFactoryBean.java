@@ -16,7 +16,7 @@
 package com.aspectran.core.scheduler.support;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -30,7 +30,7 @@ import java.util.Properties;
  *
  * @since 3.0.0
  */
-public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBean<Scheduler> {
+public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Scheduler> {
 
     private String schedulerName;
 
@@ -82,13 +82,13 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
      */
     protected Scheduler createScheduler() throws SchedulerException {
         Properties props;
-        if (this.quartzProperties != null) {
-            props = new Properties(this.quartzProperties);
+        if (quartzProperties != null) {
+            props = new Properties(quartzProperties);
         } else {
             props = new Properties();
         }
-        if (this.schedulerName != null) {
-            props.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, this.schedulerName);
+        if (schedulerName != null) {
+            props.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, schedulerName);
         }
 
         String schedulerName = props.getProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME);
@@ -103,7 +103,7 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory(props);
         Scheduler newScheduler = schedulerFactory.getScheduler();
-        if (!this.exposeSchedulerInRepository) {
+        if (!exposeSchedulerInRepository) {
             // Need to remove it in this case, since Quartz shares the Scheduler instance by default!
             SchedulerRepository.getInstance().remove(newScheduler.getSchedulerName());
         }
@@ -112,12 +112,14 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
 
     @Override
     public void initialize() throws Exception {
-        this.scheduler = createScheduler();
+        if (schedulerName == null) {
+            scheduler = createScheduler();
+        }
     }
 
     @Override
     public Scheduler getObject() {
-        return this.scheduler;
+        return scheduler;
     }
 
 }

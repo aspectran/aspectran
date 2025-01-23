@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.pebble;
-
-import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
-import io.pebbletemplates.pebble.PebbleEngine;
+package com.aspectran.core.component.bean.ablility;
 
 /**
- * JavaBean to configure Pebble Engine.
+ * The Interface InitializableFactoryBean.
  *
- * <p>Created: 2016. 1. 25.</p>
+ * @param <T> the type of the bean object
+ *
+ * @since 8.3.1
  */
-public class PebbleEngineFactoryBean extends PebbleEngineFactory
-        implements InitializableFactoryBean<PebbleEngine> {
-
-    private PebbleEngine pebbleEngine;
-
-    @Override
-    public void initialize() {
-        if (pebbleEngine == null) {
-            pebbleEngine = createPebbleEngine();
-        }
-    }
-
-    @Override
-    public PebbleEngine getObject() {
-        return pebbleEngine;
-    }
-
+public interface InitializableFactoryBean<T> extends InitializableBean, FactoryBean<T> {
 }

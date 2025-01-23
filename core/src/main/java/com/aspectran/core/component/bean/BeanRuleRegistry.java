@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
@@ -84,6 +85,7 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(FactoryBean.class);
         ignoreDependencyInterface(DisposableBean.class);
         ignoreDependencyInterface(InitializableBean.class);
+        ignoreDependencyInterface(InitializableFactoryBean.class);
         ignoreDependencyInterface(ActivityContextAware.class);
         ignoreDependencyInterface(ApplicationAdapterAware.class);
         ignoreDependencyInterface(CurrentActivityAware.class);

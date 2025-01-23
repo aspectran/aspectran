@@ -16,8 +16,7 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.Assert;
@@ -37,8 +36,7 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
  * using default MyBatis Configuration.
  */
 @AvoidAdvice
-public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableBean,
-        FactoryBean<SqlSessionFactory> {
+public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableFactoryBean<SqlSessionFactory> {
 
     private ApplicationAdapter applicationAdapter;
 

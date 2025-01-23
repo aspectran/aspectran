@@ -20,7 +20,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
@@ -68,7 +67,9 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
 
     @Override
     public void setCurrentActivity(@NonNull Activity activity) {
-        Assert.state(translet == null, "Current activity already injected");
+        if (translet != null) {
+            throw new IllegalStateException("The translet for the current activity is already set");
+        }
         if (activity.hasTranslet()) {
             translet = activity.getTranslet();
             if (attributeName != null) {
