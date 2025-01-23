@@ -38,22 +38,8 @@
                 </bean>
             </item>
             <item name="servlets" type="array">
-                <bean class="com.aspectran.undertow.server.servlet.TowServlet">
-                    <arguments>
-                        <item>Default JSP Servlet</item>
-                        <item>org.apache.jasper.servlet.JspServlet</item>
-                    </arguments>
+                <bean class="com.aspectran.undertow.server.servlet.DefaultJspServlet">
                     <properties>
-                        <item name="mappings" type="array">
-                            <value>*.jsp</value>
-                            <value>*.jspf</value>
-                            <value>*.jspx</value>
-                            <value>*.xsp</value>
-                            <value>*.JSP</value>
-                            <value>*.JSPF</value>
-                            <value>*.JSPX</value>
-                            <value>*.XSP</value>
-                        </item>
                         <item name="loadOnStartup" valueType="int">0</item>
                     </properties>
                 </bean>

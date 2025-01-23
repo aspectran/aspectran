@@ -24,22 +24,8 @@
             <item name="defaultsDescriptor">/config/server/jetty/webdefault-ee10.xml</item>
             <item name="sessionHandler">#{jetty.context.root.sessionHandler}</item>
             <item name="servlets" type="array">
-                <bean class="com.aspectran.jetty.server.servlet.JettyServlet">
-                    <arguments>
-                        <item>Default JSP Servlet</item>
-                        <item>org.apache.jasper.servlet.JspServlet</item>
-                    </arguments>
+                <bean class="com.aspectran.jetty.server.servlet.DefaultJspServlet">
                     <properties>
-                        <item name="mappings" type="array">
-                            <value>*.jsp</value>
-                            <value>*.jspf</value>
-                            <value>*.jspx</value>
-                            <value>*.xsp</value>
-                            <value>*.JSP</value>
-                            <value>*.JSPF</value>
-                            <value>*.JSPX</value>
-                            <value>*.XSP</value>
-                        </item>
                         <item name="initOrder" valueType="int">0</item>
                     </properties>
                 </bean>

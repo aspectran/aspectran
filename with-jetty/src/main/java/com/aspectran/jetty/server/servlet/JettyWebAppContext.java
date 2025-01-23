@@ -87,12 +87,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             if (Files.isDirectory(path)) {
                 Files.createDirectories(path);
                 if (!Files.exists(path)) {
-                    throw new IOException("Unable to create WAR directory: " + path);
+                    throw new IOException("Could not create WAR directory: " + path);
                 }
             }
             super.setWar(path.toString());
         } catch (Exception e) {
-            logger.error("Failed to establish WAR of the webapp: " + war, e);
+            logger.error("Failed to establish WAR for webapp: " + war, e);
         }
     }
 
@@ -101,7 +101,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             Path path = getActivityContext().getApplicationAdapter().getRealPath(tempDirectory);
             Files.createDirectories(path);
             if (!Files.isDirectory(path) || !Files.isWritable(path)) {
-                throw new IOException("Unable to create scratch directory: " + path);
+                throw new IOException("Could not create scratch directory: " + path);
             }
             super.setTempDirectory(path.toFile());
         } catch (Exception e) {

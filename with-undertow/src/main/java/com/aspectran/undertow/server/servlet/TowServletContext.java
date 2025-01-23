@@ -71,6 +71,9 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     public void setScratchDir(String scratchDir) throws IOException {
         Path dir = getApplicationAdapter().getRealPath(scratchDir);
         Files.createDirectories(dir);
+        if (!Files.isDirectory(dir) || !Files.isWritable(dir)) {
+            throw new IOException("Could not create scratch directory: " + dir);
+        }
         setTempDir(dir);
     }
 
