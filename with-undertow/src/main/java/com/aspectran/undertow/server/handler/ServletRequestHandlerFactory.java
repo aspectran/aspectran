@@ -135,10 +135,12 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         for (String deploymentName : getServletContainer().listDeployments()) {
             DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
             if (manager != null) {
-                ServletContext servletContext = manager.getDeployment().getServletContext();
                 SessionManager sessionManager = manager.getDeployment().getSessionManager();
+                ServletContext servletContext = manager.getDeployment().getServletContext();
                 DefaultWebService webService = WebService.findWebService(servletContext);
-                webService.pause();
+                if (webService.isActive()) {
+                    webService.pause();
+                }
                 manager.stop();
                 manager.undeploy();
                 disposeRootWebService(webService);
