@@ -26,7 +26,7 @@
 
     <bean id="imageFileUploader" class="com.aspectran.web.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
         <description>
-            Required to handle multi-part form data.
+            Required to handle multipart form data.
         </description>
         <properties>
             <item name="maxRequestSize" value="6M"/>

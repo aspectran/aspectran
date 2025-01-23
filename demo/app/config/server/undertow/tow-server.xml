@@ -9,7 +9,6 @@
 
     <environment>
         <properties>
-            <item name="tow.server.startup" valueType="boolean">true</item>
             <item name="tow.server.listener.http.port" valueType="int">8080</item>
             <item name="tow.server.listener.http.host">0.0.0.0</item>
         </properties>
@@ -17,7 +16,6 @@
 
     <bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
         <properties>
-            <item name="autoStart">%{tow.server.startup}</item>
             <item name="httpListeners" type="array">
                 <bean class="com.aspectran.undertow.server.HttpListenerConfig">
                     <properties>

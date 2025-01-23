@@ -43,7 +43,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
 
     private final Undertow.Builder builder = Undertow.builder();
 
-    private boolean autoStart;
+    private boolean autoStart = true;
 
     private boolean shutdownGracefully = true;
 
