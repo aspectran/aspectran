@@ -79,7 +79,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                 this.standalone = true;
             }
             if (newWebService != null) {
-                newWebService.start();
+                if (newWebService.isOrphan()) {
+                    newWebService.start();
+                }
                 this.webService = newWebService;
             }
         } catch (Exception e) {
