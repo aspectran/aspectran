@@ -20,6 +20,7 @@ import com.aspectran.undertow.server.handler.logging.LoggingGroupAssistHandlerWr
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.server.handler.session.SessionAttachmentHandler;
 import com.aspectran.undertow.server.servlet.TowServletContext;
+import com.aspectran.undertow.server.servlet.TowWebSocketInitializer;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -32,6 +33,7 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
+import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
@@ -120,12 +122,10 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
                 DefaultWebService rootWebService = createRootWebService(servletContext);
-                if (towServletContext.getSessionManager() == null) {
-                    rootWebService.setSessionAdaptable(false);
+                if (towServletContext.getTowSessionManager() != null) {
+                    towServletContext.getTowSessionManager().start(); // for lazy stop
                 } else {
-                    if (towServletContext.getSessionManager() instanceof TowSessionManager towSessionManager) {
-                        towSessionManager.start(); // for lazy stop
-                    }
+                    rootWebService.setSessionAdaptable(false);
                 }
             }
         }
@@ -135,12 +135,17 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         for (String deploymentName : getServletContainer().listDeployments()) {
             DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
             if (manager != null) {
-                SessionManager sessionManager = manager.getDeployment().getSessionManager();
-                ServletContext servletContext = manager.getDeployment().getServletContext();
+                Deployment deployment = manager.getDeployment();
+                SessionManager sessionManager = deployment.getSessionManager();
+                ServletContext servletContext = deployment.getServletContext();
+
                 DefaultWebService webService = WebService.findWebService(servletContext);
                 if (webService.isActive()) {
                     webService.pause();
                 }
+
+                TowWebSocketInitializer.destroy(deployment);
+
                 manager.stop();
                 manager.undeploy();
                 disposeRootWebService(webService);

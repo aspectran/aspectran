@@ -20,7 +20,8 @@ import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionListener;
-import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.server.session.SessionManager;
+import io.undertow.servlet.api.Deployment;
 import io.undertow.websockets.core.CloseMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
@@ -60,12 +61,33 @@ public class TowWebSocketInitializer  {
         this.threadLocalCacheSize = threadLocalCacheSize;
     }
 
-    public void initialize(@NonNull DeploymentInfo deploymentInfo) {
-        if (!deploymentInfo.getServletContextAttributes().containsKey(WebSocketDeploymentInfo.ATTRIBUTE_NAME)) {
+    public void initialize(@NonNull TowServletContext towServletContext) {
+        if (!towServletContext.getServletContextAttributes().containsKey(WebSocketDeploymentInfo.ATTRIBUTE_NAME)) {
             ByteBufferPool byteBufferPool = new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize);
             WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo().setBuffers(byteBufferPool);
-            deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, webSocketDeploymentInfo);
-            deploymentInfo.addSessionListener(new WebSocketGracefulCloseListener());
+            towServletContext.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, webSocketDeploymentInfo);
+            towServletContext.addSessionListener(new WebSocketGracefulCloseListener());
+        }
+    }
+
+    public static void destroy(@NonNull Deployment deployment) {
+        SessionManager sessionManager = deployment.getSessionManager();
+        if (sessionManager != null) {
+            sessionManager.getActiveSessions().forEach(sessionId -> {
+                Session session = sessionManager.getSession(sessionId);
+                session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+            });
+        }
+    }
+
+    private static void closeWebSockets(List<WebSocketChannel> connections) {
+        if (connections != null && !connections.isEmpty()) {
+            CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
+            for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
+                if (webSocketChannel != null) {
+                    WebSockets.sendClose(closeMessage, webSocketChannel, null);
+                }
+            }
         }
     }
 
@@ -89,14 +111,7 @@ public class TowWebSocketInitializer  {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
-                if (!connections.isEmpty()) {
-                    CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
-                    for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
-                        if (webSocketChannel != null) {
-                            WebSockets.sendClose(closeMessage, webSocketChannel, null);
-                        }
-                    }
-                }
+                TowWebSocketInitializer.closeWebSockets(connections);
             }
         }
 

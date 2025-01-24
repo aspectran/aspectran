@@ -24,7 +24,6 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
-import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
@@ -48,7 +47,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private ActivityContext context;
 
-    private SessionManager sessionManager;
+    private TowSessionManager sessionManager;
 
     public TowServletContext() {
     }
@@ -80,14 +79,14 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         setTempDir(dir);
     }
 
-    public SessionManager getSessionManager() {
+    public TowSessionManager getTowSessionManager() {
         return sessionManager;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
+    public void setSessionManager(TowSessionManager towSessionManager) {
+        this.sessionManager = towSessionManager;
         setSessionManagerFactory(deployment -> {
-            if (sessionManager instanceof TowSessionManager towSessionManager) {
+            if (towSessionManager != null) {
                 towSessionManager.setClassLoader(getClassLoader());
                 try {
                     towSessionManager.initialize();
@@ -95,7 +94,7 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
                     throw new RuntimeException(e);
                 }
             }
-            return sessionManager;
+            return towSessionManager;
         });
     }
 
