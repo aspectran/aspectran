@@ -83,8 +83,8 @@
                     </properties>
                 </bean>
             </item>
-            <item name="webSocketInitializer">
-                <bean class="com.aspectran.jetty.server.servlet.JettyWebSocketInitializer">
+            <item name="webSocketServerContainerInitializer">
+                <bean class="com.aspectran.jetty.server.servlet.JettyWebSocketServerContainerInitializer">
                     <properties>
                         <item name="idleTimeout" valueType="long">60000</item>
                     </properties>

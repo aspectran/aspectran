@@ -18,13 +18,13 @@ package com.aspectran.jetty.server.servlet;
 import jakarta.websocket.server.ServerContainer;
 
 /**
- * The Class JettyWebSocketInitializer.
+ * The Class JettyWebSocketServerContainerInitializer.
  *
  * <p>Created: 2021/02/26</p>
  *
  * @since 7.0.0
  */
-public class JettyWebSocketInitializer {
+public class JettyWebSocketServerContainerInitializer {
 
     private Long idleTimeout;
 

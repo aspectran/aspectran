@@ -20,7 +20,7 @@ import com.aspectran.undertow.server.handler.logging.LoggingGroupAssistHandlerWr
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
 import com.aspectran.undertow.server.handler.session.SessionAttachmentHandler;
 import com.aspectran.undertow.server.servlet.TowServletContext;
-import com.aspectran.undertow.server.servlet.TowWebSocketInitializer;
+import com.aspectran.undertow.server.servlet.TowWebSocketServerContainerInitializer;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -144,7 +144,7 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                     webService.pause();
                 }
 
-                TowWebSocketInitializer.destroy(deployment);
+                TowWebSocketServerContainerInitializer.destroy(deployment);
 
                 manager.stop();
                 manager.undeploy();

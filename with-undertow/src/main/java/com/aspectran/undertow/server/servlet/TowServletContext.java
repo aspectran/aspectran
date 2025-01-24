@@ -160,9 +160,9 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
-    public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
-        if (webSocketInitializer != null) {
-            webSocketInitializer.initialize(this);
+    public void setWebSocketServerContainerInitializer(TowWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
+        if (webSocketServerContainerInitializer != null) {
+            webSocketServerContainerInitializer.initialize(this);
         }
     }
 

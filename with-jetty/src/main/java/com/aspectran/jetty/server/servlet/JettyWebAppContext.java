@@ -65,7 +65,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private List<JettyErrorPage> errorPages;
 
-    private JettyWebSocketInitializer webSocketInitializer;
+    private JettyWebSocketServerContainerInitializer webSocketServerContainerInitializer;
 
     private DefaultWebService rootWebService;
 
@@ -219,8 +219,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
-    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
-        this.webSocketInitializer = webSocketInitializer;
+    public void setWebSocketServerContainerInitializer(JettyWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
+        this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
     }
 
     public void deferredInitialize(Server server) {
@@ -245,11 +245,11 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             setErrorHandler(errorHandler);
         }
 
-        if (webSocketInitializer != null) {
+        if (webSocketServerContainerInitializer != null) {
             JakartaWebSocketServletContainerInitializer.configure(this,
                     (servletContext, jettyWebSocketServerContainer) -> {
                         ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
-                        webSocketInitializer.customize(serverContainer);
+                        webSocketServerContainerInitializer.customize(serverContainer);
                     });
         }
 

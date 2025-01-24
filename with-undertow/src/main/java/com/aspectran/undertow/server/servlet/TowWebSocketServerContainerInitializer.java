@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Initializer for WebSocket Support in Undertow.
  */
-public class TowWebSocketInitializer  {
+public class TowWebSocketServerContainerInitializer {
 
     private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
@@ -111,7 +111,7 @@ public class TowWebSocketInitializer  {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
-                TowWebSocketInitializer.closeWebSockets(connections);
+                TowWebSocketServerContainerInitializer.closeWebSockets(connections);
             }
         }
 
