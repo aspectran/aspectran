@@ -26,7 +26,6 @@ import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
-import com.aspectran.web.service.WebService;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
@@ -67,6 +66,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private List<JettyErrorPage> errorPages;
 
     private JettyWebSocketInitializer webSocketInitializer;
+
+    private DefaultWebService rootWebService;
 
     @NonNull
     private ActivityContext getActivityContext() {
@@ -254,7 +255,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         // Create a root web service
         CoreService masterService = getActivityContext().getMasterService();
-        WebService rootWebService = DefaultWebServiceBuilder.build(getServletContext(), masterService);
+        rootWebService = DefaultWebServiceBuilder.build(getServletContext(), masterService);
         if (rootWebService.isOrphan()) {
             server.addEventListener(new LifeCycle.Listener() {
                 @Override
@@ -271,11 +272,13 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     public void deferredDispose() {
-        DefaultWebService webService = WebService.findWebService(getServletContext());
-        if (webService.isActive()) {
-            webService.stop();
+        if (rootWebService != null) {
+            if (rootWebService.isActive()) {
+                rootWebService.stop();
+            }
+            rootWebService.withdraw();
+            rootWebService = null;
         }
-        webService.withdraw();
     }
 
 }

@@ -169,25 +169,26 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         logger.info("Stopping embedded Jetty server");
         if (gracefulShutdown != null) {
             gracefulShutdown.shutDownGracefully(result -> {
-                try {
-                    super.doStop();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (Exception e) {
-                    logger.error("Unable to stop embedded Jetty server", e);
-                }
+                shutdown();
             });
         } else {
-            try {
-                super.doStop();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                logger.error("Unable to stop embedded Jetty server", e);
-            }
+            shutdown();
         }
-        for (Handler handler : getHandlers()) {
-            handleDeferredDispose(handler);
+    }
+
+    private void shutdown() {
+        try {
+            getHandler().stop();
+            super.doStop();
+            super.destroy();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            logger.error("Unable to stop embedded Jetty server", e);
+        } finally {
+            for (Handler handler : getHandlers()) {
+                handleDeferredDispose(handler);
+            }
         }
     }
 

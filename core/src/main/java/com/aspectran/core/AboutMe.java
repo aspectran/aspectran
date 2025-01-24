@@ -46,11 +46,19 @@ public abstract class AboutMe {
         POWERED_BY_LINK = "<a href=\"https://aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
 
         // Show warning when RC# or M# or -SNAPSHOT is in version string
-        STABLE = !VERSION.matches("^.*[.-](RC|M|SNAPSHOT)[0-9]?$");
+        STABLE = !VERSION.matches("^.*[.-](RC|M|SNAPSHOT|x)[0-9]?$");
     }
 
     public static String getVersion() {
         return VERSION;
+    }
+
+    public static String getVersionDetail() {
+        if (STABLE) {
+            return VERSION;
+        } else {
+            return VERSION + " (THIS IS NOT A STABLE RELEASE! DO NOT USE IN PRODUCTION!)";
+        }
     }
 
     public static String getPoweredBy() {
@@ -67,7 +75,7 @@ public abstract class AboutMe {
      */
     public static void print(PrintStream output) {
         Assert.notNull(output, "output must not be null");
-        output.println("Aspectran: " + VERSION);
+        output.println("Aspectran: " + getVersionDetail());
         output.println("JVM: " + System.getProperty("java.vm.name") + " (build " +
                 System.getProperty("java.vm.version") + ", " + System.getProperty("java.vm.info") + ")");
         output.println("OS: " + System.getProperty("os.name") + " " +
@@ -80,13 +88,13 @@ public abstract class AboutMe {
      */
     public static void printPretty(PrintStream output) {
         Assert.notNull(output, "output must not be null");
-        output.println("---------------------------------------------------------------------");
-        output.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
+        output.println("-------------------------------------------------------------------------------");
+        output.printf(" %1$-9s : %2$s%n", "Aspectran", getVersionDetail());
         output.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.vm.name") + " (build " +
                 System.getProperty("java.vm.version") + ", " + System.getProperty("java.vm.info") + ")");
         output.printf(" %1$-9s : %2$s%n", "OS", System.getProperty("os.name") + " " +
                 System.getProperty("os.version") + " " + System.getProperty("os.arch"));
-        output.println("---------------------------------------------------------------------");
+        output.println("-------------------------------------------------------------------------------");
     }
 
     /**
