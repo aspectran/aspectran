@@ -88,7 +88,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public boolean isRunning() {
-        final int state = this.state;
+        int state = this.state;
         return (state == STATE_STARTED || state == STATE_STARTING);
     }
 
@@ -110,6 +110,12 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     @Override
     public boolean isStopped() {
         return (state == STATE_STOPPED);
+    }
+
+    @Override
+    public boolean isStoppable() {
+        int state = this.state;
+        return (state != STATE_STOPPED && state != STATE_STOPPING);
     }
 
     @Override

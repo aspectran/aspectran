@@ -133,17 +133,19 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     @Override
     public void initialize() throws Exception {
         setStopAtShutdown(false);
-        if (autoStart) {
+        if (autoStart && !isRunning()) {
             start();
         }
     }
 
     @Override
     public void destroy() {
-        try {
-            stop();
-        } catch (Exception e) {
-            logger.error("Error while stopping jetty server", e);
+        if (!isStopped() && isStopping()) {
+            try {
+                stop();
+            } catch (Exception e) {
+                logger.error("Error while stopping jetty server", e);
+            }
         }
     }
 

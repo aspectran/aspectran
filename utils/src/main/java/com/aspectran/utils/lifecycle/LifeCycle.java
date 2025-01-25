@@ -88,6 +88,8 @@ public interface LifeCycle {
      */
     boolean isStopped();
 
+    boolean isStoppable();
+
     /**
      * @return true if the component has failed to start or has failed to stop
      */

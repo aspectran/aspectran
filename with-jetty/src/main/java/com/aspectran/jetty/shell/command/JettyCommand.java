@@ -145,6 +145,7 @@ public class JettyCommand extends AbstractCommand {
         try {
             if (hasJettyServer(serverName)) {
                 JettyServer jettyServer = getJettyServer(serverName);
+                jettyServer.stop();
                 destroyJettyServer(jettyServer);
                 printStatus(LifeCycle.STOPPED, console);
                 success = true;

@@ -16,6 +16,8 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
@@ -29,11 +31,14 @@ import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Initializer for WebSocket Support in Undertow.
  */
 public class TowWebSocketServerContainerInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(TowWebSocketServerContainerInitializer.class);
 
     private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
@@ -70,13 +75,21 @@ public class TowWebSocketServerContainerInitializer {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void destroy(@NonNull Deployment deployment) {
         SessionManager sessionManager = deployment.getSessionManager();
         if (sessionManager != null) {
-            sessionManager.getActiveSessions().forEach(sessionId -> {
-                Session session = sessionManager.getSession(sessionId);
-                session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
-            });
+            Set<String> activeSessions = sessionManager.getActiveSessions();
+            if (!activeSessions.isEmpty()) {
+                activeSessions.forEach(sessionId -> {
+                    Session session = sessionManager.getSession(sessionId);
+                    Object value = session.getAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+                    if (value != null) {
+                        closeWebSockets((List<WebSocketChannel>) value);
+                        session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+                    }
+                });
+            }
         }
     }
 
@@ -84,7 +97,7 @@ public class TowWebSocketServerContainerInitializer {
         if (connections != null && !connections.isEmpty()) {
             CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
             for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
-                if (webSocketChannel != null) {
+                if (webSocketChannel != null && webSocketChannel.isOpen()) {
                     WebSockets.sendClose(closeMessage, webSocketChannel, null);
                 }
             }
@@ -107,9 +120,9 @@ public class TowWebSocketServerContainerInitializer {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private void closeWebSockets(@NonNull String name, @NonNull Object value) {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
-                @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
                 TowWebSocketServerContainerInitializer.closeWebSockets(connections);
             }

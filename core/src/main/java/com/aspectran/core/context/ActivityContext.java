@@ -16,6 +16,7 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityCounter;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -166,5 +167,7 @@ public interface ActivityContext {
      * @return {@code true} if there is current activity, {@code false} otherwise
      */
     boolean hasCurrentActivity();
+
+    ActivityCounter getActivityCounter();
 
 }

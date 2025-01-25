@@ -266,6 +266,8 @@ public class CoreActivity extends AdviceActivity {
 
         V result = null;
         try {
+            getActivityContext().getActivityCounter().increase();
+
             if (!adapted) {
                 adapt();
             }
@@ -343,8 +345,12 @@ public class CoreActivity extends AdviceActivity {
                 throw new ActivityPerformException("Failed to perform activity", e);
             }
         } finally {
-            if (!forwarding) {
-                finish();
+            try {
+                if (!forwarding) {
+                    finish();
+                }
+            } finally {
+                getActivityContext().getActivityCounter().decrease();
             }
         }
         return result;

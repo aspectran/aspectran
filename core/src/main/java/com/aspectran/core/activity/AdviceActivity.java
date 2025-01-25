@@ -277,9 +277,17 @@ public abstract class AdviceActivity extends AbstractActivity {
                 Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
                 if (adviceBean == null) {
                     if (aspectAdviceRule.getAdviceBeanClass() != null) {
-                        adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
+                        try {
+                            adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
+                        } catch (Exception e) {
+                            logger.error("Failed to load advice bean " + aspectAdviceRule, e);
+                        }
                     } else if (aspectAdviceRule.getAdviceBeanId() != null) {
-                        adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+                        try {
+                            adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+                        } catch (Exception e) {
+                            logger.error("Failed to load advice bean " + aspectAdviceRule, e);
+                        }
                     }
                     putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                 }

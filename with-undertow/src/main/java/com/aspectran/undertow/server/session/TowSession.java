@@ -93,7 +93,7 @@ public final class TowSession implements io.undertow.server.session.Session {
     @Override
     public Object setAttribute(String name, Object value) {
         Assert.notNull(name, "name must not be null");
-        if (isNonPersistent(name)) {
+        if (value != null && isNonPersistent(name)) {
             return session.setAttribute(name, NonPersistentValue.wrap(value));
         } else {
             return session.setAttribute(name, value);

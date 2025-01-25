@@ -16,6 +16,7 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityCounter;
 import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
@@ -47,6 +48,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     private static final Logger logger = LoggerFactory.getLogger(DefaultActivityContext.class);
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
+
+    private final ActivityCounter activityCounter = new ActivityCounter();
 
     private final ClassLoader classLoader;
 
@@ -254,6 +257,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     @Override
     public boolean hasCurrentActivity() {
         return (currentActivityHolder.get() != null);
+    }
+
+    @Override
+    public ActivityCounter getActivityCounter() {
+        return activityCounter;
     }
 
     /**

@@ -145,6 +145,7 @@ public class UndertowCommand extends AbstractCommand {
         try {
             if (hasTowServer(serverName)) {
                 TowServer towServer = getTowServer(serverName);
+                towServer.stop();
                 destroyTowServer(towServer);
                 printStatus(LifeCycle.STOPPED, console);
                 success = true;

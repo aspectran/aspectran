@@ -148,7 +148,9 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
                 manager.stop();
                 manager.undeploy();
+
                 disposeRootWebService(webService);
+
                 if (sessionManager instanceof TowSessionManager towSessionManager) {
                     towSessionManager.stop(); // for lazy stop
                 }

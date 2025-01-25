@@ -68,17 +68,19 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
 
     @Override
     public void initialize() throws Exception {
-        if (isAutoStart()) {
+        if (isAutoStart() && !isRunning()) {
             start();
         }
     }
 
     @Override
     public void destroy() {
-        try {
-            stop();
-        } catch (Exception e) {
-            logger.error("Error while stopping Undertow server", e);
+        if (isStoppable()) {
+            try {
+                stop();
+            } catch (Exception e) {
+                logger.error("Error while stopping Undertow server", e);
+            }
         }
     }
 
