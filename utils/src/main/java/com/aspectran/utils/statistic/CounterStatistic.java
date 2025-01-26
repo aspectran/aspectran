@@ -64,7 +64,7 @@ public class CounterStatistic {
         max.accumulate(current);
     }
 
-    public void reset(final long value) {
+    public void reset(long value) {
         current.set(value);
         total.reset();
         max.reset();
@@ -74,7 +74,7 @@ public class CounterStatistic {
         }
     }
 
-    public long add(final long delta) {
+    public long add(long delta) {
         long value = current.addAndGet(delta);
         if (delta > 0) {
             total.add(delta);

@@ -16,7 +16,6 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityCounter;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -26,6 +25,7 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.MessageSource;
+import com.aspectran.utils.statistic.CounterStatistic;
 
 import java.nio.charset.StandardCharsets;
 
@@ -168,6 +168,6 @@ public interface ActivityContext {
      */
     boolean hasCurrentActivity();
 
-    ActivityCounter getActivityCounter();
+    CounterStatistic getActivityCounter();
 
 }

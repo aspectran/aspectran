@@ -16,7 +16,6 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityCounter;
 import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
@@ -36,6 +35,7 @@ import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.statistic.CounterStatistic;
 import com.aspectran.utils.thread.ThreadContextHelper;
 
 /**
@@ -49,7 +49,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
-    private final ActivityCounter activityCounter = new ActivityCounter();
+    private final CounterStatistic activityCounter = new CounterStatistic();
 
     private final ClassLoader classLoader;
 
@@ -260,7 +260,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
-    public ActivityCounter getActivityCounter() {
+    public CounterStatistic getActivityCounter() {
         return activityCounter;
     }
 

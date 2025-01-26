@@ -266,7 +266,7 @@ public class CoreActivity extends AdviceActivity {
 
         V result = null;
         try {
-            getActivityContext().getActivityCounter().increase();
+            getActivityContext().getActivityCounter().increment();
 
             if (!adapted) {
                 adapt();
@@ -350,7 +350,7 @@ public class CoreActivity extends AdviceActivity {
                     finish();
                 }
             } finally {
-                getActivityContext().getActivityCounter().decrease();
+                getActivityContext().getActivityCounter().decrement();
             }
         }
         return result;
