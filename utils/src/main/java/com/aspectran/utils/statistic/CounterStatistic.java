@@ -13,23 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//
-//  ========================================================================
-//  Copyright (c) 1995-2017 Mort Bay Consulting Pty. Ltd.
-//  ------------------------------------------------------------------------
-//  All rights reserved. This program and the accompanying materials
-//  are made available under the terms of the Eclipse Public License v1.0
-//  and Apache License v2.0 which accompanies this distribution.
-//
-//      The Eclipse Public License is available at
-//      http://www.eclipse.org/legal/epl-v10.html
-//
-//      The Apache License v2.0 is available at
-//      http://www.opensource.org/licenses/apache2.0.php
-//
-//  You may elect to redistribute this code under either of these licenses.
-//  ========================================================================
-//
 package com.aspectran.utils.statistic;
 
 import com.aspectran.utils.ObjectUtils;
@@ -50,11 +33,11 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class CounterStatistic {
 
-    protected final LongAccumulator max = new LongAccumulator(Math::max,0L);
+    private final AtomicLong current = new AtomicLong();
 
-    protected final AtomicLong current = new AtomicLong();
+    private final LongAccumulator max = new LongAccumulator(Math::max,0L);
 
-    protected final LongAdder total = new LongAdder();
+    private final LongAdder total = new LongAdder();
 
     public void reset() {
         total.reset();
@@ -94,12 +77,12 @@ public class CounterStatistic {
         return current.decrementAndGet();
     }
 
-    public long getMax() {
-        return max.get();
-    }
-
     public long getCurrent() {
         return current.get();
+    }
+
+    public long getMax() {
+        return max.get();
     }
 
     public long getTotal() {
@@ -109,9 +92,9 @@ public class CounterStatistic {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
-        tsb.append("current", current.get());
-        tsb.append("max", max.get());
-        tsb.append("total", total.sum());
+        tsb.append("current", getCurrent());
+        tsb.append("max", getMax());
+        tsb.append("total", getTotal());
         return tsb.toString();
     }
 

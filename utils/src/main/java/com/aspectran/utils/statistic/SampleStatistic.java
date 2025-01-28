@@ -13,23 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//
-//  ========================================================================
-//  Copyright (c) 1995-2017 Mort Bay Consulting Pty. Ltd.
-//  ------------------------------------------------------------------------
-//  All rights reserved. This program and the accompanying materials
-//  are made available under the terms of the Eclipse Public License v1.0
-//  and Apache License v2.0 which accompanies this distribution.
-//
-//      The Eclipse Public License is available at
-//      http://www.eclipse.org/legal/epl-v10.html
-//
-//      The Apache License v2.0 is available at
-//      http://www.opensource.org/licenses/apache2.0.php
-//
-//  You may elect to redistribute this code under either of these licenses.
-//  ========================================================================
-//
 package com.aspectran.utils.statistic;
 
 import com.aspectran.utils.ObjectUtils;
@@ -53,13 +36,13 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class SampleStatistic {
 
-    protected final LongAccumulator max = new LongAccumulator(Math::max,0L);
+    private final LongAccumulator max = new LongAccumulator(Math::max,0L);
 
-    protected final AtomicLong total = new AtomicLong();
+    private final AtomicLong total = new AtomicLong();
 
-    protected final AtomicLong count = new AtomicLong();
+    private final AtomicLong count = new AtomicLong();
 
-    protected final LongAdder totalVariance100 = new LongAdder();
+    private final LongAdder totalVariance100 = new LongAdder();
 
     /**
      * Resets the statistics.
@@ -135,9 +118,10 @@ public class SampleStatistic {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(ObjectUtils.simpleIdentityToString(this));
-        tsb.append("count", getCount());
         tsb.append("max", getMax());
         tsb.append("total", getTotal());
+        tsb.append("count", getCount());
+        tsb.append("mean", getMean());
         tsb.append("stddev", getStdDev());
         return tsb.toString();
     }
