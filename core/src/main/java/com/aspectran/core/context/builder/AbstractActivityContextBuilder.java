@@ -22,6 +22,7 @@ import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
+import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
@@ -374,25 +375,32 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
+    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant, CoreService masterService)
             throws BeanReferenceException, IllegalRuleException {
         DefaultActivityContext context = new DefaultActivityContext(
-                assistant.getClassLoader(), assistant.getApplicationAdapter());
+                assistant.getClassLoader(), assistant.getApplicationAdapter(), masterService);
         if (getContextConfig() != null) {
             context.setName(getContextConfig().getName());
         }
         context.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
         ActivityEnvironment activityEnvironment = createActivityEnvironment(context, assistant);
-        context.setActivityEnvironment(activityEnvironment);
+        context.setEnvironment(activityEnvironment);
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
         beanRuleRegistry.postProcess(assistant);
 
+        BeanRegistry parentBeanRegistry = null;
+        if (masterService != null) {
+            if (masterService.getParentService() != null) {
+                parentBeanRegistry = masterService.getParentService().getActivityContext().getBeanRegistry();
+            }
+        }
+
         BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
-        beanReferenceInspector.inspect(beanRuleRegistry);
+        beanReferenceInspector.inspect(beanRuleRegistry, parentBeanRegistry);
 
         initAspectRuleRegistry(assistant);
 
@@ -431,8 +439,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private ActivityEnvironment createActivityEnvironment(
             ActivityContext context, @NonNull ActivityRuleAssistant assistant) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
-        ActivityEnvironmentBuilder builder = new ActivityEnvironmentBuilder(context, environmentProfiles)
-            .putPropertyItemRules(propertyItemRuleMap);
+        ActivityEnvironmentBuilder builder = new ActivityEnvironmentBuilder()
+                .setEnvironmentProfiles(environmentProfiles)
+                .putPropertyItemRules(propertyItemRuleMap);
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             if (environmentProfiles.acceptsProfiles(environmentRule.getProfiles())) {
                 if (environmentRule.getPropertyItemRuleMapList() != null) {
@@ -444,7 +453,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 }
             }
         }
-        return builder.build();
+        return builder.build(context);
     }
 
     /**

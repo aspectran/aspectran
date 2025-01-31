@@ -139,14 +139,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 assistant.clearCurrentRuleAppender();
             }
 
-            activityContext = createActivityContext(assistant);
+            activityContext = createActivityContext(assistant, getMasterService());
             assistant.release();
 
-            // When driven by a service
-            if (getMasterService() != null) {
-                // ActivityContext will be initialized in that service
-                activityContext.setMasterService(getMasterService());
-            } else {
+            if (getMasterService() == null) {
+                // If a MasterService is specified, the ActivityContext will be initialized
+                // by that service, otherwise it must be explicitly initialized here
                 ((Component)activityContext).initialize();
             }
 

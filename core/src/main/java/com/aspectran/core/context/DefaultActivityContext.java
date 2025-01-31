@@ -55,13 +55,13 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private final ApplicationAdapter applicationAdapter;
 
+    private final CoreService masterService;
+
     private final Activity defaultActivity;
 
     private String name;
 
     private DescriptionRule descriptionRule;
-
-    private CoreService masterService;
 
     private ActivityEnvironment activityEnvironment;
 
@@ -82,9 +82,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * @param classLoader the class loader
      * @param applicationAdapter the application adapter
      */
-    public DefaultActivityContext(ClassLoader classLoader, ApplicationAdapter applicationAdapter) {
+    public DefaultActivityContext(ClassLoader classLoader, ApplicationAdapter applicationAdapter, CoreService masterService) {
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
+        this.masterService = masterService;
         this.defaultActivity = new DefaultActivity(this);
     }
 
@@ -122,12 +123,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
-    public void setMasterService(CoreService masterService) {
-        checkInitializable();
-        this.masterService = masterService;
-    }
-
-    @Override
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -143,7 +138,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return activityEnvironment;
     }
 
-    public void setActivityEnvironment(ActivityEnvironment activityEnvironment) {
+    public void setEnvironment(ActivityEnvironment activityEnvironment) {
         checkInitializable();
         this.activityEnvironment = activityEnvironment;
     }

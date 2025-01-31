@@ -88,6 +88,8 @@ public interface BeanRegistry {
      */
     boolean containsBean(Class<?> type, String id);
 
+    boolean containsSingleBean(Class<?> type);
+
     Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);
 
     boolean hasSingleton(Object bean);

@@ -25,17 +25,16 @@ import com.aspectran.utils.Assert;
  */
 public class ActivityEnvironmentBuilder {
 
-    private final ActivityContext context;
-
-    private final EnvironmentProfiles environmentProfiles;
-
     private final ItemRuleMap propertyItemRuleMap = new ItemRuleMap();
 
-    public ActivityEnvironmentBuilder(ActivityContext context, EnvironmentProfiles environmentProfiles) {
-        Assert.notNull(context, "ActivityContext must not be null");
-        Assert.notNull(environmentProfiles, "EnvironmentProfiles must not be null");
-        this.context = context;
+    private EnvironmentProfiles environmentProfiles;
+
+    public ActivityEnvironmentBuilder() {
+    }
+
+    public ActivityEnvironmentBuilder setEnvironmentProfiles(EnvironmentProfiles environmentProfiles) {
         this.environmentProfiles = environmentProfiles;
+        return this;
     }
 
     public ActivityEnvironmentBuilder putPropertyItemRules(ItemRuleMap propertyItemRuleMap) {
@@ -45,7 +44,9 @@ public class ActivityEnvironmentBuilder {
         return this;
     }
 
-    public ActivityEnvironment build() {
+    public ActivityEnvironment build(ActivityContext context) {
+        Assert.notNull(context, "ActivityContext must not be null");
+        Assert.notNull(environmentProfiles, "EnvironmentProfiles is not set");
         ActivityEnvironment activityEnvironment = new ActivityEnvironment(context, environmentProfiles);
         for (ItemRule itemRule : propertyItemRuleMap.values()) {
             activityEnvironment.putPropertyItemRule(itemRule);

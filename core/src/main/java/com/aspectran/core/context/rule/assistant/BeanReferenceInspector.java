@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
+import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
@@ -75,7 +76,8 @@ public class BeanReferenceInspector {
      * @throws BeanReferenceException the bean reference exception
      * @throws BeanRuleException if an illegal bean rule is found
      */
-    public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException, BeanRuleException {
+    public void inspect(BeanRuleRegistry beanRuleRegistry, BeanRegistry parentBeanRegistry)
+            throws BeanReferenceException, BeanRuleException {
         Map<RefererInfo, RefererKey> brokenReferences = new LinkedHashMap<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
@@ -98,13 +100,11 @@ public class BeanReferenceInspector {
                         } else {
                             beanRule = beanRules[0];
                         }
-                    } else {
-                        if (beanId != null) {
-                            for (BeanRule br : beanRules) {
-                                if (beanId.equals(br.getId())) {
-                                    beanRule = br;
-                                    break;
-                                }
+                    } else if (beanId != null) {
+                        for (BeanRule br : beanRules) {
+                            if (beanId.equals(br.getId())) {
+                                beanRule = br;
+                                break;
                             }
                         }
                     }
@@ -116,32 +116,45 @@ public class BeanReferenceInspector {
                 beanRule = beanRuleRegistry.getBeanRule(beanId);
             }
 
-            if (beanRule == null) {
-                if (beanRules != null && beanRules.length > 1) {
-                    for (RefererInfo refererInfo : refererInfoSet) {
-                        if (beanId != null) {
-                            logger.error("Cannot resolve reference to bean " + refererKey +
+            boolean existsInParents = false;
+            if (parentBeanRegistry != null && beanRule == null && (beanRules == null || beanRules.length == 0)) {
+                if (beanId != null && beanClass != null) {
+                    existsInParents = parentBeanRegistry.containsBean(beanClass, beanId);
+                } else if (beanId != null) {
+                    existsInParents = parentBeanRegistry.containsBean(beanId);
+                } else if (beanClass != null) {
+                    existsInParents = parentBeanRegistry.containsSingleBean(beanClass);
+                }
+            }
+
+            if (!existsInParents) {
+                if (beanRule == null) {
+                    if (beanRules != null && beanRules.length > 1) {
+                        for (RefererInfo refererInfo : refererInfoSet) {
+                            if (beanId != null) {
+                                logger.error("Cannot resolve reference to bean " + refererKey +
                                     "; Referer: " + refererInfo);
-                        } else {
-                            logger.error("No unique bean of type [" + beanClass + "] is defined: " +
+                            } else {
+                                logger.error("No unique bean of type [" + beanClass + "] is defined: " +
                                     "expected single matching bean but found " + beanRules.length + ": [" +
                                     NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo);
+                            }
+                            brokenReferences.put(refererInfo, refererKey);
                         }
-                        brokenReferences.put(refererInfo, refererKey);
+                    } else {
+                        for (RefererInfo refererInfo : refererInfoSet) {
+                            if (!isStaticReference(refererInfo)) {
+                                logger.error("Cannot resolve reference: " + refererInfo);
+                                brokenReferences.put(refererInfo, null);
+                            }
+                        }
                     }
                 } else {
                     for (RefererInfo refererInfo : refererInfoSet) {
-                        if (!isValidStaticReference(refererInfo)) {
-                            logger.error("Cannot resolve reference: " + refererInfo);
-                            brokenReferences.put(refererInfo, null);
-                        }
-                    }
-                }
-            } else {
-                for (RefererInfo refererInfo : refererInfoSet) {
-                    if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
-                        checkTransletActionParameter((InvokeActionRule)refererInfo.getReferenceable(),
+                        if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
+                            checkTransletActionParameter((InvokeActionRule)refererInfo.getReferenceable(),
                                 beanRule, refererInfo);
+                        }
                     }
                 }
             }
@@ -152,22 +165,23 @@ public class BeanReferenceInspector {
         }
     }
 
-    private boolean isValidStaticReference(@NonNull RefererInfo refererInfo) {
+    private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token token = (Token)refererInfo.getReferenceable();
-            if (token.getAlternativeValue() != null && token.getGetterName() != null) {
-                Class<?> beanClass = (Class<?>)token.getAlternativeValue();
+            Class<?> beanClass = (Class<?>)token.getAlternativeValue();
+            String getterName = token.getGetterName();
+            if (beanClass != null && getterName != null) {
                 if (beanClass.isEnum()) {
                     Object[] enums = beanClass.getEnumConstants();
                     if (enums != null) {
                         for (Object en : enums) {
-                            if (token.getGetterName().equals(en.toString())) {
+                            if (getterName.equals(en.toString())) {
                                 return true;
                             }
                         }
                     }
                 }
-                return BeanUtils.hasReadableProperty((Class<?>)token.getAlternativeValue(), token.getGetterName());
+                return BeanUtils.hasReadableProperty(beanClass, getterName);
             }
         }
         return false;

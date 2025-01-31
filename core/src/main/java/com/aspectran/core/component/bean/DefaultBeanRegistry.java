@@ -194,6 +194,19 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
+    public boolean containsSingleBean(Class<?> type) {
+        BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
+        if (beanRules == null) {
+            BeanRegistry parent = getParentBeanRegistry();
+            if (parent != null) {
+                return parent.containsSingleBean(type);
+            }
+            return false;
+        }
+        return (beanRules.length == 1);
+    }
+
+    @Override
     public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
         return getBeanRuleRegistry().findConfigBeanClassesWithAnnotation(annotationType);
     }
