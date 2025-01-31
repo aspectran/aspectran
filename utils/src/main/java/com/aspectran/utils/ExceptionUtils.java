@@ -47,11 +47,42 @@ public class ExceptionUtils {
     @NonNull
     public static Exception getRootCauseException(@NonNull Exception e) {
         Throwable cause = getRootCause(e);
-        if (cause instanceof Exception) {
-            return (Exception)cause;
+        if (cause instanceof Exception ex) {
+            return ex;
         } else {
             return e;
         }
+    }
+
+    /**
+     * Tests if the throwable's causal chain have an wrapped exception of the given type.
+     * @param chain the root of a Throwable causal chain
+     * @param type the exception type to test
+     * @return true, if chain is wrapping a cause of the given type
+     */
+    public static boolean hasCause(Throwable chain, Class<? extends Throwable> type) {
+        if (chain == null) {
+            return false;
+        }
+        if (type.isInstance(chain)) {
+            return true;
+        }
+        return hasCause(chain.getCause(), type);
+    }
+
+    @SafeVarargs
+    public static boolean hasCause(Throwable chain, Class<? extends Throwable> type, Class<? extends Throwable>... more) {
+        if (hasCause(chain, type)) {
+            return true;
+        } else if (more.length == 0) {
+            return false;
+        }
+        for (Class<? extends Throwable> one : more) {
+            if (hasCause(chain, one)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -95,8 +126,8 @@ public class ExceptionUtils {
      * @return the Throwable
      */
     public static Throwable throwIfError(Throwable t) {
-        if (t instanceof Error) {
-            throw (Error)t;
+        if (t instanceof Error e) {
+            throw e;
         }
         return t;
     }
@@ -108,8 +139,8 @@ public class ExceptionUtils {
      * @return the Throwable
      */
     public static Throwable throwIfRTE(Throwable t) {
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException)t;
+        if (t instanceof RuntimeException re) {
+            throw re;
         }
         return t;
     }
@@ -122,8 +153,8 @@ public class ExceptionUtils {
      * @throws IOException rethrow the IOException
      */
     public static Throwable throwIfIOE(Throwable t) throws IOException {
-        if (t instanceof IOException) {
-            throw (IOException)t;
+        if (t instanceof IOException ioe) {
+            throw ioe;
         }
         return t;
     }

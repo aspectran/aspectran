@@ -46,7 +46,7 @@ final class GracefulShutdown {
 
     void shutDownGracefully(@NonNull GracefulShutdownCallback callback) {
         logger.info("Commencing graceful shutdown. Waiting for active requests to complete");
-        for (Connector connector : this.server.getConnectors()) {
+        for (Connector connector : server.getConnectors()) {
             shutdown(connector);
         }
         this.shuttingDown = true;
@@ -75,6 +75,7 @@ final class GracefulShutdown {
     }
 
     private void awaitShutdown(GracefulShutdownCallback callback) {
+        sleep(300);
         int activeRequests = 0;
         while (this.shuttingDown && (activeRequests = getActiveRequests()) > 0) {
             sleep(100);
@@ -98,8 +99,7 @@ final class GracefulShutdown {
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        }
-        catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
     }

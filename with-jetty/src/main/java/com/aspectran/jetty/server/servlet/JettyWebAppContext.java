@@ -247,10 +247,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         if (webSocketServerContainerInitializer != null) {
             JakartaWebSocketServletContainerInitializer.configure(this,
-                    (servletContext, jettyWebSocketServerContainer) -> {
-                        ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
-                        webSocketServerContainerInitializer.customize(serverContainer);
-                    });
+                    (servletContext, serverContainer)
+                        -> webSocketServerContainerInitializer.customize(serverContainer));
         }
 
         // Create a root web service

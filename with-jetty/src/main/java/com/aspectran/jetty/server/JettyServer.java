@@ -170,9 +170,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     public void doStop() {
         logger.info("Stopping embedded Jetty server");
         if (gracefulShutdown != null) {
-            gracefulShutdown.shutDownGracefully(result -> {
-                shutdown();
-            });
+            gracefulShutdown.shutDownGracefully(result -> shutdown());
         } else {
             shutdown();
         }

@@ -27,6 +27,7 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
@@ -42,8 +43,10 @@ import jakarta.websocket.server.ServerEndpoint;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.channels.ClosedChannelException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
 /**
  * WebSocket endpoint for the chat server.
@@ -117,7 +120,9 @@ public class ChatServerEndpoint extends InstantActivitySupport {
 
     @OnError
     public void onError(@NonNull Session session, Throwable error) {
-        logger.error("Error in websocket session: " + session.getId(), error);
+        if (!ExceptionUtils.hasCause(error, ClosedChannelException.class, TimeoutException.class)) {
+            logger.warn("Error in websocket session: " + session.getId(), error);
+        }
         try {
             session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
         } catch (IOException e) {
