@@ -28,8 +28,8 @@ public class Slf4jLogger implements Logger {
 
     public Slf4jLogger(String name) {
         org.slf4j.Logger logger = LoggerFactory.getLogger(name);
-        if (logger instanceof LocationAwareLogger) {
-            this.internalLogger = new Slf4jLocationAwareLoggerWrapper((LocationAwareLogger)logger);
+        if (logger instanceof LocationAwareLogger locationAwareLogger) {
+            this.internalLogger = new Slf4jLocationAwareLoggerWrapper(locationAwareLogger);
         } else {
             // Logger is not LocationAwareLogger or slf4j version < 1.6
             this.internalLogger = new Slf4jLoggerWrapper(logger);

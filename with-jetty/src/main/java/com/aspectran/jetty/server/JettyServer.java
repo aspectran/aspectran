@@ -140,7 +140,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void destroy() {
-        if (!isStopped() && isStopping()) {
+        if (!isStopped() && !isStopping()) {
             try {
                 stop();
             } catch (Exception e) {

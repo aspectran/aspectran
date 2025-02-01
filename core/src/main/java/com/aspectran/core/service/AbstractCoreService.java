@@ -20,6 +20,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.scheduler.service.DefaultSchedulerServiceBuilder;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
@@ -185,8 +186,9 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     protected void buildSchedulerService() {
         Assert.state(getAspectranConfig() != null, "AspectranConfig is not set");
-        if (getAspectranConfig().hasSchedulerConfig() && getAspectranConfig().getSchedulerConfig().isEnabled()) {
-            this.schedulerService = DefaultSchedulerServiceBuilder.build(this, getAspectranConfig().getSchedulerConfig());
+        SchedulerConfig schedulerConfig = getAspectranConfig().getSchedulerConfig();
+        if (schedulerConfig != null && schedulerConfig.isEnabled()) {
+            this.schedulerService = DefaultSchedulerServiceBuilder.build(this, schedulerConfig);
         }
     }
 
