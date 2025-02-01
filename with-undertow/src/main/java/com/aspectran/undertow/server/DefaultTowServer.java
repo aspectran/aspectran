@@ -79,7 +79,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
             try {
                 stop();
             } catch (Exception e) {
-                logger.error("Error while stopping Undertow server", e);
+                logger.error("Error stopping Undertow server", e);
             }
         }
     }

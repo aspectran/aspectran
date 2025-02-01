@@ -49,15 +49,15 @@ public class RestartCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmRestart()) {
+            if (!getShellService().getServiceLifeCycle().isActive()) {
+                console.writeError("Oops! This shell is currently not functioning properly. Please fix the problem.");
+                return;
+            }
             console.writeLine("Restarting...");
             try {
-                if (getShellService().getServiceLifeCycle().isActive()) {
-                    getShellService().getServiceLifeCycle().restart();
-                } else {
-                    getShellService().getServiceLifeCycle().start();
-                }
+                getShellService().getServiceLifeCycle().restart();
             } catch (Exception e) {
-                throw new ShellCommandExecutionException("Shell restart failed!", e);
+                throw new ShellCommandExecutionException("Shell restart failed! Please fix the problem.", e);
             }
         }
     }

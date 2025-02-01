@@ -144,14 +144,14 @@ public class JettyServer extends Server implements InitializableBean, Disposable
             try {
                 stop();
             } catch (Exception e) {
-                logger.error("Error while stopping jetty server", e);
+                logger.error("Error stopping Jetty server", e);
             }
         }
     }
 
     @Override
     public void doStart() throws Exception {
-        logger.info("Starting embedded Jetty server");
+        logger.info("Starting Jetty server");
         if (shutdownGracefully && getStatisticsHandler() != null) {
             gracefulShutdown = new GracefulShutdown(this);
         } else if (gracefulShutdown != null) {
@@ -162,13 +162,13 @@ public class JettyServer extends Server implements InitializableBean, Disposable
             handleDeferredInitialize(handler);
         }
         super.doStart();
-        logger.info("Jetty started on port(s) " + getActualPortsDescription()
+        logger.info("Jetty server started on port(s) " + getActualPortsDescription()
                 + " with context path '" + getContextPath() + "'");
     }
 
     @Override
     public void doStop() {
-        logger.info("Stopping embedded Jetty server");
+        logger.info("Stopping Jetty server");
         if (gracefulShutdown != null) {
             gracefulShutdown.shutDownGracefully(result -> shutdown());
         } else {
@@ -184,7 +184,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            logger.error("Unable to stop embedded Jetty server", e);
+            logger.error("Failed to shutdown Jetty server", e);
         } finally {
             for (Handler handler : getHandlers()) {
                 handleDeferredDispose(handler);
