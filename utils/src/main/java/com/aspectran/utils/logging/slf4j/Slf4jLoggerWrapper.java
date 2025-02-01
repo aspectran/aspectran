@@ -24,7 +24,7 @@ class Slf4jLoggerWrapper implements Logger {
 
     private final transient org.slf4j.Logger internalLogger;
 
-    public Slf4jLoggerWrapper(org.slf4j.Logger internalLogger) {
+    Slf4jLoggerWrapper(org.slf4j.Logger internalLogger) {
         this.internalLogger = internalLogger;
     }
 

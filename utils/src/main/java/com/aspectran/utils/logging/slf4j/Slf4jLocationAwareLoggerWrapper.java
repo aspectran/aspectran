@@ -25,60 +25,60 @@ class Slf4jLocationAwareLoggerWrapper implements Logger {
 
     private static final String FQCN = Slf4jLogger.class.getName();
 
-    private final transient LocationAwareLogger internalLogger;
+    private final transient LocationAwareLogger locationAwareLogger;
 
-    Slf4jLocationAwareLoggerWrapper(LocationAwareLogger internalLogger) {
-        this.internalLogger = internalLogger;
+    Slf4jLocationAwareLoggerWrapper(LocationAwareLogger locationAwareLogger) {
+        this.locationAwareLogger = locationAwareLogger;
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return internalLogger.isDebugEnabled();
+        return locationAwareLogger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return internalLogger.isTraceEnabled();
+        return locationAwareLogger.isTraceEnabled();
     }
 
     @Override
     public void error(String s, Throwable e) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.ERROR_INT, s, null, e);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.ERROR_INT, s, null, e);
     }
 
     @Override
     public void error(String s) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.ERROR_INT, s, null, null);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.ERROR_INT, s, null, null);
     }
 
     @Override
     public void debug(String s) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.DEBUG_INT, s, null, null);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.DEBUG_INT, s, null, null);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.DEBUG_INT, s, null, e);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.DEBUG_INT, s, null, e);
     }
 
     @Override
     public void info(String s) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.INFO_INT, s, null, null);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.INFO_INT, s, null, null);
     }
 
     @Override
     public void trace(String s) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.TRACE_INT, s, null, null);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.TRACE_INT, s, null, null);
     }
 
     @Override
     public void warn(String s) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.WARN_INT, s, null, null);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.WARN_INT, s, null, null);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        internalLogger.log(null, FQCN, LocationAwareLogger.WARN_INT, s, null, e);
+        locationAwareLogger.log(null, FQCN, LocationAwareLogger.WARN_INT, s, null, e);
     }
 
 }

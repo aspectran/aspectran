@@ -30,13 +30,6 @@ import java.lang.reflect.Constructor;
  */
 public final class LoggerFactory {
 
-    /**
-     * Marker to be used by logging implementations that support markers.
-     */
-    public static final String MARKER = "ASPECTRAN";
-
-    static final String EXCEPTION_MESSAGE = "Unexpected exception: ";
-
     private static Constructor<? extends Logger> loggerConstructor;
 
     static {

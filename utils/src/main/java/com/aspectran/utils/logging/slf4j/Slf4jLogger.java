@@ -24,66 +24,66 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public class Slf4jLogger implements Logger {
 
-    private final transient Logger internalLogger;
+    private final transient Logger logger;
 
     public Slf4jLogger(String name) {
-        org.slf4j.Logger logger = LoggerFactory.getLogger(name);
-        if (logger instanceof LocationAwareLogger locationAwareLogger) {
-            this.internalLogger = new Slf4jLocationAwareLoggerWrapper(locationAwareLogger);
+        org.slf4j.Logger internalLogger = LoggerFactory.getLogger(name);
+        if (internalLogger instanceof LocationAwareLogger locationAwareLogger) {
+            this.logger = new Slf4jLocationAwareLoggerWrapper(locationAwareLogger);
         } else {
             // Logger is not LocationAwareLogger or slf4j version < 1.6
-            this.internalLogger = new Slf4jLoggerWrapper(logger);
+            this.logger = new Slf4jLoggerWrapper(internalLogger);
         }
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return internalLogger.isDebugEnabled();
+        return logger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return internalLogger.isTraceEnabled();
+        return logger.isTraceEnabled();
     }
 
     @Override
     public void error(String s) {
-        internalLogger.error(s);
+        logger.error(s);
     }
 
     @Override
     public void error(String s, Throwable e) {
-        internalLogger.error(s, e);
+        logger.error(s, e);
     }
 
     @Override
     public void debug(String s) {
-        internalLogger.debug(s);
+        logger.debug(s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        internalLogger.debug(s, e);
+        logger.debug(s, e);
     }
 
     @Override
     public void info(String s) {
-        internalLogger.info(s);
+        logger.info(s);
     }
 
     @Override
     public void trace(String s) {
-        internalLogger.trace(s);
+        logger.trace(s);
     }
 
     @Override
     public void warn(String s) {
-        internalLogger.warn(s);
+        logger.warn(s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        internalLogger.warn(s, e);
+        logger.warn(s, e);
     }
 
 }
