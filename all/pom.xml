@@ -129,17 +129,6 @@
             <artifactId>log4j-api</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- Additional testing dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
