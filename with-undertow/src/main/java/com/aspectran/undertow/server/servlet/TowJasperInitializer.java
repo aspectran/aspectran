@@ -75,8 +75,8 @@ public class TowJasperInitializer extends JasperInitializer implements ActivityC
     }
 
     @Override
-    protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware,
-                                       boolean validate, boolean blockExternal) {
+    protected TldScanner newTldScanner(
+            ServletContext context, boolean namespaceAware, boolean validate, boolean blockExternal) {
         TowTldScanner tldScanner = new TowTldScanner(context, namespaceAware, validate, blockExternal);
         tldScanner.setClassLoader(context.getClassLoader());
         tldScanner.setTldResources(tldResources);

@@ -16,8 +16,6 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
@@ -37,8 +35,6 @@ import java.util.Set;
  * Initializer for WebSocket Support in Undertow.
  */
 public class TowWebSocketServerContainerInitializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(TowWebSocketServerContainerInitializer.class);
 
     private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 

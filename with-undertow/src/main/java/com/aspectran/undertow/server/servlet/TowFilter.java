@@ -85,16 +85,16 @@ public class TowFilter extends FilterInfo {
     public void setUrlMappings(TowFilterMapping[] towFilterMappings) {
         if (towFilterMappings != null) {
             List<TowFilterUrlMapping> urlMappingList;
-            if (this.urlMappings != null) {
-                urlMappingList = new ArrayList<>(this.servletMappings.length + towFilterMappings.length);
-                urlMappingList.addAll(Arrays.asList(this.urlMappings));
+            if (urlMappings != null) {
+                urlMappingList = new ArrayList<>(servletMappings.length + towFilterMappings.length);
+                urlMappingList.addAll(Arrays.asList(urlMappings));
             } else {
                 urlMappingList = new ArrayList<>(towFilterMappings.length);
             }
             for (TowFilterMapping mapping : towFilterMappings) {
                 urlMappingList.addAll(TowFilterUrlMapping.of(getName(), mapping));
             }
-            this.urlMappings = urlMappingList.toArray(new TowFilterUrlMapping[0]);
+            urlMappings = urlMappingList.toArray(new TowFilterUrlMapping[0]);
         }
     }
 
@@ -115,16 +115,16 @@ public class TowFilter extends FilterInfo {
     public void setServletMappings(TowFilterMapping[] towFilterMappings) {
         if (towFilterMappings != null) {
             List<TowFilterServletMapping> servletMappingList;
-            if (this.servletMappings != null) {
-                servletMappingList = new ArrayList<>(this.servletMappings.length + towFilterMappings.length);
-                servletMappingList.addAll(Arrays.asList(this.servletMappings));
+            if (servletMappings != null) {
+                servletMappingList = new ArrayList<>(servletMappings.length + towFilterMappings.length);
+                servletMappingList.addAll(Arrays.asList(servletMappings));
             } else {
                 servletMappingList = new ArrayList<>(towFilterMappings.length);
             }
             for (TowFilterMapping towFilterMapping : towFilterMappings) {
                 servletMappingList.addAll(TowFilterServletMapping.of(getName(), towFilterMapping));
             }
-            this.servletMappings = servletMappingList.toArray(new TowFilterServletMapping[0]);
+            servletMappings = servletMappingList.toArray(new TowFilterServletMapping[0]);
         }
     }
 
