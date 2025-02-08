@@ -410,9 +410,9 @@ public abstract class StringUtils {
      */
     @NonNull
     public static String replaceLast(@NonNull String str, @NonNull String searchStr, @NonNull String replacement) {
-        int pos = str.lastIndexOf(searchStr);
-        if (pos > -1) {
-            return str.substring(0, pos) + replacement + str.substring(pos + searchStr.length());
+        int index = str.lastIndexOf(searchStr);
+        if (index > -1) {
+            return str.substring(0, index) + replacement + str.substring(index + searchStr.length());
         } else {
             return str;
         }
@@ -439,6 +439,36 @@ public abstract class StringUtils {
     }
 
     /**
+     * Divide a {@code String} into a two-element array at the first occurrence of the delimiter.
+     * Does not include the delimiter in the result.
+     * @param str the string to divide (potentially {@code null} or empty)
+     * @param delim to divide the string up with (potentially {@code null} or empty)
+     * @return a two element array with index 0 being before the delimiter, and
+     *      index 1 being after the delimiter (neither element includes the delimiter);
+     *      if the delimiter wasn't found in the given input {@code String}, both elements
+     *      of the array will be {@code null}.
+     */
+    @NonNull
+    public static String[] divide(String str, String delim) {
+        if (str == null) {
+            return new String[] {null, null};
+        }
+        if (str.isEmpty()) {
+            return new String[] {EMPTY, null};
+        }
+        if (isEmpty(delim)) {
+            return new String[] {str, null};
+        }
+        int idx = str.indexOf(delim);
+        if (idx < 0) {
+            return new String[] {str, null};
+        }
+        String str1 = str.substring(0, idx);
+        String str2 = str.substring(idx + delim.length());
+        return new String[] {str1, str2};
+    }
+
+    /**
      * Returns an array of strings separated by the delimiter string.
      * @param str the string to be separated
      * @param delim the delimiter
@@ -449,27 +479,27 @@ public abstract class StringUtils {
             return EMPTY_STRING_ARRAY;
         }
         int cnt = search(str, delim);
-        String[] item = new String[cnt + 1];
+        String[] arr = new String[cnt + 1];
         if (cnt == 0) {
-            item[0] = str;
-            return item;
+            arr[0] = str;
+            return arr;
         }
         int idx = 0;
-        int pos1 = 0;
-        int pos2 = str.indexOf(delim);
+        int idx1 = 0;
+        int idx2 = str.indexOf(delim);
         int delimLen = delim.length();
-        while (pos2 >= 0) {
-            item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
-            pos1 = pos2 + delimLen;
-            pos2 = str.indexOf(delim, pos1);
+        while (idx2 >= 0) {
+            arr[idx++] = (idx1 > idx2 - 1) ? EMPTY : str.substring(idx1, idx2);
+            idx1 = idx2 + delimLen;
+            idx2 = str.indexOf(delim, idx1);
         }
-        if (pos1 < str.length()) {
-            item[idx] = str.substring(pos1);
+        if (idx1 < str.length()) {
+            arr[idx] = str.substring(idx1);
         }
-        if (item[cnt] == null) {
-            item[cnt] = EMPTY;
+        if (arr[cnt] == null) {
+            arr[cnt] = EMPTY;
         }
-        return item;
+        return arr;
     }
 
     /**
@@ -504,26 +534,26 @@ public abstract class StringUtils {
             return EMPTY_STRING_ARRAY;
         }
         int cnt = search(str, delim);
-        String[] item = new String[cnt + 1];
+        String[] arr = new String[cnt + 1];
         if (cnt == 0) {
-            item[0] = str;
-            return item;
+            arr[0] = str;
+            return arr;
         }
         int idx = 0;
-        int pos1 = 0;
-        int pos2 = str.indexOf(delim);
-        while (pos2 >= 0) {
-            item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
-            pos1 = pos2 + 1;
-            pos2 = str.indexOf(delim, pos1);
+        int idx1 = 0;
+        int idx2 = str.indexOf(delim);
+        while (idx2 >= 0) {
+            arr[idx++] = (idx1 > idx2 - 1 ? EMPTY : str.substring(idx1, idx2));
+            idx1 = idx2 + 1;
+            idx2 = str.indexOf(delim, idx1);
         }
-        if (pos1 < str.length()) {
-            item[idx] = str.substring(pos1);
+        if (idx1 < str.length()) {
+            arr[idx] = str.substring(idx1);
         }
-        if (item[cnt] == null) {
-            item[cnt] = EMPTY;
+        if (arr[cnt] == null) {
+            arr[cnt] = EMPTY;
         }
-        return item;
+        return arr;
     }
 
     /**
@@ -554,18 +584,18 @@ public abstract class StringUtils {
      * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int search(@NonNull String str, @NonNull String searchStr) {
-        int strLen = str.length();
-        int keywLen = searchStr.length();
-        int pos = 0;
-        int cnt = 0;
-        if (keywLen == 0) {
+    public static int search(String str, String searchStr) {
+        if (isEmpty(str) || isEmpty(searchStr)) {
             return 0;
         }
-        while ((pos = str.indexOf(searchStr, pos)) != -1) {
-            pos += keywLen;
+        int len1 = str.length();
+        int len2 = searchStr.length();
+        int idx = 0;
+        int cnt = 0;
+        while ((idx = str.indexOf(searchStr, idx)) != -1) {
+            idx += len2;
             cnt++;
-            if (pos >= strLen) {
+            if (idx >= len1) {
                 break;
             }
         }
@@ -580,7 +610,10 @@ public abstract class StringUtils {
      * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int searchIgnoreCase(@NonNull String str, @NonNull String searchStr) {
+    public static int searchIgnoreCase(String str, String searchStr) {
+        if (isEmpty(str) || isEmpty(searchStr)) {
+            return 0;
+        }
         return search(str.toLowerCase(), searchStr.toLowerCase());
     }
 
@@ -588,13 +621,16 @@ public abstract class StringUtils {
      * Returns the number of times the specified character was found
      * in the target string, or 0 if there is no specified character.
      * @param chars the target string
-     * @param c the character to find
+     * @param searchChar the character to find
      * @return the number of times the specified character was found
      */
-    public static int search(@NonNull CharSequence chars, char c) {
+    public static int search(CharSequence chars, char searchChar) {
+        if (chars == null || chars.isEmpty()) {
+            return 0;
+        }
         int count = 0;
         for (int i = 0; i < chars.length(); i++) {
-            if (chars.charAt(i) == c) {
+            if (chars.charAt(i) == searchChar) {
                 count++;
             }
         }
@@ -609,7 +645,10 @@ public abstract class StringUtils {
      * @param searchChar the character to find
      * @return the number of times the specified character was found
      */
-    public static int searchIgnoreCase(@NonNull CharSequence chars, char searchChar) {
+    public static int searchIgnoreCase(CharSequence chars, char searchChar) {
+        if (chars == null || chars.isEmpty()) {
+            return 0;
+        }
         int count = 0;
         char cl = Character.toLowerCase(searchChar);
         for (int i = 0; i < chars.length(); i++) {
@@ -638,7 +677,7 @@ public abstract class StringUtils {
      * @return an array of the tokens
      */
     public static String[] tokenize(String str, String delimiters, boolean trim) {
-        if (str == null) {
+        if (isEmpty(str) || isEmpty(delimiters)) {
             return EMPTY_STRING_ARRAY;
         }
         StringTokenizer st = new StringTokenizer((trim ? str.trim() : str), delimiters);
@@ -809,8 +848,8 @@ public abstract class StringUtils {
             throw new NumberFormatException(msg + " " + e.getMessage());
         }
         long l = Math.round(d * 1024 * 1024 * 1024L);
-        int index = Math.max(0, bytes.length() - (bytes.endsWith("B") ? 2 : 1));
-        switch (bytes.charAt(index)) {
+        int idx = Math.max(0, bytes.length() - (bytes.endsWith("B") ? 2 : 1));
+        switch (bytes.charAt(idx)) {
             default:  l /= 1024;
             case 'K': l /= 1024;
             case 'M': l /= 1024;
