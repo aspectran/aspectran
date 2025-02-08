@@ -56,7 +56,7 @@
   </div>
 </div>
 <script>
-  let backend = "/examples";
+  const BASE_PATH = "${pageContext.request.contextPath}/examples";
   $(function() {
     $("select[name=customerList]").change(function() {
       $("#details form, #cust-no").stop(true).fadeOut(300);
@@ -92,7 +92,7 @@
   function getCustomerList() {
     $.ajax({
       type: "GET",
-      url: backend + "/gs-rest-service/customers",
+      url: BASE_PATH + "/gs-rest-service/customers",
       dataType: "json",
       success: function(data, textStatus, xhr) {
         console.log(data);
@@ -116,7 +116,7 @@
     $("input.is-invalid-input").removeClass("is-invalid-input");
     $.ajax({
       type: "GET",
-      url: backend + "/gs-rest-service/customers/" + id,
+      url: BASE_PATH + "/gs-rest-service/customers/" + id,
       dataType: "json",
       success: function(data, textStatus, xhr) {
         describe(this.type, this.url, xhr);
@@ -146,10 +146,10 @@
     let id = $("input[name=id]").val();
     if (id) {
       type = "PUT";
-      url = backend + "/gs-rest-service/customers/" + id;
+      url = BASE_PATH + "/gs-rest-service/customers/" + id;
     } else {
       type = "POST";
-      url = backend + "/gs-rest-service/customers";
+      url = BASE_PATH + "/gs-rest-service/customers";
     }
     $.ajax({
       type: type,
@@ -193,7 +193,7 @@
     }
     $.ajax({
       type: "DELETE",
-      url: backend + "/gs-rest-service/customers/" + id,
+      url: BASE_PATH + "/gs-rest-service/customers/" + id,
       dataType: "json",
       success: function(data, textStatus, xhr) {
         describe(this.type, this.url, xhr);
@@ -213,7 +213,7 @@
     }
     $.ajax({
       type: "PUT",
-      url: backend + "/gs-rest-service/customers/" + id + "/attributes",
+      url: BASE_PATH + "/gs-rest-service/customers/" + id + "/attributes",
       data: {
         approved: approved
       },
