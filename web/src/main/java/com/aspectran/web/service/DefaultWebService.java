@@ -290,7 +290,9 @@ public class DefaultWebService extends AbstractWebService {
                 sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Paused");
                 return true;
             } else if (pauseTimeout == -2L) {
-                logger.warn(getServiceName() + " is not yet started");
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is not yet started");
+                }
                 sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
                 return true;
             } else {
