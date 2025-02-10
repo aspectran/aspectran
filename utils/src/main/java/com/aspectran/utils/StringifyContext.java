@@ -348,9 +348,7 @@ public class StringifyContext implements Cloneable {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("pretty", pretty);
-        if (indentSize > -1) {
-            tsb.append("indentSize", indentSize);
-        }
+        tsb.append("indentSize", indentSize);
         tsb.append("indentTab", indentTab);
         tsb.append("nullWritable", nullWritable);
         tsb.append("dateTimeFormat", dateTimeFormat);
