@@ -35,9 +35,9 @@ public class StringifyContext implements Cloneable {
 
     private Boolean pretty;
 
-    private int indentSize = -1;
+    private Integer indentSize;
 
-    private boolean indentTab;
+    private Boolean indentTab;
 
     private Boolean nullWritable;
 
@@ -71,15 +71,19 @@ public class StringifyContext implements Cloneable {
     }
 
     public boolean hasIndentSize() {
-        return (indentSize > -1);
+        return (indentSize != null);
     }
 
     public int getIndentSize() {
-        return indentSize;
+        return (indentSize != null ? indentSize : 0);
     }
 
     public void setIndentSize(int indentSize) {
         this.indentSize = indentSize;
+    }
+
+    public boolean isIndentTab() {
+        return BooleanUtils.toBoolean(indentTab);
     }
 
     public void setIndentTab(boolean indentTab) {
@@ -88,69 +92,15 @@ public class StringifyContext implements Cloneable {
 
     @Nullable
     public String getIndentString() {
-        if (indentTab) {
+        if (indentTab != null && indentTab) {
             return "\t";
-        } else if (indentSize == 1) {
+        } else if (getIndentSize() == 1) {
             return " ";
-        } else if (indentSize > 0) {
+        } else if (getIndentSize() > 0) {
             return StringUtils.repeat(' ', indentSize);
         } else {
             return null;
         }
-    }
-
-    public boolean hasDateTimeFormat() {
-        return (dateTimeFormat != null);
-    }
-
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
-    }
-
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-        this.dateTimeFormatter = null;
-    }
-
-    public boolean hasDateFormat() {
-        return (dateFormat != null);
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-        this.dateFormatter = null;
-    }
-
-    public boolean hasTimeFormat() {
-        return (timeFormat != null);
-    }
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-        this.timeFormatter = null;
-    }
-
-    public boolean hasLocale() {
-        return (locale != null);
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-        this.dateTimeFormatter = null;
-        this.dateFormatter = null;
-        this.timeFormatter = null;
     }
 
     public boolean hasNullWritable() {
@@ -163,6 +113,44 @@ public class StringifyContext implements Cloneable {
 
     public void setNullWritable(Boolean nullWritable) {
         this.nullWritable = nullWritable;
+    }
+
+    public String getDateTimeFormat() {
+        return dateTimeFormat;
+    }
+
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
+        this.dateTimeFormatter = null;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+        this.dateFormatter = null;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+        this.timeFormatter = null;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        this.dateTimeFormatter = null;
+        this.dateFormatter = null;
+        this.timeFormatter = null;
     }
 
     public String toString(LocalDateTime localDateTime) {
@@ -308,6 +296,42 @@ public class StringifyContext implements Cloneable {
             return new SimpleDateFormat(format, locale);
         } else {
             return new SimpleDateFormat(format);
+        }
+    }
+
+    public void merge(StringifyContext from) {
+        if (pretty == null && from.pretty != null) {
+            pretty = from.pretty;
+        }
+        if (indentSize == null && from.indentSize != null) {
+            indentSize = from.indentSize;
+        }
+        if (indentTab == null && from.indentTab != null) {
+            indentTab = from.indentTab;
+        }
+        if (nullWritable == null && from.nullWritable != null) {
+            nullWritable = from.nullWritable;
+        }
+        if (dateTimeFormat == null && from.dateTimeFormat != null) {
+            dateTimeFormat = from.dateTimeFormat;
+        }
+        if (dateFormat == null && from.dateFormat != null) {
+            dateFormat = from.dateFormat;
+        }
+        if (timeFormat == null && from.timeFormat != null) {
+            timeFormat = from.timeFormat;
+        }
+        if (locale == null && from.locale != null) {
+            locale = from.locale;
+        }
+        if (dateTimeFormatter == null && from.dateTimeFormatter != null) {
+            dateTimeFormatter = from.dateTimeFormatter;
+        }
+        if (dateFormatter == null && from.dateFormatter != null) {
+            dateFormatter = from.dateFormatter;
+        }
+        if (timeFormatter == null && from.timeFormatter != null) {
+            timeFormatter = from.timeFormatter;
         }
     }
 

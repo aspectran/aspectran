@@ -16,6 +16,7 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 
@@ -45,17 +46,15 @@ public interface RestResponse extends CustomTransformer {
      */
     RestResponse setData(String name, Object data);
 
-    boolean isPrettyPrint();
+    StringifyContext getStringifyContext();
 
-    /**
-     * Sets whether to apply indentations and line breaks
-     * when generating response data.
-     * @param prettyPrint true if responding with indentations
-     *                    and line breaks; otherwise false
-     */
-    void setPrettyPrint(boolean prettyPrint);
+    StringifyContext touchStringifyContext();
 
-    RestResponse prettyPrint(boolean prettyPrint);
+    void setStringifyContext(StringifyContext stringifyContext);
+
+    RestResponse stringifyContext(StringifyContext stringifyContext);
+
+    RestResponse nullWritable(boolean nullWritable);
 
     boolean isFavorPathExtension();
 

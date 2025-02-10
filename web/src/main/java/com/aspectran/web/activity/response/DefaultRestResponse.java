@@ -212,11 +212,13 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
     @NonNull
     private StringifyContext resolveStringifyContext(@NonNull Activity activity, int indent) {
-        StringifyContext stringifyContext = activity.getStringifyContext().clone();
-        if (hasPrettyPrint()) {
-            stringifyContext.setPretty(isPrettyPrint());
+        StringifyContext stringifyContext = getStringifyContext();
+        if (stringifyContext == null) {
+            stringifyContext = activity.getStringifyContext().clone();
+        } else {
+            stringifyContext.merge(activity.getStringifyContext());
         }
-        if (isPrettyPrint() && indent > -1) {
+        if (stringifyContext.isPretty() && !stringifyContext.hasIndentSize() && indent > -1) {
             stringifyContext.setIndentSize(indent);
         }
         return stringifyContext;

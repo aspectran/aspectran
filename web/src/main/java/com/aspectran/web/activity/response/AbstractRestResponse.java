@@ -17,12 +17,13 @@ package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -44,7 +45,7 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     private Object data;
 
-    private Boolean prettyPrint;
+    private StringifyContext stringifyContext;
 
     private boolean favorPathExtension = true;
 
@@ -102,23 +103,35 @@ public abstract class AbstractRestResponse implements RestResponse {
         return this;
     }
 
-    protected boolean hasPrettyPrint() {
-        return (prettyPrint != null);
+    @Override
+    @Nullable
+    public StringifyContext getStringifyContext() {
+        return stringifyContext;
     }
 
     @Override
-    public boolean isPrettyPrint() {
-        return BooleanUtils.toBoolean(prettyPrint);
+    @NonNull
+    public StringifyContext touchStringifyContext() {
+        if (stringifyContext == null) {
+            stringifyContext = new StringifyContext();
+        }
+        return stringifyContext;
     }
 
     @Override
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
+    public void setStringifyContext(StringifyContext stringifyContext) {
+        this.stringifyContext = stringifyContext;
     }
 
     @Override
-    public RestResponse prettyPrint(boolean prettyPrint) {
-        setPrettyPrint(prettyPrint);
+    public RestResponse stringifyContext(StringifyContext stringifyContext) {
+        setStringifyContext(stringifyContext);
+        return this;
+    }
+
+    @Override
+    public RestResponse nullWritable(boolean nullWritable) {
+        touchStringifyContext().setNullWritable(nullWritable);
         return this;
     }
 
