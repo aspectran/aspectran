@@ -50,7 +50,7 @@ class ActivityStringifyContextTest {
         RequestAdapter requestAdapter = new DefaultRequestAdapter();
         activity.setRequestAdapter(requestAdapter);
 
-        activity.putSetting(ActivityStringifyContext.FORMAT_PRETTY, true);
+        activity.putSetting(ActivityStringifyContext.FORMAT_PRETTY_PRINT, true);
         activity.getRequestAdapter().setLocale(Locale.ENGLISH);
         StringifyContext stringifyContext1 = activity.getStringifyContext();
         StringifyContext stringifyContext2 = activity.perform(() -> {

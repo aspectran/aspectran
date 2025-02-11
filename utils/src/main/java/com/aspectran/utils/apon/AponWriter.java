@@ -102,14 +102,14 @@ public class AponWriter implements Flushable {
 
     public void setStringifyContext(StringifyContext stringifyContext) {
         if (stringifyContext != null) {
-            if (stringifyContext.hasPretty()) {
-                prettyPrint(stringifyContext.isPretty());
+            if (stringifyContext.hasPrettyPrint()) {
+                setPrettyPrint(stringifyContext.isPrettyPrint());
             }
             if (stringifyContext.hasIndentSize()) {
-                indentString(stringifyContext.getIndentString());
+                setIndentString(stringifyContext.getIndentString());
             }
             if (stringifyContext.hasNullWritable()) {
-                nullWritable(stringifyContext.isNullWritable());
+                setNullWritable(stringifyContext.isNullWritable());
             }
         }
     }
@@ -123,11 +123,11 @@ public class AponWriter implements Flushable {
     public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
-            if (this.indentString == null) {
-                this.indentString = DEFAULT_INDENT_STRING;
+            if (indentString == null) {
+                indentString = DEFAULT_INDENT_STRING;
             }
         } else {
-            this.indentString = null;
+            indentString = null;
         }
     }
 

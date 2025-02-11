@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 public class StringifyContext implements Cloneable {
 
-    private Boolean pretty;
+    private Boolean prettyPrint;
 
     private Integer indentSize;
 
@@ -58,16 +58,16 @@ public class StringifyContext implements Cloneable {
     public StringifyContext() {
     }
 
-    public boolean hasPretty() {
-        return (pretty != null);
+    public boolean hasPrettyPrint() {
+        return (prettyPrint != null);
     }
 
-    public boolean isPretty() {
-        return BooleanUtils.toBoolean(pretty);
+    public boolean isPrettyPrint() {
+        return BooleanUtils.toBoolean(prettyPrint);
     }
 
-    public void setPretty(Boolean pretty) {
-        this.pretty = pretty;
+    public void setPrettyPrint(Boolean prettyPrint) {
+        this.prettyPrint = prettyPrint;
     }
 
     public boolean hasIndentSize() {
@@ -300,8 +300,8 @@ public class StringifyContext implements Cloneable {
     }
 
     public void merge(StringifyContext from) {
-        if (pretty == null && from.pretty != null) {
-            pretty = from.pretty;
+        if (prettyPrint == null && from.prettyPrint != null) {
+            prettyPrint = from.prettyPrint;
         }
         if (indentSize == null && from.indentSize != null) {
             indentSize = from.indentSize;
@@ -347,7 +347,7 @@ public class StringifyContext implements Cloneable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("pretty", pretty);
+        tsb.append("pretty", prettyPrint);
         tsb.append("indentSize", indentSize);
         tsb.append("indentTab", indentTab);
         tsb.append("nullWritable", nullWritable);

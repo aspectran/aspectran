@@ -218,7 +218,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         } else {
             stringifyContext.merge(activity.getStringifyContext());
         }
-        if (stringifyContext.isPretty() && !stringifyContext.hasIndentSize() && indent > -1) {
+        if (stringifyContext.isPrettyPrint() && !stringifyContext.hasIndentSize() && indent > -1) {
             stringifyContext.setIndentSize(indent);
         }
         return stringifyContext;

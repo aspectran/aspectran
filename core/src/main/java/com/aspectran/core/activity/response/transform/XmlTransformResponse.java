@@ -92,9 +92,9 @@ public class XmlTransformResponse extends TransformResponse {
         Writer writer = responseAdapter.getWriter();
 
         StringifyContext stringifyContext = activity.getStringifyContext();
-        if (pretty != null && stringifyContext.isPretty() != pretty) {
+        if (pretty != null && stringifyContext.isPrettyPrint() != pretty) {
             stringifyContext = stringifyContext.clone();
-            stringifyContext.setPretty(pretty);
+            stringifyContext.setPrettyPrint(pretty);
         }
 
         transform(processResult, writer, encoding, stringifyContext, pretty);
@@ -114,7 +114,7 @@ public class XmlTransformResponse extends TransformResponse {
     private static void transform(
             Object object, Writer writer, String encoding,
             StringifyContext stringifyContext, Boolean prettyForce) throws TransformerException {
-        boolean pretty = (prettyForce != null ? prettyForce : (stringifyContext == null || stringifyContext.isPretty()));
+        boolean pretty = (prettyForce != null ? prettyForce : (stringifyContext == null || stringifyContext.isPrettyPrint()));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         if (pretty) {

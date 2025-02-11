@@ -66,7 +66,7 @@ class XmlTransformResponseTest {
         contentResult.addActionResult(r4);
 
         StringifyContext stringifyContext = new StringifyContext();
-        stringifyContext.setPretty(true);
+        stringifyContext.setPrettyPrint(true);
         stringifyContext.setDateFormat("yyyy-MM-dd");
         stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
 

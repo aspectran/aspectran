@@ -130,6 +130,12 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
+    public RestResponse prettyPrint(boolean prettyPrint) {
+        touchStringifyContext().setPrettyPrint(prettyPrint);
+        return this;
+    }
+
+    @Override
     public RestResponse nullWritable(boolean nullWritable) {
         touchStringifyContext().setNullWritable(nullWritable);
         return this;

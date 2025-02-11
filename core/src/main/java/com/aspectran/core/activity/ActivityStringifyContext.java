@@ -31,7 +31,7 @@ public class ActivityStringifyContext extends StringifyContext {
 
     static final int MAX_INDENT_SIZE = 8;
 
-    public static final String FORMAT_PRETTY = "format.pretty";
+    public static final String FORMAT_PRETTY_PRINT = "format.prettyPrint";
 
     public static final String FORMAT_INDENT_STYLE = "format.indentStyle";
 
@@ -53,12 +53,12 @@ public class ActivityStringifyContext extends StringifyContext {
         String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
         String timeFormat = activity.getSetting(FORMAT_TIME_FORMAT);
 
-        Object pretty = activity.getSetting(FORMAT_PRETTY);
-        Boolean prettyToUse = null;
-        if (pretty instanceof Boolean prettyInBool) {
-            prettyToUse = prettyInBool;
-        } else if (pretty != null) {
-            prettyToUse = BooleanUtils.toBooleanObject(pretty.toString());
+        Object prettyPrint = activity.getSetting(FORMAT_PRETTY_PRINT);
+        Boolean prettyPrintToUse = null;
+        if (prettyPrint instanceof Boolean prettyPrintInBool) {
+            prettyPrintToUse = prettyPrintInBool;
+        } else if (prettyPrint != null) {
+            prettyPrintToUse = BooleanUtils.toBooleanObject(prettyPrint.toString());
         }
 
         Object indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
@@ -83,10 +83,10 @@ public class ActivityStringifyContext extends StringifyContext {
         } else if (indentSizeToUse > 0) {
             setIndentSize(indentSizeToUse);
         }
-        if (prettyToUse != null) {
-            setPretty(prettyToUse);
+        if (prettyPrintToUse != null) {
+            setPrettyPrint(prettyPrintToUse);
         } else if (getIndentSize() > 0) {
-            setPretty(true);
+            setPrettyPrint(true);
         }
         if (nullWritableToUse != null) {
             setNullWritable(nullWritableToUse);

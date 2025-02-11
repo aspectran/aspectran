@@ -54,6 +54,8 @@ public interface RestResponse extends CustomTransformer {
 
     RestResponse stringifyContext(StringifyContext stringifyContext);
 
+    RestResponse prettyPrint(boolean prettyPrint);
+
     RestResponse nullWritable(boolean nullWritable);
 
     boolean isFavorPathExtension();

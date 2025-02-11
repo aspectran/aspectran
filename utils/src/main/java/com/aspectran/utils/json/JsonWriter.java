@@ -20,7 +20,6 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -87,14 +86,14 @@ public class JsonWriter {
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
         if (stringifyContext != null) {
-            if (stringifyContext.hasPretty()) {
-                prettyPrint(stringifyContext.isPretty());
+            if (stringifyContext.hasPrettyPrint()) {
+                setPrettyPrint(stringifyContext.isPrettyPrint());
             }
             if (stringifyContext.hasIndentSize()) {
-                indentString(stringifyContext.getIndentString());
+                setIndentString(stringifyContext.getIndentString());
             }
             if (stringifyContext.hasNullWritable()) {
-                nullWritable(stringifyContext.isNullWritable());
+                setNullWritable(stringifyContext.isNullWritable());
             }
         }
     }
@@ -105,28 +104,40 @@ public class JsonWriter {
         return (T)this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T prettyPrint(boolean prettyPrint) {
+    public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
-            if (this.indentString == null) {
-                this.indentString = DEFAULT_INDENT_STRING;
+            if (indentString == null) {
+                indentString = DEFAULT_INDENT_STRING;
             }
         } else {
-            this.indentString = null;
+            indentString = null;
         }
-        return (T)this;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends JsonWriter> T indentString(@Nullable String indentString) {
-        this.indentString = indentString;
+    public <T extends JsonWriter> T prettyPrint(boolean prettyPrint) {
+        setPrettyPrint(prettyPrint);
         return (T)this;
+    }
+
+    public void setIndentString(String indentString) {
+        this.indentString = indentString;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T indentString(String indentString) {
+        setIndentString(indentString);
+        return (T)this;
+    }
+
+    public void setNullWritable(boolean nullWritable) {
+        this.nullWritable = nullWritable;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
-        this.nullWritable = nullWritable;
+        setNullWritable(nullWritable);
         return (T)this;
     }
 
