@@ -44,10 +44,8 @@ import org.quartz.TriggerBuilder;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The Class AbstractSchedulerService.
@@ -55,8 +53,6 @@ import java.util.Set;
 public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle implements SchedulerService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSchedulerService.class);
-
-    private final Set<Scheduler> schedulers = new HashSet<>();
 
     private final Map<String, Scheduler> schedulerMap = new HashMap<>();
 
@@ -109,8 +105,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         this.requestAcceptor = requestAcceptor;
     }
 
-    protected Set<Scheduler> getSchedulers() {
-        return schedulers;
+    protected Collection<Scheduler> getSchedulers() {
+        return schedulerMap.values();
     }
 
     protected Scheduler getScheduler(String scheduleId) {
@@ -118,13 +114,12 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     private void addScheduler(String scheduleId, Scheduler scheduler) {
+        Assert.notNull(scheduleId, "scheduleId must not be null");
         Assert.notNull(scheduler, "scheduler must not be null");
-        schedulers.add(scheduler);
         schedulerMap.put(scheduleId, scheduler);
     }
 
     private void clearSchedulers() {
-        schedulers.clear();
         schedulerMap.clear();
     }
 
