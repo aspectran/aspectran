@@ -58,7 +58,6 @@ public class SampleStatistic {
      * Records a sample value.
      * @param sample the value to record.
      */
-
     public void record(long sample) {
         long total = this.total.addAndGet(sample);
         long count = this.count.incrementAndGet();

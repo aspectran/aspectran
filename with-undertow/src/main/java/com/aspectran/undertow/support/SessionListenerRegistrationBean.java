@@ -82,7 +82,7 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
                 sessionManager.removeSessionListener(listener);
             } else {
                 logger.warn("Unable to remove " + ObjectUtils.simpleIdentityToString(listener) +
-                    ". Cause: No session manager found for deployment '" + deploymentName + "'");
+                        ". Cause: No session manager found for deployment '" + deploymentName + "'");
             }
         }
     }

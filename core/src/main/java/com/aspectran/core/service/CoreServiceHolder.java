@@ -30,6 +30,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public abstract class CoreServiceHolder {
 
+    private static final Set<ServiceHoldingListener> serviceHoldingListeners = new CopyOnWriteArraySet<>();
+
     private static final Set<CoreService> allServices = new CopyOnWriteArraySet<>();
 
     private static final Map<ClassLoader, CoreService> servicesByLoader = new HashMap<>();
@@ -37,6 +39,16 @@ public abstract class CoreServiceHolder {
     private static final Map<Class<?>, CoreService> servicesByClass = new HashMap<>();
 
     private static volatile CoreService currentService;
+
+    public static void addServiceHolingListener(ServiceHoldingListener listener) {
+        Assert.notNull(listener, "listener must not be null");
+        serviceHoldingListeners.add(listener);
+    }
+
+    public static void removeServiceHolingListener(ServiceHoldingListener listener) {
+        Assert.notNull(listener, "listener must not be null");
+        serviceHoldingListeners.remove(listener);
+    }
 
     public static synchronized void hold(CoreService service) {
         Assert.notNull(service, "service must not be null");
@@ -52,6 +64,9 @@ public abstract class CoreServiceHolder {
             }
             if (service.getAltClassLoader() != null) {
                 hold(service.getAltClassLoader(), service);
+            }
+            for (ServiceHoldingListener listener : serviceHoldingListeners) {
+                listener.afterServiceHolding(service);
             }
         }
     }
@@ -77,7 +92,13 @@ public abstract class CoreServiceHolder {
     public static synchronized void release(CoreService service) {
         Assert.notNull(service, "service must not be null");
         Assert.state(allServices.contains(service), "Not a registered service: " + service);
+        for (ServiceHoldingListener listener : serviceHoldingListeners) {
+            listener.beforeServiceRelease(service);
+        }
         allServices.remove(service);
+        if (allServices.isEmpty()) {
+            serviceHoldingListeners.clear();
+        }
         if (currentService != null && currentService == service) {
             currentService = null;
         }
