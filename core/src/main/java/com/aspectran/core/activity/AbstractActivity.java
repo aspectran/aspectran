@@ -30,7 +30,6 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -66,7 +65,10 @@ public abstract class AbstractActivity implements Activity {
      * Instantiates a new abstract activity.
      * @param context the activity context
      */
-    protected AbstractActivity(@NonNull ActivityContext context) {
+    protected AbstractActivity(ActivityContext context) {
+        if (context == null) {
+            throw new IllegalArgumentException("context must not be null");
+        }
         this.context = context;
     }
 
