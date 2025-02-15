@@ -26,6 +26,10 @@ public abstract class SqlMapperDao<T> {
         this.mapperInterface = mapperInterface;
     }
 
+    public SqlMapperAgent getMapperAgent() {
+        return mapperAgent;
+    }
+
     public T simple() {
         return mapperAgent.simple(mapperInterface);
     }

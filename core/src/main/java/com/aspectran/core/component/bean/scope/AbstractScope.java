@@ -24,6 +24,7 @@ import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -134,7 +135,15 @@ public abstract class AbstractScope implements Scope {
                 ((DisposableBean)bean).destroy();
             } else if (beanRule.getDestroyMethod() != null) {
                 Method destroyMethod = beanRule.getDestroyMethod();
-                destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
+                try {
+                    destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
+                } catch (InvocationTargetException e) {
+                    if (e.getCause() instanceof Exception) {
+                        throw (Exception)e.getCause();
+                    } else {
+                        throw e;
+                    }
+                }
             }
         }
     }

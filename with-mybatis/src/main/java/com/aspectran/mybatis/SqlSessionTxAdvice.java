@@ -16,6 +16,7 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -54,7 +55,7 @@ public class SqlSessionTxAdvice {
     /**
      * Specifies whether to auto-commit.
      * @param autoCommit true to automatically commit each time updates/deletes/inserts
-     *                  is called, false to commit manually
+     *                   is called, false to commit manually
      */
     public void setAutoCommit(boolean autoCommit) {
         Assert.state(sqlSession == null, "Sql Session is already open");
@@ -106,12 +107,10 @@ public class SqlSessionTxAdvice {
             sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
 
             if (logger.isDebugEnabled()) {
-                ToStringBuilder tsb = new ToStringBuilder(String.format("%s %s@%x",
-                        (arbitrarilyClosed ? "Reopen" : "Open"),
-                        sqlSession.getClass().getSimpleName(),
-                        sqlSession.hashCode()));
+                ToStringBuilder tsb = new ToStringBuilder((arbitrarilyClosed ? "Reopen " : "Open ") +
+                        ObjectUtils.simpleIdentityToString(sqlSession));
                 tsb.append("executorType", executorType);
-                tsb.append("autoCommit", autoCommit);
+                tsb.appendForce("autoCommit", autoCommit);
                 logger.debug(tsb.toString());
             }
 
@@ -157,9 +156,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Commit transaction for %s@%x",
-                    sqlSession.getClass().getSimpleName(),
-                    sqlSession.hashCode()));
+            logger.debug("Commit transaction for " + ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.commit();
@@ -175,8 +172,8 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(String.format("Commit transaction for %s@%x",
-                    sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
+            ToStringBuilder tsb = new ToStringBuilder("Commit transaction for " +
+                    ObjectUtils.simpleIdentityToString(sqlSession));
             tsb.append("force", force);
             logger.debug(tsb.toString());
         }
@@ -195,9 +192,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Rollback transaction for %s@%x",
-                    sqlSession.getClass().getSimpleName(),
-                    sqlSession.hashCode()));
+            logger.debug("Rollback transaction for " + ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.rollback();
@@ -214,8 +209,8 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(String.format("Rollback transaction for %s@%x",
-                    sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
+            ToStringBuilder tsb = new ToStringBuilder("Rollback transaction for " +
+                    ObjectUtils.simpleIdentityToString(sqlSession));
             tsb.append("force", force);
             logger.debug(tsb.toString());
         }
@@ -243,9 +238,7 @@ public class SqlSessionTxAdvice {
         sqlSession.close();
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Close %s@%x",
-                    sqlSession.getClass().getSimpleName(),
-                    sqlSession.hashCode()));
+            logger.debug("Close " + ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession = null;

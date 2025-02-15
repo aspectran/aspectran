@@ -285,8 +285,8 @@ public abstract class ObjectUtils {
         if (obj == null) {
             return StringUtils.EMPTY;
         }
-        String name = (obj.getClass().isAnonymousClass() ? obj.getClass().getName() : obj.getClass().getSimpleName());
-        return name + "@" + getIdentityHexString(obj);
+        return (obj.getClass().isAnonymousClass() ? obj.getClass().getName() : obj.getClass().getSimpleName()) +
+                "@" + getIdentityHexString(obj);
     }
 
     /**
