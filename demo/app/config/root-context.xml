@@ -50,8 +50,8 @@
     </aspect>
 
     <append file="/config/server/server.xml"/>
-    <append file="/config/shell/shell.xml" profile="!daemon"/>
-    <append resource="web/web-config.xml"/>
+    <append file="/config/shell/shell-context.xml" profile="!daemon"/>
+    <append resource="web/web-context.xml"/>
     <!--<append file="/config/error-report.xml"/>-->
 
 </aspectran>
