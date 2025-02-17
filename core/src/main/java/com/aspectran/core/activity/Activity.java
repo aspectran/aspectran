@@ -48,6 +48,7 @@ public interface Activity {
     enum Mode {
         DAEMON,
         DEFAULT,
+        PROXY,
         SCHEDULER,
         SHELL,
         WEB

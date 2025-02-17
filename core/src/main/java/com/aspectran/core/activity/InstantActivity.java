@@ -55,14 +55,14 @@ public class InstantActivity extends CoreActivity {
         this(activity, true);
     }
 
-    public InstantActivity(@NonNull Activity activity, boolean inheritResponseAdapter) {
+    public InstantActivity(@NonNull Activity activity, boolean responseAdapterInheritable) {
         super(activity.getActivityContext());
         this.mode = activity.getMode();
         if (activity.hasSessionAdapter()) {
             setSessionAdapter(activity.getSessionAdapter());
         }
         setRequestAdapter(activity.getRequestAdapter());
-        if (inheritResponseAdapter) {
+        if (responseAdapterInheritable) {
             setResponseAdapter(activity.getResponseAdapter());
         }
     }

@@ -16,8 +16,8 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.InstantActivityException;
+import com.aspectran.core.activity.InstantProxyActivity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
@@ -56,7 +56,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
             return invoke(self, overridden, proceed, args, activity);
         } else {
             try {
-                Activity activity = new InstantActivity(context);
+                Activity activity = new InstantProxyActivity(context);
                 return activity.perform(() -> invoke(self, overridden, proceed, args, activity));
             } catch (Exception e) {
                 throw new InstantActivityException(e);

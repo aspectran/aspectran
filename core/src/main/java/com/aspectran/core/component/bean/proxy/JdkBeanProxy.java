@@ -16,11 +16,14 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivityException;
+import com.aspectran.core.activity.InstantProxyActivity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.bean.BeanFactoryUtils;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -51,8 +54,25 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         if (isAvoidAdvice(method)) {
             return method.invoke(bean, args);
         }
+        if (context.hasCurrentActivity()) {
+            Activity activity = context.getCurrentActivity();
+            return invoke(method, args, activity);
+        } else {
+            try {
+                Activity activity = new InstantProxyActivity(context);
+                return activity.perform(() -> invoke(method, args, activity));
+            } catch (Exception e) {
+                throw new InstantActivityException(e);
+            }
+        }
+    }
 
-        Activity activity = context.getAvailableActivity();
+    @Nullable
+    private Object invoke(Method method, Object[] args, Activity activity) throws Throwable {
+        if (isAvoidAdvice(method)) {
+            return method.invoke(bean, args);
+        }
+
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();

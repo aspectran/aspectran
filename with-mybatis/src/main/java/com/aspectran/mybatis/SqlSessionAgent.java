@@ -15,6 +15,7 @@
  */
 package com.aspectran.mybatis;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
@@ -252,6 +253,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @AvoidAdvice
     @NonNull
     private SqlSessionTxAdvice getSqlSessionTxAdvice() {
+        checkTransactional();
         SqlSessionTxAdvice txAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
         if (txAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
@@ -267,6 +269,14 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Nullable
     private ActivityData getActivityData() {
         return getAvailableActivity().getActivityData();
+    }
+
+    @AvoidAdvice
+    private void checkTransactional() {
+        if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
+            throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
+                " needs to be wrapped in an instant activity.");
+        }
     }
 
 }
