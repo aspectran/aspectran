@@ -47,6 +47,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
         this.relevantAspectId = relevantAspectId;
     }
 
+    @AvoidAdvice
     public void setAutoParameters(boolean autoParameters) {
         this.autoParameters = autoParameters;
     }
@@ -262,6 +263,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
         return txAdvice;
     }
 
+    @AvoidAdvice
     @Nullable
     private ActivityData getActivityData() {
         return getAvailableActivity().getActivityData();
