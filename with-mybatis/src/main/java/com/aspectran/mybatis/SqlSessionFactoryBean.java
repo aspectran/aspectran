@@ -68,13 +68,12 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.properties = properties;
     }
 
-    protected SqlSessionFactory buildSqlSessionFactory(InputStream inputStream) {
+    protected SqlSessionFactory buildSqlSessionFactory(InputStream inputStream) throws Exception {
         try {
-            SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
-            return sqlSessionFactoryBuilder.build(inputStream, environment, properties);
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
-                    configLocation, ex);
+            SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+            return builder.build(inputStream, environment, properties);
+        } catch (Exception e) {
+            throw new Exception("Failed to parse mybatis config resource: " + configLocation, e);
         }
     }
 
@@ -87,9 +86,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     public void initialize() throws Exception {
         Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
         if (sqlSessionFactory == null) {
-            if (configLocation == null) {
-                throw new IllegalArgumentException("Property 'configLocation' is required");
-            }
+            Assert.notNull(configLocation, "Property 'configLocation' is required");
             InputStream is;
             if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
                 is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()));

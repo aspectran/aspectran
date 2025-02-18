@@ -109,22 +109,29 @@ public abstract class PropertiesLoaderUtils {
             URL url = urls.nextElement();
             URLConnection con = url.openConnection();
             try (InputStream is = con.getInputStream()) {
-                if (resourceName.endsWith(XML_FILE_EXTENSION)) {
-                    props.loadFromXML(is);
-                } else {
-                    props.load(is);
-                }
+                loadIntoProperties(props, resourceName, is);
             }
             found = true;
         }
         if (!found) {
             throw new IOException("Could not find resource '" + resourceName + "'");
         }
+    }
+
+    public static void loadIntoProperties(Properties props, String resourceName, InputStream inputStream)
+            throws IOException {
+        Assert.notNull(props, "props must not be null");
+        Assert.notNull(resourceName, "resourceName must not be null");
+        Assert.notNull(inputStream, "inputStream must not be null");
+        if (resourceName.endsWith(XML_FILE_EXTENSION)) {
+            props.loadFromXML(inputStream);
+        } else {
+            props.load(inputStream);
+        }
         if (resourceName.endsWith(ENCRYPTED_RESOURCE_NAME_SUFFIX)) {
             for (Map.Entry<?, ?> entry: props.entrySet()) {
                 Object key = entry.getKey();
-                Object val = entry.getValue();
-                if (val instanceof String value) {
+                if (entry.getValue() instanceof String value) {
                     if (PropertyValueEncryptionUtils.isEncryptedValue(value)) {
                         value = PropertyValueEncryptionUtils.decrypt(value, getDefaultEncryptor());
                         props.put(key, value);

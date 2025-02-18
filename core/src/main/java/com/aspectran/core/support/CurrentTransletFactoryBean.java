@@ -20,6 +20,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
@@ -59,7 +60,7 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
      * Specifies the attribute name for registering the current {@code Translet} as an attribute
      * in the request scope.
      * @param attributeName the attribute name of the current {@code Translet} to be registered
-     *                      in the request scope.
+     *      in the request scope.
      */
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
@@ -67,9 +68,7 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
 
     @Override
     public void setCurrentActivity(@NonNull Activity activity) {
-        if (translet != null) {
-            throw new IllegalStateException("The translet for the current activity is already set");
-        }
+        Assert.state(translet == null, "The translet for the current activity is already set");
         if (activity.hasTranslet()) {
             translet = activity.getTranslet();
             if (attributeName != null) {

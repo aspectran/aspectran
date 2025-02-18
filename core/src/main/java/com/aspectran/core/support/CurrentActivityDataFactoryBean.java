@@ -20,6 +20,7 @@ import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
@@ -60,7 +61,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
      * Specifies the attribute name for registering the current {@code ActivityData} as an
      * attribute in the request scope.
      * @param attributeName the attribute name of the current {@code ActivityData} to be
-     *                      registered in the request scope.
+     *      registered in the request scope.
      */
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
@@ -68,9 +69,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     @Override
     public void setCurrentActivity(@NonNull Activity activity) {
-        if (this.activity != null) {
-            throw new IllegalStateException("activity is already set");
-        }
+        Assert.state(this.activity == null, "Current activity is already set");
         this.activity = activity;
         if (activity.hasTranslet() && attributeName != null) {
             activity.getTranslet().setAttribute(attributeName, activity.getActivityData());
