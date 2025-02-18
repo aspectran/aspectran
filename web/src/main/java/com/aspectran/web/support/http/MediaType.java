@@ -713,8 +713,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (other == null) {
             return false;
         }
-        return this.type.equalsIgnoreCase(other.type) &&
-            this.subtype.equalsIgnoreCase(other.subtype);
+        return (this.type.equalsIgnoreCase(other.type) &&
+            this.subtype.equalsIgnoreCase(other.subtype));
     }
 
     /**
