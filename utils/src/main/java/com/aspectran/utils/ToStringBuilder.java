@@ -89,6 +89,10 @@ public class ToStringBuilder {
         this.start = buffer.length();
     }
 
+    public boolean hasStringifyContext() {
+        return (stringifyContext != null);
+    }
+
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
     }

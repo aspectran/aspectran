@@ -263,6 +263,8 @@ public interface Activity {
      */
     void putSetting(String name, Object value);
 
+    boolean hasStringifyContext();
+
     StringifyContext getStringifyContext();
 
     TemplateRenderer getTemplateRenderer();

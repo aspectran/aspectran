@@ -45,8 +45,7 @@ public class QuartzJobListener implements JobListener {
 
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-        JobActivityReport report = new JobActivityReport(context, jobException);
-        report.reporting();
+        JobActivityReporter.report(context, jobException);
     }
 
 }

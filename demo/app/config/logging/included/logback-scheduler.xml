@@ -23,7 +23,7 @@
         </sift>
     </appender>
 
-    <logger name="com.aspectran.core.scheduler.service.JobActivityReport" level="debug" additivity="false">
+    <logger name="com.aspectran.core.scheduler.service.JobActivityReporter" level="debug" additivity="false">
         <appender-ref ref="SIFT-SCHEDULER"/>
     </logger>
 

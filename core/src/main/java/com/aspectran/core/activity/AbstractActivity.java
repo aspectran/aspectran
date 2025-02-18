@@ -256,6 +256,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public boolean hasStringifyContext() {
+        return (stringifyContext != null);
+    }
+
+    @Override
     public StringifyContext getStringifyContext() {
         if (stringifyContext == null) {
             stringifyContext = new ActivityStringifyContext(this);

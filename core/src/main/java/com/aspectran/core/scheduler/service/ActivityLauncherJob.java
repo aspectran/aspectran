@@ -23,7 +23,6 @@ import com.aspectran.core.scheduler.activity.JobActivity;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -38,15 +37,12 @@ public class ActivityLauncherJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
-            JobDetail jobDetail = jobExecutionContext.getJobDetail();
-            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
             ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(JOB_RULE_DATA_KEY);
-            if (!jobRule.isDisabled()) {
-                SchedulerService service = (SchedulerService)jobDataMap.get(SERVICE_DATA_KEY);
-                if (service.isActive()) {
-                    Activity activity = performActivity(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
-                    jobExecutionContext.setResult(activity);
-                }
+            SchedulerService service = (SchedulerService)jobDataMap.get(SERVICE_DATA_KEY);
+            if (service.isActive() && !jobRule.isDisabled()) {
+                Activity activity = perform(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
+                jobExecutionContext.setResult(activity);
             }
         } catch (Exception e) {
             throw new JobExecutionException(e);
@@ -54,7 +50,8 @@ public class ActivityLauncherJob implements Job {
     }
 
     @NonNull
-    private Activity performActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
+    private Activity perform(
+            ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
         JobActivity activity = new JobActivity(context, jobExecutionContext);
         activity.prepare(transletName);

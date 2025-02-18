@@ -47,13 +47,15 @@ public class StringifyContext implements Cloneable {
 
     private String timeFormat;
 
-    private Locale locale;
-
     private DateTimeFormatter dateTimeFormatter;
 
     private DateTimeFormatter dateFormatter;
 
     private DateTimeFormatter timeFormatter;
+
+    private SimpleDateFormat simpleDateFormat;
+
+    private Locale locale;
 
     public StringifyContext() {
     }
@@ -124,6 +126,15 @@ public class StringifyContext implements Cloneable {
         this.dateTimeFormatter = null;
     }
 
+    public DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
+    }
+
+    public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormat = null;
+        this.dateTimeFormatter = dateTimeFormatter;
+    }
+
     public String getDateFormat() {
         return dateFormat;
     }
@@ -133,6 +144,15 @@ public class StringifyContext implements Cloneable {
         this.dateFormatter = null;
     }
 
+    public DateTimeFormatter getDateFormatter() {
+        return dateFormatter;
+    }
+
+    public void setDateFormatter(DateTimeFormatter dateFormatter) {
+        this.dateFormat = null;
+        this.dateFormatter = dateFormatter;
+    }
+
     public String getTimeFormat() {
         return timeFormat;
     }
@@ -140,6 +160,19 @@ public class StringifyContext implements Cloneable {
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
         this.timeFormatter = null;
+    }
+
+    public DateTimeFormatter getTimeFormatter() {
+        return timeFormatter;
+    }
+
+    public void setTimeFormatter(DateTimeFormatter timeFormatter) {
+        this.timeFormat = null;
+        this.timeFormatter = timeFormatter;
+    }
+
+    public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
+        this.simpleDateFormat = simpleDateFormat;
     }
 
     public Locale getLocale() {
@@ -246,11 +279,8 @@ public class StringifyContext implements Cloneable {
 
     public Date toDate(String date, String format) throws ParseException {
         Assert.notNull(date, "date must not be null");
-        if (format != null) {
-            return createSimpleDateFormat(format, locale).parse(date);
-        } else {
-            return createSimpleDateFormat(dateTimeFormat, locale).parse(date);
-        }
+        SimpleDateFormat simpleDateFormat = touchSimpleDateFormat(format);
+        return simpleDateFormat.parse(date);
     }
 
     private DateTimeFormatter touchDateTimeFormatter(String format) {
@@ -278,6 +308,15 @@ public class StringifyContext implements Cloneable {
             timeFormatter = createDateTimeFormatter(timeFormat, locale);
         }
         return timeFormatter;
+    }
+
+    private SimpleDateFormat touchSimpleDateFormat(String format) {
+        if (format != null) {
+            return createSimpleDateFormat(format, locale);
+        } else if (dateTimeFormat != null && simpleDateFormat == null) {
+            simpleDateFormat = createSimpleDateFormat(dateTimeFormat, locale);
+        }
+        return simpleDateFormat;
     }
 
     @NonNull
@@ -321,9 +360,6 @@ public class StringifyContext implements Cloneable {
         if (timeFormat == null && from.timeFormat != null) {
             timeFormat = from.timeFormat;
         }
-        if (locale == null && from.locale != null) {
-            locale = from.locale;
-        }
         if (dateTimeFormatter == null && from.dateTimeFormatter != null) {
             dateTimeFormatter = from.dateTimeFormatter;
         }
@@ -332,6 +368,12 @@ public class StringifyContext implements Cloneable {
         }
         if (timeFormatter == null && from.timeFormatter != null) {
             timeFormatter = from.timeFormatter;
+        }
+        if (simpleDateFormat == null && from.simpleDateFormat != null) {
+            simpleDateFormat = from.simpleDateFormat;
+        }
+        if (locale == null && from.locale != null) {
+            locale = from.locale;
         }
     }
 
