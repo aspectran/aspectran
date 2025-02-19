@@ -62,10 +62,10 @@ public class DefaultCoreService extends AbstractCoreService {
 
             SystemConfig systemConfig = aspectranConfig.getSystemConfig();
             if (systemConfig != null) {
-                for (String key : systemConfig.getPropertyKeys()) {
-                    String value = systemConfig.getProperty(key);
+                for (String name : systemConfig.getPropertyNames()) {
+                    String value = systemConfig.getProperty(name);
                     if (value != null) {
-                        System.setProperty(key, value);
+                        System.setProperty(name, value);
                     }
                 }
             }

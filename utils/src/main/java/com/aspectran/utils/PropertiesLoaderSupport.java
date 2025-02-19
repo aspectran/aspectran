@@ -115,13 +115,13 @@ public abstract class PropertiesLoaderSupport {
         if (localProperties != null) {
             for (Properties localProp : localProperties) {
                 for (Enumeration<?> en = localProp.propertyNames(); en.hasMoreElements();) {
-                    String key = (String)en.nextElement();
-                    Object value = localProp.get(key);
+                    String name = (String)en.nextElement();
+                    Object value = localProp.get(name);
                     if (value == null) {
                         // Allow for defaults fallback or potentially overridden accessor...
-                        value = localProp.getProperty(key);
+                        value = localProp.getProperty(name);
                     }
-                    result.put(key, value);
+                    result.put(name, value);
                 }
             }
         }

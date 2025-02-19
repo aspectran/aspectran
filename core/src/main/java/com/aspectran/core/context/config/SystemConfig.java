@@ -41,7 +41,7 @@ public class SystemConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public String[] getPropertyKeys() {
+    public String[] getPropertyNames() {
         Parameters properties = getParameters(SystemConfig.properties);
         if (properties != null) {
             return properties.getParameterNames();
@@ -50,18 +50,18 @@ public class SystemConfig extends AbstractParameters {
         }
     }
 
-    public String getProperty(String key) {
+    public String getProperty(String name) {
         Parameters properties = getParameters(SystemConfig.properties);
         if (properties != null) {
-            return properties.getString(key);
+            return properties.getString(name);
         } else {
             return null;
         }
     }
 
-    public void setProperty(String key, String value) {
+    public void setProperty(String name, String value) {
         Parameters properties = touchParameters(SystemConfig.properties);
-        properties.putValue(key, value);
+        properties.putValue(name, value);
     }
 
 }
