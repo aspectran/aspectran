@@ -18,7 +18,6 @@ package com.aspectran.utils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -41,7 +40,7 @@ public abstract class PropertiesLoaderSupport {
 
     private boolean localOverride = false;
 
-    private boolean ignoreResourceNotFound = false;
+    private boolean ignoreInvalidResource = false;
 
     /**
      * Set local properties, for example, via the "props" tag in XML bean definitions.
@@ -97,8 +96,8 @@ public abstract class PropertiesLoaderSupport {
      * <p>"true" is appropriate if the properties file is completely optional.
      * Default is "false".
      */
-    public void setIgnoreResourceNotFound(boolean ignoreResourceNotFound) {
-        this.ignoreResourceNotFound = ignoreResourceNotFound;
+    public void setIgnoreInvalidResource(boolean ignoreInvalidResource) {
+        this.ignoreInvalidResource = ignoreInvalidResource;
     }
 
     /**
@@ -147,10 +146,10 @@ public abstract class PropertiesLoaderSupport {
                 try {
                     InputStream is = getResourceAsStream(location);
                     PropertiesLoaderUtils.loadIntoProperties(props, location, is);
-                } catch (FileNotFoundException e) {
-                    if (ignoreResourceNotFound) {
+                } catch (IOException e) {
+                    if (ignoreInvalidResource) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Properties resource not found: " + e.getMessage());
+                            logger.debug("Invalid properties resource: " + e.getMessage());
                         }
                     } else {
                         throw e;

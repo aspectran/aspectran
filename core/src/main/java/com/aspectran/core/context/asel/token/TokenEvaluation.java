@@ -22,6 +22,7 @@ import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.utils.BeanClassUtils;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.PropertiesLoaderUtils;
 import com.aspectran.utils.ReflectionUtils;
@@ -56,7 +57,7 @@ public class TokenEvaluation implements TokenEvaluator {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenEvaluation.class);
 
-    protected final Activity activity;
+    private final Activity activity;
 
     /**
      * Instantiates a new TokenEvaluation.
@@ -193,19 +194,6 @@ public class TokenEvaluation implements TokenEvaluator {
         return valueMap;
     }
 
-    @Override
-    public Properties evaluateAsProperties(Properties tokensProp) {
-        if (tokensProp == null || tokensProp.isEmpty()) {
-            return null;
-        }
-        Properties prop = new Properties();
-        for (Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
-            Object value = evaluate((Token[])entry.getValue());
-            prop.put(entry.getKey(), value);
-        }
-        return prop;
-    }
-
     /**
      * Returns an array of {@code String} objects containing all
      * of the values the given activity's request parameter has,
@@ -287,7 +275,7 @@ public class TokenEvaluation implements TokenEvaluator {
                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                     if (getterName != null) {
                         try {
-                            value = BeanUtils.getProperty(beanClass, getterName);
+                            value = BeanClassUtils.getProperty(beanClass, getterName);
                             if (value == null) {
                                 value = token.getDefaultValue();
                             }
@@ -340,9 +328,9 @@ public class TokenEvaluation implements TokenEvaluator {
      * </pre></p>
      * @param token the token
      * @return an environment variable
-     * @throws IOException if an I/O error has occurred
+     * @throws Exception if an error has occurred
      */
-    protected Object getProperty(@NonNull Token token) throws IOException {
+    protected Object getProperty(@NonNull Token token) throws Exception {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             try {
                 Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getClassLoader());
@@ -361,7 +349,10 @@ public class TokenEvaluation implements TokenEvaluator {
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }
-            return (value != null ? value : token.getDefaultValue());
+            if (value == null) {
+                value = token.getDefaultValue();
+            }
+            return value;
         }
     }
 

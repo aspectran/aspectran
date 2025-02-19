@@ -222,14 +222,14 @@ public class ItemEvaluation implements ItemEvaluator {
                     values = new String[] { map.toString() };
                 }
             } else if (itemType == ItemType.PROPERTIES) {
-                Properties prop;
+                Properties props;
                 if (valueType == ItemValueType.BEAN) {
-                    prop = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
+                    props = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
                 } else {
-                    prop = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                    props = evaluateAsProperties(itemRule.getTokensMap(), valueType);
                 }
-                if (prop != null) {
-                    values = new String[] { prop.toString() };
+                if (props != null) {
+                    values = new String[] { props.toString() };
                 }
             }
             return values;
@@ -327,17 +327,17 @@ public class ItemEvaluation implements ItemEvaluator {
         if (tokensMap == null || tokensMap.isEmpty()) {
             return null;
         }
-        Properties prop = new Properties();
+        Properties props = new Properties();
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = tokenEvaluator.evaluate(entry.getValue());
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
             if (value != null) {
-                prop.put(entry.getKey(), value);
+                props.put(entry.getKey(), value);
             }
         }
-        return prop;
+        return props;
     }
 
     private Object valuelize(Object value, ItemValueType valueType) throws Exception {
@@ -435,14 +435,14 @@ public class ItemEvaluation implements ItemEvaluator {
         if (beanRuleMap == null || beanRuleMap.isEmpty()) {
             return null;
         }
-        Properties prop = new Properties();
+        Properties props = new Properties();
         for (Map.Entry<String, BeanRule> entry : beanRuleMap.entrySet()) {
             Object value = evaluateBean(entry.getValue());
             if (value != null) {
-                prop.put(entry.getKey(), value);
+                props.put(entry.getKey(), value);
             }
         }
-        return prop;
+        return props;
     }
 
 }

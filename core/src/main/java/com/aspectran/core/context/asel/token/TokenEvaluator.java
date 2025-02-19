@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -46,8 +45,6 @@ public interface TokenEvaluator {
     Set<Object> evaluateAsSet(Set<Token[]> tokensSet);
 
     Map<String, Object> evaluateAsMap(Map<String, Token[]> tokensMap);
-
-    Properties evaluateAsProperties(Properties tokensProp);
 
     static Object evaluate(String expression, Activity activity) {
         if (Token.hasToken(expression)) {

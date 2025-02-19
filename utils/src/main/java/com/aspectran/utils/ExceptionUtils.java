@@ -20,6 +20,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * Provides utilities for manipulating and examining Throwable objects.
@@ -211,6 +213,24 @@ public class ExceptionUtils {
      */
     public static IllegalArgumentException unwrapAndThrowAsIAE(Throwable t, String msg) {
         throw throwAsIAE(getRootCause(t), msg);
+    }
+
+    /**
+     * Examines a Throwable object and gets it's root cause
+     * @param t the exception to examine
+     * @return the root cause
+     */
+    public static Throwable unwrapThrowable(Throwable t) {
+        Throwable t2 = t;
+        while (true) {
+            if (t2 instanceof InvocationTargetException e) {
+                t2 = e.getTargetException();
+            } else if (t2 instanceof UndeclaredThrowableException e) {
+                t2 = e.getUndeclaredThrowable();
+            } else {
+                return t2;
+            }
+        }
     }
 
 }

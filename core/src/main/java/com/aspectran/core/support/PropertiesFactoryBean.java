@@ -15,10 +15,14 @@
  */
 package com.aspectran.core.support;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.asel.token.Token;
+import com.aspectran.core.context.asel.token.TokenEvaluator;
+import com.aspectran.core.context.asel.token.TokenParser;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.PropertiesLoaderSupport;
 import com.aspectran.utils.ResourceUtils;
@@ -27,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Set;
 
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
@@ -42,15 +47,15 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
  */
 @AvoidAdvice
 public class PropertiesFactoryBean extends PropertiesLoaderSupport
-        implements ApplicationAdapterAware, InitializableFactoryBean<Properties> {
+        implements ActivityContextAware, InitializableFactoryBean<Properties> {
+
+    private ActivityContext context;
 
     private Properties properties;
 
-    private ApplicationAdapter applicationAdapter;
-
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public void setActivityContext(ActivityContext context) {
+        this.context = context;
     }
 
     @Override
@@ -60,8 +65,8 @@ public class PropertiesFactoryBean extends PropertiesLoaderSupport
         if (location.startsWith(CLASSPATH_URL_PREFIX)) {
             is = ResourceUtils.getResourceAsStream(location.substring(CLASSPATH_URL_PREFIX.length()));
         } else {
-            Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
-            is = new FileInputStream(applicationAdapter.getRealPath(location).toFile());
+            Assert.state(context != null, "No ActivityContext injected");
+            is = new FileInputStream(context.getApplicationAdapter().getRealPath(location).toFile());
         }
         return is;
     }
@@ -69,7 +74,35 @@ public class PropertiesFactoryBean extends PropertiesLoaderSupport
     @Override
     public void initialize() throws Exception {
         if (properties == null) {
-            properties = mergeProperties();
+            Properties properties = mergeProperties();
+            if (context != null) {
+                TokenEvaluator evaluator = context.getAvailableActivity().getTokenEvaluator();
+                Set<String> propertyNames = properties.stringPropertyNames();
+                for (String name : propertyNames) {
+                    String value = properties.getProperty(name);
+                    if (value != null && Token.hasToken(value)) {
+                        Token[] tokens = TokenParser.parse(value);
+                        for (int i = 0; i < tokens.length; i++) {
+                            Token token = tokens[i];
+                            if (token.getType() == TokenType.PROPERTY &&
+                                    token.getGetterName() == null &&
+                                    token.getDirectiveType() == null &&
+                                    token.getAlternativeValue() == null) {
+                                String tokenName = token.getName();
+                                String defaultValue = token.getDefaultValue();
+                                if (tokenName != null && !tokenName.equals(name) && propertyNames.contains(tokenName)) {
+                                    tokens[i] = new Token(properties.getProperty(tokenName, defaultValue));
+                                }
+                            }
+                        }
+                        String evaluated = (String)evaluator.evaluate(tokens);
+                        if (!value.equals(evaluated)) {
+                            properties.setProperty(name, evaluated);
+                        }
+                    }
+                }
+            }
+            this.properties = properties;
         }
     }
 

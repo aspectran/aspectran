@@ -78,9 +78,9 @@ public class JobActivityReporter {
             }
 
             if (activity != null) {
-                String reponse = activity.getResponseAdapter().getWriter().toString();
-                if (StringUtils.hasLength(reponse)) {
-                    tsb.append("response", reponse);
+                String response = activity.getResponseAdapter().getWriter().toString();
+                if (StringUtils.hasLength(response)) {
+                    tsb.append("response", response);
                 }
             } else {
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();

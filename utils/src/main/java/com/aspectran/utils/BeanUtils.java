@@ -19,130 +19,21 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
  * BeanUtils provides methods that allow simple, reflective access to
- * JavaBeans style properties.  Methods are provided for all simple types as
- * well as object types.
+ * JavaBeans style properties. Methods are provided for object types.
  *
  * <p>Created: 2008. 04. 22 PM 3:47:15</p>
  */
-public class BeanUtils {
+public abstract class BeanUtils {
 
     /** An empty immutable {@code Object} array. */
-    private static final Object[] NO_ARGUMENTS = new Object[0];
-
-    /**
-     * Invokes the static method of the specified class to get the bean property value.
-     * @param beanClass the class for which to lookup
-     * @param name the property name
-     * @return the property value (as an Object)
-     * @throws InvocationTargetException if the property accessor method throws an exception
-     */
-    public static Object getProperty(Class<?> beanClass, String name) throws InvocationTargetException {
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            Method method = bd.getGetter(name);
-            Object bean = null;
-            if (!Modifier.isStatic(method.getModifiers())) {
-                bean = ClassUtils.createInstance(beanClass);
-            }
-            try {
-                return method.invoke(bean, NO_ARGUMENTS);
-            } catch (Throwable t) {
-                throw unwrapThrowable(t);
-            }
-        } catch (InvocationTargetException e) {
-            throw e;
-        } catch (Throwable t) {
-            throw new InvocationTargetException(t, "Could not get property '" + name +
-                    "' from " + beanClass.getName() + ". Cause: " + t);
-        }
-    }
-
-    /**
-     * Invokes the static method of the specified class to get the bean property value.
-     * @param beanClass the class for which to lookup
-     * @param name the property name
-     * @param value the value to which this property is to be set
-     * @throws InvocationTargetException if the property accessor method throws an exception
-     */
-    public static void setProperty(Class<?> beanClass, String name, Object value) throws InvocationTargetException {
-        Object bean = null;
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            Method method = bd.getSetter(name);
-            Object[] params = new Object[] { value };
-            if (!Modifier.isStatic(method.getModifiers())) {
-                bean = ClassUtils.createInstance(beanClass);
-            }
-            try {
-                method.invoke(bean, params);
-            } catch (Throwable t) {
-                throw unwrapThrowable(t);
-            }
-        } catch (InvocationTargetException e) {
-            throw e;
-        } catch (Throwable t) {
-            try {
-                if (bean != null) {
-                    MethodUtils.invokeSetter(bean, name, value);
-                } else {
-                    MethodUtils.invokeStaticMethod(beanClass, name, value);
-                }
-                return;
-            } catch (Throwable tt) {
-                //ignore
-            }
-            throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value +
-                    "' for " + beanClass.getName() + ". Cause: " + t);
-        }
-    }
-
-    public static boolean hasReadableProperty(Class<?> beanClass, String name) {
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            bd.getGetter(name);
-            return true;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    public static boolean hasWritableProperty(Class<?> beanClass, String name) {
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            bd.getSetter(name);
-            return true;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    public static boolean hasStaticReadableProperty(Class<?> beanClass, String name) {
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            Method method = bd.getGetter(name);
-            return Modifier.isStatic(method.getModifiers());
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    public static boolean hasStaticWritableProperty(Class<?> beanClass, String name) {
-        try {
-            BeanDescriptor bd = getBeanDescriptor(beanClass);
-            Method method = bd.getSetter(name);
-            return Modifier.isStatic(method.getModifiers());
-        } catch (Throwable t) {
-            return false;
-        }
-    }
+    static final Object[] NO_ARGUMENTS = new Object[0];
 
     /**
      * Return the value of the specified property of the specified bean,
@@ -154,9 +45,16 @@ public class BeanUtils {
      * @throws InvocationTargetException if the property accessor method throws an exception
      */
     public static Object getProperty(Object bean, @NonNull String name) throws InvocationTargetException {
+        Object value;
+        if (bean instanceof Properties props) {
+            value = getProperty(props, name);
+            if (value != null) {
+                return value;
+            }
+        }
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
-            Object value = bean;
+            value = bean;
             while (parser.hasMoreTokens()) {
                 value = getSimpleProperty(value, parser.nextToken());
                 if (value == null) {
@@ -183,15 +81,17 @@ public class BeanUtils {
             Object value;
             if (name.contains("[")) {
                 value = getIndexedProperty(bean, name);
+            } else if (bean instanceof Properties props) {
+                value = getProperty(props, name);
             } else if (bean instanceof Map<?, ?> map) {
                 value = map.get(name);
             } else {
-                BeanDescriptor bd = getBeanDescriptor(bean.getClass());
+                BeanDescriptor bd = BeanDescriptor.getInstance(bean.getClass());
                 Method method = bd.getGetter(name);
                 try {
                     value = method.invoke(bean, NO_ARGUMENTS);
                 } catch (Throwable t) {
-                    throw unwrapThrowable(t);
+                    throw ExceptionUtils.unwrapThrowable(t);
                 }
             }
             return value;
@@ -208,6 +108,15 @@ public class BeanUtils {
         }
     }
 
+    private static Object getProperty(@NonNull Properties props, @NonNull String name) {
+        Object value = props.get(name);
+        if (value == null) {
+            // Allow for defaults fallback or potentially overridden accessor...
+            value = props.getProperty(name);
+        }
+        return value;
+    }
+
     /**
      * Sets the value of the specified property of the specified bean.
      * @param bean the bean whose property is to be modified
@@ -218,7 +127,9 @@ public class BeanUtils {
      */
     public static void setProperty(Object bean, @NonNull String name, Object value)
             throws InvocationTargetException, NoSuchMethodException {
-        if (name.contains(".")) {
+        if (bean instanceof Properties props) {
+            props.put(name, value);
+        } else if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             String newName = parser.nextToken();
             Object child = bean;
@@ -256,6 +167,10 @@ public class BeanUtils {
      * @throws InvocationTargetException if the property accessor method throws an exception
      */
     public static void setSimpleProperty(Object bean, @NonNull String name, Object value) throws InvocationTargetException {
+        if (bean instanceof Properties props) {
+            props.put(name, value);
+            return;
+        }
         try {
             if (name.contains("[")) {
                 setIndexedProperty(bean, name, value);
@@ -265,13 +180,13 @@ public class BeanUtils {
                     Map<String, Object> map = (Map<String, Object>)bean;
                     map.put(name, value);
                 } else {
-                    BeanDescriptor bd = getBeanDescriptor(bean.getClass());
+                    BeanDescriptor bd = BeanDescriptor.getInstance(bean.getClass());
                     Method method = bd.getSetter(name);
                     Object[] params = new Object[] { value };
                     try {
                         method.invoke(bean, params);
                     } catch (Throwable t) {
-                        throw unwrapThrowable(t);
+                        throw ExceptionUtils.unwrapThrowable(t);
                     }
                 }
             }
@@ -410,30 +325,103 @@ public class BeanUtils {
     }
 
     /**
-     * Checks to see if a bean has a writable property be a given name.
+     * Returns the class that the getter will return when reading a property value.
      * @param bean the bean to check
-     * @param name the property name to check for
-     * @return true if the property exists and is writable
+     * @param name the name of the property
+     * @return the type of the property
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static boolean hasWritableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
-        boolean exists = false;
-        if (bean instanceof Map<?, ?>) {
-            exists = true; // ((Map)bean).containsKey(propertyName);
-        } else {
-            if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
-                Class<?> type = bean.getClass();
-                while (parser.hasMoreTokens()) {
-                    name = parser.nextToken();
-                    type = getBeanDescriptor(type).getGetterType(name);
-                    exists = getBeanDescriptor(type).hasWritableProperty(name);
-                }
-            } else {
-                exists = getBeanDescriptor(bean.getClass()).hasWritableProperty(name);
+    public static Class<?> getPropertyTypeForGetter(@NonNull Object bean, String name) throws NoSuchMethodException {
+        Class<?> type;
+        if (bean instanceof Class<?>) {
+            type = getClassPropertyTypeForGetter((Class<?>)bean, name);
+        } else if (bean instanceof Map<?, ?> map) {
+            Object value = map.get(name);
+            if (value == null && bean instanceof Properties props) {
+                // Allow for defaults fallback or potentially overridden accessor...
+                value = props.getProperty(name);
             }
+            if (value == null) {
+                type = Object.class;
+            } else {
+                type = value.getClass();
+            }
+        } else {
+            type = getClassPropertyTypeForGetter(bean.getClass(), name);
         }
-        return exists;
+        return type;
+    }
+
+    /**
+     * Returns the class that the getter will return when reading a property value.
+     * @param type the class to check
+     * @param name the name of the property
+     * @return the type of the property
+     * @throws NoSuchMethodException if an accessor method for this property cannot be found
+     */
+    public static Class<?> getClassPropertyTypeForGetter(Class<?> type, @NonNull String name)
+        throws NoSuchMethodException {
+        if (name.contains(".")) {
+            StringTokenizer parser = new StringTokenizer(name, ".");
+            while (parser.hasMoreTokens()) {
+                name = parser.nextToken();
+                type = BeanDescriptor.getInstance(type).getGetterType(name);
+            }
+        } else {
+            type = BeanDescriptor.getInstance(type).getGetterType(name);
+        }
+        return type;
+    }
+
+    /**
+     * Returns the class that the setter expects to receive as a parameter when
+     * setting a property value.
+     * @param bean the bean to check
+     * @param name the name of the property
+     * @return the type of the property
+     * @throws NoSuchMethodException if an accessor method for this property cannot be found
+     */
+    public static Class<?> getPropertyTypeForSetter(@NonNull Object bean, String name) throws NoSuchMethodException {
+        Class<?> type;
+        if (bean instanceof Class<?>) {
+            type = getClassPropertyTypeForSetter((Class<?>)bean, name);
+        } else if (bean instanceof Map<?, ?> map) {
+            Object value = map.get(name);
+            if (value == null && bean instanceof Properties props) {
+                // Allow for defaults fallback or potentially overridden accessor...
+                value = props.getProperty(name);
+            }
+            if (value == null) {
+                type = Object.class;
+            } else {
+                type = value.getClass();
+            }
+        } else {
+            type = getPropertyTypeForSetter(bean.getClass(), name);
+        }
+        return type;
+    }
+
+    /**
+     * Returns the class that the setter expects to receive as a parameter when
+     * setting a property value.
+     * @param type The class to check
+     * @param name the name of the property
+     * @return the type of the property
+     * @throws NoSuchMethodException if an accessor method for this property cannot be found
+     */
+    public static Class<?> getClassPropertyTypeForSetter(Class<?> type, @NonNull String name)
+        throws NoSuchMethodException {
+        if (name.contains(".")) {
+            StringTokenizer parser = new StringTokenizer(name, ".");
+            while (parser.hasMoreTokens()) {
+                name = parser.nextToken();
+                type = BeanDescriptor.getInstance(type).getSetterType(name);
+            }
+        } else {
+            type = BeanDescriptor.getInstance(type).getSetterType(name);
+        }
+        return type;
     }
 
     /**
@@ -453,140 +441,41 @@ public class BeanUtils {
                 Class<?> type = bean.getClass();
                 while (parser.hasMoreTokens()) {
                     name = parser.nextToken();
-                    type = getBeanDescriptor(type).getGetterType(name);
-                    exists = getBeanDescriptor(type).hasReadableProperty(name);
+                    type = BeanDescriptor.getInstance(type).getGetterType(name);
+                    exists = BeanDescriptor.getInstance(type).hasReadableProperty(name);
                 }
             } else {
-                exists = getBeanDescriptor(bean.getClass()).hasReadableProperty(name);
+                exists = BeanDescriptor.getInstance(bean.getClass()).hasReadableProperty(name);
             }
         }
         return exists;
     }
 
     /**
-     * Examines a Throwable object and gets it's root cause
-     * @param t the exception to examine
-     * @return the root cause
-     */
-    private static Throwable unwrapThrowable(Throwable t) {
-        Throwable t2 = t;
-        while (true) {
-            if (t2 instanceof InvocationTargetException e) {
-                t2 = e.getTargetException();
-            } else if (t2 instanceof UndeclaredThrowableException e) {
-                t2 = e.getUndeclaredThrowable();
-            } else {
-                return t2;
-            }
-        }
-    }
-
-    /**
-     * Returns the class that the setter expects to receive as a parameter when
-     * setting a property value.
+     * Checks to see if a bean has a writable property be a given name.
      * @param bean the bean to check
-     * @param name the name of the property
-     * @return the type of the property
+     * @param name the property name to check for
+     * @return true if the property exists and is writable
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static Class<?> getPropertyTypeForSetter(@NonNull Object bean, String name) throws NoSuchMethodException {
-        Class<?> type = bean.getClass();
-        if (bean instanceof Class<?>) {
-            type = getClassPropertyTypeForSetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?> map) {
-            Object value = map.get(name);
-            if (value == null) {
-                type = Object.class;
-            } else {
-                type = value.getClass();
-            }
+    public static boolean hasWritableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
+        boolean exists = false;
+        if (bean instanceof Map<?, ?>) {
+            exists = true; // ((Map)bean).containsKey(propertyName);
         } else {
             if (name.contains(".")) {
                 StringTokenizer parser = new StringTokenizer(name, ".");
+                Class<?> type = bean.getClass();
                 while (parser.hasMoreTokens()) {
                     name = parser.nextToken();
-                    type = getBeanDescriptor(type).getSetterType(name);
+                    type = BeanDescriptor.getInstance(type).getGetterType(name);
+                    exists = BeanDescriptor.getInstance(type).hasWritableProperty(name);
                 }
             } else {
-                type = getBeanDescriptor(type).getSetterType(name);
+                exists = BeanDescriptor.getInstance(bean.getClass()).hasWritableProperty(name);
             }
         }
-        return type;
-    }
-
-    /**
-     * Returns the class that the getter will return when reading a property value.
-     * @param bean the bean to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getPropertyTypeForGetter(@NonNull Object bean, String name) throws NoSuchMethodException {
-        Class<?> type = bean.getClass();
-        if (bean instanceof Class<?>) {
-            type = getClassPropertyTypeForGetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?> map) {
-            Object value = map.get(name);
-            if (value == null) {
-                type = Object.class;
-            } else {
-                type = value.getClass();
-            }
-        } else {
-            if (name.contains(".")) {
-                StringTokenizer parser = new StringTokenizer(name, ".");
-                while (parser.hasMoreTokens()) {
-                    name = parser.nextToken();
-                    type = getBeanDescriptor(type).getGetterType(name);
-                }
-            } else {
-                type = getBeanDescriptor(type).getGetterType(name);
-            }
-        }
-        return type;
-    }
-
-    /**
-     * Returns the class that the getter will return when reading a property value.
-     * @param type the class to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getClassPropertyTypeForGetter(Class<?> type, @NonNull String name)
-            throws NoSuchMethodException {
-        if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
-            while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = getBeanDescriptor(type).getGetterType(name);
-            }
-        } else {
-            type = getBeanDescriptor(type).getGetterType(name);
-        }
-        return type;
-    }
-
-    /**
-     * Returns the class that the setter expects to receive as a parameter when
-     * setting a property value.
-     * @param type The class to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getClassPropertyTypeForSetter(Class<?> type, @NonNull String name)
-            throws NoSuchMethodException {
-        if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
-            while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = getBeanDescriptor(type).getSetterType(name);
-            }
-        } else {
-            type = getBeanDescriptor(type).getSetterType(name);
-        }
-        return type;
+        return exists;
     }
 
     /**
@@ -595,7 +484,7 @@ public class BeanUtils {
      * @return the readable properties
      */
     public static String[] getReadablePropertyNames(@NonNull Object bean) {
-        return getBeanDescriptor(bean.getClass()).getReadablePropertyNames();
+        return BeanDescriptor.getInstance(bean.getClass()).getReadablePropertyNames();
     }
 
     /**
@@ -605,7 +494,7 @@ public class BeanUtils {
      * @return the readable properties without non-serializable
      */
     public static String[] getReadablePropertyNamesWithoutNonSerializable(@NonNull Object bean) {
-        return getBeanDescriptor(bean.getClass()).getReadablePropertyNamesWithoutNonSerializable();
+        return BeanDescriptor.getInstance(bean.getClass()).getReadablePropertyNamesWithoutNonSerializable();
     }
 
     /**
@@ -614,16 +503,7 @@ public class BeanUtils {
      * @return the properties
      */
     public static String[] getWritablePropertyNames(@NonNull Object bean) {
-        return getBeanDescriptor(bean.getClass()).getWritablePropertyNames();
-    }
-
-    /**
-     * Gets an instance of BeanDescriptor for the specified class.
-     * @param beanClass the class for which to look up the ClassDescriptor cache.
-     * @return the ClassDescriptor cache for the class
-     */
-    private static BeanDescriptor getBeanDescriptor(Class<?> beanClass) {
-        return BeanDescriptor.getInstance(beanClass);
+        return BeanDescriptor.getInstance(bean.getClass()).getWritablePropertyNames();
     }
 
 }
