@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.utils.BeanClassUtils;
+import com.aspectran.utils.BeanTypeUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -168,7 +168,7 @@ public class BeanReferenceInspector {
     private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token token = (Token)refererInfo.getReferenceable();
-            Class<?> beanClass = (Class<?>)token.getAlternativeValue();
+            Class<?> beanClass = (Class<?>)token.getValueProvider();
             String getterName = token.getGetterName();
             if (beanClass != null && getterName != null) {
                 if (beanClass.isEnum()) {
@@ -181,7 +181,7 @@ public class BeanReferenceInspector {
                         }
                     }
                 }
-                return BeanClassUtils.hasReadableProperty(beanClass, getterName);
+                return BeanTypeUtils.hasReadableProperty(beanClass, getterName);
             }
         }
         return false;

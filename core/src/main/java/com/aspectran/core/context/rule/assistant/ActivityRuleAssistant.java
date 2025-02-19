@@ -470,7 +470,7 @@ public class ActivityRuleAssistant {
                 Class<?> beanClass = loadClass(token.getValue(), token);
                 try {
                     Field field = beanClass.getField(token.getGetterName());
-                    token.setAlternativeValue(field);
+                    token.setValueProvider(field);
                     if (!Modifier.isStatic(field.getModifiers())) {
                         reserveBeanReference(beanClass, referenceable);
                     }
@@ -485,7 +485,7 @@ public class ActivityRuleAssistant {
                 Class<?> beanClass = loadClass(token.getValue(), token);
                 try {
                     Method method = beanClass.getMethod(token.getGetterName());
-                    token.setAlternativeValue(method);
+                    token.setValueProvider(method);
                     if (!Modifier.isStatic(method.getModifiers())) {
                         reserveBeanReference(beanClass, referenceable);
                     }
@@ -495,7 +495,7 @@ public class ActivityRuleAssistant {
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
                 Class<?> beanClass = loadClass(token.getValue(), token);
-                token.setAlternativeValue(beanClass);
+                token.setValueProvider(beanClass);
                 reserveBeanReference(beanClass, referenceable);
             } else {
                 reserveBeanReference(token.getName(), referenceable);
@@ -521,24 +521,12 @@ public class ActivityRuleAssistant {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                 AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                 if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    ValueExpression valueExpression = autowireTargetRule.getValueExpression();
-                    if (valueExpression != null) {
-                        Token[] tokens = valueExpression.getTokens();
-                        resolveBeanClass(tokens, autowireRule);
-                    } else {
-                        Class<?> type = autowireTargetRule.getType();
-                        String qualifier = autowireTargetRule.getQualifier();
-                        reserveBeanReference(qualifier, type, autowireRule);
-                    }
+                    resolveBeanClassOrReference(autowireRule, autowireTargetRule, true);
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
                 AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
                 if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
-                    ValueExpression valueExpression = autowireTargetRule.getValueExpression();
-                    if (valueExpression != null) {
-                        Token[] tokens = valueExpression.getTokens();
-                        resolveBeanClass(tokens, autowireRule);
-                    }
+                    resolveBeanClassOrReference(autowireRule, autowireTargetRule, false);
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
@@ -546,19 +534,25 @@ public class ActivityRuleAssistant {
                 if (autowireRule.isRequired() && autowireTargetRules != null) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
                         if (!autowireTargetRule.isInnerBean()) {
-                            ValueExpression valueExpression = autowireTargetRule.getValueExpression();
-                            if (valueExpression != null) {
-                                Token[] tokens = valueExpression.getTokens();
-                                resolveBeanClass(tokens, autowireRule);
-                            } else {
-                                Class<?> type = autowireTargetRule.getType();
-                                String qualifier = autowireTargetRule.getQualifier();
-                                reserveBeanReference(qualifier, type, autowireRule);
-                            }
+                            resolveBeanClassOrReference(autowireRule, autowireTargetRule, true);
                         }
                     }
                 }
             }
+        }
+    }
+
+    private void resolveBeanClassOrReference(
+            AutowireRule autowireRule, @NonNull AutowireTargetRule autowireTargetRule, boolean forReference)
+            throws IllegalRuleException {
+        ValueExpression valueExpression = autowireTargetRule.getValueExpression();
+        if (valueExpression != null) {
+            Token[] tokens = valueExpression.getTokens();
+            resolveBeanClass(tokens, autowireRule);
+        } else if (forReference) {
+            Class<?> type = autowireTargetRule.getType();
+            String qualifier = autowireTargetRule.getQualifier();
+            reserveBeanReference(qualifier, type, autowireRule);
         }
     }
 

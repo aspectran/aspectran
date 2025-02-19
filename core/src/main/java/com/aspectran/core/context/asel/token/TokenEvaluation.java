@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.utils.BeanClassUtils;
+import com.aspectran.utils.BeanTypeUtils;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.PropertiesLoaderUtils;
 import com.aspectran.utils.ReflectionUtils;
@@ -238,9 +238,9 @@ public class TokenEvaluation implements TokenEvaluator {
      */
     protected Object getBean(@NonNull Token token) {
         Object value;
-        if (token.getAlternativeValue() != null) {
+        if (token.getValueProvider() != null) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
-                Field field = (Field)token.getAlternativeValue();
+                Field field = (Field)token.getValueProvider();
                 if (Modifier.isStatic(field.getModifiers())) {
                     value = ReflectionUtils.getField(field, null);
                 } else {
@@ -249,7 +249,7 @@ public class TokenEvaluation implements TokenEvaluator {
                     value = ReflectionUtils.getField(field, target);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
-                Method method = (Method)token.getAlternativeValue();
+                Method method = (Method)token.getValueProvider();
                 if (Modifier.isStatic(method.getModifiers())) {
                     value = ReflectionUtils.invokeMethod(method, null);
                 } else {
@@ -258,7 +258,7 @@ public class TokenEvaluation implements TokenEvaluator {
                     value = ReflectionUtils.invokeMethod(method, target);
                 }
             } else {
-                Class<?> beanClass = (Class<?>)token.getAlternativeValue();
+                Class<?> beanClass = (Class<?>)token.getValueProvider();
                 String getterName = token.getGetterName();
                 if (getterName != null && beanClass.isEnum()) {
                     Object[] enums = beanClass.getEnumConstants();
@@ -275,7 +275,7 @@ public class TokenEvaluation implements TokenEvaluator {
                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                     if (getterName != null) {
                         try {
-                            value = BeanClassUtils.getProperty(beanClass, getterName);
+                            value = BeanTypeUtils.getProperty(beanClass, getterName);
                             if (value == null) {
                                 value = token.getDefaultValue();
                             }

@@ -112,7 +112,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     private String value;
 
-    private Object alternativeValue;
+    private Object valueProvider;
 
     private String getterName;
 
@@ -222,21 +222,21 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Gets the alternative value.
-     * It is a value corresponding to class name or class path according to token directive.
+     * Gets an object that is able to provide the values of a token.
+     * It could be a field, a method or a class, depending on the directive type.
      * @return the alternative value
      */
-    public Object getAlternativeValue() {
-        return alternativeValue;
+    public Object getValueProvider() {
+        return valueProvider;
     }
 
     /**
-     * Sets the alternative value.
-     * It is a value corresponding to class name or class path according to token directive.
-     * @param value the new alternative value
+     * Sets an object that is able to provide the values of a token.
+     * It could be a field, a method or a class, depending on the directive type.
+     * @param valueProvider the value provider
      */
-    public void setAlternativeValue(Object value) {
-        this.alternativeValue = value;
+    public void setValueProvider(Object valueProvider) {
+        this.valueProvider = valueProvider;
     }
 
     /**
@@ -392,7 +392,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         Token token;
         if (directiveType != null) {
             token = new Token(type, directiveType, value);
-            token.setAlternativeValue(alternativeValue);
+            token.setValueProvider(valueProvider);
             token.setGetterName(getterName);
             token.setDefaultValue(defaultValue);
         } else {
@@ -479,7 +479,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return type;
     }
 
-    public static void resolveAlternativeValue(Token token, ClassLoader classLoader) {
+    public static void resolveValueProvider(Token token, ClassLoader classLoader) {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
                 if (token.getGetterName() == null) {
@@ -488,7 +488,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
                     Field field = cls.getField(token.getGetterName());
-                    token.setAlternativeValue(field);
+                    token.setValueProvider(field);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 } catch (NoSuchFieldException e) {
@@ -501,7 +501,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
                     Method method = cls.getMethod(token.getGetterName());
-                    token.setAlternativeValue(method);
+                    token.setValueProvider(method);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 } catch (NoSuchMethodException e) {
@@ -510,7 +510,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
-                    token.setAlternativeValue(cls);
+                    token.setValueProvider(cls);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 }

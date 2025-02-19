@@ -134,7 +134,7 @@ public abstract class BeanUtils {
             String newName = parser.nextToken();
             Object child = bean;
             while (parser.hasMoreTokens()) {
-                Class<?> type = getPropertyTypeForSetter(child, newName);
+                Class<?> type = BeanTypeUtils.getPropertyTypeForSetter(child, newName);
                 Object parent = child;
                 child = getSimpleProperty(parent, newName);
                 if (child == null) {
@@ -247,44 +247,6 @@ public abstract class BeanUtils {
         }
     }
 
-    public static Class<?> getIndexedType(Object bean, @NonNull String indexedName) throws InvocationTargetException {
-        try {
-            String name = indexedName.substring(0, indexedName.indexOf("["));
-            int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-            Object obj = (!name.isEmpty() ? getSimpleProperty(bean, name) : bean);
-            Class<?> value;
-            if (obj instanceof List<?> list) {
-                value = list.get(i).getClass();
-            } else if (obj instanceof Object[] arr) {
-                value = arr[i].getClass();
-            } else if (obj instanceof char[]) {
-                value = Character.class;
-            } else if (obj instanceof boolean[]) {
-                value = Boolean.class;
-            } else if (obj instanceof byte[]) {
-                value = Byte.class;
-            } else if (obj instanceof double[]) {
-                value = Double.class;
-            } else if (obj instanceof float[]) {
-                value = Float.class;
-            } else if (obj instanceof int[]) {
-                value = Integer.class;
-            } else if (obj instanceof long[]) {
-                value = Long.class;
-            } else if (obj instanceof short[]) {
-                value = Short.class;
-            } else {
-                throw new IllegalArgumentException("The '" + name + "' property of the " +
-                        bean.getClass().getName() + " class is not a List or Array");
-            }
-            return value;
-        } catch (InvocationTargetException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
-        }
-    }
-
     public static void setIndexedProperty(Object bean, @NonNull String indexedName, Object value)
             throws InvocationTargetException {
         try {
@@ -293,8 +255,8 @@ public abstract class BeanUtils {
             Object obj = getSimpleProperty(bean, name);
             if (obj instanceof List<?>) {
                 @SuppressWarnings("unchecked")
-                List<Object> llist = (List<Object>)obj;
-                llist.set(index, value);
+                List<Object> list = (List<Object>)obj;
+                list.set(index, value);
             } else if (obj instanceof Object[] arr) {
                 arr[index] = value;
             } else if (obj instanceof char[] arr) {
@@ -322,106 +284,6 @@ public abstract class BeanUtils {
         } catch (Exception e) {
             throw new InvocationTargetException(e, "Error getting ordinal value from JavaBean. Cause: " + e);
         }
-    }
-
-    /**
-     * Returns the class that the getter will return when reading a property value.
-     * @param bean the bean to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getPropertyTypeForGetter(@NonNull Object bean, String name) throws NoSuchMethodException {
-        Class<?> type;
-        if (bean instanceof Class<?>) {
-            type = getClassPropertyTypeForGetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?> map) {
-            Object value = map.get(name);
-            if (value == null && bean instanceof Properties props) {
-                // Allow for defaults fallback or potentially overridden accessor...
-                value = props.getProperty(name);
-            }
-            if (value == null) {
-                type = Object.class;
-            } else {
-                type = value.getClass();
-            }
-        } else {
-            type = getClassPropertyTypeForGetter(bean.getClass(), name);
-        }
-        return type;
-    }
-
-    /**
-     * Returns the class that the getter will return when reading a property value.
-     * @param type the class to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getClassPropertyTypeForGetter(Class<?> type, @NonNull String name)
-        throws NoSuchMethodException {
-        if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
-            while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = BeanDescriptor.getInstance(type).getGetterType(name);
-            }
-        } else {
-            type = BeanDescriptor.getInstance(type).getGetterType(name);
-        }
-        return type;
-    }
-
-    /**
-     * Returns the class that the setter expects to receive as a parameter when
-     * setting a property value.
-     * @param bean the bean to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getPropertyTypeForSetter(@NonNull Object bean, String name) throws NoSuchMethodException {
-        Class<?> type;
-        if (bean instanceof Class<?>) {
-            type = getClassPropertyTypeForSetter((Class<?>)bean, name);
-        } else if (bean instanceof Map<?, ?> map) {
-            Object value = map.get(name);
-            if (value == null && bean instanceof Properties props) {
-                // Allow for defaults fallback or potentially overridden accessor...
-                value = props.getProperty(name);
-            }
-            if (value == null) {
-                type = Object.class;
-            } else {
-                type = value.getClass();
-            }
-        } else {
-            type = getPropertyTypeForSetter(bean.getClass(), name);
-        }
-        return type;
-    }
-
-    /**
-     * Returns the class that the setter expects to receive as a parameter when
-     * setting a property value.
-     * @param type The class to check
-     * @param name the name of the property
-     * @return the type of the property
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
-     */
-    public static Class<?> getClassPropertyTypeForSetter(Class<?> type, @NonNull String name)
-        throws NoSuchMethodException {
-        if (name.contains(".")) {
-            StringTokenizer parser = new StringTokenizer(name, ".");
-            while (parser.hasMoreTokens()) {
-                name = parser.nextToken();
-                type = BeanDescriptor.getInstance(type).getSetterType(name);
-            }
-        } else {
-            type = BeanDescriptor.getInstance(type).getSetterType(name);
-        }
-        return type;
     }
 
     /**

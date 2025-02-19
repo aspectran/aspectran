@@ -131,7 +131,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
             if (greetingsTokens != null) {
                 try {
                     for (Token token : greetingsTokens) {
-                        Token.resolveAlternativeValue(token, getServiceClassLoader());
+                        Token.resolveValueProvider(token, getServiceClassLoader());
                     }
                 } catch (Exception e) {
                     greetingsTokens = null;

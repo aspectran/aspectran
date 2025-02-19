@@ -87,7 +87,7 @@ public class PropertiesFactoryBean extends PropertiesLoaderSupport
                             if (token.getType() == TokenType.PROPERTY &&
                                     token.getGetterName() == null &&
                                     token.getDirectiveType() == null &&
-                                    token.getAlternativeValue() == null) {
+                                    token.getValueProvider() == null) {
                                 String tokenName = token.getName();
                                 String defaultValue = token.getDefaultValue();
                                 if (tokenName != null && !tokenName.equals(name) && propertyNames.contains(tokenName)) {
