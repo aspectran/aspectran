@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.scheduler.service;
+package com.aspectran.core.scheduler.activity;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.scheduler.activity.JobActivity;
+import com.aspectran.core.scheduler.service.SchedulerService;
+import com.aspectran.core.support.logging.LoggingGroupHelper;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -41,6 +42,9 @@ public class ActivityLauncherJob implements Job {
             ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(JOB_RULE_DATA_KEY);
             SchedulerService service = (SchedulerService)jobDataMap.get(SERVICE_DATA_KEY);
             if (service.isActive() && !jobRule.isDisabled()) {
+                if (service.getLoggingGroup() != null) {
+                    LoggingGroupHelper.set(service.getLoggingGroup());
+                }
                 Activity activity = perform(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
                 jobExecutionContext.setResult(activity);
             }

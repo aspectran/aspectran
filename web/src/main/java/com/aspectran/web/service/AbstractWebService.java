@@ -119,8 +119,8 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
         if (aspectranConfig.hasWebConfig()) {
             webConfigList.add(aspectranConfig.getWebConfig());
         }
-        for (CoreService parentService = getParentService();
-             parentService != null; parentService = parentService.getParentService()) {
+        for (CoreService parentService = getParentService(); parentService != null;
+             parentService = parentService.getParentService()) {
             webConfigList.add(0, parentService.getAspectranConfig().getWebConfig());
         }
         for (WebConfig webConfig : webConfigList) {

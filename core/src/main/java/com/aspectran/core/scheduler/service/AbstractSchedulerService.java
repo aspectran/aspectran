@@ -17,16 +17,17 @@ package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
+import com.aspectran.core.scheduler.activity.ActivityJobListener;
+import com.aspectran.core.scheduler.activity.ActivityLauncherJob;
 import com.aspectran.core.service.AbstractServiceLifeCycle;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -60,7 +61,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private boolean waitOnShutdown = false;
 
-    private RequestAcceptor requestAcceptor;
+    private String loggingGroup;
 
     AbstractSchedulerService(CoreService parentService) {
         super(parentService);
@@ -93,16 +94,17 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     @Override
+    public String getLoggingGroup() {
+        return loggingGroup;
+    }
+
+    public void setLoggingGroup(String loggingGroup) {
+        this.loggingGroup = loggingGroup;
+    }
+
+    @Override
     public boolean isDerived() {
         return true;
-    }
-
-    public boolean isAcceptable(String requestName) {
-        return (requestAcceptor == null || requestAcceptor.isAcceptable(requestName));
-    }
-
-    protected void setRequestAcceptor(RequestAcceptor requestAcceptor) {
-        this.requestAcceptor = requestAcceptor;
     }
 
     protected Collection<Scheduler> getSchedulers() {
@@ -131,7 +133,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 logger.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
 
                 // Listener attached to jobKey
-                JobListener defaultJobListener = new QuartzJobListener();
+                JobListener defaultJobListener = new ActivityJobListener(getLoggingGroup());
                 scheduler.getListenerManager().addJobListener(defaultJobListener);
 
                 if (getStartDelaySeconds() > 0) {
@@ -196,16 +198,12 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
         List<ScheduledJobRule> jobRuleList = scheduleRule.getScheduledJobRuleList();
         for (ScheduledJobRule jobRule : jobRuleList) {
-            if (isAcceptable(jobRule.getTransletName())) {
-                JobDetail jobDetail = createJobDetail(jobRule);
-                if (jobDetail != null) {
-                    String triggerName = jobDetail.getKey().getName();
-                    String triggerGroup = scheduleRule.getId();
-                    Trigger trigger = createTrigger(triggerName, triggerGroup, scheduleRule, getStartDelaySeconds());
-                    scheduler.scheduleJob(jobDetail, trigger);
-                }
-            } else {
-                logger.warn("Unexposed translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
+            JobDetail jobDetail = createJobDetail(jobRule);
+            if (jobDetail != null) {
+                String triggerName = jobDetail.getKey().getName();
+                String triggerGroup = scheduleRule.getId();
+                Trigger trigger = createTrigger(triggerName, triggerGroup, scheduleRule, getStartDelaySeconds());
+                scheduler.scheduleJob(jobDetail, trigger);
             }
         }
 
@@ -286,23 +284,26 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
     }
 
     protected void configure(@NonNull SchedulerConfig schedulerConfig) {
-        int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
-        if (startDelaySeconds == -1) {
-            startDelaySeconds = 3;
-            if (logger.isDebugEnabled()) {
-                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
+        if (schedulerConfig.hasWaitOnShutdown()) {
+            int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
+            if (startDelaySeconds < 0) {
+                startDelaySeconds = 3;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
+                }
             }
+            setStartDelaySeconds(startDelaySeconds);
         }
 
-        boolean waitOnShutdown = schedulerConfig.isWaitOnShutdown();
-        if (waitOnShutdown) {
-            setWaitOnShutdown(true);
+        if (schedulerConfig.hasWaitOnShutdown()) {
+            setWaitOnShutdown(schedulerConfig.isWaitOnShutdown());
         }
-        setStartDelaySeconds(startDelaySeconds);
 
-        AcceptableConfig acceptableConfig = schedulerConfig.getAcceptableConfig();
-        if (acceptableConfig != null) {
-            setRequestAcceptor(new RequestAcceptor(acceptableConfig));
+        if (getParentService().getAspectranConfig().hasContextConfig()) {
+            String contextName = getParentService().getAspectranConfig().getContextConfig().getName();
+            if (StringUtils.hasText(contextName)) {
+                setLoggingGroup(contextName);
+            }
         }
     }
 

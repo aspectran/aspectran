@@ -24,7 +24,6 @@ public class SchedulerConfig extends AbstractParameters {
     private static final ParameterKey startDelaySeconds;
     private static final ParameterKey waitOnShutdown;
     private static final ParameterKey enabled;
-    private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -32,13 +31,11 @@ public class SchedulerConfig extends AbstractParameters {
         startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
         waitOnShutdown = new ParameterKey("waitOnShutdown", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
-        acceptable = new ParameterKey("acceptable", AcceptableConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 startDelaySeconds,
                 waitOnShutdown,
-                enabled,
-                acceptable
+                enabled
         };
     }
 
@@ -50,6 +47,10 @@ public class SchedulerConfig extends AbstractParameters {
         return getInt(startDelaySeconds, -1);
     }
 
+    public boolean hasStartDelaySeconds() {
+        return hasValue(startDelaySeconds);
+    }
+
     public SchedulerConfig setStartDelaySeconds(int startDelaySeconds) {
         putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
         return this;
@@ -57,6 +58,10 @@ public class SchedulerConfig extends AbstractParameters {
 
     public boolean isWaitOnShutdown() {
         return getBoolean(waitOnShutdown, false);
+    }
+
+    public boolean hasWaitOnShutdown() {
+        return hasValue(waitOnShutdown);
     }
 
     public SchedulerConfig setWaitOnShutdown(boolean waitOnShutdown) {
@@ -71,18 +76,6 @@ public class SchedulerConfig extends AbstractParameters {
     public SchedulerConfig setEnabled(boolean enabled) {
         putValue(SchedulerConfig.enabled, enabled);
         return this;
-    }
-
-    public AcceptableConfig getAcceptableConfig() {
-        return getParameters(acceptable);
-    }
-
-    public AcceptableConfig newAcceptableConfig() {
-        return newParameters(acceptable);
-    }
-
-    public AcceptableConfig touchAcceptableConfig() {
-        return touchParameters(acceptable);
     }
 
 }

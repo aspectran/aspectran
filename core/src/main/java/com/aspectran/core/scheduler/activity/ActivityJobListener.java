@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.scheduler.service;
+package com.aspectran.core.scheduler.activity;
 
+import com.aspectran.core.support.logging.LoggingGroupHelper;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
 
 /**
- * The Class QuartzJobListener.
+ * The Class ActivityJobListener.
  *
  * <p>Created: 2016. 9. 4.</p>
  *
  * @since 3.0.0
  */
-public class QuartzJobListener implements JobListener {
+public class ActivityJobListener implements JobListener {
 
-    private static final String LISTENER_NAME = "defaultJobListener";
+    private static final String LISTENER_NAME = "activityJobListener";
+
+    private final String loggingGroup;
+
+    public ActivityJobListener(String loggingGroup) {
+        this.loggingGroup = loggingGroup;
+    }
 
     @Override
     public String getName() {
@@ -37,15 +44,26 @@ public class QuartzJobListener implements JobListener {
 
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
+        if (loggingGroup != null) {
+            LoggingGroupHelper.set(loggingGroup);
+        }
+        ActivityJobReporter.jobToBeExecuted(context, false);
     }
 
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
+        if (loggingGroup != null) {
+            LoggingGroupHelper.set(loggingGroup);
+        }
+        ActivityJobReporter.jobToBeExecuted(context, true);
     }
 
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-        JobActivityReporter.report(context, jobException);
+        if (loggingGroup != null) {
+            LoggingGroupHelper.set(loggingGroup);
+        }
+        ActivityJobReporter.jobWasExecuted(context, jobException);
     }
 
 }

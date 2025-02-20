@@ -33,6 +33,8 @@ public interface SchedulerService extends ServiceLifeCycle {
 
     boolean isWaitOnShutdown();
 
+    String getLoggingGroup();
+
     void pauseAll();
 
     void resumeAll();
