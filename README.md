@@ -43,6 +43,8 @@ Aspectran consists of the following major packages:
   Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  
   Package for embedding Aspectran in non-Aspectran-based Java applications
+* **com.aspectran.logging**  
+  Package for using Logback as the underlying logging library
 * **com.aspectran.shell**  
   Package for building interactive shell (aka command line) applications based on Aspectran
 * **com.aspectran.shell-jline**  
@@ -65,6 +67,9 @@ Aspectran consists of the following major packages:
   Add-on package for using Pebble as the templating engine
 * **com.aspectran.thymeleaf**  
   Add-on package for using Thymeleaf as the templating engine
+
+Additionally, there is a POM module with-logback that packages the dependencies needed to use Logback as a 
+logging library, and is mainly used to build and test other modules.
 
 ## Building
 
