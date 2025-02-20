@@ -29,8 +29,6 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -41,6 +39,8 @@ import jakarta.servlet.AsyncListener;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -217,7 +217,7 @@ public class DefaultWebService extends AbstractWebService {
                 sendError(activity.getResponse(), HttpServletResponse.SC_NOT_FOUND, null);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             sendError(activity.getResponse(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
         }
     }

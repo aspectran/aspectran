@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.scheduler.activity;
 
-import com.aspectran.core.support.logging.LoggingGroupHelper;
+import com.aspectran.utils.logging.LoggingGroupHelper;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;

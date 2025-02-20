@@ -28,8 +28,8 @@ import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class DefaultCoreService.

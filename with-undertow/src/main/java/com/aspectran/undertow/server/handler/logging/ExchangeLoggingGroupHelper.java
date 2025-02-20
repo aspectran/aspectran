@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server.handler.logging;
 
-import com.aspectran.core.support.logging.LoggingGroupHelper;
+import com.aspectran.utils.logging.LoggingGroupHelper;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;

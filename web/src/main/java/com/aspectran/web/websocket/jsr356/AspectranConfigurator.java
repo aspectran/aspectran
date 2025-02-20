@@ -17,10 +17,10 @@ package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreServiceHolder;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.websocket.server.ServerEndpointConfig;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link ServerEndpointConfig.Configurator} for initializing ServerEndpoint-annotated

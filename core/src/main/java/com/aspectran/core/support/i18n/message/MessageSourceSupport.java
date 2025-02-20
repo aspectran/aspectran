@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

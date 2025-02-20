@@ -16,8 +16,8 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class ShutdownHook {
             win32ConsoleCtrlCloseHook = Win32ConsoleCtrlCloseHook.register(hook);
         } catch (NoClassDefFoundError e) {
             win32ConsoleCtrlCloseHook = null;
-            logger.warn(e);
+            logger.warn(e.getMessage(), e);
         }
     }
 
@@ -108,7 +108,7 @@ public class ShutdownHook {
             Runtime.getRuntime().removeShutdownHook(thread);
         } catch (IllegalStateException e) {
             // The VM is shutting down, not a big deal; ignore
-            logger.warn(e);
+            logger.warn(e.getMessage(), e);
         }
 
         if (win32ConsoleCtrlCloseHook != null) {

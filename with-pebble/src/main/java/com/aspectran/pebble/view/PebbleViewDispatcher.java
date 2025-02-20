@@ -22,9 +22,9 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.pebble.PebbleTemplateEngine;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class PebbleViewDispatcher.

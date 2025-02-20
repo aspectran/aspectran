@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils.lifecycle;
 
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A LifeCycle that when started will stop another LifeCycle.
@@ -37,7 +37,7 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
         try {
             this.lifecycle.stop();
         } catch (Exception e) {
-            logger.warn(e);
+            logger.warn(e.getMessage(), e);
         }
     }
 

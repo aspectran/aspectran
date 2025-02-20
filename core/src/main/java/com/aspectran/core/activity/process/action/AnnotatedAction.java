@@ -37,8 +37,8 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -328,7 +328,7 @@ public class AnnotatedAction implements Executable {
                 }
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(e);
+                    logger.debug(e.getMessage(), e);
                 }
             }
         }

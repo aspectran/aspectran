@@ -17,8 +17,8 @@ package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.service.ServiceLifeCycle;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 

@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class FileLocker {
                     try {
                         fileChannel.close();
                     } catch (IOException ie) {
-                        logger.warn(ie);
+                        logger.warn(ie.getMessage(), ie);
                     }
                     fileChannel = null;
                 }
@@ -123,7 +123,7 @@ public class FileLocker {
                     try {
                         fileChannel.close();
                     } catch (IOException e) {
-                        logger.warn(e);
+                        logger.warn(e.getMessage(), e);
                     }
                     fileChannel = null;
                 }

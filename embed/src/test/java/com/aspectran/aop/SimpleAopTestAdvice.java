@@ -16,8 +16,8 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Created: 2016. 11. 5.</p>

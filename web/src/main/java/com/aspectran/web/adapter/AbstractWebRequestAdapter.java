@@ -19,10 +19,10 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter implements WebRequestAdapter {
 

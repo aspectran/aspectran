@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 

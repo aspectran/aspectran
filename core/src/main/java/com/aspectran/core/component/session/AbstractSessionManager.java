@@ -19,10 +19,10 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
 import com.aspectran.utils.thread.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,7 +159,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
             return session;
         } catch (Exception e) {
             if (session != null && session.isValid()) {
-                logger.warn(e);
+                logger.warn(e.getMessage(), e);
             }
             return null;
         }

@@ -22,8 +22,8 @@ import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Bean to register session listener in session manager.

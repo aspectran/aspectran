@@ -16,10 +16,10 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.sun.jna.Native;
 import com.sun.jna.win32.StdCallLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback {
 

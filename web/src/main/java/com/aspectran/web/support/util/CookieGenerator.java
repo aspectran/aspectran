@@ -17,10 +17,10 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is a clone of org.springframework.web.util.CookieGenerator</p>

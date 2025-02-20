@@ -25,8 +25,8 @@ import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
 import java.io.Serializable;

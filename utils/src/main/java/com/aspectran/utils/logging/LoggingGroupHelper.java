@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.support.logging;
+package com.aspectran.utils.logging;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.MDC;

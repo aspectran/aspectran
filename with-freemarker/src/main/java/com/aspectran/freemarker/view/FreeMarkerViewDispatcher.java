@@ -22,9 +22,9 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.freemarker.FreeMarkerTemplateEngine;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import freemarker.template.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class FreeMarkerViewDispatcher.

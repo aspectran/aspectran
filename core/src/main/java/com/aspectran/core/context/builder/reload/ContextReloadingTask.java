@@ -17,8 +17,8 @@ package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceLifeCycle;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -61,7 +61,7 @@ public class ContextReloadingTask extends TimerTask {
                     String filePath = file.getAbsolutePath();
                     modifiedTimeMap.put(filePath, file.lastModified());
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

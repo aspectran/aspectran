@@ -16,11 +16,11 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.utils.timer.CyclicTimeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +66,7 @@ public class SessionInactivityTimer {
                         expired = ThreadContextHelper.call(sessionManager.getClassLoader(), () ->
                             sessionManager.sessionInactivityTimerExpired(session, now));
                     } catch (Exception e) {
-                        logger.warn(e);
+                        logger.warn(e.getMessage(), e);
                     }
 
                     // grab the lock and check what happened to the session: if it didn't get evicted and

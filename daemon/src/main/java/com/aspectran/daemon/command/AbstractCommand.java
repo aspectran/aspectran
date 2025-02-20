@@ -17,8 +17,8 @@ package com.aspectran.daemon.command;
 
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCommand implements Command {
 

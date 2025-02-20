@@ -118,6 +118,7 @@
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
 
+
         <jakarta.servlet.api.version>6.0.0</jakarta.servlet.api.version>
         <jakarta.servlet.jsp.api.version>3.1.1</jakarta.servlet.jsp.api.version>
         <jakarta.servlet.jsp.jstl.api.version>3.0.0</jakarta.servlet.jsp.jstl.api.version>

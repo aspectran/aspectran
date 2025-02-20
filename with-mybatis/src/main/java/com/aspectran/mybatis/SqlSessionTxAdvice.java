@@ -18,11 +18,11 @@ package com.aspectran.mybatis;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Advice for SqlSession Transactions.

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.sample;
 
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SampleActivity {
 

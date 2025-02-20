@@ -27,8 +27,8 @@ import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @Aspect(

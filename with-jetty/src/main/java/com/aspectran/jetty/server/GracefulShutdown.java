@@ -18,10 +18,10 @@ package com.aspectran.jetty.server;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;

@@ -118,17 +118,6 @@
             <artifactId>aspectran-with-undertow</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- Optional dependencies -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>

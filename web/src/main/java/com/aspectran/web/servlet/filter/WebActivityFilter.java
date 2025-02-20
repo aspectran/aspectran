@@ -19,8 +19,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.utils.wildcard.WildcardPatterns;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
@@ -35,6 +33,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 

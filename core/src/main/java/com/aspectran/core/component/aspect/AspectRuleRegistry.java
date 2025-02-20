@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentReferenceCache;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -17,9 +17,9 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.Undertow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Undertow Server managed by Aspectran.

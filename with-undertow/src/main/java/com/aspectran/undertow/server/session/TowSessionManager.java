@@ -24,13 +24,13 @@ import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -116,7 +116,7 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
             try {
                 destroy();
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }

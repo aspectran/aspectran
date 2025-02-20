@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;

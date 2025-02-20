@@ -16,9 +16,9 @@
 package com.aspectran.undertow.server.handler.accesslog;
 
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.server.handlers.accesslog.AccessLogReceiver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access log receiver that logs messages at INFO level.

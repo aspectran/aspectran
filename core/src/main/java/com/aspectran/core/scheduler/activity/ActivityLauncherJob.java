@@ -20,7 +20,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.scheduler.service.SchedulerService;
-import com.aspectran.core.support.logging.LoggingGroupHelper;
+import com.aspectran.utils.logging.LoggingGroupHelper;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.quartz.Job;
 import org.quartz.JobDataMap;

@@ -19,8 +19,8 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.logging.Logger;
-import com.aspectran.utils.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +151,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                     serviceStateListener.paused();
                     serviceStateListener.stopped();
                 } catch (Exception e) {
-                    logger.warn(e);
+                    logger.warn(e.getMessage(), e);
                 }
             }
 
@@ -196,7 +196,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 try {
                     serviceStateListener.stopped();
                 } catch (Exception e) {
-                    logger.warn(e);
+                    logger.warn(e.getMessage(), e);
                 }
             }
 
