@@ -3,7 +3,7 @@
 
     <!-- Undertow Access Logging -->
     <appender name="SIFT-ACCESSLOG" class="ch.qos.logback.classic.sift.SiftingAppender">
-        <discriminator class="com.aspectran.core.support.logging.LoggingGroupDiscriminator">
+        <discriminator class="com.aspectran.logging.LoggingGroupDiscriminator">
             <key>LOGGING_GROUP</key>
             <defaultValue>root</defaultValue>
         </discriminator>

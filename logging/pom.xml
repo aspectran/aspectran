@@ -23,29 +23,33 @@
         <version>8.4.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aspectran-with-logback</artifactId>
+    <artifactId>aspectran-logging</artifactId>
     <version>8.4.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <name>Aspectran with Logback</name>
-    <description>Add-on package for logging with logback</description>
+    <name>Aspectran Logging</name>
+    <description>Package for logging based on Logback</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <automatic.module.name>com.aspectran.logging</automatic.module.name>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
