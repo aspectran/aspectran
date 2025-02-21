@@ -89,7 +89,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             throw new UnavailableException(e.getMessage());
         }
 
-        logger.info("Initialized " + getMyName());
+        logger.info("Initialized {}", getMyName());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             webService.withdraw();
         }
 
-        logger.info("Destroyed " + getMyName());
+        logger.info("Destroyed {}", getMyName());
     }
 
     @NonNull

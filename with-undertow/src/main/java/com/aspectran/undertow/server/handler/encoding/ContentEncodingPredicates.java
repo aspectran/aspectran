@@ -62,8 +62,8 @@ public class ContentEncodingPredicates {
         List<Predicate> predicates = new ArrayList<>();
         if (contentSizeLargerThan > 0L) {
             if (contentSizeLargerThan < BREAK_EVEN_GZIP_SIZE) {
-                logger.warn("contentSizeLargerThan of " + contentSizeLargerThan +
-                    " is inefficient for short content, break even is size " + BREAK_EVEN_GZIP_SIZE);
+                logger.warn("contentSizeLargerThan of {} is inefficient for short content, " +
+                        "break even is size {}", contentSizeLargerThan, BREAK_EVEN_GZIP_SIZE);
             }
             predicates.add(Predicates.requestLargerThan(contentSizeLargerThan));
         }

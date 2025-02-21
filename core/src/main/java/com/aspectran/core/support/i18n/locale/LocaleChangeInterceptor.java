@@ -145,7 +145,7 @@ public class LocaleChangeInterceptor {
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
+                        logger.debug("Ignoring invalid locale value [{}]: {}", newLocale, ex.getMessage());
                     }
                 } else {
                     throw ex;
@@ -168,7 +168,7 @@ public class LocaleChangeInterceptor {
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
+                        logger.debug("Ignoring invalid timezone value [{}]: {}", newTimeZone, ex.getMessage());
                     }
                 } else {
                     throw ex;

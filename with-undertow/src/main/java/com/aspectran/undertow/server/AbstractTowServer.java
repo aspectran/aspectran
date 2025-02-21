@@ -208,8 +208,8 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
                 if (getShutdownTimeoutSecs() > 0) {
                     boolean result = shutdownHandler.awaitShutdown(getShutdownTimeoutSecs() * 1000L);
                     if (!result) {
-                        logger.warn("Undertow server did not shut down gracefully within " +
-                                getShutdownTimeoutSecs() + " seconds. Proceeding with forceful shutdown");
+                        logger.warn("Undertow server did not shut down gracefully within {} seconds. " +
+                                "Proceeding with forceful shutdown", getShutdownTimeoutSecs());
                     }
                 } else {
                     shutdownHandler.awaitShutdown();

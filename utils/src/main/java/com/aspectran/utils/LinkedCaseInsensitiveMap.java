@@ -109,11 +109,15 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * @see #convertKey(String)
      */
     public LinkedCaseInsensitiveMap(int initialCapacity, @Nullable Locale locale) {
-        this.targetMap = new LinkedHashMap<String, V>(initialCapacity) {
+        this.targetMap = new LinkedHashMap<>(initialCapacity) {
+            @Serial
+            private static final long serialVersionUID = 1591385344290376365L;
+
             @Override
             public boolean containsKey(Object key) {
                 return LinkedCaseInsensitiveMap.this.containsKey(key);
             }
+
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, V> eldest) {
                 boolean doRemove = LinkedCaseInsensitiveMap.this.removeEldestEntry(eldest);
@@ -388,6 +392,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         }
 
         @Override
+        @NonNull
         public Spliterator<String> spliterator() {
             return this.delegate.spliterator();
         }
@@ -430,6 +435,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         }
 
         @Override
+        @NonNull
         public Spliterator<V> spliterator() {
             return this.delegate.spliterator();
         }
@@ -482,6 +488,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         }
 
         @Override
+        @NonNull
         public Spliterator<Entry<String, V>> spliterator() {
             return this.delegate.spliterator();
         }

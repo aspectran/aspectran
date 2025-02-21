@@ -56,7 +56,7 @@ public class DispatchResponse implements Response {
     public void commit(Activity activity) throws ResponseException {
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Response " + dispatchRule);
+                logger.debug("Response {}", dispatchRule);
             }
 
             ViewDispatcher viewDispatcher = getViewDispatcher(activity);

@@ -212,12 +212,12 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             wrappedConsole.writeError(e.getMessage());
             command.printHelp(wrappedConsole);
         } catch (ShellCommandExecutionException e) {
-            logger.error("Failed to execute command: " + lineParser.getCommandLine(), e.getCause());
+            logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e.getCause());
             console.dangerStyle();
             console.writeAbove(e.getMessage());
             console.resetStyle();
         } catch (Exception e) {
-            logger.error("Failed to execute command: " + lineParser.getCommandLine(), e);
+            logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e);
         } finally {
             if (outputWriter != null) {
                 outputWriter.close();
@@ -241,7 +241,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             } catch (ShellConsoleClosedException e) {
                 throw e;
             } catch (Exception e) {
-                logger.error("Failed to execute command: " +
+                logger.error("Failed to execute command: {}",
                         transletCommandLine.getLineParser().getCommandLine(), e);
             }
         } else {

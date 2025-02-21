@@ -72,7 +72,7 @@ public class FileLocker {
                 throw new Exception("Lock is already held");
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Acquiring lock on " + lockFile.getAbsolutePath());
+                logger.debug("Acquiring lock on {}", lockFile.getAbsolutePath());
             }
             try {
                 fileChannel = new RandomAccessFile(lockFile, "rw").getChannel();
@@ -104,7 +104,7 @@ public class FileLocker {
     public void release() throws Exception {
         synchronized (this) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Releasing lock on " + lockFile.getAbsolutePath());
+                logger.debug("Releasing lock on {}", lockFile.getAbsolutePath());
             }
             if (fileLock != null) {
                 try {
@@ -112,7 +112,7 @@ public class FileLocker {
                         fileLock.release();
                     } else {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Lock already released: " + lockFile.getAbsolutePath());
+                            logger.debug("Lock already released: {}", lockFile.getAbsolutePath());
                         }
                     }
                     fileLock = null;
@@ -130,11 +130,11 @@ public class FileLocker {
                 if (lockFile != null) {
                     if (lockFile.delete()) {
                         if (logger.isTraceEnabled()) {
-                            logger.trace("Deleted lock file " + lockFile.getAbsolutePath());
+                            logger.trace("Deleted lock file {}", lockFile.getAbsolutePath());
                         }
                     } else if (lockFile.exists()) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Could not delete lock file " + lockFile.getAbsolutePath());
+                            logger.debug("Could not delete lock file {}", lockFile.getAbsolutePath());
                         }
                     }
                     lockFile = null;

@@ -74,7 +74,7 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Pebble template [" + viewName + "]");
+                logger.debug("Dispatching to Pebble template [{}]", viewName);
             }
 
             PebbleTemplateEngine.process(pebbleEngine, viewName, activity);

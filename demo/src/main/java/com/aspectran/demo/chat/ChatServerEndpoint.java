@@ -69,7 +69,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     @OnOpen
     public void onOpen(Session session) {
         if (logger.isDebugEnabled()) {
-            logger.debug("WebSocket connection established with session: " + session.getId());
+            logger.debug("WebSocket connection established with session: {}", session.getId());
         }
     }
 
@@ -110,7 +110,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     @OnClose
     public void onClose(Session session, CloseReason reason) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Websocket session " + session.getId() + " has been closed. Reason: " + reason);
+            logger.debug("Websocket session {} has been closed. Reason: {}", session.getId(), reason);
         }
         String username = getUsername(session);
         if (username != null) {
@@ -121,7 +121,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     @OnError
     public void onError(@NonNull Session session, Throwable error) {
         if (!ExceptionUtils.hasCause(error, ClosedChannelException.class, TimeoutException.class)) {
-            logger.warn("Error in websocket session: " + session.getId(), error);
+            logger.warn("Error in websocket session: {}", session.getId(), error);
         }
         try {
             session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));

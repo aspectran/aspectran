@@ -49,7 +49,7 @@ public class SimpleAopTestActivity {
     @Request("aop/test/action3-${param1}")
     public String action3(@NonNull Translet translet, String param1) throws IOException {
         logger.debug("===> Action3: [SimpleAopTestActivity]=== Action Result (Action-3)");
-        logger.debug("===> Action3: (PathVariable)param1: " + param1);
+        logger.debug("===> Action3: (PathVariable)param1: {}", param1);
         translet.getResponseAdapter().getWriter().write(param1);
         return param1;
     }

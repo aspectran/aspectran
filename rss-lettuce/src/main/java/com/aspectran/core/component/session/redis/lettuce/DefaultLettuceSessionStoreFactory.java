@@ -43,7 +43,7 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
     @Override
     public DefaultLettuceSessionStore createSessionStore() {
         if (logger.isDebugEnabled()) {
-            logger.debug("RedisConnectionPoolConfig " + poolConfig);
+            logger.debug("RedisConnectionPoolConfig {}", poolConfig);
         }
         RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
         DefaultLettuceSessionStore sessionStore = new DefaultLettuceSessionStore(pool);

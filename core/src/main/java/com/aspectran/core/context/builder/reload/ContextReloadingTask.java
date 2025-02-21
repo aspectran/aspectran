@@ -81,7 +81,7 @@ public class ContextReloadingTask extends TimerTask {
                 modified = true;
                 modifiedTimeMap.put(filePath, lastModifiedTime);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Detected modified resource: " + filePath);
+                    logger.debug("Detected modified resource: {}", filePath);
                 }
             }
         }

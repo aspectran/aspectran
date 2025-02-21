@@ -100,7 +100,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
             if (incomingFiles != null) {
                 for (File file : incomingFiles) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Delete old incoming command file: " + file);
+                        logger.debug("Delete old incoming command file: {}", file);
                     }
                     file.delete();
                 }
@@ -170,7 +170,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     private void executeQueuedCommand(final CommandParameters parameters, final String fileName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Execute Command: " + fileName + System.lineSeparator() + parameters);
+            logger.debug("Execute Command: {}{}{}", fileName, System.lineSeparator(), parameters);
         }
         getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
@@ -178,7 +178,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir, fileName);
                 writeCompletedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Completed Command: " + fileName + System.lineSeparator() + parameters);
+                    logger.trace("Result of Completed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
                 }
             }
 
@@ -187,7 +187,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir, fileName);
                 writeFailedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Failed Command: " + fileName + System.lineSeparator() + parameters);
+                    logger.trace("Result of Failed Command: {}{}{}", fileName, System.lineSeparator(), parameters);
                 }
             }
 
@@ -211,14 +211,14 @@ public class DefaultFileCommander extends AbstractFileCommander {
     @Nullable
     private CommandParameters readCommandFile(@NonNull File file) {
         if (logger.isTraceEnabled()) {
-            logger.trace("Read command file: " + file);
+            logger.trace("Read command file: {}", file);
         }
         try {
             CommandParameters parameters = new CommandParameters();
             AponReader.read(file, parameters);
             return parameters;
         } catch (Exception e) {
-            logger.error("Failed to read command file: " + file, e);
+            logger.error("Failed to read command file: {}", file, e);
             removeCommandFile(incomingDir, file.getName());
             return null;
         }
@@ -227,14 +227,14 @@ public class DefaultFileCommander extends AbstractFileCommander {
     private void writeIncomingCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(incomingDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Incoming Command: " + written + " in " + incomingDir);
+            logger.debug("Incoming Command: {} in {}", written, incomingDir);
         }
     }
 
     private String writeQueuedCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(queuedDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Queued Command: " + written + " in " + queuedDir);
+            logger.debug("Queued Command: {} in {}", written, queuedDir);
         }
         return written;
     }
@@ -242,14 +242,14 @@ public class DefaultFileCommander extends AbstractFileCommander {
     private void writeCompletedCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(completedDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Completed Command: " + written + " in " + completedDir);
+            logger.debug("Completed Command: {} in {}", written, completedDir);
         }
     }
 
     private void writeFailedCommand(CommandParameters parameters, String fileName) {
         String written = writeCommandFile(failedDir, fileName, parameters);
         if (logger.isDebugEnabled()) {
-            logger.debug("Failed Command: " + written + " in " + failedDir);
+            logger.debug("Failed Command: {} in {}", written, failedDir);
         }
     }
 
@@ -262,7 +262,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 file.createNewFile();
             }
             if (logger.isTraceEnabled()) {
-                logger.trace("Write command file: " + file);
+                logger.trace("Write command file: {}", file);
             }
             AponWriter aponWriter = new AponWriter(file).nullWritable(false);
             aponWriter.write(parameters);
@@ -270,10 +270,10 @@ public class DefaultFileCommander extends AbstractFileCommander {
             return file.getName();
         } catch (IOException e) {
             if (file != null) {
-                logger.warn("Failed to write command file: " + file, e);
+                logger.warn("Failed to write command file: {}", file, e);
             } else {
                 File f = new File(dir, fileName);
-                logger.warn("Failed to write command file: " + f, e);
+                logger.warn("Failed to write command file: {}", f, e);
             }
             return null;
         }
@@ -282,10 +282,10 @@ public class DefaultFileCommander extends AbstractFileCommander {
     private void removeCommandFile(File dir, String fileName) {
         File file = new File(dir, fileName);
         if (logger.isTraceEnabled()) {
-            logger.trace("Delete command file: " + file);
+            logger.trace("Delete command file: {}", file);
         }
         if (!file.delete()) {
-            logger.warn("Failed to delete command file: " + file);
+            logger.warn("Failed to delete command file: {}", file);
         }
     }
 

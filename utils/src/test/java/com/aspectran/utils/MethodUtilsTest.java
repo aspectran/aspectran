@@ -44,7 +44,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "primitiveArray", null, paramTypes);
         assertNotNull(method);
 
-        logger.debug("matched method: " + method);
+        logger.debug("matched method: {}", method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
@@ -58,7 +58,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "primitiveArray", args, paramTypes);
         assertNotNull(method);
 
-        logger.debug("matched method: " + method);
+        logger.debug("matched method: {}", method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
@@ -72,7 +72,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        logger.debug("matched method: " + method);
+        logger.debug("matched method: {}", method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
@@ -86,7 +86,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        logger.debug("matched method: " + method);
+        logger.debug("matched method: {}", method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
@@ -104,7 +104,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        logger.debug("matched method: " + method);
+        logger.debug("matched method: {}", method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);

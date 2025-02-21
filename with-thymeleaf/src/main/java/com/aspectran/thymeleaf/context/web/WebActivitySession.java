@@ -63,7 +63,7 @@ public class WebActivitySession implements IWebSession {
         if (enumer == null) {
             return Collections.emptySet();
         }
-        Set<String> attributeNames = new LinkedHashSet<String>(10);
+        Set<String> attributeNames = new LinkedHashSet<>(10);
         while (enumer.hasMoreElements()) {
             attributeNames.add(enumer.nextElement());
         }
@@ -76,7 +76,7 @@ public class WebActivitySession implements IWebSession {
         if (enumer == null) {
             return Collections.emptyMap();
         }
-        Map<String, Object> attributeMap = new LinkedHashMap<String, Object>(10);
+        Map<String, Object> attributeMap = new LinkedHashMap<>(10);
         String attributeName;
         while (enumer.hasMoreElements()) {
             attributeName = enumer.nextElement();

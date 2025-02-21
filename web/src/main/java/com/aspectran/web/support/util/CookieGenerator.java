@@ -195,7 +195,7 @@ public class CookieGenerator {
         }
         response.addCookie(cookie);
         if (logger.isTraceEnabled()) {
-            logger.trace("Added cookie [" + getCookieName() + "=" + cookieValue + "]");
+            logger.trace("Added cookie [{}={}]", getCookieName(), cookieValue);
         }
     }
 
@@ -220,7 +220,7 @@ public class CookieGenerator {
         }
         response.addCookie(cookie);
         if (logger.isTraceEnabled()) {
-            logger.trace("Removed cookie '" + getCookieName() + "'");
+            logger.trace("Removed cookie '{}'", getCookieName());
         }
     }
 

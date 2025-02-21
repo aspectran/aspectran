@@ -42,12 +42,12 @@ public class ProxyBeanFactory {
         Object bean;
         if (superClass.isInterface() || Proxy.isProxyClass(superClass) || ClassUtils.isLambdaClass(superClass)) {
             if (logger.isTraceEnabled()) {
-                logger.trace("Create a proxied bean " + beanRule + " using JDK");
+                logger.trace("Create a proxied bean {} using JDK", beanRule);
             }
             bean = JdkBeanProxy.create(context, beanRule, args, argTypes);
         } else {
             if (logger.isTraceEnabled()) {
-                logger.trace("Create a proxied bean " + beanRule + " using Javassist");
+                logger.trace("Create a proxied bean {} using Javassist", beanRule);
             }
             bean = JavassistBeanProxy.create(context, beanRule, args, argTypes);
         }

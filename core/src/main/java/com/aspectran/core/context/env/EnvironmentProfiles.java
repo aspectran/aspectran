@@ -88,7 +88,7 @@ public class EnvironmentProfiles {
      */
     public void setActiveProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(profiles) + "]");
+        logger.info("Activating profiles [{}]", StringUtils.joinCommaDelimitedList(profiles));
         synchronized (activeProfiles) {
             activeProfiles.clear();
             for (String profile : profiles) {
@@ -99,7 +99,7 @@ public class EnvironmentProfiles {
     }
 
     public void addActiveProfile(String profile) {
-        logger.info("Activating profile '" + profile + "'");
+        logger.info("Activating profile '{}'", profile);
         validateProfile(profile);
         doGetActiveProfiles();
         synchronized (this.activeProfiles) {
@@ -142,7 +142,7 @@ public class EnvironmentProfiles {
      */
     public void setDefaultProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(profiles) + "]");
+        logger.info("Default profiles [{}]", StringUtils.joinCommaDelimitedList(profiles));
         synchronized (defaultProfiles) {
             defaultProfiles.clear();
             for (String profile : profiles) {

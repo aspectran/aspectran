@@ -199,7 +199,7 @@ public class CoreActivity extends AdviceActivity {
         Translet prevTranslet = translet;
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Translet " + transletRule);
+                logger.debug("Translet {}", transletRule);
             }
 
             translet = new CoreTranslet(transletRule, this);
@@ -480,7 +480,7 @@ public class CoreActivity extends AdviceActivity {
     private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Action " + action);
+                logger.debug("Action {}", action);
             }
             if (action.getActionType() == ActionType.CHOOSE) {
                 Object resultValue = action.execute(this);

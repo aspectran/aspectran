@@ -162,8 +162,8 @@ public class JettyServer extends Server implements InitializableBean, Disposable
             handleDeferredInitialize(handler);
         }
         super.doStart();
-        logger.info("Jetty server started on port(s) " + getActualPortsDescription()
-                + " with context path '" + getContextPath() + "'");
+        logger.info("Jetty server started on port(s) {} with context path '{}'",
+                getActualPortsDescription(), getContextPath());
     }
 
     @Override

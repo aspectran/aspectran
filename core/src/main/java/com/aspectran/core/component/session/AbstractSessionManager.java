@@ -130,10 +130,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         this.defaultMaxIdleSecs = defaultMaxIdleSecs;
         if (logger.isDebugEnabled()) {
             if (defaultMaxIdleSecs <= 0) {
-                logger.debug("Sessions created by this manager are immortal (default maxInactiveInterval="
-                        + defaultMaxIdleSecs + ")");
+                logger.debug("Sessions created by this manager are immortal (default maxInactiveInterval={})",
+                        defaultMaxIdleSecs);
             } else {
-                logger.debug("SessionManager default maxInactiveInterval=" + defaultMaxIdleSecs);
+                logger.debug("SessionManager default maxInactiveInterval={}", defaultMaxIdleSecs);
             }
         }
     }
@@ -151,7 +151,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                         session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
                         session.invalidate();
                     } catch (Exception e) {
-                        logger.warn("Invalidating session " + id + " found to be expired when requested", e);
+                        logger.warn("Invalidating session {} found to be expired when requested", id, e);
                     }
                     return null;
                 }
@@ -215,7 +215,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
             }
             return session.getId();
         } catch (Exception e) {
-            logger.warn("Unable to renew session id " + oldId + " to " + newId, e);
+            logger.warn("Unable to renew session id {} to {}", oldId, newId, e);
             return null;
         }
     }
@@ -253,16 +253,16 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                     }
                 } catch (IllegalStateException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + session + " already invalid");
+                        logger.debug("Session {} already invalid", session);
                     }
                 }
             }
             return session;
         } catch (Exception e) {
             if (invalidate) {
-                logger.warn("Unable to invalidate session id=" + id, e);
+                logger.warn("Unable to invalidate session id={}", id, e);
             } else {
-                logger.warn("Unable to remove session id=" + id, e);
+                logger.warn("Unable to remove session id={}", id, e);
             }
             return null;
         }
@@ -334,7 +334,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
             candidateSessionIdsForExpiry.add(id);
             if (logger.isTraceEnabled()) {
-                logger.trace("Session " + id + " is candidate for expiry");
+                logger.trace("Session {} is candidate for expiry", id);
             }
             return true;
         } else {
@@ -353,7 +353,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
             return;
         }
         if (logger.isTraceEnabled()) {
-            logger.trace(getComponentName() + " scavenging sessions");
+            logger.trace("{} scavenging sessions", getComponentName());
         }
 
         // Get a snapshot of the candidates as they are now. Others that
@@ -362,7 +362,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         String[] candidateSessionIds = candidateSessionIdsForExpiry.toArray(new String[0]);
         Set<String> candidates = new HashSet<>(Arrays.asList(candidateSessionIds));
         if (logger.isTraceEnabled()) {
-            logger.trace(getComponentName() + " scavenging session ids " + candidates);
+            logger.trace("{} scavenging session ids {}", getComponentName(), candidates);
         }
         try {
             Set<String> checkedCandidates = sessionCache.checkExpiration(candidates);
@@ -387,8 +387,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to check expiration on [" +
-                    StringUtils.joinCommaDelimitedList(candidates) + "]", e);
+            logger.warn("Failed to check expiration on [{}]", StringUtils.joinCommaDelimitedList(candidates), e);
         }
 
         // Periodically but infrequently comb the backing store to delete sessions
@@ -399,7 +398,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         try {
             if (now > (lastOrphanSweepTime + scavengingInterval * 10L)) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
+                    logger.trace("Cleaning orphans at {}, last sweep at {}", now, lastOrphanSweepTime);
                 }
                 sessionCache.cleanOrphans(now - scavengingInterval * 10L);
             }
@@ -411,7 +410,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     @Override
     public void addSessionListener(SessionListener listener) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Register session listener " + listener + " in " + getComponentName());
+            logger.debug("Register session listener {} in {}", listener, getComponentName());
         }
         sessionListeners.add(listener);
     }
@@ -419,7 +418,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     @Override
     public void removeSessionListener(SessionListener listener) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Remove session listener " + listener + " from " + getComponentName());
+            logger.debug("Remove session listener {} from {}", listener, getComponentName());
         }
         sessionListeners.remove(listener);
     }

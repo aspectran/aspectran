@@ -112,7 +112,7 @@ public class ServerEndpointExporter {
                         "has not run yet.");
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Registering @ServerEndpoint: " + endpointClass);
+                logger.debug("Registering @ServerEndpoint: {}", endpointClass);
             }
             serverContainer.addEndpoint(endpointClass);
         } catch (DeploymentException ex) {
@@ -125,7 +125,7 @@ public class ServerEndpointExporter {
         Assert.state(serverContainer != null, "No ServerContainer found");
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Registering ServerEndpointConfig: " + endpointConfig);
+                logger.debug("Registering ServerEndpointConfig: {}", endpointConfig);
             }
             serverContainer.addEndpoint(endpointConfig);
         } catch (DeploymentException ex) {

@@ -32,7 +32,7 @@ public class TestAdvice {
     }
 
     public String goodbye(Translet translet) {
-        logger.info("activityData " + translet.getActivityData());
+        logger.info("activityData {}", translet.getActivityData());
 
         String msg = "Goodbye!";
 

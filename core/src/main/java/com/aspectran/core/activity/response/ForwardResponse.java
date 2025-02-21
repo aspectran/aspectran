@@ -46,7 +46,7 @@ public class ForwardResponse implements Response {
     @Override
     public void commit(Activity activity) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Response " + forwardRule);
+            logger.debug("Response {}", forwardRule);
         }
 
         ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();

@@ -80,8 +80,8 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
            IExpressionContext context, IStandardVariableExpression expression,
            StandardExpressionExecutionContext execContext, boolean applyOgnlShortcuts) {
         if (logger.isTraceEnabled()) {
-            logger.trace("[THYMELEAF][" + TemplateEngine.threadIndex() +
-                    "] AspectranEL expression: evaluating expression \"" + expression.getExpression() + "\" on target");
+            logger.trace("[THYMELEAF][{}] AspectranEL expression: evaluating expression \"{}\" on target",
+                    TemplateEngine.threadIndex(), expression.getExpression());
         }
 
         try {

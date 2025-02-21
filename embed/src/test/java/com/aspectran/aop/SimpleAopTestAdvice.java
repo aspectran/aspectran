@@ -35,7 +35,8 @@ public class SimpleAopTestAdvice {
     }
 
     public void thrown(Translet translet) {
-        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Thrown - " + translet.getRootCauseOfRaisedException());
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Thrown - {}",
+                String.valueOf(translet.getRootCauseOfRaisedException()));
     }
 
     public void close(Translet translet) {

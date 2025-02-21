@@ -62,8 +62,8 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
         if (sessionManager != null) {
             sessionManager.addSessionListener(listener);
         } else {
-            logger.warn("Unable to register " + ObjectUtils.simpleIdentityToString(listener) +
-                    ". Cause: No session manager found for deployment '" + deploymentName + "'");
+            logger.warn("Unable to register {}. Cause: No session manager found for deployment '{}'",
+                    ObjectUtils.simpleIdentityToString(listener), deploymentName);
         }
     }
 
@@ -81,8 +81,8 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
             if (sessionManager != null) {
                 sessionManager.removeSessionListener(listener);
             } else {
-                logger.warn("Unable to remove " + ObjectUtils.simpleIdentityToString(listener) +
-                        ". Cause: No session manager found for deployment '" + deploymentName + "'");
+                logger.warn("Unable to remove {}. Cause: No session manager found for deployment '{}'",
+                        ObjectUtils.simpleIdentityToString(listener), deploymentName);
             }
         }
     }

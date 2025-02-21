@@ -275,8 +275,8 @@ public class TransletRuleRegistry extends AbstractComponent {
                 String responseName = responseRule.getName();
                 if (responseName == null || responseName.isEmpty()) {
                     if (defaultResponseRule != null) {
-                        logger.warn("Ignore duplicated default response rule " + defaultResponseRule +
-                                " of transletRule " + transletRule);
+                        logger.warn("Ignore duplicated default response rule {} of transletRule {}",
+                                defaultResponseRule, transletRule);
                     }
                     defaultResponseRule = responseRule;
                 } else {
@@ -366,7 +366,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
 
         if (logger.isTraceEnabled()) {
-            logger.trace("add TransletRule " + transletRule);
+            logger.trace("add TransletRule {}", transletRule);
         }
     }
 

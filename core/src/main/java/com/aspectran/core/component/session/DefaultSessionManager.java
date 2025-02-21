@@ -116,12 +116,12 @@ public class DefaultSessionManager extends AbstractSessionManager
         int scavengingIntervalSeconds = -1;
         if (sessionManagerConfig == null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Initializing " + getComponentName());
+                logger.debug("Initializing {}", getComponentName());
             }
             setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("Initializing " + ToStringBuilder.toString(getComponentName(), sessionManagerConfig));
+                logger.debug("Initializing {}", ToStringBuilder.toString(getComponentName(), sessionManagerConfig));
             }
             if (sessionManagerConfig.isClusterEnabled()) {
                 clusterEnabled = true;

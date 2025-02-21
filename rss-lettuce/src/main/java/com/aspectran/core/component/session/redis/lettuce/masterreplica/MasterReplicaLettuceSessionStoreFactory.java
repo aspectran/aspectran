@@ -39,7 +39,7 @@ public class MasterReplicaLettuceSessionStoreFactory extends AbstractSessionStor
     @Override
     public MasterReplicaLettuceSessionStore createSessionStore() {
         if (logger.isDebugEnabled()) {
-            logger.debug("RedisMasterReplicaConnectionPoolConfig " + poolConfig);
+            logger.debug("RedisMasterReplicaConnectionPoolConfig {}", poolConfig);
         }
         RedisMasterReplicaConnectionPool pool = new RedisMasterReplicaConnectionPool(poolConfig);
         MasterReplicaLettuceSessionStore sessionStore = new MasterReplicaLettuceSessionStore(pool);

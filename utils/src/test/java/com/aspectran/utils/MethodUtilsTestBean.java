@@ -27,12 +27,12 @@ public class MethodUtilsTestBean {
 
     @SuppressWarnings("unused")
     public void primitiveArray(int num) {
-        logger.debug("specified args: " + num);
+        logger.debug("specified args: {}", num);
     }
 
     @SuppressWarnings("unused")
     public void primitiveArray(int[] intArray) {
-        logger.debug("specified args: " + Arrays.toString(intArray));
+        logger.debug("specified args: {}", Arrays.toString(intArray));
     }
 
     @SuppressWarnings("unused")
@@ -48,17 +48,17 @@ public class MethodUtilsTestBean {
 
     @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean sampleBean) {
-        logger.debug("specified args: " + sampleBean);
+        logger.debug("specified args: {}", sampleBean);
     }
 
     @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean[] sampleBean) {
-        logger.debug("specified args: " + Arrays.toString(sampleBean));
+        logger.debug("specified args: {}", Arrays.toString(sampleBean));
     }
 
     @SuppressWarnings("unused")
     public void setSampleBean(List<MethodUtilsTestBean> list) {
-        logger.debug("specified args: " + list);
+        logger.debug("specified args: {}", list);
     }
 
     @SuppressWarnings("unused")

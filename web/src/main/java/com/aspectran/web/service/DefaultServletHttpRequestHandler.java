@@ -91,7 +91,7 @@ public class DefaultServletHttpRequestHandler {
         }
         if (defaultServletName != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Default servlet name: " + defaultServletName);
+                logger.debug("Default servlet name: {}", defaultServletName);
             }
             return;
         }

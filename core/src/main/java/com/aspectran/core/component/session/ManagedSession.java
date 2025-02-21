@@ -160,9 +160,9 @@ public class ManagedSession implements Session {
             sessionData.setDirty(true);
             if (logger.isDebugEnabled()) {
                 if (secs <= 0) {
-                    logger.debug("Session " + sessionData.getId() + " is now immortal (maxInactiveInterval=" + secs + ")");
+                    logger.debug("Session {} is now immortal (maxInactiveInterval={})", sessionData.getId(), secs);
                 } else {
-                    logger.debug("Session " + sessionData.getId() + " maxInactiveInterval=" + secs);
+                    logger.debug("Session {} maxInactiveInterval={}", sessionData.getId(), secs);
                 }
             }
         }
@@ -193,7 +193,7 @@ public class ManagedSession implements Session {
 
             // temporarily stop the idle timer
             if (logger.isDebugEnabled()) {
-                logger.debug("Session " + getId() + " accessed, stopping timer, active requests=" + requests);
+                logger.debug("Session {} accessed, stopping timer, active requests={}", getId(), requests);
             }
             sessionInactivityTimer.cancel();
 
@@ -213,7 +213,7 @@ public class ManagedSession implements Session {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Session " + getId() + " complete, active requests=" + requests);
+                logger.debug("Session {} complete, active requests={}", getId(), requests);
             }
 
             // start the inactivity timer if necessary
@@ -258,14 +258,13 @@ public class ManagedSession implements Session {
                     // we do not want to evict inactive sessions
                     time = -1L;
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + getId() + " is immortal && no inactivity eviction");
+                        logger.trace("Session {} is immortal && no inactivity eviction", getId());
                     }
                 } else {
                     // sessions are immortal but we want to evict after inactivity
                     time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
-                                " sec inactivity");
+                        logger.trace("Session {} is immortal; evict after {} sec inactivity", getId(), evictionIdleSecs);
                     }
                 }
             } else {
@@ -274,21 +273,21 @@ public class ManagedSession implements Session {
                     // timeout is the time remaining until its expiry
                     time = Math.max(remaining, 0L);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + getId() + " no eviction");
+                        logger.trace("Session {} no eviction", getId());
                     }
                 } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
                     time = -1L;
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + getId() + " evict on exit");
+                        logger.trace("Session {} evict on exit", getId());
                     }
                 } else {
                     // want to evict on idle: timer is the lesser of the session's
                     // expiration remaining and the time to evict
                     time = (remaining > 0L ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
-                                (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);
+                        logger.trace("Session {} timer set to lesser of maxIdleSeconds={} and evictionIdleSeconds={}",
+                                getId(), maxInactive / 1000L, evictionIdleSecs);
                     }
                 }
             }
@@ -325,7 +324,7 @@ public class ManagedSession implements Session {
                     sessionManager.removeSession(sessionData.getId(), false);
                 }
             } catch (Exception e) {
-                logger.warn("Unable to invalidate session " + this, e);
+                logger.warn("Unable to invalidate session {}", this, e);
             }
         }
     }
@@ -339,7 +338,7 @@ public class ManagedSession implements Session {
                     throw new IllegalStateException();
                 case INVALIDATING:
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + sessionData.getId() + " already being invalidated");
+                        logger.debug("Session {} already being invalidated", sessionData.getId());
                     }
                     break;
                 case VALID:
@@ -359,7 +358,7 @@ public class ManagedSession implements Session {
             try {
                 if (state == State.VALID || state == State.INVALIDATING) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Invalidate session id=" + sessionData.getId());
+                        logger.debug("Invalidate session id={}", sessionData.getId());
                     }
                     Set<String> keys;
                     do {

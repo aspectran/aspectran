@@ -18,6 +18,7 @@ package com.aspectran.utils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -400,6 +401,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
+    @NonNull
     public Set<Map.Entry<K, V>> entrySet() {
         Set<Map.Entry<K, V>> entrySet = this.entrySet;
         if (entrySet == null) {
@@ -459,6 +461,9 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
      * A single segment used to divide the map to allow better concurrent performance.
      */
     protected final class Segment extends ReentrantLock {
+
+        @Serial
+        private static final long serialVersionUID = 2979063948252364310L;
 
         private final ReferenceManager referenceManager;
 

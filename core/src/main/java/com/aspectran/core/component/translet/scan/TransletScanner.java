@@ -95,8 +95,8 @@ public class TransletScanner extends FileScanner {
                 if (maskedTransletName != null) {
                     transletName = maskedTransletName;
                 }  else {
-                    logger.warn("Translet name [" + transletName + "] can not be masked by mask pattern [" +
-                            transletNameMaskPattern + "]");
+                    logger.warn("Translet name [{}] can not be masked by mask pattern [{}]",
+                            transletName, transletNameMaskPattern);
                 }
             }
 
@@ -118,7 +118,7 @@ public class TransletScanner extends FileScanner {
             saveHandler.save(transletName, scannedFile);
 
             if (logger.isTraceEnabled()) {
-                logger.trace("Scanned file: " + filePath);
+                logger.trace("Scanned file: {}", filePath);
             }
         }
     }

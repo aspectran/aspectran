@@ -152,13 +152,13 @@ public abstract class IdleTimeout {
             long idleLeft = idleTimeout - idleElapsed;
 
             if (logger.isTraceEnabled()) {
-                logger.trace(this + " idle timeout check, elapsed: " + idleElapsed + " ms, remaining: " + idleLeft + " ms");
+                logger.trace("{} idle timeout check, elapsed: {} ms, remaining: {} ms", this, idleElapsed, idleLeft);
             }
 
             if (idleTimeout > 0) {
                 if (idleLeft <= 0) {
                     if (logger.isTraceEnabled()) {
-                        logger.trace(this + " idle timeout expired");
+                        logger.trace("{} idle timeout expired", this);
                     }
                     try {
                         onIdleExpired(new TimeoutException("Idle timeout expired: " + idleElapsed + "/" + idleTimeout + " ms"));

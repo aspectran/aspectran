@@ -105,9 +105,9 @@ public class TowResourceHandler extends ResourceHandler {
                 WildcardPattern[] excludePatterns = (pathPatterns != null ? pathPatterns.getExcludePatterns() : null);
                 pathPatterns = IncludeExcludeWildcardPatterns.of(includePatterns, excludePatterns);
 
-                logger.info("TowResourceHandler includePatterns=" + Arrays.toString(includePatterns));
+                logger.info("TowResourceHandler includePatterns={}", Arrays.toString(includePatterns));
                 if (excludePatterns != null) {
-                    logger.info("TowResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                    logger.info("TowResourceHandler excludePatterns={}", Arrays.toString(excludePatterns));
                 }
             }
         }

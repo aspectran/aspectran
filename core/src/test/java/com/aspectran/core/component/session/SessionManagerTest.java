@@ -40,7 +40,7 @@ class SessionManagerTest {
 
         SessionAgent agent = new SessionAgent(sessionManager);
 
-        logger.info("Created Session " + agent.getSession(true));
+        logger.info("Created Session {}", agent.getSession(true));
 
         agent.setAttribute("attr1", "val-1");
         agent.setAttribute("attr2", "val-2");
@@ -49,7 +49,7 @@ class SessionManagerTest {
         Enumeration<String> enumer = agent.getAttributeNames();
         while(enumer.hasMoreElements()) {
             String key = enumer.nextElement();
-            logger.info("getAttribute " + key + "=" + agent.getAttribute(key));
+            logger.info("getAttribute {}={}", key, agent.getAttribute(key));
         }
 
         agent.complete();
@@ -67,7 +67,7 @@ class SessionManagerTest {
 
         SessionAgent agent = new SessionAgent(sessionManager);
 
-        logger.info("Created Session " + agent.getSession(true));
+        logger.info("Created Session {}", agent.getSession(true));
 
         agent.complete();
 

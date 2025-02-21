@@ -49,7 +49,8 @@ public class DefaultSchedulerServiceBuilder {
 
             @Override
             public void paused(long millis) {
-                logger.warn(schedulerService.getServiceName() + " does not support pausing for a certain period of time");
+                logger.warn("{} does not support pausing for a certain period of time",
+                        schedulerService.getServiceName());
             }
 
             @Override

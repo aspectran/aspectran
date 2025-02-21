@@ -100,8 +100,7 @@ public class BeanClassScanner extends ClassScanner {
                 if (maskedBeanId != null) {
                     beanId = maskedBeanId;
                 } else {
-                    logger.warn("Bean name [" + beanId + "] can not be masked by mask pattern [" +
-                            beanIdMaskPattern + "]");
+                    logger.warn("Bean name [{}] can not be masked by mask pattern [{}]", beanId, beanIdMaskPattern);
                 }
             }
 

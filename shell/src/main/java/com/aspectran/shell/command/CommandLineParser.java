@@ -188,7 +188,7 @@ public class CommandLineParser {
         if (!redirectionList.isEmpty()) {
             this.redirectionList = redirectionList;
             if (logger.isDebugEnabled()) {
-                logger.debug("Output Redirection: " + OutputRedirection.serialize(redirectionList));
+                logger.debug("Output Redirection: {}", OutputRedirection.serialize(redirectionList));
             }
         }
         if (StringUtils.hasLength(commandLine)) {

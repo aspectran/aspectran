@@ -267,15 +267,16 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         if (beanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
             messageSource = beanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
             if (logger.isDebugEnabled()) {
-                logger.debug("Using MessageSource [" + messageSource + "]");
+                logger.debug("Using MessageSource [{}]", messageSource);
             }
         }
         if (messageSource == null) {
             // Use empty MessageSource to be able to accept getMessage calls.
             messageSource = new DelegatingMessageSource();
             if (logger.isDebugEnabled()) {
-                logger.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
-                        "': using default [" + messageSource + "]");
+                logger.debug("Unable to locate MessageSource with name '{}': using default [{}]",
+                        MESSAGE_SOURCE_BEAN_ID,
+                        messageSource);
             }
         }
     }

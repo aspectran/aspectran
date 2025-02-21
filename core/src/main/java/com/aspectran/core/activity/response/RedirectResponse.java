@@ -45,7 +45,7 @@ public class RedirectResponse implements Response {
     public void commit(Activity activity) throws ResponseException {
         RedirectRule newRedirectRule = redirectRule.replicate();
         if (logger.isDebugEnabled()) {
-            logger.debug("Response " + newRedirectRule);
+            logger.debug("Response {}", newRedirectRule);
         }
 
         try {

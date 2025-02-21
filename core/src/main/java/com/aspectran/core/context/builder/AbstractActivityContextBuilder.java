@@ -584,7 +584,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         try {
             System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
         } catch (Exception e) {
-            logger.warn("Could not verify the working directory: " + workDir);
+            logger.warn("Could not verify the working directory: {}", workDir);
         }
 
         // Determines the path of the temporary directory.
@@ -601,7 +601,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         try {
             System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
         } catch (Exception e) {
-            logger.warn("Could not verify the temporary directory: " + tempDir);
+            logger.warn("Could not verify the temporary directory: {}", tempDir);
         }
     }
 

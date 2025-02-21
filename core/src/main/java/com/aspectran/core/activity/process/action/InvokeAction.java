@@ -102,7 +102,7 @@ public class InvokeAction implements Executable {
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (logger.isTraceEnabled()) {
-                                logger.trace("No such accessible method to invoke action " + invokeActionRule);
+                                logger.trace("No such accessible method to invoke action {}", invokeActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, false);

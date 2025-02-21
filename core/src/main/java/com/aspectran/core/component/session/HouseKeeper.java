@@ -82,11 +82,11 @@ public class HouseKeeper extends AbstractLifeCycle {
             if (isStarted() || isStarting()) {
                 if (intervalInSecs <= 0) {
                     scavengingInterval = 0L;
-                    logger.info(sessionManager.getComponentName() + " scavenging disabled");
+                    logger.info("{} scavenging disabled", sessionManager.getComponentName());
                     stopScavenging();
                 } else {
                     if (intervalInSecs < 10) {
-                        logger.warn("Short interval of " + intervalInSecs + " secs for session scavenging");
+                        logger.warn("Short interval of {} secs for session scavenging", intervalInSecs);
                     }
                     scavengingInterval = intervalInSecs * 1000L;
                     startScavenging();
@@ -110,7 +110,7 @@ public class HouseKeeper extends AbstractLifeCycle {
                 runner.stop();
             }
             if (logger.isTraceEnabled()) {
-                logger.trace(this + " is scavenging every " + scavengingInterval + " ms");
+                logger.trace("{} is scavenging every {} ms", this, scavengingInterval);
             }
             runner = new Runner();
             task = scheduler.schedule(runner, scavengingInterval, TimeUnit.MILLISECONDS, true);

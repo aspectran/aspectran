@@ -149,7 +149,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         File aponFile = makeAponFile(fileRuleAppender);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Save as APON file: " + aponFile);
+            logger.debug("Save as APON file: {}", aponFile);
         }
 
         try {
@@ -169,7 +169,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 try {
                     aponWriter.close();
                 } catch (IOException e) {
-                    logger.error("Exception during closing file " + aponFile, e);
+                    logger.error("Exception during closing file {}", aponFile, e);
                 }
             }
         } catch (Exception e) {

@@ -133,7 +133,7 @@ public class DefaultWebService extends AbstractWebService {
         } else {
             asyncContext = activity.getRequest().startAsync();
             if (logger.isDebugEnabled()) {
-                logger.debug("Async Started " + asyncContext);
+                logger.debug("Async Started {}", asyncContext);
             }
             if (activity.getTimeout() != null) {
                 asyncContext.setTimeout(activity.getTimeout());
@@ -143,7 +143,7 @@ public class DefaultWebService extends AbstractWebService {
             @Override
             public void onComplete(AsyncEvent asyncEvent) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Async Completed " + asyncEvent);
+                    logger.debug("Async Completed {}", asyncEvent);
                 }
             }
 
@@ -152,19 +152,19 @@ public class DefaultWebService extends AbstractWebService {
                 if (!activity.isCommitted() && !activity.isExceptionRaised()) {
                     activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
                 } else {
-                    logger.error("Async Timeout " + asyncEvent);
+                    logger.error("Async Timeout {}", asyncEvent);
                 }
             }
 
             @Override
             public void onError(AsyncEvent asyncEvent) {
-                logger.error("Async Error " + asyncEvent);
+                logger.error("Async Error {}", asyncEvent);
             }
 
             @Override
             public void onStartAsync(AsyncEvent asyncEvent) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Async Started " + asyncEvent);
+                    logger.debug("Async Started {}", asyncEvent);
                 }
             }
         });
@@ -180,7 +180,7 @@ public class DefaultWebService extends AbstractWebService {
                 activity.perform();
             } catch (ActivityTerminatedException e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Activity terminated: " + e.getMessage());
+                    logger.debug("Activity terminated: {}", e.getMessage());
                 }
             } catch (Exception e) {
                 sendError(activity, e);
@@ -212,7 +212,7 @@ public class DefaultWebService extends AbstractWebService {
         try {
             if (!getDefaultServletHttpRequestHandler().handleRequest(activity.getRequest(), activity.getResponse())) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("No translet mapped for " + activity.getFullRequestName());
+                    logger.trace("No translet mapped for {}", activity.getFullRequestName());
                 }
                 sendError(activity.getResponse(), HttpServletResponse.SC_NOT_FOUND, null);
             }
@@ -229,7 +229,7 @@ public class DefaultWebService extends AbstractWebService {
         } else {
             t = e;
         }
-        logger.error("Error occurred while processing request: " + activity.getFullRequestName(), t);
+        logger.error("Error occurred while processing request: {}", activity.getFullRequestName(), t);
         if (!activity.getResponse().isCommitted()) {
             Throwable cause = ExceptionUtils.getRootCause(t);
             if (cause instanceof RequestMethodNotAllowedException) {
@@ -258,7 +258,7 @@ public class DefaultWebService extends AbstractWebService {
                 response.sendError(sc);
             }
         } catch (IOException e) {
-            logger.error("Failed to send an error response to the client with status code " + sc, e);
+            logger.error("Failed to send an error response to the client with status code {}", sc, e);
         }
     }
 
@@ -285,13 +285,13 @@ public class DefaultWebService extends AbstractWebService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not respond to requests");
+                    logger.debug("{} is paused, so did not respond to requests", getServiceName());
                 }
                 sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Paused");
                 return true;
             } else if (pauseTimeout == -2L) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is not yet started");
+                    logger.debug("{} is not yet started", getServiceName());
                 }
                 sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
                 return true;

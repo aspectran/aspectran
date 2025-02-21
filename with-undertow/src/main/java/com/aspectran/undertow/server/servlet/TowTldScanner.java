@@ -77,14 +77,14 @@ public class TowTldScanner extends TldScanner {
                             scanDir(dir);
                         }
                     } else {
-                        logger.warn("Unrecognized TLD Resource: " + url);
+                        logger.warn("Unrecognized TLD Resource: {}", url);
                     }
                 }
             }
         }
         Map<String, TldResourcePath> result = getUriTldResourcePathMap();
         for (Map.Entry<String, TldResourcePath> entry : result.entrySet()) {
-            logger.debug("Found TLD: " + entry.getKey() + " [" + entry.getValue().getUrl() + "]");
+            logger.debug("Found TLD: {} [{}]", entry.getKey(), entry.getValue().getUrl());
         }
     }
 
@@ -131,7 +131,7 @@ public class TowTldScanner extends TldScanner {
             }
         }
         if (!found && logger.isDebugEnabled()) {
-            logger.debug("No TLDs were found in JAR [" + jarFileUrl + "]");
+            logger.debug("No TLDs were found in JAR [{}]", jarFileUrl);
         }
     }
 

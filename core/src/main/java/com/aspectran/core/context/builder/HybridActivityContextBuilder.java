@@ -86,8 +86,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             AspectranParameters aspectranParameters = getAspectranParameters();
 
             if (contextRules != null) {
-                logger.info("Building ActivityContext with context rules [" +
-                        StringUtils.joinCommaDelimitedList(contextRules) + "]");
+                logger.info("Building ActivityContext with context rules [{}]",
+                        StringUtils.joinCommaDelimitedList(contextRules));
             } else if (aspectranParameters != null) {
                 logger.info("Building ActivityContext with specified parameters");
             } else if (logger.isDebugEnabled()) {
@@ -150,7 +150,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
-            logger.info("ActivityContext build completed in " + elapsedTime + " ms");
+            logger.info("ActivityContext build completed in {} ms", elapsedTime);
 
             if (getMasterService() != null) {
                 // Timer starts only if it is driven by a service

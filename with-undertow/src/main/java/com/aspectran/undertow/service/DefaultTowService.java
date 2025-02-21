@@ -97,7 +97,7 @@ public class DefaultTowService extends AbstractTowService {
             activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Activity terminated: " + e.getMessage());
+                logger.debug("Activity terminated: {}", e.getMessage());
             }
         } catch (Exception e) {
             sendError(activity, e);
@@ -119,7 +119,7 @@ public class DefaultTowService extends AbstractTowService {
             }
         }
         if (logger.isTraceEnabled()) {
-            logger.trace("No translet mapped for " + activity.getFullRequestName());
+            logger.trace("No translet mapped for {}", activity.getFullRequestName());
         }
         sendError(activity.getExchange(), HttpStatus.NOT_FOUND, null);
     }
@@ -132,7 +132,7 @@ public class DefaultTowService extends AbstractTowService {
             t = e;
         }
         Throwable cause = ExceptionUtils.getRootCause(t);
-        logger.error("Error occurred while processing request: " + activity.getFullRequestName(), t);
+        logger.error("Error occurred while processing request: {}", activity.getFullRequestName(), t);
         if (!activity.getExchange().isComplete()) {
             if (cause instanceof RequestMethodNotAllowedException) {
                 sendError(activity.getExchange(), HttpStatus.METHOD_NOT_ALLOWED, null);
@@ -178,12 +178,12 @@ public class DefaultTowService extends AbstractTowService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not respond to requests");
+                    logger.debug("{} is paused, so did not respond to requests", getServiceName());
                 }
                 sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Paused");
                 return true;
             } else if (pauseTimeout == -2L) {
-                logger.warn(getServiceName() + " is not yet started");
+                logger.warn("{} is not yet started", getServiceName());
                 sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
                 return true;
             } else {

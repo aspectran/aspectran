@@ -202,8 +202,9 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
                         fileParameterMap.add(fieldName, fileParameter);
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
-                                    fileParameter.getFileSize() + " bytes, stored " +
+                            logger.debug("Found multipart file [{}] of size {} bytes, stored {}",
+                                    fileParameter.getFileName(),
+                                    fileParameter.getFileSize(),
                                     fileParameter.getStorageDescription());
                         }
                     }
@@ -221,8 +222,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             try {
                 value = fileItem.getString(encoding);
             } catch (UnsupportedEncodingException ex) {
-                logger.warn("Could not decode multipart item '" + fileItem.getFieldName() +
-                        "' with encoding '" + encoding + "': using platform default");
+                logger.warn("Could not decode multipart item '{}' with encoding '{}': using platform default",
+                        fileItem.getFieldName(), encoding);
                 value = fileItem.getString();
             }
         } else {

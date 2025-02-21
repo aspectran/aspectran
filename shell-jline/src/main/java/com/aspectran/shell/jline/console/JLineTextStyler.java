@@ -265,7 +265,7 @@ public class JLineTextStyler {
                                 try {
                                     color = Colors.rgbColor(style.toLowerCase());
                                 } catch (Throwable e) {
-                                    logger.warn("Unable to parse color from string \"" + style + "\"", e);
+                                    logger.warn("Unable to parse color from string \"{}\"", style, e);
                                 }
                             }
                             baseStyle = baseStyle.background(color);
@@ -280,13 +280,13 @@ public class JLineTextStyler {
                                 try {
                                     color = Colors.rgbColor(style.toLowerCase());
                                 } catch (Throwable e) {
-                                    logger.warn("Unable to parse color from string \"" + style + "\"", e);
+                                    logger.warn("Unable to parse color from string \"{}\"", style, e);
                                 }
                             }
                             baseStyle = baseStyle.foreground(color);
                         }
                         if (color == -1) {
-                            logger.warn("Unknown color code \"" + style + "\"");
+                            logger.warn("Unknown color code \"{}\"", style);
                         }
                         break;
                 }

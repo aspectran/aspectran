@@ -251,13 +251,13 @@ public abstract class AdviceActivity extends AbstractActivity {
                 handleException(aspectAdviceRule.getExceptionRule());
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    logger.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute isolated advice action {}", aspectAdviceRule, e);
                 } else {
                     if (throwable) {
                         throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        logger.error("Failed to execute advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute advice action {}", aspectAdviceRule, e);
                     }
                 }
             }
@@ -268,7 +268,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         Executable action = aspectAdviceRule.getAdviceAction();
         if (action != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Advice " + AspectAdviceRule.toString(action, aspectAdviceRule));
+                logger.debug("Advice {}", AspectAdviceRule.toString(action, aspectAdviceRule));
             }
 
             AspectAdviceRule oldAdviceRule = currentAdviceRule;
@@ -280,13 +280,13 @@ public abstract class AdviceActivity extends AbstractActivity {
                         try {
                             adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
                         } catch (Exception e) {
-                            logger.error("Failed to load advice bean " + aspectAdviceRule, e);
+                            logger.error("Failed to load advice bean {}", aspectAdviceRule, e);
                         }
                     } else if (aspectAdviceRule.getAdviceBeanId() != null) {
                         try {
                             adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
                         } catch (Exception e) {
-                            logger.error("Failed to load advice bean " + aspectAdviceRule, e);
+                            logger.error("Failed to load advice bean {}", aspectAdviceRule, e);
                         }
                     }
                     putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
@@ -309,14 +309,14 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    logger.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute isolated advice action {}", aspectAdviceRule, e);
                 } else {
                     setRaisedException(e);
                     if (throwable) {
                         throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        logger.error("Failed to execute advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute advice action {}", aspectAdviceRule, e);
                     }
                 }
             } finally {
@@ -362,7 +362,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                 Executable action = exceptionThrownRule.getAction();
                 if (action != null) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Advice " + action);
+                        logger.debug("Advice {}", action);
                     }
                     try {
                         Object resultValue = action.execute(this);

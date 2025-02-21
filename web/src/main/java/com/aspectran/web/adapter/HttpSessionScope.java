@@ -44,14 +44,14 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
     @Override /* Explicit overrides for backward compatibility with Servlet 3.x */
     public  void valueBound(HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
-            logger.debug("New HttpSessionScope bound in session " + event.getSession());
+            logger.debug("New HttpSessionScope bound in session {}", event.getSession());
         }
     }
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
-            logger.debug("HttpSessionScope removed from session " + event.getSession());
+            logger.debug("HttpSessionScope removed from session {}", event.getSession());
         }
 
         destroy();

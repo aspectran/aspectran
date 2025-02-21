@@ -130,7 +130,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         try {
             buildSchedulers();
             for (Scheduler scheduler : getSchedulers()) {
-                logger.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
+                logger.info("Starting scheduler '{}'", scheduler.getSchedulerName());
 
                 // Listener attached to jobKey
                 JobListener defaultJobListener = new ActivityJobListener(getLoggingGroup());
@@ -152,8 +152,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         try {
             for (Scheduler scheduler : getSchedulers()) {
                 if (!scheduler.isShutdown()) {
-                    logger.info("Shutting down the scheduler '" + scheduler.getSchedulerName() +
-                            "' with waitForJobsToComplete=" + isWaitOnShutdown());
+                    logger.info("Shutting down the scheduler '{}' with waitForJobsToComplete={}",
+                            scheduler.getSchedulerName(), isWaitOnShutdown());
                     scheduler.shutdown(isWaitOnShutdown());
                 }
             }

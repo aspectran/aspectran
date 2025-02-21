@@ -42,7 +42,7 @@ public class AspectranConfigurator extends Configurator {
         }
         T endpoint = context.getBeanRegistry().getBean(endpointClass);
         if (logger.isTraceEnabled()) {
-            logger.trace("Using @ServerEndpoint singleton " + endpoint);
+            logger.trace("Using @ServerEndpoint singleton {}", endpoint);
         }
         return endpoint;
     }

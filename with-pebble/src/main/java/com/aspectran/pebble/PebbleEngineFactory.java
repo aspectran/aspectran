@@ -130,12 +130,13 @@ public class PebbleEngineFactory implements ActivityContextAware {
                 // Register default template loaders.
                 Loader<?> stringLoader = new StringLoader();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
+                    logger.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: {}",
+                            stringLoader);
                 }
                 return stringLoader;
             case 1:
                 if (logger.isDebugEnabled()) {
-                    logger.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
+                    logger.debug("One Pebble Engine Template Loader registered: {}", templateLoaders[0]);
                 }
                 return templateLoaders[0];
             default:
@@ -144,7 +145,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
                 Collections.addAll(defaultLoadingStrategies, templateLoaders);
                 Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
+                    logger.debug("Multiple Pebble Engine Template Loader registered: {}", delegatingLoader);
                 }
                 return delegatingLoader;
         }
@@ -159,7 +160,8 @@ public class PebbleEngineFactory implements ActivityContextAware {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (logger.isDebugEnabled()) {
-                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
+                logger.debug("Template loader path [{}] resolved to class path [{}]",
+                        templateLoaderPath, basePackagePath);
             }
             ClasspathLoader loader = new ClasspathLoader(context.getAvailableActivity().getClassLoader());
             loader.setPrefix(basePackagePath);
@@ -168,7 +170,8 @@ public class PebbleEngineFactory implements ActivityContextAware {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             String prefix = file.getAbsolutePath();
             if (logger.isDebugEnabled()) {
-                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+                logger.debug("Template loader path [{}] resolved to file path [{}]",
+                        templateLoaderPath, prefix);
             }
             FileLoader loader = new FileLoader();
             loader.setPrefix(prefix);
@@ -177,7 +180,8 @@ public class PebbleEngineFactory implements ActivityContextAware {
             File file = new File(context.getApplicationAdapter().getBasePathString(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
             if (logger.isDebugEnabled()) {
-                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+                logger.debug("Template loader path [{}] resolved to file path [{}]",
+                        templateLoaderPath, prefix);
             }
             FileLoader loader = new FileLoader();
             loader.setPrefix(prefix);

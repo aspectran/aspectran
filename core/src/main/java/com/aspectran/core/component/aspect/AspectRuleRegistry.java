@@ -76,7 +76,7 @@ public class AspectRuleRegistry extends AbstractComponent {
             throw new IllegalArgumentException("aspectRule must not be null");
         }
         if (logger.isTraceEnabled()) {
-            logger.trace("add AspectRule " + aspectRule);
+            logger.trace("add AspectRule {}", aspectRule);
         }
         AspectRule existing = aspectRuleMap.get(aspectRule.getId());
         if (existing == null) {

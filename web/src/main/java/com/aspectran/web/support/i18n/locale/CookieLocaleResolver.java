@@ -243,13 +243,13 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
                 } else {
                     // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid locale cookie '" + cookieName +
-                                "': [" + value + "] due to: " + ex.getMessage());
+                        logger.debug("Ignoring invalid locale cookie '{}': [{}] due to: {}",
+                                cookieName, value, ex.getMessage());
                     }
                 }
             }
             if (locale != null && logger.isTraceEnabled()) {
-                logger.trace("Parsed cookie value [" + cookie.getValue() + "] into locale '" + locale + "'");
+                logger.trace("Parsed cookie value [{}] into locale '{}'", cookie.getValue(), locale);
             }
         }
         return locale;
@@ -272,13 +272,14 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
                 } else {
                     // Lenient handling (e.g. error dispatch): ignore locale/timezone parse exceptions
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Ignoring invalid time zone cookie '" + cookieName +
-                                "': [" + value + "] due to: " + ex.getMessage());
+                        logger.debug("Ignoring invalid time zone cookie '{}': [{}] due to: {}",
+                                cookieName, value, ex.getMessage());
                     }
                 }
             }
             if (timeZone != null && logger.isTraceEnabled()) {
-                logger.trace("Parsed cookie value [" + cookie.getValue() + "] into time zone '" + timeZone.getID() + "'");
+                logger.trace("Parsed cookie value [{}] into time zone '{}'",
+                        cookie.getValue(), timeZone.getID());
             }
         }
         return timeZone;

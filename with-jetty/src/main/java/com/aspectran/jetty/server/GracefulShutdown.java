@@ -85,8 +85,8 @@ final class GracefulShutdown {
             logger.info("Graceful shutdown complete");
             callback.shutdownComplete(GracefulShutdownResult.IDLE);
         } else {
-            logger.info("Graceful shutdown aborted with " + activeRequests +
-                    " request" + (activeRequests == 1 ? "" : "s") + " still active");
+            logger.info("Graceful shutdown aborted with {} request{} still active",
+                    activeRequests, (activeRequests == 1 ? "" : "s"));
             callback.shutdownComplete(GracefulShutdownResult.REQUESTS_ACTIVE);
         }
     }

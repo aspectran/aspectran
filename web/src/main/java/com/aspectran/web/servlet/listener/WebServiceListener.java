@@ -50,7 +50,7 @@ public class WebServiceListener implements ServletContextListener {
             webService = DefaultWebServiceBuilder.build(event.getServletContext());
             webService.start();
 
-            logger.info("Initialized " + getMyName());
+            logger.info("Initialized {}", getMyName());
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);
         }
@@ -62,7 +62,7 @@ public class WebServiceListener implements ServletContextListener {
             webService.stop();
             webService = null;
 
-            logger.info("Destroyed " + getMyName());
+            logger.info("Destroyed {}", getMyName());
         }
     }
 

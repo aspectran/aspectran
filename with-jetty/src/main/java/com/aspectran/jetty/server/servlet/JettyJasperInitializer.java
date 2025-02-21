@@ -57,7 +57,7 @@ public class JettyJasperInitializer extends JasperInitializer implements Activit
 
     public void setTldResources(String[] resourcesToTldScan) throws IOException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Specified TLD resources: " + Arrays.toString(resourcesToTldScan));
+            logger.debug("Specified TLD resources: {}", Arrays.toString(resourcesToTldScan));
         }
         List<URL> tldResources = new ArrayList<>();
         if (resourcesToTldScan != null) {

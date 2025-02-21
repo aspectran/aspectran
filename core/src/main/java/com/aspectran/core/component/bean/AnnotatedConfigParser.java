@@ -141,11 +141,11 @@ public class AnnotatedConfigParser {
 
         if (!configurableBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing bean rules for annotated configurations: " + configurableBeanRules.size());
+                logger.debug("Parsing bean rules for annotated configurations: {}", configurableBeanRules.size());
             }
             for (BeanRule beanRule : configurableBeanRules) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("configurableBeanRule " + beanRule);
+                    logger.trace("configurableBeanRule {}", beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
                     parseConfigurableBean(beanRule);
@@ -158,11 +158,11 @@ public class AnnotatedConfigParser {
 
         if (!idBasedBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing for ID-based bean rules: " + idBasedBeanRules.size());
+                logger.debug("Parsing for ID-based bean rules: {}", idBasedBeanRules.size());
             }
             for (BeanRule beanRule : idBasedBeanRules) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("idBasedBeanRule " + beanRule);
+                    logger.trace("idBasedBeanRule {}", beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
                     parseConstructorAutowire(beanRule);
@@ -174,13 +174,13 @@ public class AnnotatedConfigParser {
 
         if (!typeBasedBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Parsing for type-based bean rules: " + typeBasedBeanRules.size());
+                logger.debug("Parsing for type-based bean rules: {}", typeBasedBeanRules.size());
             }
             for (Set<BeanRule> set : typeBasedBeanRules) {
                 for (BeanRule beanRule : set) {
                     if (!beanRule.isFactoryOffered()) {
                         if (logger.isTraceEnabled()) {
-                            logger.trace("typeBasedBeanRule " + beanRule);
+                            logger.trace("typeBasedBeanRule {}", beanRule);
                         }
                         parseConstructorAutowire(beanRule);
                         parseFieldAutowire(beanRule);

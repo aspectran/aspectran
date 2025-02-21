@@ -38,7 +38,7 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
     public boolean callback(long dwCtrlType) {
         if ((int)dwCtrlType == CTRL_CLOSE_EVENT) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Win32ConsoleCtrlHandler receives event " + dwCtrlType);
+                logger.debug("Win32ConsoleCtrlHandler receives event {}", dwCtrlType);
             }
             hook.start();
             while (true) {

@@ -309,7 +309,7 @@ public class BeanRuleRegistry {
                 saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
             }
             if (logger.isTraceEnabled()) {
-                logger.trace("add BeanRule " + beanRule);
+                logger.trace("add BeanRule {}", beanRule);
             }
         }
     }

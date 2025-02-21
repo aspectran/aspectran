@@ -65,7 +65,7 @@ public class TransletInterpreter extends InstantActivitySupport {
         TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestName);
         if (transletRule == null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("No translet " + requestName);
+                logger.debug("No translet {}", requestName);
             }
 
             new JsonWriter(translet.getResponseAdapter().getWriter())
@@ -126,7 +126,7 @@ public class TransletInterpreter extends InstantActivitySupport {
             requestName = COMMANDS_PREFIX + requestName;
             instantActivity(requestName);
         } catch (Exception e) {
-            logger.error("Failed to execute translet: " + requestName, e);
+            logger.error("Failed to execute translet: {}", requestName, e);
         }
     }
 

@@ -68,7 +68,7 @@ public class CustomTransformResponse implements Response {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Response " + transformer);
+            logger.debug("Response {}", transformer);
         }
 
         try {

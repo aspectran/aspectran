@@ -133,8 +133,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 try {
                                     args[i] = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    logger.error("No bean found for autowiring target " + autowireTargetRules[i] +
-                                            " of " + ctorAutowireRule, e);
+                                    logger.error("No bean found for autowiring target {} of {}",
+                                            autowireTargetRules[i], ctorAutowireRule, e);
                                     throw new BeanCreationException("Could not autowire constructor: " +
                                             ctorAutowireRule, beanRule, e);
                                 }
@@ -143,8 +143,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     args[i] = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                     args[i] = null;
-                                    logger.warn("No bean found for autowiring target " + autowireTargetRules[i] +
-                                            " of " + ctorAutowireRule + "; Cause: " + e);
+                                    logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                            autowireTargetRules[i], ctorAutowireRule, e.toString());
                                 }
                             }
                         }
@@ -267,8 +267,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 try {
                                     value = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    logger.error("No bean found for autowiring target " + autowireTargetRule +
-                                            " of " + autowireRule, e);
+                                    logger.error("No bean found for autowiring target {} of {}",
+                                            autowireTargetRule, autowireRule, e);
                                     throw new BeanCreationException("Could not autowire field: " +
                                             autowireRule, beanRule, e);
                                 }
@@ -277,8 +277,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     value = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                     value = null;
-                                    logger.warn("No bean found for autowiring target " + autowireTargetRule  +
-                                            " of " + autowireRule + "; Cause: " + e);
+                                    logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                            autowireTargetRule, autowireRule, e.toString());
                                 }
                             }
                         }
@@ -312,8 +312,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     try {
                                         args[i] = activity.getBean(type, qualifier);
                                     } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                        logger.error("No bean found for autowiring target " +
-                                                autowireTargetRules[i] + " of " + autowireRule, e);
+                                        logger.error("No bean found for autowiring target {} of {}",
+                                                autowireTargetRules[i], autowireRule, e);
                                         throw new BeanCreationException("Could not autowire method: " +
                                                 autowireRule, beanRule, e);
                                     }
@@ -322,8 +322,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                         args[i] = activity.getBean(type, qualifier);
                                     } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                         args[i] = null;
-                                        logger.warn("No bean found for autowiring target " +
-                                                autowireTargetRules[i] + " of " + autowireRule + "; Cause: " + e);
+                                        logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                                autowireTargetRules[i], autowireRule, e.toString());
                                     }
                                 }
                             }

@@ -266,7 +266,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
                 localeMap.put(locale, bundle);
                 return bundle;
             } catch (MissingResourceException ex) {
-                logger.warn("ResourceBundle [" + basename + "] not found for MessageSource: " + ex.getMessage());
+                logger.warn("ResourceBundle [{}] not found for MessageSource: {}", basename, ex.getMessage());
 
                 // Assume bundle not found
                 // -> do NOT throw the exception to allow for checking parent message source.

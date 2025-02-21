@@ -156,7 +156,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Commit transaction for " + ObjectUtils.simpleIdentityToString(sqlSession));
+            logger.debug("Commit transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.commit();
@@ -192,7 +192,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Rollback transaction for " + ObjectUtils.simpleIdentityToString(sqlSession));
+            logger.debug("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession.rollback();
@@ -238,7 +238,7 @@ public class SqlSessionTxAdvice {
         sqlSession.close();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Close " + ObjectUtils.simpleIdentityToString(sqlSession));
+            logger.debug("Close {}", ObjectUtils.simpleIdentityToString(sqlSession));
         }
 
         sqlSession = null;

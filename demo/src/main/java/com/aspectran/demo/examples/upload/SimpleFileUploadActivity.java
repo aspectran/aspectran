@@ -64,7 +64,7 @@ public class SimpleFileUploadActivity {
     private void addUploadedFile(UploadedFile uploadedFile) {
         synchronized (uploadedFiles) {
             uploadedFiles.put(uploadedFile.getKey(), uploadedFile);
-            logger.debug("Uploaded File " + uploadedFile);
+            logger.debug("Uploaded File {}", uploadedFile);
 
             if (uploadedFiles.size() > this.maxFiles) {
                 Iterator<String> it = uploadedFiles.keySet().iterator();
@@ -72,7 +72,7 @@ public class SimpleFileUploadActivity {
                 while (cnt-- > 0) {
                     if (it.hasNext()) {
                         UploadedFile removedFile = uploadedFiles.remove(it.next());
-                        logger.debug("Remove Old File " + removedFile);
+                        logger.debug("Remove Old File {}", removedFile);
                     }
                 }
             }

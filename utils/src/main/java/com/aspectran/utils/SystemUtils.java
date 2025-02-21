@@ -45,10 +45,8 @@ public abstract class SystemUtils {
             return System.getProperty(key);
         } catch (Exception ex) { // AccessControlException is deprecated for removal
             if (logger.isDebugEnabled()) {
-                logger.debug(String.format(
-                        "Caught AccessControlException when accessing system property [%s]; " +
-                                "its value will be returned [null]. Reason: %s",
-                        key, ex.getMessage()));
+                logger.debug("Caught AccessControlException when accessing system property [{}]; " +
+                        "its value will be returned [null]. Reason: {}", key, ex.getMessage());
             }
             return null;
         }
@@ -65,9 +63,8 @@ public abstract class SystemUtils {
             return System.clearProperty(key);
         } catch (Exception ex) { // AccessControlException is deprecated for removal
             if (logger.isDebugEnabled()) {
-                logger.debug(String.format(
-                    "Caught AccessControlException when accessing system property [%s]. Reason: %s",
-                    key, ex.getMessage()));
+                logger.debug("Caught AccessControlException when accessing system property [{}]. Reason: {}",
+                        key, ex.getMessage());
             }
             return null;
         }

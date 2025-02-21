@@ -66,7 +66,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             throw new IllegalArgumentException("name must not be null");
         }
         if (!isAcceptable(name)) {
-            logger.error("Unavailable translet: " + name);
+            logger.error("Unavailable translet: {}", name);
             return null;
         }
 
@@ -82,7 +82,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Activity terminated: " + e.getMessage());
+                logger.debug("Activity terminated: {}", e.getMessage());
             }
         } catch (Exception e) {
             Throwable t;
@@ -102,7 +102,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused, so did not execute translet: " + name);
+                    logger.debug("{} is paused, so did not execute translet: {}", getServiceName(), name);
                 }
                 return true;
             } else {

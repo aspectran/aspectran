@@ -62,7 +62,7 @@ public abstract class AbstractComponent implements Component {
             initialized = true;
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Initialized " + getComponentName());
+                logger.debug("Initialized {}", getComponentName());
             }
         }
     }
@@ -81,10 +81,10 @@ public abstract class AbstractComponent implements Component {
             try {
                 doDestroy();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Destroyed " + getComponentName());
+                    logger.debug("Destroyed {}", getComponentName());
                 }
             } catch (Exception e) {
-                logger.warn("Failed to destroy " + getComponentName(), e);
+                logger.warn("Failed to destroy {}", getComponentName(), e);
             } finally {
                 destroying = false;
             }

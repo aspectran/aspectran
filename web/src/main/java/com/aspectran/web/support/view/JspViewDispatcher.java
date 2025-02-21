@@ -78,7 +78,7 @@ public class JspViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to " + jspPath);
+                logger.debug("Dispatching to {}", jspPath);
             }
 
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
@@ -86,7 +86,7 @@ public class JspViewDispatcher extends AbstractViewDispatcher {
             requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
-                logger.warn("Resource file [" + jspPath + "] not found");
+                logger.warn("Resource file [{}] not found", jspPath);
             }
         } catch (Exception e) {
             activity.setRaisedException(e);

@@ -184,7 +184,7 @@ public class DefaultCoreService extends AbstractCoreService {
                 fileLocker.release();
                 fileLocker = null;
             } catch (Exception e) {
-                logger.warn("Unable to release singleton lock: " + e);
+                logger.warn("Unable to release singleton lock; {}", e.toString());
             }
         }
     }

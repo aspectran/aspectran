@@ -83,8 +83,8 @@ public class CommandExecutor {
 
         if (isolated.get()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Holds '" + commandName + "' command until the end of the command " +
-                        "requiring a single execution guarantee.");
+                logger.debug("Holds '{}' command until the end of the command " +
+                        "requiring a single execution guarantee.", commandName);
             }
             return false;
         }
@@ -104,8 +104,8 @@ public class CommandExecutor {
 
         if (command.isIsolated() && queueSize.get() > 0) {
             if (logger.isDebugEnabled()) {
-                logger.debug("'" + commandName + "' command requires a single execution guarantee, " +
-                        "so it is held until another command completes");
+                logger.debug("'{}' command requires a single execution guarantee, " +
+                        "so it is held until another command completes", commandName);
             }
             return false;
         }
@@ -167,7 +167,7 @@ public class CommandExecutor {
                 return false;
             }
         } catch (Exception e) {
-            logger.error("Error executing daemon command " + command, e);
+            logger.error("Error executing daemon command {}", command, e);
             parameters.setResult("[FAILED] Error executing daemon command " + command +
                     System.lineSeparator() + ExceptionUtils.getStacktrace(e));
             return false;

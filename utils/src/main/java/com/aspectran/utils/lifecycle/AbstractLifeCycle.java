@@ -164,7 +164,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     private void setStarted() {
         state = STATE_STARTED;
         if (logger.isDebugEnabled()) {
-            logger.debug("Started " + this);
+            logger.debug("Started {}", this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStarted(this);
@@ -173,7 +173,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStarting() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Starting " + this);
+            logger.debug("Starting {}", this);
         }
         state = STATE_STARTING;
         for (Listener listener : listeners) {
@@ -183,7 +183,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStopping() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Stopping " + this);
+            logger.debug("Stopping {}", this);
         }
         state = STATE_STOPPING;
         for (Listener listener : listeners) {
@@ -194,7 +194,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     private void setStopped() {
         state = STATE_STOPPED;
         if (logger.isDebugEnabled()) {
-            logger.debug("Stopped " + this);
+            logger.debug("Stopped {}", this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStopped(this);
@@ -203,7 +203,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setFailed(Throwable th) {
         state = STATE_FAILED;
-        logger.warn(this + " - " + th, th);
+        logger.warn("{} - {}", this, th, th);
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);
         }

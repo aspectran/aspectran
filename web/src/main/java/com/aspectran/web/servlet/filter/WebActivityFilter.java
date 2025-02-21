@@ -71,14 +71,14 @@ public class WebActivityFilter implements Filter {
 
                 if (logger.isDebugEnabled()) {
                     for (WildcardPattern pattern : bypassPatterns.getPatterns()) {
-                        logger.debug(pattern + " is bypassed by " + getMyName() + " to servlet '" +
-                                defaultHandler.getDefaultServletName() + "'");
+                        logger.debug("{} is bypassed by {} to servlet '{}'",
+                                pattern, getMyName(), defaultHandler.getDefaultServletName());
                     }
                 }
             }
         }
 
-        logger.info("Initialized " + getMyName());
+        logger.info("Initialized {}", getMyName());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class WebActivityFilter implements Filter {
 
     @Override
     public void destroy() {
-        logger.info("Destroyed " + getMyName());
+        logger.info("Destroyed {}", getMyName());
     }
 
     @NonNull

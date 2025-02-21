@@ -189,7 +189,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         ManagedSession session;
         session = doComputeIfAbsent(id, k -> {
             if (logger.isTraceEnabled()) {
-                logger.trace("Session " + id + " not found locally in " + this + ", attempting to load");
+                logger.trace("Session {} not found locally in {}, attempting to load", id, this);
             }
             try {
                 ManagedSession stored = loadSession(id);
@@ -200,7 +200,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     loaded.set(true);
                 } else {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session " + id + " not loaded by " + storeName);
+                        logger.trace("Session {} not loaded by {}", id, storeName);
                     }
                 }
                 return stored;
@@ -214,7 +214,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         }
         if (!forDeleting && session != null && loaded.get()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Reside evicted session id=" + session.getId() + " into " + thisName);
+                logger.debug("Reside evicted session id={} into {}", session.getId(), thisName);
             }
             sessionManager.onSessionResided(session);
         }
@@ -239,7 +239,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             SessionData data = sessionStore.load(id);
             if (data != null) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Session " + id + " loaded from session store " + sessionStore);
+                    logger.trace("Session {} loaded from session store {}", id, sessionStore);
                 }
                 return new ManagedSession(sessionManager, data, false);
             } else {
@@ -261,7 +261,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw new IllegalArgumentException("id must not be null");
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Create new session id=" + id);
+            logger.debug("Create new session id={}", id);
         }
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
         ManagedSession session = new ManagedSession(sessionManager, data, true);
@@ -291,7 +291,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     SessionData data = sessionStore.load(id);
                     if (data != null) {
                         if (logger.isTraceEnabled()) {
-                            logger.trace("Reload session data for session id=" + id + " from " + storeName);
+                            logger.trace("Reload session data for session id={} from {}", id, storeName);
                         }
                         session.setSessionData(data);
                     }
@@ -323,13 +323,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     sessionStore.save(id, session.getSessionData());
                 } else {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("No SessionStore, session in " + thisName + " only id=" + id);
+                        logger.trace("No SessionStore, session in {} only id={}", thisName, id);
                     }
                 }
                 // if we evict on session exit, boot it from the cache
                 if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Eviction on request exit id=" + id);
+                        logger.trace("Eviction on request exit id={}", id);
                     }
                     doDelete(session.getId());
                     session.setResident(false);
@@ -387,7 +387,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
             if (logger.isTraceEnabled()) {
-                logger.trace("Session " + id + " deleted in " + storeName + ": " + deleted);
+                logger.trace("Session {} deleted in {}: {}", id, storeName, deleted);
             }
         }
         // delete it from the session object store
@@ -467,7 +467,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 sessionStore.save(newId, session.getSessionData()); //save the session data with the new id
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Session id " + oldId + " swapped for new id " + newId);
+                logger.debug("Session id {} swapped for new id {}", oldId, newId);
             }
         }
     }
@@ -481,7 +481,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             return candidates;
         }
         if (logger.isTraceEnabled()) {
-            logger.trace("SessionStore checking expiration on " + candidates);
+            logger.trace("SessionStore checking expiration on {}", candidates);
         }
         Set<String> allCandidates = sessionStore.getExpired(candidates);
         if (allCandidates != null) {
@@ -518,7 +518,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             return false;
         }
         if (logger.isTraceEnabled()) {
-            logger.trace("Checking for idle session id=" +  session.getId());
+            logger.trace("Checking for idle session id={}", session.getId());
         }
         try (AutoLock ignored = session.lock()) {
             if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
@@ -526,7 +526,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Evict idle session id=" + session.getId() + " from " + thisName);
+                    logger.debug("Evict idle session id={} from {}", session.getId(), thisName);
                 }
                 // save before evicting
                 if (sessionStore != null && (isClusterEnabled() || isSaveOnInactiveEviction())) {
@@ -537,7 +537,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 return true;
             }
         } catch (Exception e) {
-            logger.warn("Passivation of idle session " + session.getId() + " failed", e);
+            logger.warn("Passivation of idle session {} failed", session.getId(), e);
         }
         return false;
     }

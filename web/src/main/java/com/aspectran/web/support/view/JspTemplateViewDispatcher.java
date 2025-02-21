@@ -99,7 +99,7 @@ public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to " + template + " for " + jspPath);
+                logger.debug("Dispatching to {} for {}", template, jspPath);
             }
 
             ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
@@ -107,7 +107,7 @@ public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
             requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
-                logger.warn("Resource file [" + template + "] not found");
+                logger.warn("Resource file [{}] not found", template);
             }
         } catch (Exception e) {
             activity.setRaisedException(e);

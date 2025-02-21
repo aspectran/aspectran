@@ -119,7 +119,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             throw new IllegalArgumentException("name must not be null");
         }
         if (!isAcceptable(name)) {
-            logger.error("Unavailable translet: " + name);
+            logger.error("Unavailable translet: {}", name);
             return null;
         }
 
@@ -136,7 +136,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Activity terminated: " + e.getMessage());
+                logger.debug("Activity terminated: {}", e.getMessage());
             }
         } catch (Exception e) {
             Throwable t;
@@ -240,7 +240,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is paused");
+                    logger.debug("{} is paused", getServiceName());
                 }
                 return true;
             } else {

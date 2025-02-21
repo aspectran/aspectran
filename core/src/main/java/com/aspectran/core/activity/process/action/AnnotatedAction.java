@@ -178,8 +178,8 @@ public class AnnotatedAction implements Executable {
                 }
                 if (thrown != null) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " +
-                            thrown.getMessage(), thrown);
+                        logger.debug("Failed to bind argument {}; Cause: {}",
+                                parameterBindingRule, thrown.getMessage(), thrown);
                     }
                 }
             }

@@ -77,7 +77,7 @@ public class TemplateRuleRegistry extends AbstractComponent {
         templateRuleMap.put(templateRule.getId(), templateRule);
 
         if (logger.isTraceEnabled()) {
-            logger.trace("add TemplateRule " + templateRule);
+            logger.trace("add TemplateRule {}", templateRule);
         }
     }
 

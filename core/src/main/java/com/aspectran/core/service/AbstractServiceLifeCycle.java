@@ -118,11 +118,11 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         synchronized (lock) {
             Assert.state(!active, getServiceName() + " has already started");
 
-            logger.info("Starting " + getServiceName());
+            logger.info("Starting {}", getServiceName());
 
             doStart();
 
-            logger.info("Started " + getServiceName());
+            logger.info("Started {}", getServiceName());
 
             for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.start();
@@ -141,7 +141,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         synchronized (lock) {
             if (!active) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " is not running, will do nothing");
+                    logger.debug("{} is not running, will do nothing", getServiceName());
                 }
                 return;
             }
@@ -160,13 +160,13 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             }
 
             try {
-                logger.info("Stopping " + getServiceName());
+                logger.info("Stopping {}", getServiceName());
 
                 doStop();
 
-                logger.info("Stopped " + getServiceName());
+                logger.info("Stopped {}", getServiceName());
             } catch (Exception e) {
-                logger.error(getServiceName() + " did not stop normally", e);
+                logger.error("{} did not stop normally", getServiceName(), e);
             }
 
             active = false;
@@ -179,7 +179,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             Assert.state(isRootService(), "Must be a root service to restart");
             Assert.state(active, getServiceName() + " is not yet started");
 
-            logger.info("Restarting " + getServiceName());
+            logger.info("Restarting {}", getServiceName());
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
@@ -203,7 +203,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             doStart();
             active = true;
 
-            logger.info("Restarted " + getServiceName());
+            logger.info("Restarted {}", getServiceName());
 
             for (ServiceLifeCycle serviceLifeCycle : subServices) {
                 serviceLifeCycle.start();
@@ -224,7 +224,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void pause() throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn(getServiceName() + " is not yet started");
+                logger.warn("{} is not yet started", getServiceName());
                 return;
             }
 
@@ -236,7 +236,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused();
             }
 
-            logger.info("Pause " + getServiceName());
+            logger.info("Pause {}", getServiceName());
         }
     }
 
@@ -244,7 +244,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void pause(long timeout) throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn(getServiceName() + " is not yet started");
+                logger.warn("{} is not yet started", getServiceName());
                 return;
             }
 
@@ -256,7 +256,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.paused(timeout);
             }
 
-            logger.info("Pause " + getServiceName() + ", resume after " + timeout + "ms");
+            logger.info("Pause {}, resume after {}ms", getServiceName(), timeout);
         }
     }
 
@@ -264,7 +264,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void resume() throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn(getServiceName() + " is not yet started");
+                logger.warn("{} is not yet started", getServiceName());
                 return;
             }
 
@@ -276,7 +276,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 serviceStateListener.resumed();
             }
 
-            logger.info("Resume " + getServiceName());
+            logger.info("Resume {}", getServiceName());
         }
     }
 

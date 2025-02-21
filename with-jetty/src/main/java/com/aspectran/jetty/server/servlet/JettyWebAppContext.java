@@ -91,7 +91,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             }
             super.setWar(path.toString());
         } catch (Exception e) {
-            logger.error("Failed to establish WAR for webapp: " + war, e);
+            logger.error("Failed to establish WAR for webapp: {}", war, e);
         }
     }
 
@@ -104,7 +104,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             }
             super.setTempDirectory(path.toFile());
         } catch (Exception e) {
-            logger.error("Failed to establish scratch directory: " + tempDirectory, e);
+            logger.error("Failed to establish scratch directory: {}", tempDirectory, e);
         }
     }
 

@@ -69,7 +69,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
         String remoteAddr = req.getRemoteAddr();
         if (!isAllowedAddress(remoteAddr)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Access Denied: " + remoteAddr);
+                logger.debug("Access Denied: {}", remoteAddr);
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

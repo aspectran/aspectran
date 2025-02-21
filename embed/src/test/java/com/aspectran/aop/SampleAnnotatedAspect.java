@@ -59,7 +59,7 @@ public class SampleAnnotatedAspect {
     public String helloWorld() {
         String msg = "Before: Hello, World.";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }
@@ -68,7 +68,7 @@ public class SampleAnnotatedAspect {
     public String goodbye() {
         String msg = "After: Goodbye.";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }
@@ -77,7 +77,7 @@ public class SampleAnnotatedAspect {
     public String seeYouAgain() {
         String msg = "Finally: See you again.";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }
@@ -86,7 +86,7 @@ public class SampleAnnotatedAspect {
     public String around() {
         String msg = "Around Method: Hi~~~~~~~~~~~~~~";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }
@@ -95,7 +95,7 @@ public class SampleAnnotatedAspect {
     public String oops() {
         String msg = "ExceptionThrown: Oops!!!!!!!!!!!!!!!";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }
@@ -104,7 +104,7 @@ public class SampleAnnotatedAspect {
     public String oopsGlobal() {
         String msg = "ExceptionThrown: Global Oops!!!!!!!!!!!!!!!";
 
-        logger.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: {}", msg);
 
         return msg;
     }

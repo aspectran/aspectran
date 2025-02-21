@@ -96,7 +96,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         if (maxActiveSessions > 0 && getStatistics().getNumberOfActives() >= maxActiveSessions) {
             getStatistics().sessionRejected();
             if (logger.isDebugEnabled()) {
-                logger.debug("Reject session id=" + id + "; Exceeded maximum number of sessions allowed");
+                logger.debug("Reject session id={}; Exceeded maximum number of sessions allowed", id);
             }
             throw new MaxSessionsExceededException(id, maxActiveSessions);
         }
@@ -127,7 +127,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                 if (restoredSessions > 0) {
                     getStatistics().sessionCreated(restoredSessions);
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Restored " + restoredSessions + " sessions from " + getSessionStoreName());
+                        logger.debug("Restored {} sessions from {}", restoredSessions, getSessionStoreName());
                     }
                 }
             }
@@ -149,7 +149,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                             try {
                                 session.removeAttribute(name);
                             } catch (Exception e) {
-                                logger.warn("Failed to remove non-persistent attribute: " + name, e);
+                                logger.warn("Failed to remove non-persistent attribute: {}", name, e);
                             }
                         }
                     }
@@ -165,7 +165,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                                         session.onSessionAttributeUpdate(name, oldValue, null);
                                     }
                                 } catch (Exception e) {
-                                    logger.warn("Failed to remove non-persistent attribute: " + name, e);
+                                    logger.warn("Failed to remove non-persistent attribute: {}", name, e);
                                 }
                             }
                         }
@@ -173,7 +173,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     try {
                         getSessionStore().save(session.getId(), session.getSessionData());
                     } catch (Exception e) {
-                        logger.warn("Failed to save session data of session id=" + session.getId(), e);
+                        logger.warn("Failed to save session data of session id={}", session.getId(), e);
                     }
                     doDelete(session.getId()); // remove from memory
                 } else {

@@ -46,7 +46,7 @@ public class SessionInactivityTimer {
             @Override
             public void onTimeoutExpired() {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Timer expired for session " + session.getId());
+                    logger.trace("Timer expired for session {}", session.getId());
                 }
                 long now = System.currentTimeMillis();
                 try (AutoLock ignored = session.lock()) {
@@ -54,7 +54,7 @@ public class SessionInactivityTimer {
                         return; // session can't expire or be idle if there is a request in it
                     }
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Inspecting session " + session.getId() + ", valid=" + session.isValid());
+                        logger.trace("Inspecting session {}, valid={}", session.getId(), session.isValid());
                     }
                     if (!session.isValid()) {
                         return; // do nothing, session is no longer valid
@@ -86,12 +86,12 @@ public class SessionInactivityTimer {
     public void schedule(long time) {
         if (time >= 0) {
             if (logger.isTraceEnabled()) {
-                logger.trace("(Re)starting timer for session " + session.getId() + " at " + time + "ms");
+                logger.trace("(Re)starting timer for session {} at {}ms", session.getId(), time);
             }
             timer.schedule(time, TimeUnit.MILLISECONDS);
         } else {
             if (logger.isTraceEnabled()) {
-                logger.trace("Not starting timer for session " + session.getId());
+                logger.trace("Not starting timer for session {}", session.getId());
             }
         }
     }
@@ -99,14 +99,14 @@ public class SessionInactivityTimer {
     public void cancel() {
         timer.cancel();
         if (logger.isTraceEnabled()) {
-            logger.trace("Cancelled timer for session " + session.getId());
+            logger.trace("Cancelled timer for session {}", session.getId());
         }
     }
 
     public void destroy() {
         timer.destroy();
         if (logger.isTraceEnabled()) {
-            logger.trace("Destroyed timer for session " + session.getId());
+            logger.trace("Destroyed timer for session {}", session.getId());
         }
     }
 

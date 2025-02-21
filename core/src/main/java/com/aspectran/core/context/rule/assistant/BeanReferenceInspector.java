@@ -132,19 +132,21 @@ public class BeanReferenceInspector {
                     if (beanRules != null && beanRules.length > 1) {
                         for (RefererInfo refererInfo : refererInfoSet) {
                             if (beanId != null) {
-                                logger.error("Cannot resolve reference to bean " + refererKey +
-                                    "; Referer: " + refererInfo);
+                                logger.error("Cannot resolve reference to bean {}; Referer: {}",
+                                        refererKey, refererInfo);
                             } else {
-                                logger.error("No unique bean of type [" + beanClass + "] is defined: " +
-                                    "expected single matching bean but found " + beanRules.length + ": [" +
-                                    NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo);
+                                logger.error("No unique bean of type [{}] is defined: " +
+                                        "expected single matching bean but found {}: [{}]; Referer: {}",
+                                        beanClass, beanRules.length,
+                                        NoUniqueBeanException.getBeanDescriptions(beanRules),
+                                        refererInfo);
                             }
                             brokenReferences.put(refererInfo, refererKey);
                         }
                     } else {
                         for (RefererInfo refererInfo : refererInfoSet) {
                             if (!isStaticReference(refererInfo)) {
-                                logger.error("Cannot resolve reference: " + refererInfo);
+                                logger.error("Cannot resolve reference: {}", refererInfo);
                                 brokenReferences.put(refererInfo, null);
                             }
                         }

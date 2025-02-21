@@ -280,7 +280,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      */
     private void instantiateSingletons() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Initializing singletons in " + this);
+            logger.debug("Initializing singletons in {}", this);
         }
         for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
             instantiateSingleton(beanRule);
@@ -307,7 +307,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      */
     private void destroySingletons() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Destroying singletons in " + this);
+            logger.debug("Destroying singletons in {}", this);
         }
         singletonScope.destroy();
     }

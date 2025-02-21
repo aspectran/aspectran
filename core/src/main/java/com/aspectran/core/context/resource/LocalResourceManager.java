@@ -69,7 +69,7 @@ public class LocalResourceManager extends ResourceManager {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Non-existent or inaccessible resource location: " + resourceLocation);
+                    logger.debug("Non-existent or inaccessible resource location: {}", resourceLocation);
                 }
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
@@ -190,8 +190,8 @@ public class LocalResourceManager extends ResourceManager {
             Path workDir = Path.of(workPath);
             if (Files.isDirectory(workDir) && Files.exists(workDir)) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Sweeping " + workDir.toAbsolutePath() + File.separatorChar +
-                            WORK_RESOURCE_DIRNAME_PREFIX + "* for old resource files");
+                    logger.debug("Sweeping {}{}{}* for old resource files",
+                            WORK_RESOURCE_DIRNAME_PREFIX, workDir.toAbsolutePath(), File.separatorChar);
                 }
                 try (Stream<Path> stream = Files.walk(workDir, 1, FileVisitOption.FOLLOW_LINKS)) {
                     stream
@@ -204,16 +204,16 @@ public class LocalResourceManager extends ResourceManager {
                                     .map(Path::toFile)
                                     .forEach(file -> {
                                         if (logger.isTraceEnabled()) {
-                                            logger.trace("Delete temp resource: " + file);
+                                            logger.trace("Delete temp resource: {}", file);
                                         }
                                         file.delete();
                                     });
                             } catch (IOException e) {
-                                logger.warn("Failed to delete temp resource: " + e.getMessage());
+                                logger.warn("Failed to delete temp resource: {}", e.getMessage());
                             }
                         });
                 } catch (IOException e) {
-                    logger.warn("Inaccessible temp path: " + workPath, e);
+                    logger.warn("Inaccessible temp path: {}", workPath, e);
                 }
             }
         }

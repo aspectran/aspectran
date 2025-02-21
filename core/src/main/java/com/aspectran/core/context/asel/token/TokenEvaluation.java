@@ -338,8 +338,8 @@ public class TokenEvaluation implements TokenEvaluator {
                 return (value != null ? value : token.getDefaultValue());
             } catch (EncryptionInitializationException | EncryptionOperationNotPossibleException e) {
                 // Most of these occur when the password used for encryption is different
-                logger.error("Failed to decrypt values of encrypted properties while evaluating token " +
-                        token + "; Most of these occur when the password used for encryption is different" , e);
+                logger.error("Failed to decrypt values of encrypted properties while evaluating token {}; " +
+                        "Most of these occur when the password used for encryption is different", token, e);
                 return null;
             }
         } else if (token.getDirectiveType() == TokenDirectiveType.SYSTEM) {

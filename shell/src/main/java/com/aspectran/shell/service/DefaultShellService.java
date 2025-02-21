@@ -96,7 +96,7 @@ public class DefaultShellService extends AbstractShellService {
             activity.prepare();
         } catch (TransletNotFoundException e) {
             if (logger.isTraceEnabled()) {
-                logger.trace("No translet mapped for " + requestMethod + " " + requestName);
+                logger.trace("No translet mapped for {} {}", requestMethod, requestName);
             }
             throw e;
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class DefaultShellService extends AbstractShellService {
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Activity terminated: " + e.getMessage());
+                logger.debug("Activity terminated: {}", e.getMessage());
             }
         } catch (Exception e) {
             serviceError(activity, e);

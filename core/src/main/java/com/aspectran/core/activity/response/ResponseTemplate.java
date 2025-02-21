@@ -47,9 +47,9 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     @Override
     public void commit(Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder();
+            ToStringBuilder tsb = new ToStringBuilder("Response");
             tsb.appendForce("type", getResponseType());
-            logger.debug("Response " + tsb);
+            logger.debug(tsb.toString());
         }
     }
 

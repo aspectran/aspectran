@@ -48,7 +48,7 @@ public class ShutdownHook {
                     runTasks();
 
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Removed shutdown-hook: " + hook);
+                        logger.debug("Removed shutdown-hook: {}", hook);
                     }
                 }
             };
@@ -56,7 +56,7 @@ public class ShutdownHook {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Adding shutdown-hook task: " + task);
+            logger.debug("Adding shutdown-hook task: {}", task);
         }
 
         tasks.add(task);
@@ -74,7 +74,7 @@ public class ShutdownHook {
         // Drop the task
         if (tasks.remove(task)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Removed shutdown-hook task: " + task);
+                logger.debug("Removed shutdown-hook task: {}", task);
             }
         }
 
@@ -87,7 +87,7 @@ public class ShutdownHook {
 
     private static void registerHook(final Thread thread) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Registering shutdown-hook: " + thread);
+            logger.debug("Registering shutdown-hook: {}", thread);
         }
 
         Runtime.getRuntime().addShutdownHook(thread);
@@ -102,7 +102,7 @@ public class ShutdownHook {
 
     private static void releaseHook(final Thread thread) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Removing shutdown-hook: " + thread);
+            logger.debug("Removing shutdown-hook: {}", thread);
         }
         try {
             Runtime.getRuntime().removeShutdownHook(thread);
@@ -119,7 +119,7 @@ public class ShutdownHook {
 
     private static synchronized void runTasks() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Running all shutdown-hook tasks: " + tasks.size());
+            logger.debug("Running all shutdown-hook tasks: {}", tasks.size());
         }
 
         List<Task> list = new ArrayList<>(tasks);
@@ -128,16 +128,16 @@ public class ShutdownHook {
             Task task = iter.previous();
             if (tasks.contains(task)) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Running task [" + ++count + "/" + list.size() + "]: " + task);
+                    logger.debug("Running task [{}/{}]: {}", ++count, list.size(), task);
                 }
                 try {
                     task.run();
                 } catch (Throwable e) {
-                    logger.warn("Failed to run task: " + task, e);
+                    logger.warn("Failed to run task: {}", task, e);
                 }
             } else {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Task already run or removed [" + ++count + "/" + list.size() + "]: " + task);
+                    logger.debug("Task already run or removed [{}/{}]: {}", ++count, list.size(), task);
                 }
             }
         }

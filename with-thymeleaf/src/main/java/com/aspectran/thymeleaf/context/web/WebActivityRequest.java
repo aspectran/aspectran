@@ -105,7 +105,7 @@ public class WebActivityRequest implements IWebRequest {
 
     @Override
     public Map<String, String[]> getHeaderMap() {
-        Map<String, String[]> headerMap = new LinkedHashMap<String, String[]>(10);
+        Map<String, String[]> headerMap = new LinkedHashMap<>(10);
         requestAdapter.getHeaderMap().forEach((key, value)
             -> headerMap.put(key, value.toArray(new String[0])));
         return Collections.unmodifiableMap(headerMap);

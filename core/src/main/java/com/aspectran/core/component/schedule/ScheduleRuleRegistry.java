@@ -83,7 +83,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
 
         if (logger.isTraceEnabled()) {
-            logger.trace("add ScheduleRule " + scheduleRule);
+            logger.trace("add ScheduleRule {}", scheduleRule);
         }
     }
 
