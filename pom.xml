@@ -109,8 +109,8 @@
         <main.basedir>${project.basedir}</main.basedir>
         <automatic.module.name />
 
-        <compiler.source>17</compiler.source>
-        <compiler.target>17</compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
@@ -290,8 +290,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${compiler.source}</source>
-                    <target>${compiler.target}</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
@@ -345,7 +345,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>${compiler.source}</source>
+                    <source>${maven.compiler.source}</source>
                     <doctitle>${javadoc.title}</doctitle>
                     <windowtitle>${javadoc.title}</windowtitle>
                     <locale>${javadoc.locale}</locale>
