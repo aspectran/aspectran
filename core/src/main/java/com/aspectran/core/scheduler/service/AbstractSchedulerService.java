@@ -143,7 +143,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 }
             }
         } catch (Exception e) {
-            throw new SchedulerServiceException("Could not start DefaultSchedulerService", e);
+            throw new SchedulerServiceException("Could not start " + getServiceName(), e);
         }
     }
 
@@ -159,7 +159,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
             }
             clearSchedulers();
         } catch (Exception e) {
-            throw new SchedulerServiceException("Could not shutdown DefaultSchedulerService", e);
+            throw new SchedulerServiceException("Could not shutdown " + getServiceName(), e);
         }
     }
 
@@ -180,7 +180,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 addScheduler(scheduleRule.getId(), scheduler);
             }
         } catch (Exception e) {
-            throw new SchedulerServiceException("Could not start DefaultSchedulerService", e);
+            throw new SchedulerServiceException("Could not start " + getServiceName(), e);
         }
     }
 
@@ -224,7 +224,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 .build();
     }
 
-    private Trigger createTrigger(String name, String group, @NonNull ScheduleRule scheduleRule, final int startDelaySeconds) {
+    private Trigger createTrigger(
+            String name, String group, @NonNull ScheduleRule scheduleRule, final int startDelaySeconds) {
         TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
         int startDelaySecondsToUse = startDelaySeconds;
         if (expressionParameters.getStartDelaySeconds() != null) {
