@@ -40,19 +40,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionCache.class);
 
-    /**
-     * The SessionManager related to this SessionCache
-     */
+    /** The SessionManager related to this SessionCache */
     private final AbstractSessionManager sessionManager;
 
-    /**
-     * The authoritative source of session data
-     */
+    /** The authoritative source of session data */
     private final SessionStore sessionStore;
 
-    /**
-     * Whether to support session clustering
-     */
+    /** Whether to support session clustering */
     private final boolean clusterEnabled;
 
     private final String thisName;
@@ -239,7 +233,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             SessionData data = sessionStore.load(id);
             if (data != null) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Session {} loaded from session store {}", id, sessionStore);
+                    logger.trace("Session {} loaded from {}", id, storeName);
                 }
                 return new ManagedSession(sessionManager, data, false);
             } else {

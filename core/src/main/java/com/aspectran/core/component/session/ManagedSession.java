@@ -36,11 +36,11 @@ public class ManagedSession implements Session {
 
     private final AbstractSessionManager sessionManager;
 
-    private final SessionInactivityTimer sessionInactivityTimer;
+    private final SessionInactivityTimer inactivityTimer;
 
     private SessionData sessionData;
 
-    private boolean newSession;
+    private boolean newbie;
 
     private boolean resident;
 
@@ -59,12 +59,12 @@ public class ManagedSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected ManagedSession(AbstractSessionManager sessionManager, SessionData sessionData, boolean newSession) {
+    protected ManagedSession(AbstractSessionManager sessionManager, SessionData sessionData, boolean newbie) {
         this.sessionManager = sessionManager;
-        this.sessionInactivityTimer = new SessionInactivityTimer(sessionManager, this);
+        this.inactivityTimer = new SessionInactivityTimer(sessionManager, this);
         this.sessionData = sessionData;
-        this.newSession = newSession;
-        if (newSession) {
+        this.newbie = newbie;
+        if (newbie) {
             this.sessionData.setDirty(true);
             this.requests = 1;
         }
@@ -175,7 +175,7 @@ public class ManagedSession implements Session {
                 return false;
             }
 
-            newSession = false;
+            newbie = false;
 
             long now = System.currentTimeMillis();
             sessionData.setAccessed(now);
@@ -195,7 +195,7 @@ public class ManagedSession implements Session {
             if (logger.isDebugEnabled()) {
                 logger.debug("Session {} accessed, stopping timer, active requests={}", getId(), requests);
             }
-            sessionInactivityTimer.cancel();
+            inactivityTimer.cancel();
 
             return true;
         }
@@ -223,7 +223,7 @@ public class ManagedSession implements Session {
                 sessionData.calcAndSetExpiry(now);
                 sessionData.setLastAccessed(sessionData.getAccessed());
                 sessionManager.releaseSession(this);
-                sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
+                inactivityTimer.schedule(calculateInactivityTimeout(now));
             }
         }
     }
@@ -264,7 +264,8 @@ public class ManagedSession implements Session {
                     // sessions are immortal but we want to evict after inactivity
                     time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} is immortal; evict after {} sec inactivity", getId(), evictionIdleSecs);
+                        logger.trace("Session {} is immortal; evict after {} sec inactivity",
+                                getId(), evictionIdleSecs);
                     }
                 }
             } else {
@@ -400,7 +401,7 @@ public class ManagedSession implements Session {
     public boolean isNew() {
         try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
-            return newSession;
+            return newbie;
         }
     }
 
@@ -411,7 +412,7 @@ public class ManagedSession implements Session {
     protected void setResident(boolean resident) {
         this.resident = resident;
         if (!resident) {
-            sessionInactivityTimer.destroy();
+            inactivityTimer.destroy();
         }
     }
 
@@ -445,7 +446,6 @@ public class ManagedSession implements Session {
      * @param name name of the attribute
      * @param newValue new value of the attribute
      * @param oldValue previous value of the attribute
-     * @throws IllegalStateException if no session manager can be find
      */
     protected void onSessionAttributeUpdate(String name, Object oldValue, Object newValue) {
         if (newValue == null || !newValue.equals(oldValue)) {
@@ -489,13 +489,13 @@ public class ManagedSession implements Session {
      */
     protected void checkValidForWrite() {
         if (state == State.INVALID) {
-            throw new IllegalStateException("Not valid for write: session " + this);
+            throw new IllegalStateException("Not valid for write; session " + this);
         }
         if (state == State.INVALIDATING) {
             return;  // in the process of being invalidated, listeners may try to remove attributes
         }
         if (!isResident()) {
-            throw new IllegalStateException("Not valid for write: session " + this);
+            throw new IllegalStateException("Not valid for write; session " + this);
         }
     }
 
@@ -505,13 +505,13 @@ public class ManagedSession implements Session {
      */
     protected void checkValidForRead() {
         if (state == State.INVALID) {
-            throw new IllegalStateException("Invalid for read: session " + this);
+            throw new IllegalStateException("Invalid for read; session " + this);
         }
         if (state == State.INVALIDATING) {
             return;
         }
         if (!isResident()) {
-            throw new IllegalStateException("Invalid for read: id=" + sessionData.getId() + " not resident");
+            throw new IllegalStateException("Invalid for read; session id=" + sessionData.getId() + " not resident");
         }
     }
 
@@ -526,7 +526,7 @@ public class ManagedSession implements Session {
     @Override
     public String toString() {
         try (AutoLock ignored = autoLock.lock()) {
-            ToStringBuilder tsb = new ToStringBuilder(getClass().getSimpleName() + "@" + hashCode());
+            ToStringBuilder tsb = new ToStringBuilder();
             tsb.append("id", sessionData.getId());
             tsb.append("state", state);
             tsb.append("requests", requests);
