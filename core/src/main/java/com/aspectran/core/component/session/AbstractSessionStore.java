@@ -34,7 +34,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 5; // default of 5min
+    public static final int DEFAULT_GRACE_PERIOD_SECS = 60; // default of 1min
 
     public static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
@@ -185,34 +185,32 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         // check the backing store to find other sessions
         // that expired long ago (ie cannot be actively managed by any node)
         long now = System.currentTimeMillis();
-        Set<String> expiredSessions = null;
-        try {
-            long time = 0L;
-            // if we have never checked for old expired sessions, then only find
-            // those that are very old so we don't find sessions that other nodes
-            // that are also starting up find
-            if (lastExpiryCheckTime <= 0L) {
-                time = now - getGracePeriodMillis(3);
-            } else {
-                // only do the check once every gracePeriod to avoid expensive searches,
-                // and find sessions that expired at least one gracePeriod ago
-                long gracePeriodMillis = getGracePeriodMillis(1);
-                if (now > (lastExpiryCheckTime + gracePeriodMillis)) {
-                    time = now - gracePeriodMillis;
-                }
+        Set<String> expired = null;
+
+        // if we have never checked for old expired sessions, then only find
+        // those that are very old so we don't find sessions that other nodes
+        // that are also starting up find
+        long time = 0L;
+        if (lastExpiryCheckTime <= 0L) {
+            time = now - getGracePeriodMillis(3);
+        } else {
+            // only do the check once every gracePeriod to avoid expensive searches,
+            // and find sessions that expired at least one gracePeriod ago
+            long gracePeriod = getGracePeriodMillis(1);
+            if (now > lastExpiryCheckTime + gracePeriod) {
+                time = now - gracePeriod;
             }
-            if (time > 0L) {
-                expiredSessions = doGetExpired(time);
-                for (String id : candidates) {
-                    if (!expiredSessions.contains(id) && !checkExpiry(id, time)) {
-                        expiredSessions.add(id);
-                    }
-                }
-            }
-        } finally {
-            lastExpiryCheckTime = now;
         }
-        return expiredSessions;
+        if (time > 0L) {
+            expired = doGetExpired(time);
+            for (String id : candidates) {
+                if (!expired.contains(id) && !checkExpiry(id, time)) {
+                    expired.add(id);
+                }
+            }
+            lastExpiryCheckTime = time;
+        }
+        return expired;
     }
 
     private boolean checkExpiry(String id, long time) {
@@ -232,16 +230,21 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      * @return true if the session has not yet expired, false otherwise
      */
     protected boolean checkExpiry(SessionData data, long time) {
-        return (data != null && (data.getExpiry() <= 0L || data.getExpiry() > time));
+        if (data != null) {
+            long expiry = data.getExpiry();
+            return (expiry <= 0L || expiry > time);
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Implemented by subclasses to resolve which sessions this node
+     * Implemented by subclasses to resolve which sessions this store
      * should attempt to expire.
      * @param time the upper limit of expiry times to check
-     * @return the reconciled set of session ids that this node should attempt to expire
+     * @return the reconciled set of session ids that this store should attempt to expire
      */
-    public abstract Set<String> doGetExpired (long time);
+    public abstract Set<String> doGetExpired(long time);
 
     /**
      * Implemented by subclasses to delete unmanaged sessions that expired
