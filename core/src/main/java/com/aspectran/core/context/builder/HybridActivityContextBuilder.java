@@ -116,7 +116,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             }
 
             EnvironmentProfiles environmentProfiles = null;
-            if (getMasterService().getRootService().getActivityContext() != null) {
+            if (getMasterService() != null && getMasterService().getRootService().getActivityContext() != null) {
                 environmentProfiles = getMasterService().getRootService().getActivityContext().getEnvironment().getEnvironmentProfiles();
             }
             if (environmentProfiles == null) {
