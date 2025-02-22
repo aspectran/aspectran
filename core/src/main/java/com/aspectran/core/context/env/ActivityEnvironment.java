@@ -39,6 +39,11 @@ public class ActivityEnvironment implements Environment {
     }
 
     @Override
+    public EnvironmentProfiles getEnvironmentProfiles() {
+        return environmentProfiles;
+    }
+
+    @Override
     public String[] getActiveProfiles() {
         return environmentProfiles.getActiveProfiles();
     }

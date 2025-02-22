@@ -25,6 +25,8 @@ import java.util.Iterator;
  */
 public interface Environment {
 
+    EnvironmentProfiles getEnvironmentProfiles();
+
     /**
      * Return the set of profiles explicitly made active for this environment. Profiles
      * are used for creating logical groupings of bean definitions to be registered

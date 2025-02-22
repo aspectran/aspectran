@@ -115,7 +115,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 applicationAdapter = createApplicationAdapter();
             }
 
-            EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
+            EnvironmentProfiles environmentProfiles = null;
+            if (getMasterService().getRootService().getActivityContext() != null) {
+                environmentProfiles = getMasterService().getRootService().getActivityContext().getEnvironment().getEnvironmentProfiles();
+            }
+            if (environmentProfiles == null) {
+                environmentProfiles = createEnvironmentProfiles();
+            }
 
             ActivityRuleAssistant assistant = new ActivityRuleAssistant(classLoader, applicationAdapter, environmentProfiles);
             assistant.prepare();

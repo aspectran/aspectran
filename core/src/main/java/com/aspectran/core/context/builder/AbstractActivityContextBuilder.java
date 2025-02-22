@@ -75,11 +75,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private static final String TMP_BASE_DIRNAME_PREFIX = "com.aspectran-";
 
+    private final CoreService masterService;
+
     private String basePath;
 
     private boolean ownBasePath;
-
-    private final CoreService masterService;
 
     private ContextConfig contextConfig;
 
