@@ -62,7 +62,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     public HouseKeeper(@NonNull AbstractSessionManager sessionManager, int scavengingIntervalInSecs) {
         this.sessionManager = sessionManager;
         this.scheduler = sessionManager.getScheduler();
-        this.scavengingInterval = scavengingIntervalInSecs * 1000L;
+        this.scavengingInterval = TimeUnit.SECONDS.toMillis(scavengingIntervalInSecs);
     }
 
     /**
@@ -70,7 +70,7 @@ public class HouseKeeper extends AbstractLifeCycle {
      * @return the interval (in seconds)
      */
     public int getScavengingInterval() {
-        return (int)(scavengingInterval / 1000L);
+        return (int)TimeUnit.MILLISECONDS.toSeconds(scavengingInterval);
     }
 
     /**
@@ -88,11 +88,11 @@ public class HouseKeeper extends AbstractLifeCycle {
                     if (intervalInSecs < 10) {
                         logger.warn("Short interval of {} secs for session scavenging", intervalInSecs);
                     }
-                    scavengingInterval = intervalInSecs * 1000L;
+                    scavengingInterval = TimeUnit.SECONDS.toMillis(intervalInSecs);
                     startScavenging();
                 }
             } else {
-                scavengingInterval = intervalInSecs * 1000L;
+                scavengingInterval = TimeUnit.SECONDS.toMillis(intervalInSecs);
             }
         }
     }
@@ -175,6 +175,8 @@ public class HouseKeeper extends AbstractLifeCycle {
             ToStringBuilder tsb = new ToStringBuilder(super.toString());
             tsb.append("scavengingInterval", scavengingInterval);
             return tsb + " used by " + sessionManager.getComponentName();
+        } else if (sessionManager.getWorkerName() != null) {
+            return super.toString() + "(" + sessionManager.getWorkerName() + ")";
         } else {
             return super.toString();
         }

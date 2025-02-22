@@ -46,7 +46,7 @@ public class SessionInactivityTimer {
             @Override
             public void onTimeoutExpired() {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Timer expired for session {}", session.getId());
+                    logger.trace("Timer expired for session id={}", session.getId());
                 }
                 long now = System.currentTimeMillis();
                 try (AutoLock ignored = session.lock()) {
@@ -54,7 +54,7 @@ public class SessionInactivityTimer {
                         return; // session can't expire or be idle if there is a request in it
                     }
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Inspecting session {}, valid={}", session.getId(), session.isValid());
+                        logger.trace("Inspecting session id={}, valid={}", session.getId(), session.isValid());
                     }
                     if (!session.isValid()) {
                         return; // do nothing, session is no longer valid

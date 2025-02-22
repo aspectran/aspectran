@@ -199,6 +199,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("maxActiveSessions", getMaxActiveSessions());
         tsb.append("evictionIdleSecs", getEvictionIdleSecs());
+        tsb.append("evictionIdleSecsForNew", getEvictionIdleSecsForNew());
         tsb.appendForce("saveOnCreate", isSaveOnCreate());
         tsb.appendForce("saveOnInactiveEviction", isSaveOnInactiveEviction());
         tsb.appendForce("clusterEnabled", isClusterEnabled());

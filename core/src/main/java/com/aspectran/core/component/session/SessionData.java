@@ -60,6 +60,8 @@ public class SessionData implements Serializable {
 
     private long inactiveInterval;
 
+    private long extraInactiveInterval;
+
     /** precalculated time of expiry in ms since epoch */
     private long expiry;
 
@@ -68,16 +70,17 @@ public class SessionData implements Serializable {
     /** time in ms since last save */
     private long lastSaved;
 
-    public SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null");
-        }
+    protected SessionData(String id, long created, long inactiveInterval) {
+        this(id, created, created, created, inactiveInterval);
+        calcAndSetExpiry(created);
+    }
+
+    protected SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
         this.id = id;
         this.created = created;
         this.accessed = accessed;
         this.lastAccessed = lastAccessed;
         this.inactiveInterval = inactiveInterval;
-        calcAndSetExpiry(created);
     }
 
     public String getId() {
@@ -116,24 +119,43 @@ public class SessionData implements Serializable {
         this.inactiveInterval = inactiveInterval;
     }
 
+    protected long getExtraInactiveInterval() {
+        return extraInactiveInterval;
+    }
+
+    protected void setExtraInactiveInterval(long extraInactiveInterval) {
+        this.extraInactiveInterval = extraInactiveInterval;
+    }
+
+    public void reduceInactiveInterval(long inactiveInterval) {
+        if (this.inactiveInterval > inactiveInterval) {
+            this.extraInactiveInterval = this.inactiveInterval - inactiveInterval;
+            this.inactiveInterval = inactiveInterval;
+        } else {
+            this.extraInactiveInterval = 0L;
+        }
+    }
+
+    public boolean restoreInactiveInterval() {
+        if (this.extraInactiveInterval > 0) {
+            this.inactiveInterval += this.extraInactiveInterval;
+            this.extraInactiveInterval = 0L;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public long getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(long expiry) {
+    private void setExpiry(long expiry) {
         this.expiry = expiry;
     }
 
-    public long calcExpiry() {
-        return calcExpiry(System.currentTimeMillis());
-    }
-
-    public long calcExpiry(long time) {
+    protected long calcExpiry(long time) {
         return (inactiveInterval <= 0L ? 0L : (time + inactiveInterval));
-    }
-
-    public void calcAndSetExpiry() {
-        setExpiry(calcExpiry());
     }
 
     public void calcAndSetExpiry(long time) {
@@ -224,12 +246,15 @@ public class SessionData implements Serializable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("id", getId());
-        tsb.append("created", getCreated());
-        tsb.append("accessed", getLastAccessed());
-        tsb.append("lastAccessed", getLastAccessed());
-        tsb.append("maxInactiveInterval", getInactiveInterval());
-        tsb.append("expiry", getExpiry());
+        tsb.append("id", id);
+        tsb.append("created", created);
+        tsb.append("accessed", accessed);
+        tsb.append("lastAccessed", lastAccessed);
+        tsb.append("inactiveInterval", inactiveInterval);
+        if (extraInactiveInterval > 0) {
+            tsb.append("extraInactiveInterval", extraInactiveInterval);
+        }
+        tsb.append("expiry", expiry);
         return tsb.toString();
     }
 
@@ -246,8 +271,9 @@ public class SessionData implements Serializable {
         dataOutputStream.writeLong(data.getCreated());
         dataOutputStream.writeLong(data.getAccessed());
         dataOutputStream.writeLong(data.getLastAccessed());
-        dataOutputStream.writeLong(data.getExpiry());
         dataOutputStream.writeLong(data.getInactiveInterval());
+        dataOutputStream.writeLong(data.getExtraInactiveInterval());
+        dataOutputStream.writeLong(data.getExpiry());
 
         Set<String> keys = data.getKeys();
         if (keys.isEmpty()) {
@@ -289,13 +315,14 @@ public class SessionData implements Serializable {
         long created = dataInputStream.readLong();
         long accessed = dataInputStream.readLong();
         long lastAccessed = dataInputStream.readLong();
+        long inactiveInterval = dataInputStream.readLong();
+        long extraInactiveInterval = dataInputStream.readLong();
         long expiry = dataInputStream.readLong();
-        long maxInactive = dataInputStream.readLong();
         int entries = dataInputStream.readInt();
 
-        SessionData data = new SessionData(id, created, accessed, lastAccessed, maxInactive);
+        SessionData data = new SessionData(id, created, accessed, lastAccessed, inactiveInterval);
+        data.setExtraInactiveInterval(extraInactiveInterval);
         data.setExpiry(expiry);
-        data.setInactiveInterval(maxInactive);
 
         // Attributes
         restoreAttributes(dataInputStream, entries, data);

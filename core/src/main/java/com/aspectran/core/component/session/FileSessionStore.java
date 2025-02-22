@@ -80,8 +80,8 @@ public class FileSessionStore extends AbstractSessionStore {
             logger.warn("No such file {} for session id={}", filename, id);
             return null;
         }
-        try (FileInputStream in = new FileInputStream(file)) {
-            SessionData data = SessionData.deserialize(in);
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            SessionData data = SessionData.deserialize(inputStream);
             data.setLastSaved(file.lastModified());
             return data;
         } catch (Exception e) {

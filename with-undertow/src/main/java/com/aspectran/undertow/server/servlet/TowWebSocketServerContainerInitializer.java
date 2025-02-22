@@ -79,10 +79,12 @@ public class TowWebSocketServerContainerInitializer {
             if (!activeSessions.isEmpty()) {
                 activeSessions.forEach(sessionId -> {
                     Session session = sessionManager.getSession(sessionId);
-                    Object value = session.getAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
-                    if (value != null) {
-                        closeWebSockets((List<WebSocketChannel>) value);
-                        session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+                    if (session != null) {
+                        Object value = session.getAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+                        if (value != null) {
+                            closeWebSockets((List<WebSocketChannel>) value);
+                            session.removeAttribute(WEBSOCKET_CURRENT_CONNECTIONS_ATTR);
+                        }
                     }
                 });
             }

@@ -39,6 +39,8 @@ public interface SessionManager {
 
     void setDefaultMaxIdleSecs(int defaultMaxIdleSecs);
 
+    int getMaxIdleSecsForNew();
+
     /**
      * Get a known existing session.
      * @param id the session id

@@ -59,6 +59,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private int evictionIdleSecs = NEVER_EVICT;
 
+    private int evictionIdleSecsForNew = evictionIdleSecs;
+
     /**
      * If true, as soon as a new session is created, it will be persisted to
      * the SessionStore
@@ -112,14 +114,37 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * -1 means we never evict inactive sessions.
-     * 0 means we evict a session after the last request for it exits.
-     * &gt;0 is the number of seconds after which we evict inactive sessions from the cache.
+     * Sessions in this cache can be:
+     * <dl>
+     * <dt>-1: never evicted</dt>
+     * <dd>means we never evict inactive sessions.</dd>
+     * <dt>0: evicted once the last request exits</dt>
+     * <dd>means we evict a session after the last request for it exits.</dd>
+     * <dt>&gt; 0: evicted after a configurable period of inactivity</dt>
+     * <dd>the number of seconds after which we evict inactive sessions from the cache.</dd>
+     * </ul>
+     * @param evictionIdleSecs -1 is never evict; 0 is evict-on-exit; and any other positive
+     *      value is the time in seconds that a session can be idle before it can
+     *      be evicted
      */
-    @Override
-    public void setEvictionIdleSecs(int evictionTimeout) {
+    public void setEvictionIdleSecs(int evictionIdleSecs) {
         checkInitializable();
-        this.evictionIdleSecs = evictionTimeout;
+        this.evictionIdleSecs = evictionIdleSecs;
+        this.evictionIdleSecsForNew = evictionIdleSecs;
+    }
+
+    @Override
+    public int getEvictionIdleSecsForNew() {
+        return evictionIdleSecsForNew;
+    }
+
+    public void setEvictionIdleSecsForNew(int evictionIdleSecsForNew) {
+        checkInitializable();
+        if (evictionIdleSecs > NEVER_EVICT && evictionIdleSecsForNew < EVICT_ON_INACTIVITY) {
+            this.evictionIdleSecsForNew = evictionIdleSecs;
+        } else {
+            this.evictionIdleSecsForNew = evictionIdleSecsForNew;
+        }
     }
 
     @Override
@@ -127,7 +152,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         return saveOnCreate;
     }
 
-    @Override
+    /**
+     * Whether a session that is newly created should be
+     * immediately saved. If false, a session that is created and
+     * invalidated within a single request is never persisted.
+     * @param saveOnCreate if true, immediately save the newly created session
+     */
     public void setSaveOnCreate(boolean saveOnCreate) {
         checkInitializable();
         this.saveOnCreate = saveOnCreate;
@@ -250,14 +280,14 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     @Override
-    public ManagedSession add(String id, long time, long maxInactiveInterval) throws Exception {
+    public ManagedSession add(String id, long time, long inactiveInterval) throws Exception {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Create new session id={}", id);
         }
-        SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
+        SessionData data = new SessionData(id, time, inactiveInterval);
         ManagedSession session = new ManagedSession(sessionManager, data, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // it's in the cache
@@ -321,7 +351,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     }
                 }
                 // if we evict on session exit, boot it from the cache
-                if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
+                if (session.getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
                     if (logger.isTraceEnabled()) {
                         logger.trace("Eviction on request exit id={}", id);
                     }
@@ -515,7 +545,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             logger.trace("Checking for idle session id={}", session.getId());
         }
         try (AutoLock ignored = session.lock()) {
-            if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
+            int evictionIdleSecs = session.getEvictionIdleSecs();
+            if (evictionIdleSecs >= EVICT_ON_INACTIVITY && session.isIdleLongerThan(evictionIdleSecs) &&
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.

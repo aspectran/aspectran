@@ -48,31 +48,12 @@ public interface SessionCache {
      */
     int getEvictionIdleSecs();
 
-    /**
-     * Sessions in this cache can be:
-     * <ul>
-     * <li>never evicted</li>
-     * <li>evicted once the last request exits</li>
-     * <li>evicted after a configurable period of inactivity</li>
-     * </ul>
-     * @param policy -1 is never evict; 0 is evict-on-exit; and any other positive
-     *      value is the time in seconds that a session can be idle before it can
-     *      be evicted.
-     */
-    void setEvictionIdleSecs(int policy);
+    int getEvictionIdleSecsForNew();
 
     /**
      * @return if true the newly created session will be saved immediately
      */
     boolean isSaveOnCreate();
-
-    /**
-     * Whether a session that is newly created should be
-     * immediately saved. If false, a session that is created and
-     * invalidated within a single request is never persisted.
-     * @param saveOnCreate if true, immediately save the newly created session
-     */
-    void setSaveOnCreate(boolean saveOnCreate);
 
     /**
      * @return true if the session should be saved before being evicted
@@ -112,9 +93,9 @@ public interface SessionCache {
      * Add an entirely new session to the cache.
      * @param id the session id
      * @param time the timestamp of the session creation
-     * @param maxInactiveInterval the max inactive time in milliseconds
+     * @param inactiveInterval the max inactive time in milliseconds
      */
-    ManagedSession add(String id, long time, long maxInactiveInterval) throws Exception;
+    ManagedSession add(String id, long time, long inactiveInterval) throws Exception;
 
     /**
      * Refreshes the data of the session to be used.

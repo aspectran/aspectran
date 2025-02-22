@@ -135,8 +135,10 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             return;
         }
 
-        long lastSaveMs = data.getLastSaved();
+        long lastSaved = data.getLastSaved();
         long savePeriodMs = getSavePeriodMillis();
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastSaved;
 
         if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Store session");
@@ -144,21 +146,21 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             tsb.append("dirty", data.isDirty());
             tsb.append("lastSaved", data.getLastSaved());
             tsb.append("savePeriod", savePeriodMs);
-            tsb.append("elapsed", System.currentTimeMillis() - lastSaveMs);
+            tsb.append("elapsed", elapsed);
             logger.trace(tsb.toString());
         }
 
         // save session if attribute changed or never been saved or time between saves exceeds threshold
-        if (data.isDirty() || lastSaveMs <= 0 || (System.currentTimeMillis() - lastSaveMs) > savePeriodMs) {
+        if (data.isDirty() || lastSaved <= 0 || elapsed > savePeriodMs) {
             // set the last saved time to now
-            data.setLastSaved(System.currentTimeMillis());
+            data.setLastSaved(now);
             try {
                 // call the specific store method, passing in previous save time
                 doSave(id, data);
                 data.setDirty(false); // only undo the dirty setting if we saved it
             } catch (Exception e) {
                 // reset last save time if save failed
-                data.setLastSaved(lastSaveMs);
+                data.setLastSaved(lastSaved);
                 throw e;
             }
         }
@@ -194,7 +196,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             } else {
                 // only do the check once every gracePeriod to avoid expensive searches,
                 // and find sessions that expired at least one gracePeriod ago
-                long gracePeriodMillis = getGracePeriodMillis(0);
+                long gracePeriodMillis = getGracePeriodMillis(1);
                 if (now > (lastExpiryCheckTime + gracePeriodMillis)) {
                     time = now - gracePeriodMillis;
                 }

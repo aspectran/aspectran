@@ -32,6 +32,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.round;
 
@@ -60,8 +61,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     private HouseKeeper houseKeeper;
 
-    /** 30 minute default */
+    /** Default 30 minutes */
     private volatile int defaultMaxIdleSecs = 30 * 60;
+
+    private int maxIdleSecsForNew;
 
     private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
 
@@ -129,13 +132,17 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     public void setDefaultMaxIdleSecs(int defaultMaxIdleSecs) {
         this.defaultMaxIdleSecs = defaultMaxIdleSecs;
         if (logger.isDebugEnabled()) {
-            if (defaultMaxIdleSecs <= 0) {
-                logger.debug("Sessions created by this manager are immortal (default maxInactiveInterval={})",
-                        defaultMaxIdleSecs);
-            } else {
-                logger.debug("SessionManager default maxInactiveInterval={}", defaultMaxIdleSecs);
-            }
+            logger.debug("{} default maxIdleSecs={}", getComponentName(), defaultMaxIdleSecs);
         }
+    }
+
+    @Override
+    public int getMaxIdleSecsForNew() {
+        return maxIdleSecsForNew;
+    }
+
+    public void setMaxIdleSecsForNew(int maxIdleSecsForNew) {
+        this.maxIdleSecsForNew = maxIdleSecsForNew;
     }
 
     @Override
@@ -167,10 +174,15 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     @Override
     public ManagedSession createSession(String id) {
+        long inactiveInterval;
+        if (defaultMaxIdleSecs > 0) {
+            inactiveInterval = TimeUnit.SECONDS.toMillis(defaultMaxIdleSecs);
+        } else {
+            inactiveInterval = -1L;
+        }
         long now = System.currentTimeMillis();
-        long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
-            ManagedSession session = sessionCache.add(id, now, maxInactiveInterval);
+            ManagedSession session = sessionCache.add(id, now, inactiveInterval);
             getStatistics().sessionCreated();
             onSessionCreated(session);
             return session;
@@ -309,6 +321,9 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                 // roundtrips to the persistent store.
                 if (!addCandidateSessionIdForExpiry(session.getId())) {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
+                }
+                if (session.isTempResident()) {
+                    onSessionEvicted(session);
                 }
                 return true;
             } else {

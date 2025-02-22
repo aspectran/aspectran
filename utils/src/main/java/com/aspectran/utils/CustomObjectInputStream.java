@@ -31,12 +31,12 @@ public class CustomObjectInputStream extends ObjectInputStream {
 
     private final ClassLoader classLoader;
 
-    public CustomObjectInputStream(InputStream in) throws IOException {
-        this(in, ClassUtils.getDefaultClassLoader());
+    public CustomObjectInputStream(InputStream inputStream) throws IOException {
+        this(inputStream, ClassUtils.getDefaultClassLoader());
     }
 
-    public CustomObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
-        super(in);
+    public CustomObjectInputStream(InputStream inputStream, ClassLoader classLoader) throws IOException {
+        super(inputStream);
         this.classLoader = classLoader;
     }
 

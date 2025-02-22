@@ -133,10 +133,13 @@ public class DefaultSessionManager extends AbstractSessionManager
                 setWorkerName(UNNAMED_WORKER_PREFIX + uniqueNumberIssuer.getAndIncrement());
             }
             if (sessionManagerConfig.hasMaxIdleSeconds()) {
-                setDefaultMaxIdleSecs(sessionManagerConfig.getMaxIdleSeconds());
+                setDefaultMaxIdleSecs(Math.max(sessionManagerConfig.getMaxIdleSeconds(), -1));
+            }
+            if (sessionManagerConfig.hasMaxIdleSecondsForNew()) {
+                setMaxIdleSecsForNew(Math.max(sessionManagerConfig.getMaxIdleSecondsForNew(), -1));
             }
             if (sessionManagerConfig.hasScavengingIntervalSeconds()) {
-                scavengingIntervalSeconds = sessionManagerConfig.getScavengingIntervalSeconds();
+                scavengingIntervalSeconds = Math.max(sessionManagerConfig.getScavengingIntervalSeconds(), 0);
             } else {
                 scavengingIntervalSeconds = 0;
             }
@@ -203,7 +206,17 @@ public class DefaultSessionManager extends AbstractSessionManager
                         }
                         secs = SessionCache.NEVER_EVICT;
                     }
-                    sessionCache.setEvictionIdleSecs(secs);
+                    sessionCache.setEvictionIdleSecs(Math.max(secs, -1));
+                }
+                if (sessionManagerConfig.hasEvictionIdleSecondsForNew()) {
+                    int secs = sessionManagerConfig.getEvictionIdleSecondsForNew();
+                    if (sessionStore == null && secs != SessionCache.NEVER_EVICT) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Fixed to evictionIdleSecondsForNew=0 because there is no session store");
+                        }
+                        secs = SessionCache.NEVER_EVICT;
+                    }
+                    sessionCache.setEvictionIdleSecsForNew(Math.max(secs, -1));
                 }
                 if (sessionManagerConfig.hasSaveOnCreate()) {
                     boolean saveOnCreate = sessionManagerConfig.getSaveOnCreate();

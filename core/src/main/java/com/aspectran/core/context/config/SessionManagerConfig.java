@@ -28,6 +28,8 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey maxActiveSessions;
     private static final ParameterKey maxIdleSeconds;
     private static final ParameterKey evictionIdleSeconds;
+    private static final ParameterKey maxIdleSecondsForNew;
+    private static final ParameterKey evictionIdleSecondsForNew;
     private static final ParameterKey scavengingIntervalSeconds;
     private static final ParameterKey saveOnCreate;
     private static final ParameterKey saveOnInactiveEviction;
@@ -43,6 +45,8 @@ public class SessionManagerConfig extends AbstractParameters {
         maxActiveSessions = new ParameterKey("maxActiveSessions", ValueType.INT);
         maxIdleSeconds = new ParameterKey("maxIdleSeconds", ValueType.INT);
         evictionIdleSeconds = new ParameterKey("evictionIdleSeconds", ValueType.INT);
+        maxIdleSecondsForNew = new ParameterKey("maxIdleSecondsForNew", ValueType.INT);
+        evictionIdleSecondsForNew = new ParameterKey("evictionIdleSecondsForNew", ValueType.INT);
         scavengingIntervalSeconds = new ParameterKey("scavengingIntervalSeconds", ValueType.INT);
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
@@ -56,6 +60,8 @@ public class SessionManagerConfig extends AbstractParameters {
                 maxActiveSessions,
                 maxIdleSeconds,
                 evictionIdleSeconds,
+                maxIdleSecondsForNew,
+                evictionIdleSecondsForNew,
                 scavengingIntervalSeconds,
                 saveOnCreate,
                 saveOnInactiveEviction,
@@ -80,6 +86,10 @@ public class SessionManagerConfig extends AbstractParameters {
         readFrom(parameters);
     }
 
+    public boolean hasWorkerName() {
+        return hasValue(workerName);
+    }
+
     public String getWorkerName() {
         return getString(workerName);
     }
@@ -89,8 +99,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasWorkerName() {
-        return hasValue(workerName);
+    public boolean hasMaxActiveSessions() {
+        return hasValue(maxActiveSessions);
     }
 
     public int getMaxActiveSessions() {
@@ -102,8 +112,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasMaxActiveSessions() {
-        return hasValue(maxActiveSessions);
+    public boolean hasMaxIdleSeconds() {
+        return hasValue(maxIdleSeconds);
     }
 
     public int getMaxIdleSeconds() {
@@ -115,8 +125,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasMaxIdleSeconds() {
-        return hasValue(maxIdleSeconds);
+    public boolean hasEvictionIdleSeconds() {
+        return hasValue(evictionIdleSeconds);
     }
 
     public int getEvictionIdleSeconds() {
@@ -128,8 +138,34 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasEvictionIdleSeconds() {
-        return hasValue(evictionIdleSeconds);
+    public boolean hasMaxIdleSecondsForNew() {
+        return hasValue(maxIdleSecondsForNew);
+    }
+
+    public int getMaxIdleSecondsForNew() {
+        return getInt(maxIdleSecondsForNew, 0);
+    }
+
+    public SessionManagerConfig setMaxIdleSecondsForNew(int maxIdleSecondsForNew) {
+        putValue(SessionManagerConfig.maxIdleSecondsForNew, maxIdleSecondsForNew);
+        return this;
+    }
+
+    public boolean hasEvictionIdleSecondsForNew() {
+        return hasValue(evictionIdleSecondsForNew);
+    }
+
+    public int getEvictionIdleSecondsForNew() {
+        return getInt(evictionIdleSecondsForNew, SessionCache.NEVER_EVICT);
+    }
+
+    public SessionManagerConfig setEvictionIdleSecondsForNewbies(int evictionIdleSecondsForNewbies) {
+        putValue(SessionManagerConfig.evictionIdleSecondsForNew, evictionIdleSecondsForNewbies);
+        return this;
+    }
+
+    public boolean hasScavengingIntervalSeconds() {
+        return hasValue(scavengingIntervalSeconds);
     }
 
     public int getScavengingIntervalSeconds() {
@@ -141,8 +177,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasScavengingIntervalSeconds() {
-        return hasValue(scavengingIntervalSeconds);
+    public boolean hasSaveOnCreate() {
+        return hasValue(saveOnCreate);
     }
 
     public boolean getSaveOnCreate() {
@@ -154,8 +190,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasSaveOnCreate() {
-        return hasValue(saveOnCreate);
+    public boolean hasSaveOnInactiveEviction() {
+        return hasValue(saveOnInactiveEviction);
     }
 
     public boolean getSaveOnInactiveEviction() {
@@ -167,8 +203,8 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean hasSaveOnInactiveEviction() {
-        return hasValue(saveOnInactiveEviction);
+    public boolean hasRemoveUnloadableSessions() {
+        return hasValue(removeUnloadableSessions);
     }
 
     public boolean getRemoveUnloadableSessions() {
@@ -178,10 +214,6 @@ public class SessionManagerConfig extends AbstractParameters {
     public SessionManagerConfig setRemoveUnloadableSessions(boolean removeUnloadableSessions) {
         putValue(SessionManagerConfig.removeUnloadableSessions, removeUnloadableSessions);
         return this;
-    }
-
-    public boolean hasRemoveUnloadableSessions() {
-        return hasValue(removeUnloadableSessions);
     }
 
     public SessionFileStoreConfig getFileStoreConfig() {

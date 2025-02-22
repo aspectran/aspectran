@@ -77,9 +77,9 @@ public abstract class CyclicTimeout implements Destroyable {
      * Schedules a timeout, even if already set, cancelled or expired.
      * If a timeout is already set, it will be cancelled and replaced
      * by the new one.
-     * @param delay The period of time before the timeout expires.
-     * @param units The unit of time of the period.
-     * @return true if the timeout was already set.
+     * @param delay The period of time before the timeout expires
+     * @param units The unit of time of the period
+     * @return true if the timeout was already set
      */
     public boolean schedule(long delay, @NonNull TimeUnit units) {
         long now = System.nanoTime();

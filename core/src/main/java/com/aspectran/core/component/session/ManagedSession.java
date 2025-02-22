@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.AutoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,9 @@ public class ManagedSession implements Session {
 
     private SessionData sessionData;
 
-    private boolean newbie;
+    private boolean newSession;
+
+    private boolean justLoaded;
 
     private boolean resident;
 
@@ -59,14 +62,19 @@ public class ManagedSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected ManagedSession(AbstractSessionManager sessionManager, SessionData sessionData, boolean newbie) {
+    protected ManagedSession(AbstractSessionManager sessionManager,
+                             @NonNull SessionData sessionData, boolean newSession) {
         this.sessionManager = sessionManager;
         this.inactivityTimer = new SessionInactivityTimer(sessionManager, this);
         this.sessionData = sessionData;
-        this.newbie = newbie;
-        if (newbie) {
+        this.newSession = newSession;
+        if (newSession) {
+            // new sessions will skip access() call
             this.sessionData.setDirty(true);
             this.requests = 1;
+            reduceInactiveInterval();
+        } else {
+            this.justLoaded = true;
         }
     }
 
@@ -145,7 +153,7 @@ public class ManagedSession implements Session {
     public int getMaxInactiveInterval() {
         try (AutoLock ignored = autoLock.lock()) {
             if (sessionData.getInactiveInterval() > 0L) {
-                return (int)(sessionData.getInactiveInterval() / 1000L);
+                return (int)TimeUnit.MILLISECONDS.toSeconds(sessionData.getInactiveInterval());
             } else {
                 return -1;
             }
@@ -153,18 +161,80 @@ public class ManagedSession implements Session {
     }
 
     @Override
-    public void setMaxInactiveInterval(int secs) {
+    public void setMaxInactiveInterval(int inactiveIntervalSecs) {
         try (AutoLock ignored = autoLock.lock()) {
-            sessionData.setInactiveInterval((long)secs * 1000L);
-            sessionData.calcAndSetExpiry();
+            sessionData.restoreInactiveInterval();
+            long inactiveInterval = Math.max(TimeUnit.SECONDS.toMillis(inactiveIntervalSecs), -1L);
+            sessionData.setInactiveInterval(inactiveInterval);
+            sessionData.calcAndSetExpiry(System.currentTimeMillis());
             sessionData.setDirty(true);
             if (logger.isDebugEnabled()) {
-                if (secs <= 0) {
-                    logger.debug("Session {} is now immortal (maxInactiveInterval={})", sessionData.getId(), secs);
+                if (inactiveIntervalSecs <= 0) {
+                    logger.debug("Session {} is now immortal (maxInactiveInterval={})",
+                            sessionData.getId(), inactiveIntervalSecs);
                 } else {
-                    logger.debug("Session {} maxInactiveInterval={}", sessionData.getId(), secs);
+                    logger.debug("Session {} maxInactiveInterval={}", sessionData.getId(), inactiveIntervalSecs);
                 }
             }
+        }
+    }
+
+    private void reduceInactiveInterval() {
+        int maxIdleSecs = sessionManager.getMaxIdleSecsForNew();
+        if (maxIdleSecs > 0) {
+            long inactiveInterval = TimeUnit.SECONDS.toMillis(maxIdleSecs);
+            sessionData.reduceInactiveInterval(inactiveInterval);
+        }
+    }
+
+    protected int getEvictionIdleSecs() {
+        if (sessionData.getExtraInactiveInterval() > 0) {
+            return sessionManager.getSessionCache().getEvictionIdleSecsForNew();
+        } else {
+            return sessionManager.getSessionCache().getEvictionIdleSecs();
+        }
+    }
+
+    @Override
+    public boolean isNew() {
+        try (AutoLock ignored = autoLock.lock()) {
+            checkValidForRead();
+            return newSession;
+        }
+    }
+
+    protected boolean isResident() {
+        return resident;
+    }
+
+    protected void setResident(boolean resident) {
+        this.resident = resident;
+        if (!resident) {
+            inactivityTimer.destroy();
+        }
+    }
+
+    @Override
+    public boolean isTempResident() {
+        try (AutoLock ignored = autoLock.lock()) {
+            return (resident && sessionData.getExtraInactiveInterval() > 0);
+        }
+    }
+
+    /**
+     * Returns the current number of requests that are active in the Session.
+     * @return the number of active requests for this session
+     */
+    protected long getRequests() {
+        try (AutoLock ignored = autoLock.lock()) {
+            return requests;
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        try (AutoLock ignored = autoLock.lock()) {
+            return (state == State.VALID);
         }
     }
 
@@ -175,7 +245,19 @@ public class ManagedSession implements Session {
                 return false;
             }
 
-            newbie = false;
+            if (requests == 0 && !justLoaded) {
+                // if in clustering mode, session data will be updated
+                sessionManager.refreshSession(this);
+            }
+
+            newSession = false;
+            justLoaded = false;
+
+            // new sessions will have full inactivity interval upon second access
+            if (sessionData.restoreInactiveInterval()) {
+                sessionData.setDirty(true);
+                sessionManager.onSessionResided(this);
+            }
 
             long now = System.currentTimeMillis();
             sessionData.setAccessed(now);
@@ -183,10 +265,6 @@ public class ManagedSession implements Session {
             if (isExpiredAt(now)) {
                 invalidate();
                 return false;
-            }
-
-            if (requests == 0) {
-                sessionManager.refreshSession(this);
             }
 
             requests++;
@@ -229,16 +307,6 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Returns the current number of requests that are active in the Session.
-     * @return the number of active requests for this session
-     */
-    protected long getRequests() {
-        try (AutoLock ignored = autoLock.lock()) {
-            return requests;
-        }
-    }
-
-    /**
      * Calculate what the session timer setting should be based on:
      * the time remaining before the session expires
      * and any idle eviction time configured.
@@ -247,24 +315,24 @@ public class ManagedSession implements Session {
      * @return the time remaining before expiry or inactivity timeout
      */
     protected long calculateInactivityTimeout(long now) {
-        long time;
+        long result;
         try (AutoLock ignored = autoLock.lock()) {
             long remaining = sessionData.getExpiry() - now;
-            long maxInactive = sessionData.getInactiveInterval();
-            int evictionIdleSecs = sessionManager.getSessionCache().getEvictionIdleSecs();
-            if (maxInactive <= 0L) {
+            long inactiveInterval = sessionData.getInactiveInterval();
+            int evictionIdleSecs = getEvictionIdleSecs();
+            if (inactiveInterval <= 0L) {
                 // sessions are immortal, they never expire
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
-                    time = -1L;
+                    result = -1L;
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} is immortal && no inactivity eviction", getId());
+                        logger.trace("Session id={} is immortal && no inactivity eviction", getId());
                     }
                 } else {
                     // sessions are immortal but we want to evict after inactivity
-                    time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
+                    result = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} is immortal; evict after {} sec inactivity",
+                        logger.trace("Session {} is immortal; evict after {} second(s) inactivity",
                                 getId(), evictionIdleSecs);
                     }
                 }
@@ -272,28 +340,32 @@ public class ManagedSession implements Session {
                 // sessions are not immortal
                 if (evictionIdleSecs == SessionCache.NEVER_EVICT) {
                     // timeout is the time remaining until its expiry
-                    time = Math.max(remaining, 0L);
+                    result = Math.max(remaining, 0L);
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} no eviction", getId());
+                        logger.trace("Session id={} no eviction", getId());
                     }
                 } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
-                    time = -1L;
+                    result = -1L;
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} evict on exit", getId());
+                        logger.trace("Session id={} evict on exit", getId());
                     }
                 } else {
                     // want to evict on idle: timer is the lesser of the session's
                     // expiration remaining and the time to evict
-                    time = (remaining > 0L ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
+                    if (remaining > 0L) {
+                        result = Math.min(inactiveInterval, TimeUnit.SECONDS.toMillis(evictionIdleSecs));
+                    } else {
+                        result = 0L;
+                    }
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Session {} timer set to lesser of maxIdleSeconds={} and evictionIdleSeconds={}",
-                                getId(), maxInactive / 1000L, evictionIdleSecs);
+                        logger.trace("Session id={} timer set to lesser of maxIdleSeconds={} and evictionIdleSeconds={}",
+                                getId(), TimeUnit.MILLISECONDS.toSeconds(inactiveInterval), evictionIdleSecs);
                     }
                 }
             }
         }
-        return time;
+        return result;
     }
 
     /**
@@ -390,32 +462,6 @@ public class ManagedSession implements Session {
         this.destroyedReason = destroyedReason;
     }
 
-    @Override
-    public boolean isValid() {
-        try (AutoLock ignored = autoLock.lock()) {
-            return (state == State.VALID);
-        }
-    }
-
-    @Override
-    public boolean isNew() {
-        try (AutoLock ignored = autoLock.lock()) {
-            checkValidForRead();
-            return newbie;
-        }
-    }
-
-    protected boolean isResident() {
-        return resident;
-    }
-
-    protected void setResident(boolean resident) {
-        this.resident = resident;
-        if (!resident) {
-            inactivityTimer.destroy();
-        }
-    }
-
     /**
      * Check to see if session has expired as at the time given.
      * @param time the time since the epoch in ms
@@ -436,7 +482,7 @@ public class ManagedSession implements Session {
     protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
         try (AutoLock ignored = autoLock.lock()) {
-            return ((sessionData.getAccessed() + (sec * 1000L)) <= now);
+            return ((sessionData.getAccessed() + TimeUnit.SECONDS.toMillis(sec)) <= now);
         }
     }
 

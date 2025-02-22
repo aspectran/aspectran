@@ -43,6 +43,31 @@ public interface Session {
     void setMaxInactiveInterval(int secs);
 
     /**
+     * Returns true if a new session was created for the request.
+     * @return true if the server has created a session,
+     *      but the client has not yet joined
+     */
+    boolean isNew();
+
+    boolean isTempResident();
+
+    /**
+     * Returns whether it is a valid session or not.
+     * @return true if valid session, false otherwise
+     */
+    boolean isValid();
+
+    /**
+     * Called when a session is first accessed by a request.
+     */
+    boolean access();
+
+    /**
+     * Called when a session is last accessed by a request.
+     */
+    void complete();
+
+    /**
      * Called by users to invalidate a session, or called by the
      * access method as a request enters the session if the session
      * has expired, or called by manager as a result of scavenger
@@ -55,29 +80,6 @@ public interface Session {
      * @return the destroyed reason
      */
     DestroyedReason getDestroyedReason();
-
-    /**
-     * Returns whether it is a valid session or not.
-     * @return true if valid session, false otherwise
-     */
-    boolean isValid();
-
-    /**
-     * Returns true if a new session was created for the request.
-     * @return true if the server has created a session,
-     *      but the client has not yet joined
-     */
-    boolean isNew();
-
-    /**
-     * Called when a session is first accessed by a request.
-     */
-    boolean access();
-
-    /**
-     * Called when a session is last accessed by a request.
-     */
-    void complete();
 
     enum DestroyedReason {
         INVALIDATED,
