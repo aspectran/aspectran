@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>8.4.0</version>
+        <version>8.4.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-web</artifactId>
