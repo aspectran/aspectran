@@ -18,6 +18,7 @@ package com.aspectran.core.context.env;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +45,30 @@ public class EnvironmentProfiles {
      */
     public static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
 
+    private final Set<String> essentialProfiles = new LinkedHashSet<>();
+
     private final Set<String> activeProfiles = new LinkedHashSet<>();
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>();
 
+    @NonNull
+    public String[] getEssentialProfiles() {
+        return StringUtils.toStringArray(essentialProfiles);
+    }
+
+    public void setEssentialProfiles(String... profiles) {
+        Assert.notNull(profiles, "profiles must not be null");
+        logger.info("Essential profiles [{}]", StringUtils.joinWithCommas(profiles));
+        synchronized (essentialProfiles) {
+            essentialProfiles.clear();
+            for (String profile : profiles) {
+                validateProfile(profile);
+                essentialProfiles.add(profile);
+            }
+        }
+    }
+
+    @NonNull
     public String[] getActiveProfiles() {
         return StringUtils.toStringArray(doGetActiveProfiles());
     }
@@ -88,7 +109,7 @@ public class EnvironmentProfiles {
      */
     public void setActiveProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Activating profiles [{}]", StringUtils.joinCommaDelimitedList(profiles));
+        logger.info("Activating profiles [{}]", StringUtils.joinWithCommas(profiles));
         synchronized (activeProfiles) {
             activeProfiles.clear();
             for (String profile : profiles) {
@@ -102,11 +123,12 @@ public class EnvironmentProfiles {
         logger.info("Activating profile '{}'", profile);
         validateProfile(profile);
         doGetActiveProfiles();
-        synchronized (this.activeProfiles) {
-            this.activeProfiles.add(profile);
+        synchronized (activeProfiles) {
+            activeProfiles.add(profile);
         }
     }
 
+    @NonNull
     public String[] getDefaultProfiles() {
         return StringUtils.toStringArray(doGetDefaultProfiles());
     }
@@ -142,7 +164,7 @@ public class EnvironmentProfiles {
      */
     public void setDefaultProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Default profiles [{}]", StringUtils.joinCommaDelimitedList(profiles));
+        logger.info("Default profiles [{}]", StringUtils.joinWithCommas(profiles));
         synchronized (defaultProfiles) {
             defaultProfiles.clear();
             for (String profile : profiles) {
@@ -228,6 +250,9 @@ public class EnvironmentProfiles {
      */
     private boolean isProfileActive(String profile) {
         validateProfile(profile);
+        if (essentialProfiles.contains(profile)) {
+            return true;
+        }
         Set<String> currentActiveProfiles = doGetActiveProfiles();
         return (currentActiveProfiles.contains(profile) ||
                 (currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
@@ -245,10 +270,10 @@ public class EnvironmentProfiles {
      */
     private void validateProfile(String profile) {
         if (!StringUtils.hasText(profile)) {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
+            throw new IllegalArgumentException("Invalid profile [" + profile + "]; must contain text");
         }
         if (profile.charAt(0) == '!') {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must not begin with ! operator");
+            throw new IllegalArgumentException("Invalid profile [" + profile + "]; must not begin with ! operator");
         }
     }
 
@@ -256,7 +281,7 @@ public class EnvironmentProfiles {
     private String[] getProfilesFromSystemProperty(String propName) {
         String profilesProp = SystemUtils.getProperty(propName);
         if (profilesProp != null) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(profilesProp);
+            String[] profiles = StringUtils.splitWithComma(profilesProp);
             if (profiles.length > 0) {
                 return profiles;
             }

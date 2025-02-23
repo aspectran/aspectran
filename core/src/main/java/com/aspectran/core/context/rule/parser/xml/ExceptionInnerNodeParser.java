@@ -58,7 +58,7 @@ class ExceptionInnerNodeParser implements SubnodeParser {
 
             ExceptionThrownRule etr = new ExceptionThrownRule();
             if (exceptionType != null) {
-                String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+                String[] exceptionTypes = StringUtils.splitWithComma(exceptionType);
                 etr.setExceptionTypes(exceptionTypes);
             }
 

@@ -70,7 +70,7 @@ public abstract class TextStyleTokenHandler {
             if (p1 == 0) {
                 character(c);
             } else if (p1 >= 2 && p1 < p2) {
-                String[] arr = StringUtils.splitCommaDelimitedString(input.subSequence(p1, p2).toString());
+                String[] arr = StringUtils.splitWithComma(input.subSequence(p1, p2).toString());
                 style(arr);
                 p1 = p2 = p3 = 0;
             }

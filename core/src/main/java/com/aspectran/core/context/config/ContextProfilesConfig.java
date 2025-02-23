@@ -21,18 +21,21 @@ import com.aspectran.utils.apon.ValueType;
 
 public class ContextProfilesConfig extends AbstractParameters {
 
-    private static final ParameterKey activeProfiles;
+    private static final ParameterKey essentialProfiles;
     private static final ParameterKey defaultProfiles;
+    private static final ParameterKey activeProfiles;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        activeProfiles = new ParameterKey("active", ValueType.STRING, true);
+        essentialProfiles = new ParameterKey("essential", ValueType.STRING, true);
         defaultProfiles = new ParameterKey("default", ValueType.STRING, true);
+        activeProfiles = new ParameterKey("active", ValueType.STRING, true);
 
         parameterKeys = new ParameterKey[] {
-                activeProfiles,
-                defaultProfiles
+                essentialProfiles,
+                defaultProfiles,
+                activeProfiles
         };
     }
 
@@ -40,18 +43,18 @@ public class ContextProfilesConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public String[] getActiveProfiles() {
-        return getStringArray(activeProfiles);
+    public String[] getEssentialProfiles() {
+        return getStringArray(essentialProfiles);
     }
 
-    public ContextProfilesConfig setActiveProfiles(String[] activeProfiles) {
-        removeValue(ContextProfilesConfig.activeProfiles);
-        putValue(ContextProfilesConfig.activeProfiles, activeProfiles);
+    public ContextProfilesConfig setEssentialProfiles(String[] essentialProfiles) {
+        removeValue(ContextProfilesConfig.essentialProfiles);
+        putValue(ContextProfilesConfig.essentialProfiles, essentialProfiles);
         return this;
     }
 
-    public ContextProfilesConfig addActiveProfile(String activeProfile) {
-        putValue(ContextProfilesConfig.activeProfiles, activeProfile);
+    public ContextProfilesConfig addEssentialProfile(String essentialProfile) {
+        putValue(ContextProfilesConfig.essentialProfiles, essentialProfile);
         return this;
     }
 
@@ -67,6 +70,21 @@ public class ContextProfilesConfig extends AbstractParameters {
 
     public ContextProfilesConfig addDefaultProfile(String defaultProfile) {
         putValue(ContextProfilesConfig.defaultProfiles, defaultProfile);
+        return this;
+    }
+
+    public String[] getActiveProfiles() {
+        return getStringArray(activeProfiles);
+    }
+
+    public ContextProfilesConfig setActiveProfiles(String[] activeProfiles) {
+        removeValue(ContextProfilesConfig.activeProfiles);
+        putValue(ContextProfilesConfig.activeProfiles, activeProfiles);
+        return this;
+    }
+
+    public ContextProfilesConfig addActiveProfile(String activeProfile) {
+        putValue(ContextProfilesConfig.activeProfiles, activeProfile);
         return this;
     }
 

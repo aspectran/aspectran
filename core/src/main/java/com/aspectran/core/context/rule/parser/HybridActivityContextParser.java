@@ -49,7 +49,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
             return getContextRuleAssistant();
         } catch (Exception e) {
             throw new ActivityContextParserException("Failed to parse configurations [" +
-                    StringUtils.joinCommaDelimitedList(contextRules) + "]", e);
+                    StringUtils.joinWithCommas(contextRules) + "]", e);
         }
     }
 

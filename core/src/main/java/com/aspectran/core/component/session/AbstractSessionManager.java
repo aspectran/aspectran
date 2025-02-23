@@ -402,7 +402,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to check expiration on [{}]", StringUtils.joinCommaDelimitedList(candidates), e);
+            logger.warn("Failed to check expiration on [{}]", StringUtils.joinWithCommas(candidates), e);
         }
 
         // Periodically but infrequently comb the backing store to delete sessions

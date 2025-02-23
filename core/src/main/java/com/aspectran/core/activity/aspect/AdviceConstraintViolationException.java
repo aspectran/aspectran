@@ -58,7 +58,7 @@ public class AdviceConstraintViolationException extends ActivityException {
 
     @Override
     public String getMessage() {
-        return StringUtils.toLineDelimitedString(violations);
+        return StringUtils.joinWithLines(violations);
     }
 
 }

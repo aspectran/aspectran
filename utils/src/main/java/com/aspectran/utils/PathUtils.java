@@ -133,7 +133,7 @@ public abstract class PathUtils {
             pathElements.addFirst(CURRENT_PATH);
         }
 
-        String joined = StringUtils.toDelimitedString(pathElements, REGULAR_FILE_SEPARATOR);
+        String joined = StringUtils.join(pathElements, REGULAR_FILE_SEPARATOR);
         // avoid string concatenation with empty prefix
         return prefix.isEmpty() ? joined : prefix + joined;
     }

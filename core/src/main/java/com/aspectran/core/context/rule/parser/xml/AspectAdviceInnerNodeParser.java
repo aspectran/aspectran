@@ -73,7 +73,7 @@ class AspectAdviceInnerNodeParser implements SubnodeParser {
             AspectAdviceRule aspectAdviceRule = parser.peekObject();
             ExceptionThrownRule etr = new ExceptionThrownRule(aspectAdviceRule);
             if (exceptionType != null) {
-                String[] exceptionTypes = StringUtils.splitCommaDelimitedString(exceptionType);
+                String[] exceptionTypes = StringUtils.splitWithComma(exceptionType);
                 etr.setExceptionTypes(exceptionTypes);
             }
             parser.pushObject(etr);

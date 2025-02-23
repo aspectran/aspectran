@@ -87,7 +87,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (contextRules != null) {
                 logger.info("Building ActivityContext with context rules [{}]",
-                        StringUtils.joinCommaDelimitedList(contextRules));
+                        StringUtils.joinWithCommas(contextRules));
             } else if (aspectranParameters != null) {
                 logger.info("Building ActivityContext with specified parameters");
             } else if (logger.isDebugEnabled()) {
@@ -115,13 +115,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 applicationAdapter = createApplicationAdapter();
             }
 
-            EnvironmentProfiles environmentProfiles = null;
-            if (getMasterService() != null && getMasterService().getRootService().getActivityContext() != null) {
-                environmentProfiles = getMasterService().getRootService().getActivityContext().getEnvironment().getEnvironmentProfiles();
-            }
-            if (environmentProfiles == null) {
-                environmentProfiles = createEnvironmentProfiles();
-            }
+            EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
 
             ActivityRuleAssistant assistant = new ActivityRuleAssistant(classLoader, applicationAdapter, environmentProfiles);
             assistant.prepare();

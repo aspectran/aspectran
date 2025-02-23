@@ -43,7 +43,7 @@ public class MissingMandatoryAttributesException extends RequestParseException {
      * @param itemRules an item rule list that represents missing attributes
      */
     public MissingMandatoryAttributesException(@NonNull Collection<ItemRule> itemRules) {
-        super("Missing mandatory attributes: " + StringUtils.joinCommaDelimitedList(itemRules));
+        super("Missing mandatory attributes: " + StringUtils.joinWithCommas(itemRules));
         this.itemRules = itemRules;
     }
 

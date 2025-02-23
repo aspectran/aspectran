@@ -102,7 +102,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
         String rawRequestHeadersString = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
         if (rawRequestHeadersString != null && hasAllowedHeaders()) {
-            String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
+            String[] requestHeaders = StringUtils.splitWithComma(rawRequestHeadersString);
             for (String requestHeader : requestHeaders) {
                 if (!isAllowedHeader(requestHeader)) {
                     rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);

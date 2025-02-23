@@ -25,7 +25,11 @@ import java.util.Iterator;
  */
 public interface Environment {
 
-    EnvironmentProfiles getEnvironmentProfiles();
+    /**
+     * Returns the set of profiles essentials for this environment. These are always active
+     * internally in this environment, but are not exposed as active profiles.
+     */
+    String[] getEssentialProfiles();
 
     /**
      * Return the set of profiles explicitly made active for this environment. Profiles
@@ -50,7 +54,6 @@ public interface Environment {
      * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY_NAME
      */
     String[] getDefaultProfiles();
-
 
     /**
      * Return the set of profiles explicitly made active for this environment.
@@ -132,6 +135,9 @@ public interface Environment {
      */
     <T> T getProperty(String name, Activity activity);
 
+    /**
+     * Returns the names of all properties available on this environment.
+     */
     Iterator<String> getPropertyNames();
 
 }

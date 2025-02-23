@@ -68,7 +68,7 @@ Aspectran consists of the following major packages:
 * **com.aspectran.thymeleaf**  
   Add-on package for using Thymeleaf as the templating engine
 
-Additionally, there is a POM module with-logback that packages the dependencies needed to use Logback as a 
+Additionally, there is a POM module *with-logback* that packages the dependencies needed to use Logback as a 
 logging library, and is mainly used to build and test other modules.
 
 ## Building

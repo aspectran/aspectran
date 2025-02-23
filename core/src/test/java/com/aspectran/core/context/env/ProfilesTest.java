@@ -53,7 +53,6 @@ class ProfilesTest {
         try {
             supplier.get();
         } catch (IllegalArgumentException e) {
-            //System.out.println(e);
             assertTrue(e.getMessage().startsWith("Malformed profile expression"));
         }
     }
@@ -132,7 +131,7 @@ class ProfilesTest {
         assertOrExpression(profiles);
     }
 
-    private void assertOrExpression(Profiles profiles) {
+    private void assertOrExpression(@NonNull Profiles profiles) {
         assertTrue(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -151,7 +150,7 @@ class ProfilesTest {
         assertAndExpression(profiles);
     }
 
-    private void assertAndExpression(Profiles profiles) {
+    private void assertAndExpression(@NonNull Profiles profiles) {
         assertFalse(profiles.matches(activeProfiles("aspectran")));
         assertFalse(profiles.matches(activeProfiles("framework")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -170,7 +169,7 @@ class ProfilesTest {
         assertOfNotAndExpression(profiles);
     }
 
-    private void assertOfNotAndExpression(Profiles profiles) {
+    private void assertOfNotAndExpression(@NonNull Profiles profiles) {
         assertTrue(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertFalse(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -207,7 +206,7 @@ class ProfilesTest {
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
-    private void assertOfAndExpressionWithInvertedSingleElement(Profiles profiles) {
+    private void assertOfAndExpressionWithInvertedSingleElement(@NonNull Profiles profiles) {
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertFalse(profiles.matches(activeProfiles("java")));
         assertFalse(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -220,7 +219,7 @@ class ProfilesTest {
         assertOfOrExpressionWithInvertedSingleElement(profiles);
     }
 
-    private void assertOfOrExpressionWithInvertedSingleElement(Profiles profiles) {
+    private void assertOfOrExpressionWithInvertedSingleElement(@NonNull Profiles profiles) {
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertTrue(profiles.matches(activeProfiles("java")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "framework")));
@@ -273,11 +272,11 @@ class ProfilesTest {
 
     @Test
     void sensibleToString() {
-        assertEquals(Profiles.of("aspectran").toString(), "aspectran");
-        assertEquals(Profiles.of("[(aspectran, framework), (aspectran, java)]").toString(),
-            "[(aspectran, framework), (aspectran, java)]");
-        assertEquals(Profiles.of("[(aspectran,framework),(aspectran,java)]").toString(),
-            "[(aspectran,framework),(aspectran,java)]");
+        assertEquals("aspectran", Profiles.of("aspectran").toString());
+        assertEquals("[(aspectran, framework), (aspectran, java)]",
+                Profiles.of("[(aspectran, framework), (aspectran, java)]").toString());
+        assertEquals("[(aspectran,framework),(aspectran,java)]",
+                Profiles.of("[(aspectran,framework),(aspectran,java)]").toString());
     }
 
     @Test
@@ -311,6 +310,7 @@ class ProfilesTest {
         assertNotEquals(profiles1.hashCode(), profiles2.hashCode());
     }
 
+    @NonNull
     private static Predicate<String> activeProfiles(String... profiles) {
         return new MockActiveProfiles(profiles);
     }

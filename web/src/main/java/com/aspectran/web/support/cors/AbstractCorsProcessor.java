@@ -100,7 +100,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     }
 
     public void setAllowedOrigins(String allowedOrigins) {
-        String[] origins = StringUtils.splitCommaDelimitedString(allowedOrigins);
+        String[] origins = StringUtils.splitWithComma(allowedOrigins);
         setAllowedOrigins(origins);
     }
 
@@ -138,7 +138,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     }
 
     public void setAllowedMethods(String allowedMethods) {
-        String[] methods = StringUtils.splitCommaDelimitedString(allowedMethods);
+        String[] methods = StringUtils.splitWithComma(allowedMethods);
         setAllowedMethods(methods);
     }
 
@@ -158,7 +158,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
                 this.allowedMethodsString = null;
             } else {
                 this.allowedMethods = allowedMethods;
-                this.allowedMethodsString = StringUtils.joinCommaDelimitedList(allowedMethods);
+                this.allowedMethodsString = StringUtils.joinWithCommas(allowedMethods);
             }
         } else {
             this.allowedMethods = null;
@@ -179,7 +179,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     }
 
     public void setAllowedHeaders(String allowedHeaders) {
-        String[] headers = StringUtils.splitCommaDelimitedString(allowedHeaders);
+        String[] headers = StringUtils.splitWithComma(allowedHeaders);
         setAllowedHeaders(headers);
     }
 
@@ -199,7 +199,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
                 this.allowedHeadersString = null;
             } else {
                 this.allowedHeaders = allowedHeaders;
-                this.allowedHeadersString = StringUtils.joinCommaDelimitedList(allowedHeaders);
+                this.allowedHeadersString = StringUtils.joinWithCommas(allowedHeaders);
             }
         } else {
             this.allowedHeaders = null;
@@ -220,7 +220,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     }
 
     public void setExposedHeaders(String exposedHeaders) {
-        String[] headers = StringUtils.splitCommaDelimitedString(exposedHeaders);
+        String[] headers = StringUtils.splitWithComma(exposedHeaders);
         setExposedHeaders(headers);
     }
 
@@ -240,7 +240,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
                 this.exposedHeadersString = null;
             } else {
                 this.exposedHeaders = exposedHeaders;
-                this.exposedHeadersString = StringUtils.joinCommaDelimitedList(exposedHeaders);
+                this.exposedHeadersString = StringUtils.joinWithCommas(exposedHeaders);
             }
         } else {
             this.exposedHeaders = null;

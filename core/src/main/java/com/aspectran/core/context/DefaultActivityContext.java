@@ -82,7 +82,9 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * @param classLoader the class loader
      * @param applicationAdapter the application adapter
      */
-    public DefaultActivityContext(ClassLoader classLoader, ApplicationAdapter applicationAdapter, CoreService masterService) {
+    public DefaultActivityContext(ClassLoader classLoader,
+                                  ApplicationAdapter applicationAdapter,
+                                  CoreService masterService) {
         this.classLoader = classLoader;
         this.applicationAdapter = applicationAdapter;
         this.masterService = masterService;

@@ -80,7 +80,7 @@ class ActivityEnvironmentTest {
         activity.setAttributeMap(attributes);
         activity.perform(() -> {
             assertEquals("Apple, Tomato, Strawberry, Melon",
-                environment.getProperty("property1", activity).toString());
+                    environment.getProperty("property1", activity).toString());
             return null;
         });
     }

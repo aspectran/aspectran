@@ -17,8 +17,11 @@ context: {
         com.aspectran.demo
     ]
     profiles: {
-        default: [
+        essential: [
             demo
+        ]
+        default: [
+            dev
         ]
     }
     autoReload: {

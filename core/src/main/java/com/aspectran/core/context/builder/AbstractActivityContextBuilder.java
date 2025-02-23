@@ -93,9 +93,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String[] basePackages;
 
-    private String[] activeProfiles;
+    private String[] essentialProfiles;
 
     private String[] defaultProfiles;
+
+    private String[] activeProfiles;
 
     private ItemRuleMap propertyItemRuleMap;
 
@@ -206,14 +208,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    @Override
-    public String[] getActiveProfiles() {
-        return activeProfiles;
+    public String[] getEssentialProfiles() {
+        return essentialProfiles;
     }
 
-    @Override
-    public void setActiveProfiles(String... activeProfiles) {
-        this.activeProfiles = activeProfiles;
+    public void setEssentialProfiles(String... essentialProfiles) {
+        this.essentialProfiles = essentialProfiles;
     }
 
     @Override
@@ -224,6 +224,16 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setDefaultProfiles(String... defaultProfiles) {
         this.defaultProfiles = defaultProfiles;
+    }
+
+    @Override
+    public String[] getActiveProfiles() {
+        return activeProfiles;
+    }
+
+    @Override
+    public void setActiveProfiles(String... activeProfiles) {
+        this.activeProfiles = activeProfiles;
     }
 
     @Override
@@ -282,17 +292,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
             if (profilesConfig != null) {
                 configure(profilesConfig);
-            } else if (getMasterService() != null) {
-                for (CoreService parentService = getMasterService().getParentService();
-                     parentService != null; parentService = parentService.getParentService()) {
-                    if (parentService.getAspectranConfig().hasContextConfig()) {
-                        ContextConfig parentContextConfig = parentService.getAspectranConfig().getContextConfig();
-                        if (parentContextConfig.hasProfilesConfig()) {
-                            configure(parentContextConfig.getProfilesConfig());
-                            break;
-                        }
-                    }
-                }
             }
 
             ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
@@ -319,8 +318,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     private void configure(@NonNull ContextProfilesConfig profilesConfig) {
-        setActiveProfiles(profilesConfig.getActiveProfiles());
+        setEssentialProfiles(profilesConfig.getEssentialProfiles());
         setDefaultProfiles(profilesConfig.getDefaultProfiles());
+        setActiveProfiles(profilesConfig.getActiveProfiles());
     }
 
     protected boolean isUseAponToLoadXml() {
@@ -357,13 +357,25 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected EnvironmentProfiles createEnvironmentProfiles() {
         EnvironmentProfiles environmentProfiles = new EnvironmentProfiles();
+        if (getEssentialProfiles() != null) {
+            environmentProfiles.setEssentialProfiles(getEssentialProfiles());
+        }
         if (getDefaultProfiles() != null) {
             environmentProfiles.setDefaultProfiles(getDefaultProfiles());
         }
         if (getActiveProfiles() != null) {
             environmentProfiles.setActiveProfiles(getActiveProfiles());
-        } else {
-            environmentProfiles.getActiveProfiles(); // just for logging
+        }
+        // just for logging
+        String[] activeProfiles = environmentProfiles.getActiveProfiles();
+        if (activeProfiles.length == 0) {
+            String[] defaultProfiles = environmentProfiles.getDefaultProfiles();
+            if (defaultProfiles.length > 0) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("No active profile set, falling back to default profiles: {}",
+                            StringUtils.joinWithCommas(defaultProfiles));
+                }
+            }
         }
         return environmentProfiles;
     }

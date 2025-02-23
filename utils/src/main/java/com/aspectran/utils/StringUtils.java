@@ -578,6 +578,156 @@ public abstract class StringUtils {
     }
 
     /**
+     * Convert a comma-delimited list (e.g., a row from a CSV file) into an
+     * array of strings.
+     * @param str the input {@code String}
+     * @return an array of strings, or the empty array in case of empty input
+     */
+    public static String[] splitWithComma(String str) {
+        return tokenize(str, ",", true);
+    }
+
+    /**
+     * Tokenize the given {@code String} into a String array via a StringTokenizer.
+     * @param str the {@code String} to tokenize
+     * @param delimiters the delimiter characters
+     * @return an array of the tokens
+     */
+    public static String[] tokenize(String str, String delimiters) {
+        return tokenize(str, delimiters, false);
+    }
+
+    /**
+     * Tokenize the given {@code String} into a {@code String} array via a {@code StringTokenizer}.
+     * @param str the String to tokenize
+     * @param delimiters the delimiter characters
+     * @param trim trim the tokens via String's trim
+     * @return an array of the tokens
+     */
+    public static String[] tokenize(String str, String delimiters, boolean trim) {
+        if (isEmpty(str) || isEmpty(delimiters)) {
+            return EMPTY_STRING_ARRAY;
+        }
+        StringTokenizer st = new StringTokenizer((trim ? str.trim() : str), delimiters);
+        List<String> tokens = new ArrayList<>();
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            tokens.add(trim ? token.trim() : token);
+        }
+        return tokens.toArray(EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
+     * <p>Useful for {@code toString()} implementations.</p>
+     * @param arr the array to display
+     * @param delim the delimiter to use (typically a ",")
+     * @return the delimited {@code String}
+     */
+    public static String join(Object[] arr, String delim) {
+        if (arr == null || arr.length == 0) {
+            return EMPTY;
+        }
+        if (arr.length == 1) {
+            return (arr[0] == null ? EMPTY : arr[0].toString());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(delim);
+            }
+            sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
+     * <p>Useful for {@code toString()} implementations.</p>
+     * @param collection the collection
+     * @param delim the delimiter to use (typically a ",")
+     * @return the delimited {@code String}
+     */
+    public static String join(Collection<?> collection, String delim) {
+        if (collection == null || collection.isEmpty()) {
+            return EMPTY;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Object o : collection) {
+            if (!first) {
+                sb.append(delim);
+            }
+            sb.append(o);
+            first = false;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convert a {@code String} array into a delimited {@code String}
+     * by a system-dependent line separator.
+     * @param arr the array to display
+     * @return the delimited {@code String}
+     */
+    public static String joinWithLines(Object[] arr) {
+        return join(arr, System.lineSeparator());
+    }
+
+    /**
+     * Convert a {@code Collection} into a delimited {@code String}
+     * by a system-dependent line separator.
+     * @param collection the collection
+     * @return the delimited {@code String}
+     */
+    public static String joinWithLines(Collection<?> collection) {
+        return join(collection, System.lineSeparator());
+    }
+
+    /**
+     * Convert a {@code String} array into a comma delimited {@code String}
+     * (i.e., CSV).
+     * @param arr the array to display
+     * @return the delimited {@code String}
+     */
+    public static String joinWithCommas(String[] arr) {
+        return join(arr, ", ");
+    }
+
+    /**
+     * Convert a {@code Collection} into a comma delimited {@code String}
+     * (i.e., CSV).
+     * @param collection the collection
+     * @return the delimited {@code String}
+     */
+    public static String joinWithCommas(Collection<?> collection) {
+        return join(collection, ", ");
+    }
+
+    /**
+     * Copy the given {@link Collection} into a {@code String} array.
+     * <p>The {@code Collection} must contain {@code String} elements only.
+     * @param collection the {@code Collection} to copy
+     * (potentially {@code null} or empty)
+     * @return the resulting {@code String} array
+     */
+    public static String[] toStringArray(Collection<String> collection) {
+        return (collection != null && !collection.isEmpty() ?
+                collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Copy the given {@link Enumeration} into a {@code String} array.
+     * <p>The {@code Enumeration} must contain {@code String} elements only.
+     * @param enumeration the {@code Enumeration} to copy
+     * (potentially {@code null} or empty)
+     * @return the resulting {@code String} array
+     */
+    public static String[] toStringArray(Enumeration<String> enumeration) {
+        return (enumeration != null ? toStringArray(Collections.list(enumeration)) : EMPTY_STRING_ARRAY);
+    }
+
+    /**
      * Returns the number of times the specified string was found
      * in the target string, or 0 if there is no specified string.
      * @param str the target string
@@ -657,156 +807,6 @@ public abstract class StringUtils {
             }
         }
         return count;
-    }
-
-    /**
-     * Tokenize the given {@code String} into a String array via a StringTokenizer.
-     * @param str the {@code String} to tokenize
-     * @param delimiters the delimiter characters
-     * @return an array of the tokens
-     */
-    public static String[] tokenize(String str, String delimiters) {
-        return tokenize(str, delimiters, false);
-    }
-
-    /**
-     * Tokenize the given {@code String} into a {@code String} array via a {@code StringTokenizer}.
-     * @param str the String to tokenize
-     * @param delimiters the delimiter characters
-     * @param trim trim the tokens via String's trim
-     * @return an array of the tokens
-     */
-    public static String[] tokenize(String str, String delimiters, boolean trim) {
-        if (isEmpty(str) || isEmpty(delimiters)) {
-            return EMPTY_STRING_ARRAY;
-        }
-        StringTokenizer st = new StringTokenizer((trim ? str.trim() : str), delimiters);
-        List<String> tokens = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            String token = st.nextToken();
-            tokens.add(trim ? token.trim() : token);
-        }
-        return tokens.toArray(EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.</p>
-     * @param arr the array to display
-     * @param delim the delimiter to use (typically a ",")
-     * @return the delimited {@code String}
-     */
-    public static String toDelimitedString(Object[] arr, String delim) {
-        if (arr == null || arr.length == 0) {
-            return EMPTY;
-        }
-        if (arr.length == 1) {
-            return (arr[0] == null ? EMPTY : arr[0].toString());
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < arr.length; i++) {
-            if (i > 0) {
-                sb.append(delim);
-            }
-            sb.append(arr[i]);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.</p>
-     * @param collection the collection
-     * @param delim the delimiter to use (typically a ",")
-     * @return the delimited {@code String}
-     */
-    public static String toDelimitedString(Collection<?> collection, String delim) {
-        if (collection == null || collection.isEmpty()) {
-            return EMPTY;
-        }
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Object o : collection) {
-            if (!first) {
-                sb.append(delim);
-            }
-            sb.append(o);
-            first = false;
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Convert a {@code String} array into a delimited {@code String}
-     * by a system-dependent line separator.
-     * @param arr the array to display
-     * @return the delimited {@code String}
-     */
-    public static String toLineDelimitedString(Object[] arr) {
-        return toDelimitedString(arr, System.lineSeparator());
-    }
-
-    /**
-     * Convert a {@code Collection} into a delimited {@code String}
-     * by a system-dependent line separator.
-     * @param collection the collection
-     * @return the delimited {@code String}
-     */
-    public static String toLineDelimitedString(Collection<?> collection) {
-        return toDelimitedString(collection, System.lineSeparator());
-    }
-
-    /**
-     * Convert a comma-delimited list (e.g., a row from a CSV file) into an
-     * array of strings.
-     * @param str the input {@code String}
-     * @return an array of strings, or the empty array in case of empty input
-     */
-    public static String[] splitCommaDelimitedString(String str) {
-        return tokenize(str, ",", true);
-    }
-
-    /**
-     * Convert a {@code String} array into a comma delimited {@code String}
-     * (i.e., CSV).
-     * @param arr the array to display
-     * @return the delimited {@code String}
-     */
-    public static String joinCommaDelimitedList(String[] arr) {
-        return toDelimitedString(arr, ", ");
-    }
-
-    /**
-     * Convert a {@code Collection} into a comma delimited {@code String}
-     * (i.e., CSV).
-     * @param collection the collection
-     * @return the delimited {@code String}
-     */
-    public static String joinCommaDelimitedList(Collection<?> collection) {
-        return toDelimitedString(collection, ", ");
-    }
-
-    /**
-     * Copy the given {@link Collection} into a {@code String} array.
-     * <p>The {@code Collection} must contain {@code String} elements only.
-     * @param collection the {@code Collection} to copy
-     * (potentially {@code null} or empty)
-     * @return the resulting {@code String} array
-     */
-    public static String[] toStringArray(Collection<String> collection) {
-        return (collection != null && !collection.isEmpty() ?
-                collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Copy the given {@link Enumeration} into a {@code String} array.
-     * <p>The {@code Enumeration} must contain {@code String} elements only.
-     * @param enumeration the {@code Enumeration} to copy
-     * (potentially {@code null} or empty)
-     * @return the resulting {@code String} array
-     */
-    public static String[] toStringArray(Enumeration<String> enumeration) {
-        return (enumeration != null ? toStringArray(Collections.list(enumeration)) : EMPTY_STRING_ARRAY);
     }
 
     /**

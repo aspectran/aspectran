@@ -262,7 +262,7 @@ public class ComponentCommand extends AbstractCommand {
             }
             MethodType[] requestMethods = transletRule.getAllowedMethods();
             if (requestMethods != null) {
-                transletName = StringUtils.toDelimitedString(requestMethods, ",") + " " + transletName;
+                transletName = StringUtils.join(requestMethods, ",") + " " + transletName;
             }
             formatter.format("%5d | %s%n", ++num, transletName);
         }

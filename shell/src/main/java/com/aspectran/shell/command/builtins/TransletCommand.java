@@ -173,7 +173,7 @@ public class TransletCommand extends AbstractCommand {
             }
             MethodType[] requestMethods = transletRule.getAllowedMethods();
             if (requestMethods != null) {
-                transletName = StringUtils.toDelimitedString(requestMethods, ",") + " " + transletName;
+                transletName = StringUtils.join(requestMethods, ",") + " " + transletName;
             }
             console.write("%5d | %-59s |", ++num, transletName);
             if (transletRule.isAsync()) {

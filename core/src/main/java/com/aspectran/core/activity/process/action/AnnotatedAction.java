@@ -333,7 +333,7 @@ public class AnnotatedAction implements Executable {
             }
         }
         if (!missingProperties.isEmpty()) {
-            String properties = StringUtils.joinCommaDelimitedList(missingProperties);
+            String properties = StringUtils.joinWithCommas(missingProperties);
             throw new IllegalArgumentException("Missing required properties [" + properties + "] for " + type);
         }
         return model;

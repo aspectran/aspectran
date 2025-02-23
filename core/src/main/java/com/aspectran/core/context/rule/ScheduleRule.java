@@ -215,7 +215,7 @@ public class ScheduleRule implements BeanReferenceable {
                         String.format("Cron expression must consist of 6 fields (found %d in %s)",
                             fields.length, expression));
             }
-            expressionParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
+            expressionParameters.putValue(TriggerParameters.expression, StringUtils.join(fields, " "));
         }
         scheduleRule.setTriggerExpressionParameters(expressionParameters);
     }

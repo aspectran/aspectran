@@ -126,7 +126,7 @@ final class ProfilesParser {
 
     private static void assertWellFormed(String expression, @NonNull List<Profiles> elements, int size) {
         assertWellFormed(expression, elements.size() == size,
-            "each profile or set of them must be separated by commas (',')");
+                "each profile or set of them must be separated by commas (',')");
     }
 
     private static void assertWellFormed(String expression, boolean wellFormed, String message) {

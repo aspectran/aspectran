@@ -29,7 +29,7 @@ public class NoActivityStateException extends IllegalStateException {
      * Constructs a NoActivityStateException.
      */
     public NoActivityStateException() {
-        super("No activity");
+        super("No Activity");
     }
 
 }

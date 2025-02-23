@@ -43,7 +43,7 @@ public class MissingMandatoryParametersException extends RequestParseException {
      * @param itemRules an item rule list that represents missing parameters
      */
     public MissingMandatoryParametersException(@NonNull Collection<ItemRule> itemRules) {
-        super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRules));
+        super("Missing mandatory parameters: " + StringUtils.joinWithCommas(itemRules));
         this.itemRules = itemRules;
     }
 

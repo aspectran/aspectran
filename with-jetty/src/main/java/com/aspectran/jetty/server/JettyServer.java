@@ -241,7 +241,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
             }
             ports.append(connector1.getLocalPort());
             ports.append(" (");
-            ports.append(StringUtils.joinCommaDelimitedList(connector.getProtocols()));
+            ports.append(StringUtils.joinWithCommas(connector.getProtocols()));
             ports.append(")");
         }
         return ports.toString();
