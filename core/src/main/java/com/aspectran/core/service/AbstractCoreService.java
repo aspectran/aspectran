@@ -36,6 +36,8 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     private String basePath;
 
+    private String contextName;
+
     private AspectranConfig aspectranConfig;
 
     private ActivityContextBuilder activityContextBuilder;
@@ -100,6 +102,15 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     @Override
+    public String getContextName() {
+        return contextName;
+    }
+
+    protected void setContextName(String contextName) {
+        this.contextName = contextName;
+    }
+
+    @Override
     public AspectranConfig getAspectranConfig() {
         return aspectranConfig;
     }
@@ -113,8 +124,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     protected ActivityContextBuilder getActivityContextBuilder() {
-        Assert.state(hasActivityContextBuilder(),
-            "No ActivityContextLoader configured");
+        Assert.state(hasActivityContextBuilder(), "No ActivityContextLoader configured");
         return activityContextBuilder;
     }
 

@@ -96,7 +96,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
-            String contextName = (getContextConfig() != null ? getContextConfig().getName() : null);
+            String contextName = null;
+            if (getMasterService() != null) {
+                contextName = getMasterService().getContextName();
+            } else if (getContextConfig() != null) {
+                contextName = getContextConfig().getName();
+            }
+
             ClassLoader parentClassLoader = null;
             if (getMasterService() != null && getMasterService().getParentService() != null) {
                 CoreService parentService = getMasterService().getParentService();
@@ -139,7 +145,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 assistant.clearCurrentRuleAppender();
             }
 
-            activityContext = createActivityContext(assistant, getMasterService());
+            activityContext = createActivityContext(assistant);
             assistant.release();
 
             if (getMasterService() == null) {

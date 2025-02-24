@@ -78,6 +78,9 @@ public class DefaultCoreService extends AbstractCoreService {
             } else {
                 setBasePath(getParentService().getBasePath());
             }
+            if (getContextName() == null && contextConfig != null && contextConfig.hasName()) {
+                setContextName(contextConfig.getName());
+            }
 
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder(this);
             activityContextBuilder.configure(contextConfig);
@@ -101,8 +104,7 @@ public class DefaultCoreService extends AbstractCoreService {
 
     protected void buildActivityContext() throws ActivityContextBuilderException {
         Assert.state(getActivityContext() == null,
-            "ActivityContext is already built; " +
-                "Must destroy the current ActivityContext before reloading");
+                "ActivityContext is already built; Must destroy the current ActivityContext before reloading");
         ActivityContext activityContext = getActivityContextBuilder().build();
         setActivityContext(activityContext);
         try {
@@ -153,19 +155,39 @@ public class DefaultCoreService extends AbstractCoreService {
 
     @Override
     public void start() throws Exception {
+        String oldContextName = null;
+        if (getContextName() != null) {
+            oldContextName = Thread.currentThread().getName();
+            Thread.currentThread().setName(getContextName());
+        }
+
         if (isRootService()) {
             registerShutdownTask();
         }
         super.start();
+
+        if (oldContextName != null) {
+            Thread.currentThread().setName(oldContextName);
+        }
     }
 
     @Override
     public void stop() {
+        String oldContextName = null;
+        if (getContextName() != null) {
+            oldContextName = Thread.currentThread().getName();
+            Thread.currentThread().setName(getContextName());
+        }
+
         super.stop();
         if (isRootService()) {
             releaseSingletonLock();
             removeShutdownTask();
             getActivityContextBuilder().clear();
+        }
+
+        if (oldContextName != null) {
+            Thread.currentThread().setName(oldContextName);
         }
     }
 
@@ -196,7 +218,7 @@ public class DefaultCoreService extends AbstractCoreService {
     private void registerShutdownTask() {
         shutdownHookManager = ShutdownHook.Manager.create(new ShutdownHook.Task() {
             @Override
-            public void run() throws Exception {
+            public void run() {
                 if (isActive()) {
                     DefaultCoreService.super.stop();
                     releaseSingletonLock();

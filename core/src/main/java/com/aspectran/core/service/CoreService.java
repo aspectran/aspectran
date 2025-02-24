@@ -57,6 +57,8 @@ public interface CoreService {
      */
     String getBasePath();
 
+    String getContextName();
+
     /**
      * Returns the Aspectran configuration parameters used to
      * generate the AspectranService.

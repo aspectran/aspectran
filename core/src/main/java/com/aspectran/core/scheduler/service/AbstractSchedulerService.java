@@ -300,11 +300,8 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
             setWaitOnShutdown(schedulerConfig.isWaitOnShutdown());
         }
 
-        if (getParentService().getAspectranConfig().hasContextConfig()) {
-            String contextName = getParentService().getAspectranConfig().getContextConfig().getName();
-            if (StringUtils.hasText(contextName)) {
-                setLoggingGroup(contextName);
-            }
+        if (StringUtils.hasText(getParentService().getContextName())) {
+            setLoggingGroup(getParentService().getContextName());
         }
     }
 

@@ -66,6 +66,10 @@ public class ContextConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
+    public boolean hasName() {
+        return hasValue(name);
+    }
+
     public String getName() {
         return getString(name);
     }
@@ -79,12 +83,12 @@ public class ContextConfig extends AbstractParameters {
         return this;
     }
 
-    public String getBasePath() {
-        return getString(base);
-    }
-
     public boolean hasBasePath() {
         return hasValue(base);
+    }
+
+    public String getBasePath() {
+        return getString(base);
     }
 
     public ContextConfig setBasePath(String basePath) {

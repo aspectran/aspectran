@@ -56,6 +56,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,21 +261,21 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void configure(ContextConfig contextConfig) throws IOException, InvalidResourceException {
+    public void configure(@Nullable ContextConfig contextConfig) throws IOException, InvalidResourceException {
         if (this.basePath == null) {
-            if (getMasterService() != null) {
-                this.basePath = getMasterService().getBasePath();
-            } else {
+            if (masterService != null) {
+                this.basePath = masterService.getBasePath();
+            } else if (contextConfig != null) {
                 this.basePath = contextConfig.getBasePath();
             }
         }
 
-        if (getMasterService() == null || getMasterService().isRootService()) {
+        if (masterService == null || masterService.isRootService()) {
             checkDirectoryStructure();
         }
 
+        this.contextConfig = contextConfig;
         if (contextConfig != null) {
-            this.contextConfig = contextConfig;
             this.contextRules = contextConfig.getContextRules();
 
             AspectranParameters aspectranParameters = contextConfig.getAspectranParameters();
@@ -387,12 +388,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant, CoreService masterService)
+    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
         DefaultActivityContext context = new DefaultActivityContext(
                 assistant.getClassLoader(), assistant.getApplicationAdapter(), masterService);
-        if (getContextConfig() != null) {
-            context.setName(getContextConfig().getName());
+        if (masterService != null) {
+            context.setName(masterService.getContextName());
+        } else if (contextConfig != null) {
+            context.setName(contextConfig.getName());
         }
         context.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
@@ -543,6 +546,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
+    @Override
     public void clear() {
         SystemUtils.clearProperty(BASE_PATH_PROPERTY_NAME);
         SystemUtils.clearProperty(WORK_PATH_PROPERTY_NAME);

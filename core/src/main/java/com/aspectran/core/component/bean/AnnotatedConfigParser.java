@@ -135,10 +135,6 @@ public class AnnotatedConfigParser {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Now trying to parse annotated configurations");
-        }
-
         if (!configurableBeanRules.isEmpty()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Parsing bean rules for annotated configurations: {}", configurableBeanRules.size());
