@@ -158,7 +158,8 @@ public class DefaultCoreService extends AbstractCoreService {
         String oldContextName = null;
         if (getContextName() != null) {
             oldContextName = Thread.currentThread().getName();
-            Thread.currentThread().setName(getContextName());
+            String newContextName = (isRootService() ? getContextName() : oldContextName + ":" + getContextName());
+            Thread.currentThread().setName(newContextName);
         }
 
         if (isRootService()) {
@@ -176,7 +177,8 @@ public class DefaultCoreService extends AbstractCoreService {
         String oldContextName = null;
         if (getContextName() != null) {
             oldContextName = Thread.currentThread().getName();
-            Thread.currentThread().setName(getContextName());
+            String newContextName = (isRootService() ? getContextName() : oldContextName + ":" + getContextName());
+            Thread.currentThread().setName(newContextName);
         }
 
         super.stop();

@@ -574,4 +574,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         }
     }
 
+    @Override
+    public String getComponentName() {
+        if (sessionManager.getWorkerName() != null) {
+            return super.getComponentName() + "(" + sessionManager.getWorkerName() + ")";
+        } else {
+            return super.getComponentName();
+        }
+    }
+
 }

@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.lifecycle;
 
-import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.AutoLock;
 import org.slf4j.Logger;
@@ -211,16 +211,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public String toString() {
-        return String.format("%s@%x{%s}", myName(), hashCode(), getState());
-    }
-
-    private String myName() {
-        Class<?> type = getClass();
-        String name = type.getSimpleName();
-        if (StringUtils.isEmpty(name) && type.getSuperclass() != null) {
-            name = type.getSuperclass().getSimpleName();
-        }
-        return name;
+        return (ObjectUtils.simpleIdentityToString(this) + "{" + getState() + "}");
     }
 
 }

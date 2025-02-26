@@ -100,6 +100,7 @@ public class ActivityJobReporter {
             ToStringBuilder tsb = new ToStringBuilder(title);
             tsb.append("group", jobGroup);
             tsb.append("name", jobName);
+            tsb.append("fireTime", toLocalDateTime(context.getFireTime()));
             tsb.append("jobRunTime", context.getJobRunTime());
 
             if (activity != null) {
