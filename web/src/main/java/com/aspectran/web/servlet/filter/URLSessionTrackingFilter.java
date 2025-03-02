@@ -54,6 +54,7 @@ public class URLSessionTrackingFilter implements Filter {
             String myName = ObjectUtils.simpleIdentityToString(this, filterConfig.getFilterName());
             ToStringBuilder tsb = new ToStringBuilder(myName);
             tsb.append("delimiter", delimiter);
+            logger.debug(tsb.toString());
         }
     }
 

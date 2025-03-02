@@ -221,11 +221,12 @@ public class ActivityData extends HashMap<String, Object> {
             }
         }
         if (activity.hasSessionAdapter()) {
-            Enumeration<String> enumer = activity.getSessionAdapter().getAttributeNames();
+            SessionAdapter sessionAdapter = activity.getSessionAdapter();
+            Enumeration<String> enumer = sessionAdapter.getAttributeNames();
             if (enumer != null) {
                 while (enumer.hasMoreElements()) {
                     String name = enumer.nextElement();
-                    Object value = activity.getSessionAdapter().getAttribute(name);
+                    Object value = sessionAdapter.getAttribute(name);
                     if (this != value) {
                         preempt(name);
                     }
