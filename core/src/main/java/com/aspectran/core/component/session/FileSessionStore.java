@@ -270,25 +270,25 @@ public class FileSessionStore extends AbstractSessionStore {
                 try {
                     if (Files.deleteIfExists(p)) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Sweep expired session file: {}", filename);
+                            logger.debug("Deleted expired session file {}", filename);
                         }
                     } else {
-                        logger.warn("Could not delete {}", filename);
+                        logger.warn("Couldn't delete expired session file {}", filename);
                     }
                 } catch (IOException e) {
-                    logger.warn("Could not delete {}", filename, e);
+                    logger.warn("Couldn't delete expired session file {}", filename, e);
                 }
             } else if (expiry == -1L && isDeleteUnrestorableFiles()) {
                 try {
                     if (Files.deleteIfExists(p)) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Deleted unrestorable session file: {}", p.getFileName());
+                            logger.debug("Deleted unrestorable session file {}", p.getFileName());
                         }
                     } else {
-                        logger.warn("Could not delete {}", filename);
+                        logger.warn("Couldn't delete unrestorable session file {}", filename);
                     }
                 } catch (IOException e) {
-                    logger.warn("Could not delete {}", filename, e);
+                    logger.warn("Couldn't delete unrestorable session file {}", filename, e);
                 }
             }
         }
