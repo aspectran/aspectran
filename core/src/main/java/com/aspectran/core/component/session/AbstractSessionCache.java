@@ -238,7 +238,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         }
         if (!forDeleting && session != null && loaded.get()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Reside evicted session id={} into {}", session.getId(), thisName);
+                logger.debug("Reside evicted session id={}", session.getId());
             }
             sessionManager.onSessionResided(session);
         }
@@ -551,7 +551,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Evict idle session id={} from {}", session.getId(), thisName);
+                    logger.debug("Evict idle session id={}", session.getId());
                 }
                 // save before evicting
                 if (sessionStore != null && (isClusterEnabled() || isSaveOnInactiveEviction())) {
