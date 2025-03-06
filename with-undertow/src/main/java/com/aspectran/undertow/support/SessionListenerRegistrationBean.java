@@ -40,6 +40,10 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
 
     private final String deploymentName;
 
+    public SessionListenerRegistrationBean() {
+        this(null, null);
+    }
+
     public SessionListenerRegistrationBean(String towServerId) {
         this(towServerId, null);
     }
@@ -88,11 +92,22 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
     }
 
     private SessionManager getSessionManager(String deploymentName) {
-        Assert.notNull(towServerId, "towServerId must not be null");
         Assert.notNull(deploymentName, "deploymentName must not be null");
-        TowServer towServer = getBeanRegistry().getBean(towServerId);
-        if (towServer == null) {
-            throw new IllegalStateException("No TowServer named '" + towServerId + "'");
+        TowServer towServer = null;
+        if (towServerId != null) {
+            if (getBeanRegistry().containsBean(TowServer.class, towServerId)) {
+                towServer = getBeanRegistry().getBean(TowServer.class, towServerId);
+            }
+            if (towServer == null) {
+                throw new IllegalStateException("No TowServer named '" + towServerId + "'");
+            }
+        } else {
+            if (getBeanRegistry().containsBean(TowServer.class)) {
+                towServer = getBeanRegistry().getBean(TowServer.class);
+            }
+            if (towServer == null) {
+                throw new IllegalStateException("No TowServer");
+            }
         }
         return towServer.getSessionManager(deploymentName);
     }
