@@ -19,6 +19,10 @@
                         <item name="templateLoaderPath" type="array">
                             <value>classpath:view</value>
                         </item>
+                        <item name="newLineTrimming" valueType="boolean">false</item>
+<!--                        <item name="disallowedTokenParserTags" type="set">-->
+<!--                            <value>include</value>-->
+<!--                        </item>-->
                     </properties>
                 </bean>
             </item>
@@ -64,5 +68,9 @@
     <template id="template-1" engine="pebble" style="apon">
         |Name: {{ name }}, Email: {{ email }}
     </template>
+
+    <translet name="template-include">
+        <dispatch name="template-3" dispatcher="pebbleViewDispatcher"/>
+    </translet>
 
 </aspectran>

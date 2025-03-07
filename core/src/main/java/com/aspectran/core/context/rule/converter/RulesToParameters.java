@@ -184,9 +184,9 @@ public class RulesToParameters {
             aspectranParameters.putValue(AspectranParameters.template, ps);
         }
 
-        List<RuleAppender> appenders = assistant.getRuleAppendHandler().getPendingList();
-        if (appenders != null) {
-            for (RuleAppender appender : appenders) {
+        List<RuleAppender> appenderList = assistant.getRuleAppendHandler().getPendingList();
+        if (appenderList != null) {
+            for (RuleAppender appender : appenderList) {
                 AppendParameters ps = toAppendParameters(appender);
                 aspectranParameters.putValue(AspectranParameters.append, ps);
             }

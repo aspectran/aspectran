@@ -75,4 +75,19 @@ class PebbleTemplateEngineTest {
         assertEquals(result1, result3);
     }
 
+    @Test
+    void testInclude() {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("name", "tester");
+        params.setParameter("email", "tester@aspectran.com");
+
+        String result1 = aspectran.translate("translet-1", params).getWrittenResponse();;
+        String result2 = aspectran.translate("template-include", params).getWrittenResponse();
+
+        //System.out.println(result1);
+        //System.out.println(result2);
+
+        assertEquals(result1, result2);
+    }
+
 }

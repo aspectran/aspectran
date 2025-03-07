@@ -22,6 +22,7 @@ import com.aspectran.utils.LocaleUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.extension.core.DisallowExtensionCustomizerBuilder;
 import io.pebbletemplates.pebble.loader.ClasspathLoader;
 import io.pebbletemplates.pebble.loader.DelegatingLoader;
 import io.pebbletemplates.pebble.loader.FileLoader;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Factory that configures a Pebble Engine Configuration.
@@ -47,26 +49,22 @@ public class PebbleEngineFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private Locale defaultLocale;
-
-    private boolean strictVariables;
-
     private String[] templateLoaderPaths;
 
     private Loader<?>[] templateLoaders;
+
+    private Locale defaultLocale;
+
+    private boolean strictVariables = false;
+
+    private boolean newLineTrimming = true;
+
+    private DisallowExtensionCustomizerBuilder disallowExtensionCustomizerBuilder;
 
     @Override
     @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
-    }
-
-    public void setDefaultLocale(String defaultLocale) {
-        this.defaultLocale = LocaleUtils.parseLocaleString(defaultLocale);
-    }
-
-    public void setStrictVariables(boolean strictVariables) {
-        this.strictVariables = strictVariables;
     }
 
     public void setTemplateLoaderPath(String templateLoaderPath) {
@@ -93,16 +91,60 @@ public class PebbleEngineFactory implements ActivityContextAware {
         this.templateLoaders = templateLoaderList.toArray(new Loader<?>[0]);
     }
 
+    public void setDefaultLocale(String defaultLocale) {
+        this.defaultLocale = LocaleUtils.parseLocaleString(defaultLocale);
+    }
+
+    public void setStrictVariables(boolean strictVariables) {
+        this.strictVariables = strictVariables;
+    }
+
+    public void setNewLineTrimming(boolean newLineTrimming) {
+        this.newLineTrimming = newLineTrimming;
+    }
+
+    public void setDisallowedFilterKeys(Set<String> disallowedFilterKeys) {
+        touchDisallowExtensionCustomizerBuilder().disallowedFilterKeys(disallowedFilterKeys);
+    }
+
+    public void setDisallowedTokenParserTags(Set<String> disallowedTokenParserTags) {
+        touchDisallowExtensionCustomizerBuilder().disallowedTokenParserTags(disallowedTokenParserTags);
+    }
+
+    public void setDisallowedFunctionKeys(Set<String> disallowedFunctionKeys) {
+        touchDisallowExtensionCustomizerBuilder().disallowedFunctionKeys(disallowedFunctionKeys);
+    }
+
+    public void setDisallowedBinaryOperatorSymbols(Set<String> disallowedBinaryOperatorSymbols) {
+        touchDisallowExtensionCustomizerBuilder().disallowedBinaryOperatorSymbols(disallowedBinaryOperatorSymbols);
+    }
+
+    public void setDisallowedUnaryOperatorSymbols(Set<String> disallowedUnaryOperatorSymbols) {
+        touchDisallowExtensionCustomizerBuilder().disallowedUnaryOperatorSymbols(disallowedUnaryOperatorSymbols);
+    }
+
+    public void setDisallowedTestKeys(Set<String> disallowedTestKeys) {
+        touchDisallowExtensionCustomizerBuilder().disallowedTestKeys(disallowedTestKeys);
+    }
+
+    public void setDisallowExtensionCustomizerBuilder(
+            DisallowExtensionCustomizerBuilder disallowExtensionCustomizerBuilder) {
+        this.disallowExtensionCustomizerBuilder = disallowExtensionCustomizerBuilder;
+    }
+
+    private DisallowExtensionCustomizerBuilder touchDisallowExtensionCustomizerBuilder() {
+        if (disallowExtensionCustomizerBuilder == null) {
+            disallowExtensionCustomizerBuilder = new DisallowExtensionCustomizerBuilder();
+        }
+        return disallowExtensionCustomizerBuilder;
+    }
+
     /**
      * Creates a PebbleEngine instance.
      * @return a PebbleEngine object that can be used to create PebbleTemplate objects
      */
     public PebbleEngine createPebbleEngine() {
         PebbleEngine.Builder builder = new PebbleEngine.Builder();
-        builder.strictVariables(strictVariables);
-        if (defaultLocale != null) {
-            builder.defaultLocale(defaultLocale);
-        }
         if (templateLoaders == null) {
             if (templateLoaderPaths != null && templateLoaderPaths.length > 0) {
                 List<Loader<?>> templateLoaderList = new ArrayList<>();
@@ -114,6 +156,15 @@ public class PebbleEngineFactory implements ActivityContextAware {
         }
         Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
         builder.loader(templateLoader);
+
+        builder.strictVariables(strictVariables);
+        builder.newLineTrimming(newLineTrimming);
+        if (defaultLocale != null) {
+            builder.defaultLocale(defaultLocale);
+        }
+        if (disallowExtensionCustomizerBuilder != null) {
+            builder.registerExtensionCustomizer(disallowExtensionCustomizerBuilder.build());
+        }
         return builder.build();
     }
 
@@ -124,7 +175,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
      * @return the aggregate TemplateLoader
      */
     protected Loader<?> getAggregateTemplateLoader(Loader<?>[] templateLoaders) {
-        int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
+        int loaderCount = (templateLoaders == null ? 0 : templateLoaders.length);
         switch (loaderCount) {
             case 0:
                 // Register default template loaders.

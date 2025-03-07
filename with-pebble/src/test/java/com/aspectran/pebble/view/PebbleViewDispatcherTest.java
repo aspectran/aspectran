@@ -61,7 +61,6 @@ class PebbleViewDispatcherTest {
         constructorArgumentItemRule3.setValue("#{pebbleEngineFactory}");
         parameters.addRule(pebbleBeanRule);
 
-        // Append a child Aspectran
         AspectranParameters aspectran1 = parameters.newAspectranParameters();
 
         TransletRule transletRule4 = new TransletRule();
