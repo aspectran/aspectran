@@ -21,7 +21,7 @@
         <dispatch name="templates/default"/>
     </translet>
 
-    <append resource="web/skylark/tts/voices.xml"/>
-    <append resource="web/skylark/tts/api-v0.xml"/>
+    <append resource="com/aspectran/demo/skylark/tts/voices.xml"/>
+    <append resource="com/aspectran/demo/skylark/tts/api-v0.xml"/>
 
 </aspectran>

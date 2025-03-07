@@ -51,7 +51,7 @@
 
     <append file="/config/server/server.xml"/>
     <append file="/config/shell/shell-context.xml" profile="!daemon"/>
-    <append resource="web/web-context.xml"/>
+    <append resource="com/aspectran/demo/web-context.xml"/>
     <!--<append file="/config/error-report.xml"/>-->
 
 </aspectran>

@@ -145,6 +145,7 @@
                             <includes>
                                 <include>_resource_*/</include>
                                 <include>_webroot/</include>
+                                <include>_webapps/</include>
                             </includes>
                             <excludes>
                                 <exclude>.gitignore</exclude>
