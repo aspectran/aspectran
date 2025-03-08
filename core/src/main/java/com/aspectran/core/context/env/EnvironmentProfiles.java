@@ -35,6 +35,13 @@ public class EnvironmentProfiles {
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentProfiles.class);
 
     /**
+     * Name of property to set to specify essential profiles: {@value}. Value may be comma-delimited.
+     * If there is a system property that contains a context name starting with this property name,
+     * that takes priority.
+     */
+    public static final String ESSENTIAL_PROFILES_PROPERTY_NAME = "aspectran.profiles.essential";
+
+    /**
      * Name of property to set to specify active profiles: {@value}. Value may be comma-delimited.
      */
     public static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
@@ -51,6 +58,17 @@ public class EnvironmentProfiles {
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>();
 
+    public EnvironmentProfiles(String contextName) {
+        String[] profiles = doGetEssentialProfilesProperty(contextName);
+        if (profiles != null) {
+            setEssentialProfiles(profiles);
+        }
+    }
+
+    public boolean hasEssentialProfiles() {
+        return !essentialProfiles.isEmpty();
+    }
+
     @NonNull
     public String[] getEssentialProfiles() {
         return StringUtils.toStringArray(essentialProfiles);
@@ -58,14 +76,24 @@ public class EnvironmentProfiles {
 
     public void setEssentialProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Essential profiles [{}]", StringUtils.joinWithCommas(profiles));
         synchronized (essentialProfiles) {
             essentialProfiles.clear();
+            logger.info("Essential profiles [{}]", StringUtils.joinWithCommas(profiles));
             for (String profile : profiles) {
                 validateProfile(profile);
                 essentialProfiles.add(profile);
             }
         }
+    }
+
+    private String[] doGetEssentialProfilesProperty(String contextName) {
+        String propertyName;
+        if (contextName == null) {
+            propertyName = ESSENTIAL_PROFILES_PROPERTY_NAME;
+        } else {
+            propertyName = ESSENTIAL_PROFILES_PROPERTY_NAME + "." + contextName;
+        }
+        return getProfilesFromSystemProperty(propertyName);
     }
 
     @NonNull

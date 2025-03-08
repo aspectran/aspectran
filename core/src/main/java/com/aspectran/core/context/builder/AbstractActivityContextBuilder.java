@@ -356,10 +356,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return new DefaultApplicationAdapter(basePath);
     }
 
-    protected EnvironmentProfiles createEnvironmentProfiles() {
-        EnvironmentProfiles environmentProfiles = new EnvironmentProfiles();
+    protected EnvironmentProfiles createEnvironmentProfiles(String contextName) {
+        EnvironmentProfiles environmentProfiles = new EnvironmentProfiles(contextName);
         if (getEssentialProfiles() != null) {
-            environmentProfiles.setEssentialProfiles(getEssentialProfiles());
+            if (environmentProfiles.hasEssentialProfiles()) {
+                logger.info("Ignored Essential profiles [{}]", StringUtils.joinWithCommas(getEssentialProfiles()));
+            } else {
+                environmentProfiles.setEssentialProfiles(getEssentialProfiles());
+            }
         }
         if (getDefaultProfiles() != null) {
             environmentProfiles.setDefaultProfiles(getDefaultProfiles());
