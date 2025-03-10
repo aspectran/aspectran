@@ -21,19 +21,19 @@ import com.aspectran.utils.apon.ValueType;
 
 public class ContextProfilesConfig extends AbstractParameters {
 
-    private static final ParameterKey essentialProfiles;
+    private static final ParameterKey baseProfiles;
     private static final ParameterKey defaultProfiles;
     private static final ParameterKey activeProfiles;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        essentialProfiles = new ParameterKey("essential", ValueType.STRING, true);
+        baseProfiles = new ParameterKey("base", ValueType.STRING, true);
         defaultProfiles = new ParameterKey("default", ValueType.STRING, true);
         activeProfiles = new ParameterKey("active", ValueType.STRING, true);
 
         parameterKeys = new ParameterKey[] {
-                essentialProfiles,
+                baseProfiles,
                 defaultProfiles,
                 activeProfiles
         };
@@ -43,18 +43,18 @@ public class ContextProfilesConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public String[] getEssentialProfiles() {
-        return getStringArray(essentialProfiles);
+    public String[] getBaseProfiles() {
+        return getStringArray(baseProfiles);
     }
 
-    public ContextProfilesConfig setEssentialProfiles(String[] essentialProfiles) {
-        removeValue(ContextProfilesConfig.essentialProfiles);
-        putValue(ContextProfilesConfig.essentialProfiles, essentialProfiles);
+    public ContextProfilesConfig setBaseProfiles(String[] baseProfiles) {
+        removeValue(ContextProfilesConfig.baseProfiles);
+        putValue(ContextProfilesConfig.baseProfiles, baseProfiles);
         return this;
     }
 
-    public ContextProfilesConfig addEssentialProfile(String essentialProfile) {
-        putValue(ContextProfilesConfig.essentialProfiles, essentialProfile);
+    public ContextProfilesConfig addBaseProfile(String baseProfile) {
+        putValue(ContextProfilesConfig.baseProfiles, baseProfile);
         return this;
     }
 

@@ -94,7 +94,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String[] basePackages;
 
-    private String[] essentialProfiles;
+    private String[] baseProfiles;
 
     private String[] defaultProfiles;
 
@@ -209,12 +209,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    public String[] getEssentialProfiles() {
-        return essentialProfiles;
+    public String[] getBaseProfiles() {
+        return baseProfiles;
     }
 
-    public void setEssentialProfiles(String... essentialProfiles) {
-        this.essentialProfiles = essentialProfiles;
+    public void setBaseProfiles(String... baseProfiles) {
+        this.baseProfiles = baseProfiles;
     }
 
     @Override
@@ -319,7 +319,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     private void configure(@NonNull ContextProfilesConfig profilesConfig) {
-        setEssentialProfiles(profilesConfig.getEssentialProfiles());
+        setBaseProfiles(profilesConfig.getBaseProfiles());
         setDefaultProfiles(profilesConfig.getDefaultProfiles());
         setActiveProfiles(profilesConfig.getActiveProfiles());
     }
@@ -358,11 +358,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected EnvironmentProfiles createEnvironmentProfiles(String contextName) {
         EnvironmentProfiles environmentProfiles = new EnvironmentProfiles(contextName);
-        if (getEssentialProfiles() != null) {
-            if (environmentProfiles.hasEssentialProfiles()) {
-                logger.info("Ignored Essential profiles [{}]", StringUtils.joinWithCommas(getEssentialProfiles()));
+        if (getBaseProfiles() != null) {
+            if (environmentProfiles.hasBaseProfiles()) {
+                logger.info("Ignored base profiles [{}]", StringUtils.joinWithCommas(getBaseProfiles()));
             } else {
-                environmentProfiles.setEssentialProfiles(getEssentialProfiles());
+                environmentProfiles.setBaseProfiles(getBaseProfiles());
             }
         }
         if (getDefaultProfiles() != null) {

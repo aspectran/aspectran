@@ -39,18 +39,18 @@ public class ActivityEnvironment implements Environment {
     }
 
     @Override
-    public String[] getEssentialProfiles() {
-        return environmentProfiles.getEssentialProfiles();
-    }
-
-    @Override
-    public String[] getActiveProfiles() {
-        return environmentProfiles.getActiveProfiles();
+    public String[] getBaseProfiles() {
+        return environmentProfiles.getBaseProfiles();
     }
 
     @Override
     public String[] getDefaultProfiles() {
         return environmentProfiles.getDefaultProfiles();
+    }
+
+    @Override
+    public String[] getActiveProfiles() {
+        return environmentProfiles.getActiveProfiles();
     }
 
     @Override

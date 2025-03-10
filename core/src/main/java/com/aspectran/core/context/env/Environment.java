@@ -28,8 +28,20 @@ public interface Environment {
     /**
      * Returns the set of profiles essentials for this environment. These are always active
      * internally in this environment, but are not exposed as active profiles.
+     * @see #getBaseProfiles
+     * @see EnvironmentProfiles#setBaseProfiles
+     * @see EnvironmentProfiles#BASE_PROFILES_PROPERTY_NAME
      */
-    String[] getEssentialProfiles();
+    String[] getBaseProfiles();
+
+    /**
+     * Return the set of profiles to be active by default when no active profiles have
+     * been set explicitly.
+     * @see #getActiveProfiles
+     * @see EnvironmentProfiles#setDefaultProfiles
+     * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY_NAME
+     */
+    String[] getDefaultProfiles();
 
     /**
      * Return the set of profiles explicitly made active for this environment. Profiles
@@ -45,15 +57,6 @@ public interface Environment {
      * @see EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME
      */
     String[] getActiveProfiles();
-
-    /**
-     * Return the set of profiles to be active by default when no active profiles have
-     * been set explicitly.
-     * @see #getActiveProfiles
-     * @see EnvironmentProfiles#setDefaultProfiles
-     * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY_NAME
-     */
-    String[] getDefaultProfiles();
 
     /**
      * Return the set of profiles explicitly made active for this environment.

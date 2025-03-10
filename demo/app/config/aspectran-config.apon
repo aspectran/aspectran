@@ -17,7 +17,7 @@ context: {
         com.aspectran.demo
     ]
     profiles: {
-        essential: [
+        base: [
             demo
         ]
         default: [

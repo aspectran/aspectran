@@ -35,16 +35,11 @@ public class EnvironmentProfiles {
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentProfiles.class);
 
     /**
-     * Name of property to set to specify essential profiles: {@value}. Value may be comma-delimited.
+     * Name of property to set to specify the base profiles: {@value}. Value may be comma-delimited.
      * If there is a system property that contains a context name starting with this property name,
      * that takes priority.
      */
-    public static final String ESSENTIAL_PROFILES_PROPERTY_NAME = "aspectran.profiles.essential";
-
-    /**
-     * Name of property to set to specify active profiles: {@value}. Value may be comma-delimited.
-     */
-    public static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
+    public static final String BASE_PROFILES_PROPERTY_NAME = "aspectran.profiles.base";
 
     /**
      * Name of property to set to specify profiles active by default: {@value}. Value may
@@ -52,48 +47,99 @@ public class EnvironmentProfiles {
      */
     public static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
 
-    private final Set<String> essentialProfiles = new LinkedHashSet<>();
+    /**
+     * Name of property to set to specify active profiles: {@value}. Value may be comma-delimited.
+     */
+    public static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 
-    private final Set<String> activeProfiles = new LinkedHashSet<>();
+    private final Set<String> baseProfiles = new LinkedHashSet<>();
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>();
 
+    private final Set<String> activeProfiles = new LinkedHashSet<>();
+
     public EnvironmentProfiles(String contextName) {
-        String[] profiles = doGetEssentialProfilesProperty(contextName);
+        String[] profiles = doGetBaseProfilesProperty(contextName);
         if (profiles != null) {
-            setEssentialProfiles(profiles);
+            setBaseProfiles(profiles);
         }
     }
 
-    public boolean hasEssentialProfiles() {
-        return !essentialProfiles.isEmpty();
+    public boolean hasBaseProfiles() {
+        return !baseProfiles.isEmpty();
     }
 
     @NonNull
-    public String[] getEssentialProfiles() {
-        return StringUtils.toStringArray(essentialProfiles);
+    public String[] getBaseProfiles() {
+        return StringUtils.toStringArray(baseProfiles);
     }
 
-    public void setEssentialProfiles(String... profiles) {
+    public void setBaseProfiles(String... profiles) {
         Assert.notNull(profiles, "profiles must not be null");
-        synchronized (essentialProfiles) {
-            essentialProfiles.clear();
-            logger.info("Essential profiles [{}]", StringUtils.joinWithCommas(profiles));
+        synchronized (baseProfiles) {
+            baseProfiles.clear();
+            logger.info("Base profiles [{}]", StringUtils.joinWithCommas(profiles));
             for (String profile : profiles) {
                 validateProfile(profile);
-                essentialProfiles.add(profile);
+                baseProfiles.add(profile);
             }
         }
     }
 
-    private String[] doGetEssentialProfilesProperty(String contextName) {
+    private String[] doGetBaseProfilesProperty(String contextName) {
         String propertyName;
         if (contextName == null) {
-            propertyName = ESSENTIAL_PROFILES_PROPERTY_NAME;
+            propertyName = BASE_PROFILES_PROPERTY_NAME;
         } else {
-            propertyName = ESSENTIAL_PROFILES_PROPERTY_NAME + "." + contextName;
+            propertyName = BASE_PROFILES_PROPERTY_NAME + "." + contextName;
         }
         return getProfilesFromSystemProperty(propertyName);
+    }
+
+    @NonNull
+    public String[] getDefaultProfiles() {
+        return StringUtils.toStringArray(doGetDefaultProfiles());
+    }
+
+    /**
+     * Returns the set of default profiles explicitly set via
+     * {@link #setDefaultProfiles(String...)}, then check for the presence of the
+     * {@value #DEFAULT_PROFILES_PROPERTY_NAME} property and assign its value (if any)
+     * to the set of default profiles.
+     */
+    private Set<String> doGetDefaultProfiles() {
+        synchronized (defaultProfiles) {
+            if (defaultProfiles.isEmpty()) {
+                String[] profiles = doGetDefaultProfilesProperty();
+                if (profiles != null) {
+                    setDefaultProfiles(profiles);
+                }
+            }
+            return defaultProfiles;
+        }
+    }
+
+    private String[] doGetDefaultProfilesProperty() {
+        return getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
+    }
+
+    /**
+     * Specify the set of profiles to be made active by default if no other profiles
+     * are explicitly made active through {@link #setActiveProfiles}.
+     * <p>Calling this method removes overrides any reserved default profiles
+     * that may have been added during construction of the environment.</p>
+     * @param profiles the set of profiles to be made active by default
+     */
+    public void setDefaultProfiles(String... profiles) {
+        Assert.notNull(profiles, "profiles must not be null");
+        logger.info("Default profiles [{}]", StringUtils.joinWithCommas(profiles));
+        synchronized (defaultProfiles) {
+            defaultProfiles.clear();
+            for (String profile : profiles) {
+                validateProfile(profile);
+                defaultProfiles.add(profile);
+            }
+        }
     }
 
     @NonNull
@@ -153,52 +199,6 @@ public class EnvironmentProfiles {
         doGetActiveProfiles();
         synchronized (activeProfiles) {
             activeProfiles.add(profile);
-        }
-    }
-
-    @NonNull
-    public String[] getDefaultProfiles() {
-        return StringUtils.toStringArray(doGetDefaultProfiles());
-    }
-
-    /**
-     * Returns the set of default profiles explicitly set via
-     * {@link #setDefaultProfiles(String...)}, then check for the presence of the
-     * {@value #DEFAULT_PROFILES_PROPERTY_NAME} property and assign its value (if any)
-     * to the set of default profiles.
-     */
-    private Set<String> doGetDefaultProfiles() {
-        synchronized (defaultProfiles) {
-            if (defaultProfiles.isEmpty()) {
-                String[] profiles = doGetDefaultProfilesProperty();
-                if (profiles != null) {
-                    setDefaultProfiles(profiles);
-                }
-            }
-            return defaultProfiles;
-        }
-    }
-
-    private String[] doGetDefaultProfilesProperty() {
-        return getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
-    }
-
-    /**
-     * Specify the set of profiles to be made active by default if no other profiles
-     * are explicitly made active through {@link #setActiveProfiles}.
-     * <p>Calling this method removes overrides any reserved default profiles
-     * that may have been added during construction of the environment.</p>
-     * @param profiles the set of profiles to be made active by default
-     */
-    public void setDefaultProfiles(String... profiles) {
-        Assert.notNull(profiles, "profiles must not be null");
-        logger.info("Default profiles [{}]", StringUtils.joinWithCommas(profiles));
-        synchronized (defaultProfiles) {
-            defaultProfiles.clear();
-            for (String profile : profiles) {
-                validateProfile(profile);
-                defaultProfiles.add(profile);
-            }
         }
     }
 
@@ -278,7 +278,7 @@ public class EnvironmentProfiles {
      */
     private boolean isProfileActive(String profile) {
         validateProfile(profile);
-        if (essentialProfiles.contains(profile)) {
+        if (baseProfiles.contains(profile)) {
             return true;
         }
         Set<String> currentActiveProfiles = doGetActiveProfiles();
