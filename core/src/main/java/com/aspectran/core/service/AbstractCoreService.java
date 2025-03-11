@@ -198,7 +198,17 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         Assert.state(getAspectranConfig() != null, "AspectranConfig is not set");
         SchedulerConfig schedulerConfig = getAspectranConfig().getSchedulerConfig();
         if (schedulerConfig != null && schedulerConfig.isEnabled()) {
-            this.schedulerService = DefaultSchedulerServiceBuilder.build(this, schedulerConfig);
+            schedulerService = DefaultSchedulerServiceBuilder.build(this, schedulerConfig);
+        }
+    }
+
+    protected void destroySchedulerService() {
+        if (schedulerService != null) {
+            if (schedulerService.isActive()) {
+                schedulerService.stop();
+            }
+            schedulerService.withdraw();
+            schedulerService = null;
         }
     }
 

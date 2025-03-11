@@ -137,6 +137,24 @@ public class DefaultCoreService extends AbstractCoreService {
     }
 
     @Override
+    public void start() throws Exception {
+        if (isRootService()) {
+            registerShutdownTask();
+        }
+        super.start();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (isRootService()) {
+            releaseSingletonLock();
+            removeShutdownTask();
+            getActivityContextBuilder().clear();
+        }
+    }
+
+    @Override
     protected void doStart() throws Exception {
         if (!isDerived()) {
             buildActivityContext();
@@ -149,47 +167,8 @@ public class DefaultCoreService extends AbstractCoreService {
     protected void doStop() {
         if (!isDerived()) {
             beforeContextDestroy();
+            destroySchedulerService();
             destroyActivityContext();
-        }
-    }
-
-    @Override
-    public void start() throws Exception {
-        String oldContextName = null;
-        if (getContextName() != null) {
-            oldContextName = Thread.currentThread().getName();
-            String newContextName = (isRootService() ? getContextName() : oldContextName + ":" + getContextName());
-            Thread.currentThread().setName(newContextName);
-        }
-
-        if (isRootService()) {
-            registerShutdownTask();
-        }
-        super.start();
-
-        if (oldContextName != null) {
-            Thread.currentThread().setName(oldContextName);
-        }
-    }
-
-    @Override
-    public void stop() {
-        String oldContextName = null;
-        if (getContextName() != null) {
-            oldContextName = Thread.currentThread().getName();
-            String newContextName = (isRootService() ? getContextName() : oldContextName + ":" + getContextName());
-            Thread.currentThread().setName(newContextName);
-        }
-
-        super.stop();
-        if (isRootService()) {
-            releaseSingletonLock();
-            removeShutdownTask();
-            getActivityContextBuilder().clear();
-        }
-
-        if (oldContextName != null) {
-            Thread.currentThread().setName(oldContextName);
         }
     }
 

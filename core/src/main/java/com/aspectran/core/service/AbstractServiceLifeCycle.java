@@ -56,11 +56,6 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     }
 
     @Override
-    public String getServiceName() {
-        return ObjectUtils.simpleIdentityToString(this);
-    }
-
-    @Override
     @NonNull
     public CoreService getRootService() {
         return rootService;
@@ -105,34 +100,31 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         }
     }
 
-    protected Object getLock() {
-        return lock;
-    }
-
-    protected abstract void doStart() throws Exception;
-
-    protected abstract void doStop() throws Exception;
-
     @Override
     public void start() throws Exception {
         synchronized (lock) {
             Assert.state(!active, getServiceName() + " has already started");
 
-            logger.info("Starting {}", getServiceName());
+            String oldThreadName = changeThreadName();
+            try {
+                logger.info("Starting {}", getServiceName());
 
-            doStart();
+                doStart();
 
-            logger.info("Started {}", getServiceName());
+                logger.info("Started {}", getServiceName());
 
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.start();
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.start();
+                }
+
+                if (serviceStateListener != null) {
+                    serviceStateListener.started();
+                }
+
+                active = true;
+            } finally {
+                restoreThreadName(oldThreadName);
             }
-
-            if (serviceStateListener != null) {
-                serviceStateListener.started();
-            }
-
-            active = true;
         }
     }
 
@@ -146,30 +138,35 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            if (serviceStateListener != null) {
-                try {
-                    serviceStateListener.paused();
-                    serviceStateListener.stopped();
-                } catch (Exception e) {
-                    logger.warn(e.getMessage(), e);
-                }
-            }
-
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.stop();
-            }
-
+            String oldThreadName = changeThreadName();
             try {
-                logger.info("Stopping {}", getServiceName());
+                if (serviceStateListener != null) {
+                    try {
+                        serviceStateListener.paused();
+                        serviceStateListener.stopped();
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage(), e);
+                    }
+                }
 
-                doStop();
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.stop();
+                }
 
-                logger.info("Stopped {}", getServiceName());
-            } catch (Exception e) {
-                logger.error("{} did not stop normally", getServiceName(), e);
+                try {
+                    logger.info("Stopping {}", getServiceName());
+
+                    doStop();
+
+                    logger.info("Stopped {}", getServiceName());
+                } catch (Exception e) {
+                    logger.error("{} did not stop normally", getServiceName(), e);
+                }
+
+                active = false;
+            } finally {
+                restoreThreadName(oldThreadName);
             }
-
-            active = false;
         }
     }
 
@@ -179,38 +176,43 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
             Assert.state(isRootService(), "Must be a root service to restart");
             Assert.state(active, getServiceName() + " is not yet started");
 
-            logger.info("Restarting {}", getServiceName());
+            String oldThreadName = changeThreadName();
+            try {
+                logger.info("Restarting {}", getServiceName());
 
-            if (serviceStateListener != null) {
-                serviceStateListener.paused();
-            }
-
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.stop();
-            }
-
-            active = false;
-            doStop();
-
-            if (serviceStateListener != null) {
-                try {
-                    serviceStateListener.stopped();
-                } catch (Exception e) {
-                    logger.warn(e.getMessage(), e);
+                if (serviceStateListener != null) {
+                    serviceStateListener.paused();
                 }
-            }
 
-            doStart();
-            active = true;
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.stop();
+                }
 
-            logger.info("Restarted {}", getServiceName());
+                active = false;
+                doStop();
 
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.start();
-            }
+                if (serviceStateListener != null) {
+                    try {
+                        serviceStateListener.stopped();
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage(), e);
+                    }
+                }
 
-            if (serviceStateListener != null) {
-                serviceStateListener.started();
+                doStart();
+                active = true;
+
+                logger.info("Restarted {}", getServiceName());
+
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.start();
+                }
+
+                if (serviceStateListener != null) {
+                    serviceStateListener.started();
+                }
+            } finally {
+                restoreThreadName(oldThreadName);
             }
         }
     }
@@ -228,15 +230,20 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.pause();
-            }
+            String oldThreadName = changeThreadName();
+            try {
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.pause();
+                }
 
-            if (serviceStateListener != null) {
-                serviceStateListener.paused();
-            }
+                if (serviceStateListener != null) {
+                    serviceStateListener.paused();
+                }
 
-            logger.info("Pause {}", getServiceName());
+                logger.info("Pause {}", getServiceName());
+            } finally {
+                restoreThreadName(oldThreadName);
+            }
         }
     }
 
@@ -248,15 +255,20 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.pause(timeout);
-            }
+            String oldThreadName = changeThreadName();
+            try {
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.pause(timeout);
+                }
 
-            if (serviceStateListener != null) {
-                serviceStateListener.paused(timeout);
-            }
+                if (serviceStateListener != null) {
+                    serviceStateListener.paused(timeout);
+                }
 
-            logger.info("Pause {}, resume after {}ms", getServiceName(), timeout);
+                logger.info("Pause {}, resume after {}ms", getServiceName(), timeout);
+            } finally {
+                restoreThreadName(oldThreadName);
+            }
         }
     }
 
@@ -268,15 +280,20 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
                 return;
             }
 
-            for (ServiceLifeCycle serviceLifeCycle : subServices) {
-                serviceLifeCycle.resume();
-            }
+            String oldThreadName = changeThreadName();
+            try {
+                for (ServiceLifeCycle serviceLifeCycle : subServices) {
+                    serviceLifeCycle.resume();
+                }
 
-            if (serviceStateListener != null) {
-                serviceStateListener.resumed();
-            }
+                if (serviceStateListener != null) {
+                    serviceStateListener.resumed();
+                }
 
-            logger.info("Resume {}", getServiceName());
+                logger.info("Resume {}", getServiceName());
+            } finally {
+                restoreThreadName(oldThreadName);
+            }
         }
     }
 
@@ -288,6 +305,39 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     @Override
     public boolean isBusy() {
         return false;
+    }
+
+    @Override
+    public String getServiceName() {
+        return ObjectUtils.simpleIdentityToString(this);
+    }
+
+    public String getContextName() {
+        return null;
+    }
+
+    protected Object getLock() {
+        return lock;
+    }
+
+    protected abstract void doStart() throws Exception;
+
+    protected abstract void doStop() throws Exception;
+
+    private String changeThreadName() {
+        String oldThreadName = null;
+        if (getContextName() != null) {
+            oldThreadName = Thread.currentThread().getName();
+            String newContextName = (isRootService() ? getContextName() : oldThreadName + ":" + getContextName());
+            Thread.currentThread().setName(newContextName);
+        }
+        return oldThreadName;
+    }
+
+    private void restoreThreadName(String oldThreadName) {
+        if (oldThreadName != null) {
+            Thread.currentThread().setName(oldThreadName);
+        }
     }
 
 }

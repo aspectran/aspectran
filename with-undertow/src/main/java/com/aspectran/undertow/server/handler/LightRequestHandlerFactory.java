@@ -128,8 +128,8 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         if (towService != null) {
             if (towService.isActive()) {
                 towService.stop();
-                towService.withdraw();
             }
+            towService.withdraw();
             towService = null;
         }
     }
