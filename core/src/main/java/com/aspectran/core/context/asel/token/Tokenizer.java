@@ -200,6 +200,16 @@ public class Tokenizer {
                                 getter = getter2;
                             }
                         }
+                    } else {
+                        offset = value.indexOf(Token.VALUE_DELIMITER);
+                        if (offset > -1) {
+                            String value2 = value.substring(0, offset);
+                            String value3 = value.substring(offset + 1);
+                            value = value2;
+                            if (!value3.isEmpty()) {
+                                defaultValue = value3;
+                            }
+                        }
                     }
                     Token token = new Token(type, directiveType, value);
                     token.setGetterName(getter);

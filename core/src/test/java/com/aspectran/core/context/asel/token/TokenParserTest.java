@@ -41,22 +41,25 @@ class TokenParserTest {
 
     @Test
     void equalsTest() {
-        String text = "${param1}" +
-                "${param2:defaultStr}" +
-                "@{attr1}" +
-                "@{attr2:defaultStr}" +
-                "@{attr3^invokeMethod}" +
-                "%{prop1}" +
-                "%{classpath:propertiesPath^getterName}" +
-                "%{classpath:propertiesPath^getterName:defaultStr}" +
-                "#{beanId}" +
-                "#{beanId^getterName}" +
-                "#{beanId^getterName:defaultStr}" +
-                "#{class:beanClassName}" +
-                "#{class:beanClassName^getterName}" +
-                "#{class:beanClassName^getterName:defaultStr}" +
-                "~{templateId}" +
-                "~{templateId:defaultStr}";
+        String text = """
+                ${param1}\
+                ${param2:defaultStr}\
+                @{attr1}\
+                @{attr2:defaultStr}\
+                @{attr3^invokeMethod}\
+                %{prop1}\
+                %{classpath:propertiesPath^getterName}\
+                %{classpath:propertiesPath^getterName:defaultStr}\
+                %{system:aaa.bbb.ccc}\
+                %{system:aaa.bbb.ccc:defaultStr}\
+                #{beanId}\
+                #{beanId^getterName}\
+                #{beanId^getterName:defaultStr}\
+                #{class:beanClassName}\
+                #{class:beanClassName^getterName}\
+                #{class:beanClassName^getterName:defaultStr}\
+                ~{templateId}\
+                ~{templateId:defaultStr}""";
 
         Token[] tokens = TokenParser.parse(text);
 
@@ -76,8 +79,8 @@ class TokenParserTest {
         Token[] tokens = TokenParser.parse(text);
 
         assertEquals(2, tokens.length);
-        assertEquals(tokens[0].toString(), "{type=text, defaultValue=${ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ}}");
-        assertEquals(tokens[1].toString(), "{type=parameter, name=ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEF}");
+        assertEquals("{type=text, defaultValue=${ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ}}", tokens[0].toString());
+        assertEquals("{type=parameter, name=ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEF}", tokens[1].toString());
     }
 
     @Test
@@ -92,6 +95,17 @@ class TokenParserTest {
         assertEquals("@", tokens[2].stringify());
         assertEquals("${emailDomain}", tokens[3].stringify());
         assertEquals("\n", tokens[4].stringify());
+    }
+
+    @Test
+    void testSystemProperties() {
+        String text = "%{system:aaa.bbb.ccc:ddd}";
+
+        Token[] tokens = TokenParser.parse(text);
+
+        assertEquals(1, tokens.length);
+        assertEquals("%{system:aaa.bbb.ccc:ddd}", tokens[0].stringify());
+        assertEquals("ddd", tokens[0].getDefaultValue());
     }
 
 }

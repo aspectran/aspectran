@@ -76,6 +76,8 @@ import java.lang.reflect.Method;
  *         <li>%{environmentPropertyName}
  *         <li>%{classpath:propertiesPath^getterName}
  *         <li>%{classpath:propertiesPath^getterName:defaultString}
+ *         <li>%{system:propertiesName}
+ *         <li>%{system:propertiesName:defaultString}
  *         </ul>
  *     </dd>
  * </dl>
