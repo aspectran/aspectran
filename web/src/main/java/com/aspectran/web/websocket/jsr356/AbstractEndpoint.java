@@ -17,48 +17,12 @@ package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreServiceHolder;
-import com.aspectran.utils.Assert;
 import com.aspectran.utils.logging.LoggingGroupHelper;
-import jakarta.websocket.server.HandshakeRequest;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Created: 2025-03-24</p>
  */
 public abstract class AbstractEndpoint {
-
-    private HandshakeRequest request;
-
-    private Map<String, List<String>> parameterMap;
-
-    public HandshakeRequest getRequest() {
-        Assert.state(this.request != null, "Handshake request not set");
-        return request;
-    }
-
-    void setRequest(HandshakeRequest request) {
-        Assert.notNull(request, "Handshake request must not be null");
-        Assert.state(this.request == null, "Handshake request has already been set");
-        this.request = request;
-        this.parameterMap = request.getParameterMap();
-    }
-
-    public Map<String, List<String>> getParameterMap() {
-        Assert.state(parameterMap != null, "Handshake request not set");
-        return parameterMap;
-    }
-
-    public String getParameter(String name) {
-        List<String> values = getParameterMap().get(name);
-        return (values != null && !values.isEmpty() ? values.get(0) : null);
-    }
-
-    public String[] getParameterValues(String name) {
-        List<String> values = getParameterMap().get(name);
-        return (values != null ? values.toArray(new String[0]) : null);
-    }
 
     protected void setLoggingGroup() {
         ActivityContext context = CoreServiceHolder.findActivityContext(getClass());

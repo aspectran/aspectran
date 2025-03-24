@@ -19,49 +19,41 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.websocket.CloseReason;
-import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
-import jakarta.websocket.server.HandshakeRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeoutException;
-
-import static com.aspectran.web.websocket.jsr356.AspectranConfigurator.HANDSHAKE_REQUEST;
+import java.util.function.Predicate;
 
 /**
  * <p>Created: 2025-03-24</p>
  */
 @AvoidAdvice
-public abstract class SimplifiedEndpoint extends AbstractEndpoint {
+public abstract class SimplifiedEndpoint extends AbstractEndpoint{
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
 
-    private SessionListener sessionListener;
-
-    protected void setSessionListener(SessionListener sessionListener) {
-        this.sessionListener = sessionListener;
-    }
-
     @OnOpen
-    public void onOpen(@NonNull Session session, @NonNull EndpointConfig config) throws IOException {
+    public void onOpen(@NonNull Session session) throws IOException {
         setLoggingGroup();
-        HandshakeRequest request = (HandshakeRequest)config.getUserProperties().get(HANDSHAKE_REQUEST);
-        setRequest(request);
-        authenticate(session, config);
+        checkAuthorized(session);
     }
 
-    public abstract void authenticate(Session session, EndpointConfig config) throws IOException;
+    protected void checkAuthorized(Session session) throws IOException {
+    }
 
     @OnMessage
     public void onMessage(Session session, String message) {
@@ -69,6 +61,19 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         processMessage(session, message);
     }
 
+    @OnMessage
+    public void onMessage(Session session, ByteBuffer message) {
+        setLoggingGroup();
+        processMessage(session, message);
+    }
+
+    protected void processMessage(Session session, String message) {
+    }
+
+    protected void processMessage(Session session, ByteBuffer message) {
+    }
+
+    @OnClose
     public void onClose(Session session, CloseReason reason) {
         setLoggingGroup();
         if (logger.isDebugEnabled()) {
@@ -91,46 +96,43 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         }
     }
 
-    public abstract void processMessage(Session session, String message);
-
-    public void addSession(Session session) {
+    protected boolean addSession(@NonNull Session session) {
         synchronized (sessions) {
-            if (sessions.add(session) && sessionListener != null) {
-                sessionListener.onAdded(session);
+            return (session.isOpen() && sessions.add(session));
+        }
+    }
+
+    protected void removeSession(Session session) {
+        synchronized (sessions) {
+            if (sessions.remove(session)) {
+                onSessionRemoved(session);
             }
         }
     }
 
-    public void removeSession(Session session) {
+    protected abstract void onSessionRemoved(Session session);
+
+    protected boolean existsSession(Predicate<Session> predicate) {
         synchronized (sessions) {
-            if (sessions.remove(session) && sessionListener != null) {
-                sessionListener.onRemoved(session);
+            for (Session session : sessions) {
+                if (predicate.test(session)) {
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     protected void broadcast(String message) {
         for (Session session : sessions) {
-            sendMessage(session, message);
+            sendText(session, message);
         }
     }
 
-    protected void sendMessage(@NonNull Session session, String message) {
+    protected void sendText(@NonNull Session session, String text) {
         if (session.isOpen()) {
-            session.getAsyncRemote().sendText(message);
+            session.getAsyncRemote().sendText(text);
         }
-    }
-
-    protected void setSendTimeout(@NonNull Session session, long timeoutInMillis) {
-        session.getAsyncRemote().setSendTimeout(timeoutInMillis);
-    }
-
-    protected interface SessionListener {
-
-        void onAdded(Session session);
-
-        void onRemoved(Session session);
-
     }
 
 }

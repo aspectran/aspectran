@@ -17,9 +17,6 @@ package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreServiceHolder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import jakarta.websocket.HandshakeResponse;
-import jakarta.websocket.server.HandshakeRequest;
 import jakarta.websocket.server.ServerEndpointConfig;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;
 import org.slf4j.Logger;
@@ -35,8 +32,6 @@ public class AspectranConfigurator extends Configurator {
 
     private static final Logger logger = LoggerFactory.getLogger(AspectranConfigurator.class);
 
-    static final String HANDSHAKE_REQUEST = Configurator.class.getName() + ".handshakeRequest";
-
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
         ActivityContext context = CoreServiceHolder.findActivityContext(endpointClass);
@@ -50,11 +45,6 @@ public class AspectranConfigurator extends Configurator {
             logger.trace("Using @ServerEndpoint singleton {}", endpoint);
         }
         return endpoint;
-    }
-
-    @Override
-    public void modifyHandshake(@NonNull ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-        sec.getUserProperties().put(HANDSHAKE_REQUEST, request);
     }
 
 }
