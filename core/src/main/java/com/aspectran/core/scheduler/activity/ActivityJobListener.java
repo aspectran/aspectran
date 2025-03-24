@@ -44,26 +44,26 @@ public class ActivityJobListener implements JobListener {
 
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
-        if (loggingGroup != null) {
-            LoggingGroupHelper.set(loggingGroup);
-        }
+        setLoggingGroup();
         ActivityJobReporter.jobToBeExecuted(context, false);
     }
 
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
-        if (loggingGroup != null) {
-            LoggingGroupHelper.set(loggingGroup);
-        }
+        setLoggingGroup();
         ActivityJobReporter.jobToBeExecuted(context, true);
     }
 
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+        setLoggingGroup();
+        ActivityJobReporter.jobWasExecuted(context, jobException);
+    }
+
+    private void setLoggingGroup() {
         if (loggingGroup != null) {
             LoggingGroupHelper.set(loggingGroup);
         }
-        ActivityJobReporter.jobWasExecuted(context, jobException);
     }
 
 }

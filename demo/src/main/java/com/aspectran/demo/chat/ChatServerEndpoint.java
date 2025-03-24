@@ -31,6 +31,7 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
+import io.undertow.util.CopyOnWriteMap;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -45,7 +46,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.channels.ClosedChannelException;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -64,7 +64,7 @@ public class ChatServerEndpoint extends InstantActivitySupport {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatServerEndpoint.class);
 
-    private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
+    private static final Map<String, Session> sessions = new CopyOnWriteMap<>();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -87,12 +87,14 @@ public class ChatServerEndpoint extends InstantActivitySupport {
                 case JOIN:
                     if (username == null) {
                         username = payload.getUsername();
-                        if (sessions.containsKey(username)) {
-                            duplicatedUser(session, username);
-                            return;
+                        synchronized (sessions) {
+                            if (sessions.containsKey(username)) {
+                                duplicatedUser(session, username);
+                                return;
+                            }
+                            setUsername(session, username);
+                            sessions.put(username, session);
                         }
-                        setUsername(session, username);
-                        sessions.put(username, session);
                         welcomeUser(session, username);
                         broadcastUserConnected(session, username);
                         broadcastAvailableUsers();
@@ -156,9 +158,10 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     }
 
     private void leaveUser(String username) {
-        sessions.remove(username);
-        broadcastUserDisconnected(username);
-        broadcastAvailableUsers();
+        if (sessions.remove(username) != null) {
+            broadcastUserDisconnected(username);
+            broadcastAvailableUsers();
+        }
     }
 
     private void broadcastUserConnected(Session session, String username) {
@@ -187,21 +190,17 @@ public class ChatServerEndpoint extends InstantActivitySupport {
     }
 
     private void broadcast(ChatMessage message) {
-        synchronized (sessions) {
-            for (Session session : sessions.values()) {
-                if (session.isOpen()) {
-                    session.getAsyncRemote().sendObject(message);
-                }
+        for (Session session : sessions.values()) {
+            if (session.isOpen()) {
+                session.getAsyncRemote().sendObject(message);
             }
         }
     }
 
     private void broadcast(ChatMessage message, Session ignoredSession) {
-        synchronized (sessions) {
-            for (Session session : sessions.values()) {
-                if (session.isOpen() && !session.getId().equals(ignoredSession.getId())) {
-                    session.getAsyncRemote().sendObject(message);
-                }
+        for (Session session : sessions.values()) {
+            if (session.isOpen() && !session.getId().equals(ignoredSession.getId())) {
+                session.getAsyncRemote().sendObject(message);
             }
         }
     }

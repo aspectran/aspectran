@@ -61,11 +61,11 @@ public class ServerEndpointExporter {
      */
     @Nullable
     public ServerContainer getServerContainer() {
-        return this.serverContainer;
+        return serverContainer;
     }
 
     public boolean hasServerContainer() {
-        return (this.serverContainer != null);
+        return (serverContainer != null);
     }
 
     /**
@@ -83,11 +83,11 @@ public class ServerEndpointExporter {
      */
     public Set<Class<?>> registerEndpoints() {
         Assert.state(getServerContainer() != null,
-            "jakarta.websocket.server.ServerContainer not available");
+                "jakarta.websocket.server.ServerContainer not available");
 
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
-        if (this.annotatedEndpointClasses != null) {
-            endpointClasses.addAll(this.annotatedEndpointClasses);
+        if (annotatedEndpointClasses != null) {
+            endpointClasses.addAll(annotatedEndpointClasses);
         } else {
             endpointClasses.addAll(findServerEndpointClasses());
         }
