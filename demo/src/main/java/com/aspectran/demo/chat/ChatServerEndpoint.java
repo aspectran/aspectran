@@ -15,7 +15,6 @@
  */
 package com.aspectran.demo.chat;
 
-import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.demo.chat.codec.ChatMessageDecoder;
 import com.aspectran.demo.chat.codec.ChatMessageEncoder;
@@ -27,26 +26,15 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.web.websocket.jsr356.AbstractEndpoint;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
 import io.undertow.util.CopyOnWriteMap;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.channels.ClosedChannelException;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 /**
  * WebSocket endpoint for the chat server.
@@ -60,21 +48,17 @@ import java.util.concurrent.TimeoutException;
         decoders = ChatMessageDecoder.class,
         configurator = AspectranConfigurator.class
 )
-public class ChatServerEndpoint extends InstantActivitySupport {
-
-    private static final Logger logger = LoggerFactory.getLogger(ChatServerEndpoint.class);
+public class ChatServerEndpoint extends AbstractEndpoint {
 
     private static final Map<String, Session> sessions = new CopyOnWriteMap<>();
 
-    @OnOpen
-    public void onOpen(Session session) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("WebSocket connection established with session: {}", session.getId());
-        }
+    @Override
+    protected void registerMessageHandlers(@NonNull Session session) {
+        session.addMessageHandler(ChatMessage.class, message
+                -> handleMessage(session, message));
     }
 
-    @OnMessage
-    public void onMessage(Session session, @NonNull ChatMessage chatMessage) {
+    private void handleMessage(Session session, @NonNull ChatMessage chatMessage) {
         SendTextMessagePayload payload = chatMessage.getSendTextMessagePayload();
         if (payload != null) {
             String username = getUsername(session);
@@ -109,26 +93,11 @@ public class ChatServerEndpoint extends InstantActivitySupport {
         }
     }
 
-    @OnClose
-    public void onClose(Session session, CloseReason reason) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Websocket session {} has been closed. Reason: {}", session.getId(), reason);
-        }
+    @Override
+    protected void removeSession(Session session) {
         String username = getUsername(session);
         if (username != null) {
             leaveUser(username);
-        }
-    }
-
-    @OnError
-    public void onError(@NonNull Session session, Throwable error) {
-        if (!ExceptionUtils.hasCause(error, ClosedChannelException.class, TimeoutException.class)) {
-            logger.warn("Error in websocket session: {}", session.getId(), error);
-        }
-        try {
-            session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 

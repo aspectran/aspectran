@@ -122,7 +122,7 @@ public class BeanClassScanner extends ClassScanner {
             saveHandler.save(beanId, targetClass);
 
             if (logger.isTraceEnabled()) {
-                logger.trace(String.format("Scanned bean {id=%s, class=%s}", beanId, className));
+                logger.trace("Scanned bean {id={}, class={}}", beanId, className);
             }
         }
     }
