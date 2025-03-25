@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.websocket.jsr356;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.websocket.Session;
 
@@ -26,7 +25,6 @@ import java.util.function.Predicate;
 /**
  * <p>Created: 2025-03-24</p>
  */
-@AvoidAdvice
 public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
@@ -48,7 +46,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     protected abstract void onSessionRemoved(Session session);
 
-    protected boolean existsSession(Predicate<Session> predicate) {
+    public boolean existsSession(Predicate<Session> predicate) {
         synchronized (sessions) {
             for (Session session : sessions) {
                 if (predicate.test(session)) {
@@ -59,13 +57,13 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         return false;
     }
 
-    protected void broadcast(String message) {
+    public void broadcast(String message) {
         for (Session session : sessions) {
             sendText(session, message);
         }
     }
 
-    protected void sendText(@NonNull Session session, String text) {
+    public void sendText(@NonNull Session session, String text) {
         if (session.isOpen()) {
             session.getAsyncRemote().sendText(text);
         }
