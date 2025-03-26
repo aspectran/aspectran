@@ -26,15 +26,16 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.websocket.jsr356.AbstractEndpoint;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
-import io.undertow.util.CopyOnWriteMap;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 
-import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * WebSocket endpoint for the chat server.
@@ -50,7 +51,9 @@ import java.util.Map;
 )
 public class ChatServerEndpoint extends AbstractEndpoint {
 
-    private static final Map<String, Session> sessions = new CopyOnWriteMap<>();
+    private static final String USERNAME_KEY = "username";
+
+    private static final Set<String> usernames = new CopyOnWriteArraySet<>();
 
     @Override
     protected void registerMessageHandlers(@NonNull Session session) {
@@ -65,28 +68,18 @@ public class ChatServerEndpoint extends AbstractEndpoint {
             switch (payload.getType()) {
                 case CHAT:
                     if (username != null) {
-                        broadcastTextMessage(session, username, payload.getContent());
+                        broadcast(session, username, payload.getContent());
                     }
                     break;
                 case JOIN:
                     if (username == null) {
                         username = payload.getUsername();
-                        synchronized (sessions) {
-                            if (sessions.containsKey(username)) {
-                                duplicatedUser(session, username);
-                                return;
-                            }
-                            setUsername(session, username);
-                            sessions.put(username, session);
-                        }
-                        welcomeUser(session, username);
-                        broadcastUserConnected(session, username);
-                        broadcastAvailableUsers();
+                        join(session, username);
                     }
                     break;
                 case LEAVE:
                     if (username != null) {
-                        leaveUser(username);
+                        userLeft(session, username);
                     }
                     break;
             }
@@ -97,80 +90,90 @@ public class ChatServerEndpoint extends AbstractEndpoint {
     protected void removeSession(Session session) {
         String username = getUsername(session);
         if (username != null) {
-            leaveUser(username);
+            userLeft(session, username);
         }
     }
 
     @Nullable
     private String getUsername(@NonNull Session session) {
-        if (session.getUserProperties().get("username") != null) {
-            return session.getUserProperties().get("username").toString();
-        } else {
-            return null;
-        }
+        Object username = session.getUserProperties().get(USERNAME_KEY);
+        return (username != null ? username.toString() : null);
     }
 
     private void setUsername(@NonNull Session session, String username) {
-        session.getUserProperties().put("username", username);
+        session.getUserProperties().put(USERNAME_KEY, username);
     }
 
-    private void welcomeUser(@NonNull Session session, String username) {
+    private void join(@NonNull Session session, @NonNull String username) {
+        Assert.hasText(username, "username must not be empty");
+        synchronized (usernames) {
+            if (usernames.contains(username)) {
+                userDuplicated(session, username);
+                return;
+            }
+            setUsername(session, username);
+            usernames.add(username);
+        }
+        welcome(session, username);
+        userConnected(session, username);
+        notifyJoinedUsers(session);
+    }
+
+    private void welcome(@NonNull Session session, String username) {
         WelcomeUserPayload payload = new WelcomeUserPayload();
         payload.setUsername(username);
-        session.getAsyncRemote().sendObject(new ChatMessage(payload));
+        sendMessage(session, new ChatMessage(payload));
     }
 
-    private void duplicatedUser(@NonNull Session session, String username) {
+    private void userDuplicated(@NonNull Session session, String username) {
         DuplicatedUserPayload payload = new DuplicatedUserPayload();
         payload.setUsername(username);
-        session.getAsyncRemote().sendObject(new ChatMessage(payload));
+        sendMessage(session, new ChatMessage(payload));
     }
 
-    private void leaveUser(String username) {
-        if (sessions.remove(username) != null) {
-            broadcastUserDisconnected(username);
-            broadcastAvailableUsers();
+    private void userLeft(@NonNull Session session, String username) {
+        if (usernames.remove(username)) {
+            userDisconnected(session, username);
+            notifyJoinedUsers(session);
         }
     }
 
-    private void broadcastUserConnected(Session session, String username) {
+    private void userConnected(Session session, String username) {
         BroadcastConnectedUserPayload payload = new BroadcastConnectedUserPayload();
         payload.setUsername(username);
-        broadcast(new ChatMessage(payload), session);
+        broadcast(session, new ChatMessage(payload), false);
     }
 
-    private void broadcastUserDisconnected(String username) {
+    private void userDisconnected(Session session, String username) {
         BroadcastDisconnectedUserPayload payload = new BroadcastDisconnectedUserPayload();
         payload.setUsername(username);
-        broadcast(new ChatMessage(payload));
+        broadcast(session, new ChatMessage(payload), true);
     }
 
-    private void broadcastTextMessage(Session session, String username, String text) {
+    private void notifyJoinedUsers(Session session) {
+        BroadcastAvailableUsersPayload payload = new BroadcastAvailableUsersPayload();
+        payload.setUsernames(usernames);
+        broadcast(session, new ChatMessage(payload), true);
+    }
+
+    private void broadcast(Session session, String username, String text) {
         BroadcastTextMessagePayload payload = new BroadcastTextMessagePayload();
         payload.setContent(text);
         payload.setUsername(username);
-        broadcast(new ChatMessage(payload), session);
+        broadcast(session, new ChatMessage(payload), false);
     }
 
-    private void broadcastAvailableUsers() {
-        BroadcastAvailableUsersPayload payload = new BroadcastAvailableUsersPayload();
-        payload.setUsernames(sessions.keySet());
-        broadcast(new ChatMessage(payload));
-    }
-
-    private void broadcast(ChatMessage message) {
-        for (Session session : sessions.values()) {
-            if (session.isOpen()) {
-                session.getAsyncRemote().sendObject(message);
+    private void broadcast(@NonNull Session session, ChatMessage message, boolean includingMe) {
+        for (Session other : session.getOpenSessions()) {
+            if (includingMe || !other.getId().equals(session.getId())) {
+                sendMessage(other, message);
             }
         }
     }
 
-    private void broadcast(ChatMessage message, Session ignoredSession) {
-        for (Session session : sessions.values()) {
-            if (session.isOpen() && !session.getId().equals(ignoredSession.getId())) {
-                session.getAsyncRemote().sendObject(message);
-            }
+    private void sendMessage(@NonNull Session session, @NonNull ChatMessage message) {
+        if (session.isOpen()) {
+            session.getAsyncRemote().sendObject(message);
         }
     }
 

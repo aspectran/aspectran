@@ -27,6 +27,7 @@ import java.util.function.Predicate;
  */
 public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
+    /** A collection of authorized sessions */
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
 
     protected boolean addSession(@NonNull Session session) {
@@ -46,7 +47,10 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     protected abstract void onSessionRemoved(Session session);
 
-    public boolean existsSession(Predicate<Session> predicate) {
+    /**
+     * Returns whether a session matching the given predicate exists in the authorized sessions.
+     */
+    public boolean containsSession(Predicate<Session> predicate) {
         synchronized (sessions) {
             for (Session session : sessions) {
                 if (predicate.test(session)) {
@@ -55,6 +59,13 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the number of currently authorized sessions.
+     */
+    public int countSessions() {
+        return sessions.size();
     }
 
     public void broadcast(String message) {
