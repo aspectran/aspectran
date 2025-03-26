@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.websocket.jsr356;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.websocket.Session;
 
@@ -51,9 +52,10 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
      * Returns whether a session matching the given predicate exists in the authorized sessions.
      */
     public boolean containsSession(Predicate<Session> predicate) {
+        Assert.notNull(predicate, "predicate must not be null");
         synchronized (sessions) {
             for (Session session : sessions) {
-                if (predicate.test(session)) {
+                if (session.isOpen() && predicate.test(session)) {
                     return true;
                 }
             }
@@ -68,13 +70,31 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         return sessions.size();
     }
 
+    /**
+     * Sends a message to all authorized sessions.
+     */
     public void broadcast(String message) {
         for (Session session : sessions) {
             sendText(session, message);
         }
     }
 
-    public void sendText(@NonNull Session session, String text) {
+    /**
+     * Sends a message to all authorized sessions.
+     */
+    public void broadcast(String message, Session sessionToSkip) {
+        for (Session session : sessions) {
+            if (session != sessionToSkip) {
+                sendText(session, message);
+            }
+        }
+    }
+
+    /**
+     * Sends a text message to the given session.
+     */
+    public void sendText(Session session, String text) {
+        Assert.notNull(session, "session must not be null");
         if (session.isOpen()) {
             session.getAsyncRemote().sendText(text);
         }
