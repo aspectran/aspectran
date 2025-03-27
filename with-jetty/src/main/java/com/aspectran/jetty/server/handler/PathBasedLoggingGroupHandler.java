@@ -81,7 +81,7 @@ public class PathBasedLoggingGroupHandler extends Handler.Wrapper {
 
     protected String resolveGroupName(@NonNull Request request) {
         String groupName = null;
-        if (pathPatternsByGroupName != null && !pathPatternsByGroupName.isEmpty()) {
+        if (pathPatternsByGroupName != null) {
             String requestPath = request.getHttpURI().getPath();
             for (Map.Entry<String, IncludeExcludeWildcardPatterns> entry : pathPatternsByGroupName.entrySet()) {
                 IncludeExcludeWildcardPatterns patterns = entry.getValue();
