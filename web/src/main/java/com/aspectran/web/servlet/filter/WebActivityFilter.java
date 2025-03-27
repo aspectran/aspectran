@@ -47,16 +47,12 @@ public class WebActivityFilter implements Filter {
 
     private static final String BYPASS_PATTERN_DELIMITERS = ",;\t\r\n\f";
 
-    private FilterConfig filterConfig;
-
     private WildcardPatterns bypassPatterns;
 
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     @Override
     public void init(@NonNull FilterConfig filterConfig) {
-        this.filterConfig = filterConfig;
-
         String bypassesParam = filterConfig.getInitParameter("bypasses");
         if (bypassesParam != null) {
             String[] bypasses = StringUtils.tokenize(bypassesParam, BYPASS_PATTERN_DELIMITERS, true);
@@ -72,13 +68,13 @@ public class WebActivityFilter implements Filter {
                 if (logger.isDebugEnabled()) {
                     for (WildcardPattern pattern : bypassPatterns.getPatterns()) {
                         logger.debug("{} is bypassed by {} to servlet '{}'",
-                                pattern, getMyName(), defaultHandler.getDefaultServletName());
+                                pattern,
+                                ObjectUtils.simpleIdentityToString(this, filterConfig.getFilterName()),
+                                defaultHandler.getDefaultServletName());
                     }
                 }
             }
         }
-
-        logger.info("Initialized {}", getMyName());
     }
 
     @Override
@@ -94,16 +90,6 @@ public class WebActivityFilter implements Filter {
             }
         }
         chain.doFilter(request, response);
-    }
-
-    @Override
-    public void destroy() {
-        logger.info("Destroyed {}", getMyName());
-    }
-
-    @NonNull
-    private String getMyName() {
-        return ObjectUtils.simpleIdentityToString(this, filterConfig.getFilterName());
     }
 
 }
