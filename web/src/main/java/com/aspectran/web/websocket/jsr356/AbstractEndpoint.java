@@ -42,9 +42,17 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private volatile boolean loggingGroupResolved = false;
+    private volatile boolean loggingGroupResolved;
 
     private String groupName;
+
+    public AbstractEndpoint() {
+    }
+
+    public AbstractEndpoint(@NonNull String groupName) {
+        this.groupName = groupName;
+        this.loggingGroupResolved = true;
+    }
 
     @OnOpen
     public void doOnOpen(@NonNull Session session) throws IOException {
@@ -103,14 +111,6 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         }
         if (groupName != null) {
             LoggingGroupHelper.set(groupName);
-        }
-    }
-
-    protected void setLoggingGroup(String groupName) {
-        if (groupName != null) {
-            LoggingGroupHelper.set(groupName);
-        } else {
-            LoggingGroupHelper.clear();
         }
     }
 
