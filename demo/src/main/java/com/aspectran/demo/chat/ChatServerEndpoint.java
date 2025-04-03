@@ -57,8 +57,10 @@ public class ChatServerEndpoint extends AbstractEndpoint {
 
     @Override
     protected void registerMessageHandlers(@NonNull Session session) {
-        session.addMessageHandler(ChatMessage.class, message
-                -> handleMessage(session, message));
+        session.addMessageHandler(ChatMessage.class, message -> {
+            setLoggingGroup();
+            handleMessage(session, message);
+        });
     }
 
     private void handleMessage(Session session, @NonNull ChatMessage chatMessage) {

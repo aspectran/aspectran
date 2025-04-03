@@ -111,6 +111,8 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         }
         if (groupName != null) {
             LoggingGroupHelper.set(groupName);
+        } else {
+            LoggingGroupHelper.clear();
         }
     }
 
