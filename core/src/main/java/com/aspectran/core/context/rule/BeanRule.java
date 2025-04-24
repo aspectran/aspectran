@@ -476,7 +476,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is important.
-     * If specified as an important bean, it can not be overridden
+     * If specified as an important bean, it cannot be overridden
      * by another bean rule with the same name.
      * @param important whether important bean
      */
@@ -617,7 +617,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      * Sets whether this bean is proxied.
      * @param proxied true, if this bean is proxied
      */
-    public void setProxied(boolean proxied) {
+    public void setProxied(Boolean proxied) {
         this.proxied = proxied;
     }
 
