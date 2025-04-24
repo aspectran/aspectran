@@ -40,4 +40,6 @@ public @interface Bean {
 
     boolean important() default false;
 
+    boolean proxied() default false;
+
 }

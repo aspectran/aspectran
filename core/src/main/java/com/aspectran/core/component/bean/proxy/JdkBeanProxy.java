@@ -116,7 +116,8 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
             bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass());
         }
         JdkBeanProxy proxy = new JdkBeanProxy(context, beanRule, bean);
-        return Proxy.newProxyInstance(context.getAvailableActivity().getClassLoader(), beanRule.getBeanClass().getInterfaces(), proxy);
+        return Proxy.newProxyInstance(context.getAvailableActivity().getClassLoader(),
+                beanRule.getBeanClass().getInterfaces(), proxy);
     }
 
 }

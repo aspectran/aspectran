@@ -20,7 +20,9 @@ import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentReferenceCache;
 import org.slf4j.Logger;
@@ -78,6 +80,7 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule {}", aspectRule);
         }
+        determineBeanRelevant(aspectRule);
         AspectRule existing = aspectRuleMap.get(aspectRule.getId());
         if (existing == null) {
             existing = aspectRuleMap.putIfAbsent(aspectRule.getId(), aspectRule);
@@ -86,6 +89,8 @@ public class AspectRuleRegistry extends AbstractComponent {
             aspectRules.add(aspectRule);
             if (isInitialized()) {
                 newAspectRules.add(aspectRule.getId());
+                softCache.clear();
+                weakCache.clear();
             }
         } else {
             throw new IllegalRuleException("Duplicate AspectRule ID: " + aspectRule.getId());
@@ -97,7 +102,10 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (existing != null) {
             if (aspectRules.remove(existing)) {
                 if (isInitialized()) {
-                    newAspectRules.remove(aspectId);
+                    if (newAspectRules.remove(aspectId)) {
+                        softCache.clear();
+                        weakCache.clear();
+                    }
                 }
             }
         }
@@ -128,7 +136,7 @@ public class AspectRuleRegistry extends AbstractComponent {
     private RelevantAspectRuleHolder createRelevantAspectRuleHolder(PointcutPattern pointcutPattern) {
         AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
-        for (AspectRule aspectRule : getAspectRules()) {
+        for (AspectRule aspectRule : aspectRules) {
             if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut == null || pointcut.matches(pointcutPattern)) {
@@ -151,6 +159,31 @@ public class AspectRuleRegistry extends AbstractComponent {
             return holder;
         } else {
             return EMPTY_HOLDER;
+        }
+    }
+
+    private void determineBeanRelevant(@NonNull AspectRule aspectRule) {
+        JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
+        if (joinpointTargetType == JoinpointTargetType.METHOD) {
+            aspectRule.setBeanRelevant(true);
+        } else {
+            Pointcut pointcut = aspectRule.getPointcut();
+            if (pointcut != null) {
+                List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
+                if (pointcutPatternRuleList != null) {
+                    for (PointcutPatternRule ppr : pointcutPatternRuleList) {
+                        PointcutPattern pp = ppr.getPointcutPattern();
+                        if (pp != null) {
+                            if (pp.getBeanIdPattern() != null ||
+                                    pp.getClassNamePattern() != null ||
+                                    pp.getMethodNamePattern() != null) {
+                                aspectRule.setBeanRelevant(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

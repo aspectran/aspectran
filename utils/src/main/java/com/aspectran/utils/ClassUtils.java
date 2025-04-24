@@ -31,10 +31,12 @@ public abstract class ClassUtils {
     /** The ".class" file suffix */
     public static final String CLASS_FILE_SUFFIX = ".class";
 
+    /** CGLIB or Javassist class separator: {@code "$$"}. */
+    public static final String PROXY_CLASS_SEPARATOR = "$$";
+
     /**
-     * Method that can be called to try to create an instance of
-     * specified type. Instantiation is done using default no-argument
-     * constructor.
+     * Method that can be called to try to create an instance of specified type.
+     * Instantiation is done using default no-argument constructor.
      * @param <T> the generic type
      * @param clazz the class to check
      * @return an instantiated object
@@ -60,8 +62,7 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Method that can be called to try to create an instantiate of
-     * specified type.
+     * Method that can be called to try to create an instantiate of specified type.
      * @param <T> the generic type
      * @param clazz the class to check
      * @param args the arguments
@@ -80,8 +81,7 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Method that can be called to try to create an instance of
-     * specified type.
+     * Method that can be called to try to create an instance of specified type.
      * @param <T> the generic type
      * @param clazz the class to check
      * @param args the arguments
@@ -109,7 +109,7 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Obtain an accessible constructor for the given class and parameters.
+     * Get an accessible constructor for the given class and parameters.
      * @param clazz the class to check
      * @param argTypes the argument types of the desired constructor
      * @param <T> the generic type
@@ -141,7 +141,7 @@ public abstract class ClassUtils {
      * Check whether the given class is visible in the given ClassLoader.
      * @param clazz the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against
-     *      (may be {@code null} in which case this method will always return {@code true})
+     *      (maybe {@code null} in which case this method will always return {@code true})
      * @return true if the given class is visible; otherwise false
      * @since 6.0.0
      */
@@ -229,6 +229,24 @@ public abstract class ClassUtils {
             cl = ClassLoader.getSystemClassLoader();
         }
         return cl;
+    }
+
+    /**
+     * Return the user-defined class for the given class: usually simply the given
+     * class, but the original class in the case of a CGLIB or Javassist-generated subclass.
+     * @param clazz the class to check
+     * @return the user-defined class
+     * @see #PROXY_CLASS_SEPARATOR
+     */
+    @NonNull
+    public static Class<?> getUserClass(@NonNull Class<?> clazz) {
+        if (clazz.getName().contains(PROXY_CLASS_SEPARATOR)) {
+            Class<?> superclass = clazz.getSuperclass();
+            if (superclass != null && superclass != Object.class) {
+                return superclass;
+            }
+        }
+        return clazz;
     }
 
 }

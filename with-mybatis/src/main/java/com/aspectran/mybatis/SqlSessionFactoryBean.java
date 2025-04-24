@@ -68,7 +68,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.properties = properties;
     }
 
-    protected SqlSessionFactory buildSqlSessionFactory(InputStream inputStream) throws Exception {
+    protected SqlSessionFactory createSqlSessionFactory(InputStream inputStream) throws Exception {
         try {
             SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
             return builder.build(inputStream, environment, properties);
@@ -93,7 +93,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             } else {
                 is = new FileInputStream(applicationAdapter.getRealPath(configLocation).toFile());
             }
-            sqlSessionFactory = buildSqlSessionFactory(is);
+            sqlSessionFactory = createSqlSessionFactory(is);
         }
     }
 

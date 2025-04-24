@@ -169,7 +169,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return tsb.toString();
     }
 
-    public static String toString(@NonNull Executable adviceAction, @Nullable AspectAdviceRule aspectAdviceRule) {
+    public static String toString(Executable adviceAction, @Nullable AspectAdviceRule aspectAdviceRule) {
         if (adviceAction instanceof AdviceAction || adviceAction instanceof AnnotatedAdviceAction) {
             return adviceAction.toString();
         }
@@ -177,10 +177,12 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         if (aspectAdviceRule != null) {
             tsb.append("type", aspectAdviceRule.getAspectAdviceType());
         }
-        if (adviceAction.getActionType() != null) {
-            tsb.append("action", adviceAction.toString());
-        } else {
-            tsb.append("instance", adviceAction.toString());
+        if (adviceAction != null) {
+            if (adviceAction.getActionType() != null) {
+                tsb.append("action", adviceAction.toString());
+            } else {
+                tsb.append("instance", adviceAction.toString());
+            }
         }
         if (aspectAdviceRule != null && aspectAdviceRule.getAspectRule() != null) {
             int order = aspectAdviceRule.getAspectRule().getOrder();

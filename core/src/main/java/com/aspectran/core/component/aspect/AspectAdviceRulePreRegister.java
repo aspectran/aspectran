@@ -25,7 +25,6 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.utils.BeanDescriptor;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -43,31 +42,6 @@ public class AspectAdviceRulePreRegister {
 
     public AspectAdviceRulePreRegister(@NonNull AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
-
-        for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
-            if (joinpointTargetType == JoinpointTargetType.METHOD) {
-                aspectRule.setBeanRelevant(true);
-            } else {
-                Pointcut pointcut = aspectRule.getPointcut();
-                if (pointcut != null) {
-                    List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-                    if (pointcutPatternRuleList != null) {
-                        for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                            PointcutPattern pp = ppr.getPointcutPattern();
-                            if (pp != null) {
-                                if (pp.getBeanIdPattern() != null ||
-                                        pp.getClassNamePattern() != null ||
-                                        pp.getMethodNamePattern() != null) {
-                                    aspectRule.setBeanRelevant(true);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public void setPointcutPatternVerifiable(boolean pointcutPatternVerifiable) {

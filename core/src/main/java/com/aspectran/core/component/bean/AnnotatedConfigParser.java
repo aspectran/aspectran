@@ -191,8 +191,8 @@ public class AnnotatedConfigParser {
         Class<?> beanClass = beanRule.getBeanClass();
         Component componentAnno = beanClass.getAnnotation(Component.class);
         if (componentAnno != null) {
-            if (beanClass.isAnnotationPresent(Profile.class)) {
-                Profile profileAnno = beanClass.getAnnotation(Profile.class);
+            Profile profileAnno = beanClass.getAnnotation(Profile.class);
+            if (profileAnno != null) {
                 String profile = StringUtils.emptyToNull(profileAnno.value());
                 if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
                     return;
@@ -209,9 +209,9 @@ public class AnnotatedConfigParser {
                 parseScheduleRule(beanRule, nameArray);
             }
             for (Method method : beanClass.getMethods()) {
-                if (method.isAnnotationPresent(Profile.class)) {
-                    Profile profileAnno = method.getAnnotation(Profile.class);
-                    String profile = StringUtils.emptyToNull(profileAnno.value());
+                Profile methodProfileAnno = method.getAnnotation(Profile.class);
+                if (methodProfileAnno != null) {
+                    String profile = StringUtils.emptyToNull(methodProfileAnno.value());
                     if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
                         continue;
                     }
@@ -310,6 +310,7 @@ public class AnnotatedConfigParser {
                             throw new IllegalRuleException("Found a method with both @Initialize and @Destroy in bean " + beanRule);
                         }
                         Initialize initializeAnno = method.getAnnotation(Initialize.class);
+                        assert initializeAnno != null;
                         String profile = StringUtils.emptyToNull(initializeAnno.profile());
                         if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                             if (beanRule.getInitMethod() == null) {
@@ -321,6 +322,7 @@ public class AnnotatedConfigParser {
                         }
                     } else if (!beanRule.isDisposableBean() && method.isAnnotationPresent(Destroy.class)) {
                         Destroy destroyAnno = method.getAnnotation(Destroy.class);
+                        assert destroyAnno != null;
                         String profile = StringUtils.emptyToNull(destroyAnno.profile());
                         if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                             if (beanRule.getDestroyMethod() == null) {
@@ -338,6 +340,7 @@ public class AnnotatedConfigParser {
 
     private void parseAspectRule(@NonNull Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
         Aspect aspectAnno = beanClass.getAnnotation(Aspect.class);
+        assert aspectAnno != null;
         String aspectId = StringUtils.emptyToNull(aspectAnno.value());
         if (aspectId == null) {
             aspectId = StringUtils.emptyToNull(aspectAnno.id());
@@ -357,8 +360,8 @@ public class AnnotatedConfigParser {
         aspectRule.setIsolated(isolated);
         aspectRule.setAdviceBeanClass(beanClass);
 
-        if (beanClass.isAnnotationPresent(Joinpoint.class)) {
-            Joinpoint joinpointAnno = beanClass.getAnnotation(Joinpoint.class);
+        Joinpoint joinpointAnno = beanClass.getAnnotation(Joinpoint.class);
+        if (joinpointAnno != null) {
             JoinpointTargetType target = joinpointAnno.target();
             MethodType[] methods = joinpointAnno.methods();
             String[] headers = joinpointAnno.headers();
@@ -378,8 +381,8 @@ public class AnnotatedConfigParser {
             aspectRule.setJoinpointRule(joinpointRule);
         }
 
-        if (beanClass.isAnnotationPresent(Settings.class)) {
-            Settings settingsAnno = beanClass.getAnnotation(Settings.class);
+        Settings settingsAnno = beanClass.getAnnotation(Settings.class);
+        if (settingsAnno != null) {
             String text = StringUtils.joinWithLines(settingsAnno.value());
             if (!text.isEmpty()) {
                 SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
@@ -403,27 +406,33 @@ public class AnnotatedConfigParser {
             } else if (method.isAnnotationPresent(Finally.class)) {
                 AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
                 aspectAdviceRule.setAdviceAction(createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method));
-            } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
+            } else {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
-                Class<? extends Throwable>[] types = exceptionThrownAnno.value();
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.THROWN);
-                AnnotatedAction action = createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method);
-                ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
-                aspectRule.putExceptionThrownRule(exceptionThrownRule);
-                if (method.isAnnotationPresent(Transform.class)) {
+                if (exceptionThrownAnno != null) {
+                    Class<? extends Throwable>[] types = exceptionThrownAnno.value();
+                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.THROWN);
+                    AnnotatedAction action = createAnnotatedAdviceAction(aspectAdviceRule, actionId, beanClass, method);
+                    ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
+                    aspectRule.putExceptionThrownRule(exceptionThrownRule);
                     Transform transformAnno = method.getAnnotation(Transform.class);
-                    TransformRule transformRule = parseTransformRule(transformAnno);
-                    exceptionThrownRule.applyResponseRule(transformRule);
-                } else if (method.isAnnotationPresent(Dispatch.class)) {
-                    Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                    DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
-                    exceptionThrownRule.applyResponseRule(dispatchRule);
-                } else if (method.isAnnotationPresent(Forward.class)) {
-                    throw new IllegalRuleException("Cannot apply the forward response rule to the exception thrown rule");
-                } else if (method.isAnnotationPresent(Redirect.class)) {
-                    Redirect redirectAnno = method.getAnnotation(Redirect.class);
-                    RedirectRule redirectRule = parseRedirectRule(redirectAnno);
-                    exceptionThrownRule.applyResponseRule(redirectRule);
+                    if (transformAnno != null) {
+                        TransformRule transformRule = parseTransformRule(transformAnno);
+                        exceptionThrownRule.applyResponseRule(transformRule);
+                    } else {
+                        Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
+                        if (dispatchAnno != null) {
+                            DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+                            exceptionThrownRule.applyResponseRule(dispatchRule);
+                        } else if (method.isAnnotationPresent(Forward.class)) {
+                            throw new IllegalRuleException("Cannot apply the forward response rule to the exception thrown rule");
+                        } else {
+                            Redirect redirectAnno = method.getAnnotation(Redirect.class);
+                            if (redirectAnno != null) {
+                                RedirectRule redirectRule = parseRedirectRule(redirectAnno);
+                                exceptionThrownRule.applyResponseRule(redirectRule);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -440,6 +449,7 @@ public class AnnotatedConfigParser {
     private void parseBeanRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
+        assert beanAnno != null;
         String beanId = StringUtils.emptyToNull(beanAnno.value());
         if (beanId == null) {
             beanId = StringUtils.emptyToNull(beanAnno.id());
@@ -452,6 +462,7 @@ public class AnnotatedConfigParser {
         boolean lazyInit = beanAnno.lazyInit();
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
+        boolean proxied = beanAnno.proxied();
 
         Scope scopeAnno = beanClass.getAnnotation(Scope.class);
         ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);
@@ -469,6 +480,9 @@ public class AnnotatedConfigParser {
         if (important) {
             beanRule.setImportant(Boolean.TRUE);
         }
+        if (proxied) {
+            beanRule.setProxied(true);
+        }
 
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
         DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
@@ -483,6 +497,7 @@ public class AnnotatedConfigParser {
     private void parseFactoryBeanRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
             throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
+        assert beanAnno != null;
         String beanId = StringUtils.emptyToNull(beanAnno.value());
         if (beanId == null) {
             beanId = StringUtils.emptyToNull(beanAnno.id());
@@ -536,6 +551,7 @@ public class AnnotatedConfigParser {
     private void parseScheduleRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
+        assert scheduleAnno != null;
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
         if (scheduleId != null && nameArray != null) {
             scheduleId = Namespace.applyNamespace(nameArray, scheduleId);
@@ -693,22 +709,28 @@ public class AnnotatedConfigParser {
         if (CustomTransformer.class.isAssignableFrom(returnType)) {
             transletRule.setResponseRule(ResponseRule.newInstance(new CustomTransformResponse()));
         } else {
-            if (method.isAnnotationPresent(Transform.class)) {
-                Transform transformAnno = method.getAnnotation(Transform.class);
+            Transform transformAnno = method.getAnnotation(Transform.class);
+            if (transformAnno != null) {
                 TransformRule transformRule = parseTransformRule(transformAnno);
                 transletRule.setResponseRule(ResponseRule.newInstance(transformRule));
-            } else if (method.isAnnotationPresent(Dispatch.class)) {
+            } else {
                 Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-                DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
-                transletRule.setResponseRule(ResponseRule.newInstance(dispatchRule));
-            } else if (method.isAnnotationPresent(Forward.class)) {
-                Forward forwardAnno = method.getAnnotation(Forward.class);
-                ForwardRule forwardRule = parseForwardRule(forwardAnno);
-                transletRule.setResponseRule(ResponseRule.newInstance(forwardRule));
-            } else if (method.isAnnotationPresent(Redirect.class)) {
-                Redirect redirectAnno = method.getAnnotation(Redirect.class);
-                RedirectRule redirectRule = parseRedirectRule(redirectAnno);
-                transletRule.setResponseRule(ResponseRule.newInstance(redirectRule));
+                if (dispatchAnno != null) {
+                    DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+                    transletRule.setResponseRule(ResponseRule.newInstance(dispatchRule));
+                } else {
+                    Forward forwardAnno = method.getAnnotation(Forward.class);
+                    if (forwardAnno != null) {
+                        ForwardRule forwardRule = parseForwardRule(forwardAnno);
+                        transletRule.setResponseRule(ResponseRule.newInstance(forwardRule));
+                    } else {
+                        Redirect redirectAnno = method.getAnnotation(Redirect.class);
+                        if (redirectAnno != null) {
+                            RedirectRule redirectRule = parseRedirectRule(redirectAnno);
+                            transletRule.setResponseRule(ResponseRule.newInstance(redirectRule));
+                        }
+                    }
+                }
             }
         }
 

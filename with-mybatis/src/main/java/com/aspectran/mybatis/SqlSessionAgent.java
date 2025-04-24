@@ -15,11 +15,8 @@
  */
 package com.aspectran.mybatis;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
-import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
@@ -35,17 +32,12 @@ import java.util.Map;
 /**
  * The SqlSession Agent.
  */
-public class SqlSessionAgent extends InstantActivitySupport implements SqlSession {
-
-    private final String relevantAspectId;
+public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 
     private boolean autoParameters;
 
     public SqlSessionAgent(String relevantAspectId) {
-        if (relevantAspectId == null) {
-            throw new IllegalArgumentException("relevantAspectId must not be null");
-        }
-        this.relevantAspectId = relevantAspectId;
+        super(relevantAspectId);
     }
 
     @AvoidAdvice
@@ -236,47 +228,9 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     }
 
     @AvoidAdvice
-    private SqlSession getSqlSession() {
-        SqlSessionTxAdvice sqlSessionTxAdvice = getSqlSessionTxAdvice();
-        SqlSession sqlSession = sqlSessionTxAdvice.getSqlSession();
-        if (sqlSession == null) {
-            if (sqlSessionTxAdvice.isArbitrarilyClosed()) {
-                sqlSessionTxAdvice.open();
-                sqlSession = sqlSessionTxAdvice.getSqlSession();
-            } else {
-                throw new IllegalStateException("SqlSession is not opened");
-            }
-        }
-        return sqlSession;
-    }
-
-    @AvoidAdvice
-    @NonNull
-    private SqlSessionTxAdvice getSqlSessionTxAdvice() {
-        checkTransactional();
-        SqlSessionTxAdvice txAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
-        if (txAdvice == null) {
-            if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
-                throw new IllegalArgumentException("Aspect '" + relevantAspectId +
-                        "' handling SqlSessionTxAdvice is undefined");
-            }
-            throw new IllegalStateException("SqlSessionTxAdvice is not defined");
-        }
-        return txAdvice;
-    }
-
-    @AvoidAdvice
     @Nullable
     private ActivityData getActivityData() {
         return getAvailableActivity().getActivityData();
-    }
-
-    @AvoidAdvice
-    private void checkTransactional() {
-        if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
-            throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
-                " needs to be wrapped in an instant activity.");
-        }
     }
 
 }

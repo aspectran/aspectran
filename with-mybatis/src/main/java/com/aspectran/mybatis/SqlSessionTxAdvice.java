@@ -86,7 +86,7 @@ public class SqlSessionTxAdvice {
 
     /**
      * Returns an open SqlSession.
-     * If no SqlSession is open then return null.
+     * If no SqlSession is open, then return null.
      * @return a SqlSession instance
      */
     public SqlSession getSqlSession() {
@@ -227,7 +227,7 @@ public class SqlSessionTxAdvice {
 
     /**
      * Closes the session.
-     * @param arbitrarily true if the session is arbitrarily closed by user code, false otherwise
+     * @param arbitrarily true if user code arbitrarily closes the session, false otherwise
      */
     public void close(boolean arbitrarily) {
         if (checkSession()) {
@@ -246,7 +246,7 @@ public class SqlSessionTxAdvice {
 
     /**
      * Returns whether the session was logically closed in user code, not by the framework.
-     * @return true if the session was closed by user code, false otherwise
+     * @return true if user code closed the session, false otherwise
      */
     public boolean isArbitrarilyClosed() {
         return arbitrarilyClosed;
@@ -254,8 +254,8 @@ public class SqlSessionTxAdvice {
 
     /**
      * Checks if the SqlSession is open.
-     * If the session has already been closed by user code, it always returns true to ignore further processing.
-     * @return true if the session has already been closed by user code, otherwise false
+     * If user code has already closed the session, it always returns true to ignore further processing.
+     * @return true if user code has already closed the session, otherwise false
      */
     private boolean checkSession() {
         if (arbitrarilyClosed) {

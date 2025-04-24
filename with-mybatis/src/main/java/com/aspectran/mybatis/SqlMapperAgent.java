@@ -25,10 +25,16 @@ public interface SqlMapperAgent {
 
     SqlSession getReuseSqlSession();
 
-    <T> T simple(Class<T> type);
+    default <T> T simple(Class<T> type) {
+        return getSimpleSqlSession().getMapper(type);
+    }
 
-    <T> T batch(Class<T> type);
+    default <T> T batch(Class<T> type) {
+        return getBatchSqlSession().getMapper(type);
+    }
 
-    <T> T reuse(Class<T> type);
-    
+    default <T> T reuse(Class<T> type) {
+        return getReuseSqlSession().getMapper(type);
+    }
+
 }

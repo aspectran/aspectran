@@ -101,8 +101,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean innerBean;
 
-    private boolean replicated;
-
     private Boolean proxied;
 
     private List<AutowireRule> autowireRuleList;
@@ -604,22 +602,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
     }
 
     /**
-     * Returns whether this bean has been replicated.
-     * @return true if this bean has been replicated; false otherwise
-     */
-    public boolean isReplicated() {
-        return replicated;
-    }
-
-    /**
-     * Sets whether this bean is replicated.
-     * @param replicated true, if this bean is replicated
-     */
-    public void setReplicated(boolean replicated) {
-        this.replicated = replicated;
-    }
-
-    /**
      * Returns whether this bean is proxied.
      * @return true if this bean is proxied; false otherwise
      */
@@ -769,7 +751,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             throw new IllegalRuleException("No scope type for '" + scope + "'");
         }
         if (scopeType == null) {
-            scopeType = (singleton == null || singleton == Boolean.TRUE ? ScopeType.SINGLETON : ScopeType.PROTOTYPE);
+            scopeType = (singleton == null || singleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE);
         }
 
         BeanRule beanRule = new BeanRule();
@@ -812,7 +794,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             throw new IllegalRuleException("No scope type for '" + scope + "'");
         }
         if (scopeType == null) {
-            scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+            scopeType = (singleton == null || singleton) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
         }
 
         BeanRule beanRule = new BeanRule();
@@ -881,7 +863,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         newBeanRule.setImportant(beanRule.getImportant());
         newBeanRule.setDescriptionRule(beanRule.getDescriptionRule());
         newBeanRule.setInnerBean(beanRule.isInnerBean());
-        newBeanRule.setReplicated(true);
+        newBeanRule.setProxied(beanRule.getProxied());
         return newBeanRule;
     }
 
