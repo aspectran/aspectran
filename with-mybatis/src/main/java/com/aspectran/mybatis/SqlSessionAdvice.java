@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
  * @author Juho Jeong
  * @since 2015. 04. 03.
  */
-public class SqlSessionTxAdvice {
+public class SqlSessionAdvice {
 
-    private static final Logger logger = LoggerFactory.getLogger(SqlSessionTxAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqlSessionAdvice.class);
 
     private final SqlSessionFactory sqlSessionFactory;
 
@@ -44,7 +44,7 @@ public class SqlSessionTxAdvice {
 
     private boolean arbitrarilyClosed;
 
-    public SqlSessionTxAdvice(SqlSessionFactory sqlSessionFactory) {
+    public SqlSessionAdvice(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
@@ -95,7 +95,7 @@ public class SqlSessionTxAdvice {
 
     /**
      * Opens a new SqlSession and store its instance inside. Therefore, whenever
-     * there is a request for a SqlSessionTxAdvice bean, a new bean instance of
+     * there is a request for a SqlSessionAdvice bean, a new bean instance of
      * the object must be created.
      */
     public void open() {

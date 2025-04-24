@@ -3,7 +3,9 @@ package com.aspectran.mybatis;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -23,7 +25,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 /**
  * <p>Created: 2025-04-23</p>
  */
-public abstract class SqlSessionProvider extends InstantActivitySupport {
+public abstract class SqlSessionProvider extends InstantActivitySupport implements InitializableBean {
 
     private final String relevantAspectId;
 
@@ -57,12 +59,12 @@ public abstract class SqlSessionProvider extends InstantActivitySupport {
 
     @AvoidAdvice
     protected SqlSession getSqlSession() {
-        SqlSessionTxAdvice sqlSessionTxAdvice = getSqlSessionTxAdvice();
-        SqlSession sqlSession = sqlSessionTxAdvice.getSqlSession();
+        SqlSessionAdvice sqlSessionAdvice = getSqlSessionAdvice();
+        SqlSession sqlSession = sqlSessionAdvice.getSqlSession();
         if (sqlSession == null) {
-            if (sqlSessionTxAdvice.isArbitrarilyClosed()) {
-                sqlSessionTxAdvice.open();
-                sqlSession = sqlSessionTxAdvice.getSqlSession();
+            if (sqlSessionAdvice.isArbitrarilyClosed()) {
+                sqlSessionAdvice.open();
+                sqlSession = sqlSessionAdvice.getSqlSession();
             } else {
                 throw new IllegalStateException("SqlSession is not opened");
             }
@@ -72,20 +74,20 @@ public abstract class SqlSessionProvider extends InstantActivitySupport {
 
     @AvoidAdvice
     @NonNull
-    protected SqlSessionTxAdvice getSqlSessionTxAdvice() {
+    protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
-        SqlSessionTxAdvice txAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
-        if (txAdvice == null) {
-            txAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
+        SqlSessionAdvice sqlSessionAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
+        if (sqlSessionAdvice == null) {
+            sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
         }
-        if (txAdvice == null) {
+        if (sqlSessionAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
-                        "' handling SqlSessionTxAdvice is not registered");
+                        "' handling SqlSessionAdvice is not registered");
             }
-            throw new IllegalStateException("SqlSessionTxAdvice not found handled by aspect '" + relevantAspectId + "'");
+            throw new IllegalStateException("SqlSessionAdvice not found handled by aspect '" + relevantAspectId + "'");
         }
-        return txAdvice;
+        return sqlSessionAdvice;
     }
 
     @AvoidAdvice
@@ -97,9 +99,17 @@ public abstract class SqlSessionProvider extends InstantActivitySupport {
     }
 
     @AvoidAdvice
-    protected void registerSqlSessionTxAdvice() {
-        if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) != null) {
-            throw new IllegalStateException("SqlSessionTxAdvice is already registered");
+    @Override
+    public void initialize() {
+        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
+            registerSqlSessionAdvice();
+        }
+    }
+
+    @AvoidAdvice
+    protected void registerSqlSessionAdvice() {
+        if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
+            throw new IllegalStateException("SqlSessionAdvice is already registered");
         }
 
         SqlSessionFactory sqlSessionFactory;
@@ -132,33 +142,33 @@ public abstract class SqlSessionProvider extends InstantActivitySupport {
 
         AspectAdviceRule beforeAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
         beforeAspectAdviceRule.setAdviceAction(activity -> {
-            SqlSessionTxAdvice sqlSessionTxAdvice = new SqlSessionTxAdvice(sqlSessionFactory);
+            SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
             if (executorType != null) {
-                sqlSessionTxAdvice.setExecutorType(executorType);
+                sqlSessionAdvice.setExecutorType(executorType);
             }
-            sqlSessionTxAdvice.setAutoCommit(autoCommit);
-            sqlSessionTxAdvice.open();
-            return sqlSessionTxAdvice;
+            sqlSessionAdvice.setAutoCommit(autoCommit);
+            sqlSessionAdvice.open();
+            return sqlSessionAdvice;
         });
 
         AspectAdviceRule afterAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
         afterAspectAdviceRule.setAdviceAction(activity -> {
-            SqlSessionTxAdvice sqlSessionTxAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionTxAdvice.commit();
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            sqlSessionAdvice.commit();
             return null;
         });
 
         AspectAdviceRule finallyAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
         finallyAspectAdviceRule.setAdviceAction(activity -> {
-            SqlSessionTxAdvice sqlSessionTxAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionTxAdvice.close();
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            sqlSessionAdvice.close();
             return null;
         });
 
         try {
             getActivityContext().getAspectRuleRegistry().addAspectRule(aspectRule);
         } catch (IllegalRuleException e) {
-            ToStringBuilder tsb = new ToStringBuilder("Failed to register SqlSessionTxAdvice with");
+            ToStringBuilder tsb = new ToStringBuilder("Failed to register SqlSessionAdvice with");
             tsb.append("relevantAspectId", relevantAspectId);
             tsb.append("sqlSessionFactoryBeanId", sqlSessionFactoryBeanId);
             throw new RuntimeException(tsb.toString(), e);

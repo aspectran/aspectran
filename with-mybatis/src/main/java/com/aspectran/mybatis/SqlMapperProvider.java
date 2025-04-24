@@ -17,7 +17,7 @@ package com.aspectran.mybatis;
 
 import org.apache.ibatis.session.SqlSession;
 
-public interface SqlMapperAgent {
+public interface SqlMapperProvider {
 
     SqlSession getSimpleSqlSession();
 
@@ -25,16 +25,16 @@ public interface SqlMapperAgent {
 
     SqlSession getReuseSqlSession();
 
-    default <T> T simple(Class<T> type) {
-        return getSimpleSqlSession().getMapper(type);
+    default <T> T simple(Class<T> mapperType) {
+        return getSimpleSqlSession().getMapper(mapperType);
     }
 
-    default <T> T batch(Class<T> type) {
-        return getBatchSqlSession().getMapper(type);
+    default <T> T batch(Class<T> mapperType) {
+        return getBatchSqlSession().getMapper(mapperType);
     }
 
-    default <T> T reuse(Class<T> type) {
-        return getReuseSqlSession().getMapper(type);
+    default <T> T reuse(Class<T> mapperType) {
+        return getReuseSqlSession().getMapper(mapperType);
     }
 
 }

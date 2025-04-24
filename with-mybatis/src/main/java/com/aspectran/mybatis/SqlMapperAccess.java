@@ -15,31 +15,31 @@
  */
 package com.aspectran.mybatis;
 
-public abstract class SqlMapperDao<T> {
+public abstract class SqlMapperAccess<T> {
 
-    private final SqlMapperAgent mapperAgent;
+    private final SqlMapperProvider mapperProvider;
 
-    private final Class<T> mapperInterface;
+    private final Class<T> mapperType;
 
-    public SqlMapperDao(SqlMapperAgent mapperAgent, Class<T> mapperInterface) {
-        this.mapperAgent = mapperAgent;
-        this.mapperInterface = mapperInterface;
+    public SqlMapperAccess(SqlMapperProvider mapperProvider, Class<T> mapperType) {
+        this.mapperProvider = mapperProvider;
+        this.mapperType = mapperType;
     }
 
-    public SqlMapperAgent getMapperAgent() {
-        return mapperAgent;
+    public SqlMapperProvider getMapperProvider() {
+        return mapperProvider;
     }
 
     public T simple() {
-        return mapperAgent.simple(mapperInterface);
+        return mapperProvider.simple(mapperType);
     }
 
     public T batch() {
-        return mapperAgent.batch(mapperInterface);
+        return mapperProvider.batch(mapperType);
     }
 
     public T reuse() {
-        return mapperAgent.reuse(mapperInterface);
+        return mapperProvider.reuse(mapperType);
     }
 
 }

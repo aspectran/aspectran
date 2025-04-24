@@ -204,7 +204,7 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 
     @Override
     public void close() {
-        getSqlSessionTxAdvice().close(true);
+        getSqlSessionAdvice().close(true);
     }
 
     @Override
