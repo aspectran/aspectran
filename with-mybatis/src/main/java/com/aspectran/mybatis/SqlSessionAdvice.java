@@ -151,7 +151,7 @@ public class SqlSessionAdvice {
      * To force the commit, call {@link #commit(boolean)}.
      */
     public void commit() {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
 
@@ -167,7 +167,7 @@ public class SqlSessionAdvice {
      * @param force forces connection commit
      */
     public void commit(boolean force) {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
 
@@ -187,7 +187,7 @@ public class SqlSessionAdvice {
      * To force the rollback, call {@link #rollback(boolean)}.
      */
     public void rollback() {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
 
@@ -204,7 +204,7 @@ public class SqlSessionAdvice {
      * @param force forces connection rollback
      */
     public void rollback(boolean force) {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
 
@@ -230,7 +230,7 @@ public class SqlSessionAdvice {
      * @param arbitrarily true if user code arbitrarily closes the session, false otherwise
      */
     public void close(boolean arbitrarily) {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
 
@@ -257,7 +257,7 @@ public class SqlSessionAdvice {
      * If user code has already closed the session, it always returns true to ignore further processing.
      * @return true if user code has already closed the session, otherwise false
      */
-    private boolean checkSession() {
+    private boolean checkOpen() {
         if (arbitrarilyClosed) {
             return true;
         }
