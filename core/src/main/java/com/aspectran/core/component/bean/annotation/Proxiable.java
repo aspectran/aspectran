@@ -22,14 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Classes with this annotation are components
- * that are automatically scanned.
+ * Classes annotated with this can be forced to become proxy beans.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Component {
-
-    String value() default "";
-
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface Proxiable {
 }

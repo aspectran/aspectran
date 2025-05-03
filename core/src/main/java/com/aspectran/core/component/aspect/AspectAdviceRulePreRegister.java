@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.utils.BeanDescriptor;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class AspectAdviceRulePreRegister {
 
     private void determineProxyBean(@NonNull BeanRule beanRule) {
         Class<?> beanClass = beanRule.getTargetBeanClass();
-        if (beanClass.isAnnotationPresent(AvoidAdvice.class)) {
+        if (ClassUtils.isAnnotationPresent(beanClass, AvoidAdvice.class)) {
             beanRule.setProxied(false);
             return;
         }

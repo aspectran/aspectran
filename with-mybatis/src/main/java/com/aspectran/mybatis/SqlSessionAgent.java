@@ -17,6 +17,7 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.annotation.Proxiable;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
@@ -32,6 +33,7 @@ import java.util.Map;
 /**
  * The SqlSession Agent.
  */
+@Proxiable
 public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 
     private boolean autoParameters;

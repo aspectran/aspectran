@@ -34,7 +34,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 29/09/2019</p>
  */
-@AvoidAdvice
 public abstract class InstantActivitySupport implements ActivityContextAware {
 
     private ActivityContext context;

@@ -17,6 +17,7 @@ package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
@@ -247,6 +248,17 @@ public abstract class ClassUtils {
             }
         }
         return clazz;
+    }
+
+    public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        Class<?> currentClass = clazz;
+        while (currentClass != null) {
+            if (currentClass.isAnnotationPresent(annotationClass)) {
+                return true;
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        return false;
     }
 
 }

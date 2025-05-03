@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * The Class JavassistDynamicBeanProxy.
+ * The Class JavassistBeanProxy.
  *
  * @since 1.1.0
  */

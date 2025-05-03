@@ -42,6 +42,7 @@ import com.aspectran.core.component.bean.annotation.Job;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Profile;
+import com.aspectran.core.component.bean.annotation.Proxiable;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Redirect;
 import com.aspectran.core.component.bean.annotation.Request;
@@ -89,6 +90,7 @@ import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.util.Namespace;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -462,7 +464,7 @@ public class AnnotatedConfigParser {
         boolean lazyInit = beanAnno.lazyInit();
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
-        boolean proxied = beanAnno.proxied();
+        boolean proxied = (beanAnno.proxied() || ClassUtils.isAnnotationPresent(beanClass, Proxiable.class));
 
         Scope scopeAnno = beanClass.getAnnotation(Scope.class);
         ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);

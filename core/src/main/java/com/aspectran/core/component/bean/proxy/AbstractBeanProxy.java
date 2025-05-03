@@ -29,13 +29,14 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * The Class AbstractDynamicBeanProxy.
+ * The Class AbstractBeanProxy.
  */
 public abstract class AbstractBeanProxy {
 
@@ -47,8 +48,8 @@ public abstract class AbstractBeanProxy {
 
     protected boolean isAvoidAdvice(@NonNull Method method) {
         return (Object.class == method.getDeclaringClass() ||
-                method.getDeclaringClass().isAnnotationPresent(AvoidAdvice.class) ||
-                method.isAnnotationPresent(AvoidAdvice.class));
+                method.isAnnotationPresent(AvoidAdvice.class) ||
+                ClassUtils.isAnnotationPresent(method.getDeclaringClass(), AvoidAdvice.class));
     }
 
     protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(@NonNull Activity activity,
