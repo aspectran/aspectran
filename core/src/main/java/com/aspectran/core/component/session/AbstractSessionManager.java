@@ -291,13 +291,13 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Each session has a timer that is configured to go off
+     * Each session has a timer configured to go off
      * when either the session has not been accessed for a
      * configurable amount of time, or the session itself
      * has passed its expiry.
      * <p>
      * If it has passed its expiry, then we will mark it for
-     * scavenging by next run of the HouseKeeper; if it has
+     * scavenging by the next run of the HouseKeeper; if it has
      * been idle longer than the configured eviction period,
      * we evict from the cache.
      * <p>
@@ -516,7 +516,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     @Override
     public Set<String> getAllSessions() {
-        return sessionCache.getActiveSessions();
+        return sessionCache.getAllSessions();
     }
 
     @Override

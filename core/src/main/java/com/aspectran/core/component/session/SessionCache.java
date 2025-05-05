@@ -177,13 +177,13 @@ public interface SessionCache {
     void cleanOrphans(long time);
 
     /**
-     * @return the identifiers of those sessions that are active on this node,
-     *      excluding passivated sessions
+     * Returns the identifiers of those sessions that are active on the cache,
+     * excluding passivated sessions.
      */
     Set<String> getActiveSessions();
 
     /**
-     * @return the identifiers of all sessions, including both active and passive
+     * Returns the identifiers of all sessions, including both active and passive.
      */
     Set<String> getAllSessions();
 
