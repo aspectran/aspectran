@@ -188,6 +188,9 @@ public class ShellActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for the shell activity", e);
         }
 
+        setFlashMapManager(shellService.getFlashMapManager());
+        setLocaleResolver(shellService.getLocaleResolver());
+
         super.adapt();
     }
 

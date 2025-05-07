@@ -35,7 +35,6 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     /**
      * Name of the session attribute that holds the Locale.
      * Only used internally by this implementation.
-     * to retrieve the current locale in controllers or views.
      */
     public static final String LOCALE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".LOCALE";
 

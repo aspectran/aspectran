@@ -178,6 +178,9 @@ public class TowActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for the tow activity", e);
         }
 
+        setFlashMapManager(towService.getFlashMapManager());
+        setLocaleResolver(towService.getLocaleResolver());
+
         super.adapt();
     }
 

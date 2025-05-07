@@ -211,6 +211,9 @@ public class WebActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for the web activity", e);
         }
 
+        setFlashMapManager(webService.getFlashMapManager());
+        setLocaleResolver(webService.getLocaleResolver());
+
         super.adapt();
     }
 

@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringifyContext;
 
 import java.util.List;
@@ -272,6 +273,10 @@ public interface Activity {
     TokenEvaluator getTokenEvaluator();
 
     ItemEvaluator getItemEvaluator();
+
+    FlashMapManager getFlashMapManager();
+
+    LocaleResolver getLocaleResolver();
 
     /**
      * Gets the aspect advice bean.

@@ -65,6 +65,8 @@ public class InstantActivity extends CoreActivity {
         if (responseAdapterInheritable) {
             setResponseAdapter(activity.getResponseAdapter());
         }
+        setFlashMapManager(activity.getFlashMapManager());
+        setLocaleResolver(activity.getLocaleResolver());
     }
 
     @Override

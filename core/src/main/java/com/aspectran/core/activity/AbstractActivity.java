@@ -27,6 +27,7 @@ import com.aspectran.core.context.asel.token.TokenEvaluation;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
@@ -60,6 +61,10 @@ public abstract class AbstractActivity implements Activity {
     private TokenEvaluator tokenEvaluator;
 
     private ItemEvaluator itemEvaluator;
+
+    private FlashMapManager flashMapManager;
+
+    private LocaleResolver localeResolver;
 
     /**
      * Instantiates a new abstract activity.
@@ -287,6 +292,24 @@ public abstract class AbstractActivity implements Activity {
             itemEvaluator = new ItemEvaluation(getTokenEvaluator());
         }
         return itemEvaluator;
+    }
+
+    @Override
+    public FlashMapManager getFlashMapManager() {
+        return flashMapManager;
+    }
+
+    protected void setFlashMapManager(FlashMapManager flashMapManager) {
+        this.flashMapManager = flashMapManager;
+    }
+
+    @Override
+    public LocaleResolver getLocaleResolver() {
+        return localeResolver;
+    }
+
+    protected void setLocaleResolver(LocaleResolver localeResolver) {
+        this.localeResolver = localeResolver;
     }
 
     //---------------------------------------------------------------------

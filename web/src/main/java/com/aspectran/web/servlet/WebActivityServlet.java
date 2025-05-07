@@ -85,7 +85,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                 this.webService = newWebService;
             }
         } catch (Exception e) {
-            logger.error("Unable to initialize WebActivityServlet", e);
+            logger.error("Unable to initialize {}", getMyName(), e);
             throw new UnavailableException(e.getMessage());
         }
 

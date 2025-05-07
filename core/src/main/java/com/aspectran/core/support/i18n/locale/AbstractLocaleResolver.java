@@ -47,7 +47,19 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Configure supported locales.
+     * Configure the list of supported locales to compare and match against requested locales.
+     * <p>In order for a supported locale to be considered a match, it must match
+     * on both country and language. If you want to support a language-only match
+     * as a fallback, you must configure the language explicitly as a supported
+     * locale.
+     * <p>For example, if the supported locales are {@code ["de-DE","en-US"]},
+     * then a request for {@code "en-GB"} will not match, and neither will a
+     * request for {@code "en"}. If you want to support additional locales for a
+     * given language such as {@code "en"}, then you must add it to the list of
+     * supported locales.
+     * <p>If there is no match, then the {@link #setDefaultLocale(Locale)
+     * defaultLocale} is used, if configured, or otherwise falling back on
+     * {@link com.aspectran.core.adapter.RequestAdapter#getLocale()}.
      * @param locales the supported locales
      */
     public void setSupportedLocales(List<Locale> locales) {

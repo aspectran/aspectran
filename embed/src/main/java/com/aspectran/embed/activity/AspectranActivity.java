@@ -24,8 +24,7 @@ import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
-import com.aspectran.embed.service.AbstractEmbeddedAspectran;
-import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.embed.service.DefaultEmbeddedAspectran;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.StringUtils;
@@ -39,7 +38,7 @@ import java.util.Map;
  */
 public class AspectranActivity extends CoreActivity {
 
-    private final EmbeddedAspectran aspectran;
+    private final DefaultEmbeddedAspectran aspectran;
 
     private Writer outputWriter;
 
@@ -57,7 +56,7 @@ public class AspectranActivity extends CoreActivity {
      * Instantiates a new embedded aspectran activity.
      * @param aspectran the embedded aspectran
      */
-    public AspectranActivity(AbstractEmbeddedAspectran aspectran) {
+    public AspectranActivity(DefaultEmbeddedAspectran aspectran) {
         this(aspectran, null);
     }
 
@@ -66,7 +65,7 @@ public class AspectranActivity extends CoreActivity {
      * @param aspectran the embedded aspectran
      * @param outputWriter the output writer
      */
-    public AspectranActivity(@NonNull AbstractEmbeddedAspectran aspectran, Writer outputWriter) {
+    public AspectranActivity(@NonNull DefaultEmbeddedAspectran aspectran, Writer outputWriter) {
         super(aspectran.getActivityContext());
 
         this.aspectran = aspectran;
@@ -138,6 +137,9 @@ public class AspectranActivity extends CoreActivity {
         }
         AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
         setResponseAdapter(responseAdapter);
+
+        setFlashMapManager(aspectran.getFlashMapManager());
+        setLocaleResolver(aspectran.getLocaleResolver());
 
         super.adapt();
     }

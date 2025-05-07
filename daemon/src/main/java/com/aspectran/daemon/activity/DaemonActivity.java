@@ -119,6 +119,9 @@ public class DaemonActivity extends CoreActivity {
         DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
         setResponseAdapter(responseAdapter);
 
+        setFlashMapManager(daemonService.getFlashMapManager());
+        setLocaleResolver(daemonService.getLocaleResolver());
+
         super.adapt();
     }
 

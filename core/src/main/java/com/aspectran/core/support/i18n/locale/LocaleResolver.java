@@ -27,6 +27,9 @@ import java.util.TimeZone;
  */
 public interface LocaleResolver {
 
+    /** Well-known name for the LocaleResolver object in the bean factory for this namespace. */
+	String LOCALE_RESOLVER_BEAN_ID = "localeResolver";
+
     /**
      * Resolve the current locale via the given translet.
      * Can return a default locale as fallback in any case.

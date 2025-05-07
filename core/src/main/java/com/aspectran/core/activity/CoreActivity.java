@@ -29,6 +29,7 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
+import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.ChooseWhenRule;
@@ -120,7 +121,7 @@ public class CoreActivity extends AdviceActivity {
      * Prepare for the activity.
      * @param requestName the request name
      * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName) throws TransletNotFoundException, ActivityPrepareException {
         TransletRule transletRule = findTransletRule(requestName, MethodType.GET);
@@ -155,7 +156,7 @@ public class CoreActivity extends AdviceActivity {
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName, String requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
@@ -167,7 +168,7 @@ public class CoreActivity extends AdviceActivity {
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
      */
     public void prepare(String requestName, MethodType requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
@@ -234,23 +235,23 @@ public class CoreActivity extends AdviceActivity {
         requestParsed = true;
     }
 
-    protected LocaleResolver resolveLocale() {
-        LocaleResolver localeResolver = null;
+    protected void resolveLocale() {
+        LocaleResolver localeResolver = getLocaleResolver();
         String localeResolverBeanId = getSetting(LOCALE_RESOLVER_SETTING_NAME);
-        if (localeResolverBeanId != null) {
+        if (localeResolverBeanId != null && !localeResolverBeanId.equals(LocaleResolver.LOCALE_RESOLVER_BEAN_ID)) {
             localeResolver = getBean(LocaleResolver.class, localeResolverBeanId);
-            localeResolver.resolveLocale(getTranslet());
-            localeResolver.resolveTimeZone(getTranslet());
         }
         if (localeResolver != null) {
-            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
-            if (localeChangeInterceptorId != null) {
-                LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
-                    localeChangeInterceptorId);
+            localeResolver.resolveLocale(getTranslet());
+            localeResolver.resolveTimeZone(getTranslet());
+            try {
+                String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+                LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class, localeChangeInterceptorId);
                 localeChangeInterceptor.handle(getTranslet(), localeResolver);
+            } catch (NoSuchBeanException e) {
+                // ignore
             }
         }
-        return localeResolver;
     }
 
     @Override
@@ -338,7 +339,8 @@ public class CoreActivity extends AdviceActivity {
             if (translet != null) {
                 throw new ActivityPerformException("Failed to perform activity for Translet " +
                         translet.getTransletRule(), e);
-            } if (instantAction != null) {
+            }
+            if (instantAction != null) {
                 throw new ActivityPerformException("Failed to perform activity for instant action " +
                         instantAction, e);
             } else {

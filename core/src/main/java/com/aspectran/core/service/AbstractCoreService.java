@@ -16,21 +16,30 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FlashMapManager;
+import com.aspectran.core.activity.support.SessionFlashMapManager;
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.scheduler.service.DefaultSchedulerServiceBuilder;
 import com.aspectran.core.scheduler.service.SchedulerService;
+import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class AbstractCoreService.
  */
 public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCoreService.class);
 
     private final boolean derived;
 
@@ -49,6 +58,10 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     private ClassLoader altClassLoader;
 
     private SchedulerService schedulerService;
+
+    private FlashMapManager flashMapManager;
+
+    private LocaleResolver localeResolver;
 
     private RequestAcceptor requestAcceptor;
 
@@ -151,9 +164,15 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         this.activityContext = activityContext;
     }
 
+    protected void checkContextConfigured() {
+        if (activityContext == null) {
+            throw new IllegalStateException("No ActivityContext configured yet");
+        }
+    }
+
     @Override
     public Activity getDefaultActivity() {
-        Assert.state(getActivityContext() != null, "No ActivityContext configured yet");
+        checkContextConfigured();
         return getActivityContext().getDefaultActivity();
     }
 
@@ -219,6 +238,67 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
 
     protected void setRequestAcceptor(RequestAcceptor requestAcceptor) {
         this.requestAcceptor = requestAcceptor;
+    }
+
+    @Override
+    public FlashMapManager getFlashMapManager() {
+        return flashMapManager;
+    }
+
+    protected void initFlashMapManager() {
+        checkContextConfigured();
+        try {
+            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", flashMapManager);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+            }
+        } catch (NoUniqueBeanException e) {
+            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class,
+                    FlashMapManager.FLASH_MAP_MANAGER_BEAN_ID);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", flashMapManager);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+            }
+        } catch (NoSuchBeanException e) {
+            flashMapManager = new SessionFlashMapManager();
+            if (logger.isTraceEnabled()) {
+                logger.trace("No FlashMapManager: using default [{}]", flashMapManager);
+            }
+        }
+    }
+
+    @Override
+    public LocaleResolver getLocaleResolver() {
+        return localeResolver;
+    }
+
+    protected void setLocaleResolver(LocaleResolver localeResolver) {
+        this.localeResolver = localeResolver;
+    }
+
+    protected void initLocaleResolver() {
+        checkContextConfigured();
+        try {
+            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", localeResolver);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+            }
+        } catch (NoUniqueBeanException e) {
+            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class,
+                    LocaleResolver.LOCALE_RESOLVER_BEAN_ID);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Detected {}", localeResolver);
+            } else if (logger.isDebugEnabled()) {
+                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+            }
+        } catch (NoSuchBeanException e) {
+            // ignore
+        }
     }
 
 }

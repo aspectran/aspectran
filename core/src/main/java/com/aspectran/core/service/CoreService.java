@@ -16,10 +16,12 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FlashMapManager;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.scheduler.service.SchedulerService;
+import com.aspectran.core.support.i18n.locale.LocaleResolver;
 
 /**
  * The Interface CoreService.
@@ -98,5 +100,9 @@ public interface CoreService {
      * @return true if the request can be processed by this service; otherwise, false
      */
     boolean isAcceptable(String requestName);
+
+    FlashMapManager getFlashMapManager();
+
+    LocaleResolver getLocaleResolver();
 
 }

@@ -24,6 +24,7 @@ import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.web.support.i18n.locale.AcceptHeaderLocaleResolver;
 import jakarta.servlet.ServletContext;
 
 import java.util.ArrayList;
@@ -102,8 +103,11 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     @Override
     protected void afterContextLoaded() throws Exception {
-        super.afterContextLoaded();
         setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
+        super.afterContextLoaded();
+        if (getLocaleResolver() == null) {
+            setLocaleResolver(new AcceptHeaderLocaleResolver());
+        }
     }
 
     @Override
