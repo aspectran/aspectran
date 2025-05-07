@@ -53,7 +53,7 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
         }
         Locale requestLocale = translet.getRequestAdapter().getLocale();
         List<Locale> supportedLocales = getSupportedLocales();
-        if (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
+        if (supportedLocales == null || supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
             return requestLocale;
         }
         Locale supportedLocale = findSupportedLocale(translet.getResponseAdapter().getAdaptee(), supportedLocales);

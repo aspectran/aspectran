@@ -103,10 +103,20 @@ public abstract class AbstractWebService extends DefaultCoreService implements W
 
     @Override
     protected void afterContextLoaded() throws Exception {
-        setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
         super.afterContextLoaded();
+        setServiceClassLoader(new WebServiceClassLoader(getActivityContext().getClassLoader()));
+    }
+
+    @Override
+    protected void doStart() throws Exception {
+        super.doStart();
         if (getLocaleResolver() == null) {
-            setLocaleResolver(new AcceptHeaderLocaleResolver());
+            if (isDerived()) {
+                setLocaleResolver(getParentService().getLocaleResolver());
+            }
+            if (getLocaleResolver() == null) {
+                setLocaleResolver(new AcceptHeaderLocaleResolver());
+            }
         }
     }
 

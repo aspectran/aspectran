@@ -342,6 +342,12 @@ public interface Translet {
      */
     void removeAttribute(String name);
 
+    Map<String, ?> getInputFlashMap();
+
+    boolean hasOutputFlashMap();
+
+    FlashMap getOutputFlashMap();
+
     /**
      * Transformation according to a given rule, and transmits this response.
      * @param transformRule the transformation rule

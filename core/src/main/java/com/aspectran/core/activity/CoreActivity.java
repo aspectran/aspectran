@@ -56,6 +56,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+
 import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;
@@ -230,6 +232,7 @@ public class CoreActivity extends AdviceActivity {
         parseDeclaredAttributes();
         parsePathVariables();
         if (!forwarding) {
+            loadFlashAttributes();
             resolveLocale();
         }
         requestParsed = true;
@@ -391,6 +394,11 @@ public class CoreActivity extends AdviceActivity {
             committed = true;
         } else {
             return null;
+        }
+
+        // Save flash attributes
+        if (getFlashMapManager() != null && getTranslet() != null) {
+            getFlashMapManager().saveFlashMap(getTranslet());
         }
 
         Response resp = getResponse();
@@ -712,6 +720,15 @@ public class CoreActivity extends AdviceActivity {
             PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, getTranslet().getRequestName());
             if (pathVariables != null) {
                 pathVariables.applyTo(getTranslet());
+            }
+        }
+    }
+
+    private void loadFlashAttributes() {
+        if (getFlashMapManager() != null) {
+            FlashMap flashMap = getFlashMapManager().retrieveAndUpdate(translet);
+            if (flashMap != null) {
+                translet.setInputFlashMap(Collections.unmodifiableMap(flashMap));
             }
         }
     }

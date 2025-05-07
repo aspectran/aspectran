@@ -47,9 +47,8 @@ public interface FlashMapManager {
      * <p><strong>NOTE:</strong> Invoke this method prior to a redirect in order
      * to allow saving the FlashMap in the HTTP session or in a response
      * cookie before the response is committed.
-     * @param flashMap the FlashMap to save
      * @param translet the current translet
      */
-    void saveFlashMap(FlashMap flashMap, Translet translet);
+    void saveFlashMap(Translet translet);
 
 }

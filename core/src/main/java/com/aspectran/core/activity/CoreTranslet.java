@@ -58,6 +58,10 @@ public class CoreTranslet extends AbstractTranslet {
 
     private ProcessResult processResult;
 
+    private Map<String, ?> inputFlashMap;
+
+    private FlashMap outputFlashMap;
+
     /**
      * Instantiates a new CoreTranslet.
      * @param transletRule the translet rule
@@ -258,6 +262,31 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public void removeAttribute(String name) {
         getRequestAdapter().removeAttribute(name);
+    }
+
+    @Override
+    public Map<String, ?> getInputFlashMap() {
+        if (inputFlashMap == null) {
+            inputFlashMap = new FlashMap();
+        }
+        return inputFlashMap;
+    }
+
+    protected void setInputFlashMap(Map<String, ?> inputFlashMap) {
+        this.inputFlashMap = inputFlashMap;
+    }
+
+    @Override
+    public boolean hasOutputFlashMap() {
+        return (outputFlashMap != null && !outputFlashMap.isEmpty());
+    }
+
+    @Override
+    public FlashMap getOutputFlashMap() {
+        if (outputFlashMap == null) {
+            outputFlashMap = new FlashMap();
+        }
+        return outputFlashMap;
     }
 
     @Override

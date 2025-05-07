@@ -128,8 +128,6 @@ public class DefaultCoreService extends AbstractCoreService {
      * @throws Exception if an error occurs
      */
     protected void afterContextLoaded() throws Exception {
-        initFlashMapManager();
-        initLocaleResolver();
     }
 
     /**
@@ -163,6 +161,8 @@ public class DefaultCoreService extends AbstractCoreService {
             buildSchedulerService();
             afterContextLoaded();
         }
+        initFlashMapManager();
+        initLocaleResolver();
     }
 
     @Override

@@ -25,8 +25,6 @@ import java.util.List;
 
 /**
  * Store and retrieve {@link FlashMap} instances to and from the HTTP session.
- * @author Rossen Stoyanchev
- * @author Juergen Hoeller
  * @since 8.4.0
  */
 public class SessionFlashMapManager extends AbstractFlashMapManager {

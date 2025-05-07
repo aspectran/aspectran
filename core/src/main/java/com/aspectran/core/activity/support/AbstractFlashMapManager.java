@@ -18,6 +18,7 @@ package com.aspectran.core.activity.support;
 import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.activity.FlashMapManager;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
@@ -139,12 +140,15 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
     }
 
     @Override
-    public final void saveFlashMap(FlashMap flashMap, Translet translet) {
-        if (flashMap == null || flashMap.isEmpty()) {
+    public final void saveFlashMap(@NonNull Translet translet) {
+        if (!translet.hasOutputFlashMap()) {
             return;
         }
 
-        flashMap.setTargetRequestName(translet.getRequestName());
+        FlashMap flashMap = translet.getOutputFlashMap();
+        if (StringUtils.isEmpty(flashMap.getTargetRequestName())) {
+            flashMap.setTargetRequestName(translet.getRequestName());
+        }
         flashMap.startExpirationPeriod(getFlashMapTimeout());
 
         Object mutex = getFlashMapsMutex(translet);

@@ -246,26 +246,30 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     protected void initFlashMapManager() {
-        checkContextConfigured();
-        try {
-            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class);
-            if (logger.isTraceEnabled()) {
-                logger.trace("Detected {}", flashMapManager);
-            } else if (logger.isDebugEnabled()) {
-                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
-            }
-        } catch (NoUniqueBeanException e) {
-            flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class,
-                    FlashMapManager.FLASH_MAP_MANAGER_BEAN_ID);
-            if (logger.isTraceEnabled()) {
-                logger.trace("Detected {}", flashMapManager);
-            } else if (logger.isDebugEnabled()) {
-                logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
-            }
-        } catch (NoSuchBeanException e) {
-            flashMapManager = new SessionFlashMapManager();
-            if (logger.isTraceEnabled()) {
-                logger.trace("No FlashMapManager: using default [{}]", flashMapManager);
+        if (isDerived()) {
+            flashMapManager = getParentService().getFlashMapManager();
+        } else {
+            checkContextConfigured();
+            try {
+                flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Detected {}", flashMapManager);
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+                }
+            } catch (NoUniqueBeanException e) {
+                flashMapManager = getActivityContext().getBeanRegistry().getBean(FlashMapManager.class,
+                        FlashMapManager.FLASH_MAP_MANAGER_BEAN_ID);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Detected {}", flashMapManager);
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("Detected {}", flashMapManager.getClass().getSimpleName());
+                }
+            } catch (NoSuchBeanException e) {
+                flashMapManager = new SessionFlashMapManager();
+                if (logger.isTraceEnabled()) {
+                    logger.trace("No FlashMapManager: using default [{}]", flashMapManager);
+                }
             }
         }
     }
@@ -280,24 +284,28 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     protected void initLocaleResolver() {
-        checkContextConfigured();
-        try {
-            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class);
-            if (logger.isTraceEnabled()) {
-                logger.trace("Detected {}", localeResolver);
-            } else if (logger.isDebugEnabled()) {
-                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+        if (isDerived()) {
+            localeResolver = getParentService().getLocaleResolver();
+        } else {
+            checkContextConfigured();
+            try {
+                localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Detected {}", localeResolver);
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+                }
+            } catch (NoUniqueBeanException e) {
+                localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class,
+                        LocaleResolver.LOCALE_RESOLVER_BEAN_ID);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Detected {}", localeResolver);
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
+                }
+            } catch (NoSuchBeanException e) {
+                // ignore
             }
-        } catch (NoUniqueBeanException e) {
-            localeResolver = getActivityContext().getBeanRegistry().getBean(LocaleResolver.class,
-                    LocaleResolver.LOCALE_RESOLVER_BEAN_ID);
-            if (logger.isTraceEnabled()) {
-                logger.trace("Detected {}", localeResolver);
-            } else if (logger.isDebugEnabled()) {
-                logger.debug("Detected {}", localeResolver.getClass().getSimpleName());
-            }
-        } catch (NoSuchBeanException e) {
-            // ignore
         }
     }
 
