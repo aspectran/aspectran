@@ -51,7 +51,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (isAvoidAdvice(method)) {
+        if (!isAdvisableMethod(method)) {
             return method.invoke(bean, args);
         }
         if (context.hasCurrentActivity()) {
@@ -68,11 +68,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
     }
 
     @Nullable
-    private Object invoke(Method method, Object[] args, Activity activity) throws Throwable {
-        if (isAvoidAdvice(method)) {
-            return method.invoke(bean, args);
-        }
-
+    private Object invoke(@NonNull Method method, Object[] args, Activity activity) throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();

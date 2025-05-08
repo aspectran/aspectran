@@ -42,7 +42,6 @@ import com.aspectran.core.component.bean.annotation.Job;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Profile;
-import com.aspectran.core.component.bean.annotation.Proxiable;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Redirect;
 import com.aspectran.core.component.bean.annotation.Request;
@@ -90,7 +89,6 @@ import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.util.Namespace;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -464,7 +462,6 @@ public class AnnotatedConfigParser {
         boolean lazyInit = beanAnno.lazyInit();
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
-        boolean proxied = (beanAnno.proxied() || ClassUtils.isAnnotationPresent(beanClass, Proxiable.class));
 
         Scope scopeAnno = beanClass.getAnnotation(Scope.class);
         ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);
@@ -481,9 +478,6 @@ public class AnnotatedConfigParser {
         }
         if (important) {
             beanRule.setImportant(Boolean.TRUE);
-        }
-        if (proxied) {
-            beanRule.setProxied(true);
         }
 
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
@@ -561,7 +555,7 @@ public class AnnotatedConfigParser {
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
 
-        String schedulerBeanId =  StringUtils.emptyToNull(scheduleAnno.scheduler());
+        String schedulerBeanId = StringUtils.emptyToNull(scheduleAnno.scheduler());
         if (schedulerBeanId != null) {
             scheduleRule.setSchedulerBeanId(schedulerBeanId);
         }
@@ -625,7 +619,7 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToGetAnno != null) {
             transletName = StringUtils.emptyToNull(requestToGetAnno.value());
-            allowedMethods = new MethodType[] { MethodType.GET };
+            allowedMethods = new MethodType[] {MethodType.GET};
             if (requestToGetAnno.async()) {
                 async = Boolean.TRUE;
             }
@@ -634,7 +628,7 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPostAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPostAnno.value());
-            allowedMethods = new MethodType[] { MethodType.POST };
+            allowedMethods = new MethodType[] {MethodType.POST};
             if (requestToPostAnno.async()) {
                 async = Boolean.TRUE;
             }
@@ -643,7 +637,7 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPutAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPutAnno.value());
-            allowedMethods = new MethodType[] { MethodType.PUT };
+            allowedMethods = new MethodType[] {MethodType.PUT};
             if (requestToPutAnno.async()) {
                 async = Boolean.TRUE;
             }
@@ -652,7 +646,7 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToPatchAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
-            allowedMethods = new MethodType[] { MethodType.PATCH };
+            allowedMethods = new MethodType[] {MethodType.PATCH};
             if (requestToPatchAnno.async()) {
                 async = Boolean.TRUE;
             }
@@ -661,7 +655,7 @@ public class AnnotatedConfigParser {
             }
         } else if (requestToDeleteAnno != null) {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
-            allowedMethods = new MethodType[] { MethodType.DELETE };
+            allowedMethods = new MethodType[] {MethodType.DELETE};
             if (requestToDeleteAnno.async()) {
                 async = Boolean.TRUE;
             }
@@ -985,8 +979,8 @@ public class AnnotatedConfigParser {
     }
 
     @NonNull
-    private AnnotatedAction createAnnotatedAdviceAction(AspectAdviceRule aspectAdviceRule, String actionId,
-                                                        Class<?> beanClass, Method method) {
+    private AnnotatedAction createAnnotatedAdviceAction(
+            AspectAdviceRule aspectAdviceRule, String actionId, Class<?> beanClass, Method method) {
         AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
         annotatedActionRule.setActionId(actionId);
         annotatedActionRule.setBeanClass(beanClass);

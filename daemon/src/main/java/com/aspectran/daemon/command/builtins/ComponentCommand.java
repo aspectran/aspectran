@@ -245,7 +245,7 @@ public class ComponentCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !daemonService.isAcceptable(transletName)) {
+            if (!all && !daemonService.isRequestAcceptable(transletName)) {
                 continue;
             }
             if (keywords != null) {
@@ -305,7 +305,7 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (TransletRule transletRule : transletRules) {
-            if (!all && !daemonService.isAcceptable(transletRule.getName())) {
+            if (!all && !daemonService.isRequestAcceptable(transletRule.getName())) {
                 continue;
             }
             TransletParameters transletParameters = RulesToParameters.toTransletParameters(transletRule);

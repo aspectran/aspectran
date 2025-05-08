@@ -156,7 +156,7 @@ public class TransletCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !shellService.isAcceptable(transletName)) {
+            if (!all && !shellService.isRequestAcceptable(transletName)) {
                 continue;
             }
             if (keywords != null) {
@@ -231,7 +231,7 @@ public class TransletCommand extends AbstractCommand {
         }
         int count = 0;
         for (TransletRule transletRule : transletRules) {
-            if (!all && !shellService.isAcceptable(transletRule.getName())) {
+            if (!all && !shellService.isRequestAcceptable(transletRule.getName())) {
                 continue;
             }
 

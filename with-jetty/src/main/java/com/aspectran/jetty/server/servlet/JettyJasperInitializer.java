@@ -15,7 +15,6 @@
  */
 package com.aspectran.jetty.server.servlet;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ResourceUtils;
@@ -50,7 +49,6 @@ public class JettyJasperInitializer extends JasperInitializer implements Activit
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }

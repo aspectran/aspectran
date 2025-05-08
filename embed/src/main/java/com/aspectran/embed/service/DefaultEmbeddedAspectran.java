@@ -37,7 +37,6 @@ import java.util.Map;
 
 /**
  * Provides an interface that can be used by embedding Aspectran in Java applications.
- *
  * @since 3.0.0
  */
 public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
@@ -104,21 +103,23 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap) {
+    public Translet translate(
+            String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         return translate(name, method, attributeMap, parameterMap, null);
     }
 
     @Override
-    public Translet translate(String name, @Nullable MethodType method,
-                              @Nullable Map<String, Object> attributeMap, @Nullable ParameterMap parameterMap,
-                              @Nullable String body) {
+    public Translet translate(
+            String name, @Nullable MethodType method,
+            @Nullable Map<String, Object> attributeMap, @Nullable ParameterMap parameterMap,
+            @Nullable String body) {
         if (checkPaused()) {
             return null;
         }
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        if (!isAcceptable(name)) {
+        if (!isRequestAcceptable(name)) {
             logger.error("Unavailable translet: {}", name);
             return null;
         }
@@ -147,7 +148,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new CoreServiceException("Error occurred while processing request: " +
-                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
+                    activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
         }
         return translet;
     }

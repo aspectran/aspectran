@@ -15,7 +15,6 @@
  */
 package com.aspectran.thymeleaf;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -35,7 +34,6 @@ public class TemplateEngineFactory implements ActivityContextAware {
     private Set<ITemplateResolver> templateResolvers;
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }

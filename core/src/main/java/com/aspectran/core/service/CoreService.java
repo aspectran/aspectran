@@ -97,9 +97,9 @@ public interface CoreService {
     /**
      * Returns whether the request can be processed by this service.
      * @param requestName the name of the request to check
-     * @return true if the request can be processed by this service; otherwise, false
+     * @return {@code true} if the request can be processed by this service; {@code false} otherwise
      */
-    boolean isAcceptable(String requestName);
+    boolean isRequestAcceptable(String requestName);
 
     FlashMapManager getFlashMapManager();
 

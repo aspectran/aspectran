@@ -109,6 +109,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public boolean hasSessionAdapter() {
+        return activity.hasSessionAdapter();
+    }
+
+    @Override
     public SessionAdapter getSessionAdapter() {
         return activity.getSessionAdapter();
     }

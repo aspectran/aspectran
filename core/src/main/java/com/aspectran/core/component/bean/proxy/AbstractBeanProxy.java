@@ -23,13 +23,12 @@ import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.RelevantAspectRuleHolder;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Method;
@@ -46,14 +45,8 @@ public abstract class AbstractBeanProxy {
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 
-    protected boolean isAvoidAdvice(@NonNull Method method) {
-        return (Object.class == method.getDeclaringClass() ||
-                method.isAnnotationPresent(AvoidAdvice.class) ||
-                ClassUtils.isAnnotationPresent(method.getDeclaringClass(), AvoidAdvice.class));
-    }
-
-    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(@NonNull Activity activity,
-            String beanId, String className, String methodName)
+    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(
+            @NonNull Activity activity, String beanId, String className, String methodName)
             throws AdviceConstraintViolationException, AspectAdviceException {
         String requestName;
         boolean literalPattern;
@@ -121,7 +114,8 @@ public abstract class AbstractBeanProxy {
         }
     }
 
-    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception exception, @NonNull Activity activity)
+    protected boolean exceptionally(
+            List<ExceptionRule> exceptionRuleList, Exception exception, @NonNull Activity activity)
             throws ActionExecutionException {
         activity.setRaisedException(exception);
         if (exceptionRuleList != null) {
@@ -129,6 +123,10 @@ public abstract class AbstractBeanProxy {
             return activity.isResponseReserved();
         }
         return false;
+    }
+
+    protected boolean isAdvisableMethod(@NonNull Method method) {
+        return method.isAnnotationPresent(Advisable.class);
     }
 
     private boolean isSameBean(@NonNull BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {

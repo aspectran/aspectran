@@ -488,7 +488,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         AspectAdviceRulePreRegister preRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
         preRegister.setPointcutPatternVerifiable(pointcutPatternVerifiable || logger.isDebugEnabled());
-        preRegister.register(beanRuleRegistry);
+        preRegister.checkProxiable(beanRuleRegistry);
         preRegister.register(transletRuleRegistry);
 
         // check invalid pointcut pattern

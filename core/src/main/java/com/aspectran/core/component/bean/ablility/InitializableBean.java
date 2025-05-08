@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface InitializableBean.
@@ -28,7 +27,6 @@ public interface InitializableBean {
      * Invoke on initialization after it has set all bean properties supplied.
      * @throws Exception if initialization fails
      */
-    @AvoidAdvice
     void initialize() throws Exception;
 
 }

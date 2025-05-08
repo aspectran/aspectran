@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.aware;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.context.env.Environment;
 
 /**
@@ -28,7 +27,6 @@ import com.aspectran.core.context.env.Environment;
  */
 public interface EnvironmentAware extends Aware {
 
-    @AvoidAdvice
     void setEnvironment(Environment environment);
 
 }

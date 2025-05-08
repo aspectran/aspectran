@@ -96,6 +96,8 @@ public interface Translet {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    boolean hasSessionAdapter();
+
     /**
      * Gets the session adapter.
      * @return the session adapter

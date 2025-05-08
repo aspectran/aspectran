@@ -16,7 +16,6 @@
 package com.aspectran.core.component.bean.aware;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * Interface to be implemented by any object that wishes to be notified of the
@@ -28,7 +27,6 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
  */
 public interface CurrentActivityAware extends Aware {
 
-    @AvoidAdvice
     void setCurrentActivity(Activity activity);
 
 }

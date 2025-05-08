@@ -16,6 +16,8 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Advisable;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class SimpleAopTestAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestAdvice.class);
 
+    @Advisable
     public void begin(Translet translet) {
         logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Begin");
     }
@@ -34,7 +37,7 @@ public class SimpleAopTestAdvice {
         logger.debug("===> aspect01: [SimpleAopTestAdvice]=== End");
     }
 
-    public void thrown(Translet translet) {
+    public void thrown(@NonNull Translet translet) {
         logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Thrown - {}",
                 String.valueOf(translet.getRootCauseOfRaisedException()));
     }

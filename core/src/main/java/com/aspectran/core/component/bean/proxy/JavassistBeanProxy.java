@@ -48,7 +48,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
 
     @Override
     public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Throwable {
-        if (isAvoidAdvice(overridden)) {
+        if (!isAdvisableMethod(overridden)) {
             return proceed.invoke(self, args);
         }
         if (context.hasCurrentActivity()) {

@@ -15,7 +15,6 @@
  */
 package com.aspectran.jetty.server.servlet;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
@@ -74,7 +73,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }

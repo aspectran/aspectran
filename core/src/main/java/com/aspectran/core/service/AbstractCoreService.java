@@ -232,7 +232,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
     }
 
     @Override
-    public boolean isAcceptable(String requestName) {
+    public boolean isRequestAcceptable(String requestName) {
         return (requestAcceptor == null || requestAcceptor.isAcceptable(requestName));
     }
 

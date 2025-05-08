@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.server.handler.accesslog;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ClassUtils;
@@ -38,7 +37,6 @@ public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWra
     private String category;
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.classLoader = context.getClassLoader();
     }

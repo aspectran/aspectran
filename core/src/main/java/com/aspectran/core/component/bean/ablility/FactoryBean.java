@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface FactoryBean.
@@ -34,7 +33,6 @@ public interface FactoryBean<T> {
      * @return an instance of the bean (can be null)
      * @throws Exception in case of creation errors
      */
-    @AvoidAdvice
     T getObject() throws Exception;
 
 }

@@ -16,7 +16,6 @@
 package com.aspectran.core.support;
 
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.token.Token;
@@ -45,7 +44,6 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
  *
  * <p>Created: 2025. 2. 18.</p>
  */
-@AvoidAdvice
 public class PropertiesFactoryBean extends PropertiesLoaderSupport
         implements ActivityContextAware, InitializableFactoryBean<Properties> {
 

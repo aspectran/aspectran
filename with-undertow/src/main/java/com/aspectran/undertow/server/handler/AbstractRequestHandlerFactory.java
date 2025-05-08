@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.server.handler;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.undertow.server.handler.logging.LoggingGroupHandlerWrapper;
@@ -41,7 +40,6 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
     }

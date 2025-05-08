@@ -65,7 +65,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        if (!isAcceptable(name)) {
+        if (!isRequestAcceptable(name)) {
             logger.error("Unavailable translet: {}", name);
             return null;
         }

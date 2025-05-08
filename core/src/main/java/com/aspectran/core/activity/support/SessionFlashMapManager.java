@@ -37,8 +37,12 @@ public class SessionFlashMapManager extends AbstractFlashMapManager {
     @Override
     @Nullable
     protected List<FlashMap> retrieveFlashMaps(@NonNull Translet translet) {
-        SessionAdapter sessionAdapter = translet.getSessionAdapter();
-        return sessionAdapter.getAttribute(FLASH_MAPS_SESSION_ATTRIBUTE);
+        if (translet.hasSessionAdapter()) {
+            SessionAdapter sessionAdapter = translet.getSessionAdapter();
+            return sessionAdapter.getAttribute(FLASH_MAPS_SESSION_ATTRIBUTE);
+        } else {
+            return null;
+        }
     }
 
     /**

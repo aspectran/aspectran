@@ -175,7 +175,7 @@ public class CommandHighlighter implements Highlighter {
                 int len = 0;
                 for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
                     String name = transletRule.getName();
-                    if (shellService.isAcceptable(name)) {
+                    if (shellService.isRequestAcceptable(name)) {
                         if (transletRule.getNamePattern() != null) {
                             if (transletRule.getNamePattern().matches(buffer)) {
                                 return buffer;

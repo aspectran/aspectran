@@ -17,7 +17,6 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
@@ -65,7 +64,6 @@ public class DefaultSessionManager extends AbstractSessionManager
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         checkInitializable();
         this.applicationAdapter = context.getApplicationAdapter();

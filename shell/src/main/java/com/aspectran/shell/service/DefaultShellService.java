@@ -60,7 +60,7 @@ public class DefaultShellService extends AbstractShellService {
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
         }
-        if (!isAcceptable(transletCommandLine.getRequestName())) {
+        if (!isRequestAcceptable(transletCommandLine.getRequestName())) {
             getConsole().writeError("Unavailable translet: " + transletCommandLine.getRequestName());
             return null;
         }

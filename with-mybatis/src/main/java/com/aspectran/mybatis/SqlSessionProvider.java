@@ -4,7 +4,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -41,22 +40,18 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         this.relevantAspectId = relevantAspectId;
     }
 
-    @AvoidAdvice
     public void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
     }
 
-    @AvoidAdvice
     public void setExecutorType(ExecutorType executorType) {
         this.executorType = executorType;
     }
 
-    @AvoidAdvice
     public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
-    @AvoidAdvice
     protected SqlSession getSqlSession() {
         SqlSessionAdvice sqlSessionAdvice = getSqlSessionAdvice();
         SqlSession sqlSession = sqlSessionAdvice.getSqlSession();
@@ -71,7 +66,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         return sqlSession;
     }
 
-    @AvoidAdvice
     @NonNull
     protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
@@ -89,7 +83,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         return sqlSessionAdvice;
     }
 
-    @AvoidAdvice
     private void checkTransactional() {
         if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
@@ -97,7 +90,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         }
     }
 
-    @AvoidAdvice
     @Override
     public void initialize() {
         if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
@@ -105,7 +97,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         }
     }
 
-    @AvoidAdvice
     protected void registerSqlSessionAdvice() {
         if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
             throw new IllegalStateException("SqlSessionAdvice is already registered");

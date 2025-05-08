@@ -17,7 +17,6 @@ package com.aspectran.core.support;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 
 /**
@@ -27,7 +26,6 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
  *
  * <p>Created: 2017. 1. 29.</p>
  */
-@AvoidAdvice
 public class BasePathFactoryBean implements ApplicationAdapterAware, FactoryBean<String> {
 
     private String basePath;

@@ -15,6 +15,7 @@
  */
 package com.aspectran.aop;
 
+import com.aspectran.core.component.bean.annotation.Advisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class InstantActivityAopTestAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(InstantActivityAopTestAdvice.class);
 
+    @Advisable
     public void begin() {
         logger.debug("===> aspect03: [InstantActivityAopTestAdvice]=== Begin");
     }

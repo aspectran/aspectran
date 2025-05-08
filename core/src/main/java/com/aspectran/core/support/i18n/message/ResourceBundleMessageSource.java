@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ClassUtils;
@@ -92,7 +91,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             new ConcurrentHashMap<>();
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.classLoader = context.getAvailableActivity().getClassLoader();
     }

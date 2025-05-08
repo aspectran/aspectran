@@ -218,19 +218,19 @@ public abstract class AdviceActivity extends AbstractActivity {
             throws AspectAdviceException {
         if (aspectAdviceRuleList != null && !aspectAdviceRuleList.isEmpty()) {
             while (true) {
-                AspectAdviceRule target = null;
+                AspectAdviceRule aspectAdviceRuleToUse = null;
                 if (executedAdviceRules == null) {
-                    target = aspectAdviceRuleList.get(0);
+                    aspectAdviceRuleToUse = aspectAdviceRuleList.get(0);
                 } else {
                     for (AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
                         if (!executedAdviceRules.contains(aspectAdviceRule)) {
-                            target = aspectAdviceRule;
+                            aspectAdviceRuleToUse = aspectAdviceRule;
                             break;
                         }
                     }
                 }
-                if (target != null) {
-                    executeAdvice(target, throwable);
+                if (aspectAdviceRuleToUse != null) {
+                    executeAdvice(aspectAdviceRuleToUse, throwable);
                 } else {
                     break;
                 }

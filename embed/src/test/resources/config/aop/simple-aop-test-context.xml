@@ -47,7 +47,7 @@
     <aspect id="aspect03" order="1" disabled="false">
         <joinpoint>
             pointcut: {
-                +: **@class:com.aspectran.aop.InstantActivityTestBean
+                +: **@class:com.aspectran.aop.InstantActivityTestBean^begin
             }
         </joinpoint>
         <advice bean="instantActivityAopTestAdvice">

@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
@@ -39,60 +38,49 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     private ActivityContext context;
 
     @NonNull
-    @AvoidAdvice
     protected ActivityContext getActivityContext() {
         Assert.state(context != null, "No ActivityContext injected");
         return context;
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         Assert.state(this.context == null, "ActivityContext already injected");
         this.context = context;
     }
 
-    @AvoidAdvice
     protected Activity getAvailableActivity() {
         return getActivityContext().getAvailableActivity();
     }
 
-    @AvoidAdvice
     protected Activity getCurrentActivity() {
         return getActivityContext().getCurrentActivity();
     }
 
-    @AvoidAdvice
     protected boolean hasCurrentActivity() {
         return getActivityContext().hasCurrentActivity();
     }
 
-    @AvoidAdvice
     protected ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
     }
 
-    @AvoidAdvice
     protected Environment getEnvironment() {
         return getActivityContext().getEnvironment();
     }
 
-    @AvoidAdvice
     protected BeanRegistry getBeanRegistry() {
         return getActivityContext().getBeanRegistry();
     }
 
-    @AvoidAdvice
     protected TemplateRenderer getTemplateRenderer() {
         return getActivityContext().getTemplateRenderer();
     }
 
-    @AvoidAdvice
     protected MessageSource getMessageSource() {
         return getActivityContext().getMessageSource();
     }
 
-    @AvoidAdvice
     protected <V> V instantActivity(InstantAction<V> instantAction) {
         if (instantAction == null) {
             throw new IllegalArgumentException("instantAction must not be null");
@@ -105,12 +93,10 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         }
     }
 
-    @AvoidAdvice
     protected void instantActivity(String requestName) {
         instantActivity(requestName, MethodType.GET);
     }
 
-    @AvoidAdvice
     protected void instantActivity(String requestName, MethodType requestMethod) {
         if (StringUtils.isEmpty(requestName)) {
             throw new IllegalArgumentException("requestName must not be null or empty");

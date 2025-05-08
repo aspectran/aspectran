@@ -19,10 +19,25 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Supported join point target types.
+ * <dl>
+ *     <dt>{@code activity}</dt>
+ *     <dd>Activities are the target of the join points.</dd>
+ *     <dt>{@code method}</dt>
+ *     <dd>Target the Advisable methods in the Bean as a join points.
+ *         The methods must be annotated with @Advisable.</dd>
+ * </dl>
  */
 public enum JoinpointTargetType {
 
+    /**
+     * Activities are the target of the join points.
+     **/
     ACTIVITY("activity"),
+
+    /**
+     * Target the Advisable methods in the Bean as a join points.
+     * The methods must be annotated with @Advisable.
+     **/
     METHOD("method");
 
     private final String alias;

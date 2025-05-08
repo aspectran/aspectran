@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
                 MethodType.GET
         },
         pointcut = {
-                "+: aop/test/*",
+                "+: aop/test/*@simpleAopTestAdvice^begin",
+                "+: aop/test/*@class:com.aspectran.aop.InstantActivityAopTestAdvice^begin",
                 "-: aop/foo/*"
         }
 )

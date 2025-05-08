@@ -18,7 +18,6 @@ package com.aspectran.core.support;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -31,7 +30,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 2017. 10. 24.</p>
  */
-@AvoidAdvice
 public class CurrentActivityDataFactoryBean implements CurrentActivityAware, FactoryBean<ActivityData> {
 
     private String attributeName;

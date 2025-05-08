@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface DisposableBean.
@@ -28,7 +27,6 @@ public interface DisposableBean {
      * A DisposableBean implementation that calls the destroy() method.
      * @throws Exception if destruction fails
      */
-    @AvoidAdvice
     void destroy() throws Exception;
 
 }

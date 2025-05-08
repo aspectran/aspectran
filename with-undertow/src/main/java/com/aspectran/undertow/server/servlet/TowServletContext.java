@@ -16,7 +16,6 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.undertow.server.session.TowSessionManager;
@@ -58,7 +57,6 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
         ClassLoader webServiceClassLoader = new WebServiceClassLoader(context.getClassLoader());
