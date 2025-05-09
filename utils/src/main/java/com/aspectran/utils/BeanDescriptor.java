@@ -47,8 +47,6 @@ public class BeanDescriptor {
 
     private final String[] writablePropertyNames;
 
-//    private final String[] distinctMethodNames;
-
     private final Map<String, Method> getterMethods = new HashMap<>();
 
     private final Map<String, Class<?>> getterTypes = new HashMap<>();
@@ -79,12 +77,6 @@ public class BeanDescriptor {
 
         addSetterMethods(methods);
         this.writablePropertyNames = setterMethods.keySet().toArray(new String[0]);
-
-//        Set<String> nameSet = new HashSet<>();
-//        for (Method method : methods) {
-//            nameSet.add(method.getName());
-//        }
-//        this.distinctMethodNames = nameSet.toArray(new String[0]);
     }
 
     @NonNull
@@ -375,14 +367,6 @@ public class BeanDescriptor {
     public boolean hasReadableProperty(String propertyName) {
         return getterMethods.containsKey(propertyName);
     }
-
-//    /**
-//     * Gets the class methods' names that is unique.
-//     * @return the distinct method names
-//     */
-//    public String[] getDistinctMethodNames() {
-//        return distinctMethodNames;
-//    }
 
     /**
      * Gets an instance of ClassDescriptor for the specified class.

@@ -189,7 +189,7 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         } else if (activityContext != null) {
             return activityContext.getClassLoader();
         } else if (getActivityContextBuilder() != null) {
-            return getActivityContextBuilder().getClassLoader();
+            return getActivityContextBuilder().getSiblingClassLoader();
         } else {
             return null;
         }

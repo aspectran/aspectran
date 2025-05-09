@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.resource.InvalidResourceException;
+import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.service.CoreService;
@@ -81,17 +82,7 @@ public interface ActivityContextBuilder {
 
     void putPropertyItemRule(ItemRule propertyItemRule);
 
-    /**
-     * Returns whether to reload all Java classes, resources,
-     * and activity context configurations.
-     * @return false if only the activity context configuration
-     *      is reloaded; true if all are reloaded
-     */
-    boolean isHardReload();
-
-    void setHardReload(boolean hardReload);
-
-    ClassLoader getClassLoader();
+    SiblingClassLoader getSiblingClassLoader();
 
     void configure(ContextConfig contextConfig) throws InvalidResourceException, IOException;
 
@@ -103,12 +94,22 @@ public interface ActivityContextBuilder {
 
     void destroy();
 
-    void clear();
+    /**
+     * Returns whether to reload all Java classes, resources,
+     * and activity context configurations.
+     * @return false if only the activity context configuration
+     *      is reloaded; true if all are reloaded
+     */
+    boolean isHardReload();
+
+    void setHardReload(boolean hardReload);
 
     boolean isActive();
 
     void setUseAponToLoadXml(boolean useAponToLoadXml);
 
     void setDebugMode(boolean debugMode);
+
+    void clear();
 
 }

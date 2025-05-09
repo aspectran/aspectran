@@ -15,6 +15,7 @@
  */
 package com.aspectran.demo.examples.hello;
 
+import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
@@ -28,6 +29,7 @@ public class HelloActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloActivity.class);
 
+    @Advisable
     public String helloWorld() {
         String msg = "Hello, World!";
 

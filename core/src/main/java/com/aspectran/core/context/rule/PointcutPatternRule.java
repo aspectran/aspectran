@@ -33,12 +33,6 @@ public class PointcutPatternRule {
 
     private PointcutPattern pointcutPattern;
 
-    private int matchedBeanIdCount;
-
-    private int matchedClassNameCount;
-
-    private int matchedMethodNameCount;
-
     private List<PointcutPatternRule> excludePointcutPatternRuleList;
 
     public PointcutPatternRule() {
@@ -74,30 +68,6 @@ public class PointcutPatternRule {
 
     public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
         this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
-    }
-
-    public int getMatchedBeanIdCount() {
-        return matchedBeanIdCount;
-    }
-
-    public void increaseMatchedBeanIdCount() {
-        matchedBeanIdCount++;
-    }
-
-    public int getMatchedClassNameCount() {
-        return matchedClassNameCount;
-    }
-
-    public void increaseMatchedClassNameCount() {
-        matchedClassNameCount++;
-    }
-
-    public int getMatchedMethodNameCount() {
-        return matchedMethodNameCount;
-    }
-
-    public void increaseMatchedMethodNameCount() {
-        matchedMethodNameCount++;
     }
 
     @Override

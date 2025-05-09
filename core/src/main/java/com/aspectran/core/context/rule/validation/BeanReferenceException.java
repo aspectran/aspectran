@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.validation;
 
-import com.aspectran.core.context.rule.assistant.BeanReferenceInspector.RefererInfo;
-import com.aspectran.core.context.rule.assistant.BeanReferenceInspector.RefererKey;
 import com.aspectran.core.context.rule.parser.ActivityContextParserException;
+import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererInfo;
+import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererKey;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Serial;

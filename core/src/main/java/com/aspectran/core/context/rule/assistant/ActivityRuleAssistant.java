@@ -47,6 +47,7 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
 import com.aspectran.core.context.rule.util.TextStyler;
+import com.aspectran.core.context.rule.validation.BeanReferenceInspector;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -251,7 +252,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Adds a type alias to use for simplifying complex type signatures.
-     * A type alias is defined by assigning the type to the alias.
      * @param alias the name of the alias
      * @param type the type identifier that you are creating an alias for
      */
@@ -260,7 +260,7 @@ public class ActivityRuleAssistant {
     }
 
     /**
-     * Returns a type of aliased type that is defined by assigning the type to the alias.
+     * Returns the type for the given alias.
      * @param alias the name of the alias
      * @return the aliased type
      */
@@ -269,8 +269,8 @@ public class ActivityRuleAssistant {
     }
 
     /**
-     * Returns a type of aliased type that is defined by assigning the type to the alias.
-     * If aliased type is not found, it returns alias.
+     * Returns the type for the given alias.
+     * If no type is found for a given alias, the alias is returned as is.
      * @param alias the name of the alias
      * @return the aliased type
      */

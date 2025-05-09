@@ -15,6 +15,7 @@
  */
 package com.aspectran.embed.sample;
 
+import com.aspectran.core.component.bean.annotation.Advisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public class SampleActivity {
 
     private final Logger logger = LoggerFactory.getLogger(SampleActivity.class);
 
+    @Advisable
     public String helloWorld() {
         String msg = "Hello, World.";
 

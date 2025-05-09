@@ -17,12 +17,10 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.DefaultApplicationAdapter;
-import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
-import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
-import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
@@ -42,16 +40,18 @@ import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.resource.ResourceManager;
 import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.context.rule.assistant.BeanReferenceException;
-import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
+import com.aspectran.core.context.rule.validation.AspectRuleValidator;
+import com.aspectran.core.context.rule.validation.BeanReferenceException;
+import com.aspectran.core.context.rule.validation.BeanReferenceInspector;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
@@ -64,7 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Set;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
@@ -102,13 +102,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ItemRuleMap propertyItemRuleMap;
 
+    private ContextReloadingTimer contextReloadingTimer;
+
     private boolean hardReload;
 
     private boolean autoReloadEnabled;
 
     private int scanIntervalSeconds;
-
-    private ContextReloadingTimer contextReloadingTimer;
 
     private SiblingClassLoader siblingClassLoader;
 
@@ -246,21 +246,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public boolean isHardReload() {
-        return hardReload;
-    }
-
-    @Override
-    public void setHardReload(boolean hardReload) {
-        this.hardReload = hardReload;
-    }
-
-    @Override
-    public ClassLoader getClassLoader() {
-        return siblingClassLoader;
-    }
-
-    @Override
     public void configure(@Nullable ContextConfig contextConfig) throws IOException, InvalidResourceException {
         if (this.basePath == null) {
             if (masterService != null) {
@@ -324,26 +309,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         setActiveProfiles(profilesConfig.getActiveProfiles());
     }
 
-    protected boolean isUseAponToLoadXml() {
-        return useAponToLoadXml;
-    }
-
     @Override
-    public void setUseAponToLoadXml(boolean useAponToLoadXml) {
-        this.useAponToLoadXml = useAponToLoadXml;
-    }
-
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    @Override
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
+    public SiblingClassLoader getSiblingClassLoader() {
+        return siblingClassLoader;
     }
 
     protected SiblingClassLoader createSiblingClassLoader(String contextName, ClassLoader parentClassLoader)
-        throws InvalidResourceException {
+            throws InvalidResourceException {
         if (siblingClassLoader == null || hardReload) {
             siblingClassLoader = new SiblingClassLoader(contextName, parentClassLoader, resourceLocations);
         } else {
@@ -408,29 +380,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
-        BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-        beanRuleRegistry.postProcess(assistant);
-
-        BeanRegistry parentBeanRegistry = null;
-        if (masterService != null) {
-            if (masterService.getParentService() != null) {
-                parentBeanRegistry = masterService.getParentService().getActivityContext().getBeanRegistry();
-            }
-        }
-
-        BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
-        beanReferenceInspector.inspect(beanRuleRegistry, parentBeanRegistry);
-
-        initAspectRuleRegistry(assistant);
-
+        BeanRuleRegistry beanRuleRegistry = initBeanRuleRegistry(assistant);
         DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(context, beanRuleRegistry);
 
-        TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(
-                context, templateRuleRegistry);
-
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
-        TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
+
+        TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
+        DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(context, templateRuleRegistry);
+
+        TransletRuleRegistry transletRuleRegistry = initTransletRuleRegistry(assistant);
+
+        AspectRuleValidator aspectRuleValidator = new AspectRuleValidator();
+        aspectRuleValidator.validate(assistant);
 
         context.setAspectRuleRegistry(aspectRuleRegistry);
         context.setBeanRegistry(defaultBeanRegistry);
@@ -438,20 +399,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         context.setTemplateRenderer(defaultTemplateRenderer);
         context.setTransletRuleRegistry(transletRuleRegistry);
         return context;
-    }
-
-    protected void startContextReloadingTimer() {
-        if (autoReloadEnabled && masterService != null && siblingClassLoader != null) {
-            contextReloadingTimer = new ContextReloadingTimer(siblingClassLoader, masterService.getServiceLifeCycle());
-            contextReloadingTimer.start(scanIntervalSeconds);
-        }
-    }
-
-    protected void stopContextReloadingTimer() {
-        if (contextReloadingTimer != null) {
-            contextReloadingTimer.stop();
-            contextReloadingTimer = null;
-        }
     }
 
     @NonNull
@@ -475,79 +422,96 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return builder.build(context);
     }
 
-    /**
-     * Initialize the aspect rule registry.
-     * @param assistant the activity rule assistant
-     */
-    private void initAspectRuleRegistry(@NonNull ActivityRuleAssistant assistant) {
-        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
+    @NonNull
+    private BeanRuleRegistry initBeanRuleRegistry(@NonNull ActivityRuleAssistant assistant)
+            throws IllegalRuleException, BeanReferenceException {
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
+        beanRuleRegistry.postProcess(assistant);
+
+        BeanRegistry parentBeanRegistry = null;
+        if (masterService != null) {
+            if (masterService.getParentService() != null) {
+                parentBeanRegistry = masterService.getParentService().getActivityContext().getBeanRegistry();
+            }
+        }
+
+        BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
+        beanReferenceInspector.inspect(beanRuleRegistry, parentBeanRegistry);
+
+        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
+            BeanRuleAnalyzer.determineProxyBean(beanRule);
+        }
+        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
+            BeanRuleAnalyzer.determineProxyBean(beanRule);
+        }
+        for (Set<BeanRule> beanRules : beanRuleRegistry.getTypeBasedBeanRules()) {
+            for (BeanRule beanRule : beanRules) {
+                BeanRuleAnalyzer.determineProxyBean(beanRule);
+            }
+        }
+
+        return beanRuleRegistry;
+    }
+
+    private TransletRuleRegistry initTransletRuleRegistry(@NonNull ActivityRuleAssistant assistant) {
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
-
-        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
-
-        AspectAdviceRulePreRegister preRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
-        preRegister.setPointcutPatternVerifiable(pointcutPatternVerifiable || logger.isDebugEnabled());
-        preRegister.checkProxiable(beanRuleRegistry);
-        preRegister.register(transletRuleRegistry);
-
-        // check invalid pointcut pattern
-        if (pointcutPatternVerifiable || logger.isDebugEnabled()) {
-            int invalidPointcutPatterns = 0;
-            for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-                Pointcut pointcut = aspectRule.getPointcut();
-                if (pointcut != null) {
-                    List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-                    if (pointcutPatternRuleList != null) {
-                        for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                            PointcutPattern pp = ppr.getPointcutPattern();
-                            if (pp != null) {
-                                if (pp.getBeanIdPattern() != null && ppr.getMatchedBeanIdCount() == 0) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans matching to '" + pp.getBeanIdPattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.error(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
-                                if (pp.getClassNamePattern() != null && ppr.getMatchedClassNameCount() == 0) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans matching to '@class:" + pp.getClassNamePattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.error(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
-                                if (pp.getMethodNamePattern() != null && ppr.getMatchedMethodNameCount() == 0) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans have methods matching to '^" + pp.getMethodNamePattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.error(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
-                            }
+        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
+        for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
+            if (!transletRule.hasPathVariables()) {
+                for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
+                    Pointcut pointcut = aspectRule.getPointcut();
+                    if (!aspectRule.isBeanRelevant()) {
+                        if (pointcut == null || pointcut.matches(transletRule.getName())) {
+                            // register to the translet scope
+                            transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
                         }
                     }
                 }
             }
-            if (invalidPointcutPatterns > 0) {
-                String msg = "Invalid pointcut detected: " + invalidPointcutPatterns +
-                        "; Please check the logs for more information";
-                if (pointcutPatternVerifiable) {
-                    logger.error(msg);
-                    throw new InvalidPointcutPatternException(msg);
-                } else {
-                    logger.debug(msg);
-                }
-            }
         }
+        return transletRuleRegistry;
+    }
+
+    protected void startContextReloadingTimer() {
+        if (autoReloadEnabled && masterService != null && siblingClassLoader != null) {
+            contextReloadingTimer = new ContextReloadingTimer(siblingClassLoader, masterService.getServiceLifeCycle());
+            contextReloadingTimer.start(scanIntervalSeconds);
+        }
+    }
+
+    protected void stopContextReloadingTimer() {
+        if (contextReloadingTimer != null) {
+            contextReloadingTimer.stop();
+            contextReloadingTimer = null;
+        }
+    }
+
+    @Override
+    public boolean isHardReload() {
+        return hardReload;
+    }
+
+    @Override
+    public void setHardReload(boolean hardReload) {
+        this.hardReload = hardReload;
+    }
+
+    protected boolean isUseAponToLoadXml() {
+        return useAponToLoadXml;
+    }
+
+    @Override
+    public void setUseAponToLoadXml(boolean useAponToLoadXml) {
+        this.useAponToLoadXml = useAponToLoadXml;
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    @Override
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     @Override
@@ -577,14 +541,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     baseDir = Files.createTempDirectory(Path.of(tmpDir), TMP_BASE_DIRNAME_PREFIX).toFile();
                     baseDir.deleteOnExit();
                 } catch (IOException e) {
-                    throw new IOException("Could not verify the base directory", e);
+                    throw new IOException("Could not verify base directory", e);
                 }
             }
             try {
                 setBasePath(baseDir.getCanonicalPath());
                 System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
             } catch (IOException e) {
-                throw new IOException("Could not verify the base directory", e);
+                throw new IOException("Could not verify base directory", e);
             }
         } else {
             System.setProperty(BASE_PATH_PROPERTY_NAME, getBasePath());
@@ -604,7 +568,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         try {
             System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
         } catch (Exception e) {
-            logger.warn("Could not verify the working directory: {}", workDir);
+            logger.warn("Could not verify working directory: {}", workDir);
         }
 
         // Determines the path of the temporary directory.
@@ -621,7 +585,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         try {
             System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
         } catch (Exception e) {
-            logger.warn("Could not verify the temporary directory: {}", tempDir);
+            logger.warn("Could not verify temporary directory: {}", tempDir);
         }
     }
 
