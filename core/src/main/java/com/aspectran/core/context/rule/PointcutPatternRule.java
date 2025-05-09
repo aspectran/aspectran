@@ -73,8 +73,8 @@ public class PointcutPatternRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("pointcutType", pointcutType);
-        tsb.append("pointcutPattern", pointcutPattern);
+        tsb.append("type", pointcutType);
+        tsb.append("pattern", pointcutPattern);
         tsb.append("excludes", excludePointcutPatternRuleList);
         return tsb.toString();
     }

@@ -21,7 +21,6 @@ import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -44,9 +43,13 @@ public class AspectRuleValidator {
     private static final Logger logger = LoggerFactory.getLogger(AspectRuleValidator.class);
 
     public void validate(@NonNull ActivityRuleAssistant assistant) {
+        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
+        if (!pointcutPatternVerifiable && !logger.isDebugEnabled()) {
+            return;
+        }
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
+
         int invalidPointcutPatterns = 0;
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             Pointcut pointcut = aspectRule.getPointcut();
@@ -80,38 +83,11 @@ public class AspectRuleValidator {
                             }
                         }
                         if (!valid) {
-                            PointcutPattern pp = ppr.getPointcutPattern();
-                            if (pp != null) {
-                                if (pp.getBeanIdPattern() != null) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans matching to '" + pp.getBeanIdPattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.warn(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
-                                if (pp.getClassNamePattern() != null) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans matching to '@class:" + pp.getClassNamePattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.warn(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
-                                if (pp.getMethodNamePattern() != null) {
-                                    invalidPointcutPatterns++;
-                                    String msg = "No beans have methods matching to '^" + pp.getMethodNamePattern() +
-                                            "'; aspectRule " + aspectRule;
-                                    if (pointcutPatternVerifiable) {
-                                        logger.warn(msg);
-                                    } else if (logger.isDebugEnabled()) {
-                                        logger.debug(msg);
-                                    }
-                                }
+                            invalidPointcutPatterns++;
+                            if (pointcutPatternVerifiable || logger.isDebugEnabled()) {
+                                String msg = "No beans matching to '" + ppr.getPointcutPattern() +
+                                        "'; aspectRule " + aspectRule;
+                                logger.warn(msg);
                             }
                         }
                     }
@@ -119,8 +95,8 @@ public class AspectRuleValidator {
             }
         }
         if (invalidPointcutPatterns > 0) {
-            String msg = "Invalid pointcut detected: " + invalidPointcutPatterns +
-                    "; Please check the logs for more information";
+            String msg = "Detected invalid pointcuts: " + invalidPointcutPatterns +
+                    "; Please check the logs above for details";
             if (pointcutPatternVerifiable) {
                 logger.error(msg);
                 throw new InvalidPointcutPatternException(msg);
@@ -149,8 +125,7 @@ public class AspectRuleValidator {
             if (matched && pp.getMethodNamePattern() != null) {
                 matched = false;
                 for (Method method : advisableMethods) {
-                    boolean matched2 = pointcut.patternMatches(pp.getMethodNamePattern(), method.getName());
-                    if (matched2) {
+                    if (pointcut.patternMatches(pp.getMethodNamePattern(), method.getName())) {
                         matched = true;
                         break;
                     }

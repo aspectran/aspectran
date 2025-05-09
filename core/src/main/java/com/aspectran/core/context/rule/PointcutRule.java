@@ -24,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pointcut are expressions that is matched with join points to determine whether
- * advice needs to be executed or not. Pointcut uses different kinds of expressions
- * that are matched with the join points and Aspectran uses the Wildcard pattern
- * matching expression.
+ * Pointcuts are expressions that match join points and determine whether
+ * to execute advice. Pointcuts use a variety of expressions that match
+ * join points, and Aspectran uses wildcard pattern matching expressions.
  */
 public class PointcutRule {
 

@@ -177,7 +177,7 @@ public class BeanRuleAnalyzer {
         return name;
     }
 
-    public static void determineProxyBean(BeanRule beanRule) {
+    public static void determineProxyBean(@NonNull BeanRule beanRule) {
         if (beanRule.getProxied() == null && !beanRule.isFactoryable() && !getAdvisableMethods(beanRule).isEmpty()) {
             beanRule.setProxied(true);
         }
@@ -199,7 +199,11 @@ public class BeanRuleAnalyzer {
             }
             currentClass = currentClass.getSuperclass();
         }
-        return Collections.unmodifiableList(advisableMethods);
+        if (advisableMethods.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return Collections.unmodifiableList(advisableMethods);
+        }
     }
 
     public static void clearAdvisableMethodsCache() {

@@ -393,6 +393,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         AspectRuleValidator aspectRuleValidator = new AspectRuleValidator();
         aspectRuleValidator.validate(assistant);
 
+        BeanRuleAnalyzer.clearAdvisableMethodsCache();
+
         context.setAspectRuleRegistry(aspectRuleRegistry);
         context.setBeanRegistry(defaultBeanRegistry);
         context.setScheduleRuleRegistry(scheduleRuleRegistry);
