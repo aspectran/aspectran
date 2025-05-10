@@ -86,7 +86,7 @@ public class JspViewDispatcher extends AbstractViewDispatcher {
             requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
-                logger.warn("Resource file [{}] not found", jspPath);
+                logger.warn("Resource file {} not found", jspPath);
             }
         } catch (Exception e) {
             activity.setRaisedException(e);

@@ -74,7 +74,7 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to FreeMarker template [{}]", viewName);
+                logger.debug("Dispatching to FreeMarker template {}", viewName);
             }
 
             FreeMarkerTemplateEngine.process(configuration, viewName, activity);

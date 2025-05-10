@@ -23,7 +23,7 @@ package com.aspectran.core.activity;
 public interface InstantAction<V> {
 
     /**
-     * Execute an instant action, and throw an exception
+     * Executes an instant action and throw an exception
      * if an error occurs during execution.
      * @return the result of the execution
      * @throws Throwable if an error occurs

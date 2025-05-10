@@ -42,7 +42,7 @@ public interface FlashMapManager {
     FlashMap retrieveAndUpdate(Translet translet);
 
     /**
-     * Save the given FlashMap, in some underlying storage and set the start
+     * Save the given FlashMap in some underlying storage and set the start
      * of its expiration period.
      * <p><strong>NOTE:</strong> Invoke this method prior to a redirect in order
      * to allow saving the FlashMap in the HTTP session or in a response

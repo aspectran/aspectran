@@ -319,8 +319,8 @@ public class ContentsXMLReader implements XMLReader {
 
     private void checkCircularReference(@NonNull Object wrapper, Object member) throws SAXException {
         if (wrapper.equals(member)) {
-            throw new SAXException("XML Serialization Failure: A circular reference was detected" +
-                    " while converting a member object [" + member + "] in [" + wrapper + "]");
+            throw new SAXException("XML Serialization Failure: Circular reference was detected" +
+                    " while converting member object " + member + " in " + wrapper);
         }
     }
 

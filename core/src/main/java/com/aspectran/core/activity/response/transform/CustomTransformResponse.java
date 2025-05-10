@@ -106,8 +106,8 @@ public class CustomTransformResponse implements Response {
                 for (ListIterator<ActionResult> iter2 = contentResult.listIterator(contentResult.size());
                      iter2.hasPrevious(); ) {
                     ActionResult actionResult = iter2.previous();
-                    if (actionResult != null && actionResult.getResultValue() instanceof CustomTransformer) {
-                        return (CustomTransformer)actionResult.getResultValue();
+                    if (actionResult != null && actionResult.getResultValue() instanceof CustomTransformer that) {
+                        return that;
                     }
                 }
             }

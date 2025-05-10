@@ -20,7 +20,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * This is an activity that does nothing, and is mainly used for unit testing.
+ * This is an activity that does nothing and is mainly used for unit testing.
  */
 public class NonActivity extends CoreActivity {
 

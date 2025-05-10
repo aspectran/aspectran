@@ -74,7 +74,7 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to Thymeleaf template [{}]", viewName);
+                logger.debug("Dispatching to Thymeleaf template {}", viewName);
             }
 
             ThymeleafTemplateEngine.process(templateEngine, viewName, activity);

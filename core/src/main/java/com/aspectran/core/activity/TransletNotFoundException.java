@@ -35,7 +35,7 @@ public class TransletNotFoundException extends ActivityException {
     private final MethodType requestMethod;
 
     /**
-     * Constructor to create exception with a message.
+     * Constructor to create an exception with a message.
      * @param requestName the request name
      */
     public TransletNotFoundException(String requestName) {
@@ -43,7 +43,7 @@ public class TransletNotFoundException extends ActivityException {
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Constructor to create an exception with a message.
      * @param requestName the request name
      * @param requestMethod the request method
      */

@@ -107,7 +107,7 @@ public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
             requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
-                logger.warn("Resource file [{}] not found", template);
+                logger.warn("Resource file {} not found", template);
             }
         } catch (Exception e) {
             activity.setRaisedException(e);

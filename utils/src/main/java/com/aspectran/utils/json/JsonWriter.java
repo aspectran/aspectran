@@ -531,7 +531,7 @@ public class JsonWriter {
                 what = "a member";
             }
             throw new IOException("JSON Serialization Failure: " +
-                    "A circular reference was detected while converting " + what);
+                    "Circular reference was detected while converting " + what);
         }
     }
 

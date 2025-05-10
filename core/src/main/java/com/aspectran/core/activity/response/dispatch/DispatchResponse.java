@@ -92,7 +92,7 @@ public class DispatchResponse implements Response {
     /**
      * Determine the view dispatcher.
      * @param activity the current Activity
-     * @throws ViewDispatcherException if ViewDispatcher can not be determined
+     * @throws ViewDispatcherException if ViewDispatcher cannot be determined
      */
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
         if (dispatchRule.getViewDispatcher() != null) {

@@ -114,7 +114,8 @@ public class XmlTransformResponse extends TransformResponse {
     private static void transform(
             Object object, Writer writer, String encoding,
             StringifyContext stringifyContext, Boolean prettyForce) throws TransformerException {
-        boolean pretty = (prettyForce != null ? prettyForce : (stringifyContext == null || stringifyContext.isPrettyPrint()));
+        boolean pretty = (prettyForce != null ? prettyForce :
+                (stringifyContext == null || stringifyContext.isPrettyPrint()));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         if (pretty) {

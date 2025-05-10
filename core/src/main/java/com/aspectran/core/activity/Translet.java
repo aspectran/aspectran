@@ -545,8 +545,8 @@ public interface Translet {
     /**
      * Return an instance of the bean that matches the given object type.
      * @param <V> the type of bean object retrieved
-     * @param type type the bean must match; can be an interface or superclass.
-     *      {@code null} is allowed.
+     * @param type the type that the bean must match; can be an interface or
+     *      superclass, and {@code null} is also allowed.
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
@@ -597,7 +597,7 @@ public interface Translet {
     String getMessage(String code, Object[] args) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
+     * Try to resolve the message. Return a default message if no message was found.
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
      *         this class are encouraged to base message names on the relevant fully
      *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
@@ -647,7 +647,7 @@ public interface Translet {
     String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
+     * Try to resolve the message. Return a default message if no message was found.
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
      *         this class are encouraged to base message names on the relevant fully
      *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
@@ -660,7 +660,7 @@ public interface Translet {
     String getMessage(String code, String defaultMessage, Locale locale);
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
+     * Try to resolve the message. Return a default message if no message was found.
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
      *         this class are encouraged to base message names on the relevant fully
      *         qualified class name, thus avoiding conflict and ensuring maximum clarity.

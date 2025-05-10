@@ -30,7 +30,8 @@ public class RequestAcceptor {
     public RequestAcceptor(AcceptableConfig acceptableConfig) {
         Assert.notNull(acceptableConfig, "acceptableConfig must not be null");
         if (acceptableConfig.hasPatterns()) {
-            acceptableRequestNamePatterns = IncludeExcludeWildcardPatterns.of(acceptableConfig, ActivityContext.NAME_SEPARATOR_CHAR);
+            acceptableRequestNamePatterns = IncludeExcludeWildcardPatterns.of(
+                    acceptableConfig, ActivityContext.NAME_SEPARATOR_CHAR);
         } else {
             acceptableRequestNamePatterns = null;
         }
