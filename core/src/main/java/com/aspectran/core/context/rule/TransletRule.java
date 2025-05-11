@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.Replicable;
@@ -72,7 +72,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private ExceptionRule exceptionRule;
 
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+    private AdviceRuleRegistry adviceRuleRegistry;
 
     private DescriptionRule descriptionRule;
 
@@ -402,23 +402,23 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.exceptionRule = exceptionRule;
     }
 
-    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-        return aspectAdviceRuleRegistry;
+    public AdviceRuleRegistry getAdviceRuleRegistry() {
+        return adviceRuleRegistry;
     }
 
-    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    public void setAdviceRuleRegistry(AdviceRuleRegistry adviceRuleRegistry) {
+        this.adviceRuleRegistry = adviceRuleRegistry;
     }
 
-    public AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {
-        if (aspectAdviceRuleRegistry == null) {
-            aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+    public AdviceRuleRegistry touchAdviceRuleRegistry() {
+        if (adviceRuleRegistry == null) {
+            adviceRuleRegistry = new AdviceRuleRegistry();
         }
-        return aspectAdviceRuleRegistry;
+        return adviceRuleRegistry;
     }
 
-    public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
-        return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.replicate() : null);
+    public AdviceRuleRegistry replicateAdviceRuleRegistry() {
+        return (adviceRuleRegistry != null ? adviceRuleRegistry.replicate() : null);
     }
 
     public DescriptionRule getDescriptionRule() {

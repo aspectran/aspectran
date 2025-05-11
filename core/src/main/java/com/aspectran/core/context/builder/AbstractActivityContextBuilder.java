@@ -465,7 +465,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     if (!aspectRule.isBeanRelevant()) {
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {
                             // register to the translet scope
-                            transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
+                            transletRule.touchAdviceRuleRegistry().register(aspectRule);
                         }
                     }
                 }

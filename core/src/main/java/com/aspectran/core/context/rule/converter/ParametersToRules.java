@@ -17,8 +17,8 @@ package com.aspectran.core.context.rule.converter;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
@@ -85,7 +85,6 @@ import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -309,8 +308,8 @@ public class ParametersToRules {
             if (beforeAdviceParameters != null) {
                 ActionParameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
-                    toActionRule(actionParameters, aspectAdviceRule);
+                    AdviceRule adviceRule = aspectRule.newBeforeAdviceRule();
+                    toActionRule(actionParameters, adviceRule);
                 }
             }
 
@@ -318,8 +317,8 @@ public class ParametersToRules {
             if (afterAdviceParameters != null) {
                 ActionParameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
-                    toActionRule(actionParameters, aspectAdviceRule);
+                    AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
+                    toActionRule(actionParameters, adviceRule);
                 }
             }
 
@@ -327,22 +326,22 @@ public class ParametersToRules {
             if (aroundAdviceParameters != null) {
                 ActionParameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
-                    toActionRule(actionParameters, aspectAdviceRule);
+                    AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
+                    toActionRule(actionParameters, adviceRule);
                 }
             }
 
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
             if (finallyAdviceParameters != null) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
+                AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
                 ActionParameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    toActionRule(actionParameters, aspectAdviceRule);
+                    toActionRule(actionParameters, adviceRule);
                 }
                 ExceptionThrownParameters etParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
                 if (etParameters != null) {
-                    ExceptionThrownRule etr = toExceptionThrownRule(etParameters, aspectAdviceRule);
-                    aspectAdviceRule.setExceptionThrownRule(etr);
+                    ExceptionThrownRule etr = toExceptionThrownRule(etParameters, adviceRule);
+                    adviceRule.setExceptionThrownRule(etr);
                 }
             }
         }
@@ -913,9 +912,9 @@ public class ParametersToRules {
 
     @NonNull
     private ExceptionThrownRule toExceptionThrownRule(@NonNull ExceptionThrownParameters exceptionThrownParameters,
-                                                      AspectAdviceRule aspectAdviceRule)
+                                                      AdviceRule adviceRule)
             throws IllegalRuleException {
-        ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule(aspectAdviceRule);
+        ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule(adviceRule);
 
         String[] exceptionTypes = exceptionThrownParameters.getStringArray(ExceptionThrownParameters.type);
         exceptionThrownRule.setExceptionTypes(exceptionTypes);

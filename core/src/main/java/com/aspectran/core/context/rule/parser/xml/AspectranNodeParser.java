@@ -43,7 +43,7 @@ public class AspectranNodeParser {
 
     private final ActionNodeParser actionNodeParser;
 
-    private final AspectAdviceInnerNodeParser aspectAdviceInnerNodeParser;
+    private final AdviceInnerNodeParser adviceInnerNodeParser;
 
     private final AspectNodeParser aspectNodeParser;
 
@@ -88,7 +88,7 @@ public class AspectranNodeParser {
     public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
         this.actionNodeParser = new ActionNodeParser();
-        this.aspectAdviceInnerNodeParser = new AspectAdviceInnerNodeParser();
+        this.adviceInnerNodeParser = new AdviceInnerNodeParser();
         this.aspectNodeParser = new AspectNodeParser();
         this.beanNodeParser = new BeanNodeParser();
         this.chooseNodeParser = new ChooseNodeParser();
@@ -341,8 +341,8 @@ public class AspectranNodeParser {
         parser.setXpath(xpath);
     }
 
-    void parseAspectAdviceInnerNode() {
-        parser.addNodelet(aspectAdviceInnerNodeParser);
+    void parseAdviceInnerNode() {
+        parser.addNodelet(adviceInnerNodeParser);
     }
 
     void parseExceptionInnerNode() {

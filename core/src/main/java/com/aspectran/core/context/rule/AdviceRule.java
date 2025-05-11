@@ -22,7 +22,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -35,7 +35,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
  *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class AspectAdviceRule implements ActionRuleApplicable {
+public class AdviceRule implements ActionRuleApplicable {
 
     private final AspectRule aspectRule;
 
@@ -45,7 +45,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     private final Class<?> adviceBeanClass;
 
-    private final AspectAdviceType aspectAdviceType;
+    private final AdviceType adviceType;
 
     private Executable adviceAction;
 
@@ -53,18 +53,18 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     private ExceptionThrownRule exceptionThrownRule;
 
-    public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+    public AdviceRule(AspectRule aspectRule, AdviceType adviceType) {
         if (aspectRule == null) {
             throw new IllegalArgumentException("aspectRule must not be null");
         }
-        if (aspectAdviceType == null) {
-            throw new IllegalArgumentException("aspectAdviceType must not be null");
+        if (adviceType == null) {
+            throw new IllegalArgumentException("adviceType must not be null");
         }
         this.aspectRule = aspectRule;
         this.aspectId = aspectRule.getId();
         this.adviceBeanId = aspectRule.getAdviceBeanId();
         this.adviceBeanClass = aspectRule.getAdviceBeanClass();
-        this.aspectAdviceType = aspectAdviceType;
+        this.adviceType = adviceType;
     }
 
     public String getAspectId() {
@@ -83,8 +83,8 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return adviceBeanClass;
     }
 
-    public AspectAdviceType getAspectAdviceType() {
-        return aspectAdviceType;
+    public AdviceType getAdviceType() {
+        return adviceType;
     }
 
     @Override
@@ -111,17 +111,17 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AdviceRule");
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("No support applying IncludeActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying IncludeActionRule to AdviceRule");
     }
 
     @Override
     public Executable applyActionRule(ChooseRule chooseRule) {
-        throw new UnsupportedOperationException("No support applying ChooseRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying ChooseRule to AdviceRule");
     }
 
     @Override
@@ -160,7 +160,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", aspectAdviceType);
+        tsb.append("type", adviceType);
         tsb.append("bean", adviceBeanId);
         if (adviceBeanId == null) {
             tsb.append("bean", adviceBeanClass);
@@ -169,13 +169,13 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return tsb.toString();
     }
 
-    public static String toString(Executable adviceAction, @Nullable AspectAdviceRule aspectAdviceRule) {
+    public static String toString(Executable adviceAction, @Nullable AdviceRule adviceRule) {
         if (adviceAction instanceof AdviceAction || adviceAction instanceof AnnotatedAdviceAction) {
             return adviceAction.toString();
         }
         ToStringBuilder tsb = new ToStringBuilder();
-        if (aspectAdviceRule != null) {
-            tsb.append("type", aspectAdviceRule.getAspectAdviceType());
+        if (adviceRule != null) {
+            tsb.append("type", adviceRule.getAdviceType());
         }
         if (adviceAction != null) {
             if (adviceAction.getActionType() != null) {
@@ -184,19 +184,19 @@ public class AspectAdviceRule implements ActionRuleApplicable {
                 tsb.append("instance", adviceAction.toString());
             }
         }
-        if (aspectAdviceRule != null && aspectAdviceRule.getAspectRule() != null) {
-            int order = aspectAdviceRule.getAspectRule().getOrder();
+        if (adviceRule != null && adviceRule.getAspectRule() != null) {
+            int order = adviceRule.getAspectRule().getOrder();
             if (order != Integer.MAX_VALUE) {
                 tsb.append("order", order);
             }
-            tsb.append("isolated", aspectAdviceRule.getAspectRule().getIsolated());
+            tsb.append("isolated", adviceRule.getAspectRule().getIsolated());
         }
         return tsb.toString();
     }
 
     @NonNull
-    public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
-        return new AspectAdviceRule(aspectRule, aspectAdviceType);
+    public static AdviceRule newInstance(AspectRule aspectRule, AdviceType adviceType) {
+        return new AdviceRule(aspectRule, adviceType);
     }
 
 }

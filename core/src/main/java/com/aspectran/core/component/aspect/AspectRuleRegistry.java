@@ -134,7 +134,7 @@ public class AspectRuleRegistry extends AbstractComponent {
     }
 
     private RelevantAspectRuleHolder createRelevantAspectRuleHolder(PointcutPattern pointcutPattern) {
-        AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
+        AdviceRulePostRegister postRegister = new AdviceRulePostRegister();
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
         for (AspectRule aspectRule : aspectRules) {
             if (aspectRule.isBeanRelevant()) {
@@ -149,10 +149,10 @@ public class AspectRuleRegistry extends AbstractComponent {
             }
         }
 
-        AspectAdviceRuleRegistry aarr = postRegister.getAspectAdviceRuleRegistry();
-        if (!dynamicAspectRuleList.isEmpty() || aarr != null) {
+        AdviceRuleRegistry adviceRuleRegistry = postRegister.getAdviceRuleRegistry();
+        if (!dynamicAspectRuleList.isEmpty() || adviceRuleRegistry != null) {
             RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-            holder.setAspectAdviceRuleRegistry(aarr);
+            holder.setAdviceRuleRegistry(adviceRuleRegistry);
             if (!dynamicAspectRuleList.isEmpty()) {
                 holder.setDynamicAspectRuleList(dynamicAspectRuleList);
             }

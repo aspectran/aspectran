@@ -16,36 +16,36 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * {@code AdviceAction} that invokes a method for Aspect Advice.
+ * Action that calls a method of an advice bean.
  *
  * <p>Created: 2019. 07. 18</p>
  */
 public class AdviceAction extends InvokeAction {
 
-    private final AspectAdviceRule aspectAdviceRule;
+    private final AdviceRule adviceRule;
 
     /**
      * Instantiates a new AdviceAction.
-     * @param aspectAdviceRule the aspect advice rule
+     * @param adviceRule the advice rule
      * @param invokeActionRule the invoke action rule
      */
-    public AdviceAction(AspectAdviceRule aspectAdviceRule, InvokeActionRule invokeActionRule) {
+    public AdviceAction(AdviceRule adviceRule, InvokeActionRule invokeActionRule) {
         super(invokeActionRule);
-        this.aspectAdviceRule = aspectAdviceRule;
+        this.adviceRule = adviceRule;
     }
 
     /**
-     * Gets the aspect advice rule.
-     * @return the aspect advice rule
+     * Gets the advice rule.
+     * @return the advice rule
      */
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
+    public AdviceRule getAdviceRule() {
+        return adviceRule;
     }
 
     @Override
@@ -53,9 +53,9 @@ public class AdviceAction extends InvokeAction {
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
             return super.resolveBean(activity);
         }
-        Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+        Object bean = activity.getAdviceBean(adviceRule.getAspectId());
         if (bean == null) {
-            throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
+            throw new ActionExecutionException("No advice bean found for " + adviceRule);
         }
         return bean;
     }
@@ -63,22 +63,22 @@ public class AdviceAction extends InvokeAction {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", aspectAdviceRule.getAspectAdviceType());
+        tsb.append("type", adviceRule.getAdviceType());
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
             tsb.append("action", super.toString());
         } else {
             if (getInvokeActionRule().getMethod() != null) {
                 tsb.append("method", getInvokeActionRule().getMethod());
             } else {
-                tsb.append("bean", aspectAdviceRule.getAdviceBeanId());
-                if (aspectAdviceRule.getAdviceBeanId() == null) {
-                    tsb.append("bean", aspectAdviceRule.getAdviceBeanClass());
+                tsb.append("bean", adviceRule.getAdviceBeanId());
+                if (adviceRule.getAdviceBeanId() == null) {
+                    tsb.append("bean", adviceRule.getAdviceBeanClass());
                 }
                 tsb.append("method", getInvokeActionRule().getMethodName());
             }
         }
-        if (aspectAdviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
-            tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        if (adviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
+            tsb.append("order", adviceRule.getAspectRule().getOrder());
         }
         return tsb.toString();
     }

@@ -18,7 +18,7 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.InstantProxyActivity;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -70,21 +70,21 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
-        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
-        if (aarr == null) {
+        AdviceRuleRegistry adviceRuleRegistry = getAdviceRuleRegistry(activity, beanId, className, methodName);
+        if (adviceRuleRegistry == null) {
             return invokeSuper(self, proceed, args);
         }
         try {
             try {
-                beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);
+                beforeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
                 Object result = invokeSuper(self, proceed, args);
-                afterAdvice(aarr.getAfterAdviceRuleList(), beanRule, activity);
+                afterAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
             } finally {
-                finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
+                finallyAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exceptionally(aarr.getExceptionRuleList(), e, activity)) {
+            if (exceptionally(adviceRuleRegistry.getExceptionRuleList(), e, activity)) {
                 return null;
             }
             throw e;

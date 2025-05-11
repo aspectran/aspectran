@@ -26,7 +26,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
  * <dt>Around advice: <dd>Before advice + After advice
  * </dl>
  */
-public enum AspectAdviceType {
+public enum AdviceType {
 
     BEFORE("before"),
     AFTER("after"),
@@ -36,7 +36,7 @@ public enum AspectAdviceType {
 
     private final String alias;
 
-    AspectAdviceType(String alias) {
+    AdviceType(String alias) {
         this.alias = alias;
     }
 
@@ -46,14 +46,14 @@ public enum AspectAdviceType {
     }
 
     /**
-     * Returns an {@code AspectAdviceType} with a value represented
+     * Returns an {@code AdviceType} with a value represented
      * by the specified {@code String}.
-     * @param alias the aspect advice type as a {@code String}
-     * @return an {@code AspectAdviceType}, may be {@code null}
+     * @param alias the advice type as a {@code String}
+     * @return an {@code AdviceType}, may be {@code null}
      */
     @Nullable
-    public static AspectAdviceType resolve(String alias) {
-        for (AspectAdviceType type : values()) {
+    public static AdviceType resolve(String alias) {
+        for (AdviceType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }

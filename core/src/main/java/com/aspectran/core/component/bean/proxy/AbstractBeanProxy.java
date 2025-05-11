@@ -17,14 +17,14 @@ package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
-import com.aspectran.core.activity.aspect.AspectAdviceException;
+import com.aspectran.core.activity.aspect.AdviceException;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.RelevantAspectRuleHolder;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.annotation.Advisable;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -45,9 +45,9 @@ public abstract class AbstractBeanProxy {
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 
-    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(
+    protected AdviceRuleRegistry getAdviceRuleRegistry(
             @NonNull Activity activity, String beanId, String className, String methodName)
-            throws AdviceConstraintViolationException, AspectAdviceException {
+            throws AdviceConstraintViolationException, AdviceException {
         String requestName;
         boolean literalPattern;
         if (activity.hasTranslet()) {
@@ -66,49 +66,49 @@ public abstract class AbstractBeanProxy {
             holder = aspectRuleRegistry.getRelevantAspectRuleHolderFromWeakCache(pointcutPattern);
         }
 
-        AspectAdviceRuleRegistry aarr = holder.getAspectAdviceRuleRegistry();
-        if (aarr != null && aarr.getSettingsAdviceRuleList() != null) {
-            for (SettingsAdviceRule sar : aarr.getSettingsAdviceRuleList()) {
+        AdviceRuleRegistry adviceRuleRegistry = holder.getAdviceRuleRegistry();
+        if (adviceRuleRegistry != null && adviceRuleRegistry.getSettingsAdviceRuleList() != null) {
+            for (SettingsAdviceRule sar : adviceRuleRegistry.getSettingsAdviceRuleList()) {
                 activity.registerSettingsAdviceRule(sar);
             }
         }
         if (holder.getDynamicAspectRuleList() != null) {
             for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
                 // register dynamically
-                activity.registerAspectAdviceRule(aspectRule);
+                activity.registerAdviceRule(aspectRule);
             }
         }
-        return aarr;
+        return adviceRuleRegistry;
     }
 
-    protected void beforeAdvice(List<AspectAdviceRule> beforeAdviceRuleList, BeanRule beanRule, Activity activity)
-            throws AspectAdviceException {
+    protected void beforeAdvice(List<AdviceRule> beforeAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AdviceException {
         if (beforeAdviceRuleList != null) {
-            for (AspectAdviceRule aspectAdviceRule : beforeAdviceRuleList) {
-                if (!isSameBean(beanRule, aspectAdviceRule)) {
-                    activity.executeAdvice(aspectAdviceRule, true);
+            for (AdviceRule adviceRule : beforeAdviceRuleList) {
+                if (!isSameBean(beanRule, adviceRule)) {
+                    activity.executeAdvice(adviceRule, true);
                 }
             }
         }
     }
 
-    protected void afterAdvice(List<AspectAdviceRule> afterAdviceRuleList, BeanRule beanRule, Activity activity)
-            throws AspectAdviceException {
+    protected void afterAdvice(List<AdviceRule> afterAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AdviceException {
         if (afterAdviceRuleList != null) {
-            for (AspectAdviceRule aspectAdviceRule : afterAdviceRuleList) {
-                if (!isSameBean(beanRule, aspectAdviceRule)) {
-                    activity.executeAdvice(aspectAdviceRule, true);
+            for (AdviceRule adviceRule : afterAdviceRuleList) {
+                if (!isSameBean(beanRule, adviceRule)) {
+                    activity.executeAdvice(adviceRule, true);
                 }
             }
         }
     }
 
-    protected void finallyAdvice(List<AspectAdviceRule> finallyAdviceRuleList, BeanRule beanRule, Activity activity)
-            throws AspectAdviceException {
+    protected void finallyAdvice(List<AdviceRule> finallyAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AdviceException {
         if (finallyAdviceRuleList != null) {
-            for (AspectAdviceRule aspectAdviceRule : finallyAdviceRuleList) {
-                if (!isSameBean(beanRule, aspectAdviceRule)) {
-                    activity.executeAdvice(aspectAdviceRule, false);
+            for (AdviceRule adviceRule : finallyAdviceRuleList) {
+                if (!isSameBean(beanRule, adviceRule)) {
+                    activity.executeAdvice(adviceRule, false);
                 }
             }
         }
@@ -129,12 +129,12 @@ public abstract class AbstractBeanProxy {
         return method.isAnnotationPresent(Advisable.class);
     }
 
-    private boolean isSameBean(@NonNull BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
-        if (beanRule.getId() != null && beanRule.getId().equals(aspectAdviceRule.getAdviceBeanId())) {
+    private boolean isSameBean(@NonNull BeanRule beanRule, AdviceRule adviceRule) {
+        if (beanRule.getId() != null && beanRule.getId().equals(adviceRule.getAdviceBeanId())) {
             return true;
         }
-        if (beanRule.getBeanClass() != null && aspectAdviceRule.getAdviceBeanClass() != null) {
-            return (beanRule.getBeanClass() == aspectAdviceRule.getAdviceBeanClass());
+        if (beanRule.getBeanClass() != null && adviceRule.getAdviceBeanClass() != null) {
+            return (beanRule.getBeanClass() == adviceRule.getAdviceBeanClass());
         }
         return false;
     }

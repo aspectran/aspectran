@@ -19,7 +19,7 @@ import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -108,7 +108,7 @@ public class AspectRule implements BeanReferenceable {
 
     private SettingsAdviceRule settingsAdviceRule;
 
-    private List<AspectAdviceRule> aspectAdviceRuleList;
+    private List<AdviceRule> adviceRuleList;
 
     private ExceptionRule exceptionRule;
 
@@ -225,30 +225,48 @@ public class AspectRule implements BeanReferenceable {
         return settingsAdviceRule;
     }
 
-    public List<AspectAdviceRule> getAspectAdviceRuleList() {
-        return aspectAdviceRuleList;
+    public List<AdviceRule> getAdviceRuleList() {
+        return adviceRuleList;
     }
 
-    public void setAspectAdviceRuleList(List<AspectAdviceRule> aspectAdviceRuleList) {
-        this.aspectAdviceRuleList = aspectAdviceRuleList;
+    public void setAdviceRuleList(List<AdviceRule> adviceRuleList) {
+        this.adviceRuleList = adviceRuleList;
     }
 
-    public AspectAdviceRule newAspectAdviceRule(AspectAdviceType aspectAdviceType) {
-        AspectAdviceRule aspectAdviceRule;
-        if (aspectAdviceType == AspectAdviceType.THROWN) {
-            aspectAdviceRule = new AspectAdviceRule(this, aspectAdviceType);
-        } else {
-            aspectAdviceRule = new AspectAdviceRule(this, aspectAdviceType);
-            touchAspectAdviceRuleList().add(aspectAdviceRule);
+    public AdviceRule newAdviceRule(AdviceType adviceType) {
+        AdviceRule adviceRule;
+        adviceRule = new AdviceRule(this, adviceType);
+        if (adviceType != AdviceType.THROWN) {
+            touchAdviceRuleList().add(adviceRule);
         }
-        return aspectAdviceRule;
+        return adviceRule;
     }
 
-    private List<AspectAdviceRule> touchAspectAdviceRuleList() {
-        if (aspectAdviceRuleList == null) {
-            aspectAdviceRuleList = new ArrayList<>();
+    public AdviceRule newBeforeAdviceRule() {
+        return newAdviceRule(AdviceType.BEFORE);
+    }
+
+    public AdviceRule newAfterAdviceRule() {
+        return newAdviceRule(AdviceType.AFTER);
+    }
+
+    public AdviceRule newAroundAdviceRule() {
+        return newAdviceRule(AdviceType.AROUND);
+    }
+
+    public AdviceRule newFinallyAdviceRule() {
+        return newAdviceRule(AdviceType.FINALLY);
+    }
+
+    public AdviceRule newThrownAdviceRule() {
+        return newAdviceRule(AdviceType.THROWN);
+    }
+
+    private List<AdviceRule> touchAdviceRuleList() {
+        if (adviceRuleList == null) {
+            adviceRuleList = new ArrayList<>();
         }
-        return aspectAdviceRuleList;
+        return adviceRuleList;
     }
 
     public ExceptionRule getExceptionRule() {
@@ -298,8 +316,8 @@ public class AspectRule implements BeanReferenceable {
         tsb.append("disabled", disabled);
         tsb.append("joinpoint", joinpointRule);
         tsb.append("adviceBean", adviceBeanId);
-        tsb.append("settingsAdvice", settingsAdviceRule);
-        tsb.append("aspectAdvices", aspectAdviceRuleList);
+        tsb.append("settings", settingsAdviceRule);
+        tsb.append("advices", adviceRuleList);
         tsb.append("exception", exceptionRule);
         tsb.appendForce("beanRelevant", beanRelevant);
         return tsb.toString();

@@ -4,13 +4,12 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ClassUtils;
@@ -69,7 +68,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     @NonNull
     protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
-        SqlSessionAdvice sqlSessionAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
+        SqlSessionAdvice sqlSessionAdvice = getAvailableActivity().getAdviceBean(relevantAspectId);
         if (sqlSessionAdvice == null) {
             sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
         }
@@ -130,8 +129,8 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
         aspectRule.setJoinpointRule(joinpointRule);
 
-        AspectAdviceRule beforeAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
-        beforeAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
+        beforeAdviceRule.setAdviceAction(activity -> {
             SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
             if (executorType != null) {
                 sqlSessionAdvice.setExecutorType(executorType);
@@ -141,15 +140,15 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             return sqlSessionAdvice;
         });
 
-        AspectAdviceRule afterAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
-        afterAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
+        afterAdviceRule.setAdviceAction(activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
             sqlSessionAdvice.commit();
             return null;
         });
 
-        AspectAdviceRule finallyAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
-        finallyAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
+        finallyAdviceRule.setAdviceAction(activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
             sqlSessionAdvice.close();
             return null;

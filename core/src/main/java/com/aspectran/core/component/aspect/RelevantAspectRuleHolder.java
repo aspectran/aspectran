@@ -27,24 +27,24 @@ import java.util.List;
  */
 public class RelevantAspectRuleHolder {
 
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+    private AdviceRuleRegistry adviceRuleRegistry;
 
     private List<AspectRule> dynamicAspectRuleList;
 
     /**
-     * Gets the aspect advice rule registry.
-     * @return the aspect advice rule registry
+     * Gets the advice rule registry.
+     * @return the advice rule registry
      */
-    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-        return aspectAdviceRuleRegistry;
+    public AdviceRuleRegistry getAdviceRuleRegistry() {
+        return adviceRuleRegistry;
     }
 
     /**
-     * Sets the aspect advice rule registry.
-     * @param aspectAdviceRuleRegistry the new aspect advice rule registry
+     * Sets the advice rule registry.
+     * @param adviceRuleRegistry the new advice rule registry
      */
-    public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-        this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+    public void setAdviceRuleRegistry(AdviceRuleRegistry adviceRuleRegistry) {
+        this.adviceRuleRegistry = adviceRuleRegistry;
     }
 
     /**
@@ -79,7 +79,7 @@ public class RelevantAspectRuleHolder {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+        tsb.append("adviceRuleRegistry", adviceRuleRegistry);
         tsb.append("dynamicAspectRules", getDynamicAspectIds());
         return tsb.toString();
     }

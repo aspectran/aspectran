@@ -18,7 +18,7 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
@@ -104,7 +104,7 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void registerAspectAdviceRule(AspectRule aspectRule) {
+    public void registerAdviceRule(AspectRule aspectRule) {
         throw new UnsupportedOperationException();
     }
 
@@ -114,12 +114,12 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
+    public void executeAdvice(List<AdviceRule> adviceRuleList, boolean throwable) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) {
+    public void executeAdvice(AdviceRule adviceRule, boolean throwable) {
         throw new UnsupportedOperationException();
     }
 
@@ -129,7 +129,7 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public <V> V getAspectAdviceBean(String aspectId) {
+    public <V> V getAdviceBean(String aspectId) {
         return null;
     }
 

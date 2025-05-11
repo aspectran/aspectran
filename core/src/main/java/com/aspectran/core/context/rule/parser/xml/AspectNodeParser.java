@@ -115,7 +115,7 @@ class AspectNodeParser implements SubnodeParser {
                 assistant.resolveAdviceBeanClass(aspectRule);
             }
         });
-        nodeParser.parseAspectAdviceInnerNode();
+        nodeParser.parseAdviceInnerNode();
         parser.setXpath(xpath + "/aspect/exception");
         parser.addNodelet(attrs -> {
             ExceptionRule exceptionRule = new ExceptionRule();

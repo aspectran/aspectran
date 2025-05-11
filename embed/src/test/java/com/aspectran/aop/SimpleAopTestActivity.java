@@ -35,7 +35,7 @@ public class SimpleAopTestActivity {
     @Request("aop/test/action1")
     public void action1(@NonNull Translet translet) {
         logger.debug("===> Action1: [SimpleAopTestActivity]=== Action Result (Action-1)");
-        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
+        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAdviceBean("aspect02");
     }
 
     @Request("aop/test/action2")

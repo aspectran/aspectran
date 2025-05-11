@@ -38,7 +38,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleApplicable {
 
-    private final AspectAdviceRule aspectAdviceRule;
+    private final AdviceRule adviceRule;
 
     private String[] exceptionTypes;
 
@@ -52,12 +52,12 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         this(null);
     }
 
-    public ExceptionThrownRule(AspectAdviceRule aspectAdviceRule) {
-        this.aspectAdviceRule = aspectAdviceRule;
+    public ExceptionThrownRule(AdviceRule adviceRule) {
+        this.adviceRule = adviceRule;
     }
 
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
+    public AdviceRule getAdviceRule() {
+        return adviceRule;
     }
 
     public String[] getExceptionTypes() {
@@ -138,12 +138,12 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     @Override
     public Executable applyActionRule(InvokeActionRule invokeActionRule) {
         InvokeAction action;
-        if (aspectAdviceRule != null) {
-            if (aspectAdviceRule.getAdviceBeanId() == null && aspectAdviceRule.getAdviceBeanClass() == null &&
+        if (adviceRule != null) {
+            if (adviceRule.getAdviceBeanId() == null && adviceRule.getAdviceBeanClass() == null &&
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
                 throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
             }
-            action = new AdviceAction(aspectAdviceRule, invokeActionRule);
+            action = new AdviceAction(adviceRule, invokeActionRule);
         } else {
             if (invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
                 throw new IllegalStateException("Unknown action bean for " + invokeActionRule);
@@ -156,17 +156,17 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AdviceRule");
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("No support applying IncludeActionRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying IncludeActionRule to AdviceRule");
     }
 
     @Override
     public Executable applyActionRule(ChooseRule chooseRule) {
-        throw new UnsupportedOperationException("No support applying ChooseRule to AspectAdviceRule");
+        throw new UnsupportedOperationException("No support applying ChooseRule to AdviceRule");
     }
 
     @Override

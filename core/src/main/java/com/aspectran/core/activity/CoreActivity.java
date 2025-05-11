@@ -43,7 +43,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -217,7 +217,7 @@ public class CoreActivity extends AdviceActivity {
                 throw new RequestMethodNotAllowedException(allowedMethod);
             }
 
-            prepareAspectAdviceRules(transletRule, transletRule.getName());
+            prepareAdviceRules(transletRule, transletRule.getName());
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
@@ -285,7 +285,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             try {
-                setCurrentAdviceType(AspectAdviceType.BEFORE);
+                setCurrentAdviceType(AdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList(), true);
 
                 if (translet != null) {
@@ -310,21 +310,21 @@ public class CoreActivity extends AdviceActivity {
                         result = instantAction.execute();
                     }
 
-                    setCurrentAdviceType(AspectAdviceType.AFTER);
+                    setCurrentAdviceType(AdviceType.AFTER);
                     executeAdvice(getAfterAdviceRuleList(), true);
                 }
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
                 if (!forwarding) {
-                    setCurrentAdviceType(AspectAdviceType.FINALLY);
+                    setCurrentAdviceType(AdviceType.FINALLY);
                     executeAdvice(getFinallyAdviceRuleList(), false);
                 }
             }
 
             if (!forwarding) {
                 if (isExceptionRaised()) {
-                    setCurrentAdviceType(AspectAdviceType.THROWN);
+                    setCurrentAdviceType(AdviceType.THROWN);
                     exception();
                     if (translet != null) {
                         response();

@@ -29,8 +29,8 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
@@ -94,7 +94,7 @@ import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
@@ -319,33 +319,33 @@ public class RulesToParameters {
             }
         }
 
-        if (aspectRule.getAspectAdviceRuleList() != null) {
+        if (aspectRule.getAdviceRuleList() != null) {
             AdviceParameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
             adviceParameters.putValueIfNotNull(AdviceParameters.bean, aspectRule.getAdviceBeanId());
-            for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
-                if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+            for (AdviceRule adviceRule : aspectRule.getAdviceRuleList()) {
+                if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
-                    if (aspectAdviceRule.getAdviceAction() != null) {
-                        toActionParameters(aspectAdviceRule.getAdviceAction(), adviceActionParameters);
+                    if (adviceRule.getAdviceAction() != null) {
+                        toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
-                } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
+                } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
-                    if (aspectAdviceRule.getAdviceAction() != null) {
-                        toActionParameters(aspectAdviceRule.getAdviceAction(), adviceActionParameters);
+                    if (adviceRule.getAdviceAction() != null) {
+                        toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
-                } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
+                } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
-                    if (aspectAdviceRule.getAdviceAction() != null) {
-                        toActionParameters(aspectAdviceRule.getAdviceAction(), adviceActionParameters);
+                    if (adviceRule.getAdviceAction() != null) {
+                        toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
-                } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
+                } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
-                    if (aspectAdviceRule.getExceptionThrownRule() != null) {
+                    if (adviceRule.getExceptionThrownRule() != null) {
                         adviceActionParameters.putValue(AdviceActionParameters.thrown,
-                                toExceptionThrownParameters(aspectAdviceRule.getExceptionThrownRule()));
+                                toExceptionThrownParameters(adviceRule.getExceptionThrownRule()));
                     }
-                    if (aspectAdviceRule.getAdviceAction() != null) {
-                        toActionParameters(aspectAdviceRule.getAdviceAction(), adviceActionParameters);
+                    if (adviceRule.getAdviceAction() != null) {
+                        toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
                 }
             }

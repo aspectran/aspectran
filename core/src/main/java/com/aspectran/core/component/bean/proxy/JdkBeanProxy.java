@@ -18,7 +18,7 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.InstantProxyActivity;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.aspect.AdviceRuleRegistry;
 import com.aspectran.core.component.bean.BeanFactoryUtils;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
@@ -73,22 +73,22 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         String className = beanRule.getClassName();
         String methodName = method.getName();
 
-        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
-        if (aarr == null) {
+        AdviceRuleRegistry adviceRuleRegistry = getAdviceRuleRegistry(activity, beanId, className, methodName);
+        if (adviceRuleRegistry == null) {
             return invokeSuper(method, args);
         }
 
         try {
             try {
-                beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);
+                beforeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
                 Object result = invokeSuper(method, args);
-                afterAdvice(aarr.getAfterAdviceRuleList(), beanRule, activity);
+                afterAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
             } finally {
-                finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
+                finallyAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exceptionally(aarr.getExceptionRuleList(), e, activity)) {
+            if (exceptionally(adviceRuleRegistry.getExceptionRuleList(), e, activity)) {
                 return null;
             }
             throw e;

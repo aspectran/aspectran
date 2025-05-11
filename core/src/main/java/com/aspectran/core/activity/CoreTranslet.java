@@ -416,8 +416,8 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <V> V getAspectAdviceBean(String aspectId) {
-        return activity.getAspectAdviceBean(aspectId);
+    public <V> V getAdviceBean(String aspectId) {
+        return activity.getAdviceBean(aspectId);
     }
 
     @Override

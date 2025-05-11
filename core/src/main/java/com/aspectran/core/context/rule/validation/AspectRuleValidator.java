@@ -36,7 +36,7 @@ import java.util.Set;
 import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
 
 /**
- * The Class AspectAdviceRulePreRegister.
+ * The Class AspectRuleValidator.
  */
 public class AspectRuleValidator {
 

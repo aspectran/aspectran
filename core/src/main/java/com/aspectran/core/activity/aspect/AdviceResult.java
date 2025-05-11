@@ -15,20 +15,20 @@
  */
 package com.aspectran.core.activity.aspect;
 
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.AdviceRule;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents the result data for the Aspect Advices.
- * Also, It contains the bean objects associated with the Aspect Advice.
+ * Represents the result data for the advice.
+ * Additionally, it holds the bean object of the advice.
  */
-public class AspectAdviceResult {
+public class AdviceResult {
 
-    private Map<String, Object> aspectAdviceBeanMap;
+    private Map<String, Object> adviceBeanMap;
 
     private Map<String, Object> beforeAdviceResultMap;
 
@@ -38,15 +38,15 @@ public class AspectAdviceResult {
 
     private Map<String, Object> finallyAdviceResultMap;
 
-    public Object getAspectAdviceBean(String aspectId) {
-        return (aspectAdviceBeanMap != null ? aspectAdviceBeanMap.get(aspectId) : null);
+    public Object getAdviceBean(String aspectId) {
+        return (adviceBeanMap != null ? adviceBeanMap.get(aspectId) : null);
     }
 
-    public void putAspectAdviceBean(String aspectId, Object adviceBean) {
-        if (aspectAdviceBeanMap == null) {
-            aspectAdviceBeanMap = new HashMap<>();
+    public void putAdviceBean(String aspectId, Object adviceBean) {
+        if (adviceBeanMap == null) {
+            adviceBeanMap = new HashMap<>();
         }
-        aspectAdviceBeanMap.put(aspectId, adviceBean);
+        adviceBeanMap.put(aspectId, adviceBean);
     }
 
     public Object getBeforeAdviceResult(String aspectId) {
@@ -93,18 +93,18 @@ public class AspectAdviceResult {
         finallyAdviceResultMap.put(aspectId, actionResult);
     }
 
-    public void putAspectAdviceResult(@NonNull AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-        if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-            putBeforeAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
-            putAfterAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
-            putAroundAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
-            putFinallyAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+    public void putAdviceResult(@NonNull AdviceRule adviceRule, Object adviceResult) {
+        if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
+            putBeforeAdviceResult(adviceRule.getAspectId(), adviceResult);
+        } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
+            putAfterAdviceResult(adviceRule.getAspectId(), adviceResult);
+        } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
+            putAroundAdviceResult(adviceRule.getAspectId(), adviceResult);
+        } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
+            putFinallyAdviceResult(adviceRule.getAspectId(), adviceResult);
         } else {
-            throw new UnsupportedOperationException("Unrecognized aspect advice type: " +
-                    aspectAdviceRule.getAspectAdviceType());
+            throw new UnsupportedOperationException("Unrecognized advice type: " +
+                    adviceRule.getAdviceType());
         }
     }
 

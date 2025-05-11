@@ -18,23 +18,23 @@ package com.aspectran.core.component.aspect;
 import com.aspectran.core.context.rule.AspectRule;
 
 /**
- * The Class AspectAdviceRulePostRegister.
+ * The Class AdviceRulePostRegister.
  */
-public class AspectAdviceRulePostRegister {
+public class AdviceRulePostRegister {
 
-    private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+    private AdviceRuleRegistry adviceRuleRegistry;
 
     public void register(AspectRule aspectRule) {
         if (aspectRule != null) {
-            if (aspectAdviceRuleRegistry == null) {
-                aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+            if (adviceRuleRegistry == null) {
+                adviceRuleRegistry = new AdviceRuleRegistry();
             }
-            aspectAdviceRuleRegistry.register(aspectRule);
+            adviceRuleRegistry.register(aspectRule);
         }
     }
 
-    public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-        return aspectAdviceRuleRegistry;
+    public AdviceRuleRegistry getAdviceRuleRegistry() {
+        return adviceRuleRegistry;
     }
 
 }

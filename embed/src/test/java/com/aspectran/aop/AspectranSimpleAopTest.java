@@ -57,7 +57,7 @@ class AspectranSimpleAopTest {
     @Test
     void test1() {
         Translet translet = aspectran.translate("aop/test/action1");
-        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
+        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAdviceBean("aspect02");
         assertEquals("foo (avoid)", sampleAnnotatedAspect.foo());
         assertEquals("value1", translet.getSetting("setting1"));
         assertEquals("value2", translet.getSetting("setting2"));
@@ -71,7 +71,7 @@ class AspectranSimpleAopTest {
         AspectRule aspectRule = context.getAspectRuleRegistry().getAspectRule("aspect01");
         aspectRule.setDisabled(false);
         Translet translet = aspectran.translate("aop/test/action1");
-        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
+        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAdviceBean("aspect01");
         assertNotNull(simpleAopTestAdvice);
     }
 
@@ -82,7 +82,7 @@ class AspectranSimpleAopTest {
         AspectRule aspectRule = context.getAspectRuleRegistry().getAspectRule("aspect01");
         aspectRule.setDisabled(true);
         Translet translet = aspectran.translate("aop/test/action1");
-        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
+        SimpleAopTestAdvice simpleAopTestAdvice = translet.getAdviceBean("aspect01");
         assertNull(simpleAopTestAdvice);
     }
 

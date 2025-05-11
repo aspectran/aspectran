@@ -16,43 +16,44 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * {@code AnnotatedAdviceAction} that invokes a method for Annotated Aspect Advice.
+ * Action that calls a method of an annotated advice bean defined
+ * by annotations declaring an aspect.
  *
  * <p>Created: 2019. 07. 18</p>
  */
 public class AnnotatedAdviceAction extends AnnotatedAction {
 
-    private final AspectAdviceRule aspectAdviceRule;
+    private final AdviceRule adviceRule;
 
     /**
      * Instantiates a new AdviceAction.
-     * @param aspectAdviceRule the aspect advice rule
+     * @param adviceRule the advice rule
      * @param annotatedActionRule the annotated method action rule
      */
-    public AnnotatedAdviceAction(AspectAdviceRule aspectAdviceRule, AnnotatedActionRule annotatedActionRule) {
+    public AnnotatedAdviceAction(AdviceRule adviceRule, AnnotatedActionRule annotatedActionRule) {
         super(annotatedActionRule);
-        this.aspectAdviceRule = aspectAdviceRule;
+        this.adviceRule = adviceRule;
     }
 
     /**
-     * Gets the aspect advice rule.
-     * @return the aspect advice rule
+     * Gets the advice rule.
+     * @return the advice rule
      */
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
+    public AdviceRule getAdviceRule() {
+        return adviceRule;
     }
 
     @Override
     protected Object resolveBean(@NonNull Activity activity) throws Exception {
-        Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+        Object bean = activity.getAdviceBean(adviceRule.getAspectId());
         if (bean == null) {
-            throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
+            throw new ActionExecutionException("No advice bean found for " + adviceRule);
         }
         return bean;
     }
@@ -60,10 +61,10 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", aspectAdviceRule.getAspectAdviceType());
+        tsb.append("type", adviceRule.getAdviceType());
         tsb.append("action", super.toString());
-        if (aspectAdviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
-            tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
+        if (adviceRule.getAspectRule().getOrder() != Integer.MAX_VALUE) {
+            tsb.append("order", adviceRule.getAspectRule().getOrder());
         }
         return tsb.toString();
     }

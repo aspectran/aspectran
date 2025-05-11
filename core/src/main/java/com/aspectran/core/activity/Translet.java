@@ -457,12 +457,12 @@ public interface Translet {
     void removeRaisedException();
 
     /**
-     * Gets the aspect advice bean.
+     * Gets the advice bean.
      * @param <V> the result type of the advice
      * @param aspectId the aspect id
-     * @return the aspect advice bean
+     * @return the advice bean
      */
-    <V> V getAspectAdviceBean(String aspectId);
+    <V> V getAdviceBean(String aspectId);
 
     /**
      * Gets the before advice result.

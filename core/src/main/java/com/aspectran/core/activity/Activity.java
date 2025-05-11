@@ -16,7 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
-import com.aspectran.core.activity.aspect.AspectAdviceException;
+import com.aspectran.core.activity.aspect.AdviceException;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
@@ -29,7 +29,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -215,10 +215,10 @@ public interface Activity {
      * Register an aspect rule dynamically.
      * @param aspectRule the aspect rule
      * @throws AdviceConstraintViolationException thrown when an Advice Constraint Violation occurs
-     * @throws AspectAdviceException thrown when an error occurs while running advice
+     * @throws AdviceException thrown when an error occurs while running advice
      */
-    void registerAspectAdviceRule(AspectRule aspectRule)
-            throws AdviceConstraintViolationException, AspectAdviceException;
+    void registerAdviceRule(AspectRule aspectRule)
+            throws AdviceConstraintViolationException, AdviceException;
 
     /**
      * Register a settings advice rule dynamically.
@@ -227,20 +227,20 @@ public interface Activity {
     void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**
-     * Execute aspect advices with given rules.
-     * @param aspectAdviceRuleList the aspect advice rules
+     * Execute advice actions with given rules.
+     * @param adviceRuleList the advice rules
      * @param throwable whether to raise an exception
-     * @throws AspectAdviceException thrown when an error occurs while running advice
+     * @throws AdviceException thrown when an error occurs while running advice
      */
-    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) throws AspectAdviceException;
+    void executeAdvice(List<AdviceRule> adviceRuleList, boolean throwable) throws AdviceException;
 
     /**
-     * Executes an aspect advice with a given rule.
-     * @param aspectAdviceRule the aspect advice rule
+     * Executes an advice action with a given rule.
+     * @param adviceRule the advice rule
      * @param throwable whether to raise an exception
-     * @throws AspectAdviceException thrown when an error occurs while running advice
+     * @throws AdviceException thrown when an error occurs while running advice
      */
-    void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException;
+    void executeAdvice(AdviceRule adviceRule, boolean throwable) throws AdviceException;
 
     /**
      * Exception handling.
@@ -279,12 +279,12 @@ public interface Activity {
     LocaleResolver getLocaleResolver();
 
     /**
-     * Gets the aspect advice bean.
+     * Gets the advice bean.
      * @param <V> the type of the bean
      * @param aspectId the aspect id
-     * @return the aspect advice bean object
+     * @return the advice bean object
      */
-    <V> V getAspectAdviceBean(String aspectId);
+    <V> V getAdviceBean(String aspectId);
 
     <V> V getBeforeAdviceResult(String aspectId);
 

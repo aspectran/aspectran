@@ -16,37 +16,37 @@
 package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.activity.ActivityException;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 
 import java.io.Serial;
 
 /**
  * Checked exception thrown if an error occurs while executing the advice.
  */
-public class AspectAdviceException extends ActivityException {
+public class AdviceException extends ActivityException {
 
     @Serial
     private static final long serialVersionUID = 6813516429436576091L;
 
-    private final AspectAdviceRule aspectAdviceRule;
+    private final AdviceRule adviceRule;
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
      * @param msg a message to associate with the exception
-     * @param aspectAdviceRule the aspect advice rule
+     * @param adviceRule the advice rule
      * @param cause the real cause of the exception
      */
-    public AspectAdviceException(String msg, AspectAdviceRule aspectAdviceRule, Throwable cause) {
+    public AdviceException(String msg, AdviceRule adviceRule, Throwable cause) {
         super(msg, cause);
-        this.aspectAdviceRule = aspectAdviceRule;
+        this.adviceRule = adviceRule;
     }
 
     /**
-     * Returns the aspect advice rule.
-     * @return the aspect advice rule
+     * Returns the advice rule.
+     * @return the advice rule
      */
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
+    public AdviceRule getAdviceRule() {
+        return adviceRule;
     }
 
 }

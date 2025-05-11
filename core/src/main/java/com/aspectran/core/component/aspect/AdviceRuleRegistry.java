@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.component.aspect;
 
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -29,28 +29,28 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The Class AspectAdviceRuleRegistry.
+ * The Class AdviceRuleRegistry.
  */
-public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegistry> {
+public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     private List<SettingsAdviceRule> settingsAdviceRuleList;
 
-    private List<AspectAdviceRule> beforeAdviceRuleList;
+    private List<AdviceRule> beforeAdviceRuleList;
 
-    private List<AspectAdviceRule> afterAdviceRuleList;
+    private List<AdviceRule> afterAdviceRuleList;
 
-    private List<AspectAdviceRule> finallyAdviceRuleList;
+    private List<AdviceRule> finallyAdviceRuleList;
 
     private List<ExceptionRule> exceptionRuleList;
 
     public void register(AspectRule aspectRule) {
         if (aspectRule != null) {
             if (aspectRule.getSettingsAdviceRule() != null) {
-                addAspectAdviceRule(aspectRule.getSettingsAdviceRule());
+                addAdviceRule(aspectRule.getSettingsAdviceRule());
             }
-            if (aspectRule.getAspectAdviceRuleList() != null) {
-                for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
-                    addAspectAdviceRule(aspectAdviceRule);
+            if (aspectRule.getAdviceRuleList() != null) {
+                for (AdviceRule adviceRule : aspectRule.getAdviceRuleList()) {
+                    addAdviceRule(adviceRule);
                 }
             }
             if (aspectRule.getExceptionRule() != null) {
@@ -59,53 +59,53 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         }
     }
 
-    public void merge(@NonNull AspectAdviceRuleRegistry aarr) {
-        if (aarr.getSettingsAdviceRuleList() != null) {
-            for (SettingsAdviceRule sar : aarr.getSettingsAdviceRuleList()) {
-                addAspectAdviceRule(sar);
+    public void merge(@NonNull AdviceRuleRegistry adviceRuleRegistry) {
+        if (adviceRuleRegistry.getSettingsAdviceRuleList() != null) {
+            for (SettingsAdviceRule sar : adviceRuleRegistry.getSettingsAdviceRuleList()) {
+                addAdviceRule(sar);
             }
         }
-        if (aarr.getBeforeAdviceRuleList() != null) {
-            for (AspectAdviceRule aar : aarr.getBeforeAdviceRuleList()) {
+        if (adviceRuleRegistry.getBeforeAdviceRuleList() != null) {
+            for (AdviceRule aar : adviceRuleRegistry.getBeforeAdviceRuleList()) {
                 addBeforeAdviceRule(aar);
             }
         }
-        if (aarr.getAfterAdviceRuleList() != null) {
-            for (AspectAdviceRule aar : aarr.getAfterAdviceRuleList()) {
+        if (adviceRuleRegistry.getAfterAdviceRuleList() != null) {
+            for (AdviceRule aar : adviceRuleRegistry.getAfterAdviceRuleList()) {
                 addAfterAdviceRule(aar);
             }
         }
-        if (aarr.getFinallyAdviceRuleList() != null) {
-            for (AspectAdviceRule aar : aarr.getFinallyAdviceRuleList()) {
+        if (adviceRuleRegistry.getFinallyAdviceRuleList() != null) {
+            for (AdviceRule aar : adviceRuleRegistry.getFinallyAdviceRuleList()) {
                 addFinallyAdviceRule(aar);
             }
         }
-        if (aarr.getExceptionRuleList() != null) {
-            for (ExceptionRule er : aarr.getExceptionRuleList()) {
+        if (adviceRuleRegistry.getExceptionRuleList() != null) {
+            for (ExceptionRule er : adviceRuleRegistry.getExceptionRuleList()) {
                 addExceptionRule(er);
             }
         }
     }
 
     @Override
-    public AspectAdviceRuleRegistry replicate() {
-        AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
+    public AdviceRuleRegistry replicate() {
+        AdviceRuleRegistry adviceRuleRegistry = new AdviceRuleRegistry();
         if (settingsAdviceRuleList != null) {
-            aarr.setSettingsAdviceRuleList(new ArrayList<>(settingsAdviceRuleList));
+            adviceRuleRegistry.setSettingsAdviceRuleList(new ArrayList<>(settingsAdviceRuleList));
         }
         if (beforeAdviceRuleList != null) {
-            aarr.setBeforeAdviceRuleList(new LinkedList<>(beforeAdviceRuleList));
+            adviceRuleRegistry.setBeforeAdviceRuleList(new LinkedList<>(beforeAdviceRuleList));
         }
         if (afterAdviceRuleList != null) {
-            aarr.setAfterAdviceRuleList(new LinkedList<>(afterAdviceRuleList));
+            adviceRuleRegistry.setAfterAdviceRuleList(new LinkedList<>(afterAdviceRuleList));
         }
         if (finallyAdviceRuleList != null) {
-            aarr.setFinallyAdviceRuleList(new LinkedList<>(finallyAdviceRuleList));
+            adviceRuleRegistry.setFinallyAdviceRuleList(new LinkedList<>(finallyAdviceRuleList));
         }
         if (exceptionRuleList != null) {
-            aarr.setExceptionRuleList(new LinkedList<>(exceptionRuleList));
+            adviceRuleRegistry.setExceptionRuleList(new LinkedList<>(exceptionRuleList));
         }
-        return aarr;
+        return adviceRuleRegistry;
     }
 
     public List<SettingsAdviceRule> getSettingsAdviceRuleList() {
@@ -116,80 +116,80 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         this.settingsAdviceRuleList = settingsAdviceRuleList;
     }
 
-    public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+    public List<AdviceRule> getBeforeAdviceRuleList() {
         return beforeAdviceRuleList;
     }
 
-    private void setBeforeAdviceRuleList(List<AspectAdviceRule> beforeAdviceRuleList) {
+    private void setBeforeAdviceRuleList(List<AdviceRule> beforeAdviceRuleList) {
         this.beforeAdviceRuleList = beforeAdviceRuleList;
     }
 
-    public List<AspectAdviceRule> getAfterAdviceRuleList() {
+    public List<AdviceRule> getAfterAdviceRuleList() {
         return afterAdviceRuleList;
     }
 
-    private void setAfterAdviceRuleList(List<AspectAdviceRule> afterAdviceRuleList) {
+    private void setAfterAdviceRuleList(List<AdviceRule> afterAdviceRuleList) {
         this.afterAdviceRuleList = afterAdviceRuleList;
     }
 
-    public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+    public List<AdviceRule> getFinallyAdviceRuleList() {
         return finallyAdviceRuleList;
     }
 
-    private void setFinallyAdviceRuleList(List<AspectAdviceRule> finallyAdviceRuleList) {
+    private void setFinallyAdviceRuleList(List<AdviceRule> finallyAdviceRuleList) {
         this.finallyAdviceRuleList = finallyAdviceRuleList;
     }
 
-    public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+    public void addAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         if (settingsAdviceRuleList == null) {
             settingsAdviceRuleList = new ArrayList<>();
         }
         settingsAdviceRuleList.add(0, settingsAdviceRule);
     }
 
-    public void addAspectAdviceRule(@NonNull AspectAdviceRule aspectAdviceRule) {
-        if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-            addBeforeAdviceRule(aspectAdviceRule);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
-            addAfterAdviceRule(aspectAdviceRule);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
-            addBeforeAdviceRule(aspectAdviceRule);
-            addAfterAdviceRule(aspectAdviceRule);
-        } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
-            addFinallyAdviceRule(aspectAdviceRule);
+    public void addAdviceRule(@NonNull AdviceRule adviceRule) {
+        if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
+            addBeforeAdviceRule(adviceRule);
+        } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
+            addAfterAdviceRule(adviceRule);
+        } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
+            addBeforeAdviceRule(adviceRule);
+            addAfterAdviceRule(adviceRule);
+        } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
+            addFinallyAdviceRule(adviceRule);
         }
     }
 
-    private void addBeforeAdviceRule(AspectAdviceRule aspectAdviceRule) {
+    private void addBeforeAdviceRule(AdviceRule adviceRule) {
         if (beforeAdviceRuleList == null) {
             beforeAdviceRuleList = new LinkedList<>();
-            beforeAdviceRuleList.add(aspectAdviceRule);
+            beforeAdviceRuleList.add(adviceRule);
         } else {
-            int leftInt = aspectAdviceRule.getAspectRule().getOrder();
+            int leftInt = adviceRule.getAspectRule().getOrder();
             int index = findLessThanIndex(beforeAdviceRuleList, leftInt);
-            beforeAdviceRuleList.add(index, aspectAdviceRule);
+            beforeAdviceRuleList.add(index, adviceRule);
         }
     }
 
-    private void addAfterAdviceRule(AspectAdviceRule aspectAdviceRule) {
+    private void addAfterAdviceRule(AdviceRule adviceRule) {
         if (afterAdviceRuleList == null) {
             afterAdviceRuleList = new LinkedList<>();
-            afterAdviceRuleList.add(aspectAdviceRule);
+            afterAdviceRuleList.add(adviceRule);
         } else {
-            int leftInt = aspectAdviceRule.getAspectRule().getOrder();
+            int leftInt = adviceRule.getAspectRule().getOrder();
             int index = findGreaterThanOrEqualIndex(afterAdviceRuleList, leftInt);
-            afterAdviceRuleList.add(index, aspectAdviceRule);
+            afterAdviceRuleList.add(index, adviceRule);
         }
     }
 
-    private void addFinallyAdviceRule(AspectAdviceRule aspectAdviceRule) {
+    private void addFinallyAdviceRule(AdviceRule adviceRule) {
         if (finallyAdviceRuleList == null) {
             finallyAdviceRuleList = new LinkedList<>();
-            finallyAdviceRuleList.add(aspectAdviceRule);
+            finallyAdviceRuleList.add(adviceRule);
         } else {
-            int leftInt = aspectAdviceRule.getAspectRule().getOrder();
+            int leftInt = adviceRule.getAspectRule().getOrder();
             int index = findGreaterThanOrEqualIndex(finallyAdviceRuleList, leftInt);
-            finallyAdviceRuleList.add(index, aspectAdviceRule);
+            finallyAdviceRuleList.add(index, adviceRule);
         }
     }
 
@@ -208,7 +208,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         exceptionRuleList.add(0, exceptionRule);
     }
 
-    private int findLessThanIndex(@NonNull List<AspectAdviceRule> adviceRuleList, int leftInt) {
+    private int findLessThanIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {
         for (int i = 0; i < adviceRuleList.size(); i++) {
             int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
             if (leftInt < rightInt) {
@@ -218,7 +218,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         return adviceRuleList.size();
     }
 
-    private int findGreaterThanOrEqualIndex(@NonNull List<AspectAdviceRule> adviceRuleList, int leftInt) {
+    private int findGreaterThanOrEqualIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {
         for (int i = 0; i < adviceRuleList.size(); i++) {
             int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
             if (leftInt >= rightInt) {
@@ -231,11 +231,11 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("settingsAdvices", settingsAdviceRuleList);
-        tsb.append("beforeAdvices", beforeAdviceRuleList);
-        tsb.append("afterAdvices", afterAdviceRuleList);
-        tsb.append("finallyAdvices", finallyAdviceRuleList);
-        tsb.append("exceptionRules", exceptionRuleList);
+        tsb.append("settings", settingsAdviceRuleList);
+        tsb.append("before", beforeAdviceRuleList);
+        tsb.append("after", afterAdviceRuleList);
+        tsb.append("finally", finallyAdviceRuleList);
+        tsb.append("exceptions", exceptionRuleList);
         return tsb.toString();
     }
 
