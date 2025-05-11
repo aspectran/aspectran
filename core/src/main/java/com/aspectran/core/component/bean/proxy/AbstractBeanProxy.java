@@ -61,9 +61,9 @@ public abstract class AbstractBeanProxy {
         PointcutPattern pointcutPattern = new PointcutPattern(requestName, beanId, className, methodName);
         RelevantAspectRuleHolder holder;
         if (literalPattern) {
-            holder = aspectRuleRegistry.getRelevantAspectRuleHolderFromSoftCache(pointcutPattern);
+            holder = aspectRuleRegistry.retrieveFromSoftCache(pointcutPattern);
         } else {
-            holder = aspectRuleRegistry.getRelevantAspectRuleHolderFromWeakCache(pointcutPattern);
+            holder = aspectRuleRegistry.retrieveFromWeakCache(pointcutPattern);
         }
 
         AdviceRuleRegistry adviceRuleRegistry = holder.getAdviceRuleRegistry();

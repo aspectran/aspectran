@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentReferenceCache;
@@ -74,9 +75,8 @@ public class AspectRuleRegistry extends AbstractComponent {
     }
 
     public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
-        if (aspectRule == null) {
-            throw new IllegalArgumentException("aspectRule must not be null");
-        }
+        Assert.notNull(aspectRule, "aspectRule must not be null");
+        Assert.notNull(aspectRule.getId(), "Aspect ID must not be null");
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule {}", aspectRule);
         }
@@ -125,11 +125,11 @@ public class AspectRuleRegistry extends AbstractComponent {
         aspectRuleMap.clear();
     }
 
-    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromSoftCache(PointcutPattern pointcutPattern) {
+    public RelevantAspectRuleHolder retrieveFromSoftCache(PointcutPattern pointcutPattern) {
         return softCache.get(pointcutPattern);
     }
 
-    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromWeakCache(PointcutPattern pointcutPattern) {
+    public RelevantAspectRuleHolder retrieveFromWeakCache(PointcutPattern pointcutPattern) {
         return weakCache.get(pointcutPattern);
     }
 
