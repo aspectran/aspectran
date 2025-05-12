@@ -175,7 +175,7 @@ public class WebActivity extends CoreActivity {
 
             HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(
                     getTranslet().getRequestMethod(), request);
-            if (getParentActivity() == null) {
+            if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {
                     try {
@@ -200,7 +200,7 @@ public class WebActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
-            if (getParentActivity() == null) {
+            if (getPendingActivity() == null) {
                 String responseEncoding = getDefinitiveResponseEncoding();
                 if (responseEncoding != null) {
                     responseAdapter.setEncoding(responseEncoding);
@@ -224,10 +224,10 @@ public class WebActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (getParentActivity() == null) {
+        if (getPendingActivity() == null) {
             getRequestAdapter().preparse();
         } else {
-            getRequestAdapter().preparse((WebRequestAdapter)getParentActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter) getPendingActivity().getRequestAdapter());
         }
 
         MediaType mediaType = getRequestAdapter().getMediaType();

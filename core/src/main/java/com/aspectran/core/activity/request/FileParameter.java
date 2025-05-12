@@ -99,7 +99,7 @@ public class FileParameter {
 
     /**
      * Returns the contents of the file in a byte array.
-     * Can not use a large array of memory than the JVM Heap deal.
+     * Cannot use a larger array of memory than the JVM Heap deal.
      * @return a byte array
      * @throws IOException if an I/O error has occurred
      */
@@ -148,7 +148,7 @@ public class FileParameter {
 
     /**
      * Save an uploaded file as a given destination file.
-     * If the file already exists in directory the save with a different name.
+     * If the file already exists in the directory, they save with a different name.
      * @param destFile the destination file
      * @return a saved file
      * @throws IOException if an I/O error has occurred
@@ -266,7 +266,7 @@ public class FileParameter {
     }
 
     /**
-     * Sets the access permission that allow write operations on the file
+     * Sets the access permission that allows to write operations on the file
      * associated with this FileParameter.
      */
     public void release() {

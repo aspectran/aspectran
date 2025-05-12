@@ -129,19 +129,19 @@ public class TowActivity extends CoreActivity {
     protected void adapt() throws AdapterException {
         try {
             if (towService.isSessionAdaptable()) {
-                if (getParentActivity() == null) {
+                if (getPendingActivity() == null) {
                     SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
                     SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
                     if (sessionManager != null && sessionConfig != null) {
                         setSessionAdapter(new TowSessionAdapter(exchange));
                     }
-                } else if (getParentActivity().hasSessionAdapter()){
-                    setSessionAdapter(getParentActivity().getSessionAdapter());
+                } else if (getPendingActivity().hasSessionAdapter()){
+                    setSessionAdapter(getPendingActivity().getSessionAdapter());
                 }
             }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
-            if (getParentActivity() == null) {
+            if (getPendingActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (StringUtils.hasLength(maxRequestSizeSetting)) {
                     try {
@@ -167,7 +167,7 @@ public class TowActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
-            if (getParentActivity() == null) {
+            if (getPendingActivity() == null) {
                 String responseEncoding = getDefinitiveResponseEncoding();
                 if (responseEncoding != null) {
                     responseAdapter.setEncoding(responseEncoding);
@@ -191,10 +191,10 @@ public class TowActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
+        if (getPendingActivity() == null) {
             getRequestAdapter().preparse();
         } else {
-            getRequestAdapter().preparse((WebRequestAdapter)getParentActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter) getPendingActivity().getRequestAdapter());
         }
 
         MediaType mediaType = getRequestAdapter().getMediaType();

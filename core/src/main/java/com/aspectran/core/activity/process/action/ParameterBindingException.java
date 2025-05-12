@@ -35,8 +35,8 @@ public class ParameterBindingException extends ProcessException {
 
     private final ParameterBindingRule parameterBindingRule;
 
-    public ParameterBindingException(@NonNull ParameterBindingRule parameterBindingRule,
-                                     @NonNull Throwable cause) {
+    public ParameterBindingException(
+            @NonNull ParameterBindingRule parameterBindingRule, @NonNull Throwable cause) {
         super("Failed to bind request parameter to action method parameter " +
                 parameterBindingRule + "; Cause: " +
             ExceptionUtils.getRootCauseSimpleMessage(cause), cause);

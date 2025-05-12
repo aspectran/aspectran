@@ -34,8 +34,8 @@ public class MethodArgumentTypeMismatchException extends ProcessException {
 
     private final Throwable cause;
 
-    public MethodArgumentTypeMismatchException(@NonNull Class<?> valueType,
-                                               @NonNull Class<?> requiredType, Throwable cause) {
+    public MethodArgumentTypeMismatchException(
+            @NonNull Class<?> valueType, @NonNull Class<?> requiredType, Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +
             "to required type [" + requiredType.getName() + "]; Cause: " +
             ExceptionUtils.getRootCauseSimpleMessage(cause), cause);

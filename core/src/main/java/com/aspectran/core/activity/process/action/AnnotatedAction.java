@@ -452,7 +452,8 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object resolveValue(Class<?> type, String[] values, StringifyContext stringifyContext, String format)
+    private static Object resolveValue(
+            Class<?> type, String[] values, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;

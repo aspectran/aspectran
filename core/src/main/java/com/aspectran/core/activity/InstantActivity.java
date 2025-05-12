@@ -99,8 +99,8 @@ public class InstantActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        if (!hasSessionAdapter() && getParentActivity() != null && getParentActivity().hasSessionAdapter()) {
-            setSessionAdapter(getParentActivity().getSessionAdapter());
+        if (!hasSessionAdapter() && getPendingActivity() != null && getPendingActivity().hasSessionAdapter()) {
+            setSessionAdapter(getPendingActivity().getSessionAdapter());
         }
         if (getRequestAdapter() == null) {
             MethodType requestMethod = (hasTranslet() ? getTranslet().getRequestMethod() : null);
@@ -126,7 +126,7 @@ public class InstantActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && hasSessionAdapter() &&
+        if (isOriginalActivity() && hasSessionAdapter() &&
                 getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().access();
         }
@@ -134,7 +134,7 @@ public class InstantActivity extends CoreActivity {
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && hasSessionAdapter() &&
+        if (isOriginalActivity() && hasSessionAdapter() &&
                 getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().complete();
         }

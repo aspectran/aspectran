@@ -208,9 +208,9 @@ public class ContentsXMLReader implements XMLReader {
         }
         if (object instanceof ProcessResult processResult) {
             parseProcessResult(processResult);
-        } else if (object instanceof String
-                || object instanceof Number
-                || object instanceof Boolean) {
+        } else if (object instanceof String ||
+                object instanceof Number ||
+                object instanceof Boolean) {
             parseString(object.toString());
         } else if (object instanceof Parameters parameters) {
             for (Parameter p: parameters.getParameterValues()) {

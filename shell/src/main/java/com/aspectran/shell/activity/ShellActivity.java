@@ -215,7 +215,7 @@ public class ShellActivity extends CoreActivity {
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
 
-        if (!hasParentActivity() && hasSessionAdapter() &&
+        if (isOriginalActivity() && hasSessionAdapter() &&
                 getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().access();
         }
@@ -223,7 +223,7 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void removeCurrentActivity() {
-        if (!hasParentActivity() && hasSessionAdapter() &&
+        if (isOriginalActivity() && hasSessionAdapter() &&
                 getSessionAdapter() instanceof DefaultSessionAdapter sessionAdapter) {
             sessionAdapter.getSessionAgent().complete();
         }

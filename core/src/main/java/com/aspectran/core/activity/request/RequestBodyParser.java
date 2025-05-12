@@ -39,7 +39,7 @@ public abstract class RequestBodyParser {
             return parameters;
         } catch (Exception e) {
             throw new RequestParseException("Failed to parse request body of APON format to required type [" +
-                requiredType.getName() + "]", e);
+                    requiredType.getName() + "]", e);
         }
     }
 

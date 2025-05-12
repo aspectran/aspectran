@@ -40,7 +40,7 @@ public class TransformResponseException extends ResponseException {
      */
     public TransformResponseException(TransformRule transformRule, Throwable cause) {
         super("Failed to transform " + transformRule + "; Cause: " +
-            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
+                ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
         this.transformRule = transformRule;
     }
 

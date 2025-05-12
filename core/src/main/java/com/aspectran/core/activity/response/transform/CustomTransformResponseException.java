@@ -37,8 +37,8 @@ public class CustomTransformResponseException extends ResponseException {
      * @param customTransformRule the custom transform rule
      * @param cause the real cause of the exception
      */
-    public CustomTransformResponseException(@NonNull CustomTransformRule customTransformRule,
-                                            @NonNull Throwable cause) {
+    public CustomTransformResponseException(
+            @NonNull CustomTransformRule customTransformRule, @NonNull Throwable cause) {
         super("Failed to transform " + customTransformRule + "; Cause: " +
             ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }
@@ -48,8 +48,8 @@ public class CustomTransformResponseException extends ResponseException {
      * @param customTransformer the custom transformer
      * @param cause the real cause of the exception
      */
-    public CustomTransformResponseException(@NonNull CustomTransformer customTransformer,
-                                            @NonNull Throwable cause) {
+    public CustomTransformResponseException(
+            @NonNull CustomTransformer customTransformer, @NonNull Throwable cause) {
         super("Failed to transform with " + customTransformer + "; Cause: " +
             ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }

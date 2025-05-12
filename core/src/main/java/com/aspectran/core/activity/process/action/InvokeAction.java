@@ -178,8 +178,9 @@ public class InvokeAction implements Executable {
         }
     }
 
-    private static Object invokeMethod(Activity activity, Object bean, String methodName,
-                                       ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) throws Exception {
+    private static Object invokeMethod(
+            Activity activity, Object bean, String methodName,
+            ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) throws Exception {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
@@ -213,12 +214,13 @@ public class InvokeAction implements Executable {
         return invokeMethod(bean, methodName, argsObjects, argsTypes);
     }
 
-    private static Object invokeMethod(@NonNull Object object, String methodName, Object[] args, Class<?>[] paramTypes)
+    private static Object invokeMethod(
+            @NonNull Object object, String methodName, Object[] args, Class<?>[] paramTypes)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method method = MethodUtils.getMatchingAccessibleMethod(object.getClass(), methodName, args, paramTypes);
         if (method == null) {
-            throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
-                + object.getClass().getName());
+            throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: " +
+                    object.getClass().getName());
         }
         if (method.getReturnType() == Void.TYPE) {
             MethodUtils.invokeMethod(object, method, args, paramTypes);
@@ -229,8 +231,8 @@ public class InvokeAction implements Executable {
     }
 
     @NonNull
-    private static Object[] createArguments(@NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap,
-                                            boolean requiresTranslet) {
+    private static Object[] createArguments(
+            @NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) {
         Object[] args;
         int size = argumentItemRuleMap.size();
         int index;

@@ -44,7 +44,7 @@ public abstract class AbstractActivity implements Activity {
 
     private final ActivityContext context;
 
-    private Activity parentActivity;
+    private Activity pendingActivity;
 
     private SessionAdapter sessionAdapter;
 
@@ -119,7 +119,7 @@ public abstract class AbstractActivity implements Activity {
      */
     protected void saveCurrentActivity() {
         if (context.hasCurrentActivity()) {
-            parentActivity = context.getCurrentActivity();
+            pendingActivity = context.getCurrentActivity();
         }
         context.setCurrentActivity(this);
     }
@@ -128,20 +128,21 @@ public abstract class AbstractActivity implements Activity {
      * Removes the current activity.
      */
     protected void removeCurrentActivity() {
-        if (parentActivity != null) {
-            context.setCurrentActivity(parentActivity);
+        if (pendingActivity != null) {
+            context.setCurrentActivity(pendingActivity);
+            pendingActivity = null;
         } else {
             context.removeCurrentActivity();
         }
     }
 
     @SuppressWarnings("unchecked")
-    protected <V extends Activity> V getParentActivity() {
-        return (V)parentActivity;
+    protected <V extends Activity> V getPendingActivity() {
+        return (V)pendingActivity;
     }
 
-    protected boolean hasParentActivity() {
-        return (parentActivity != null);
+    protected boolean isOriginalActivity() {
+        return (pendingActivity != null);
     }
 
     @Override
