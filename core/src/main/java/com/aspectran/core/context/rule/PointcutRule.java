@@ -110,12 +110,12 @@ public class PointcutRule {
         }
         if (pointcutPatternRuleList.isEmpty()) {
             PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
-            pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+            pointcutPatternRule.setExcludePatternRuleList(excludePointcutPatternRuleList);
             pointcutRule.addPointcutPatternRule(pointcutPatternRule);
         } else {
             for (PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
                 pointcutPatternRule.setPointcutType(pointcutRule.getPointcutType());
-                pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+                pointcutPatternRule.setExcludePatternRuleList(excludePointcutPatternRuleList);
                 pointcutRule.addPointcutPatternRule(pointcutPatternRule);
             }
         }

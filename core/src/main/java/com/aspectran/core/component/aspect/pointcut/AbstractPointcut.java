@@ -73,10 +73,10 @@ public abstract class AbstractPointcut implements Pointcut {
         if (pointcutPatternRuleList != null) {
             for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                 if (exists(ppr, transletName, beanId, className, methodName)) {
-                    List<PointcutPatternRule> epprList = ppr.getExcludePointcutPatternRuleList();
-                    if (epprList != null) {
-                        for (PointcutPatternRule eppr : epprList) {
-                            if (exists(eppr, transletName, beanId, className, methodName)) {
+                    List<PointcutPatternRule> excludePatternRuleList = ppr.getExcludePatternRuleList();
+                    if (excludePatternRuleList != null) {
+                        for (PointcutPatternRule excludePatternRule : excludePatternRuleList) {
+                            if (exists(excludePatternRule, transletName, beanId, className, methodName)) {
                                 return false;
                             }
                         }

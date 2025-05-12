@@ -68,8 +68,6 @@ public class AnnotatedAction implements Executable {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedAction.class);
 
-    private static final Object NONE = new Object();
-
     private final AnnotatedActionRule annotatedActionRule;
 
     /**
@@ -213,7 +211,7 @@ public class AnnotatedAction implements Executable {
             } else {
                 String[] values = translet.getParameterValues(name);
                 result = resolveValue(type, values, stringifyContext, format);
-                if (result == NONE) {
+                if (result == Void.TYPE) {
                     result = null;
                 }
             }
@@ -267,7 +265,7 @@ public class AnnotatedAction implements Executable {
         } else {
             String value = translet.getParameter(name);
             result = resolveValue(type, value, stringifyContext, format);
-            if (result == NONE) {
+            if (result == Void.TYPE) {
                 if (type.isAnnotationPresent(Component.class)) {
                     try {
                         result = translet.getBean(type);
@@ -321,7 +319,7 @@ public class AnnotatedAction implements Executable {
                     String value = translet.getParameter(paramName);
                     result = resolveValue(setterType, value, stringifyContext, format);
                 }
-                if (result != null && result != NONE) {
+                if (result != null && result != Void.TYPE) {
                     BeanUtils.setProperty(model, name, result);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     missingProperties.add(name);
@@ -446,7 +444,7 @@ public class AnnotatedAction implements Executable {
                     result = stringifyContext.toDate(value, format);
                 }
             } else {
-                result = NONE;
+                result = Void.TYPE;
             }
             return result;
         } catch (Exception e) {
@@ -661,7 +659,7 @@ public class AnnotatedAction implements Executable {
                     result = arr;
                 }
             } else {
-                result = NONE;
+                result = Void.TYPE;
             }
             return result;
         } catch (Exception e) {

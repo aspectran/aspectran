@@ -90,7 +90,7 @@ public class HeaderActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -98,7 +98,7 @@ public class HeaderActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public boolean isHidden() {
@@ -106,8 +106,8 @@ public class HeaderActionRule {
     }
 
     /**
-     * Sets whether to hide result of the action.
-     * @param hidden whether to hide result of the action
+     * Sets whether to hide the result of the action.
+     * @param hidden whether to hide the result of the action
      */
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
@@ -127,7 +127,7 @@ public class HeaderActionRule {
     /**
      * Returns a new derived instance of HeaderActionRule.
      * @param id the action id
-     * @param hidden whether to hide result of the action
+     * @param hidden whether to hide the result of the action
      * @return the header action rule
      */
     @NonNull

@@ -33,7 +33,7 @@ public class PointcutPatternRule {
 
     private PointcutPattern pointcutPattern;
 
-    private List<PointcutPatternRule> excludePointcutPatternRuleList;
+    private List<PointcutPatternRule> excludePatternRuleList;
 
     public PointcutPatternRule() {
     }
@@ -62,12 +62,12 @@ public class PointcutPatternRule {
         this.pointcutPattern = pointcutPattern;
     }
 
-    public List<PointcutPatternRule> getExcludePointcutPatternRuleList() {
-        return excludePointcutPatternRuleList;
+    public List<PointcutPatternRule> getExcludePatternRuleList() {
+        return excludePatternRuleList;
     }
 
-    public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
-        this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
+    public void setExcludePatternRuleList(List<PointcutPatternRule> excludePatternRuleList) {
+        this.excludePatternRuleList = excludePatternRuleList;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class PointcutPatternRule {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", pointcutType);
         tsb.append("pattern", pointcutPattern);
-        tsb.append("excludes", excludePointcutPatternRuleList);
+        tsb.append("excludes", excludePatternRuleList);
         return tsb.toString();
     }
 

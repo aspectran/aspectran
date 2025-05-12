@@ -88,7 +88,7 @@ public class EchoActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if is hidden
      */
     public Boolean getHidden() {
@@ -96,7 +96,7 @@ public class EchoActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if is hidden
      */
     public boolean isHidden() {
@@ -104,8 +104,8 @@ public class EchoActionRule {
     }
 
     /**
-     * Sets whether to hide result of the action.
-     * @param hidden whether to hide result of the action
+     * Sets whether to hide the result of the action.
+     * @param hidden whether to hide the result of the action
      */
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
@@ -125,7 +125,7 @@ public class EchoActionRule {
     /**
      * Returns a new derived instance of EchoActionRule.
      * @param id the action id
-     * @param hidden whether to hide result of the action
+     * @param hidden whether to hide the result of the action
      * @return the echo action rule
      */
     @NonNull

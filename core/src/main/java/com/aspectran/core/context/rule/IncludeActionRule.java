@@ -158,7 +158,7 @@ public class IncludeActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -166,7 +166,7 @@ public class IncludeActionRule {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public Boolean isHidden() {
@@ -174,8 +174,8 @@ public class IncludeActionRule {
     }
 
     /**
-     * Sets whether to hide result of the action.
-     * @param hidden whether to hide result of the action
+     * Sets whether to hide the result of the action.
+     * @param hidden whether to hide the result of the action
      */
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
@@ -201,7 +201,7 @@ public class IncludeActionRule {
      * @param id the action id
      * @param transletName the translet name
      * @param method the request method type
-     * @param hidden whether to hide result of the action
+     * @param hidden whether to hide the result of the action
      * @return the include action rule
      * @throws IllegalRuleException if an illegal rule is found
      */

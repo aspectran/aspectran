@@ -123,7 +123,7 @@ public class InvokeActionRule implements BeanReferenceable {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -131,7 +131,7 @@ public class InvokeActionRule implements BeanReferenceable {
     }
 
     /**
-     * Returns whether to hide result of the action.
+     * Returns whether to hide the result of the action.
      * @return true, if this action is hidden
      */
     public boolean isHidden() {
@@ -139,8 +139,8 @@ public class InvokeActionRule implements BeanReferenceable {
     }
 
     /**
-     * Sets whether to hide result of the action.
-     * @param hidden whether to hide result of the action
+     * Sets whether to hide the result of the action.
+     * @param hidden whether to hide the result of the action
      */
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;

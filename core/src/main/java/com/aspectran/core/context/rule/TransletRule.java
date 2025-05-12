@@ -294,7 +294,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Returns the action list.
-     * If not yet instantiated then create a new one.
+     * If not yet instantiated, then create a new one.
      * @return the action list
      */
     private ActionList touchActionList() {
