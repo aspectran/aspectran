@@ -45,6 +45,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     private boolean precommitDone;
 
+    private String reservedRedirectLocation;
+
     /**
      * Instantiates a new HttpServletResponseAdapter.
      * @param response the HTTP response
@@ -119,6 +121,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() throws IOException {
+        if (reservedRedirectLocation != null) {
+            getHttpServletResponse().sendRedirect(reservedRedirectLocation);
+            reservedRedirectLocation = null;
+        }
         if (getHttpServletResponse().isCommitted()) {
             getHttpServletResponse().flushBuffer();
         }
@@ -130,7 +136,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (proxyProtocolAware) {
             location = SendRedirectBasedOnXForwardedProtocol.getLocation(activity.getTranslet(), location);
         }
-        getHttpServletResponse().sendRedirect(location);
+        reservedRedirectLocation = location;
     }
 
     @Override

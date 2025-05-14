@@ -444,7 +444,7 @@ public class CoreActivity extends AdviceActivity {
                     getRequestAdapter().getRequestScope().destroy();
                 }
             }
-            if (getResponseAdapter() != null) {
+            if (getResponseAdapter() != null && !isExceptionRaised()) {
                 getResponseAdapter().flush();
             }
         } catch (Exception e) {

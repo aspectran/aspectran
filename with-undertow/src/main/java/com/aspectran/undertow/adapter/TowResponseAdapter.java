@@ -58,6 +58,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     private ResponseState responseState = ResponseState.NONE;
 
+    private String reservedRedirectLocation;
+
     public TowResponseAdapter(HttpServerExchange exchange, TowActivity activity) {
         super(exchange);
         this.activity = activity;
@@ -187,6 +189,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() throws IOException {
+        if (reservedRedirectLocation != null) {
+            getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, reservedRedirectLocation);
+            reservedRedirectLocation = null;
+        }
         if (writer != null) {
             writer.flush();
         } else if (getHttpServerExchange().isBlocking() && getHttpServerExchange().isResponseStarted()) {
@@ -198,7 +204,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     public void redirect(String location) throws IOException {
         setStatus(HttpStatus.FOUND.value());
         if (URLUtils.isAbsoluteUrl(location)) { //absolute url
-            getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, location);
+            reservedRedirectLocation = location;
         } else {
             boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
             if (proxyProtocolAware) {
@@ -215,9 +221,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             } else {
                 realPath = CanonicalPathUtils.canonicalize(location);
             }
-            String url = getHttpServerExchange().getRequestScheme() + "://" +
+            reservedRedirectLocation = getHttpServerExchange().getRequestScheme() + "://" +
                     getHttpServerExchange().getHostAndPort() + realPath;
-            getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, url);
         }
     }
 

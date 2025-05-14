@@ -115,7 +115,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(relevantAspectId);
         aspectRule.setOrder(0);
-        aspectRule.setIsolated(true);
 
         String pattern = "**@class:" + ClassUtils.getUserClass(getClass()).getName();
         PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);

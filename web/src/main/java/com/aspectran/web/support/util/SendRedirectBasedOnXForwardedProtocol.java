@@ -49,7 +49,7 @@ public class SendRedirectBasedOnXForwardedProtocol {
         if (StringUtils.hasLength(xForwardedProtocol)) {
             String host = translet.getRequestAdapter().getHeader(HttpHeaders.HOST);
             if (StringUtils.hasLength(host) && !isAbsoluteUrl(location)) {
-                return xForwardedProtocol + SCHEME_DELIMITER + host + location;
+                return (xForwardedProtocol + SCHEME_DELIMITER + host + location);
             }
         }
         return null;
