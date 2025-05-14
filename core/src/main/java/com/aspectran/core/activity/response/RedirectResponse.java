@@ -42,7 +42,7 @@ public class RedirectResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void respond(Activity activity) throws ResponseException {
         RedirectRule newRedirectRule = redirectRule.replicate();
         if (logger.isDebugEnabled()) {
             logger.debug("Response {}", newRedirectRule);

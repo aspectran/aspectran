@@ -44,7 +44,7 @@ public class ForwardResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) {
+    public void respond(Activity activity) {
         if (logger.isDebugEnabled()) {
             logger.debug("Response {}", forwardRule);
         }

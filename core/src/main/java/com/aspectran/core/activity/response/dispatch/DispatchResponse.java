@@ -53,7 +53,7 @@ public class DispatchResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void respond(Activity activity) throws ResponseException {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Response {}", dispatchRule);

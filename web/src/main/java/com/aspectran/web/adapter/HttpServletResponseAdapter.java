@@ -120,13 +120,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void commit() throws IOException {
         if (reservedRedirectLocation != null) {
             getHttpServletResponse().sendRedirect(reservedRedirectLocation);
             reservedRedirectLocation = null;
-        }
-        if (getHttpServletResponse().isCommitted()) {
-            getHttpServletResponse().flushBuffer();
         }
     }
 
@@ -174,7 +171,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                 FormatType formatType = transformResponse.getFormatType();
                 if (formatType == null) {
                     try {
-                        response.commit(activity);
+                        response.respond(activity);
                     } catch (ResponseException e) {
                         throw new IOException("Error during pre-commit", e);
                     }

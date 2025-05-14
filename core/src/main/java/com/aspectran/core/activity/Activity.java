@@ -180,7 +180,7 @@ public interface Activity {
      * Returns whether a response was attempted after performing the activity.
      * @return true if a response was attempted, false otherwise
      */
-    boolean isCommitted();
+    boolean isResponded();
 
     /**
      * Returns whether an exception was thrown in the activity.

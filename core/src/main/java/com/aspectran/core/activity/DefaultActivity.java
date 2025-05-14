@@ -99,7 +99,7 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public boolean isCommitted() {
+    public boolean isResponded() {
         return false;
     }
 

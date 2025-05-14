@@ -149,7 +149,7 @@ public class DefaultWebService extends AbstractWebService {
 
             @Override
             public void onTimeout(AsyncEvent asyncEvent) {
-                if (!activity.isCommitted() && !activity.isExceptionRaised()) {
+                if (!activity.isResponded() && !activity.isExceptionRaised()) {
                     activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
                 } else {
                     logger.error("Async Timeout {}", asyncEvent);

@@ -71,7 +71,7 @@ public abstract class TransformResponse implements Response {
     }
 
     @Override
-    public void commit(@NonNull Activity activity) throws ResponseException {
+    public void respond(@NonNull Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
             logger.debug("Response {}", transformRule);
         }

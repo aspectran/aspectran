@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.action.AnnotatedAction;
+import com.aspectran.core.activity.process.action.AnnotatedMethodInvoker;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -366,7 +366,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method initMethod = beanRule.getInitMethod();
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
-            AnnotatedAction.invokeMethod(activity, bean, initMethod, parameterBindingRules);
+            AnnotatedMethodInvoker.invoke(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of bean",
                     beanRule, e);
@@ -377,7 +377,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
             ParameterBindingRule[] parameterBindingRules = beanRule.getFactoryMethodParameterBindingRules();
-            return AnnotatedAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
+            return AnnotatedMethodInvoker.invoke(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of bean",
                     beanRule, e);
@@ -394,9 +394,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
         if (resultBean == null) {
             throw new FactoryBeanNotInitializedException(
-                        "FactoryBean returned null object: " +
-                        "probably not fully initialized (maybe due to circular bean reference)",
-                        beanRule);
+                    "FactoryBean returned null object: " +
+                            "probably not fully initialized (maybe due to circular bean reference)",
+                    beanRule);
         }
         return resultBean;
     }

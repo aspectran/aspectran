@@ -188,7 +188,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void commit() throws IOException {
         if (reservedRedirectLocation != null) {
             getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, reservedRedirectLocation);
             reservedRedirectLocation = null;

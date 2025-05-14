@@ -90,7 +90,7 @@ public class CoreActivity extends AdviceActivity {
 
     private boolean forwarding;
 
-    private boolean committed;
+    private boolean responded;
 
     /**
      * Instantiates a new CoreActivity.
@@ -390,8 +390,8 @@ public class CoreActivity extends AdviceActivity {
 
     @Nullable
     private ForwardRule response() throws ResponseException {
-        if (!committed) {
-            committed = true;
+        if (!responded) {
+            responded = true;
         } else {
             return null;
         }
@@ -401,14 +401,14 @@ public class CoreActivity extends AdviceActivity {
             getFlashMapManager().saveFlashMap(getTranslet());
         }
 
-        Response resp = getResponse();
-        if (resp != null) {
-            resp.commit(this);
+        Response response = getResponse();
+        if (response != null) {
+            response.respond(this);
             if (isExceptionRaised()) {
                 clearRaisedException();
             }
-            if (resp.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse)resp;
+            if (response.getResponseType() == ResponseType.FORWARD) {
+                ForwardResponse forwardResponse = (ForwardResponse)response;
                 return forwardResponse.getForwardRule();
             }
         }
@@ -418,7 +418,7 @@ public class CoreActivity extends AdviceActivity {
     private void forward(@NonNull ForwardRule forwardRule)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         reserveResponse(null);
-        committed = false;
+        responded = false;
         requestParsed = false;
 
         prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod());
@@ -427,7 +427,7 @@ public class CoreActivity extends AdviceActivity {
 
     private void exception() throws ActionExecutionException {
         reserveResponse(null);
-        committed = false;
+        responded = false;
 
         if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
             handleException(getTransletRule().getExceptionRule());
@@ -445,7 +445,7 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
             if (getResponseAdapter() != null && !isExceptionRaised()) {
-                getResponseAdapter().flush();
+                getResponseAdapter().commit();
             }
         } catch (Exception e) {
             logger.error("Error detected while finishing activity", e);
@@ -571,8 +571,8 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public boolean isCommitted() {
-        return committed;
+    public boolean isResponded() {
+        return responded;
     }
 
     @Override

@@ -45,7 +45,7 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void respond(Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Response");
             tsb.appendForce("type", getResponseType());
@@ -123,8 +123,8 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
-    public void flush() throws IOException {
-        responseAdapter.flush();
+    public void commit() throws IOException {
+        responseAdapter.commit();
     }
 
     @Override

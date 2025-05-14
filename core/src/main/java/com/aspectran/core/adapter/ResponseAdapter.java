@@ -132,10 +132,10 @@ public interface ResponseAdapter {
     Writer getWriter() throws IOException;
 
     /**
-     * Forces any content in the buffer to be written to the client.
-     * @throws IOException if an input or output exception occurs
+     * If a redirect response is pending, commit the actual response.
+     * @throws IOException if an output exception occurs
      */
-    void flush() throws IOException;
+    void commit() throws IOException;
 
     /**
      * Sends a temporary redirect response to the client using the specified redirect location.

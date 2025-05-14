@@ -125,7 +125,7 @@ public class DefaultShellService extends AbstractShellService {
             completableFuture.orTimeout(activity.getTimeout(), TimeUnit.MILLISECONDS);
         }
         completableFuture.exceptionally(throwable -> {
-            if (!activity.isCommitted() && !activity.isExceptionRaised()) {
+            if (!activity.isResponded() && !activity.isExceptionRaised()) {
                 activity.setRaisedException(new ActivityTerminatedException("Async Timeout"));
             } else {
                 logger.error(throwable.getMessage(), throwable);

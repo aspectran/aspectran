@@ -202,7 +202,7 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void commit() throws IOException {
         if (outputStream != null) {
             outputStream.flush();
         }

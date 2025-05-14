@@ -58,7 +58,7 @@ public class CustomTransformResponse implements Response {
     }
 
     @Override
-    public void commit(@NonNull Activity activity) throws ResponseException {
+    public void respond(@NonNull Activity activity) throws ResponseException {
         CustomTransformer transformer = customTransformRule.getTransformer();
         if (transformer == null) {
             transformer = findTransformer(activity.getProcessResult());

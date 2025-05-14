@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * The Interface Response.
- * 
+ *
  * <p>Created: 2008. 03. 23 PM 12:52:04</p>
  */
 public interface Response extends Replicable<Response> {
@@ -32,7 +32,7 @@ public interface Response extends Replicable<Response> {
      * @param activity the current Activity
      * @throws ResponseException the response exception
      */
-    void commit(Activity activity) throws ResponseException;
+    void respond(Activity activity) throws ResponseException;
 
     /**
      * Gets the response type.
