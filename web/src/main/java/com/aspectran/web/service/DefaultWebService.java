@@ -224,7 +224,7 @@ public class DefaultWebService extends AbstractWebService {
 
     private void sendError(@NonNull WebActivity activity, Exception e) {
         Throwable t;
-        if (activity.getRaisedException() != null) {
+        if (activity.isExceptionRaised()) {
             t = activity.getRaisedException();
         } else {
             t = e;

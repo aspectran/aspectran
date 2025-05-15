@@ -86,7 +86,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
         } catch (Exception e) {
             Throwable t;
-            if (activity.getRaisedException() != null) {
+            if (activity.isExceptionRaised()) {
                 t = activity.getRaisedException();
             } else {
                 t = e;

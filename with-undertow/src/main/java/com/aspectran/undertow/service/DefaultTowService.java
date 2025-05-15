@@ -126,7 +126,7 @@ public class DefaultTowService extends AbstractTowService {
 
     private void sendError(@NonNull TowActivity activity, Exception e) {
         Throwable t;
-        if (activity.getRaisedException() != null) {
+        if (activity.isExceptionRaised()) {
             t = activity.getRaisedException();
         } else {
             t = e;

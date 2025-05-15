@@ -79,7 +79,6 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
 
             PebbleTemplateEngine.process(pebbleEngine, viewName, activity);
         } catch (Exception e) {
-            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
                     dispatchRule.toString(this, viewName), e);
         }

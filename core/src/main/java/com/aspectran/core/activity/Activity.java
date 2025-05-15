@@ -229,18 +229,16 @@ public interface Activity {
     /**
      * Execute advice actions with given rules.
      * @param adviceRuleList the advice rules
-     * @param throwable whether to raise an exception
      * @throws AdviceException thrown when an error occurs while running advice
      */
-    void executeAdvice(List<AdviceRule> adviceRuleList, boolean throwable) throws AdviceException;
+    void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException;
 
     /**
      * Executes an advice action with a given rule.
      * @param adviceRule the advice rule
-     * @param throwable whether to raise an exception
      * @throws AdviceException thrown when an error occurs while running advice
      */
-    void executeAdvice(AdviceRule adviceRule, boolean throwable) throws AdviceException;
+    void executeAdvice(AdviceRule adviceRule) throws AdviceException;
 
     /**
      * Exception handling.

@@ -81,43 +81,19 @@ public abstract class AbstractBeanProxy {
         return adviceRuleRegistry;
     }
 
-    protected void beforeAdvice(List<AdviceRule> beforeAdviceRuleList, BeanRule beanRule, Activity activity)
+    protected void executeAdvice(List<AdviceRule> adviceRuleList, BeanRule beanRule, Activity activity)
             throws AdviceException {
-        if (beforeAdviceRuleList != null) {
-            for (AdviceRule adviceRule : beforeAdviceRuleList) {
+        if (adviceRuleList != null) {
+            for (AdviceRule adviceRule : adviceRuleList) {
                 if (!isSameBean(beanRule, adviceRule)) {
-                    activity.executeAdvice(adviceRule, true);
+                    activity.executeAdvice(adviceRule);
                 }
             }
         }
     }
 
-    protected void afterAdvice(List<AdviceRule> afterAdviceRuleList, BeanRule beanRule, Activity activity)
-            throws AdviceException {
-        if (afterAdviceRuleList != null) {
-            for (AdviceRule adviceRule : afterAdviceRuleList) {
-                if (!isSameBean(beanRule, adviceRule)) {
-                    activity.executeAdvice(adviceRule, true);
-                }
-            }
-        }
-    }
-
-    protected void finallyAdvice(List<AdviceRule> finallyAdviceRuleList, BeanRule beanRule, Activity activity)
-            throws AdviceException {
-        if (finallyAdviceRuleList != null) {
-            for (AdviceRule adviceRule : finallyAdviceRuleList) {
-                if (!isSameBean(beanRule, adviceRule)) {
-                    activity.executeAdvice(adviceRule, false);
-                }
-            }
-        }
-    }
-
-    protected boolean exceptionally(
-            List<ExceptionRule> exceptionRuleList, Exception exception, @NonNull Activity activity)
+    protected boolean handleException(List<ExceptionRule> exceptionRuleList, @NonNull Activity activity)
             throws ActionExecutionException {
-        activity.setRaisedException(exception);
         if (exceptionRuleList != null) {
             activity.handleException(exceptionRuleList);
             return activity.isResponseReserved();

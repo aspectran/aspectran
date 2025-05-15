@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -31,17 +30,6 @@ public class CustomTransformResponseException extends ResponseException {
 
     @Serial
     private static final long serialVersionUID = -5289305670156473011L;
-
-    /**
-     * Instantiates a new CustomTransformResponseException.
-     * @param customTransformRule the custom transform rule
-     * @param cause the real cause of the exception
-     */
-    public CustomTransformResponseException(
-            @NonNull CustomTransformRule customTransformRule, @NonNull Throwable cause) {
-        super("Failed to transform " + customTransformRule + "; Cause: " +
-            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
-    }
 
     /**
      * Instantiates a new CustomTransformResponseException.

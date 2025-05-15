@@ -70,21 +70,27 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
+
         AdviceRuleRegistry adviceRuleRegistry = getAdviceRuleRegistry(activity, beanId, className, methodName);
         if (adviceRuleRegistry == null) {
             return invokeSuper(self, proceed, args);
         }
+
         try {
             try {
-                beforeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
                 Object result = invokeSuper(self, proceed, args);
-                afterAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
+            } catch (Exception e) {
+                activity.setRaisedException(e);
+                throw e;
             } finally {
-                finallyAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exceptionally(adviceRuleRegistry.getExceptionRuleList(), e, activity)) {
+            activity.setRaisedException(e);
+            if (handleException(adviceRuleRegistry.getExceptionRuleList(), activity)) {
                 return null;
             }
             throw e;

@@ -79,7 +79,6 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
 
             FreeMarkerTemplateEngine.process(configuration, viewName, activity);
         } catch (Exception e) {
-            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to FreeMarker template " +
                     dispatchRule.toString(this, viewName), e);
         }

@@ -141,7 +141,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         } catch (Exception e) {
             Throwable t;
-            if (activity.getRaisedException() != null) {
+            if (activity.isExceptionRaised()) {
                 t = activity.getRaisedException();
             } else {
                 t = e;

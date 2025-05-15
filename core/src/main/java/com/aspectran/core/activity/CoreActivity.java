@@ -286,7 +286,7 @@ public class CoreActivity extends AdviceActivity {
 
             try {
                 setCurrentAdviceType(AdviceType.BEFORE);
-                executeAdvice(getBeforeAdviceRuleList(), true);
+                executeAdvice(getBeforeAdviceRuleList());
 
                 if (translet != null) {
                     if (!isResponseReserved()) {
@@ -311,23 +311,27 @@ public class CoreActivity extends AdviceActivity {
                     }
 
                     setCurrentAdviceType(AdviceType.AFTER);
-                    executeAdvice(getAfterAdviceRuleList(), true);
+                    executeAdvice(getAfterAdviceRuleList());
                 }
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
                 if (!forwarding) {
                     setCurrentAdviceType(AdviceType.FINALLY);
-                    executeAdvice(getFinallyAdviceRuleList(), false);
+                    executeAdvice(getFinallyAdviceRuleList());
                 }
             }
 
             if (!forwarding) {
                 if (isExceptionRaised()) {
                     setCurrentAdviceType(AdviceType.THROWN);
-                    exception();
-                    if (translet != null) {
-                        response();
+                    try {
+                        exception();
+                        if (translet != null) {
+                            response();
+                        }
+                    } catch (Exception e) {
+                        setRaisedException(e);
                     }
                     if (isExceptionRaised()) {
                         throw getRaisedException();
@@ -396,18 +400,19 @@ public class CoreActivity extends AdviceActivity {
             return null;
         }
 
-        // Save flash attributes
-        if (getFlashMapManager() != null && getTranslet() != null) {
-            getFlashMapManager().saveFlashMap(getTranslet());
-        }
-
         Response response = getResponse();
         if (response != null) {
-            response.respond(this);
-            if (isExceptionRaised()) {
+            try {
+                response.respond(this);
+            } finally {
                 clearRaisedException();
             }
-            if (response.getResponseType() == ResponseType.FORWARD) {
+            if (response.getResponseType() == ResponseType.REDIRECT) {
+                // Save flash attributes
+                if (getFlashMapManager() != null) {
+                    getFlashMapManager().saveFlashMap(getTranslet());
+                }
+            } else if (response.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)response;
                 return forwardResponse.getForwardRule();
             }
@@ -454,11 +459,11 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    protected void execute(ActionList actionList) throws ActionExecutionException {
+    private void execute(ActionList actionList) throws ActionExecutionException {
         execute(actionList, null);
     }
 
-    protected void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
+    private void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
             ProcessResult processResult = getTranslet().getProcessResult();
             if (processResult == null) {
@@ -513,10 +518,8 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
         } catch (ActionExecutionException e) {
-            setRaisedException(e);
             throw e;
         } catch (Exception e) {
-            setRaisedException(e);
             throw new ActionExecutionException(action, e);
         }
     }
@@ -536,11 +539,11 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private Response getResponse() {
-        Response resp = this.reservedResponse;
-        if (resp == null && !isExceptionRaised()) {
-            resp = getDeclaredResponse();
+        Response response = reservedResponse;
+        if (response == null && !isExceptionRaised()) {
+            response = getDeclaredResponse();
         }
-        return resp;
+        return response;
     }
 
     @Override

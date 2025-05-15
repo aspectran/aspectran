@@ -32,6 +32,10 @@ import java.lang.reflect.UndeclaredThrowableException;
  */
 public class ExceptionUtils {
 
+    public static Throwable getCause(@NonNull Throwable t) {
+        return (t.getCause() != null ? t.getCause() : t);
+    }
+
     /**
      * Method that can be used to find the "root cause", innermost
      * of chained (wrapped) exceptions.
@@ -57,7 +61,7 @@ public class ExceptionUtils {
     }
 
     /**
-     * Tests if the throwable's causal chain have an wrapped exception of the given type.
+     * Tests if the throwable's causal chain have a wrapped exception of the given type.
      * @param chain the root of a Throwable causal chain
      * @param type the exception type to test
      * @return true, if chain is wrapping a cause of the given type

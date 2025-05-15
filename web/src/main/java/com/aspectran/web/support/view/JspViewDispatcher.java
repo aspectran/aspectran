@@ -89,7 +89,6 @@ public class JspViewDispatcher extends AbstractViewDispatcher {
                 logger.warn("Resource file {} not found", jspPath);
             }
         } catch (Exception e) {
-            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
                     dispatchRule.toString(this, jspPath), e);
         }

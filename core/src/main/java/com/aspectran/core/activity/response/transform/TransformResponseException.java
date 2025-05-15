@@ -39,7 +39,7 @@ public class TransformResponseException extends ResponseException {
      * @param cause the real cause of the exception
      */
     public TransformResponseException(TransformRule transformRule, Throwable cause) {
-        super("Failed to transform " + transformRule + "; Cause: " +
+        super("Error responding with transform rule " + transformRule + "; Cause: " +
                 ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
         this.transformRule = transformRule;
     }

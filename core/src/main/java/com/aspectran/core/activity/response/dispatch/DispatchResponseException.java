@@ -17,6 +17,7 @@ package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchRule;
+import com.aspectran.utils.ExceptionUtils;
 
 import java.io.Serial;
 
@@ -38,28 +39,8 @@ public class DispatchResponseException extends ResponseException {
      * @param cause the real cause of the exception
      */
     public DispatchResponseException(DispatchRule dispatchRule, Throwable cause) {
-        super("Failed to dispatch " + dispatchRule, cause);
-        this.dispatchRule = dispatchRule;
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param dispatchRule the dispatch rule
-     * @param msg the detail message
-     * @param cause the real cause of the exception
-     */
-    public DispatchResponseException(DispatchRule dispatchRule, String msg, Throwable cause) {
-        super(msg + " " + dispatchRule, cause);
-        this.dispatchRule = dispatchRule;
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param dispatchRule the dispatch rule
-     * @param msg the detail message
-     */
-    public DispatchResponseException(DispatchRule dispatchRule, String msg) {
-        super(msg + " " + dispatchRule);
+        super("Error responding with dispatch rule " + dispatchRule + "; Cause: " +
+                ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
         this.dispatchRule = dispatchRule;
     }
 

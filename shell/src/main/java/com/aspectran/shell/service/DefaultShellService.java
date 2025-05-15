@@ -178,7 +178,7 @@ public class DefaultShellService extends AbstractShellService {
         getConsole().resetStyle();
 
         Throwable t;
-        if (activity.getRaisedException() != null) {
+        if (activity.isExceptionRaised()) {
             t = activity.getRaisedException();
         } else {
             t = e;

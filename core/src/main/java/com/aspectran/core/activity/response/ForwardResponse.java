@@ -44,15 +44,19 @@ public class ForwardResponse implements Response {
     }
 
     @Override
-    public void respond(Activity activity) {
+    public void respond(Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
             logger.debug("Response {}", forwardRule);
         }
 
-        ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();
-        if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
-            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(itemRuleMap);
-            activity.getRequestAdapter().putAllAttributes(valueMap);
+        try {
+            ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();
+            if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
+                Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(itemRuleMap);
+                activity.getRequestAdapter().putAllAttributes(valueMap);
+            }
+        } catch (Exception e) {
+            throw new ResponseException("Failed to respond with forward rule " + forwardRule, e);
         }
     }
 

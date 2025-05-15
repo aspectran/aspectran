@@ -30,29 +30,6 @@ public class ViewDispatcherException extends ResponseException {
     private static final long serialVersionUID = 5341799597740412582L;
 
     /**
-     * Simple constructor.
-     */
-    public ViewDispatcherException() {
-        super();
-    }
-
-    /**
-     * Constructor to create exception with a message.
-     * @param msg the detail message
-     */
-    public ViewDispatcherException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
-     */
-    public ViewDispatcherException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
      * Constructor to create exception to wrap another exception and pass a message.
      * @param msg the detail message
      * @param cause the real cause of the exception

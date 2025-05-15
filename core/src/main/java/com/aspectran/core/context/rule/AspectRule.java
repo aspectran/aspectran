@@ -94,6 +94,10 @@ public class AspectRule implements BeanReferenceable {
      */
     private int order = Integer.MAX_VALUE;
 
+    /**
+     * Even if an Advice execution error occurs, the entire flow is not stopped.
+     * It is recommended to set true for aspects that are not related to business logic.
+     */
     private Boolean isolated;
 
     private volatile Boolean disabled;

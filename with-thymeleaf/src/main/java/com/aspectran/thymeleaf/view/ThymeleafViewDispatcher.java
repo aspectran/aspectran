@@ -79,7 +79,6 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
 
             ThymeleafTemplateEngine.process(templateEngine, viewName, activity);
         } catch (Exception e) {
-            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to Thymeleaf template " +
                     dispatchRule.toString(this, viewName), e);
         }

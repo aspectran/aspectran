@@ -183,21 +183,21 @@ public abstract class AdviceActivity extends AbstractActivity {
                         int order2 = adviceRule2.getAspectRule().getOrder();
                         if (adviceType1 == AdviceType.BEFORE) {
                             if (order2 < order1) {
-                                executeAdvice(adviceRule2, true);
+                                executeAdvice(adviceRule2);
                             }
                         } else {
                             if (order2 > order1) {
-                                executeAdvice(adviceRule2, true);
+                                executeAdvice(adviceRule2);
                             }
                         }
                     } else if (adviceType2 == AdviceType.BEFORE) {
-                        executeAdvice(adviceRule2, true);
+                        executeAdvice(adviceRule2);
                     }
                 }
             } else {
                 for (AdviceRule adviceRule : adviceRuleList) {
                     if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
-                        executeAdvice(adviceRule, true);
+                        executeAdvice(adviceRule);
                     }
                 }
             }
@@ -214,7 +214,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AdviceRule> adviceRuleList, boolean throwable)
+    public void executeAdvice(List<AdviceRule> adviceRuleList)
             throws AdviceException {
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
             while (true) {
@@ -230,7 +230,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                 }
                 if (adviceRuleToUse != null) {
-                    executeAdvice(adviceRuleToUse, throwable);
+                    executeAdvice(adviceRuleToUse);
                 } else {
                     break;
                 }
@@ -239,26 +239,24 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(@NonNull AdviceRule adviceRule, boolean throwable)
+    public void executeAdvice(@NonNull AdviceRule adviceRule)
             throws AdviceException {
         if (adviceRule.getAspectRule().isDisabled() || !isAcceptable(adviceRule.getAspectRule())) {
             touchExecutedAdviceRules().add(adviceRule);
             return;
         }
 
+        // for Finally thrown
         if (isExceptionRaised() && adviceRule.getExceptionRule() != null) {
             try {
                 handleException(adviceRule.getExceptionRule());
             } catch (Exception e) {
                 if (adviceRule.getAspectRule().isIsolated()) {
                     logger.error("Failed to execute isolated advice action {}", adviceRule, e);
+                } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
+                    logger.error("Failed to execute advice action {}", adviceRule, e);
                 } else {
-                    if (throwable) {
-                        throw new AdviceException("Failed to execute advice action " +
-                                adviceRule, adviceRule, e);
-                    } else {
-                        logger.error("Failed to execute advice action {}", adviceRule, e);
-                    }
+                    throw new AdviceException("Failed to execute advice action " + adviceRule, adviceRule, e);
                 }
             }
         }
@@ -312,11 +310,10 @@ public abstract class AdviceActivity extends AbstractActivity {
                     logger.error("Failed to execute isolated advice action {}", adviceRule, e);
                 } else {
                     setRaisedException(e);
-                    if (throwable) {
-                        throw new AdviceException("Failed to execute advice action " +
-                                adviceRule, adviceRule, e);
-                    } else {
+                    if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
                         logger.error("Failed to execute advice action {}", adviceRule, e);
+                    } else {
+                        throw new AdviceException("Failed to execute advice action " + adviceRule, adviceRule, e);
                     }
                 }
             } finally {
@@ -386,7 +383,6 @@ public abstract class AdviceActivity extends AbstractActivity {
                             }
                         }
                     } catch (Exception e) {
-                        setRaisedException(e);
                         throw new ActionExecutionException("Failed to execute exception handling advice action " +
                                 action, e);
                     }

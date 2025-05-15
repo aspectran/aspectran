@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.aspect.AdviceException;
+import com.aspectran.core.activity.process.action.ActionExecutionException;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -219,7 +222,13 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void setRaisedException(Throwable raisedException) {
         if (this.raisedException == null) {
-            this.raisedException = raisedException;
+            if (raisedException instanceof ActionExecutionException ||
+                    raisedException instanceof AdviceException ||
+                    raisedException instanceof ResponseException) {
+                this.raisedException = ExceptionUtils.getCause(raisedException);
+            } else {
+                this.raisedException = raisedException;
+            }
         }
     }
 

@@ -80,15 +80,19 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
 
         try {
             try {
-                beforeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
                 Object result = invokeSuper(method, args);
-                afterAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
+            } catch (Exception e) {
+                activity.setRaisedException(e);
+                throw e;
             } finally {
-                finallyAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exceptionally(adviceRuleRegistry.getExceptionRuleList(), e, activity)) {
+            activity.setRaisedException(e);
+            if (handleException(adviceRuleRegistry.getExceptionRuleList(), activity)) {
                 return null;
             }
             throw e;

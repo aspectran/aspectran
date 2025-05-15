@@ -74,9 +74,7 @@ public class AponTransformResponse extends TransformResponse {
         if (processResult != null && !processResult.isEmpty()) {
             Writer writer = responseAdapter.getWriter();
             StringifyContext stringifyContext = activity.getStringifyContext();
-
             Parameters parameters = ContentsToParameters.from(processResult, stringifyContext);
-
             transform(parameters, writer, stringifyContext, pretty);
         }
     }
