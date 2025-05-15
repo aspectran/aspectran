@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.meta.TypeQualifierNickname;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,5 +28,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
+@Nonnull
+@TypeQualifierNickname
 public @interface Required {
 }
