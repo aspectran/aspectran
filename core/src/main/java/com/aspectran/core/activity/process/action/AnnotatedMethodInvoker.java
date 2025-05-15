@@ -31,6 +31,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
@@ -131,7 +132,7 @@ public abstract class AnnotatedMethodInvoker {
 
     private static Object resolveArgumentWithTranslet(
             Translet translet, Class<?> type, String name, StringifyContext stringifyContext, String format)
-            throws MethodArgumentTypeMismatchException, RequestParseException {
+            throws MethodArgumentTypeMismatchException, RequestParseException, NoSuchMethodException {
         Object result;
         if (type == Translet.class) {
             result = translet;
@@ -229,26 +230,28 @@ public abstract class AnnotatedMethodInvoker {
     }
 
     @NonNull
-    private static Object bindModel(Translet translet, Class<?> type, StringifyContext stringifyContext) {
+    private static Object bindModel(Translet translet, Class<?> type, StringifyContext stringifyContext)
+            throws NoSuchMethodException {
         Object model = ClassUtils.createInstance(type);
         BeanDescriptor bd = BeanDescriptor.getInstance(type);
         List<String> missingProperties = new ArrayList<>();
         for (String name : bd.getWritablePropertyNames()) {
+            Method method = bd.getSetter(name);
+            Class<?> setterType = bd.getSetterType(name);
+            Qualifier qualifierAnno = bd.getSetterAnnotation(method, Qualifier.class);
+            String paramName = (qualifierAnno != null ? qualifierAnno.value() : name);
+            Format formatAnno = bd.getSetterAnnotation(method, Format.class);
+            String format = (formatAnno != null ? formatAnno.value() : null);
+            Object value = null;
             try {
-                Method method = bd.getSetter(name);
-                Class<?> setterType = bd.getSetterType(name);
-                Qualifier qualifierAnno = bd.getSetterAnnotation(method, Qualifier.class);
-                String paramName = (qualifierAnno != null ? qualifierAnno.value() : name);
-                Format formatAnno = bd.getSetterAnnotation(method, Format.class);
-                String format = (formatAnno != null ? formatAnno.value() : null);
                 Object result;
                 if (setterType.isArray()) {
                     setterType = setterType.getComponentType();
-                    String[] values = translet.getParameterValues(paramName);
-                    result = resolveValue(setterType, values, stringifyContext, format);
+                    value = translet.getParameterValues(paramName);
+                    result = resolveValue(setterType, (String[])value, stringifyContext, format);
                 } else {
-                    String value = translet.getParameter(paramName);
-                    result = resolveValue(setterType, value, stringifyContext, format);
+                    value = translet.getParameter(paramName);
+                    result = resolveValue(setterType, (String)value, stringifyContext, format);
                 }
                 if (result != null && result != Void.TYPE) {
                     BeanUtils.setProperty(model, name, result);
@@ -257,7 +260,14 @@ public abstract class AnnotatedMethodInvoker {
                 }
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(e.getMessage(), e);
+                    ToStringBuilder tsb = new ToStringBuilder("Model binding error");
+                    tsb.append("bean", type);
+                    tsb.append("property", paramName);
+                    tsb.append("type", setterType);
+                    tsb.append("format", format);
+                    tsb.append("value", value);
+                    tsb.append("value", value);
+                    logger.debug(tsb.toString(), e);
                 }
             }
         }
