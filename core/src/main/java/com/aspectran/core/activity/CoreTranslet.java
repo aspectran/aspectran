@@ -270,6 +270,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public boolean hasInputFlashMap() {
+        return (inputFlashMap != null && !inputFlashMap.isEmpty());
+    }
+
+    @Override
     public Map<String, ?> getInputFlashMap() {
         if (inputFlashMap == null) {
             inputFlashMap = new FlashMap();

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
@@ -217,13 +218,12 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectRule redirectRule) {
+    public RedirectTarget redirect(RedirectRule redirectRule) {
         throw new UnsupportedOperationException("redirect");
     }
 
     /**
      * Returns the status code.
-     * @return the status
      */
     @Override
     public int getStatus() {
@@ -232,7 +232,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Sets the status code.
-     * @param status the status code
      */
     @Override
     public void setStatus(int status) {

@@ -17,6 +17,7 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.item.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -140,7 +141,7 @@ public abstract class WebUtils {
     }
 
     @NonNull
-    public static String createRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
+    public static RedirectTarget getRedirectTarget(RedirectRule redirectRule, Activity activity) throws IOException {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
         }
@@ -193,7 +194,8 @@ public abstract class WebUtils {
                 }
             }
         }
-        return sb.toString();
+        String requestName = (questionPos != -1 ? path.substring(0, questionPos) : path);
+        return RedirectTarget.of(requestName, sb.toString());
     }
 
 }

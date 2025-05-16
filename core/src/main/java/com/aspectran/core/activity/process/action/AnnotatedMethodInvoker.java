@@ -266,8 +266,7 @@ public abstract class AnnotatedMethodInvoker {
                     tsb.append("type", setterType);
                     tsb.append("format", format);
                     tsb.append("value", value);
-                    tsb.append("value", value);
-                    logger.debug(tsb.toString(), e);
+                    logger.warn("{}; Cause: {}", tsb, e, e);
                 }
             }
         }

@@ -16,9 +16,11 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +63,15 @@ public class RedirectResponse implements Response {
                     newRedirectRule.setEncoding(responseAdapter.getEncoding());
                 }
             }
-            responseAdapter.redirect(newRedirectRule);
+
+            RedirectTarget redirectTarget = responseAdapter.redirect(newRedirectRule);
+
+            if (activity.getTranslet().hasOutputFlashMap()) {
+                FlashMap flashMap = activity.getTranslet().getOutputFlashMap();
+                if (StringUtils.isEmpty(flashMap.getTargetRequestName())) {
+                    flashMap.setTargetRequestName(redirectTarget.getRequestName());
+                }
+            }
         } catch (Exception e) {
             throw new ResponseException("Failed to respond with redirect rule " + newRedirectRule, e);
         }

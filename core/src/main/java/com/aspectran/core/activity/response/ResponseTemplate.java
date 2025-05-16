@@ -133,7 +133,7 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectRule redirectRule) throws IOException {
+    public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
         return responseAdapter.redirect(redirectRule);
     }
 

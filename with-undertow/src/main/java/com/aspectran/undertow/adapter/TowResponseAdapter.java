@@ -16,6 +16,7 @@
 package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.undertow.activity.TowActivity;
@@ -227,10 +228,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectRule redirectRule) throws IOException {
-        String path = WebUtils.createRedirectPath(redirectRule, activity);
+    public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
+        RedirectTarget redirectTarget = WebUtils.getRedirectTarget(redirectRule, activity);
+        String path = redirectTarget.getLocation();
         redirect(path);
-        return path;
+        return redirectTarget;
     }
 
     @Override

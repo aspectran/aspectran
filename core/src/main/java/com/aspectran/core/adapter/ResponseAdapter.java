@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.context.rule.RedirectRule;
 
 import java.io.IOException;
@@ -147,10 +148,10 @@ public interface ResponseAdapter {
     /**
      * Redirects a client to a new URL.
      * @param redirectRule the redirect rule
-     * @return the redirect path
+     * @return the redirect target information
      * @throws IOException if an input or output exception occurs
      */
-    String redirect(RedirectRule redirectRule) throws IOException;
+    RedirectTarget redirect(RedirectRule redirectRule) throws IOException;
 
     /**
      * Returns the status code.

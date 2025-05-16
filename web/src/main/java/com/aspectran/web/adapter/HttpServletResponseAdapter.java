@@ -16,6 +16,7 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.response.RedirectTarget;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.TransformResponse;
@@ -137,11 +138,12 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public String redirect(RedirectRule redirectRule) throws IOException {
-        String path = WebUtils.createRedirectPath(redirectRule, activity);
+    public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
+        RedirectTarget redirectTarget = WebUtils.getRedirectTarget(redirectRule, activity);
+        String path = redirectTarget.getLocation();
         String url = getHttpServletResponse().encodeRedirectURL(path);
         redirect(url);
-        return path;
+        return redirectTarget;
     }
 
     @Override

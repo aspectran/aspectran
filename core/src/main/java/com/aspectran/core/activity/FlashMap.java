@@ -58,7 +58,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
      */
     @Nullable
     public String getTargetRequestName() {
-        return this.targetRequestName;
+        return targetRequestName;
     }
 
     /**
@@ -73,7 +73,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
      * period has not started.
      */
     public long getExpirationTime() {
-        return this.expirationTime;
+        return expirationTime;
     }
 
     /**
@@ -97,7 +97,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
      * elapsed time since the call to {@link #startExpirationPeriod}.
      */
     public boolean isExpired() {
-        return (this.expirationTime != -1 && System.currentTimeMillis() > this.expirationTime);
+        return (expirationTime != -1 && System.currentTimeMillis() > expirationTime);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
      */
     @Override
     public int compareTo(@NonNull FlashMap other) {
-        int thisUrlPath = (this.targetRequestName != null ? 1 : 0);
+        int thisUrlPath = (targetRequestName != null ? 1 : 0);
         int otherUrlPath = (other.targetRequestName != null ? 1 : 0);
         return otherUrlPath - thisUrlPath;
     }
@@ -116,7 +116,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
     public boolean equals(@Nullable Object other) {
         return (this == other || (other instanceof FlashMap that &&
                 super.equals(other) &&
-                ObjectUtils.nullSafeEquals(this.targetRequestName, that.targetRequestName)));
+                ObjectUtils.nullSafeEquals(targetRequestName, that.targetRequestName)));
     }
 
     @Override
@@ -129,7 +129,7 @@ public final class FlashMap extends HashMap<String, Object> implements Comparabl
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("targetRequestName", this.targetRequestName);
+        tsb.append("targetRequestName", targetRequestName);
         tsb.append("attributes", this);
         return tsb.toString();
     }

@@ -344,6 +344,8 @@ public interface Translet {
      */
     void removeAttribute(String name);
 
+    boolean hasInputFlashMap();
+
     Map<String, ?> getInputFlashMap();
 
     boolean hasOutputFlashMap();
