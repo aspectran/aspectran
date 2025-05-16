@@ -202,6 +202,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
+    public void reset() {
+        throw new UnsupportedOperationException("reset");
+    }
+
+    @Override
     public void redirect(String location) throws IOException {
         setStatus(HttpStatus.FOUND.value());
         if (URLUtils.isAbsoluteUrl(location)) { //absolute url

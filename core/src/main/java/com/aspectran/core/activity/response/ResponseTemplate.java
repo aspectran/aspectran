@@ -128,6 +128,11 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
+    public void reset() {
+        responseAdapter.reset();
+    }
+
+    @Override
     public void redirect(String location) throws IOException {
         responseAdapter.redirect(location);
     }

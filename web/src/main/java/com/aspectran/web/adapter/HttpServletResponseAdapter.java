@@ -129,6 +129,11 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
+    public void reset() {
+        getHttpServletResponse().reset();
+    }
+
+    @Override
     public void redirect(String location) throws IOException {
         boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
         if (proxyProtocolAware) {

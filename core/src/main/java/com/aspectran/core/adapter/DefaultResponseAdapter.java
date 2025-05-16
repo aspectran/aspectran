@@ -213,6 +213,11 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
+    public void reset() {
+        throw new UnsupportedOperationException("reset");
+    }
+
+    @Override
     public void redirect(String location) {
         throw new UnsupportedOperationException("redirect");
     }

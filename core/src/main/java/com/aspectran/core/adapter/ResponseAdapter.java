@@ -139,6 +139,11 @@ public interface ResponseAdapter {
     void commit() throws IOException;
 
     /**
+     * Clears any data that exists in the buffer as well as the status code, headers.
+     */
+    void reset();
+
+    /**
      * Sends a temporary redirect response to the client using the specified redirect location.
      * @param location the redirect location
      * @throws IOException if an input or output exception occurs
