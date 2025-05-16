@@ -79,7 +79,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public String readCommandLine() {
         String prompt = getCommandPrompt();
-        String line = readMultiCommandLine(readRawLine(prompt));
+        String line = readMultiCommandLine(readTerminalLine(prompt));
         return (line != null ? line.trim() : null);
     }
 
@@ -107,7 +107,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         String line;
         try {
             reading = true;
-            line = readMultiLine(readRawLine(prompt));
+            line = readMultiLine(readTerminalLine(prompt));
         } finally {
             reading = false;
         }
@@ -149,12 +149,12 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    protected String readRawCommandLine(String prompt) {
-        return readRawLine(prompt);
+    protected String readTerminalCommandLine(String prompt) {
+        return readTerminalLine(prompt);
     }
 
     @Override
-    protected String readRawLine(String prompt) {
+    protected String readTerminalLine(String prompt) {
         try {
             String line;
             if (System.console() != null) {
@@ -176,7 +176,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         if (System.console() != null) {
             return new String(System.console().readPassword(prompt));
         } else {
-            return readRawLine(prompt);
+            return readTerminalLine(prompt);
         }
     }
 

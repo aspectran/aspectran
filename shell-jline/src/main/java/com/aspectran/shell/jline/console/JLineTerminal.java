@@ -44,7 +44,7 @@ public class JLineTerminal {
 
     private final Terminal terminal;
 
-    private final LineReader reader;
+    private final LineReader lineReader;
 
     private final LineReader commandReader;
 
@@ -54,9 +54,9 @@ public class JLineTerminal {
 
     private final History commandHistory;
 
-    private final boolean dumb;
+    private final boolean colorlessDumb;
 
-    private final boolean dumbColor;
+    private final boolean coloredDumb;
 
     private Style style;
 
@@ -70,8 +70,8 @@ public class JLineTerminal {
                 .encoding(encoding)
                 .build();
 
-        this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
-        this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
+        this.colorlessDumb = Terminal.TYPE_DUMB.equals(terminal.getType());
+        this.coloredDumb = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
 
         this.commandCompleter = new CommandCompleter(console);
         this.commandHighlighter = new CommandHighlighter(console);
@@ -90,11 +90,11 @@ public class JLineTerminal {
         AutosuggestionWidgets autosuggestionWidgets = new AutosuggestionWidgets(commandReader);
         autosuggestionWidgets.enable();
 
-        this.reader = LineReaderBuilder.builder()
+        this.lineReader = LineReaderBuilder.builder()
                 .terminal(terminal)
                 .build();
-        this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
-        this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
+        this.lineReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
+        this.lineReader.unsetOpt(LineReader.Option.INSERT_TAB);
     }
 
     public Terminal getTerminal() {
@@ -106,19 +106,23 @@ public class JLineTerminal {
     }
 
     protected boolean isDumb() {
-        return dumb;
+        return (isColorlessDumb() || isColoredDumb());
     }
 
-    protected boolean isDumbColor() {
-        return dumbColor;
+    protected boolean isColorlessDumb() {
+        return colorlessDumb;
+    }
+
+    protected boolean isColoredDumb() {
+        return coloredDumb;
     }
 
     protected boolean isNormal() {
-        return (!dumb && !dumbColor);
+        return (!colorlessDumb && !coloredDumb);
     }
 
-    public LineReader getReader() {
-        return reader;
+    public LineReader getLineReader() {
+        return lineReader;
     }
 
     public LineReader getCommandReader() {
@@ -153,15 +157,15 @@ public class JLineTerminal {
     }
 
     public void clearScreen() {
-        if (!isDumb()) {
+        if (!isColorlessDumb()) {
             if (commandReader.isReading()) {
                 commandReader.callWidget(LineReader.CLEAR_SCREEN);
                 commandReader.callWidget(LineReader.REDRAW_LINE);
                 commandReader.callWidget(LineReader.REDISPLAY);
-            } else if (reader.isReading()) {
-                reader.callWidget(LineReader.CLEAR_SCREEN);
-                reader.callWidget(LineReader.REDRAW_LINE);
-                reader.callWidget(LineReader.REDISPLAY);
+            } else if (lineReader.isReading()) {
+                lineReader.callWidget(LineReader.CLEAR_SCREEN);
+                lineReader.callWidget(LineReader.REDRAW_LINE);
+                lineReader.callWidget(LineReader.REDISPLAY);
             } else {
                 if (terminal.puts(InfoCmp.Capability.clear_screen)) {
                     terminal.flush();
@@ -172,8 +176,8 @@ public class JLineTerminal {
 
     public void clearLine() {
         if (isNormal()) {
-            if (reader.isReading()) {
-                reader.callWidget(LineReader.CLEAR);
+            if (lineReader.isReading()) {
+                lineReader.callWidget(LineReader.CLEAR);
             } else {
                 commandReader.callWidget(LineReader.CLEAR);
             }
@@ -184,10 +188,10 @@ public class JLineTerminal {
     }
 
     public void redrawLine() {
-        if (!isDumb()) {
-            if (reader.isReading()) {
-                reader.callWidget(LineReader.REDRAW_LINE);
-                reader.callWidget(LineReader.REDISPLAY);
+        if (!isColorlessDumb()) {
+            if (lineReader.isReading()) {
+                lineReader.callWidget(LineReader.REDRAW_LINE);
+                lineReader.callWidget(LineReader.REDISPLAY);
             } else if (commandReader.isReading()) {
                 commandReader.callWidget(LineReader.REDRAW_LINE);
                 commandReader.callWidget(LineReader.REDISPLAY);
@@ -204,7 +208,7 @@ public class JLineTerminal {
     }
 
     public boolean isReading() {
-        return commandReader.isReading() || reader.isReading();
+        return commandReader.isReading() || lineReader.isReading();
     }
 
     public boolean hasStyle() {
@@ -242,8 +246,8 @@ public class JLineTerminal {
     }
 
     public void writeAbove(String str) {
-        if (getReader().isReading()) {
-            getReader().printAbove(toAnsi(str));
+        if (getLineReader().isReading()) {
+            getLineReader().printAbove(toAnsi(str));
         } else {
             getCommandReader().printAbove(toAnsi(str));
         }

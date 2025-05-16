@@ -108,7 +108,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
             return null;
         }
         if (COMMENT_DELIMITER.equals(line)) {
-            String next = readRawCommandLine(COMMENT_PROMPT);
+            String next = readTerminalCommandLine(COMMENT_PROMPT);
             if (next.isEmpty()) {
                 return next;
             }
@@ -116,7 +116,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
         }
         String quote = searchQuote(line);
         if (quote != null || line.endsWith(MULTILINE_DELIMITER)) {
-            String next = readRawCommandLine(MULTILINE_PROMPT).trim();
+            String next = readTerminalCommandLine(MULTILINE_PROMPT).trim();
             if (next.startsWith(COMMENT_DELIMITER)) {
                 line = readMultiCommandLine(line);
             } else if (quote != null) {
@@ -137,7 +137,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     protected String readMultiLine(String line) {
         if (line == null) {
-            line = readRawLine(MULTILINE_PROMPT);
+            line = readTerminalLine(MULTILINE_PROMPT);
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
@@ -146,9 +146,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return line;
     }
 
-    protected abstract String readRawCommandLine(String prompt);
+    protected abstract String readTerminalCommandLine(String prompt);
 
-    protected abstract String readRawLine(String prompt);
+    protected abstract String readTerminalLine(String prompt);
 
     @Nullable
     private String searchQuote(@NonNull String line) {

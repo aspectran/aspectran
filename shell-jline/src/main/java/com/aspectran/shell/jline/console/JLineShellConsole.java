@@ -97,7 +97,7 @@ public class JLineShellConsole extends AbstractShellConsole {
     @Override
     public String readCommandLine() {
         try {
-            String line = readRawCommandLine(getCommandPrompt()).trim();
+            String line = readTerminalCommandLine(getCommandPrompt()).trim();
             jlineTerminal.getCommandCompleter().setLimited(true);
             jlineTerminal.getCommandHighlighter().setLimited(true);
             line = readMultiCommandLine(line);
@@ -132,7 +132,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             defaultValue = promptStringBuilder.getDefaultValue();
         }
         try {
-            return readMultiLine(readRawLine(prompt, null, defaultValue));
+            return readMultiLine(readTerminalLine(prompt, null, defaultValue));
         } catch (EndOfFileException | UserInterruptException e) {
             return defaultValue;
         }
@@ -147,24 +147,26 @@ public class JLineShellConsole extends AbstractShellConsole {
             defaultValue = promptStringBuilder.getDefaultValue();
         }
         try {
-            return readRawLine(prompt, MASK_CHAR, defaultValue);
+            return readTerminalLine(prompt, MASK_CHAR, defaultValue);
         } catch (EndOfFileException | UserInterruptException e) {
             return defaultValue;
         }
     }
 
     @Override
-    protected String readRawCommandLine(String prompt) {
+    protected String readTerminalCommandLine(String prompt) {
         return jlineTerminal.getCommandReader().readLine(prompt);
     }
 
     @Override
-    protected String readRawLine(String prompt) {
-        return readRawLine(prompt, null, null);
+    protected String readTerminalLine(String prompt) {
+        return readTerminalLine(prompt, null, null);
     }
 
-    private String readRawLine(String prompt, Character mask, String defaultValue) {
-        return jlineTerminal.getReader().readLine(prompt, mask, defaultValue);
+    private String readTerminalLine(String prompt, Character mask, String defaultValue) {
+        // Password masking for dumb terminal doesn't seem to work properly
+        Character maskToUse = (jlineTerminal.isDumb() ? null : mask);
+        return jlineTerminal.getLineReader().readLine(prompt, maskToUse, defaultValue);
     }
 
     @Override
