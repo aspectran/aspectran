@@ -28,6 +28,7 @@ public enum ActionType {
     ECHO("echo"),
     INVOKE("invoke"),
     INVOKE_ANNOTATED("annotated"),
+    INVOKE_ANNOTATED_ADVICE("advice"),
     INCLUDE("include"),
     CHOOSE("choose");
 

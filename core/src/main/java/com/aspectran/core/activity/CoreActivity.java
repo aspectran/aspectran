@@ -331,6 +331,7 @@ public class CoreActivity extends AdviceActivity {
                             response();
                         }
                     } catch (Exception e) {
+                        logger.error("Failed to handle exception", e);
                         setRaisedException(e);
                     }
                     if (isExceptionRaised()) {
@@ -580,9 +581,7 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public CoreTranslet getTranslet() {
-        if (translet == null) {
-            throw new IllegalStateException("No Translet");
-        }
+        Assert.state(translet != null, "No Translet");
         return translet;
     }
 

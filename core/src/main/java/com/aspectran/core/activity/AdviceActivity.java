@@ -19,6 +19,7 @@ import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
 import com.aspectran.core.activity.aspect.AdviceResult;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
+import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -214,8 +215,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AdviceRule> adviceRuleList)
-            throws AdviceException {
+    public void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException {
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
             while (true) {
                 AdviceRule adviceRuleToUse = null;
@@ -239,8 +239,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(@NonNull AdviceRule adviceRule)
-            throws AdviceException {
+    public void executeAdvice(@NonNull AdviceRule adviceRule) throws AdviceException {
         if (adviceRule.getAspectRule().isDisabled() || !isAcceptable(adviceRule.getAspectRule())) {
             touchExecutedAdviceRules().add(adviceRule);
             return;
@@ -274,20 +273,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             try {
                 Object adviceBean = getAdviceBean(adviceRule.getAspectId());
                 if (adviceBean == null) {
-                    if (adviceRule.getAdviceBeanClass() != null) {
-                        try {
-                            adviceBean = getBean(adviceRule.getAdviceBeanClass());
-                        } catch (Exception e) {
-                            logger.error("Failed to resolve advice bean {}", adviceRule, e);
-                        }
-                    } else if (adviceRule.getAdviceBeanId() != null) {
-                        try {
-                            adviceBean = getBean(adviceRule.getAdviceBeanId());
-                        } catch (Exception e) {
-                            logger.error("Failed to resolve advice bean {}", adviceRule, e);
-                        }
-                    }
-                    putAdviceBean(adviceRule.getAspectId(), adviceBean);
+                    resolveAdviceBean(adviceRule);
                 }
 
                 Object resultValue = action.execute(this);
@@ -362,6 +348,14 @@ public abstract class AdviceActivity extends AbstractActivity {
                         logger.debug("Advice {}", action);
                     }
                     try {
+                        if (action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) {
+                            AdviceRule adviceRule = ((AnnotatedAdviceAction)action).getAdviceRule();
+                            Object adviceBean = getAdviceBean(adviceRule.getAspectId());
+                            if (adviceBean == null) {
+                                resolveAdviceBean(adviceRule);
+                            }
+                        }
+
                         Object resultValue = action.execute(this);
                         if (hasTranslet() && !action.isHidden() && resultValue != Void.TYPE) {
                             if (resultValue instanceof ProcessResult processResult) {
@@ -442,11 +436,31 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @param adviceBean the advice bean
      */
-    protected void putAdviceBean(String aspectId, Object adviceBean) {
+    private void putAdviceBean(String aspectId, Object adviceBean) {
         if (adviceResult == null) {
             adviceResult = new AdviceResult();
         }
         adviceResult.putAdviceBean(aspectId, adviceBean);
+    }
+
+    private void resolveAdviceBean(@NonNull AdviceRule adviceRule) {
+        Object adviceBean = getAdviceBean(adviceRule.getAspectId());
+        if (adviceBean == null) {
+            if (adviceRule.getAdviceBeanClass() != null) {
+                try {
+                    adviceBean = getBean(adviceRule.getAdviceBeanClass());
+                } catch (Exception e) {
+                    logger.error("Failed to resolve advice bean {}", adviceRule, e);
+                }
+            } else if (adviceRule.getAdviceBeanId() != null) {
+                try {
+                    adviceBean = getBean(adviceRule.getAdviceBeanId());
+                } catch (Exception e) {
+                    logger.error("Failed to resolve advice bean {}", adviceRule, e);
+                }
+            }
+            putAdviceBean(adviceRule.getAspectId(), adviceBean);
+        }
     }
 
     /**

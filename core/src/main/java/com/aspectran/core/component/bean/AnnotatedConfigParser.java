@@ -422,13 +422,13 @@ public class AnnotatedConfigParser {
                         if (dispatchAnno != null) {
                             DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
                             exceptionThrownRule.applyResponseRule(dispatchRule);
-                        } else if (method.isAnnotationPresent(Forward.class)) {
-                            throw new IllegalRuleException("Cannot apply the forward response rule to the exception thrown rule");
                         } else {
                             Redirect redirectAnno = method.getAnnotation(Redirect.class);
                             if (redirectAnno != null) {
                                 RedirectRule redirectRule = parseRedirectRule(redirectAnno);
                                 exceptionThrownRule.applyResponseRule(redirectRule);
+                            } else if (method.isAnnotationPresent(Forward.class)) {
+                                throw new IllegalRuleException("Cannot apply the forward response rule to the exception thrown rule");
                             }
                         }
                     }

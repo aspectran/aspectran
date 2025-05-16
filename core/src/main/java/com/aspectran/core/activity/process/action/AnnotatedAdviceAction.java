@@ -18,6 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -56,6 +57,11 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
             throw new ActionExecutionException("No advice bean found for " + adviceRule);
         }
         return bean;
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.INVOKE_ANNOTATED_ADVICE;
     }
 
     @Override
