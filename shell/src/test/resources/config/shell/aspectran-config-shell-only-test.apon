@@ -15,8 +15,7 @@ shell: {
         |  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
         | /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
         |=========== /_/ =============================================
-        |
-        |Welcome To Aspectran Shell #{class:com.aspectran.core.AboutMe^version}
+        |:: Built with Aspectran :: #{class:com.aspectran.core.AboutMe^version}
         |
         |If you want a list of all supported built-in commands, type 'help'.
         |To get help on a specific command, type 'command_name -h'.

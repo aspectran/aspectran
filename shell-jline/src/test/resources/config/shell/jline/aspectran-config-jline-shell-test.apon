@@ -45,8 +45,7 @@ shell: {
         |{{GREEN  }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
         |{{CYAN   }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
         |{{CYAN   }}=========== /_/ =============================================
-        |{{reset  }}
-        |{{MAGENTA}}Welcome To Aspectran Shell #{class:com.aspectran.core.AboutMe^version}
+        |{{MAGENTA}}:: Built with Aspectran :: #{class:com.aspectran.core.AboutMe^version}
         |{{reset  }}
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
         |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
