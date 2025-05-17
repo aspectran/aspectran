@@ -198,11 +198,11 @@ public class ItemRule {
 
     /**
      * Sets the specified value to this Single type item.
-     * @param text the value to be analyzed for use as the value of this item
+     * @param value the value to be analyzed for use as the value of this item
      * @see #setValue(Token[])
      */
-    public void setValue(String text) {
-        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+    public void setValue(String value) {
+        Token[] tokens = TokenParser.makeTokens(value, isTokenize());
         setValue(tokens);
     }
 
@@ -221,11 +221,11 @@ public class ItemRule {
     /**
      * Puts the specified value with the specified key to this Map type item.
      * @param name the value name; may be null
-     * @param text the value to be analyzed for use as the value of this item
+     * @param value the value to be analyzed for use as the value of this item
      * @see #putValue(String, Token[])
      */
-    public void putValue(String name, String text) {
-        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+    public void putValue(String name, String value) {
+        Token[] tokens = TokenParser.makeTokens(value, isTokenize());
         putValue(name, tokens);
     }
 
@@ -286,11 +286,11 @@ public class ItemRule {
 
     /**
      * Adds the specified value to this List type item.
-     * @param text the value to be analyzed for use as the value of this item
+     * @param value the value to be analyzed for use as the value of this item
      * @see #addValue(Token[])
      */
-    public void addValue(String text) {
-        Token[] tokens = TokenParser.makeTokens(text, isTokenize());
+    public void addValue(String value) {
+        Token[] tokens = TokenParser.makeTokens(value, isTokenize());
         addValue(tokens);
     }
 

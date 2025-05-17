@@ -367,7 +367,9 @@ public class CoreTranslet extends AbstractTranslet {
     public void redirect(String path, Map<String, String> parameters) {
         RedirectRule redirectRule = new RedirectRule();
         redirectRule.setPath(path);
-        redirectRule.setParameters(parameters);
+        if (parameters != null) {
+            redirectRule.setParameters(parameters);
+        }
         redirect(redirectRule);
     }
 
