@@ -21,8 +21,11 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.apache.ibatis.builder.xml.XMLConfigBuilder;
+import org.apache.ibatis.executor.ErrorContext;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -42,9 +45,14 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     private String environment;
 
-    private Properties properties;
+    private Properties variables;
 
     private SqlSessionFactory sqlSessionFactory;
+
+    @Override
+    public void setApplicationAdapter(@NonNull ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
 
     /**
      * Set the location of the MyBatis {@code SqlSessionFactory} config file.
@@ -60,38 +68,50 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     /**
      * Set optional properties to be passed into the SqlSession configuration.
-     * @param properties the optional properties
+     * @param variables the optional properties
      */
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    public void setVariables(Properties variables) {
+        this.variables = variables;
     }
 
-    protected SqlSessionFactory createSqlSessionFactory(InputStream inputStream) throws Exception {
-        try {
-            SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-            return builder.build(inputStream, environment, properties);
-        } catch (Exception e) {
-            throw new Exception("Failed to parse mybatis config resource: " + configLocation, e);
+    private Configuration createConfiguration() throws Exception {
+        Properties variablesToUse = new Properties();
+        if (variables != null) {
+            variablesToUse.putAll(variables);
+            variables = null;
+        }
+        if (configLocation != null) {
+            Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
+            InputStream inputStream;
+            if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+                inputStream = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()));
+            } else {
+                inputStream = new FileInputStream(applicationAdapter.getRealPath(configLocation).toFile());
+            }
+            try (inputStream) {
+                XMLConfigBuilder builder = new XMLConfigBuilder(inputStream, environment, variablesToUse);
+                return builder.parse();
+            } catch (Exception e) {
+                throw new Exception("Error building configuration with resource " + configLocation, e);
+            } finally {
+                ErrorContext.instance().reset();
+            }
+        } else {
+            Configuration configuration = new Configuration();
+            configuration.setVariables(variablesToUse);
+            return configuration;
         }
     }
 
-    @Override
-    public void setApplicationAdapter(@NonNull ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    protected void configure(Configuration configuration) {
     }
 
     @Override
     public void initialize() throws Exception {
-        Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
         if (sqlSessionFactory == null) {
-            Assert.notNull(configLocation, "Property 'configLocation' is required");
-            InputStream is;
-            if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
-                is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()));
-            } else {
-                is = new FileInputStream(applicationAdapter.getRealPath(configLocation).toFile());
-            }
-            sqlSessionFactory = createSqlSessionFactory(is);
+            Configuration configuration = createConfiguration();
+            configure(configuration);
+            sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
         }
     }
 
