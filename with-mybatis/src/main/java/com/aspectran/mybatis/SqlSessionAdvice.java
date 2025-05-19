@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author Juho Jeong
  * @since 2015. 04. 03.
  */
-public final class SqlSessionAdvice {
+public class SqlSessionAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(SqlSessionAdvice.class);
 
