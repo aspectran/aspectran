@@ -13,7 +13,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 
 /**
- *
+ * A unified implementation of the EntityManager and JPQLQueryFactory interfaces.
  *
  * <p>Created: 2025-04-24</p>
  */
