@@ -23,17 +23,17 @@
         <version>8.5.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aspectran-with-mybatis</artifactId>
+    <artifactId>aspectran-with-jpa</artifactId>
     <version>8.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Aspectran with MyBatis</name>
-    <description>Add-on package for using MyBatis as an ORM framework</description>
+    <name>Aspectran with JPA</name>
+    <description>Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.mybatis</automatic.module.name>
-        <mybatis.version>3.5.19</mybatis.version>
+        <querydsl.version>5.1.0</querydsl.version>
     </properties>
 
     <dependencies>
@@ -49,11 +49,18 @@
             <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- MyBatis dependencies -->
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Querydsl dependency -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
         </dependency>
         <!-- Additional testing dependencies -->
         <dependency>

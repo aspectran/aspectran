@@ -99,6 +99,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-mybatis</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -233,7 +238,7 @@
                         </group>
                         <group>
                             <title>Add-ons</title>
-                            <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.thymeleaf*:com.aspectran.undertow*</packages>
+                            <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.jpa*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.thymeleaf*:com.aspectran.undertow*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

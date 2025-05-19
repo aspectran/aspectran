@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using MyBatis as an ORM framework.
+ * Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework.
  */
-package com.aspectran.mybatis;
+package com.aspectran.jpa;

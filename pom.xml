@@ -97,6 +97,7 @@
         <module>web</module>
         <module>with-freemarker</module>
         <module>with-jetty</module>
+        <module>with-jpa</module>
         <module>with-logback</module>
         <module>with-mybatis</module>
         <module>with-pebble</module>

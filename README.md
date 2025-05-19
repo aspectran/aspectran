@@ -59,8 +59,10 @@ Aspectran consists of the following major packages:
   Add-on package for using Jetty as the embedded servlet container
 * **com.aspectran.undertow**  
   Add-on package for using Undertow as the embedded servlet container
+* **com.aspectran.jpa**  
+  Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework
 * **com.aspectran.mybatis**  
-  Add-on package for using the MyBatis SQL mapper framework that makes using relational databases easy
+  Add-on package for using MyBatis as an ORM framework
 * **com.aspectran.freemarker**  
   Add-on package for using Freemarker as the templating engine
 * **com.aspectran.pebble**  
