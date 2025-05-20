@@ -3,7 +3,7 @@ package com.aspectran.jpa;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,19 +27,46 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
         this.properties = properties;
     }
 
-    protected void configure(Map<String, Object> properties) {
+    public void setProperty(String name, Object value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(name, value);
+    }
+
+    protected PersistenceConfiguration configuration() {
+        return null;
+    }
+
+    protected void preConfigure(Map<String, Object> properties) {
+    }
+
+    protected void preConfigure(PersistenceConfiguration persistenceConfiguration) {
+    }
+
+    protected void postConfigure(EntityManagerFactory entityManagerFactory) {
     }
 
     @Override
     public void initialize() throws Exception {
         if (entityManagerFactory == null) {
+            PersistenceConfiguration persistenceConfiguration = configuration();
+            if (persistenceConfiguration == null) {
+                persistenceConfiguration = new PersistenceConfiguration(persistenceUnitName);
+            }
+
             Map<String, Object> propertiesToUse = new HashMap<>();
             if (properties != null) {
                 propertiesToUse.putAll(properties);
                 properties = null;
             }
-            configure(propertiesToUse);
-            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, propertiesToUse);
+            preConfigure(propertiesToUse);
+            persistenceConfiguration.properties(propertiesToUse);
+
+            preConfigure(persistenceConfiguration);
+
+            entityManagerFactory = persistenceConfiguration.createEntityManagerFactory();
+            postConfigure(entityManagerFactory);
         }
     }
 

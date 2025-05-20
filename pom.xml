@@ -101,6 +101,7 @@
         <module>with-logback</module>
         <module>with-mybatis</module>
         <module>with-pebble</module>
+        <module>with-querydsl</module>
         <module>with-thymeleaf</module>
         <module>with-undertow</module>
         <module>demo</module>

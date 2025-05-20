@@ -23,11 +23,11 @@
         <version>8.5.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aspectran-with-jpa</artifactId>
+    <artifactId>aspectran-with-querydsl</artifactId>
     <version>8.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Aspectran with JPA</name>
+    <name>Aspectran with QueryDSL</name>
     <description>Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework</description>
 
     <properties>
@@ -49,9 +49,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.2.0</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-with-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Querydsl dependency -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>6.11</version>
         </dependency>
         <!-- Additional testing dependencies -->
         <dependency>

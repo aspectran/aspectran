@@ -1,6 +1,7 @@
-package com.aspectran.jpa;
+package com.aspectran.jpa.querydsl;
 
 import com.aspectran.core.component.bean.annotation.Advisable;
+import com.aspectran.jpa.EntityManagerAgent;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
@@ -51,36 +52,43 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
         return query().select(exprs);
     }
 
+    @Advisable
     @Override
     public <T> JPAQuery<T> selectDistinct(Expression<T> expr) {
         return select(expr).distinct();
     }
 
+    @Advisable
     @Override
     public JPAQuery<Tuple> selectDistinct(Expression<?>... exprs) {
         return select(exprs).distinct();
     }
 
+    @Advisable
     @Override
     public JPAQuery<Integer> selectOne() {
         return select(Expressions.ONE);
     }
 
+    @Advisable
     @Override
     public JPAQuery<Integer> selectZero() {
         return select(Expressions.ZERO);
     }
 
+    @Advisable
     @Override
     public <T> JPAQuery<T> selectFrom(EntityPath<T> from) {
         return select(from).from(from);
     }
 
+    @Advisable
     @Override
     public JPAQuery<?> from(EntityPath<?> from) {
         return query().from(from);
     }
 
+    @Advisable
     @Override
     public JPAQuery<?> from(EntityPath<?>... from) {
         return query().from(from);

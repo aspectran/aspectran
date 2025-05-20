@@ -1,18 +1,27 @@
 package com.aspectran.jpa;
 
 import com.aspectran.core.component.bean.annotation.Advisable;
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.CacheStoreMode;
+import jakarta.persistence.ConnectionConsumer;
+import jakarta.persistence.ConnectionFunction;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.FindOption;
 import jakarta.persistence.FlushModeType;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.LockOption;
 import jakarta.persistence.Query;
+import jakarta.persistence.RefreshOption;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaSelect;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.metamodel.Metamodel;
 
@@ -75,8 +84,26 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Advisable
     @Override
+    public <T> T find(Class<T> entityClass, Object primaryKey, FindOption... options) {
+        return getEntityManager().find(entityClass, primaryKey, options);
+    }
+
+    @Advisable
+    @Override
+    public <T> T find(EntityGraph<T> entityGraph, Object primaryKey, FindOption... options) {
+        return getEntityManager().find(entityGraph, primaryKey, options);
+    }
+
+    @Advisable
+    @Override
     public <T> T getReference(Class<T> entityClass, Object primaryKey) {
         return getEntityManager().getReference(entityClass, primaryKey);
+    }
+
+    @Advisable
+    @Override
+    public <T> T getReference(T entity) {
+        return getEntityManager().getReference(entity);
     }
 
     @Advisable
@@ -113,6 +140,13 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Advisable
     @Override
+    public void lock(Object entity, LockModeType lockMode, LockOption... options) {
+        getEntityManagerAdvice().transactional();
+        getEntityManager().lock(entity, lockMode, options);
+    }
+
+    @Advisable
+    @Override
     public void refresh(Object entity) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity);
@@ -137,6 +171,13 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, lockMode, properties);
+    }
+
+    @Advisable
+    @Override
+    public void refresh(Object entity, RefreshOption... options) {
+        getEntityManagerAdvice().transactional();
+        getEntityManager().refresh(entity, options);
     }
 
     @Advisable
@@ -166,6 +207,30 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Advisable
     @Override
+    public void setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
+        getEntityManager().setCacheRetrieveMode(cacheRetrieveMode);
+    }
+
+    @Advisable
+    @Override
+    public void setCacheStoreMode(CacheStoreMode cacheStoreMode) {
+        getEntityManager().setCacheStoreMode(cacheStoreMode);
+    }
+
+    @Advisable
+    @Override
+    public CacheRetrieveMode getCacheRetrieveMode() {
+        return getEntityManager().getCacheRetrieveMode();
+    }
+
+    @Advisable
+    @Override
+    public CacheStoreMode getCacheStoreMode() {
+        return getEntityManager().getCacheStoreMode();
+    }
+
+    @Advisable
+    @Override
     public void setProperty(String propertyName, Object value) {
         getEntityManager().setProperty(propertyName, value);
     }
@@ -186,6 +251,12 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Override
     public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
         return getEntityManager().createQuery(criteriaQuery);
+    }
+
+    @Advisable
+    @Override
+    public <T> TypedQuery<T> createQuery(CriteriaSelect<T> selectQuery) {
+        return getEntityManager().createQuery(selectQuery);
     }
 
     @Advisable
@@ -218,6 +289,12 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Override
     public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
         return getEntityManager().createNamedQuery(name, resultClass);
+    }
+
+    @Advisable
+    @Override
+    public <T> TypedQuery<T> createQuery(TypedQueryReference<T> reference) {
+        return getEntityManager().createQuery(reference);
     }
 
     @Advisable
@@ -345,6 +422,18 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Override
     public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
         return getEntityManager().getEntityGraphs(entityClass);
+    }
+
+    @Advisable
+    @Override
+    public <C> void runWithConnection(ConnectionConsumer<C> action) {
+        getEntityManager().runWithConnection(action);
+    }
+
+    @Advisable
+    @Override
+    public <C, T> T callWithConnection(ConnectionFunction<C, T> function) {
+        return getEntityManager().callWithConnection(function);
     }
 
 }
