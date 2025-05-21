@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework.
+ * Add-on package for using Querydsl based on JPA (Jakarta Persistence API) as an ORM framework.
  */
 package com.aspectran.jpa.querydsl;

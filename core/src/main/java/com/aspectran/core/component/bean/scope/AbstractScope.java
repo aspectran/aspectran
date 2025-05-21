@@ -131,9 +131,7 @@ public abstract class AbstractScope implements Scope {
 
     private void doDestroy(BeanRule beanRule, Object bean) throws Exception {
         if (bean != null) {
-            if (beanRule.isDisposableBean()) {
-                ((DisposableBean)bean).destroy();
-            } else if (beanRule.getDestroyMethod() != null) {
+            if (beanRule.getDestroyMethod() != null) {
                 Method destroyMethod = beanRule.getDestroyMethod();
                 try {
                     destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
@@ -144,6 +142,9 @@ public abstract class AbstractScope implements Scope {
                         throw e;
                     }
                 }
+            }
+            if (beanRule.isDisposableBean()) {
+                ((DisposableBean)bean).destroy();
             }
         }
     }

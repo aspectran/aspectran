@@ -53,6 +53,18 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.2.0</version>
         </dependency>
+        <!-- EclipseLink dependency -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Querydsl dependency -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- Additional testing dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

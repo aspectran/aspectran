@@ -101,7 +101,6 @@
         <module>with-logback</module>
         <module>with-mybatis</module>
         <module>with-pebble</module>
-        <module>with-querydsl</module>
         <module>with-thymeleaf</module>
         <module>with-undertow</module>
         <module>demo</module>
@@ -165,6 +164,19 @@
                 <groupId>org.apache.httpcomponents.client5</groupId>
                 <artifactId>httpclient5</artifactId>
                 <version>5.4.4</version>
+                <optional>true</optional>
+            </dependency>
+            <!-- Optional dependencies for modules -->
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>eclipselink</artifactId>
+                <version>5.0.0-B07</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>6.11</version>
                 <optional>true</optional>
             </dependency>
         </dependencies>

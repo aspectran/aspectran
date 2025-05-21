@@ -131,6 +131,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void reset() {
         getHttpServletResponse().reset();
+        reservedRedirectLocation = null;
     }
 
     @Override

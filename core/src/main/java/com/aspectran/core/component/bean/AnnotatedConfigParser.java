@@ -304,7 +304,7 @@ public class AnnotatedConfigParser {
                         }
                     } else if (method.isAnnotationPresent(Required.class)) {
                         BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
-                    } else if (!beanRule.isInitializableBean() && method.isAnnotationPresent(Initialize.class)) {
+                    } else if (method.isAnnotationPresent(Initialize.class)) {
                         if (method.isAnnotationPresent(Destroy.class)) {
                             throw new IllegalRuleException("Found a method with both @Initialize and @Destroy in bean " + beanRule);
                         }
@@ -319,7 +319,7 @@ public class AnnotatedConfigParser {
                                 throw new IllegalRuleException("Found duplicate methods to initialize bean " + beanRule);
                             }
                         }
-                    } else if (!beanRule.isDisposableBean() && method.isAnnotationPresent(Destroy.class)) {
+                    } else if (method.isAnnotationPresent(Destroy.class)) {
                         Destroy destroyAnno = method.getAnnotation(Destroy.class);
                         assert destroyAnno != null;
                         String profile = StringUtils.emptyToNull(destroyAnno.profile());

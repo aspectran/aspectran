@@ -173,10 +173,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 }
             }
 
+            if (beanRule.getInitMethod() != null) {
+                invokeInitMethod(beanRule, bean, activity);
+            }
             if (beanRule.isInitializableBean()) {
                 initializeBean(beanRule, bean);
-            } else if (beanRule.getInitMethod() != null) {
-                invokeInitMethod(beanRule, bean, activity);
             }
 
             return bean;

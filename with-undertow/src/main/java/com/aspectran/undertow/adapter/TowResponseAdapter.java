@@ -203,7 +203,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("reset");
+        if (responseState == ResponseState.WRITER) {
+            writer = null;
+        }
+        getHttpServerExchange().getResponseHeaders().clear();
+        setStatus(HttpStatus.OK.value());
     }
 
     @Override

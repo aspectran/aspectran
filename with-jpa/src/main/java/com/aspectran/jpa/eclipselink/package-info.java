@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package to integrate Jakarta Persistence API (JPA 3.2) support.
+ * Add-on package to integrate EclipseLink support.
  */
-package com.aspectran.jpa;
+package com.aspectran.jpa.eclipselink;
