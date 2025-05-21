@@ -27,7 +27,7 @@ import com.aspectran.utils.nodelet.NodeletParser;
 import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
- * The Class BeanInnerNodeletAdder.
+ * The Class BeanNodeParser.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */

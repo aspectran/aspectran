@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.ExceptionUtils;
 
 import java.io.Serial;
 
@@ -54,7 +55,7 @@ public class BeanCreationException extends BeanException {
      * @param cause the root cause
      */
     public BeanCreationException(BeanRule beanRule, Throwable cause) {
-        super("Cannot create a bean " + beanRule, cause);
+        super("Cannot create a bean " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
@@ -65,7 +66,7 @@ public class BeanCreationException extends BeanException {
      * @param cause the root cause
      */
     public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
-        super(msg + " " + beanRule, cause);
+        super(msg + " " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 

@@ -1,17 +1,22 @@
 package com.aspectran.jpa;
 
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
+import com.aspectran.core.component.bean.scan.BeanClassScanner;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Created: 2025-04-24</p>
  */
-public class EntityManagerFactoryBean  implements InitializableFactoryBean<EntityManagerFactory>, DisposableBean {
+public class EntityManagerFactoryBean extends InstantActivitySupport
+        implements InitializableFactoryBean<EntityManagerFactory>, DisposableBean {
 
     private final String persistenceUnitName;
 
@@ -21,6 +26,10 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
 
     public EntityManagerFactoryBean(String persistenceUnitName) {
         this.persistenceUnitName = persistenceUnitName;
+    }
+
+    public String getPersistenceUnitName() {
+        return persistenceUnitName;
     }
 
     public void setProperties(Map<String, Object> properties) {
@@ -41,7 +50,7 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
     protected void preConfigure(Map<String, Object> properties) {
     }
 
-    protected void preConfigure(PersistenceConfiguration persistenceConfiguration) {
+    protected void preConfigure(PersistenceConfiguration configuration) {
     }
 
     protected void postConfigure(EntityManagerFactory entityManagerFactory) {
@@ -50,9 +59,9 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
     @Override
     public void initialize() throws Exception {
         if (entityManagerFactory == null) {
-            PersistenceConfiguration persistenceConfiguration = configuration();
-            if (persistenceConfiguration == null) {
-                persistenceConfiguration = new PersistenceConfiguration(persistenceUnitName);
+            PersistenceConfiguration configuration = configuration();
+            if (configuration == null) {
+                configuration = new PersistenceConfiguration(persistenceUnitName);
             }
 
             Map<String, Object> propertiesToUse = new HashMap<>();
@@ -61,11 +70,14 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
                 properties = null;
             }
             preConfigure(propertiesToUse);
-            persistenceConfiguration.properties(propertiesToUse);
+            configuration.properties(propertiesToUse);
 
-            preConfigure(persistenceConfiguration);
+            // Find all managed classes
+            scanManagedClasses(configuration);
 
-            entityManagerFactory = persistenceConfiguration.createEntityManagerFactory();
+            preConfigure(configuration);
+
+            entityManagerFactory = configuration.createEntityManagerFactory();
             postConfigure(entityManagerFactory);
         }
     }
@@ -80,6 +92,20 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
         if (entityManagerFactory != null) {
             entityManagerFactory.close();
             entityManagerFactory = null;
+        }
+    }
+
+    private void scanManagedClasses(PersistenceConfiguration configuration) {
+        Set<String> basePackages = getBeanRegistry().getBasePackages();
+        if (!basePackages.isEmpty()) {
+            for (String basePackage : basePackages) {
+                BeanClassScanner scanner = new BeanClassScanner(getActivityContext().getClassLoader());
+                scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
+                    if (targetClass.isAnnotationPresent(Entity.class)) {
+                        configuration.managedClass(targetClass);
+                    }
+                });
+            }
         }
     }
 

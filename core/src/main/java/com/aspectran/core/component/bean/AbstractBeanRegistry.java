@@ -53,6 +53,11 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return beanRuleRegistry;
     }
 
+    @Override
+    public Set<String> getBasePackages() {
+        return beanRuleRegistry.getBasePackages();
+    }
+
     @SuppressWarnings("unchecked")
     protected <V> V getBean(@NonNull BeanRule beanRule) {
         if (beanRule.getScopeType() == ScopeType.SINGLETON) {

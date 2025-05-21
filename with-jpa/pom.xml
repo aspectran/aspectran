@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with JPA</name>
-    <description>Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework</description>
+    <description>Add-on package to integrate Jakarta Persistence API (JPA 3.2) support</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

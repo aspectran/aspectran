@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -61,15 +62,17 @@ public class BeanRuleRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanRuleRegistry.class);
 
+    private final Set<String> basePackages = new HashSet<>();
+
+    private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
+
+    private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
+
     private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>();
 
     private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>();
 
     private final Map<Class<?>, BeanRule> configurableBeanRuleMap = new LinkedHashMap<>();
-
-    private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
-
-    private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
     private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
 
@@ -97,6 +100,10 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.lang.constant.ConstantDesc.class);
         ignoreDependencyInterface(java.io.Serializable.class);
         ignoreDependencyInterface(java.io.Closeable.class);
+    }
+
+    public Set<String> getBasePackages() {
+        return Collections.unmodifiableSet(basePackages);
     }
 
     public void ignoreDependencyType(Class<?> type) {
@@ -206,6 +213,8 @@ public class BeanRuleRegistry {
         logger.info(tsb.toString());
 
         for (String basePackage : basePackages) {
+            this.basePackages.add(basePackage);
+
             final Set<Class<?>> beanClasses = new HashSet<>();
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
@@ -377,7 +386,7 @@ public class BeanRuleRegistry {
             throw new IllegalArgumentException("beanRule cannot be null");
         }
         if (!beanRule.isInnerBean()) {
-            throw new BeanRuleException("Not an inner bean", beanRule);
+            throw new BeanRuleException("Not inner bean", beanRule);
         }
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         if (targetBeanClass == null) {

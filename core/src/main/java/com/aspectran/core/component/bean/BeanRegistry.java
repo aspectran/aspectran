@@ -20,6 +20,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * The Interface BeanRegistry.
@@ -27,6 +28,8 @@ import java.util.Collection;
  * @since 2012. 11. 9.
  */
 public interface BeanRegistry {
+
+    Set<String> getBasePackages();
 
     /**
      * Returns an instance of the bean that matches the given id.
