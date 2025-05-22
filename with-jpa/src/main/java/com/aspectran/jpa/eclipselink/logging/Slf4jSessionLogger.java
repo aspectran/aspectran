@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jpa.eclipselink;
+package com.aspectran.jpa.eclipselink.logging;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;

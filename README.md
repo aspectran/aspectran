@@ -60,7 +60,7 @@ Aspectran consists of the following major packages:
 * **com.aspectran.undertow**  
   Add-on package for using Undertow as the embedded servlet container
 * **com.aspectran.jpa**  
-  Add-on package for using Querydsl based on JPA (Java Persistence API) as an ORM framework
+  Add-on package to integrate Jakarta Persistence API (JPA 3.2) support
 * **com.aspectran.mybatis**  
   Add-on package for using MyBatis as an ORM framework
 * **com.aspectran.freemarker**  

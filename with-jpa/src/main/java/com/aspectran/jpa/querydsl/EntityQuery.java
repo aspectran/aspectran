@@ -56,6 +56,7 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
         }
     }
 
+    @Advisable
     @Override
     public <T> JPAQuery<T> select(Expression<T> expr) {
         return query().select(expr);
