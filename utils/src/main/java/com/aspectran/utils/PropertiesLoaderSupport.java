@@ -149,7 +149,7 @@ public abstract class PropertiesLoaderSupport {
                 } catch (IOException e) {
                     if (ignoreInvalidResource) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Invalid properties resource; {}", e.toString());
+                            logger.debug("(IGNORED) Invalid properties resource; {}", e.toString());
                         }
                     } else {
                         throw e;

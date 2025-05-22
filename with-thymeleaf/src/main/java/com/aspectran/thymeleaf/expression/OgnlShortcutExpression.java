@@ -339,6 +339,7 @@ public class OgnlShortcutExpression {
      * the properties of one of the objects involved in the expression, which behaviour (the custom property accessor's)
      * cannot be replicated by OGNLShortcutExpressions.
      */
+    @SuppressWarnings("serial")
     static class OGNLShortcutExpressionNotApplicableException extends RuntimeException {
 
         OGNLShortcutExpressionNotApplicableException() {

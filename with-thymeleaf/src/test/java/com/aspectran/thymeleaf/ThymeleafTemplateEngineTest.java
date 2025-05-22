@@ -66,6 +66,12 @@ class ThymeleafTemplateEngineTest {
     }
 
     @Test
+    void echoEnvironmentProperties() {
+        Translet translet = aspectran.translate("echoEnvironmentProperties");
+        assertEquals("PROPERTY1", translet.getWrittenResponse());
+    }
+
+    @Test
     void testText() {
         ParameterMap params = new ParameterMap();
         params.setParameter("name", "tester");

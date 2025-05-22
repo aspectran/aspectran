@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.ExpressionParserException;
 
 /**
- * It supports expressions in the CHOOSE-WHEN statement,
+ * It supports expressions in the CHOOSE-WHEN statement
  * and evaluates the expression as a boolean result.
  *
  * <p>Created: 2019-01-06</p>

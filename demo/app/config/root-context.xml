@@ -22,7 +22,7 @@
     </description>
     <description profile="!demo" style="apon">
         |
-        |Current profiles: #{currentEnv^currentProfiles}
+        |Current profiles: #{currentEnvironment^currentProfiles}
         |
     </description>
     <description profile="demo" style="apon">
@@ -33,7 +33,7 @@
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
-    <bean id="currentEnv" class="com.aspectran.core.support.CurrentEnvironmentFactoryBean"/>
+    <bean id="currentEnvironment" class="com.aspectran.core.support.CurrentEnvironmentFactoryBean"/>
     <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
     <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
 

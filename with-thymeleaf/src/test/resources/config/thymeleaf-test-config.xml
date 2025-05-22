@@ -11,6 +11,19 @@
         <setting name="defaultTemplateEngineBean" value="thymeleaf"/>
     </settings>
 
+    <environment>
+        <properties>
+            <item name="property1" value="PROPERTY1"/>
+            <item name="property2" value="PROPERTY2"/>
+            <item name="property3" value="PROPERTY3"/>
+        </properties>
+    </environment>
+
+    <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentEnvironment" class="com.aspectran.core.support.CurrentEnvironmentFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
     <bean id="messageSource" class="com.aspectran.core.support.i18n.message.ResourceBundleMessageSource">
         <description>
             Defines a bean for multilingual processing.
@@ -91,6 +104,14 @@
         <transform format="text">
             <template engine="thymeleaf" style="apon" contentType="plain/text">
                 |[[${#numbers.formatDecimal(input_1,5,'COMMA',2,'POINT')}]]
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="echoEnvironmentProperties">
+        <transform format="text">
+            <template engine="thymeleaf" style="apon" contentType="plain/text">
+                |[[${#{currentEnvironment}.getProperty('property1')}]]
             </template>
         </transform>
     </translet>
