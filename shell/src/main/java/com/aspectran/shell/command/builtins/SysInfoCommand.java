@@ -153,7 +153,6 @@ public class SysInfoCommand extends AbstractCommand {
         console.writeLine("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max));
         console.writeLine("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total));
         console.writeLine("%-23s %12s", "Used memory", StringUtils.toHumanFriendlyByteSize(total - free));
-        console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free));
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -168,8 +167,9 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
+            console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free));
             console.writeLine("%-23s %12s", "Free memory after GC", StringUtils.toHumanFriendlyByteSize(after));
-            console.writeLine("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(after - free));
+            console.writeLine("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(free - after));
         } else {
             console.writeLine("%-23s %12s", "Free memory", StringUtils.toHumanFriendlyByteSize(free));
         }

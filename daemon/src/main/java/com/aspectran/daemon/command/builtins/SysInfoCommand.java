@@ -124,7 +124,6 @@ public class SysInfoCommand extends AbstractCommand {
         printWriter.format("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max)).println();
         printWriter.format("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total)).println();
         printWriter.format("%-23s %12s", "Used memory", StringUtils.toHumanFriendlyByteSize(total - free)).println();
-        printWriter.format("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free)).println();
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -139,8 +138,9 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
+            printWriter.format("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free)).println();
             printWriter.format("%-23s %12s", "Free memory after GC", StringUtils.toHumanFriendlyByteSize(after)).println();
-            printWriter.format("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(after - free)).println();
+            printWriter.format("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(free - after)).println();
         } else {
             printWriter.format("%-23s %12s", "Free memory", StringUtils.toHumanFriendlyByteSize(free)).println();
         }
