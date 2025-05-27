@@ -190,7 +190,7 @@
     $(function() {
         let $win = $(window);
         let $nav = $("#navigation");
-        let navHeight = $("#masthead").height() - $nav.height();
+        let navHeight = Math.abs($("#masthead").height() - $nav.height());
         let lastScrollTop = 0;
         let scrolled;
         let navFixed;
