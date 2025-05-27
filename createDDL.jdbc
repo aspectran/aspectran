@@ -1,0 +1,13 @@
+CREATE TABLE vets (ID INTEGER NOT NULL, first_name VARCHAR, last_name VARCHAR, PRIMARY KEY (ID))
+CREATE TABLE specialties (ID INTEGER NOT NULL, name VARCHAR, PRIMARY KEY (ID))
+CREATE TABLE visits (ID INTEGER NOT NULL, visit_date DATE, DESCRIPTION VARCHAR, pet_id INTEGER, PRIMARY KEY (ID))
+CREATE TABLE pets (ID INTEGER NOT NULL, birth_date DATE, name VARCHAR, type_id INTEGER, owner_id INTEGER, PRIMARY KEY (ID))
+CREATE TABLE owners (ID INTEGER NOT NULL, address VARCHAR, city VARCHAR, first_name VARCHAR, last_name VARCHAR, telephone VARCHAR, PRIMARY KEY (ID))
+CREATE TABLE types (ID INTEGER NOT NULL, name VARCHAR, PRIMARY KEY (ID))
+CREATE TABLE vet_specialties (vet_id INTEGER NOT NULL  /*  */ , specialty_id INTEGER NOT NULL  /*  */ , PRIMARY KEY (vet_id, specialty_id))
+ALTER TABLE visits ADD CONSTRAINT FK_visits_pet_id FOREIGN KEY (pet_id) REFERENCES pets (ID)
+ALTER TABLE pets ADD CONSTRAINT FK_pets_type_id FOREIGN KEY (type_id) REFERENCES types (ID)
+ALTER TABLE pets ADD CONSTRAINT FK_pets_owner_id FOREIGN KEY (owner_id) REFERENCES owners (ID)
+ALTER TABLE vet_specialties ADD CONSTRAINT FK_vet_specialties_specialty_id FOREIGN KEY (specialty_id) REFERENCES specialties (ID)
+ALTER TABLE vet_specialties ADD CONSTRAINT FK_vet_specialties_vet_id FOREIGN KEY (vet_id) REFERENCES vets (ID)
+CREATE SEQUENCE SEQ_GEN_SEQUENCE INCREMENT BY 50 START WITH 50
