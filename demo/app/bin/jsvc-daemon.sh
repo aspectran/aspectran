@@ -119,7 +119,7 @@ fi
 
 test ".$PROC_NAME" = . && PROC_NAME="jsvc-daemon"
 test ".$PID_FILE" = . && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
-test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=30
+test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=60
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
