@@ -40,11 +40,11 @@ import java.util.Map;
  * <p>
  * Use the following categories from EclipseLink
  * (eclipselink.logging.timestamp, eclipselink.logging.thread,
- * eclipselink.logging.session, eclipselink.logging.connection
- * y eclipselink.logging.parameters).
+ * eclipselink.logging.session, eclipselink.logging.connection,
+ * eclipselink.logging.parameters).
  * <p>
  * Logging categories available are:
- * <p>
+ * </p>
  * <ul>
  * <li>org.eclipse.persistence.logging.default
  * <li>org.eclipse.persistence.logging.sql
@@ -61,7 +61,6 @@ import java.util.Map;
  * <li>org.eclipse.persistence.logging.properties
  * <li>org.eclipse.persistence.logging.server
  * </ul>
- * </p>
  * <p>
  * Mapping of Java Log Level to SLF4J Log Level:
  * </p>
@@ -72,8 +71,10 @@ import java.util.Map;
  * <li>WARNING -> WARN
  * <li>SEVERE -> ERROR
  * </ul>
- * </p>
  * <p>
+ * Usage Example:
+ * </p>
+ * <code>properties.put(PersistenceUnitProperties.LOGGING_LOGGER, Slf4jSessionLogger.class.getName());</code>
  */
 public class Slf4jSessionLogger extends AbstractSessionLog {
 
