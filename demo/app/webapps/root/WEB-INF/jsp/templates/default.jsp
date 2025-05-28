@@ -229,8 +229,8 @@
             }
         }, 200);
         /* google search */
-        $("form[name=google_quick_search]").submit(function(event) {
-            window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ site.url | cgi_escape }}');
+        $("form[name=google_quick_search]").submit(function (event) {
+            window.open("https://www.google.com/search?q=" + this.keyword.value + "+site:https%3A%2F%2Faspectran.com");
             event.preventDefault();
         });
     });
