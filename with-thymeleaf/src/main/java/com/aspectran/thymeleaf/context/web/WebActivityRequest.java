@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.thymeleaf.web.IWebRequest;
@@ -36,8 +37,11 @@ public class WebActivityRequest implements IWebRequest {
 
     private final RequestAdapter requestAdapter;
 
+    private final String contextPath;
+
     WebActivityRequest(@NonNull RequestAdapter requestAdapter) {
         this.requestAdapter = requestAdapter;
+        this.contextPath = WebUtils.getReverseContextPath(getHttpServletRequest(), getHttpServletRequest().getContextPath());
     }
 
     @Override
@@ -62,12 +66,12 @@ public class WebActivityRequest implements IWebRequest {
 
     @Override
     public String getApplicationPath() {
-        String contextPath = getHttpServletRequest().getContextPath();
         // This protects against a redirection behaviour in Jetty
         if (contextPath != null && contextPath.length() == 1 && contextPath.charAt(0) == '/') {
-            contextPath = "";
+            return StringUtils.EMPTY;
+        } else {
+            return contextPath;
         }
-        return contextPath;
     }
 
     @Override

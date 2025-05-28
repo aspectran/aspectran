@@ -125,7 +125,7 @@ public abstract class WebUtils {
     }
 
     @Nullable
-    public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
+    public static String getReverseContextPath(@NonNull HttpServletRequest request) {
         String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
         if (forwardedPath != null) {
             if (forwardedPath.equals(ActivityContext.NAME_SEPARATOR)) {
@@ -135,6 +135,16 @@ public abstract class WebUtils {
             } else {
                 return forwardedPath;
             }
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
+        String reverseContextPath = getReverseContextPath(request);
+        if (reverseContextPath != null) {
+            return reverseContextPath;
         } else {
             return defaultContextPath;
         }
