@@ -170,7 +170,7 @@
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>eclipselink</artifactId>
-                <version>5.0.0-B07</version>
+                <version>5.0.0-B08</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
