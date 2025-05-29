@@ -23,6 +23,7 @@ import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.executor.ErrorContext;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -52,6 +53,8 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     private Environment environment;
 
+    private DatabaseIdProvider databaseIdProvider;
+
     private String configLocation;
 
     private Configuration configuration;
@@ -77,6 +80,10 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    public void setDatabaseIdProvider(DatabaseIdProvider databaseIdProvider) {
+        this.databaseIdProvider = databaseIdProvider;
     }
 
     /**
@@ -134,6 +141,9 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             }
             if (environment != null) {
                 configuration.setEnvironment(environment);
+                if (databaseIdProvider != null && environment.getDataSource() != null) {
+                    configuration.setDatabaseId(databaseIdProvider.getDatabaseId(environment.getDataSource()));
+                }
             }
             configure(configuration);
             sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
