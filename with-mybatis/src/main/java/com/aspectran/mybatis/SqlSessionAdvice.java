@@ -100,16 +100,13 @@ public class SqlSessionAdvice {
      */
     public void open() {
         if (sqlSession == null) {
-            if (executorType == null) {
-                executorType = ExecutorType.SIMPLE;
-            }
-
             sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
 
             if (logger.isDebugEnabled()) {
                 ToStringBuilder tsb = new ToStringBuilder((arbitrarilyClosed ? "Reopen " : "Open ") +
                         ObjectUtils.simpleIdentityToString(sqlSession));
-                tsb.append("executorType", executorType);
+                tsb.append("executorType",
+                        (executorType != null ? executorType : sqlSession.getConfiguration().getDefaultExecutorType()));
                 tsb.appendForce("autoCommit", autoCommit);
                 logger.debug(tsb.toString());
             }

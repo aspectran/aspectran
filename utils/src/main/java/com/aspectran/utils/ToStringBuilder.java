@@ -110,6 +110,14 @@ public class ToStringBuilder {
         return this;
     }
 
+    public ToStringBuilder append(String name, Object value, Object defaultValue) {
+        if (value != null) {
+            return append(name, value);
+        } else {
+            return append(name, defaultValue);
+        }
+    }
+
     public ToStringBuilder appendForce(String name, Object value) {
         appendName(name);
         appendValue(value);

@@ -23,9 +23,12 @@ import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.executor.ErrorContext;
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -39,19 +42,41 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
  */
 public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableFactoryBean<SqlSessionFactory> {
 
+    private static final Logger logger = LoggerFactory.getLogger(SqlSessionFactoryBean.class);
+
     private ApplicationAdapter applicationAdapter;
+
+    private Properties variables;
+
+    private String environmentId;
+
+    private Environment environment;
 
     private String configLocation;
 
-    private String environment;
-
-    private Properties variables;
+    private Configuration configuration;
 
     private SqlSessionFactory sqlSessionFactory;
 
     @Override
     public void setApplicationAdapter(@NonNull ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
+    }
+
+    /**
+     * Set optional properties to be passed into the SqlSession configuration.
+     * @param variables the optional properties
+     */
+    public void setVariables(Properties variables) {
+        this.variables = variables;
+    }
+
+    public void setEnvironmentId(String environmentId) {
+        this.environmentId = environmentId;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     /**
@@ -62,16 +87,8 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.configLocation = configLocation;
     }
 
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
-
-    /**
-     * Set optional properties to be passed into the SqlSession configuration.
-     * @param variables the optional properties
-     */
-    public void setVariables(Properties variables) {
-        this.variables = variables;
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     private Configuration createConfiguration() throws Exception {
@@ -89,7 +106,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
                 inputStream = new FileInputStream(applicationAdapter.getRealPath(configLocation).toFile());
             }
             try (inputStream) {
-                XMLConfigBuilder builder = new XMLConfigBuilder(inputStream, environment, variablesToUse);
+                XMLConfigBuilder builder = new XMLConfigBuilder(inputStream, environmentId, variablesToUse);
                 return builder.parse();
             } catch (Exception e) {
                 throw new Exception("Error building configuration with resource " + configLocation, e);
@@ -97,6 +114,9 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
                 ErrorContext.instance().reset();
             }
         } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
+            }
             Configuration configuration = new Configuration();
             configuration.setVariables(variablesToUse);
             return configuration;
@@ -109,7 +129,12 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     @Override
     public void initialize() throws Exception {
         if (sqlSessionFactory == null) {
-            Configuration configuration = createConfiguration();
+            if (configuration == null) {
+                configuration = createConfiguration();
+            }
+            if (environment != null) {
+                configuration.setEnvironment(environment);
+            }
             configure(configuration);
             sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
         }
