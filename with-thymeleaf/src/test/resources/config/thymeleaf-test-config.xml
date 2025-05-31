@@ -47,6 +47,8 @@
                                     </item>
                                     <item name="templateMode">HTML</item>
                                     <item name="cacheable" valueType="boolean">true</item>
+                                    <!-- Set template cache TTL to 1 hour -->
+                                    <item name="cacheTTLMs">3600000</item>
                                 </properties>
                             </bean>
                             <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
@@ -57,6 +59,8 @@
                                     </item>
                                     <item name="templateMode">TEXT</item>
                                     <item name="cacheable" valueType="boolean">true</item>
+                                    <!-- Set template cache TTL to 1 hour -->
+                                    <item name="cacheTTLMs">3600000</item>
                                 </properties>
                             </bean>
                             <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
