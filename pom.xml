@@ -176,7 +176,7 @@
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-jpa</artifactId>
-                <version>6.11</version>
+                <version>7.0</version>
                 <optional>true</optional>
             </dependency>
         </dependencies>
