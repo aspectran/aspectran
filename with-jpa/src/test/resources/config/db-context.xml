@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "https://aspectran.com/dtd/aspectran-8.dtd">
+<aspectran>
+
+    <description>
+        Configuration for database transactions
+    </description>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroyMethod="close" lazyDestroy="true">
+        <arguments>
+            <item>
+                <bean class="com.zaxxer.hikari.HikariConfig">
+                    <arguments>
+                        <item>
+                            <bean class="com.aspectran.core.support.PropertiesFactoryBean">
+                                <properties profile="h2">
+                                    <item name="locations" type="array">
+                                        <value>classpath:config/h2/db.properties</value>
+                                    </item>
+                                </properties>
+                            </bean>
+                        </item>
+                    </arguments>
+                    <properties>
+                        <item name="poolName">petclinic-test</item>
+                        <item name="registerMbeans" valueType="boolean">true</item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
+    </bean>
+
+</aspectran>

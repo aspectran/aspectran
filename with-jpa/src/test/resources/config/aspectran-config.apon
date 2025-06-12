@@ -1,0 +1,15 @@
+context: {
+    rules: classpath:config/db-context.xml
+    scan: [
+        com.aspectran.jpa
+    ]
+    profiles: {
+        base: [
+            h2
+        ]
+        default: [
+            dev
+            test
+        ]
+    }
+}
