@@ -104,12 +104,6 @@ logging library, and is mainly used to build and test other modules.
 * [Aspectran Demo Site](https://public.aspectran.com/)
 * [API Reference](https://javadoc.io/doc/com.aspectran/aspectran-all)
 
-## Thanks
-
-[![JetBrains](http://aspectran.com/assets/img/jetbrains.svg)](https://jb.gg/OpenSourceSupport)  
-[**JetBrains**](https://jb.gg/OpenSourceSupport) products are very helpful in developing **Aspectran**.  
-Thank you for the Open Source License!
-
 ## License
 
 Aspectran is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
