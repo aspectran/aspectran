@@ -46,12 +46,12 @@ public class ExpressionCache {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     static <V> V getFromCache(@NonNull IEngineConfiguration configuration, String input, String type) {
         ICacheManager cacheManager = configuration.getCacheManager();
         if (cacheManager != null) {
             ICache<ExpressionCacheKey, Object> cache = cacheManager.getExpressionCache();
             if (cache != null) {
-                //noinspection unchecked
                 return (V)cache.get(new ExpressionCacheKey(type, input));
             }
         }
