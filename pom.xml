@@ -310,6 +310,7 @@
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
                     <parameters>true</parameters>
+                    <proc>full</proc>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                     <meminitial>256m</meminitial>
