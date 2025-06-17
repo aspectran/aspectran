@@ -69,8 +69,8 @@ if [ -z "$JAVA_HOME" ]; then
       JAVA_BIN="$(dirname "$JAVA_BIN")/$link"
     fi
   done
-  test -x "$JAVA_BIN" && JAVA_HOME="$(dirname "$JAVA_BIN")"
-  test ".$JAVA_HOME" != . && JAVA_HOME=$(
+  [ -x "$JAVA_BIN" ] && JAVA_HOME="$(dirname "$JAVA_BIN")"
+  [ ! -z "$JAVA_HOME"] && JAVA_HOME=$(
     cd "$JAVA_HOME/.." >/dev/null || exit
     pwd
   )

@@ -87,8 +87,8 @@ if [ -z "$JAVA_HOME" ]; then
       JAVA_BIN="$(dirname "$JAVA_BIN")/$link"
     fi
   done
-  test -x "$JAVA_BIN" && JAVA_HOME="$(dirname "$JAVA_BIN")"
-  test ".$JAVA_HOME" != . && JAVA_HOME=$(
+  [ -x "$JAVA_BIN" ] && JAVA_HOME="$(dirname "$JAVA_BIN")"
+  [ ! -z "$JAVA_HOME"] && JAVA_HOME=$(
     cd "$JAVA_HOME/.." >/dev/null || exit
     pwd
   )
@@ -117,9 +117,9 @@ if [ ! -x "$JSVC" ]; then
   exit 3
 fi
 
-test ".$PROC_NAME" = . && PROC_NAME="jsvc-daemon"
-test ".$PID_FILE" = . && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
-test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=60
+[ -z "$PROC_NAME" ] && PROC_NAME="jsvc-daemon"
+[ -z "$PID_FILE" ] && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
+[ -z "$SERVICE_START_WAIT_TIME" ] && SERVICE_START_WAIT_TIME=90
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
