@@ -143,7 +143,7 @@ start_aspectran() {
   sleep 0.5
   if [ -f "$LOCK_FILE" ]; then
     echo "Aspectran daemon is already running."
-    exit 3
+    exit 0
   fi
   echo "Starting Aspectran daemon..."
   if start_daemon; then
@@ -161,8 +161,8 @@ start_aspectran() {
 stop_aspectran() {
   sleep 0.5
   if [ ! -f "$LOCK_FILE" ]; then
-    echo "Can't stop, Aspectran daemon NOT running."
-    exit 3
+    echo "Aspectran daemon NOT running."
+    exit 7
   fi
   echo "Stopping Aspectran daemon..."
   if stop_daemon; then

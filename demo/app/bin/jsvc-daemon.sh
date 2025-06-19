@@ -210,7 +210,7 @@ start_aspectran() {
   PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
     echo "Aspectran daemon is already running (pid $PID)."
-    exit 3
+    exit 0
   fi
   echo "Starting Aspectran daemon..."
   if start_daemon; then
@@ -229,8 +229,8 @@ start_aspectran() {
 stop_aspectran() {
   PID=$(pidof_daemon) || true
   if [ -z "$PID" ]; then
-    echo "Can't stop, Aspectran daemon NOT running."
-    exit 3
+    echo "Aspectran daemon NOT running."
+    exit 7
   fi
   echo "Stopping Aspectran daemon..."
   if stop_daemon; then
