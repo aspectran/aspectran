@@ -447,7 +447,7 @@
                                         <java>SLASHSTAR_STYLE</java>
                                     </mapping>
                                     <properties>
-                                        <copyright-range>${project.inceptionYear}-2025</copyright-range>
+                                        <copyright-range>${project.inceptionYear}-present</copyright-range>
                                     </properties>
                                     <licenseSets>
                                         <licenseSet>
