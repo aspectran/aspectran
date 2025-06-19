@@ -165,7 +165,7 @@
         <div class="grid-container">
             <nav class="grid-x b30">
                 <section id="subfooter-left" class="medium-6 cell credits">
-                    <p>Copyright © 2018-2025 The Aspectran Project</p>
+                    <p>Copyright © 2018-present The Aspectran Project</p>
                 </section>
                 <section id="subfooter-right" class="medium-6 cell social-icons text-right">
                     <%= com.aspectran.core.AboutMe.POWERED_BY_LINK %>
