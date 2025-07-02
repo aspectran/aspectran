@@ -4,9 +4,10 @@ on:
     branches:
       - master
 jobs:
-  build:
+  deploy:
     if: github.repository_owner == 'aspectran' && !contains(toJSON(github.event.head_commit.message), '[maven-release-plugin]')
     runs-on: ubuntu-latest
+    environment: sonatype
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,8 +16,9 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Deploy to Sonatype
-        run: ./mvnw deploy -DskipTests -B -V -ntp --settings ./.mvn/settings.xml -Dlicense.skip=true
+          cache: 'maven'
+      - name: Deploy snapshot artifacts
         env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+        run: ./mvnw deploy -B -V -ntp --batch-mode --settings .mvn/settings.xml -DskipTests=true -D"license.skip=true"

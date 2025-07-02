@@ -3,9 +3,19 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
     <servers>
         <server>
-            <id>ossrh</id>
-            <username>${env.CI_DEPLOY_USERNAME}</username>
-            <password>${env.CI_DEPLOY_PASSWORD}</password>
+            <id>central</id>
+            <username>${env.CENTRAL_USERNAME}</username>
+            <password>${env.CENTRAL_PASSWORD}</password>
+        </server>
+        <server>
+            <id>central-portal-snapshots</id>
+            <username>${env.CENTRAL_USERNAME}</username>
+            <password>${env.CENTRAL_PASSWORD}</password>
+        </server>
+        <server>
+            <id>central-portal-staging</id>
+            <username>${env.CENTRAL_USERNAME}</username>
+            <password>${env.CENTRAL_PASSWORD}</password>
         </server>
     </servers>
 </settings>
