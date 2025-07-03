@@ -99,7 +99,11 @@ public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore {
         long now = System.currentTimeMillis();
         return sync(c -> {
             SessionData data = c.get(id);
-            return checkExpiry(data, now);
+            if (data != null) {
+                return checkExpiry(data, now);
+            } else {
+                return false;
+            }
         });
     }
 
