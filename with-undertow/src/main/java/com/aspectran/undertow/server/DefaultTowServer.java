@@ -31,22 +31,27 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowServer.class);
 
-    private Undertow server;
+    private Undertow undertow;
+
+    @Override
+    public Undertow getUndertow() {
+        return undertow;
+    }
 
     @Override
     public void doStart() throws Exception {
         try {
-            server = buildServer();
-            server.start();
+            undertow = buildServer();
+            undertow.start();
             logger.info("Undertow {} started", TowServer.getVersion());
         } catch (Exception e) {
-            if (server != null) {
+            if (undertow != null) {
                 try {
-                    server.stop();
+                    undertow.stop();
                 } catch (Exception ex) {
                     // ignore
                 }
-                server = null;
+                undertow = null;
             }
             throw new Exception("Unable to start Undertow server", e);
         }
@@ -55,14 +60,14 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
     @Override
     public void doStop() {
         shutdown();
-        if (server != null) {
+        if (undertow != null) {
             try {
-                server.stop();
+                undertow.stop();
                 logger.info("Undertow {} stopped", TowServer.getVersion());
             } catch (Exception e) {
                 logger.error("Unable to stop Undertow server", e);
             }
-            server = null;
+            undertow = null;
         }
     }
 

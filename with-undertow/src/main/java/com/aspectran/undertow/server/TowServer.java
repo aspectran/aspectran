@@ -17,6 +17,7 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.utils.lifecycle.LifeCycle;
+import io.undertow.Undertow;
 import io.undertow.Version;
 import io.undertow.servlet.api.DeploymentManager;
 
@@ -28,6 +29,8 @@ public interface TowServer extends LifeCycle {
     static String getVersion() {
         return Version.getVersionString();
     }
+
+    Undertow getUndertow();
 
     DeploymentManager getDeploymentManager(String deploymentName);
 
