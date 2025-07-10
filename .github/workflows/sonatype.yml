@@ -5,19 +5,19 @@ on:
       - master
 jobs:
   deploy:
-    if: github.repository_owner == 'aspectran' && !contains(github.event.head_commit.message, '[maven-release-plugin]')
+    if: !contains(github.event.head_commit.message, '[maven-release-plugin]')
     name: Deploy
     runs-on: ubuntu-latest
     environment: sonatype
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up JDK
+      - name: Set up JDK 17 temurin
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
-          cache: 'maven'
+          cache: maven
       - name: Deploy snapshot artifacts
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
