@@ -31,8 +31,8 @@ import static java.lang.Long.MAX_VALUE;
  *
  * <p>An abstract implementation of a timeout.</p>
  * <p>Subclasses should implement {@link #onTimeoutExpired()}.</p>
- * <p>This implementation is optimised assuming that the timeout
- * will mostly be cancelled and then reused with a similar value.</p>
+ * <p>This implementation is optimized assuming that the timeout
+ * will mostly be canceled and then reused with a similar value.</p>
  * <p>This implementation has a {@link Timeout} holding the time
  * at which the scheduled task should fire, and a linked list of
  * {@link Wakeup}, each holding the actual scheduled task.</p>
@@ -74,8 +74,8 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * Schedules a timeout, even if already set, cancelled or expired.
-     * If a timeout is already set, it will be cancelled and replaced
+     * Schedules a timeout, even if already set, canceled or expired.
+     * If a timeout is already set, it will be canceled and replaced
      * by the new one.
      * @param delay The period of time before the timeout expires
      * @param units The unit of time of the period
@@ -121,7 +121,7 @@ public abstract class CyclicTimeout implements Destroyable {
 
     /**
      * Cancels this CyclicTimeout so that it won't expire.
-     * After being cancelled, this CyclicTimeout can be scheduled again.
+     * After being canceled, this CyclicTimeout can be scheduled again.
      * @return true if this CyclicTimeout was scheduled to expire
      * @see #destroy()
      */

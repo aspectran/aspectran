@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * An Abstract implementation of an Idle Timeout.
  * <p>
- * This implementation is optimised that timeout operations are not cancelled on
+ * This implementation is optimized that timeout operations are not canceled on
  * every operation. Rather timeout are allowed to expire and a check is then made
  * to see when the last operation took place.  If the idle timeout has not expired,
  * the timeout is rescheduled for the earliest possible time a timeout could occur.</p>
