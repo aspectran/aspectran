@@ -22,5 +22,7 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
           cache: ${{ matrix.cache }}
+      - name: Print JDK Version
+        run: java -version
       - name: Test with Maven
         run: ./mvnw test -B -V -ntp -D"license.skip=true" -D"jacoco.skip=true"

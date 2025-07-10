@@ -5,7 +5,8 @@ on:
       - master
 jobs:
   deploy:
-    if: github.repository_owner == 'aspectran' && !contains(toJSON(github.event.head_commit.message), '[maven-release-plugin]')
+    if: github.repository_owner == 'aspectran' && !contains(github.event.head_commit.message, '[maven-release-plugin]')
+    name: Deploy
     runs-on: ubuntu-latest
     environment: sonatype
     steps:
