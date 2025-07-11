@@ -122,7 +122,7 @@
 
         <logback.version>1.5.18</logback.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <log4j-to-slf4j.version>2.25.0</log4j-to-slf4j.version>
+        <log4j-to-slf4j.version>2.25.1</log4j-to-slf4j.version>
 
         <jakarta.servlet.api.version>6.0.0</jakarta.servlet.api.version>
         <jakarta.servlet.jsp.api.version>3.1.1</jakarta.servlet.jsp.api.version>
