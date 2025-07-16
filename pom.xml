@@ -129,7 +129,7 @@
         <jakarta.servlet.jsp.jstl.api.version>3.0.0</jakarta.servlet.jsp.jstl.api.version>
         <jakarta.servlet.jsp.jstl.impl.version>3.0.1</jakarta.servlet.jsp.jstl.impl.version>
         <jakarta.websocket.api.version>2.2.0</jakarta.websocket.api.version>
-        <jasper.version>10.1.41</jasper.version>
+        <jasper.version>11.0.9</jasper.version>
         <taglibs-standard.version>10.0.2</taglibs-standard.version>
     </properties>
 
