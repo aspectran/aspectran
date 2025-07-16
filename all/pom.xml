@@ -128,15 +128,17 @@
             <artifactId>aspectran-with-undertow</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- Optional dependencies for javadoc -->
+        <!-- All optional dependencies of modules -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
+            <version>5.0.0-B09</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
+            <version>7.0</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

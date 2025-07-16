@@ -57,12 +57,14 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
+            <version>5.0.0-B09</version>
             <optional>true</optional>
         </dependency>
         <!-- Querydsl dependency -->
         <dependency>
             <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
+            <version>7.0</version>
             <optional>true</optional>
         </dependency>
         <!-- Additional testing dependencies -->
@@ -106,7 +108,7 @@
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-el</artifactId>
-            <version>11.0.7</version>
+            <version>${jasper.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
