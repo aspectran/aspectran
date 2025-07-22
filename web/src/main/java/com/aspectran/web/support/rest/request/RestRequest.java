@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-present The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,10 +147,10 @@ public class RestRequest {
         ClassicHttpRequest request = requestBuilder.build();
 
         return httpClient.execute(request, response -> {
-            HttpEntity entity1 = response.getEntity();
+            HttpEntity entity = response.getEntity();
             final int statusCode = response.getCode();
-            ContentType contentType = ContentType.parse(entity1.getContentType());
-            String data = EntityUtils.toString(entity1).trim();
+            ContentType contentType = ContentType.parse(entity.getContentType());
+            String data = EntityUtils.toString(entity).trim();
             if (statusCode == HttpStatus.SC_SUCCESS ||
                     statusCode == HttpStatus.SC_CREATED ||
                     statusCode == HttpStatus.SC_ACCEPTED ||
@@ -173,7 +173,7 @@ public class RestRequest {
                 FailureResponse failureResponse = new FailureResponse();
                 failureResponse.setStatus(statusCode);
                 if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                    failureResponse.setError("-404", "Target URL not found: " + url);
+                    failureResponse.setError("-404", "The requested resource was not found");
                 } else {
                     failureResponse.setError("-" + statusCode, data);
                 }
@@ -202,7 +202,7 @@ public class RestRequest {
     }
 
     private boolean isJsonType(String mimeType) {
-        return (mimeType != null && mimeType.equals(ContentType.APPLICATION_JSON.getMimeType()));
+        return (mimeType != null && mimeType.equalsIgnoreCase(ContentType.APPLICATION_JSON.getMimeType()));
     }
 
 }
