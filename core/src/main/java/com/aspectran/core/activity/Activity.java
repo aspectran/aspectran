@@ -46,6 +46,9 @@ import java.util.List;
  */
 public interface Activity {
 
+    /**
+     * Activity modes to distinguish execution environments.
+     */
     enum Mode {
         DAEMON,
         DEFAULT,
@@ -55,6 +58,9 @@ public interface Activity {
         WEB
     }
 
+    /**
+     * Returns the current activity mode.
+     */
     Mode getMode();
 
     /**

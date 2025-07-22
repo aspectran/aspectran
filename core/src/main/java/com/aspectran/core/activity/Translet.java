@@ -45,6 +45,11 @@ import java.util.Map;
 public interface Translet {
 
     /**
+     * Returns the current activity mode.
+     */
+    Activity.Mode getMode();
+
+    /**
      * Returns the context path. This is similar to the
      * servlet context path.
      * @return the context path of the activity, or ""

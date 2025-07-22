@@ -73,6 +73,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public Activity.Mode getMode() {
+        return activity.getMode();
+    }
+
+    @Override
     @NonNull
     public String getContextPath() {
         return StringUtils.nullToEmpty(activity.getContextPath());
