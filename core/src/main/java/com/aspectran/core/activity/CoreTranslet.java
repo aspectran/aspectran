@@ -330,7 +330,7 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public void dispatch(String name, String dispatcherName) {
         DispatchRule dispatchRule = new DispatchRule();
-        dispatchRule.setName(name, null);
+        dispatchRule.setName(name);
         dispatchRule.setDispatcherName(dispatcherName);
         dispatch(dispatchRule);
     }

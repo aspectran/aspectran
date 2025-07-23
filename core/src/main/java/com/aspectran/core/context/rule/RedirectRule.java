@@ -17,16 +17,14 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.token.Tokenizer;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,7 +82,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
      * @return the redirect path
      */
     public String getPath(Activity activity) {
-        if (pathTokens != null && pathTokens.length > 0) {
+        if (pathTokens != null) {
             return activity.getTokenEvaluator().evaluateAsString(pathTokens);
         } else {
             return path;
@@ -97,22 +95,13 @@ public class RedirectRule implements Replicable<RedirectRule> {
      */
     public void setPath(String path) {
         this.path = path;
-
-        List<Token> tokens = Tokenizer.tokenize(path, true);
-        int tokenCount = 0;
-        for (Token t : tokens) {
-            if (t.getType() != TokenType.TEXT) {
-                tokenCount++;
-            }
-        }
-        if (tokenCount > 0) {
-            this.pathTokens = tokens.toArray(new Token[0]);
-        } else {
-            this.pathTokens = null;
-        }
+        this.pathTokens = TokenParser.parsePathSafely(path);
     }
 
-    public void setPath(String path, Token[] pathTokens) {
+    private void setPath(String path, Token[] pathTokens) {
+        if (pathTokens != null && pathTokens.length == 0) {
+            throw new IllegalArgumentException("pathTokens must not be empty");
+        }
         this.path = path;
         this.pathTokens = pathTokens;
     }

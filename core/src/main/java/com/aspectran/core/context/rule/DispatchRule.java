@@ -18,15 +18,12 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.token.Tokenizer;
+import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-
-import java.util.List;
 
 /**
  * The Class DispatchRule.
@@ -52,7 +49,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
     private ViewDispatcher viewDispatcher;
 
     /**
-     * Gets the view name.
+     * Gets the dispatch name.
      * @return the view name
      */
     public String getName() {
@@ -60,12 +57,12 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Gets the view name.
+     * Gets the dispatch name.
      * @param activity the activity
      * @return the view name
      */
     public String getName(Activity activity) {
-        if (nameTokens != null && nameTokens.length > 0) {
+        if (nameTokens != null) {
             return activity.getTokenEvaluator().evaluateAsString(nameTokens);
         } else {
             return name;
@@ -77,23 +74,8 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @param name the new dispatch name
      */
     public void setName(String name) {
-        if (name == null) {
-            setName(null, null);
-            return;
-        }
         this.name = name;
-        List<Token> tokens = Tokenizer.tokenize(name, true);
-        int count = 0;
-        for (Token t : tokens) {
-            if (t.getType() != TokenType.TEXT) {
-                count++;
-            }
-        }
-        if (count > 0) {
-            this.nameTokens = tokens.toArray(new Token[0]);
-        } else {
-            this.nameTokens = null;
-        }
+        this.nameTokens = TokenParser.parsePathSafely(name);
     }
 
     /**
@@ -101,7 +83,10 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @param name the new dispatch name
      * @param nameTokens the name tokens
      */
-    public void setName(String name, Token[] nameTokens) {
+    private void setName(String name, Token[] nameTokens) {
+        if (nameTokens != null && nameTokens.length == 0) {
+            throw new IllegalArgumentException("nameTokens must not be empty");
+        }
         this.name = name;
         this.nameTokens = nameTokens;
     }

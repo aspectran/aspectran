@@ -17,6 +17,7 @@ package com.aspectran.core.context.asel.token;
 
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -140,6 +141,37 @@ public class TokenParser {
             }
         }
         return sb.toString();
+    }
+
+    @Nullable
+    public static Token[] parsePathSafely(String path) {
+        if (!StringUtils.hasText(path)) {
+            return null;
+        }
+
+        Token[] tokens = Tokenizer.tokenize(path, true).toArray(new Token[0]);
+        if (tokens.length == 1 && tokens[0].getType() == TokenType.TEXT) {
+            return null;
+        }
+
+        int count = 0;
+        for (Token token : tokens) {
+            if (token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            for (int i = 0; i < tokens.length; i++) {
+                Token token = tokens[i];
+                if (token.getType() != TokenType.PARAMETER && token.getType() != TokenType.ATTRIBUTE) {
+                    tokens[i] = new Token(token.stringify());
+                }
+            }
+            return tokens;
+        } else {
+            return null;
+        }
     }
 
 }
