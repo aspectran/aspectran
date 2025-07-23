@@ -2,8 +2,7 @@
 
 [![Build Status](https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg)](https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven Central Version](https://img.shields.io/maven-central/v/com.aspectran/aspectran-project)]([https://maven-badges.sml.io/sonatype-central/com.aspectran/aspectran-project](https://central.sonatype.com/artifact/com.aspectran/aspectran-project))
-[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran-project.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran-project/)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.aspectran/aspectran-project)](https://central.sonatype.com/artifact/com.aspectran/aspectran-project)
 [![javadoc](https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg)](https://javadoc.io/doc/com.aspectran/aspectran-all)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
