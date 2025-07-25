@@ -174,7 +174,7 @@
         </div>
     </div>
 </footer>
-<script src="https://assets.aspectran.com/foundation/js/foundation.min.js"></script>
+<script src="https://assets.aspectran.com/foundation@6.9.0/js/foundation.min.js"></script>
 <script>
     $(document).foundation();
     $(function() {
