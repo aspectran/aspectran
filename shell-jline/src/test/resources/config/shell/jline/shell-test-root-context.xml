@@ -149,7 +149,7 @@
         </description>
         <request>
             <parameters>
-                <item name="email">${emailId}@${emailDomain}</item>
+                <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
                 <item name="password" secret="true"/>
             </parameters>
         </request>
@@ -172,8 +172,8 @@
         </description>
         <request>
             <parameters>
-                <item name="email">${emailId}@${emailDomain}</item>
-                <item name="password" secret="true"/>
+                <item name="email" mandatory="true">${emailId}@${emailDomain}</item>
+                <item name="password" secret="true" mandatory="true"/>
                 <item name="confirmPassword" secret="true"/>
             </parameters>
         </request>

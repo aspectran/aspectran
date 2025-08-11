@@ -177,11 +177,11 @@ public class TransletCommand extends AbstractCommand {
             }
             console.write("%5d | %-59s |", ++num, transletName);
             if (transletRule.isAsync()) {
-                console.successStyle();
+                console.getStyler().successStyle();
             }
             console.writeLine(" %-5s ", transletRule.isAsync());
             if (transletRule.isAsync()) {
-                console.resetStyle();
+                console.getStyler().resetStyle();
             }
         }
         if (num == 0) {

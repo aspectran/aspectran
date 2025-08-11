@@ -125,19 +125,19 @@ public class AspectCommand extends AbstractCommand {
             console.write("%5d | %-46s ", ++num, aspectRule.getId());
             console.write("|");
             if (aspectRule.isIsolated()) {
-                console.successStyle();
+                console.getStyler().successStyle();
             }
             console.write(" %-8s ", aspectRule.isIsolated());
             if (aspectRule.isIsolated()) {
-                console.resetStyle();
+                console.getStyler().resetStyle();
             }
             console.write("|");
             if (!aspectRule.isDisabled()) {
-                console.successStyle();
+                console.getStyler().successStyle();
             }
             console.writeLine(" %-7s ", !aspectRule.isDisabled());
             if (!aspectRule.isDisabled()) {
-                console.resetStyle();
+                console.getStyler().resetStyle();
             }
         }
         if (num == 0) {

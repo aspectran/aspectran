@@ -16,6 +16,7 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -255,28 +256,6 @@ public class JLineTerminal {
 
     public void flush() {
         getWriter().flush();
-    }
-
-    protected static class Style {
-
-        private final AttributedStyle attributedStyle;
-
-        protected Style(String... styles) {
-            this(null, styles);
-        }
-
-        protected Style(Style defaultStyle, String... styles) {
-            if (defaultStyle != null) {
-                this.attributedStyle = JLineTextStyler.style(defaultStyle.getAttributedStyle(), styles);
-            } else {
-                this.attributedStyle = JLineTextStyler.style(styles);
-            }
-        }
-
-        public AttributedStyle getAttributedStyle() {
-            return attributedStyle;
-        }
-
     }
 
 }

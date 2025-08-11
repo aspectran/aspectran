@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.ConsoleCommander;
 
 import java.io.File;
@@ -44,6 +43,8 @@ public interface ShellConsole {
 
     char MASK_CHAR = '*';
 
+    ConsoleStyler getStyler();
+
     String getEncoding();
 
     PrintStream getOutput();
@@ -54,9 +55,9 @@ public interface ShellConsole {
 
     void setWorkingDir(File workingDir);
 
-    ConsoleCommander getConsoleCommander();
+    ConsoleCommander getCommander();
 
-    void setConsoleCommander(ConsoleCommander runner);
+    void setCommander(ConsoleCommander runner);
 
     void setCommandHistoryFile(String historyFile);
 
@@ -70,7 +71,7 @@ public interface ShellConsole {
 
     PromptStringBuilder newPromptStringBuilder();
 
-    String readCommandLine();
+    String readCommand();
 
     String readLine();
 
@@ -79,6 +80,8 @@ public interface ShellConsole {
     String readPassword();
 
     String readPassword(PromptStringBuilder promptStringBuilder);
+
+    boolean isReading();
 
     void write(String str);
 
@@ -102,39 +105,7 @@ public interface ShellConsole {
 
     void redrawLine();
 
-    boolean isReading();
-
-    boolean hasStyle();
-
-    void setStyle(String... styles);
-
-    void resetStyle();
-
-    void resetStyle(String... styles);
-
-    void setShellStyleConfig(ShellStyleConfig shellStyleConfig);
-
-    String[] getPrimaryStyle();
-
-    String[] getSecondaryStyle();
-
-    String[] getSuccessStyle();
-
-    String[] getDangerStyle();
-
-    String[] getWarningStyle();
-
-    String[] getInfoStyle();
-
-    void secondaryStyle();
-
-    void successStyle();
-
-    void dangerStyle();
-
-    void warningStyle();
-
-    void infoStyle();
+    void flush();
 
     boolean confirmRestart();
 

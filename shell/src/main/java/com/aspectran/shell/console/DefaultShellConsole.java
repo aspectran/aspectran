@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class DefaultShellConsole extends AbstractShellConsole {
 
+    private final ConsoleStyler consoleStyler = new DefaultConsoleStyler();
+
     private volatile boolean reading;
 
     public DefaultShellConsole() {
@@ -41,6 +43,11 @@ public class DefaultShellConsole extends AbstractShellConsole {
 
     public DefaultShellConsole(String encoding) {
         super(encoding);
+    }
+
+    @Override
+    public ConsoleStyler getStyler() {
+        return consoleStyler;
     }
 
     @Override
@@ -77,9 +84,9 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readCommandLine() {
+    public String readCommand() {
         String prompt = getCommandPrompt();
-        String line = readMultiCommandLine(readTerminalLine(prompt));
+        String line = readMultiCommand(readLineFromTerminal(prompt));
         return (line != null ? line.trim() : null);
     }
 
@@ -107,7 +114,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         String line;
         try {
             reading = true;
-            line = readMultiLine(readTerminalLine(prompt));
+            line = readMultiLine(readLineFromTerminal(prompt));
         } finally {
             reading = false;
         }
@@ -137,7 +144,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         String line;
         try {
             reading = true;
-            line = readRawPassword(prompt);
+            line = readPasswordFromTerminal(prompt);
         } finally {
             reading = false;
         }
@@ -149,12 +156,12 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    protected String readTerminalCommandLine(String prompt) {
-        return readTerminalLine(prompt);
+    protected String readCommandFromTerminal(String prompt) {
+        return readLineFromTerminal(prompt);
     }
 
     @Override
-    protected String readTerminalLine(String prompt) {
+    protected String readLineFromTerminal(String prompt) {
         try {
             String line;
             if (System.console() != null) {
@@ -172,12 +179,17 @@ public class DefaultShellConsole extends AbstractShellConsole {
         }
     }
 
-    private String readRawPassword(String prompt) {
+    private String readPasswordFromTerminal(String prompt) {
         if (System.console() != null) {
             return new String(System.console().readPassword(prompt));
         } else {
-            return readTerminalLine(prompt);
+            return readLineFromTerminal(prompt);
         }
+    }
+
+    @Override
+    public boolean isReading() {
+        return reading;
     }
 
     @Override
@@ -237,53 +249,8 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public boolean isReading() {
-        return reading;
-    }
-
-    @Override
-    public boolean hasStyle() {
-        return false;
-    }
-
-    @Override
-    public void setStyle(String... styles) {
-        // Nothing to do
-    }
-
-    @Override
-    public void resetStyle() {
-        // Nothing to do
-    }
-
-    @Override
-    public void resetStyle(String... styles) {
-        // Nothing to do
-    }
-
-    @Override
-    public void secondaryStyle() {
-        // Nothing to do
-    }
-
-    @Override
-    public void successStyle() {
-        // Nothing to do
-    }
-
-    @Override
-    public void dangerStyle() {
-        // Nothing to do
-    }
-
-    @Override
-    public void warningStyle() {
-        // Nothing to do
-    }
-
-    @Override
-    public void infoStyle() {
-        // Nothing to do
+    public void flush() {
+        System.out.flush();
     }
 
 }

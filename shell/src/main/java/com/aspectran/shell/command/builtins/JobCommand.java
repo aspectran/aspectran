@@ -123,11 +123,11 @@ public class JobCommand extends AbstractCommand {
                 }
                 console.write("%5d | %-20s | %-34s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
                 if (!jobRule.isDisabled()) {
-                    console.successStyle();
+                    console.getStyler().successStyle();
                 }
                 console.writeLine(" %-7s ", !jobRule.isDisabled());
                 if (!jobRule.isDisabled()) {
-                    console.resetStyle();
+                    console.getStyler().resetStyle();
                 }
             }
         }

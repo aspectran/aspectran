@@ -175,7 +175,7 @@ public class DefaultShellService extends AbstractShellService {
 
     private void serviceError(@NonNull ShellActivity activity, Exception e) {
         getConsole().clearLine();
-        getConsole().resetStyle();
+        getConsole().getStyler().resetStyle();
 
         Throwable t;
         if (activity.isExceptionRaised()) {

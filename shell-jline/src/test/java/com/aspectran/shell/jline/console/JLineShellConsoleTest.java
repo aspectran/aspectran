@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
@@ -27,8 +28,11 @@ import java.io.IOException;
 class JLineShellConsoleTest {
 
     public static void main(String[] args) throws IOException {
+        ShellStyleConfig shellStyleConfig = new ShellStyleConfig();
+        shellStyleConfig.setDangerStyle("RED");
         ShellConsole console = new JLineShellConsole();
-        console.setStyle("yellow");
+        console.getStyler().setShellStyleConfig(shellStyleConfig);
+        console.getStyler().setStyle("BLUE");
         String prompt = "{{GREEN}}Test>{{reset}} ";
         while (true) {
             PromptStringBuilder psb = console.newPromptStringBuilder()
@@ -36,6 +40,7 @@ class JLineShellConsoleTest {
             String line = console.readLine(psb);
             if (StringUtils.hasLength(line)) {
                 if ("quit".equals(line)) {
+                    console.getStyler().dangerStyle();
                     console.writeLine("Bye~");
                     break;
                 } else {

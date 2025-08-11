@@ -63,7 +63,7 @@ public class CommandCompleter implements Completer {
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        if (!isLimited() && console.getConsoleCommander() != null) {
+        if (!isLimited() && console.getCommander() != null) {
             if (line.wordIndex() == 0) {
                 makeCommandCandidates(line.word(), candidates);
                 makeTransletCandidates(line.word(), candidates);
@@ -75,7 +75,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeCommandCandidates(String word, List<Candidate> candidates) {
-        CommandRegistry commandRegistry = console.getConsoleCommander().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getCommander().getCommandRegistry();
         if (commandRegistry != null) {
             for (Command command : commandRegistry.getAllCommands()) {
                 String name = command.getDescriptor().getName();
@@ -89,7 +89,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeArgumentsCandidates(String word, String opt, List<Candidate> candidates) {
-        CommandRegistry commandRegistry = console.getConsoleCommander().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getCommander().getCommandRegistry();
         if (commandRegistry != null) {
             Command command = commandRegistry.getCommand(word);
             if (command != null) {
@@ -133,7 +133,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeTransletCandidates(String word, List<Candidate> candidates) {
-        ShellService shellService = console.getConsoleCommander().getShellService();
+        ShellService shellService = console.getCommander().getShellService();
         if (shellService != null && shellService.getActivityContext() != null) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             if (transletRuleRegistry != null) {

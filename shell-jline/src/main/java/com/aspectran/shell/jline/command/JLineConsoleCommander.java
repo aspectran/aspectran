@@ -37,7 +37,7 @@ public class JLineConsoleCommander extends DefaultConsoleCommander {
 
         JLineShellConsole console = getConsole();
         System.setOut(new TerminalPrintStream(console.getJlineTerminal(), true));
-        System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true, console.getDangerStyle()));
+        System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true, console.getStyler().getDangerStyle()));
     }
 
 }

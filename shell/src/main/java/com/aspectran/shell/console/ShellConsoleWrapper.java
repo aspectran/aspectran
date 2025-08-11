@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.ConsoleCommander;
 
 import java.io.File;
@@ -31,6 +30,11 @@ public class ShellConsoleWrapper implements ShellConsole {
 
     public ShellConsoleWrapper(ShellConsole console) {
         this.console = console;
+    }
+
+    @Override
+    public ConsoleStyler getStyler() {
+        return console.getStyler();
     }
 
     @Override
@@ -82,12 +86,12 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getConsoleCommander() {
-        return console.getConsoleCommander();
+    public ConsoleCommander getCommander() {
+        return console.getCommander();
     }
 
     @Override
-    public void setConsoleCommander(ConsoleCommander runner) {
+    public void setCommander(ConsoleCommander runner) {
         throw new UnsupportedOperationException();
     }
 
@@ -107,8 +111,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readCommandLine() {
-        return console.readCommandLine();
+    public String readCommand() {
+        return console.readCommand();
     }
 
     @Override
@@ -129,6 +133,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public String readPassword(PromptStringBuilder promptStringBuilder) {
         return console.readPassword(promptStringBuilder);
+    }
+
+    @Override
+    public boolean isReading() {
+        return console.isReading();
     }
 
     @Override
@@ -199,91 +208,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public boolean isReading() {
-        return console.isReading();
-    }
-
-    @Override
-    public boolean hasStyle() {
-        return console.hasStyle();
-    }
-
-    @Override
-    public void setStyle(String... styles) {
-        console.setStyle(styles);
-    }
-
-    @Override
-    public void resetStyle() {
-        console.resetStyle();
-    }
-
-    @Override
-    public void resetStyle(String... styles) {
-        console.resetStyle(styles);
-    }
-
-    @Override
-    public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
-        console.setShellStyleConfig(shellStyleConfig);
-    }
-
-    @Override
-    public String[] getPrimaryStyle() {
-        return console.getPrimaryStyle();
-    }
-
-    @Override
-    public String[] getSecondaryStyle() {
-        return console.getSecondaryStyle();
-    }
-
-    @Override
-    public String[] getSuccessStyle() {
-        return console.getSuccessStyle();
-    }
-
-    @Override
-    public String[] getDangerStyle() {
-        return console.getDangerStyle();
-    }
-
-    @Override
-    public String[] getWarningStyle() {
-        return console.getWarningStyle();
-    }
-
-    @Override
-    public String[] getInfoStyle() {
-        return console.getInfoStyle();
-    }
-
-    @Override
-    public void secondaryStyle() {
-        console.secondaryStyle();
-    }
-
-    @Override
-    public void successStyle() {
-        console.successStyle();
-    }
-
-    @Override
-    public void dangerStyle() {
-        console.dangerStyle();
-    }
-
-    @Override
-    public void warningStyle() {
-        console.warningStyle();
-    }
-
-    @Override
-    public void infoStyle() {
-        console.infoStyle();
-    }
-
-    @Override
     public boolean confirmRestart() {
         return console.confirmRestart();
     }
@@ -291,6 +215,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public boolean confirmQuit() {
         return console.confirmQuit();
+    }
+
+    @Override
+    public void flush() {
+        console.flush();
     }
 
 }

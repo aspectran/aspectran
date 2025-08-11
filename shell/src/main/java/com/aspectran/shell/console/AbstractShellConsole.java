@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.ConsoleCommander;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -37,18 +36,6 @@ public abstract class AbstractShellConsole implements ShellConsole {
     private File workingDir;
 
     private ConsoleCommander consoleCommander;
-
-    private String[] primaryStyle;
-
-    private String[] secondaryStyle;
-
-    private String[] successStyle;
-
-    private String[] dangerStyle;
-
-    private String[] warningStyle;
-
-    private String[] infoStyle;
 
     public AbstractShellConsole(String encoding) {
         if (encoding != null) {
@@ -74,12 +61,12 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getConsoleCommander() {
+    public ConsoleCommander getCommander() {
         return consoleCommander;
     }
 
     @Override
-    public void setConsoleCommander(ConsoleCommander consoleCommander) {
+    public void setCommander(ConsoleCommander consoleCommander) {
         this.consoleCommander = consoleCommander;
     }
 
@@ -103,22 +90,22 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return readPassword(null);
     }
 
-    protected String readMultiCommandLine(String line) {
+    protected String readMultiCommand(String line) {
         if (line == null) {
             return null;
         }
         if (COMMENT_DELIMITER.equals(line)) {
-            String next = readTerminalCommandLine(COMMENT_PROMPT);
+            String next = readCommandFromTerminal(COMMENT_PROMPT);
             if (next.isEmpty()) {
                 return next;
             }
-            readMultiCommandLine(COMMENT_DELIMITER);
+            readMultiCommand(COMMENT_DELIMITER);
         }
         String quote = searchQuote(line);
         if (quote != null || line.endsWith(MULTILINE_DELIMITER)) {
-            String next = readTerminalCommandLine(MULTILINE_PROMPT).trim();
+            String next = readCommandFromTerminal(MULTILINE_PROMPT).trim();
             if (next.startsWith(COMMENT_DELIMITER)) {
-                line = readMultiCommandLine(line);
+                line = readMultiCommand(line);
             } else if (quote != null) {
                 line += System.lineSeparator() + next;
             } else {
@@ -127,17 +114,17 @@ public abstract class AbstractShellConsole implements ShellConsole {
         }
         quote = searchQuote(line);
         if (quote != null) {
-            return readMultiCommandLine(line);
+            return readMultiCommand(line);
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = readMultiCommandLine(line);
+            line = readMultiCommand(line);
         }
         return line;
     }
 
     protected String readMultiLine(String line) {
         if (line == null) {
-            line = readTerminalLine(MULTILINE_PROMPT);
+            line = readLineFromTerminal(MULTILINE_PROMPT);
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
@@ -146,9 +133,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return line;
     }
 
-    protected abstract String readTerminalCommandLine(String prompt);
+    protected abstract String readCommandFromTerminal(String prompt);
 
-    protected abstract String readTerminalLine(String prompt);
+    protected abstract String readLineFromTerminal(String prompt);
 
     @Nullable
     private String searchQuote(@NonNull String line) {
@@ -169,50 +156,6 @@ public abstract class AbstractShellConsole implements ShellConsole {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
-        if (shellStyleConfig == null) {
-            throw new IllegalArgumentException("shellStyleConfig must not be null");
-        }
-        primaryStyle = shellStyleConfig.getPrimaryStyle();
-        secondaryStyle = shellStyleConfig.getSecondaryStyle();
-        successStyle = shellStyleConfig.getSuccessStyle();
-        dangerStyle = shellStyleConfig.getDangerStyle();
-        warningStyle = shellStyleConfig.getWarningStyle();
-        infoStyle = shellStyleConfig.getInfoStyle();
-        resetStyle();
-    }
-
-    @Override
-    public String[] getPrimaryStyle() {
-        return primaryStyle;
-    }
-
-    @Override
-    public String[] getSecondaryStyle() {
-        return secondaryStyle;
-    }
-
-    @Override
-    public String[] getSuccessStyle() {
-        return successStyle;
-    }
-
-    @Override
-    public String[] getDangerStyle() {
-        return dangerStyle;
-    }
-
-    @Override
-    public String[] getWarningStyle() {
-        return warningStyle;
-    }
-
-    @Override
-    public String[] getInfoStyle() {
-        return infoStyle;
     }
 
     @Override
@@ -241,9 +184,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private boolean checkReadingState() {
         if (isReading()) {
-            setStyle(getDangerStyle());
+            getStyler().dangerStyle();
             writeAbove("Illegal State");
-            resetStyle();
+            getStyler().resetStyle();
             return true;
         } else {
             return false;

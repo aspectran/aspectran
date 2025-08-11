@@ -195,18 +195,18 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     @Override
     public void restart(String message) throws Exception {
         if (StringUtils.hasText(message)) {
-            console.setStyle(console.getDangerStyle());
+            console.getStyler().dangerStyle();
             console.writeAbove(message);
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
         if (!isBusy() && console.confirmRestart()) {
             try {
                 super.restart(message);
             } catch (Exception e) {
                 logger.error("Shell restart failed", e);
-                console.setStyle(console.getDangerStyle());
+                console.getStyler().dangerStyle();
                 console.writeAbove("Shell restart failed!");
-                console.resetStyle();
+                console.getStyler().resetStyle();
             }
             if (console.isReading()) {
                 console.redrawLine();

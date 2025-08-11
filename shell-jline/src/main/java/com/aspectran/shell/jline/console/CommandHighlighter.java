@@ -64,7 +64,7 @@ public class CommandHighlighter implements Highlighter {
 
     @Override
     public AttributedString highlight(LineReader reader, String buffer) {
-        if (!isLimited() && console.getConsoleCommander() != null) {
+        if (!isLimited() && console.getCommander() != null) {
             String str = StringUtils.trimLeadingWhitespace(buffer);
             String best = getMatchedCommandName(str);
             if (best == null) {
@@ -117,8 +117,8 @@ public class CommandHighlighter implements Highlighter {
             return asb.toAttributedString();
         } else {
             AttributedStyle as = null;
-            if (console.hasStyle()) {
-                as = ((JLineShellConsole)console).getStyle().getAttributedStyle();
+            if (console.getStyler().hasStyle()) {
+                as = ((JLineShellConsole)console).getStyler().getStyle().getAttributedStyle();
             }
             if (!isLimited()) {
                 if (as == null) {
@@ -133,8 +133,8 @@ public class CommandHighlighter implements Highlighter {
     @NonNull
     private AttributedStringBuilder newAttributedStringBuilder(@NonNull String buffer) {
         AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
-        if (console.hasStyle()) {
-            asb.style(((JLineShellConsole)console).getStyle().getAttributedStyle());
+        if (console.getStyler().hasStyle()) {
+            asb.style(((JLineShellConsole)console).getStyler().getStyle().getAttributedStyle());
         }
         return asb;
     }
@@ -149,7 +149,7 @@ public class CommandHighlighter implements Highlighter {
 
     private String getMatchedCommandName(String buffer) {
         String best = null;
-        CommandRegistry commandRegistry = console.getConsoleCommander().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getCommander().getCommandRegistry();
         if (commandRegistry != null) {
             int len = 0;
             for (Command command : commandRegistry.getAllCommands()) {
@@ -168,7 +168,7 @@ public class CommandHighlighter implements Highlighter {
 
     private String getMatchedTransletName(String buffer) {
         String best = null;
-        ShellService shellService = console.getConsoleCommander().getShellService();
+        ShellService shellService = console.getCommander().getShellService();
         if (shellService != null && shellService.getActivityContext() != null) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             if (transletRuleRegistry != null) {

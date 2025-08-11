@@ -23,7 +23,7 @@ shell: {
          warning: YELLOW
          info: BLUE
     }
-    prompt: "jline-shell-test> "
+    prompt: "{{green}}jline-shell-test>{{reset}} "
     commands: [
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.SysInfoCommand

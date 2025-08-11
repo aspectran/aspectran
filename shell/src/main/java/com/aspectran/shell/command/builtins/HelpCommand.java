@@ -78,9 +78,9 @@ public class HelpCommand extends AbstractCommand {
                 console.writeLine("No command mapped to '" + targetCommands[0] +  "'");
             }
         } else {
-            console.setStyle("bold");
+            console.getStyler().setStyle("bold");
             console.writeLine("Built-in commands:");
-            console.resetStyle();
+            console.getStyler().resetStyle();
             printHelp(targetCommands, console);
         }
     }
@@ -105,9 +105,9 @@ public class HelpCommand extends AbstractCommand {
 
     private void printHelp(String[] targetCommands, ShellConsole console) {
         if (targetCommands == null) {
-            console.setStyle("bold");
+            console.getStyler().setStyle("bold");
             console.writeLine("Available commands:");
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
         final int commandWidth = maxLengthOfCommandName(targetCommands);

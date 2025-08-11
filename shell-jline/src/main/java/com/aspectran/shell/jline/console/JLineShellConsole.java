@@ -19,6 +19,7 @@ import com.aspectran.shell.console.AbstractShellConsole;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsoleClosedException;
+import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
 
@@ -26,8 +27,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
-
-import static com.aspectran.shell.jline.console.JLineTerminal.Style;
 
 /**
  * Console I/O implementation that supports JLine.
@@ -42,7 +41,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     private final PrintWriter writer;
 
-    private Style baseStyle;
+    private final JLineConsoleStyler consoleStyler;
 
     public JLineShellConsole() throws IOException {
         this(null);
@@ -53,10 +52,16 @@ public class JLineShellConsole extends AbstractShellConsole {
         this.jlineTerminal = new JLineTerminal(this, encoding);
         this.output = new TerminalPrintStream(jlineTerminal);
         this.writer = new TerminalPrintWriter(jlineTerminal);
+        this.consoleStyler = new JLineConsoleStyler(jlineTerminal);
     }
 
     public JLineTerminal getJlineTerminal() {
         return jlineTerminal;
+    }
+
+        @Override
+    public JLineConsoleStyler getStyler() {
+        return consoleStyler;
     }
 
     @Override
@@ -95,12 +100,12 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readCommandLine() {
+    public String readCommand() {
         try {
-            String line = readTerminalCommandLine(getCommandPrompt()).trim();
+            String line = readCommandFromTerminal(getCommandPrompt()).trim();
             jlineTerminal.getCommandCompleter().setLimited(true);
             jlineTerminal.getCommandHighlighter().setLimited(true);
-            line = readMultiCommandLine(line);
+            line = readMultiCommand(line);
             jlineTerminal.getCommandCompleter().setLimited(false);
             jlineTerminal.getCommandHighlighter().setLimited(false);
             return line;
@@ -132,7 +137,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             defaultValue = promptStringBuilder.getDefaultValue();
         }
         try {
-            return readMultiLine(readTerminalLine(prompt, null, defaultValue));
+            return readMultiLine(readLineFromTerminal(prompt, null, defaultValue));
         } catch (EndOfFileException | UserInterruptException e) {
             return defaultValue;
         }
@@ -147,26 +152,31 @@ public class JLineShellConsole extends AbstractShellConsole {
             defaultValue = promptStringBuilder.getDefaultValue();
         }
         try {
-            return readTerminalLine(prompt, MASK_CHAR, defaultValue);
+            return readLineFromTerminal(prompt, MASK_CHAR, defaultValue);
         } catch (EndOfFileException | UserInterruptException e) {
             return defaultValue;
         }
     }
 
     @Override
-    protected String readTerminalCommandLine(String prompt) {
+    protected String readCommandFromTerminal(String prompt) {
         return jlineTerminal.getCommandReader().readLine(prompt);
     }
 
     @Override
-    protected String readTerminalLine(String prompt) {
-        return readTerminalLine(prompt, null, null);
+    protected String readLineFromTerminal(String prompt) {
+        return readLineFromTerminal(prompt, null, null);
     }
 
-    private String readTerminalLine(String prompt, Character mask, String defaultValue) {
+    private String readLineFromTerminal(String prompt, Character mask, String defaultValue) {
         // Password masking for dumb terminal doesn't seem to work properly
         Character maskToUse = (jlineTerminal.isDumb() ? null : mask);
         return jlineTerminal.getLineReader().readLine(prompt, maskToUse, defaultValue);
+    }
+
+    @Override
+    public boolean isReading() {
+        return jlineTerminal.isReading();
     }
 
     @Override
@@ -197,10 +207,10 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeError(String str) {
-        Style oldStyle = getStyle();
-        setStyle(getDangerStyle());
+        Style oldStyle = consoleStyler.getStyle();
+        consoleStyler.dangerStyle();
         writeLine(str);
-        setStyle(oldStyle);
+        consoleStyler.setStyle(oldStyle);
     }
 
     @Override
@@ -229,89 +239,8 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public boolean isReading() {
-        return jlineTerminal.isReading();
-    }
-
-    protected Style getBaseStyle() {
-        return baseStyle;
-    }
-
-    @Override
-    public boolean hasStyle() {
-        return jlineTerminal.hasStyle();
-    }
-
-    protected Style getStyle() {
-        return jlineTerminal.getStyle();
-    }
-
-    protected void setStyle(Style style) {
-        jlineTerminal.setStyle(style);
-    }
-
-    @Override
-    public void setStyle(String... styles) {
-        jlineTerminal.applyStyle(styles);
-    }
-
-    @Override
-    public void resetStyle() {
-        if (baseStyle == null && getPrimaryStyle() != null) {
-            baseStyle = new Style(getPrimaryStyle());
-        }
-        setStyle(baseStyle);
-    }
-
-    @Override
-    public void resetStyle(String... styles) {
-        resetStyle();
-        setStyle(styles);
-    }
-
-    @Override
-    public void secondaryStyle() {
-        if (getSecondaryStyle() != null) {
-            setStyle(new Style(getSecondaryStyle()));
-        } else {
-            resetStyle();
-        }
-    }
-
-    @Override
-    public void successStyle() {
-        if (getSecondaryStyle() != null) {
-            setStyle(new Style(getSuccessStyle()));
-        } else {
-            resetStyle();
-        }
-    }
-
-    @Override
-    public void dangerStyle() {
-        if (getSecondaryStyle() != null) {
-            setStyle(new Style(getDangerStyle()));
-        } else {
-            resetStyle();
-        }
-    }
-
-    @Override
-    public void warningStyle() {
-        if (getSecondaryStyle() != null) {
-            setStyle(new Style(getWarningStyle()));
-        } else {
-            resetStyle();
-        }
-    }
-
-    @Override
-    public void infoStyle() {
-        if (getSecondaryStyle() != null) {
-            setStyle(new Style(getInfoStyle()));
-        } else {
-            resetStyle();
-        }
+    public void flush() {
+        jlineTerminal.flush();
     }
 
 }

@@ -100,7 +100,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
         ShellStyleConfig shellStyleConfig = shellConfig.getShellStyleConfig();
         if (shellStyleConfig != null) {
-            console.setShellStyleConfig(shellStyleConfig);
+            console.getStyler().setShellStyleConfig(shellStyleConfig);
         }
         String commandPrompt = shellConfig.getPrompt();
         if (commandPrompt != null) {
@@ -140,11 +140,11 @@ public class DefaultConsoleCommander implements ConsoleCommander {
 
     public void run() {
         try {
-            console.setConsoleCommander(this);
+            console.setCommander(this);
 
             for (;;) {
                 try {
-                    String commandLine = console.readCommandLine();
+                    String commandLine = console.readCommand();
                     if (!StringUtils.hasLength(commandLine)) {
                         continue;
                     }
@@ -183,7 +183,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                 }
             }
         } finally {
-            console.setConsoleCommander(null);
+            console.setCommander(null);
 
             if (logger.isDebugEnabled()) {
                 if (shellService != null && shellService.isActive()) {
@@ -213,9 +213,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             command.printHelp(wrappedConsole);
         } catch (ShellCommandExecutionException e) {
             logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e.getCause());
-            console.dangerStyle();
+            console.getStyler().dangerStyle();
             console.writeAbove(e.getMessage());
-            console.resetStyle();
+            console.getStyler().resetStyle();
         } catch (Exception e) {
             logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e);
         } finally {

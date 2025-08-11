@@ -27,26 +27,28 @@ class JLineTextStylerTest {
 
     @Test
     void testParse() throws IOException {
-        String s1 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{reset}}";
-        String s2 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{reset}}";
+        String s1 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{reset}}\n";
+        String s2 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{reset}}\n";
         String s3 = "{{white,bg:black}} black {{black,bg:red}} red {{white,bg:green}} green {{black,bg:yellow}} yellow {{bg:blue}} blue {{bg:magenta}} magenta {{bg:cyan}} cyan {{black,bg:gray}} gray  {{reset}}\n" +
-                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{reset}}";
+                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{reset}}\n";
 
         ShellConsole console = new JLineShellConsole();
-        console.setStyle("bg:black", "WHITE", "underline");
-        console.writeLine("          START          ");
-        console.setStyle("underline:off");
-        console.writeLine(s1);
-        console.writeLine(s2);
-        console.writeLine(s3);
-        console.setStyle("bg:blue");
-        console.writeLine();
-        console.setStyle("bg:GRAY");
-        console.writeLine(s1);
-        console.writeLine(s2);
-        console.writeLine(s3);
-        console.setStyle("bg:black", "underline");
-        console.writeLine("          END          ");
+        console.getStyler().setStyle("bg:black", "WHITE", "underline", "bold");
+        console.write("          START          \n");
+        console.getStyler().setStyle("underline:off", "bold:off");
+        console.getStyler().setStyle("bg:black");
+        console.write(s1);
+        console.write(s2);
+        console.write(s3);
+        console.getStyler().setStyle("white");
+        console.write("--------------------------------------------------------------------\n");
+        console.getStyler().setStyle("bg:white");
+        console.write(s1);
+        console.write(s2);
+        console.write(s3);
+        console.getStyler().setStyle("bg:black", "underline");
+        console.write("          END          \n");
+        console.flush();
     }
 
 }

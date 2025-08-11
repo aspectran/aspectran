@@ -17,7 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.DefaultPromptStringBuilder;
 import com.aspectran.shell.console.PromptStringBuilder;
-import com.aspectran.shell.jline.console.JLineTerminal.Style;
+import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
@@ -34,8 +34,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
         super();
         this.console = console;
         this.jlineTerminal = console.getJlineTerminal();
-        this.baseStyle = console.getBaseStyle();
-        this.style = console.getBaseStyle();
+        this.baseStyle = console.getStyler().getBaseStyle();
+        this.style = console.getStyler().getBaseStyle();
     }
 
     @Override
@@ -67,8 +67,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     @Override
     public PromptStringBuilder secondaryStyle() {
-        if (console.getSecondaryStyle() != null) {
-            return setStyle(new Style(console.getSecondaryStyle()));
+        if (console.getStyler().getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getStyler().getSecondaryStyle()));
         } else {
             return resetStyle();
         }
@@ -76,8 +76,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     @Override
     public PromptStringBuilder successStyle() {
-        if (console.getSecondaryStyle() != null) {
-            return setStyle(new Style(console.getSuccessStyle()));
+        if (console.getStyler().getSuccessStyle() != null) {
+            return setStyle(new Style(console.getStyler().getSuccessStyle()));
         } else {
             return resetStyle();
         }
@@ -85,8 +85,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     @Override
     public PromptStringBuilder dangerStyle() {
-        if (console.getSecondaryStyle() != null) {
-            return setStyle(new Style(console.getDangerStyle()));
+        if (console.getStyler().getDangerStyle() != null) {
+            return setStyle(new Style(console.getStyler().getDangerStyle()));
         } else {
             return resetStyle();
         }
@@ -94,8 +94,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     @Override
     public PromptStringBuilder warningStyle() {
-        if (console.getSecondaryStyle() != null) {
-            return setStyle(new Style(console.getWarningStyle()));
+        if (console.getStyler().getWarningStyle() != null) {
+            return setStyle(new Style(console.getStyler().getWarningStyle()));
         } else {
             return resetStyle();
         }
@@ -103,8 +103,8 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     @Override
     public PromptStringBuilder infoStyle() {
-        if (console.getSecondaryStyle() != null) {
-            return setStyle(new Style(console.getInfoStyle()));
+        if (console.getStyler().getInfoStyle() != null) {
+            return setStyle(new Style(console.getStyler().getInfoStyle()));
         } else {
             return resetStyle();
         }

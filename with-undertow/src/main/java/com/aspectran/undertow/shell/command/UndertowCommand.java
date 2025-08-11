@@ -181,9 +181,9 @@ public class UndertowCommand extends AbstractCommand {
 
     private void printStatus(String status, @NonNull ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
-        console.setStyle("YELLOW");
+        console.getStyler().setStyle("YELLOW");
         console.write(status);
-        console.resetStyle();
+        console.getStyler().resetStyle();
         console.writeLine(" - Undertow " + TowServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
     }

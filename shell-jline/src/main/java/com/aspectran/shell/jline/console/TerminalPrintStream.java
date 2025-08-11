@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.shell.jline.console.JLineTerminal.Style;
+import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.PrintStream;

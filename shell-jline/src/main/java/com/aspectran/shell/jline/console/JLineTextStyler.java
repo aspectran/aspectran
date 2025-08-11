@@ -206,6 +206,9 @@ public class JLineTextStyler {
                     case "fg:white":
                         baseStyle = baseStyle.foreground(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
                         break;
+                    case "fg:off":
+                        baseStyle = baseStyle.foregroundOff();
+                        break;
                     case "bg:black":
                     case "bg:BLACK":
                         baseStyle = baseStyle.background(AttributedStyle.BLACK);
@@ -255,6 +258,9 @@ public class JLineTextStyler {
                     case "bg:WHITE":
                     case "bg:white":
                         baseStyle = baseStyle.background(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
+                        break;
+                    case "bg:off":
+                        baseStyle = baseStyle.backgroundOff();
                         break;
                     default:
                         int color = -1;

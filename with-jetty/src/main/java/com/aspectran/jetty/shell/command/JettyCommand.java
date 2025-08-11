@@ -181,9 +181,9 @@ public class JettyCommand extends AbstractCommand {
 
     private void printStatus(@NonNull String status, @NonNull ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
-        console.setStyle("YELLOW");
+        console.getStyler().setStyle("YELLOW");
         console.write(status);
-        console.resetStyle();
+        console.getStyler().resetStyle();
         console.writeLine(" - Jetty " + JettyServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
     }

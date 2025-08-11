@@ -107,9 +107,9 @@ public class TransletPreProcedure {
 
     private void printDescription(String description) {
         if (description != null) {
-            console.infoStyle();
+            console.getStyler().infoStyle();
             console.writeLine(description);
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
     }
 
@@ -125,9 +125,9 @@ public class TransletPreProcedure {
     private void printRequiredParameters() {
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            console.secondaryStyle();
+            console.getStyler().secondaryStyle();
             console.writeLine("Required parameters:");
-            console.resetStyle();
+            console.getStyler().resetStyle();
             if (!readSimply) {
                 writeItems(parameterItemRuleMap.values(), TokenType.PARAMETER);
             }
@@ -138,9 +138,9 @@ public class TransletPreProcedure {
         if (!readSimply) {
             ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                console.secondaryStyle();
+                console.getStyler().secondaryStyle();
                 console.writeLine("Required attributes:");
-                console.resetStyle();
+                console.getStyler().resetStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
             }
         }
@@ -148,29 +148,29 @@ public class TransletPreProcedure {
 
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
-            console.dangerStyle();
+            console.getStyler().dangerStyle();
             console.writeLine("Some mandatory parameters are missing:");
             for (ItemRule ir : itemRules) {
-                console.warningStyle();
+                console.getStyler().warningStyle();
                 console.write(" * ");
-                console.resetStyle("bold");
+                console.getStyler().resetStyle("bold");
                 console.writeLine(ir.getName());
             }
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
     }
 
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
-            console.dangerStyle();
+            console.getStyler().dangerStyle();
             console.writeLine("Some mandatory attributes are missing:");
             for (ItemRule ir : itemRules) {
-                console.warningStyle();
+                console.getStyler().warningStyle();
                 console.write(" * ");
-                console.resetStyle("bold");
+                console.getStyler().resetStyle("bold");
                 console.writeLine(ir.getName());
             }
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
     }
 
@@ -193,9 +193,9 @@ public class TransletPreProcedure {
             missingItemRules = checkRequiredParameters(itemRules);
         }
         if (missingItemRules != null) {
-            console.warningStyle();
+            console.getStyler().warningStyle();
             console.writeLine("Missing mandatory parameters:");
-            console.resetStyle();
+            console.getStyler().resetStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
             }
@@ -256,9 +256,9 @@ public class TransletPreProcedure {
 
     @Nullable
     private Collection<ItemRule> readEachToken(@NonNull Collection<ItemRule> itemRules) {
-        console.secondaryStyle();
+        console.getStyler().secondaryStyle();
         console.writeLine("Enter a value for each token:");
-        console.resetStyle();
+        console.getStyler().resetStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
@@ -357,11 +357,11 @@ public class TransletPreProcedure {
     }
 
     private void writeItem(@NonNull ItemRule itemRule, Token[] tokens) {
-        console.warningStyle();
+        console.getStyler().warningStyle();
         console.write(getMandatoryMarker(itemRule.isMandatory()));
-        console.resetStyle("bold");
+        console.getStyler().resetStyle("bold");
         console.write(itemRule.getName());
-        console.resetStyle();
+        console.getStyler().resetStyle();
         if (tokens != null && tokens.length > 0) {
             console.write(": ");
             if (itemRule.isSecret()) {
@@ -380,13 +380,13 @@ public class TransletPreProcedure {
             console.write(token.stringify());
         } else {
             String str = token.stringify();
-            console.infoStyle();
+            console.getStyler().infoStyle();
             console.write(str.substring(0, 2));
-            console.resetStyle("bold");
+            console.getStyler().resetStyle("bold");
             console.write(str.substring(2, str.length() - 1));
-            console.infoStyle();
+            console.getStyler().infoStyle();
             console.write(str.substring(str.length() - 1));
-            console.resetStyle();
+            console.getStyler().resetStyle();
         }
     }
 
