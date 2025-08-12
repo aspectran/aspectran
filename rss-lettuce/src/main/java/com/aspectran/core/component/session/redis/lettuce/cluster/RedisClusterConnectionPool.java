@@ -28,7 +28,12 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import java.util.Arrays;
 
 /**
- * Redis cluster connection pool based on Lettuce.
+ * Redis Cluster connection pool based on Lettuce and Apache Commons Pool.
+ * <p>
+ * Creates and borrows {@link io.lettuce.core.cluster.api.StatefulRedisClusterConnection} instances
+ * that encode/decode values using a provided {@link SessionDataCodec}. Configure with
+ * {@link RedisClusterConnectionPoolConfig}.
+ * </p>
  *
  * <p>Created: 2019/12/08</p>
  */
@@ -40,15 +45,31 @@ public class RedisClusterConnectionPool implements ConnectionPool<StatefulRedisC
 
     private GenericObjectPool<StatefulRedisClusterConnection<String, SessionData>> pool;
 
+    /**
+     * Create a new pool with the given configuration.
+     * @param poolConfig the pool configuration providing Redis URIs and client options
+     */
     public RedisClusterConnectionPool(RedisClusterConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
 
+    /**
+     * Borrows a clustered connection from the pool.
+     * @return a ready-to-use clustered connection
+     * @throws Exception if the pool is not initialized or cannot provide a connection
+     */
     public StatefulRedisClusterConnection<String, SessionData> getConnection() throws Exception {
         Assert.state(pool != null, "No RedisClusterConnectionPool configured");
         return pool.borrowObject();
     }
 
+    /**
+     * Initializes this pool by creating a {@link RedisClusterClient} and configuring
+     * an internal pool that creates clustered connections with the provided codec.
+     * @param codec the codec used to serialize/deserialize {@link SessionData}
+     * @throws IllegalArgumentException if the Redis URIs are missing
+     * @throws IllegalStateException if initialization is attempted more than once
+     */
     @Override
     public void initialize(SessionDataCodec codec) {
         Assert.state(pool == null, "RedisClusterConnectionPool is already configured");
@@ -65,6 +86,10 @@ public class RedisClusterConnectionPool implements ConnectionPool<StatefulRedisC
                         -> client.connect(codec), poolConfig);
     }
 
+    /**
+     * Closes the internal pool and shuts down the {@link RedisClusterClient}.
+     * This method is idempotent and can be invoked multiple times safely.
+     */
     @Override
     public void destroy() {
         if (pool != null) {

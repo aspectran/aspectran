@@ -18,6 +18,9 @@ package com.aspectran.core.component.session.redis.lettuce;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
+ * FactoryBean variant of {@link DefaultLettuceSessionStoreFactory} that eagerly creates
+ * and exposes a singleton {@link DefaultLettuceSessionStore} instance.
+ *
  * <p>Created: 2024. 12. 26.</p>
  */
 public class DefaultLettuceSessionStoreFactoryBean extends DefaultLettuceSessionStoreFactory

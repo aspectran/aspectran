@@ -38,15 +38,26 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
 
     private final Set<String> nonPersistentAttributes;
 
+    /**
+     * Creates a codec for String keys and {@link SessionData} values.
+     * @param nonPersistentAttributes attribute names to exclude from serialization; may be {@code null}
+     */
     public SessionDataCodec(Set<String> nonPersistentAttributes) {
         this.nonPersistentAttributes = nonPersistentAttributes;
     }
 
+    /**
+     * Decodes a String key from UTF-8 bytes.
+     */
     @Override
     public String decodeKey(ByteBuffer bytes) {
         return UTF8.decode(bytes).toString();
     }
 
+    /**
+     * Decodes {@link SessionData} from a ByteBuffer.
+     * @throws SessionDataSerializationException if deserialization fails
+     */
     @Override
     public SessionData decodeValue(ByteBuffer bytes) {
         try {
@@ -59,11 +70,19 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
         }
     }
 
+    /**
+     * Encodes a String key as UTF-8 bytes.
+     */
     @Override
     public ByteBuffer encodeKey(String key) {
         return UTF8.encode(key);
     }
 
+    /**
+     * Encodes {@link SessionData} into a ByteBuffer using {@link SessionData#serialize} and
+     * excluding any attributes configured as non-persistent.
+     * @throws SessionDataSerializationException if serialization fails
+     */
     @Override
     public ByteBuffer encodeValue(SessionData value) {
         try {

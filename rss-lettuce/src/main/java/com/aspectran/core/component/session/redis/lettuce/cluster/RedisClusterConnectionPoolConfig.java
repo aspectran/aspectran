@@ -28,7 +28,23 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Redis cluster connection pool configuration based on Lettuce.
+ * Configuration holder for a Lettuce-backed Redis Cluster connection pool.
+ * <p>
+ * Extends Apache Commons Pool's {@link org.apache.commons.pool2.impl.GenericObjectPoolConfig}
+ * to expose Redis Cluster–specific properties:
+ * </p>
+ * <ul>
+ *   <li>{@link #getRedisURIs() redisURIs} — target cluster node endpoints used to create connections</li>
+ *   <li>{@link #getClusterClientOptions() clusterClientOptions} — optional
+ *       {@link io.lettuce.core.cluster.ClusterClientOptions} applied to the underlying
+ *       {@link io.lettuce.core.cluster.RedisClusterClient}</li>
+ * </ul>
+ * The remaining pooling knobs (maxTotal, maxIdle, minIdle, etc.) are inherited from
+ * {@code GenericObjectPoolConfig}.
+ *
+ * <p>Typical usage: populate this config (either with {@link #setRedisURIs(RedisURI...)}
+ * or {@link #setUri(String)}), optionally set {@link #setClusterClientOptions(ClusterClientOptions)},
+ * then supply it to {@link RedisClusterConnectionPool} which will create/configure the actual pool.</p>
  *
  * <p>Created: 2019/12/07</p>
  */
@@ -38,14 +54,30 @@ public class RedisClusterConnectionPoolConfig extends GenericObjectPoolConfig<St
 
     private ClusterClientOptions clusterClientOptions;
 
+    /**
+     * Creates a new config with default pooling parameters inherited from
+     * {@link GenericObjectPoolConfig}. Customize pool sizing and behavior via the
+     * superclass setters (e.g., setMaxTotal, setMaxIdle) and cluster specifics via
+     * {@link #setRedisURIs(RedisURI...)}/{@link #setUri(String)} and
+     * {@link #setClusterClientOptions(ClusterClientOptions)}.
+     */
     public RedisClusterConnectionPoolConfig() {
         super();
     }
 
+    /**
+     * Returns the Redis Cluster node URIs used to create new connections.
+     * @return the array of RedisURIs to connect to (may be a single-element array)
+     */
     public RedisURI[] getRedisURIs() {
         return redisURIs;
     }
 
+    /**
+     * Sets the cluster node endpoints.
+     * @param redisURIs one or more RedisURIs (must not be {@code null} or empty)
+     * @throws IllegalArgumentException if {@code redisURIs} is {@code null} or empty
+     */
     public void setRedisURIs(RedisURI... redisURIs) {
         if (redisURIs == null || redisURIs.length == 0) {
             throw new IllegalArgumentException("redisURIs must not be null or empty");
@@ -53,6 +85,15 @@ public class RedisClusterConnectionPoolConfig extends GenericObjectPoolConfig<St
         this.redisURIs = redisURIs;
     }
 
+    /**
+     * Convenience to parse a single cluster-style URI and set the resulting node list.
+     * <p>
+     * The URI may reference a seed node or a comma-separated list, which will be converted
+     * into {@link RedisURI}s via {@link RedisClusterURIUtil#toRedisURIs(URI)}.
+     * </p>
+     * @param uri a Redis Cluster URI string (must not be {@code null} or empty)
+     * @throws IllegalArgumentException if {@code uri} is {@code null} or empty
+     */
     public void setUri(String uri) {
         if (!StringUtils.hasText(uri)) {
             throw new IllegalArgumentException("uri must not be null or empty");
@@ -61,10 +102,19 @@ public class RedisClusterConnectionPoolConfig extends GenericObjectPoolConfig<St
         this.redisURIs = redisURIs.toArray(new RedisURI[0]);
     }
 
+    /**
+     * Returns optional Lettuce cluster client options to tune connection behavior.
+     * @return the cluster client options, or {@code null} if none set
+     */
     public ClusterClientOptions getClusterClientOptions() {
         return clusterClientOptions;
     }
 
+    /**
+     * Sets optional Lettuce cluster client options to apply to the {@code RedisClusterClient}
+     * created by the pool. Safe to leave {@code null}.
+     * @param clusterClientOptions the cluster client options
+     */
     public void setClusterClientOptions(ClusterClientOptions clusterClientOptions) {
         this.clusterClientOptions = clusterClientOptions;
     }

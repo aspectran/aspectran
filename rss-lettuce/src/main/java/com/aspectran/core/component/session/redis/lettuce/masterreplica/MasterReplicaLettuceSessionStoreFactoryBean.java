@@ -18,6 +18,9 @@ package com.aspectran.core.component.session.redis.lettuce.masterreplica;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
+ * FactoryBean variant of {@link MasterReplicaLettuceSessionStoreFactory} that eagerly creates
+ * and exposes a singleton {@link MasterReplicaLettuceSessionStore} instance.
+ *
  * <p>Created: 2024. 12. 26.</p>
  */
 public class MasterReplicaLettuceSessionStoreFactoryBean extends MasterReplicaLettuceSessionStoreFactory

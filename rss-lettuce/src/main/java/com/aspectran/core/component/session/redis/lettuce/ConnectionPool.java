@@ -16,14 +16,33 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 /**
+ * Abstraction for a pool that supplies Lettuce connections and manages their lifecycle.
+ * <p>
+ * Implementations create, borrow, and return underlying Lettuce connections and
+ * provide simple hooks to initialize with a {@link SessionDataCodec} and to destroy
+ * resources when the pool is no longer needed.
+ * </p>
+ *
  * <p>Created: 2019/12/23</p>
  */
 public interface ConnectionPool<T> {
 
+    /**
+     * Borrows a connection from the pool.
+     * @return a ready-to-use connection
+     * @throws Exception if a connection cannot be obtained
+     */
     T getConnection() throws Exception;
 
+    /**
+     * Initializes the pool with the given session codec for value serialization.
+     * @param codec the codec used to encode/decode {@code SessionData}
+     */
     void initialize(SessionDataCodec codec);
 
+    /**
+     * Destroys this pool and releases all underlying resources.
+     */
     void destroy();
 
 }

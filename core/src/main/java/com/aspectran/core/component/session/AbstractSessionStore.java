@@ -26,8 +26,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Abstract Implementation for SessionStore.
- *
  * <p>Created: 2017. 9. 10.</p>
  */
 public abstract class AbstractSessionStore extends AbstractComponent implements SessionStore {
