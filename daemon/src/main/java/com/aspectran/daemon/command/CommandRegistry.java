@@ -19,14 +19,40 @@ import com.aspectran.daemon.Daemon;
 
 import java.util.Collection;
 
+/**
+ * Registry of daemon commands.
+ * <p>
+ * Provides lookup and enumeration of {@link Command} implementations associated
+ * with a {@link com.aspectran.daemon.Daemon}. Implementations may support
+ * dynamic registration.
+ * </p>
+ */
 public interface CommandRegistry {
 
+    /**
+     * Returns the owning daemon instance associated with this registry.
+     * @return the {@link Daemon}
+     */
     Daemon getDaemon();
 
+    /**
+     * Look up a command by its descriptor name.
+     * @param commandName the command name as exposed by {@link Command.Descriptor#getName()}
+     * @return the matching command instance, or {@code null} if not registered
+     */
     Command getCommand(String commandName);
 
+    /**
+     * Look up a command by its concrete implementation class.
+     * @param commandClass the command class to match
+     * @return the registered command of the given class, or {@code null} if none
+     */
     Command getCommand(Class<? extends Command> commandClass);
 
+    /**
+     * Get all registered commands in this registry.
+     * @return a collection view of all commands (iteration order is implementation-specific)
+     */
     Collection<Command> getAllCommands();
 
 }

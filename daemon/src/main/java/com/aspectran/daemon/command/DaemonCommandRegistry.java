@@ -22,6 +22,14 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Default {@link CommandRegistry} implementation used by the daemon.
+ * <p>
+ * Maintains an insertion-ordered map of commands keyed by their descriptor name
+ * and supports programmatic registration either by class or by fully qualified
+ * class name via reflection.
+ * </p>
+ */
 public class DaemonCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();

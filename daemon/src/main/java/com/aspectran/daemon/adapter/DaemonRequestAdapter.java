@@ -20,7 +20,12 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * Adapt Daemon Request to Core {@link RequestAdapter}.
+ * Request adapter used by the daemon runtime.
+ * <p>
+ * This is a thin specialization of {@link com.aspectran.core.adapter.DefaultRequestAdapter}
+ * that is instantiated with the daemon’s request method and optionally pre-populated
+ * attributes/parameters by {@link com.aspectran.daemon.activity.DaemonActivity}.
+ * </p>
  */
 public class DaemonRequestAdapter extends DefaultRequestAdapter {
 

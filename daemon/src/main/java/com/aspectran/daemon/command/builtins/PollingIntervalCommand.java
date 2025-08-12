@@ -21,6 +21,10 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Built-in command that changes the daemon's file commander's polling interval.
+ * <p>Command name: "pollingInterval" (namespace: "builtins").</p>
+ */
 public class PollingIntervalCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

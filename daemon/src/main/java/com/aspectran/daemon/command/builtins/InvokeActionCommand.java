@@ -27,6 +27,10 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Built-in command that executes a method on the specified bean.
+ * <p>Command name: "invokeAction" (namespace: "builtins").</p>
+ */
 public class InvokeActionCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

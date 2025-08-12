@@ -31,6 +31,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Executes daemon commands asynchronously using a thread pool.
+ * <p>
+ * Maintains a bounded executor backed by a {@link ThreadPoolExecutor} and
+ * tracks queue size to enforce commands marked as {@code isolated} to run
+ * without concurrency. Provides a simple {@link Callback} hook to notify
+ * callers of success or failure after execution.
+ * </p>
+ */
 public class CommandExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandExecutor.class);

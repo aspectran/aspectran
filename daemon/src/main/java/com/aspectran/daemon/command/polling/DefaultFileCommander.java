@@ -37,7 +37,20 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * File system-based commander.
+ * Default {@link FileCommander} that uses the local filesystem as a queue.
+ * <p>
+ * It manages a simple directory layout under the daemon base path:
+ * <ul>
+ *   <li>/cmd/incoming — new commands to be picked up by the poller</li>
+ *   <li>/cmd/queued — commands that are being processed</li>
+ *   <li>/cmd/completed — successfully processed commands</li>
+ *   <li>/cmd/failed — commands that failed during processing</li>
+ * </ul>
+ * The polling cycle retrieves command files from the incoming directory, moves
+ * them into the queue, executes them via {@link CommandExecutor}, and finally
+ * persists the result into the completed/failed directory. When re-queue is
+ * enabled, pending items in the queue can be moved back to incoming on restart.
+ * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
  */

@@ -21,6 +21,10 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Built-in command that gracefully shuts down the daemon when supported.
+ * <p>Command name: "quit" (namespace: "builtins").</p>
+ */
 public class QuitCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

@@ -20,7 +20,12 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
+ * Session adapter used by the daemon runtime.
+ * <p>
+ * This class delegates to {@link com.aspectran.core.adapter.DefaultSessionAdapter}
+ * and is created by daemon services to provide session access within
+ * {@link com.aspectran.daemon.activity.DaemonActivity} executions.
+ * </p>
  */
 public class DaemonSessionAdapter extends DefaultSessionAdapter {
 

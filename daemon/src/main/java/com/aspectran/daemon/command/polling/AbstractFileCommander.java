@@ -20,6 +20,13 @@ import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 
 /**
+ * Base implementation of {@link FileCommander} providing common state and behavior.
+ * <p>
+ * Holds a reference to the owning {@link Daemon}, manages the configurable polling
+ * interval, and exposes whether queued commands are re-queuable based on the
+ * provided {@link DaemonPollingConfig}.
+ * </p>
+ *
  * <p>Created: 2017. 12. 11.</p>
  */
 public abstract class AbstractFileCommander implements FileCommander {

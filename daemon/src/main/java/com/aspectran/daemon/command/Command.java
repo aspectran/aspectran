@@ -54,7 +54,6 @@ public interface Command {
          * The purpose of the namespace is to provide an identifier to group
          * commands without relying on class name or other convoluted approaches
          * to group commands.
-         *
          * @return the command's namespace
          */
         String getNamespace();
@@ -62,7 +61,6 @@ public interface Command {
         /**
          * Implementation of this method should return a simple string (with no spaces)
          * that identifies the action mapped to this command.
-         *
          * @return the name of the action mapped to this command.
          */
         String getName();
@@ -70,7 +68,6 @@ public interface Command {
         /**
          * This method should return a descriptive text about the command
          * it is attached to.
-         *
          * @return a descriptive text about the command
          */
         String getDescription();

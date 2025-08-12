@@ -38,10 +38,16 @@ import com.aspectran.utils.apon.AponReader;
 import java.io.File;
 
 /**
- * The Abstract Daemon.
+ * Base implementation of the {@link Daemon} contract.
+ * <p>
+ * This class wires together the daemon service, command executor/registry, and
+ * optional file-based command polling. It provides common lifecycle operations
+ * such as prepare, start (optionally waiting), stop, and destroy. Subclasses
+ * may extend behavior but typically use this as-is via {@link DefaultDaemon} or
+ * platform wrappers (e.g., {@link JsvcDaemon}, {@link ProcrunDaemon}).
+ * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
- *
  * @since 5.1.0
  */
 public class AbstractDaemon implements Daemon {

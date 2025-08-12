@@ -23,32 +23,53 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
- * Start and Stop Aspectran Daemon using Procrun.
+ * Utilities for running the Aspectran daemon as a Windows service via Apache Commons Procrun.
+ * <p>
+ * Provides static entry points that Procrun can bind to (start/stop) and delegates to
+ * an internal {@link DefaultDaemon} instance.
+ * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
- *
  * @since 5.1.0
  */
 public class ProcrunDaemon {
 
     private static DefaultDaemon defaultDaemon;
 
+    /**
+     * Returns the active {@link DefaultDaemon} instance managed by this helper.
+     * @return the active DefaultDaemon
+     * @throws IllegalStateException if no daemon has been started
+     */
     protected static DefaultDaemon getDefaultDaemon() {
         Assert.state(defaultDaemon != null,
             "No DefaultDaemon available");
         return defaultDaemon;
     }
 
+    /**
+     * Procrun entry point for starting the daemon.
+     * @param params command-line parameters passed by Procrun
+     */
     public static void start(String[] params) {
         Thread.currentThread().setName("procrun-start");
         start(params, 0L);
     }
 
+    /**
+     * Procrun entry point for stopping the daemon.
+     * @param args parameters passed by Procrun (ignored)
+     */
     public static void stop(String[] args) {
         Thread.currentThread().setName("procrun-stop");
         stop();
     }
 
+    /**
+     * Internal start routine used by the public Procrun start entry point.
+     * @param params command-line parameters from Procrun
+     * @param waitTimeoutMillis milliseconds to wait before returning; 0 for non-blocking
+     */
     protected static void start(String[] params, long waitTimeoutMillis) {
         if (defaultDaemon == null) {
             try {
@@ -65,6 +86,10 @@ public class ProcrunDaemon {
         }
     }
 
+    /**
+     * Internal stop routine used by the public Procrun stop entry point.
+     * Destroys the underlying {@link DefaultDaemon} if present.
+     */
     protected static void stop() {
         if (defaultDaemon != null) {
             try {
@@ -76,6 +101,17 @@ public class ProcrunDaemon {
         }
     }
 
+    /**
+     * Command-line helper allowing manual start/stop when running outside the service wrapper.
+     * <p>
+     * Usage:
+     * <ul>
+     *   <li>start [options]</li>
+     *   <li>stop</li>
+     * </ul>
+     * </p>
+     * @param args the arguments where the first token is "start" or "stop"
+     */
     public static void main(@NonNull String[] args) {
         if (args.length > 0) {
             if ("start".equals(args[0])) {

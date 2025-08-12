@@ -48,8 +48,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * A daemon command that displays detailed information about an aspect,
- * translet, or scheduled job, and can control its active state.
+ * Built-in command that displays detailed information about an aspect, translet, or scheduled job,
+ * and can control its active state.
+ * <p>Command name: "component" (namespace: "builtins").</p>
  */
 public class ComponentCommand extends AbstractCommand {
 

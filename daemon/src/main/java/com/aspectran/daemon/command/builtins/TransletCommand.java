@@ -28,6 +28,10 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 import java.util.Map;
 
+/**
+ * Built-in command that executes a translet and returns its response output if any.
+ * <p>Command name: "translet" (namespace: "builtins").</p>
+ */
 public class TransletCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

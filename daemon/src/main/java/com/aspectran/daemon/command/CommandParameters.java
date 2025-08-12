@@ -34,6 +34,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Holder for all parameters required to execute a daemon command.
+ * <p>
+ * Supports multiple addressing models:
+ * <ul>
+ *   <li><b>command</b>: name of a built-in command to run</li>
+ *   <li><b>translet</b>: translet name to execute</li>
+ *   <li><b>bean</b> and <b>method</b>: a bean method to invoke</li>
+ * </ul>
+ * and optional payloads such as <b>arguments</b>, <b>properties</b>,
+ * request <b>parameters</b>, request <b>attributes</b>, a <b>requeuable</b>
+ * flag for file-based polling, and a textual <b>result</b> field.
+ * </p>
  * <p>Created: 2017. 12. 11.</p>
  */
 public class CommandParameters extends AbstractParameters {

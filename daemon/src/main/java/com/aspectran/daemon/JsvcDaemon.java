@@ -22,16 +22,28 @@ import org.apache.commons.daemon.DaemonContext;
 import java.io.File;
 
 /**
- * Start and Stop Aspectran Daemon using Jsvc.
+ * Adapter for running the Aspectran daemon under Apache Commons Daemon (Jsvc).
+ * <p>
+ * Delegates lifecycle events from the service wrapper to an internal {@link DefaultDaemon} instance.
+ * This enables installing Aspectran as a Unix service via Jsvc with proper start/stop hooks.
+ * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
- *
  * @since 5.1.0
  */
 public class JsvcDaemon implements Daemon {
 
     private DefaultDaemon defaultDaemon;
 
+    /**
+     * Initializes the internal {@link DefaultDaemon} using arguments from the provided context.
+     * <p>
+     * Extracts the base path and Aspectran configuration file from {@link DaemonContext#getArguments()} and
+     * invokes {@link DefaultDaemon#prepare(String, File)}.
+     * </p>
+     * @param daemonContext the daemon context supplying command-line arguments
+     * @throws Exception if preparation fails
+     */
     @Override
     public void init(DaemonContext daemonContext) throws Exception {
         if (defaultDaemon == null) {
@@ -50,6 +62,10 @@ public class JsvcDaemon implements Daemon {
         }
     }
 
+    /**
+     * Starts the daemon service.
+     * @throws Exception if the daemon is already running or cannot start
+     */
     @Override
     public void start() throws Exception {
         if (defaultDaemon != null) {
@@ -60,6 +76,10 @@ public class JsvcDaemon implements Daemon {
         }
     }
 
+    /**
+     * Stops the daemon service.
+     * @throws Exception if the daemon is not running or cannot stop
+     */
     @Override
     public void stop() throws Exception {
         if (defaultDaemon != null) {
@@ -70,6 +90,10 @@ public class JsvcDaemon implements Daemon {
         }
     }
 
+    /**
+     * Destroys the daemon service and releases resources.
+     * Safe to call multiple times.
+     */
     @Override
     public void destroy() {
         if (defaultDaemon != null) {

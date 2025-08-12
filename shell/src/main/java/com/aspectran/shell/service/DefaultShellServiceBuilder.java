@@ -25,6 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Factory for constructing and wiring a {@link DefaultShellService} instance.
+ * <p>
+ * Applies {@link AspectranConfig}, registers a {@link ServiceStateListener} to
+ * manage session lifecycle and console UI (greetings/help), and returns a ready
+ * service instance to be started by the shell.
+ * </p>
  * <p>Created: 4/1/24</p>
  */
 public class DefaultShellServiceBuilder {

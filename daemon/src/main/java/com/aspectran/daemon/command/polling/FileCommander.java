@@ -19,7 +19,13 @@ import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 
 /**
- * The file commander.
+ * Abstraction for a file-based command polling mechanism.
+ * <p>
+ * Implementations watch a filesystem location for serialized command requests,
+ * periodically polling for new items and delegating their execution to a
+ * {@link CommandExecutor}. Implementations may support re-queuing unfinished
+ * commands depending on configuration.
+ * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
  */

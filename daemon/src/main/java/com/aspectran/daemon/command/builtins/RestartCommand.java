@@ -22,6 +22,10 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Built-in command that restarts the daemon service to reload resources.
+ * <p>Command name: "restart" (namespace: "builtins").</p>
+ */
 public class RestartCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

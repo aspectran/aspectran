@@ -16,7 +16,12 @@
 package com.aspectran.daemon.command;
 
 /**
- * It contains the results of executing the command.
+ * Represents the outcome of a daemon command execution.
+ * <p>
+ * A {@code CommandResult} is immutable and contains a success flag and an
+ * optional textual message produced by the command. When a command finishes
+ * without a textual response, the {@code result} may be {@code null}.
+ * </p>
  *
  * <p>Created: 2019-01-19</p>
  */
@@ -29,17 +34,25 @@ public class CommandResult {
     /**
      * Creates a new instance of the command result.
      * @param success whether the command executed successfully
-     * @param result the output of executed command
+     * @param result the output produced by the executed command; may be {@code null}
      */
     public CommandResult(boolean success, String result) {
         this.success = success;
         this.result = result;
     }
 
+    /**
+     * Indicates whether the associated command completed successfully.
+     * @return {@code true} if the command succeeded; {@code false} otherwise
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Returns the textual output produced by the command, if any.
+     * @return the command output, or {@code null} if the command did not produce text
+     */
     public String getResult() {
         return result;
     }

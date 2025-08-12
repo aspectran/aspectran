@@ -28,7 +28,23 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * The Class DefaultDaemonService.
+ * Default implementation of {@link DaemonService} that executes named requests (translets)
+ * within a daemon-oriented {@link com.aspectran.daemon.activity.DaemonActivity}.
+ * <p>
+ * Features:
+ * </p>
+ * <ul>
+ *   <li>Accepts request names optionally prefixed with an HTTP-like method token
+ *       (e.g., "POST foo/bar"). If present the token is parsed into a {@link MethodType}.</li>
+ *   <li>Validates availability of the target translet via {@link #isRequestAcceptable(String)}.</li>
+ *   <li>Builds and prepares a {@link com.aspectran.daemon.activity.DaemonActivity},
+ *       performs it, and returns the bound {@link Translet}.</li>
+ *   <li>Maps failures to {@link CoreServiceException} with a concise root-cause message.</li>
+ *   <li>Honors a pause window via {@link #pauseTimeout}: if paused, the request is skipped.</li>
+ * </ul>
+ *
+ * <p>Thread-safety: instances are typically used as singleton services.
+ * The {@code pauseTimeout} flag is {@code volatile} to allow concurrent checks.</p>
  *
  * @since 5.1.0
  */
@@ -36,12 +52,39 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultDaemonService.class);
 
+    /**
+     * Pause control timeout in milliseconds.
+     * <ul>
+     *   <li>-1: paused indefinitely</li>
+     *   <li>0: not paused</li>
+     *   <li>> 0: paused until the given epoch millis</li>
+     * </ul>
+     */
     protected volatile long pauseTimeout = -1L;
 
+    /**
+     * Package-private constructor used by the daemon infrastructure.
+     * Prefer building via DefaultDaemonServiceBuilder.
+     */
     DefaultDaemonService() {
         super();
     }
 
+    /**
+     * Executes a translet by name using an optional method prefix in the name.
+     * <p>
+     * If {@code name} starts with a recognized {@link MethodType} followed by a space
+     * (e.g., "POST foo/bar"), that method is extracted and used while the remainder
+     * becomes the actual request name. Otherwise, the request method will be resolved
+     * in the two-argument overload.
+     * </p>
+     * @param name the translet name, optionally prefixed with a request method token
+     * @param attributeMap attributes to expose to the request (may be {@code null})
+     * @param parameterMap parameters to expose to the request (may be {@code null})
+     * @return the resulting {@link Translet}, or {@code null} if the service is paused
+     *         or the target translet is not acceptable
+     * @throws IllegalArgumentException if {@code name} is {@code null}
+     */
     @Override
     public Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         MethodType requestMethod = null;
@@ -56,6 +99,21 @@ public class DefaultDaemonService extends AbstractDaemonService {
         return translate(name, requestMethod, attributeMap, parameterMap);
     }
 
+    /**
+     * Executes the given translet with an explicit request {@code method}.
+     * <p>
+     * Returns {@code null} when the service is currently paused or when the translet
+     * is not acceptable according to configuration. On failure, the root cause is
+     * extracted and wrapped in a {@link CoreServiceException} with a concise message.
+     * </p>
+     * @param name the translet name to execute (must not be {@code null})
+     * @param method the request method to use; if {@code null}, defaults to {@link MethodType#GET}
+     * @param attributeMap attributes to expose to the request (may be {@code null})
+     * @param parameterMap parameters to expose to the request (may be {@code null})
+     * @return the resulting {@link Translet}, or {@code null} if paused or unavailable
+     * @throws IllegalArgumentException if {@code name} is {@code null}
+     * @throws CoreServiceException if an error occurs while preparing or performing the activity
+     */
     @Override
     public Translet translate(String name, MethodType method,
                               Map<String, Object> attributeMap, ParameterMap parameterMap) {
@@ -98,6 +156,19 @@ public class DefaultDaemonService extends AbstractDaemonService {
         return translet;
     }
 
+    /**
+     * Checks whether the service is currently paused and should skip execution.
+     * <p>
+     * Semantics of {@link #pauseTimeout}:
+     * </p>
+     * <ul>
+     *   <li>-1: paused indefinitely</li>
+     *   <li>0: not paused</li>
+     *   <li>> 0: paused until the given epoch millis; when expired, automatically unpauses</li>
+     * </ul>
+     * @param name the request name (used for debug logging)
+     * @return {@code true} if paused and the request should be skipped
+     */
     private boolean checkPaused(String name) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {

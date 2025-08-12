@@ -35,6 +35,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Built-in command that prints information about the current JVM and runtime environment.
+ * <p>Supports printing system properties, classpath, and memory usage (with optional GC).</p>
+ * <p>Command name: "sysinfo" (namespace: "builtins").</p>
+ */
 public class SysInfoCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";

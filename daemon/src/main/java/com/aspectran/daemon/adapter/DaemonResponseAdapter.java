@@ -22,7 +22,13 @@ import com.aspectran.core.context.rule.type.ContentType;
 import java.io.Writer;
 
 /**
- * Adapt Daemon Response to Core {@link ResponseAdapter}.
+ * Response adapter used by the daemon runtime.
+ * <p>
+ * This specialization of {@link com.aspectran.core.adapter.DefaultResponseAdapter}
+ * initializes the response content type to plain text and writes output to the
+ * provided {@link Writer}. It is typically created by
+ * {@link com.aspectran.daemon.activity.DaemonActivity}.
+ * </p>
  */
 public class DaemonResponseAdapter extends DefaultResponseAdapter {
 

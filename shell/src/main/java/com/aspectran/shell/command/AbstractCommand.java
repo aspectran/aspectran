@@ -25,6 +25,16 @@ import com.aspectran.shell.service.ShellService;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base support class for shell commands.
+ * <p>
+ * Provides access to the {@link CommandRegistry}, collects option/argument
+ * metadata to drive parsing and help output, and offers convenience methods
+ * for printing usage via {@link com.aspectran.shell.command.option.HelpFormatter}.
+ * Subclasses implement {@link Command#execute} and use {@link #addOption(Option)}
+ * and {@link #touchArguments()} to declare their contract.
+ * </p>
+ */
 public abstract class AbstractCommand implements Command {
 
     private final CommandRegistry registry;

@@ -20,6 +20,15 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Arrays;
 
+/**
+ * Base parser for shell command invocations that target translets or commands.
+ * <p>
+ * Given a tokenized {@link CommandLineParser}, this class extracts a
+ * ParameterMap by interpreting arguments that start with "--" as parameter
+ * names and subsequent tokens as their values (supporting repeated values).
+ * Subclasses provide domain-specific accessors over the parsed data.
+ * </p>
+ */
 public abstract class AbstractCommandLine {
 
     private static final String PARAM_NAME_PREFIX = "--";

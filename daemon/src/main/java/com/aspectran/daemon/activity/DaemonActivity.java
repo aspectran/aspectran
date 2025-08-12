@@ -34,7 +34,14 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * An activity that processes a daemon command.
+ * Activity specialization used by the daemon runtime.
+ * <p>
+ * It prepares adapters suitable for background execution (daemon request/response
+ * and session), delegates to the configured {@link DaemonService}, and runs
+ * a named request with a specific {@link MethodType}.
+ * </p>
+ *
+ * <p>Created: 2017. 12. 11.</p>
  */
 public class DaemonActivity extends CoreActivity {
 
@@ -78,6 +85,11 @@ public class DaemonActivity extends CoreActivity {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns a human-readable representation of the request, combining
+     * method and name when both are available.
+     * @return e.g., "GET foo/bar" or just the name if no method is set
+     */
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
             return requestMethod + " " + requestName;
@@ -96,6 +108,12 @@ public class DaemonActivity extends CoreActivity {
         this.parameterMap = parameterMap;
     }
 
+    /**
+     * Prepares this activity for execution by validating and applying the
+     * configured request name and method.
+     * @throws TransletNotFoundException if the target request cannot be found
+     * @throws ActivityPrepareException if preparation fails for any reason
+     */
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
         Assert.state(requestName != null, "requestName is not set");
         Assert.state(requestMethod != null, "requestMethod is not set");
