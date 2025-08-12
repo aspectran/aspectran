@@ -20,26 +20,59 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
 /**
+ * Advisory helper around an {@link EntityManager} lifecycle and transaction boundaries.
+ * <p>
+ * This class encapsulates a simple usage pattern:
+ * </p>
+ * <ul>
+ *   <li>open(): lazily create and hold an EntityManager</li>
+ *   <li>transactional(): begin a transaction if none is active for this advisor</li>
+ *   <li>commit(): commit the transaction if one had been started via {@link #transactional()}</li>
+ *   <li>close(): rollback any active transaction and close the EntityManager</li>
+ * </ul>
+ * <p>
+ * It is intentionally minimal and does not integrate with container-managed transactions.
+ * </p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public class EntityManagerAdvice {
 
+    /** Factory used to create EntityManager instances. */
     private final EntityManagerFactory entityManagerFactory;
 
+    /** The lazily created EntityManager held by this advisor. */
     private EntityManager entityManager;
 
+    /**
+     * Flag indicating whether the EntityManager was closed by external logic.
+     * When set, transactional operations become no-ops.
+     */
     private boolean arbitrarilyClosed;
 
+    /** Whether a transaction has been started via {@link #transactional()}. */
     private boolean transactional;
 
+    /**
+     * Create a new advisor using the given factory.
+     * @param entityManagerFactory the factory to create EntityManagers
+     */
     public EntityManagerAdvice(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    /**
+     * Returns the currently held EntityManager, or {@code null} if {@link #open()} was not called
+     * or after {@link #close()}.
+     * @return the current EntityManager, or {@code null}
+     */
     public EntityManager getEntityManager() {
         return entityManager;
     }
 
+    /**
+     * Lazily creates an EntityManager if one is not already open.
+     */
     public void open() {
         if (entityManager == null) {
             entityManager = entityManagerFactory.createEntityManager();
@@ -47,6 +80,10 @@ public class EntityManagerAdvice {
         }
     }
 
+    /**
+     * Closes the held EntityManager, rolling back any active transaction first.
+     * Safe to call multiple times.
+     */
     public void close() {
         if (entityManager != null) {
             rollbackTransaction();
@@ -55,10 +92,18 @@ public class EntityManagerAdvice {
         }
     }
 
+    /**
+     * Returns whether this advisor is marked as arbitrarily closed.
+     * @return {@code true} if arbitrarily closed
+     */
     public boolean isArbitrarilyClosed() {
         return arbitrarilyClosed;
     }
 
+    /**
+     * Begins a transaction if none is currently active for this advisor.
+     * If the advisor is marked arbitrarily closed, this is a no-op.
+     */
     public void transactional() {
         if (checkOpen()) {
             return;
@@ -66,6 +111,10 @@ public class EntityManagerAdvice {
         beginTransaction();
     }
 
+    /**
+     * Commits an active transaction started via {@link #transactional()}.
+     * If the advisor is marked arbitrarily closed, this is a no-op.
+     */
     public void commit() {
         if (checkOpen()) {
             return;
@@ -73,6 +122,7 @@ public class EntityManagerAdvice {
         commitTransaction();
     }
 
+    /** Start a new transaction, rolling back any active one first. */
     private void beginTransaction() {
         if (!transactional) {
             EntityTransaction transaction = entityManager.getTransaction();
@@ -84,6 +134,7 @@ public class EntityManagerAdvice {
         }
     }
 
+    /** Commit the current transaction, if one was started. */
     private void commitTransaction() {
         if (transactional) {
             EntityTransaction transaction = entityManager.getTransaction();
@@ -94,6 +145,7 @@ public class EntityManagerAdvice {
         }
     }
 
+    /** Roll back the current transaction, if one was started. */
     private void rollbackTransaction() {
         if (transactional) {
             EntityTransaction transaction = entityManager.getTransaction();
@@ -104,6 +156,12 @@ public class EntityManagerAdvice {
         }
     }
 
+    /**
+     * Checks if operations should proceed: returns true if arbitrarilyClosed is set, throws if
+     * no EntityManager is open, otherwise allows further work.
+     * @return {@code true} if arbitrarily closed and the caller should stop further work
+     * @throws IllegalStateException if no EntityManager has been opened
+     */
     private boolean checkOpen() {
         if (arbitrarilyClosed) {
             return true;

@@ -25,7 +25,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Advice for SqlSession Transactions.
+ * Advisory helper around a MyBatis {@link SqlSession} lifecycle and commit/rollback boundaries.
+ * <p>
+ * Typical usage pattern:
+ * </p>
+ * <ul>
+ *   <li>open(): lazily create and hold a SqlSession</li>
+ *   <li>commit(): commit pending updates if auto-commit is disabled</li>
+ *   <li>rollback(): rollback on error if auto-commit is disabled</li>
+ *   <li>close(): close the session; optionally mark as arbitrarily closed</li>
+ * </ul>
  *
  * @author Juho Jeong
  * @since 2015. 04. 03.

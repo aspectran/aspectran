@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The SqlSession Agent.
+ * An {@link SqlSession} facade that delegates to a context-bound SqlSession
+ * while applying {@link Advisable} semantics. It forwards calls to the
+ * underlying session obtained via {@link SqlSessionProvider#getSqlSession()} and
+ * optionally injects {@link ActivityData} as parameters when autoParameters is enabled.
  */
 public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 

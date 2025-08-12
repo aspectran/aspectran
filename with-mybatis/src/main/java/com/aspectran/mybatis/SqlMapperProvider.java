@@ -17,22 +17,33 @@ package com.aspectran.mybatis;
 
 import org.apache.ibatis.session.SqlSession;
 
+/**
+ * Strategy interface that supplies {@link SqlSession} instances configured for
+ * different executor behaviors (SIMPLE, BATCH, REUSE) and provides convenient
+ * helper methods to obtain mapper proxies for each mode.
+ */
 public interface SqlMapperProvider {
 
+    /** Returns a SqlSession configured with SIMPLE executor behavior. */
     SqlSession getSimpleSqlSession();
 
+    /** Returns a SqlSession configured with BATCH executor behavior. */
     SqlSession getBatchSqlSession();
 
+    /** Returns a SqlSession configured with REUSE executor behavior. */
     SqlSession getReuseSqlSession();
 
+    /** Shortcut to obtain a mapper bound to the SIMPLE SqlSession. */
     default <T> T simple(Class<T> mapperType) {
         return getSimpleSqlSession().getMapper(mapperType);
     }
 
+    /** Shortcut to obtain a mapper bound to the BATCH SqlSession. */
     default <T> T batch(Class<T> mapperType) {
         return getBatchSqlSession().getMapper(mapperType);
     }
 
+    /** Shortcut to obtain a mapper bound to the REUSE SqlSession. */
     default <T> T reuse(Class<T> mapperType) {
         return getReuseSqlSession().getMapper(mapperType);
     }

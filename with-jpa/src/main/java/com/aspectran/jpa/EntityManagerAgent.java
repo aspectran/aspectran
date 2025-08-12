@@ -44,6 +44,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * An {@link EntityManager} facade that delegates to a context-bound EntityManager
+ * while applying {@link Advisable} semantics to ensure transactional boundaries
+ * are respected for mutating operations.
+ *
+ * <p>This class extends {@link EntityManagerProvider} to look up the relevant
+ * EntityManager and simply forwards the vast majority of calls. For operations
+ * that mutate state, it advises to begin a transaction via
+ * {@link EntityManagerAdvice#transactional()}.</p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public class EntityManagerAgent extends EntityManagerProvider implements EntityManager {

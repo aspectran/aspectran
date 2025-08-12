@@ -28,6 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * FactoryBean that builds a Jakarta Persistence {@link EntityManagerFactory}
+ * using Aspectran's activity context for configuration.
+ * <p>
+ * Subclasses may override {@link #configuration()}, {@link #preConfigure(Map)} or
+ * {@link #preConfigure(PersistenceConfiguration)} to customize properties and managed classes
+ * before the factory is created, and {@link #postConfigure(EntityManagerFactory)} after creation.
+ * </p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public class EntityManagerFactoryBean extends InstantActivitySupport

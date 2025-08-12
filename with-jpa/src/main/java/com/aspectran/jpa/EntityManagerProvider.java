@@ -34,6 +34,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
+ * Base support class that locates and manages access to an {@link EntityManager}
+ * and the corresponding {@link EntityManagerAdvice} registered via Aspectran AOP.
+ * <p>
+ * Subclasses can call {@link #getEntityManager()} to obtain a context-bound
+ * EntityManager and rely on {@link #getEntityManagerAdvice()} for transactional
+ * control as configured by the registered aspect.
+ * </p>
+ *
  * <p>Created: 2025-04-24</p>
  */
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {

@@ -35,6 +35,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
+ * Base support class that locates and manages access to a MyBatis {@link SqlSession}
+ * and the corresponding {@link SqlSessionAdvice} registered via Aspectran AOP.
+ * <p>
+ * Subclasses can call {@link #getSqlSession()} to obtain a context-bound
+ * SqlSession and rely on {@link #getSqlSessionAdvice()} for transactional
+ * control (begin/commit/close) as configured by the registered aspect.
+ * </p>
+ *
  * <p>Created: 2025-04-23</p>
  */
 public abstract class SqlSessionProvider extends InstantActivitySupport implements InitializableBean {
@@ -66,6 +74,12 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         this.autoCommit = autoCommit;
     }
 
+    /**
+     * Returns the current SqlSession bound to this advisor/context, opening one
+     * if necessary when previously marked as arbitrarily closed.
+     * @return the active SqlSession
+     * @throws IllegalStateException if a SqlSession has not been opened
+     */
     protected SqlSession getSqlSession() {
         SqlSessionAdvice sqlSessionAdvice = getSqlSessionAdvice();
         SqlSession sqlSession = sqlSessionAdvice.getSqlSession();

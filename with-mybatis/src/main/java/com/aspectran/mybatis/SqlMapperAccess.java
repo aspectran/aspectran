@@ -15,6 +15,15 @@
  */
 package com.aspectran.mybatis;
 
+/**
+ * Convenience base class that provides easy access to MyBatis mapper proxies
+ * with different {@link org.apache.ibatis.session.ExecutorType} strategies.
+ * <p>
+ * Subclasses can expose typed accessors that call {@link #simple()},
+ * {@link #batch()}, or {@link #reuse()} to obtain the mapper with the
+ * corresponding executor behavior from a {@link SqlMapperProvider}.
+ * </p>
+ */
 public abstract class SqlMapperAccess<T> {
 
     private final SqlMapperProvider mapperProvider;
