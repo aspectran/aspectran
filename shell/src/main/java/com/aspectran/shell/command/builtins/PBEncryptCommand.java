@@ -29,7 +29,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.List;
 
 /**
- * Encrypts the input string using the encryption password.
+ * Built-in command that encrypts the given string using a password (PBE).
+ * <p>Command name: "encrypt" (namespace: "builtins").</p>
  */
 public class PBEncryptCommand extends AbstractCommand {
 

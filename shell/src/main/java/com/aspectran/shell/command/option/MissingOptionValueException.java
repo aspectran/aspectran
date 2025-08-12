@@ -40,8 +40,7 @@ public class MissingOptionValueException extends OptionParserException {
     }
 
     /**
-     * Construct a new {@code MissingOptionValueException}
-     * with the specified detail message.
+     * Construct a new {@code MissingOptionValueException} for the specified option.
      * @param option the option requiring an argument
      */
     public MissingOptionValueException(@NonNull Option option) {

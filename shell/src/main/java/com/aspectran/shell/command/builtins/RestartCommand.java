@@ -25,7 +25,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Restarts the Aspectran Shell.
+ * Built-in command that restarts the shell service to reload resources.
+ * <p>Command name: "restart" (namespace: "builtins").</p>
  */
 public class RestartCommand extends AbstractCommand {
 

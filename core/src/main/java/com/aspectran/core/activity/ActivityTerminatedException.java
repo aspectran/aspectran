@@ -33,7 +33,7 @@ public class ActivityTerminatedException extends ActivityPerformException {
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Constructor to create an exception with a message.
      * @param msg a message to associate with the exception
      */
     public ActivityTerminatedException(String msg) {
@@ -41,7 +41,7 @@ public class ActivityTerminatedException extends ActivityPerformException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Constructor to create an exception to wrap another exception.
      * @param cause the real cause of the exception
      */
     public ActivityTerminatedException(Throwable cause) {
@@ -49,7 +49,7 @@ public class ActivityTerminatedException extends ActivityPerformException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Constructor to create an exception to wrap another exception and pass a message.
      * @param msg the message
      * @param cause the real cause of the exception
      */

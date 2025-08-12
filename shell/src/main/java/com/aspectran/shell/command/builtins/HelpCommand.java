@@ -32,7 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Display information about builtin commands.
+ * Built-in command that displays general help or command-specific help.
+ * <p>Command name: "help" (namespace: "builtins").</p>
  */
 public class HelpCommand extends AbstractCommand {
 
@@ -146,8 +147,10 @@ public class HelpCommand extends AbstractCommand {
         return false;
     }
 
-    private String renderCommand(@NonNull Command command, int lineWidth, int commandWidth,
-                                 String leftPad, String descPad) {
+    @Nullable
+    private String renderCommand(
+                @NonNull Command command, int lineWidth, int commandWidth,
+                String leftPad, String descPad) {
         String name = command.getDescriptor().getName();
         String desc = command.getDescriptor().getDescription();
 
@@ -158,7 +161,7 @@ public class HelpCommand extends AbstractCommand {
         }
         sb.append(descPad);
         HelpFormatter.renderWrappedText(sb, lineWidth, sb.length(), desc);
-        return (sb.length() > 0 ? sb.toString() : null);
+        return (!sb.isEmpty() ? sb.toString() : null);
     }
 
     @Override

@@ -18,8 +18,7 @@ package com.aspectran.shell.command.option;
 import java.io.Serial;
 
 /**
- * Exception thrown during parsing signalling an unrecognized
- * option was seen.
+ * Thrown when an unrecognized option is encountered during parsing.
  */
 public class UnrecognizedOptionException extends OptionParserException {
 
@@ -30,7 +29,7 @@ public class UnrecognizedOptionException extends OptionParserException {
     private String option;
 
     /**
-     * Construct a new {@code UnrecognizedArgumentException}
+     * Construct a new {@code UnrecognizedOptionException}
      * with the specified detail message.
      * @param message the detail message
      */
@@ -39,7 +38,7 @@ public class UnrecognizedOptionException extends OptionParserException {
     }
 
     /**
-     * Construct a new {@code UnrecognizedArgumentException}
+     * Construct a new {@code UnrecognizedOptionException}
      * with the specified option and detail message.
      * @param message the detail message
      * @param option the unrecognized option

@@ -24,7 +24,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * A command that display or delete all previously run commands.
+ * Built-in command that prints the command history or clears it.
+ * <p>Command name: "history" (namespace: "builtins").</p>
  */
 public class HistoryCommand extends AbstractCommand {
 
@@ -58,7 +59,7 @@ public class HistoryCommand extends AbstractCommand {
         }
     }
 
-    private void listHistory(ShellConsole console) {
+    private void listHistory(@NonNull ShellConsole console) {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         console.writeLine(" %4s | %-67s ", "No.", "User input commands");
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");

@@ -35,6 +35,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
+/**
+ * Built-in command that lists, describes, and toggles scheduled jobs.
+ * <p>
+ * Provides listing with keyword filtering, detailed rule output, and enable/disable controls
+ * for jobs defined under schedules.
+ * </p>
+ * <p>Command name: "job" (namespace: "builtins").</p>
+ */
 public class JobCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
@@ -98,8 +106,8 @@ public class JobCommand extends AbstractCommand {
         }
     }
 
-    private void listScheduledJobs(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                   String[] keywords) {
+    private void listScheduledJobs(
+            @NonNull ShellService shellService, @NonNull ShellConsole console, String[] keywords) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
                 "----", "--------------------", "----------------------------------", "-------");
@@ -138,9 +146,9 @@ public class JobCommand extends AbstractCommand {
                 "----", "--------------------", "----------------------------------", "-------");
     }
 
-    private void describeScheduledJobRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                          @Nullable String[] transletNames)
-            throws IOException {
+    private void describeScheduledJobRule(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            @Nullable String[] transletNames) throws IOException {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         if (transletNames != null && transletNames.length > 0) {
             Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
@@ -180,8 +188,9 @@ public class JobCommand extends AbstractCommand {
         }
     }
 
-    private void changeJobActiveState(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                      @Nullable String[] transletNames, boolean disabled) {
+    private void changeJobActiveState(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            @Nullable String[] transletNames, boolean disabled) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
         if (scheduledJobRules.isEmpty()) {

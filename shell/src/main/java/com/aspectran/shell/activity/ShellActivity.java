@@ -40,7 +40,19 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 
 /**
- * An activity that processes a shell command.
+ * Activity implementation used by Aspectran Shell to execute a translet from the console.
+ * <p>
+ * A {@code ShellActivity} is created per shell invocation and wired with shell-specific
+ * adapters:
+ * <ul>
+ *   <li>{@link com.aspectran.shell.adapter.ShellRequestAdapter} to provide request
+ *   parameters gathered from the command line</li>
+ *   <li>{@link com.aspectran.shell.adapter.ShellResponseAdapter} to render output to the
+ *   interactive console (or a redirected {@link java.io.Writer})</li>
+ * </ul>
+ * It also honours shell features such as procedural prompting for missing inputs, verbose
+ * description printing, and async/timeout hints taken from the target {@link TransletRule}.
+ * </p>
  *
  * @since 2016. 1. 18.
  */
@@ -114,6 +126,11 @@ public class ShellActivity extends CoreActivity {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns the request name prefixed with the HTTP-like method when available.
+     * For example, {@code GET /path}.
+     * @return the combined method and request name, or an empty string if none
+     */
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
             return requestMethod + " " + requestName;
@@ -148,6 +165,12 @@ public class ShellActivity extends CoreActivity {
         return timeout;
     }
 
+    /**
+     * Prepares this activity to execute the target translet.
+     * <p>Both {@link #requestName} and {@link #requestMethod} must be set prior to calling.</p>
+     * @throws TransletNotFoundException if no translet is mapped to the requested name
+     * @throws ActivityPrepareException if preparation fails
+     */
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
         Assert.state(requestName != null, "requestName is not set");
         Assert.state(requestMethod != null, "requestMethod is not set");
@@ -159,15 +182,25 @@ public class ShellActivity extends CoreActivity {
             throws ActivityPrepareException {
         this.async = transletRule.isAsync();
         this.timeout = transletRule.getTimeout();
-
         super.prepare(requestName, requestMethod, transletRule);
     }
 
+    /**
+     * Performs shell-specific pre-procedure steps: adapts the request/response and parses input.
+     * @throws AdapterException if adapters cannot be initialized
+     * @throws RequestParseException if parsing fails
+     * @throws ActivityTerminatedException if the activity is terminated during validation
+     */
     public void preProcedure() throws AdapterException, RequestParseException, ActivityTerminatedException {
         adapt();
         parseRequest();
     }
 
+    /**
+     * Sets up shell-specific adapters and delegates to the base {@link CoreActivity}.
+     * Initializes session adapter, request/response adapters, and configures locale and flash maps.
+     * @throws AdapterException if any adapter fails to initialize
+     */
     @Override
     protected void adapt() throws AdapterException {
         try {
@@ -194,6 +227,12 @@ public class ShellActivity extends CoreActivity {
         super.adapt();
     }
 
+    /**
+     * Parses the request from the console context, prompting for missing values when allowed.
+     * Prints helpful messages for missing mandatory inputs and terminates the activity gracefully.
+     * @throws RequestParseException if parsing fails
+     * @throws ActivityTerminatedException if the activity is terminated due to validation errors
+     */
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         TransletPreProcedure procedure = new TransletPreProcedure(

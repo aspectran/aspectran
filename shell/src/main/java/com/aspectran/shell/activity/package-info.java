@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the activity interface for command-line application.
+ * Shell-specific activity implementations.
+ * <p>
+ * Provides an {@code Activity} variant tailored for interactive console execution.
+ * {@link com.aspectran.shell.activity.ShellActivity} wires shell request/response
+ * adapters, supports procedural prompting for parameters, and renders output to the
+ * console or a redirected writer.
+ * </p>
  */
 package com.aspectran.shell.activity;

@@ -39,6 +39,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Built-in command that executes or inspects translets available to the shell.
+ * <p>
+ * Supports listing and describing translets (optionally filtering by keywords or request method)
+ * and executing a specified translet using command-line parameters.
+ * </p>
+ * <p>Command name: "translet" (namespace: "builtins").</p>
+ */
 public class TransletCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
@@ -144,8 +152,9 @@ public class TransletCommand extends AbstractCommand {
         }
     }
 
-    private void listTranslets(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                               @Nullable String[] keywords, boolean all) {
+    private void listTranslets(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            @Nullable String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%4s-+-%-59s-+-%-5s-",
@@ -191,9 +200,9 @@ public class TransletCommand extends AbstractCommand {
                 "----", "-----------------------------------------------------------", "-----");
     }
 
-    private void describeTransletRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                      @Nullable String[] transletNames,
-                                      @Nullable MethodType requestMethod, boolean all) throws IOException {
+    private void describeTransletRule(
+            @NonNull ShellService shellService, @NonNull ShellConsole console, @Nullable String[] transletNames,
+            @Nullable MethodType requestMethod, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (transletNames == null || transletNames.length == 0) {

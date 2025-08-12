@@ -36,7 +36,7 @@ public class AdapterException extends ActivityException {
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Constructor to create an exception with a message.
      * @param msg a message to associate with the exception
      */
     public AdapterException(String msg) {
@@ -44,7 +44,7 @@ public class AdapterException extends ActivityException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Constructor to create an exception to wrap another exception.
      * @param cause the real cause of the exception
      */
     public AdapterException(Throwable cause) {
@@ -52,7 +52,7 @@ public class AdapterException extends ActivityException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Constructor to create an exception to wrap another exception and pass a message.
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

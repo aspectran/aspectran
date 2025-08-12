@@ -25,7 +25,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Releases all resources and exits this application.
+ * Built-in command that gracefully exits the shell after confirmation.
+ * <p>Command name: "quit" (namespace: "builtins").</p>
  */
 public class QuitCommand extends AbstractCommand {
 

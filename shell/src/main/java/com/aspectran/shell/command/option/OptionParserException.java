@@ -26,7 +26,7 @@ public class OptionParserException extends Exception {
     private static final long serialVersionUID = -8387597753242192122L;
 
     /**
-     * Construct a new {@code OptionParseException}
+     * Construct a new {@code OptionParserException}
      * with the specified detail message.
      * @param message the detail message
      */

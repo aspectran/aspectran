@@ -25,7 +25,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Displays a message on the screen.
+ * Built-in command that echoes the given message to the console.
+ * <p>Command name: "echo" (namespace: "builtins").</p>
  */
 public class EchoCommand extends AbstractCommand {
 
@@ -78,7 +79,7 @@ public class EchoCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Displays a message on the screen";
+            return "Echoes the given message to the console";
         }
 
         @Override

@@ -35,7 +35,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Change the active state of an Aspect or view the list of registered Aspect.
+ * Built-in command that lists, describes, and toggles Aspect definitions.
+ * <p>
+ * Supports listing aspects (optionally filtering by keywords), printing detailed rules,
+ * and enabling or disabling selected aspects.
+ * </p>
+ * <p>Command name: "aspect" (namespace: "builtins").</p>
  */
 public class AspectCommand extends AbstractCommand {
 
@@ -147,8 +152,9 @@ public class AspectCommand extends AbstractCommand {
                 "----", "----------------------------------------------", "--------", "-------");
     }
 
-    private void describeAspectRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                    String[] aspectIds) throws IOException {
+    private void describeAspectRule(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            String[] aspectIds) throws IOException {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (aspectIds == null || aspectIds.length == 0) {
@@ -186,8 +192,9 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void changeAspectActiveState(@NonNull ShellService shellService, @NonNull ShellConsole console,
-                                         @NonNull String[] aspectIds, boolean disabled) {
+    private void changeAspectActiveState(
+            @NonNull ShellService shellService, @NonNull ShellConsole console,
+            @NonNull String[] aspectIds, boolean disabled) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         List<AspectRule> aspectRules = new ArrayList<>();
         for (String aspectId : aspectIds) {

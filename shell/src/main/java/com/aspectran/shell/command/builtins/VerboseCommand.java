@@ -25,7 +25,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Turns on or off the mode that displays a description of the translet before it is executed.
+ * Built-in command that toggles verbose mode for translet execution.
+ * <p>When enabled, detailed descriptions are printed before executing a translet.</p>
+ * <p>Command name: "verbose" (namespace: "builtins").</p>
  */
 public class VerboseCommand extends AbstractCommand {
 

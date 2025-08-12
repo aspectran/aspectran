@@ -14,6 +14,30 @@
  * limitations under the License.
  */
 /**
- * A simple API for presenting, processing and validating a command line interface.
+ * Command-line option model and parser for the Aspectran Shell.
+ * <p>
+ * This package provides a small, focused API to declare options and parse
+ * command lines used by shell commands. Core types include:
+ * </p>
+ * <ul>
+ *   <li>{@link com.aspectran.shell.command.option.Option Option} — describes a single
+ *       option (short/long name, value arity, type, requirement, description)</li>
+ *   <li>{@link com.aspectran.shell.command.option.Options Options} — a collection of
+ *       declared options and option groups for a command</li>
+ *   <li>{@link com.aspectran.shell.command.option.OptionGroup OptionGroup} — a set of
+ *       mutually exclusive options (optionally required)</li>
+ *   <li>{@link com.aspectran.shell.command.option.OptionParser OptionParser} and
+ *       {@link com.aspectran.shell.command.option.DefaultOptionParser DefaultOptionParser}
+ *       — parse a String[] against an {@code Options} descriptor</li>
+ *   <li>{@link com.aspectran.shell.command.option.ParsedOptions ParsedOptions} — results
+ *       of a parse, including selected options, values and leftover arguments</li>
+ *   <li>{@link com.aspectran.shell.command.option.OptionValueType OptionValueType} — built-in
+ *       value type conversions for option arguments</li>
+ *   <li>Exceptions: {@link com.aspectran.shell.command.option.OptionParserException},
+ *       {@link com.aspectran.shell.command.option.MissingOptionException},
+ *       {@link com.aspectran.shell.command.option.MissingOptionValueException},
+ *       {@link com.aspectran.shell.command.option.UnrecognizedOptionException},
+ *       {@link com.aspectran.shell.command.option.AlreadySelectedException}</li>
+ * </ul>
  */
 package com.aspectran.shell.command.option;

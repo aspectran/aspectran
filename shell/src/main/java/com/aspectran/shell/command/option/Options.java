@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Main entry-point into the library.
- *
  * <p>Options represents a collection of {@link Option} objects, which
  * describe the possible options for a command-line.</p>
  *

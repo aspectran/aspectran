@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 /**
- * Shell-specific request/response/session adapters used by the interactive console.
+ * Command abstractions and infrastructure for Aspectran Shell.
  * <p>
- * Bridges Aspectran's core adapter SPI to the shell environment, wiring the
- * request parameters parsed from the command line, rendering output to the
- * console (or a redirected writer), and optionally providing session access
- * when a session manager is configured.
+ * Defines the command SPI used by the interactive shell (interfaces and base classes),
+ * a registry for command lookup, a console commander that parses and dispatches
+ * commands, and utilities for options, arguments, and output redirection.
  * </p>
- * <ul>
- *   <li>{@link com.aspectran.shell.adapter.ShellRequestAdapter}</li>
- *   <li>{@link com.aspectran.shell.adapter.ShellResponseAdapter}</li>
- *   <li>{@link com.aspectran.shell.adapter.ShellSessionAdapter}</li>
- * </ul>
  */
-package com.aspectran.shell.adapter;
+package com.aspectran.shell.command;

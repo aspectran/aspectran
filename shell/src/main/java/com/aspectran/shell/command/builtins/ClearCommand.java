@@ -24,7 +24,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Clear the terminal screen.
+ * Built-in command that clears the interactive console screen.
+ * <p>Command name: "clear" (namespace: "builtins").</p>
  */
 public class ClearCommand extends AbstractCommand {
 
