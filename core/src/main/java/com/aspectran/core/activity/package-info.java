@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 /**
- * A package for handling an activity that perform requests, business logic, and responses.
+ * Core activity abstractions and implementations.
+ * <p>
+ * This package defines the Activity model used throughout Aspectran to
+ * perform requests, execute business logic, and render responses. It includes
+ * the main contracts and base classes for activities and their lightweight
+ * instant variants used for programmatic, transactional work.
+ * </p>
+ *
+ * <p>Key types:</p>
+ * <ul>
+ *   <li>{@link com.aspectran.core.activity.Activity Activity} — primary contract representing an executable unit</li>
+ *   <li>{@link com.aspectran.core.activity.InstantActivity InstantActivity} and
+ *       {@link com.aspectran.core.activity.InstantActivitySupport InstantActivitySupport} — helpers for
+ *       ad-hoc, short-lived work that requires access to the activity context</li>
+ *   <li>{@link com.aspectran.core.activity.Translet Translet} — an activity scoped to a single request</li>
+ *   <li>{@link com.aspectran.core.activity.FlashMap FlashMap} and
+ *       {@link com.aspectran.core.activity.FlashMapManager FlashMapManager} — utilities for passing
+ *       attributes across redirects or successive interactions</li>
+ * </ul>
  */
 package com.aspectran.core.activity;

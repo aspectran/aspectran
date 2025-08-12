@@ -69,6 +69,10 @@ public interface Activity {
      */
     ActivityContext getActivityContext();
 
+    /**
+     * Returns the ClassLoader associated with this activity's context.
+     * @return the active ClassLoader
+     */
     ClassLoader getClassLoader();
 
     /**
@@ -83,6 +87,10 @@ public interface Activity {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    /**
+     * Returns whether a session adapter is available for this activity.
+     * @return {@code true} if a session adapter is present; {@code false} otherwise
+     */
     boolean hasSessionAdapter();
 
     /**
@@ -151,6 +159,10 @@ public interface Activity {
      */
     Translet getTranslet();
 
+    /**
+     * Indicates whether a {@link Translet} is currently associated with this activity.
+     * @return {@code true} if a translet is present; {@code false} otherwise
+     */
     boolean hasTranslet();
 
     /**
@@ -167,6 +179,10 @@ public interface Activity {
      */
     Object getProcessResult(String actionId);
 
+    /**
+     * Returns the mutable data map associated with this activity's execution.
+     * @return the current {@link ActivityData}
+     */
     ActivityData getActivityData();
 
     /**
@@ -268,18 +284,46 @@ public interface Activity {
      */
     void putSetting(String name, Object value);
 
+    /**
+     * Returns whether a {@link StringifyContext} is available for this activity.
+     * @return {@code true} if a stringify context is present; {@code false} otherwise
+     */
     boolean hasStringifyContext();
 
+    /**
+     * Returns the {@link StringifyContext} that governs string conversions during rendering.
+     * @return the stringify context, or {@code null} if none
+     */
     StringifyContext getStringifyContext();
 
+    /**
+     * Returns the template renderer used to render views/templates.
+     * @return the template renderer
+     */
     TemplateRenderer getTemplateRenderer();
 
+    /**
+     * Returns the token evaluator used to evaluate template tokens.
+     * @return the token evaluator
+     */
     TokenEvaluator getTokenEvaluator();
 
+    /**
+     * Returns the item evaluator used to evaluate ASEL items.
+     * @return the item evaluator
+     */
     ItemEvaluator getItemEvaluator();
 
+    /**
+     * Returns the {@link FlashMapManager} for storing attributes across requests.
+     * @return the flash map manager
+     */
     FlashMapManager getFlashMapManager();
 
+    /**
+     * Returns the {@link LocaleResolver} responsible for determining the current locale.
+     * @return the locale resolver
+     */
     LocaleResolver getLocaleResolver();
 
     /**
@@ -290,12 +334,36 @@ public interface Activity {
      */
     <V> V getAdviceBean(String aspectId);
 
+    /**
+     * Returns the value produced by the registered BEFORE advice for the given aspect id.
+     * @param <V> the result type
+     * @param aspectId the aspect identifier
+     * @return the BEFORE advice result, or {@code null} if none
+     */
     <V> V getBeforeAdviceResult(String aspectId);
 
+    /**
+     * Returns the value produced by the registered AFTER advice for the given aspect id.
+     * @param <V> the result type
+     * @param aspectId the aspect identifier
+     * @return the AFTER advice result, or {@code null} if none
+     */
     <V> V getAfterAdviceResult(String aspectId);
 
+    /**
+     * Returns the value produced by the registered AROUND advice for the given aspect id.
+     * @param <V> the result type
+     * @param aspectId the aspect identifier
+     * @return the AROUND advice result, or {@code null} if none
+     */
     <V> V getAroundAdviceResult(String aspectId);
 
+    /**
+     * Returns the value produced by the registered FINALLY advice for the given aspect id.
+     * @param <V> the result type
+     * @param aspectId the aspect identifier
+     * @return the FINALLY advice result, or {@code null} if none
+     */
     <V> V getFinallyAdviceResult(String aspectId);
 
     /**
@@ -327,6 +395,12 @@ public interface Activity {
      */
     <V> V getBean(Class<V> type, String id);
 
+    /**
+     * Creates and returns a new instance of a prototype-scoped bean described by the given rule.
+     * @param <V> the bean type
+     * @param beanRule the bean rule describing the prototype
+     * @return a newly created bean instance
+     */
     <V> V getPrototypeScopeBean(BeanRule beanRule);
 
     /**

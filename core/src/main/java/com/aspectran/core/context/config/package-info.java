@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 /**
- * Root package for Aspectran Core.
+ * Configuration model objects for Aspectran application context settings.
  * <p>
- * This package exposes the primary APIs and foundational types used by
- * Aspectran-based applications and extensions. It includes abstractions for
- * activities, contexts, bean lifecycle, AOP rules, scheduling, services,
- * session handling, and other infrastructure that higher-level modules build
- * upon.
+ * This package contains APON-backed parameter classes (e.g., {@code *Config})
+ * that capture user-provided settings for core services such as the shell,
+ * scheduler, session, and general runtime environment.
  * </p>
  */
-package com.aspectran.core;
+package com.aspectran.core.context.config;

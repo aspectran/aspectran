@@ -101,6 +101,10 @@ public interface Translet {
      */
     ApplicationAdapter getApplicationAdapter();
 
+    /**
+     * Returns whether a session adapter is available for this translet.
+     * @return {@code true} if a session adapter is present; {@code false} otherwise
+     */
     boolean hasSessionAdapter();
 
     /**
@@ -349,12 +353,31 @@ public interface Translet {
      */
     void removeAttribute(String name);
 
+    /**
+     * Returns whether an input FlashMap is available for this request.
+     * @return {@code true} if an input FlashMap is present; {@code false} otherwise
+     */
     boolean hasInputFlashMap();
 
+    /**
+     * Returns the input FlashMap containing attributes from a previous request
+     * (e.g., after a redirect), or {@code null} if none.
+     * @return the input FlashMap or {@code null}
+     */
     Map<String, ?> getInputFlashMap();
 
+    /**
+     * Returns whether an output FlashMap is available to store attributes for
+     * the next request cycle.
+     * @return {@code true} if an output FlashMap is present; {@code false} otherwise
+     */
     boolean hasOutputFlashMap();
 
+    /**
+     * Returns the output {@link FlashMap} used to store attributes for a subsequent
+     * request (for example across a redirect).
+     * @return the output FlashMap
+     */
     FlashMap getOutputFlashMap();
 
     /**
@@ -363,6 +386,10 @@ public interface Translet {
      */
     void transform(TransformRule transformRule);
 
+    /**
+     * Applies a custom transformer to render the response.
+     * @param transformer the transformer to apply
+     */
     void transform(CustomTransformer transformer);
 
     /**
@@ -509,6 +536,11 @@ public interface Translet {
      */
     boolean hasPathVariables();
 
+    /**
+     * Returns the response content that has been written so far, if recorded by
+     * the underlying adapter/response implementation; may be {@code null}.
+     * @return the written response content or {@code null}
+     */
     String getWrittenResponse();
 
     /**
