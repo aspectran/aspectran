@@ -47,7 +47,16 @@ import java.util.List;
 public interface Activity {
 
     /**
-     * Activity modes to distinguish execution environments.
+     * Defines the operational modes of the currently running activity.
+     * <p>Each constant represents a distinct mode that influences how the activity behaves.</p>
+     * <ul>
+     *   <li><b>DAEMON</b> - Mode for activities run by daemon services with no user interface.</li>
+     *   <li><b>DEFAULT</b> - Mode for activities run when no configured services are present.</li>
+     *   <li><b>PROXY</b> - Mode for activities run within proxied objects.</li>
+     *   <li><b>SCHEDULER</b> - Mode for activities run by scheduled tasks.</li>
+     *   <li><b>SHELL</b> - Mode for activities run from the console via the command line.</li>
+     *   <li><b>WEB</b> - Mode for activities run to handle web requests.</li>
+     * </ul>
      */
     enum Mode {
         DAEMON,
@@ -59,7 +68,8 @@ public interface Activity {
     }
 
     /**
-     * Returns the current activity mode.
+     * Returns the operating mode of the currently running activity.
+     * @return {@link Mode} for the currently running activity
      */
     Mode getMode();
 
