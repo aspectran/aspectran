@@ -415,6 +415,33 @@
 
     <profiles>
         <profile>
+            <id>javadoc-style-default</id>
+            <activation>
+                <jdk>(,22)</jdk>
+            </activation>
+            <properties>
+                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+            </properties>
+        </profile>
+        <profile>
+            <id>javadoc-style-java22</id>
+            <activation>
+                <jdk>[22,23)</jdk>
+            </activation>
+            <properties>
+                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet-java22.css</stylesheetfile>
+            </properties>
+        </profile>
+        <profile>
+            <id>javadoc-style-java23</id>
+            <activation>
+                <jdk>[23,)</jdk>
+            </activation>
+            <properties>
+                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet-java23.css</stylesheetfile>
+            </properties>
+        </profile>
+        <profile>
             <id>license</id>
             <build>
                 <plugins>

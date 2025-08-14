@@ -227,31 +227,31 @@
                 <configuration>
                     <groups>
                         <group>
-                            <title>Aspectran Core</title>
+                            <title>Core</title>
                             <packages>com.aspectran.core*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Daemon</title>
+                            <title>Daemon</title>
                             <packages>com.aspectran.daemon*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Embed</title>
+                            <title>Embed</title>
                             <packages>com.aspectran.embed*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Logging</title>
+                            <title>Logging</title>
                             <packages>com.aspectran.logging*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Shell</title>
+                            <title>Shell</title>
                             <packages>com.aspectran.shell*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Utilities</title>
+                            <title>Utilities</title>
                             <packages>com.aspectran.utils*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Web</title>
+                            <title>Web</title>
                             <packages>com.aspectran.web*</packages>
                         </group>
                         <group>
@@ -259,8 +259,8 @@
                             <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.jpa*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.thymeleaf*:com.aspectran.undertow*</packages>
                         </group>
                     </groups>
-                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
                     <overview>${project.basedir}/src/main/javadoc/overview.html</overview>
+                    <stylesheetfile>${stylesheetfile}</stylesheetfile>
                 </configuration>
             </plugin>
 

@@ -22,9 +22,9 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.eclipse.jetty.ee10.servlet.SessionHandler;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
-import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.NetworkConnectionLimit;
 import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -78,7 +78,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     public void setMaxConnections(int maxConnections) {
         if (maxConnections > -1) {
-            addBean(new ConnectionLimit(maxConnections, this));
+            addBean(new NetworkConnectionLimit(maxConnections, this));
         }
     }
 
