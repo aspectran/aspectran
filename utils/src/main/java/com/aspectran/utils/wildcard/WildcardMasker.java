@@ -18,21 +18,8 @@ package com.aspectran.utils.wildcard;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
-/**
- * Erase the characters that does not correspond to the wildcard, and
- * returns collect only the  remaining characters. In other words,
- * only the characters that correspond to wildcards are left.
- */
 public class WildcardMasker {
 
-    /**
-     * Erase the characters that does not correspond to the wildcard, and
-     * returns collect only the  remaining characters. In other words,
-     * only the characters that correspond to wildcards are left.
-     * @param pattern the pattern to match
-     * @param input the input string
-     * @return the remains string
-     */
     @Nullable
     public static String mask(WildcardPattern pattern, CharSequence input) {
         Assert.notNull(pattern, "pattern must not be null");

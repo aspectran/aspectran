@@ -18,29 +18,35 @@ package com.aspectran.utils.wildcard;
 import com.aspectran.utils.StringUtils;
 
 /**
- * Checks whether a string matches a given wildcard pattern.
+ * Stateful matcher for evaluating an input {@link CharSequence} against a
+ * compiled {@link WildcardPattern}. Provides convenience methods to count and
+ * iterate over path segments when a separator is configured.
  */
 public class WildcardMatcher {
 
+    /** The compiled pattern to use for matching. */
     private final WildcardPattern pattern;
 
+    /** Last input passed to {@link #matches(CharSequence)} or {@link #separate(CharSequence)}. */
     private CharSequence input;
 
+    /** Per-character flags indicating the segment index at each separator position. */
     private int[] separatorFlags;
 
+    /** Number of separators found in the last input (or -1 if unknown). */
     private int separatorCount = -1;
 
+    /** Current index used by {@link #next()} and {@link #previous()}. */
     private int separatorIndex;
 
+    /**
+     * Create a new matcher bound to the given pattern.
+     * @param pattern the compiled wildcard pattern (must not be {@code null})
+     */
     public WildcardMatcher(WildcardPattern pattern) {
         this.pattern = pattern;
     }
 
-    /**
-     * Checks whether a string matches a given wildcard pattern.
-     * @param input the input string
-     * @return {@code true} if string matches the pattern, otherwise {@code false}
-     */
     public boolean matches(CharSequence input) {
         separatorCount = -1;
         separatorIndex = 0;
@@ -185,12 +191,6 @@ public class WildcardMatcher {
         return pattern;
     }
 
-    /**
-     * Checks whether a string matches a given wildcard pattern.
-     * @param pattern the pattern to match
-     * @param input the character sequence to be matched
-     * @return {@code true} if string matches the pattern, otherwise {@code false}
-     */
     public static boolean matches(WildcardPattern pattern, CharSequence input) {
         return matches(pattern, input, null);
     }

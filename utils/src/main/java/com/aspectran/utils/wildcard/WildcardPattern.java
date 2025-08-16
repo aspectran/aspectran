@@ -21,58 +21,66 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Objects;
 
-/**
- * The Class WildcardPattern.
- * <p>
- * The following standard quantifiers are recognized:
- * <dl>
- * <dt>{@code *}</dt>  <dd>matches single character</dd>
- * <dt>{@code +}</dt>  <dd>matches one or more characters</dd>
- * <dt>{@code ?}</dt>  <dd>matches zero or more characters</dd>
- * <dt>{@code **}</dt> <dd>matches zero or more string delimited by separators</dd>
- * <dt>{@code \}</dt>  <dd>Wildcard characters can be escaped</dd>
- * </dl>
- * <p>
- * Examples
- * <dl>
- * <dt>/static/{@code *}</dt>  <dd>/static/a.jpg</dd>
- * <dt>/static{@code *}/{@code **}/b/{@code *}</dt>  <dd>matches one or more characters</dd>
- * <dt>/static{@code *}/{@code **}</dt>  <dd>/static/a/a.jpg</dd>
- * <dt>{@code **}/static/{@code **}</dt> <dd>a/b/static/a/b/c/a.jpg</dd>
- * <dt>/static-{@code ?}/a{@code ?}{@code ?}.jpg</dt>  <dd>/static-a/abc.jpg</dd>
- * </dl>
- */
 public class WildcardPattern {
 
+    /** Escape character to treat the next character as a literal. */
     private static final char ESCAPE_CHAR = '\\';
+    /** Space used internally when compacting the token array. */
     private static final char SPACE_CHAR = ' ';
+    /** Wildcard for any sequence of characters within a segment. */
     public static final char STAR_CHAR = '*';
+    /** Wildcard for exactly one character within a segment. */
     public static final char QUESTION_CHAR = '?';
+    /** Wildcard for one or more characters within a segment. */
     public static final char PLUS_CHAR = '+';
 
+    /** Token type: literal character. */
     static final int LITERAL_TYPE = 1;
+    /** Token type: '*' (single-segment wildcard). */
     static final int STAR_TYPE = 2;
+    /** Token type: '**' (cross-segment wildcard, respects separator). */
     static final int STAR_STAR_TYPE = 3;
+    /** Token type: '?' (single character). */
     static final int QUESTION_TYPE = 4;
+    /** Token type: '+' (one or more characters). */
     static final int PLUS_TYPE = 5;
+    /** Internal marker: skip/removed during compaction. */
     static final int SKIP_TYPE = 8;
+    /** Token type: separator character. */
     static final int SEPARATOR_TYPE = 9;
+    /** End-of-tokens marker. */
     static final int EOT_TYPE = 0;
 
+    /** Original pattern string as provided by the caller. */
     private final String patternString;
 
+    /** Optional path separator used to distinguish segments; Character.MIN_VALUE means none. */
     private final char separator;
 
+    /** Compacted token characters representing the pattern. */
     private final char[] tokens;
 
+    /** Parallel array with token types for each entry in {@link #tokens}. */
     private final int[] types;
 
+    /** Heuristic weight used to sort/select more specific patterns first. */
     private final float weight;
 
+    /**
+     * Create a pattern using the default behavior (no segment separator).
+     * @param patternString the wildcard pattern text
+     */
     public WildcardPattern(String patternString) {
         this(patternString, Character.MIN_VALUE);
     }
 
+    /**
+     * Create a pattern with an explicit segment separator. When provided, the
+     * double-star token (**) may span across separators while single-star and
+     * other tokens do not.
+     * @param patternString the wildcard pattern text
+     * @param separator the segment separator character, or {@link Character#MIN_VALUE} for none
+     */
     public WildcardPattern(String patternString, char separator) {
         Assert.notNull(patternString, "patternString must not be null");
         this.patternString = patternString;
@@ -82,6 +90,11 @@ public class WildcardPattern {
         this.weight = parse();
     }
 
+    /**
+     * Tokenize and compact the pattern string into {@link #tokens} and {@link #types}
+     * and compute a heuristic weight to rank pattern specificity.
+     * @return the computed weight
+     */
     private float parse() {
         boolean star = false;
         boolean esc = false;
@@ -171,18 +184,30 @@ public class WildcardPattern {
         return weight;
     }
 
+    /**
+     * Return the configured segment separator or {@link Character#MIN_VALUE} if none.
+     */
     public char getSeparator() {
         return separator;
     }
 
+    /**
+     * Internal accessor for the compacted token characters.
+     */
     protected char[] getTokens() {
         return tokens;
     }
 
+    /**
+     * Internal accessor for token types aligned to {@link #getTokens()}.
+     */
     protected int[] getTypes() {
         return types;
     }
 
+    /**
+     * Return a weight indicating relative pattern specificity (higher is more specific).
+     */
     public float getWeight() {
         return weight;
     }
@@ -231,16 +256,32 @@ public class WildcardPattern {
         return patternString;
     }
 
+    /**
+     * Compile the given text into a {@link WildcardPattern} with no segment separator.
+     * @param patternString the wildcard pattern text
+     * @return a compiled pattern
+     */
     @NonNull
     public static WildcardPattern compile(String patternString) {
         return new WildcardPattern(patternString);
     }
 
+    /**
+     * Compile the given text into a {@link WildcardPattern} with the supplied separator.
+     * @param patternString the wildcard pattern text
+     * @param separator the segment separator character
+     * @return a compiled pattern
+     */
     @NonNull
     public static WildcardPattern compile(String patternString, char separator) {
         return new WildcardPattern(patternString, separator);
     }
 
+    /**
+     * Quick check whether the supplied text contains any wildcard characters ('*', '?', '+').
+     * @param patternString the text to inspect
+     * @return {@code true} if wildcards are present; {@code false} otherwise
+     */
     public static boolean hasWildcards(String patternString) {
         if (StringUtils.hasLength(patternString)) {
             char[] ca = patternString.toCharArray();
