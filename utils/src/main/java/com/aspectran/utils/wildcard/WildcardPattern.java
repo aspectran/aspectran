@@ -54,8 +54,10 @@ import java.util.Objects;
  *
  * <p>Examples:</p>
  * <ul>
+ *   <li><code>/static/*</code> - Matches "/static/a.jpg", "/static/b.jpg"</li>
  *   <li><code>com/example/*Service</code> – matches any single-segment prefix ending with "Service"</li>
  *   <li><code>com/**&#47;internal/**</code> – matches paths that contain "internal" at any depth</li>
+ *   <li><code>/static/**</code> - Matches "/static/a/b.jpg", "/static/a/b/c.jpg"</li>
  *   <li><code>log-????.txt</code> – matches exactly four characters between hyphen and extension</li>
  *   <li><code>img+png</code> – requires at least one character between "img" and "png"</li>
  * </ul>
