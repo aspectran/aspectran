@@ -151,32 +151,63 @@ public class AponWriter implements Flushable {
         }
     }
 
+    /**
+     * Fluent variant of {@link #setPrettyPrint(boolean)} returning {@code this}.
+     * @param prettyPrint whether to pretty-print
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
         setPrettyPrint(prettyPrint);
         return (T)this;
     }
 
+    /**
+     * Set the string to use for each indentation level when pretty-printing.
+     * Ignored when pretty-printing is disabled.
+     * @param indentString the indentation string (e.g., two spaces)
+     */
     public void setIndentString(String indentString) {
         this.indentString = indentString;
     }
 
+    /**
+     * Fluent variant of {@link #setIndentString(String)} returning {@code this}.
+     * @param indentString the indentation string
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T indentString(String indentString) {
         setIndentString(indentString);
         return (T)this;
     }
 
+    /**
+     * Control whether {@code null} values are written for unassigned parameters.
+     * @param nullWritable true to write null values; false to skip
+     */
     public void setNullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
     }
 
+    /**
+     * Fluent variant of {@link #setNullWritable(boolean)} returning {@code this}.
+     * @param nullWritable true to write nulls; false to skip
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T nullWritable(boolean nullWritable) {
         setNullWritable(nullWritable);
         return (T)this;
     }
 
+    /**
+     * Enable or disable writing of explicit value-type hints (e.g., name(int): ...).
+     * @param valueTypeHintEnabled true to include hints; false to omit
+     */
     public void setEnableValueTypeHints(boolean valueTypeHintEnabled) {
         this.valueTypeHintEnabled = valueTypeHintEnabled;
     }
@@ -191,10 +222,20 @@ public class AponWriter implements Flushable {
         return (T)this;
     }
 
+    /**
+     * Enable or disable automatic flush after each newline written.
+     * @param autoFlush true to flush automatically; false to buffer
+     */
     public void setAutoFlush(boolean autoFlush) {
         this.autoFlush = autoFlush;
     }
 
+    /**
+     * Fluent variant of {@link #setAutoFlush(boolean)} returning {@code this}.
+     * @param autoFlush whether to flush after each newline
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T autoFlush(boolean autoFlush) {
         setAutoFlush(autoFlush);

@@ -291,22 +291,52 @@ public class ObjectToParameters {
         }
     }
 
+    /**
+     * Convenience factory to convert an object into a new {@link VariableParameters} container.
+     * @param object the source object to convert
+     * @return a populated Parameters instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static Parameters from(Object object) throws IOException {
         return new ObjectToParameters().read(object);
     }
 
+    /**
+     * Convenience factory to convert an object using the given {@link StringifyContext}.
+     * @param object the source object to convert
+     * @param stringifyContext formatting rules for date/time and others
+     * @return a populated Parameters instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static Parameters from(Object object, StringifyContext stringifyContext) throws IOException {
         return new ObjectToParameters().apply(stringifyContext).read(object);
     }
 
+    /**
+     * Convenience factory to convert an object into a new container of the given type.
+     * @param <T> the container type to create
+     * @param object the source object to convert
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(Object object, Class<? extends Parameters> requiredType)
             throws IOException {
         return new ObjectToParameters(requiredType).read(object);
     }
 
+    /**
+     * Convenience factory to convert an object into a typed container with a {@link StringifyContext}.
+     * @param <T> the container type to create
+     * @param object the source object to convert
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param stringifyContext formatting rules for date/time and others
+     * @return a populated container instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(
             Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext)
@@ -314,22 +344,57 @@ public class ObjectToParameters {
         return new ObjectToParameters(requiredType).apply(stringifyContext).read(object);
     }
 
+    /**
+     * Convenience factory to convert a named object into a new {@link VariableParameters} container.
+     * The value is placed under the given parameter name.
+     * @param name the parameter name to use
+     * @param object the source object
+     * @return a populated Parameters instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static Parameters from(String name, Object object) throws IOException {
         return new ObjectToParameters().read(name, object);
     }
 
+    /**
+     * Convenience factory to convert a named object into a new container using the given context.
+     * @param name the parameter name to use
+     * @param object the source object
+     * @param stringifyContext formatting rules for date/time and others
+     * @return a populated Parameters instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static Parameters from(String name, Object object, StringifyContext stringifyContext) throws IOException {
         return new ObjectToParameters().apply(stringifyContext).read(name, object);
     }
 
+    /**
+     * Convenience factory to convert a named object into a new typed container.
+     * @param <T> the container type to create
+     * @param name the parameter name to use
+     * @param object the source object
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(
             String name, Object object, Class<? extends Parameters> requiredType) throws IOException {
         return new ObjectToParameters(requiredType).read(name, object);
     }
 
+    /**
+     * Convenience factory to convert a named object into a new typed container using the given context.
+     * @param <T> the container type to create
+     * @param name the parameter name to use
+     * @param object the source object
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param stringifyContext formatting rules for date/time and others
+     * @return a populated container instance
+     * @throws IOException if conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(
             String name, Object object, Class<? extends Parameters> requiredType, StringifyContext stringifyContext)
