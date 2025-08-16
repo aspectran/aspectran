@@ -21,7 +21,12 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * This exception is raised when attempting to read (or write) a malformed APON Format string.
+ * Thrown when an APON string is syntactically incorrect or its value types
+ * are incompatible with the expected schema.
+ * <p>
+ * Includes helpers to compose detailed error messages with line/column information
+ * for easier troubleshooting.
+ * </p>
  */
 public class MalformedAponException extends AponParseException {
 
@@ -55,8 +60,9 @@ public class MalformedAponException extends AponParseException {
      * @param parameterValue the actual value type
      * @param expectedValueType the expected value type
      */
-    public MalformedAponException(int lineNumber, String line, String tline, ParameterValue parameterValue,
-                                  ValueType expectedValueType) {
+    public MalformedAponException(
+            int lineNumber, String line, String tline, ParameterValue parameterValue,
+            ValueType expectedValueType) {
         super(makeMessage(lineNumber, line, tline, parameterValue, expectedValueType));
     }
 
@@ -95,8 +101,9 @@ public class MalformedAponException extends AponParseException {
     }
 
     @NonNull
-    private static String makeMessage(int lineNumber, String line, String tline, ParameterValue parameterValue,
-                                      ValueType expectedValueType) {
+    private static String makeMessage(
+            int lineNumber, String line, String tline, ParameterValue parameterValue,
+            ValueType expectedValueType) {
         StringBuilder sb = new StringBuilder();
         sb.append("Incompatible value type with expected value type '");
         sb.append(expectedValueType).append("'");

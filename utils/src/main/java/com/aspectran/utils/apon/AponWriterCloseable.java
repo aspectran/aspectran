@@ -21,14 +21,17 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Writes an APON object to an output source.
- * <p>By default, the indentation string is "  " (two blanks)</p>
- * <p>Useful with Java 7 for example :
+ * A {@link AponWriter} variant that implements {@link Closeable} for use with
+ * try-with-resources blocks.
+ * <p>
+ * Example:
  * <pre>{@code
- *   try(AponWriterCloseable aponWriter = AponWriterCloseable(writer)) {
- *     ....
- *   }
- * }</pre></p>
+ * try (AponWriterCloseable writer = new AponWriterCloseable(myWriter)) {
+ *     writer.write(parameters);
+ * }
+ * }
+ * </pre>
+ * </p>
  */
 public class AponWriterCloseable extends AponWriter implements Closeable {
 

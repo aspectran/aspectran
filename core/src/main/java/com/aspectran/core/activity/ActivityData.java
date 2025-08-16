@@ -44,8 +44,16 @@ public class ActivityData extends HashMap<String, Object> {
     @Serial
     private static final long serialVersionUID = -4557424414862800204L;
 
+    /**
+     * Placeholder marker indicating that a value was preemptively cached as absent.
+     * Used internally to avoid repeated lookups for missing entries.
+     */
     private static final Object PREEMPTED = new Object();
 
+    /**
+     * The backing activity used to lazily resolve parameters, attributes,
+     * session attributes, and action results.
+     */
     private final Activity activity;
 
     /**
@@ -58,6 +66,14 @@ public class ActivityData extends HashMap<String, Object> {
         refresh();
     }
 
+    /**
+     * Returns the value to which the specified key is mapped, performing a lazy lookup
+     * from action results, request attributes/parameters, and session attributes if not
+     * already cached in this map. Successfully resolved values are cached for subsequent
+     * access; missing values are marked to avoid repeated lookups.
+     * @param key the key whose associated value is to be returned
+     * @return the mapped value, or {@code null} if none
+     */
     @Override
     public Object get(Object key) {
         Object value = super.get(key);
@@ -96,6 +112,14 @@ public class ActivityData extends HashMap<String, Object> {
         return null;
     }
 
+    /**
+     * Associates the specified value with the specified key in this map.
+     * Prevents storing this map instance itself as a value to avoid self-references.
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or {@code null} if there was no mapping
+     * @throws IllegalArgumentException if {@code value} is this map instance
+     */
     @Override
     public Object put(String key, Object value) {
         if (this == value) {
@@ -104,11 +128,22 @@ public class ActivityData extends HashMap<String, Object> {
         return super.put(key, value);
     }
 
+    /**
+     * Returns {@code true} if this map contains a mapping for the specified key.
+     * This method triggers lazy resolution for preempted keys.
+     * @param key key whose presence in this map is to be tested
+     * @return {@code true} if this map contains a mapping for the specified key
+     */
     @Override
     public boolean containsKey(Object key) {
         return (super.get(key) != null);
     }
 
+    /**
+     * Returns a Collection view of the values contained in this map.
+     * Values are resolved lazily for preempted entries.
+     * @return a collection view of the values contained in this map
+     */
     @Override
     @NonNull
     public Collection<Object> values() {
@@ -119,6 +154,12 @@ public class ActivityData extends HashMap<String, Object> {
         return list;
     }
 
+    /**
+     * Returns a Set view of the mappings contained in this map.
+     * Preempted entries are resolved on access so that callers see actual values
+     * instead of internal placeholders.
+     * @return a set view of the mappings contained in this map
+     */
     @Override
     @NonNull
     public Set<Map.Entry<String, Object>> entrySet() {
@@ -208,6 +249,12 @@ public class ActivityData extends HashMap<String, Object> {
         }
     }
 
+    /**
+     * Refreshes this map by preemptively marking all known parameter, attribute,
+     * session attribute, and action result names for lazy resolution. This avoids
+     * immediate value retrieval while guaranteeing that subsequent access will
+     * attempt to resolve from the underlying sources.
+     */
     public void refresh() {
         if (activity.getRequestAdapter() != null) {
             for (String name : activity.getRequestAdapter().getParameterNames()) {
@@ -244,10 +291,19 @@ public class ActivityData extends HashMap<String, Object> {
         }
     }
 
+    /**
+     * Marks the given name as preempted, i.e., eligible for lazy resolution on first access.
+     * @param name the entry name to preempt
+     */
     private void preempt(String name) {
         preempt(name, super.get(name));
     }
 
+    /**
+     * Internal helper to mark a name as preempted only when a current mapping has no value.
+     * @param name the entry name
+     * @param value the current mapped value (may be {@code null})
+     */
     private void preempt(String name, Object value) {
         if (value == null) {
             put(name, PREEMPTED);

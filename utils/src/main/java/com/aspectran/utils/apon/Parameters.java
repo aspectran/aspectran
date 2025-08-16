@@ -21,7 +21,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Interface Parameters.
+ * Central contract representing a mutable collection of named parameters in APON.
+ * <p>
+ * A {@code Parameters} instance acts as a typed map where each entry is a
+ * {@link Parameter} that can store scalar values, arrays, or nested
+ * {@link Parameters} (for hierarchical structures). Implementations may expose
+ * either a fixed structure (predefined keys) or allow dynamic addition of
+ * parameters at runtime. Numerous convenience getters are provided to retrieve
+ * values in the desired Java type.
+ * </p>
  */
 public interface Parameters {
 
@@ -73,15 +81,39 @@ public interface Parameters {
      */
     String getQualifiedName();
 
-    String getQualifiedName(String name);
+    /**
+         * Returns the qualified name built from this container's actual name and the given local name.
+         * @param name the local parameter name
+         * @return a qualified name for display/logging
+         */
+        String getQualifiedName(String name);
 
-    String getQualifiedName(ParameterKey key);
+    /**
+         * Returns the qualified name for the given predefined key in this container.
+         * @param key the parameter definition
+         * @return a qualified name for display/logging
+         */
+        String getQualifiedName(ParameterKey key);
 
-    ParameterValue getParameterValue(String name);
+    /**
+         * Return the internal {@link ParameterValue} holder by name, or {@code null} if absent.
+         * @param name the parameter name
+         * @return the holder or {@code null}
+         */
+        ParameterValue getParameterValue(String name);
 
-    ParameterValue getParameterValue(ParameterKey key);
+    /**
+         * Return the internal {@link ParameterValue} holder by predefined key, or {@code null}.
+         * @param key the parameter definition
+         * @return the holder or {@code null}
+         */
+        ParameterValue getParameterValue(ParameterKey key);
 
-    Collection<ParameterValue> getParameterValues();
+    /**
+         * Return a read-only view of all {@link ParameterValue} holders in declaration order.
+         * @return a collection of holders
+         */
+        Collection<ParameterValue> getParameterValues();
 
     /**
      * Returns all parameter names associated with this {@code Parameters}.
@@ -164,7 +196,12 @@ public interface Parameters {
      */
     Object getValue(ParameterKey key);
 
-    void putAll(Parameters parameters);
+    /**
+         * Copy all values from the given container into this one, overwriting existing values.
+         * Structure is not altered; only values are affected.
+         * @param parameters the source of values to copy
+         */
+        void putAll(Parameters parameters);
 
     /**
      * Put a value into the Parameter with the specified name.
@@ -658,37 +695,119 @@ public interface Parameters {
      */
     <T extends Parameters> List<T> getParametersList(ParameterKey key);
 
+    /**
+     * Create a new {@link ParameterValue} holder with the given type under the given name.
+     * @param name the parameter name
+     * @param valueType the declared type
+     * @return a new holder associated with this container
+     */
     ParameterValue newParameterValue(String name, ValueType valueType);
 
+    /**
+     * Create a new {@link ParameterValue} holder with the given type and array flag.
+     * @param name the parameter name
+     * @param valueType the declared type
+     * @param array whether the parameter accepts multiple values
+     * @return a new holder associated with this container
+     */
     ParameterValue newParameterValue(String name, ValueType valueType, boolean array);
 
+    /**
+     * Create and attach a new nested {@link Parameters} instance under the given name.
+     * @param <T> the concrete subtype
+     * @param name the parameter name
+     * @return the created nested container
+     */
     <T extends Parameters> T newParameters(String name);
 
+    /**
+     * Create and attach a new nested {@link Parameters} instance under the given key.
+     * @param <T> the concrete subtype
+     * @param key the parameter definition
+     * @return the created nested container
+     */
     <T extends Parameters> T newParameters(ParameterKey key);
 
+    /**
+     * Ensure a nested {@link Parameters} exists under the given name and return it.
+     * Creates it if missing.
+     * @param <T> the concrete subtype
+     * @param name the parameter name
+     * @return the existing or newly created nested container
+     */
     <T extends Parameters> T touchParameters(String name);
 
+    /**
+     * Ensure a nested {@link Parameters} exists under the given key and return it.
+     * Creates it if missing.
+     * @param <T> the concrete subtype
+     * @param key the parameter definition
+     * @return the existing or newly created nested container
+     */
     <T extends Parameters> T touchParameters(ParameterKey key);
 
     /**
-     * Updates the holder of the subparameters belonging to this parameter.
+     * Updates the holder of the subparameters belonging to this parameter so that
+     * the back-reference of nested parameter holders to point to the given container.
+     * Primarily used internally when moving/merging parameters.
+     * @param container the new parent container
      */
     void updateContainer(Parameters container);
 
+    /**
+     * Populate this container by parsing APON text.
+     * @param apon APON-formatted string
+     * @throws AponParseException on parse error
+     */
     void readFrom(String apon) throws AponParseException;
 
+    /**
+     * Merge values from the given variable-structure container into this one.
+     * @param parameters the source parameters
+     * @throws AponParseException on parse/merge error
+     */
     void readFrom(VariableParameters parameters) throws AponParseException;
 
+    /**
+     * Populate this container by reading APON content from the given file.
+     * @param file the source file
+     * @throws AponParseException on I/O or parse error
+     */
     void readFrom(File file) throws AponParseException;
 
+    /**
+     * Populate this container by reading APON content from the given file using the specified encoding.
+     * @param file the source file
+     * @param encoding the character encoding to use
+     * @throws AponParseException on I/O or parse error
+     */
     void readFrom(File file, String encoding) throws AponParseException;
 
+    /**
+     * Populate this container by reading APON content from the given reader.
+     * @param reader the character stream supplying APON content
+     * @throws AponParseException on I/O or parse error
+     */
     void readFrom(Reader reader) throws AponParseException;
 
+    /**
+     * Make a deep copy of this container including all nested parameters.
+     * @param <T> the runtime container type
+     * @return an independent copy
+     */
     <T extends Parameters> T copy();
 
+    /**
+     * Render a brief human-readable description of this container and its parameters.
+     * @return a description string
+     */
     String describe();
 
+    /**
+     * Render a description of this container; include details if requested.
+     * @param details whether to include parameter values and structure info
+     * @return a description string
+     */
     String describe(boolean details);
 
 }

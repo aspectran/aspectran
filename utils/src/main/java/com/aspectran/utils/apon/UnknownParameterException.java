@@ -20,7 +20,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * The Class UnknownParameterException.
+ * Thrown when attempting to access a parameter that is not defined in the container.
  */
 public class UnknownParameterException extends RuntimeException {
 
@@ -28,14 +28,17 @@ public class UnknownParameterException extends RuntimeException {
     private static final long serialVersionUID = 6446576507072773588L;
 
     /**
-     * Constructor to create exception with a message.
-     * @param parameterName the parameter name
-     * @param parameters the Parameters object
+     * Construct the exception for an unknown parameter access.
+     * @param parameterName the missing parameter name
+     * @param parameters the container being accessed (used for description)
      */
     public UnknownParameterException(String parameterName, Parameters parameters) {
         super("No such parameter '" + parameterName + "' in " + describe(parameters));
     }
 
+    /**
+     * Render a short description of the container for the error message.
+     */
     private static String describe(@NonNull Parameters parameters) {
         return parameters.describe();
     }

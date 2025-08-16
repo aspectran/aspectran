@@ -50,8 +50,13 @@ import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
 
 /**
- * Writes an APON object to an output source.
- * <p>By default, the indentation string is "  " (two blanks)</p>
+ * Streaming writer that serializes {@link Parameters} into APON (Aspectran Parameters
+ * Object Notation) text.
+ * <p>
+ * Provides pretty-printing, custom indentation, null handling, and optional type hints.
+ * Can write to in-memory {@link java.io.StringWriter}, files, or any {@link Writer}.
+ * The default indentation is two spaces and pretty printing is enabled by default.
+ * </p>
  */
 public class AponWriter implements Flushable {
 
@@ -100,6 +105,11 @@ public class AponWriter implements Flushable {
         this.writer = writer;
     }
 
+    /**
+     * Apply options from a {@link StringifyContext} to this writer:
+     * pretty print, indent string and null-writability.
+     * @param stringifyContext the configuration (ignored if null)
+     */
     public void setStringifyContext(StringifyContext stringifyContext) {
         if (stringifyContext != null) {
             if (stringifyContext.hasPrettyPrint()) {
@@ -114,13 +124,23 @@ public class AponWriter implements Flushable {
         }
     }
 
+    /**
+     * Fluent variant of {@link #setStringifyContext(StringifyContext)} returning {@code this}.
+     * @param stringifyContext the configuration
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return (T)this;
     }
 
-    public void setPrettyPrint(boolean prettyPrint) {
+    /**
+         * Enable or disable pretty-printing (indentation and newlines).
+         * @param prettyPrint true to pretty-print; false for compact output
+         */
+        public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
             if (indentString == null) {

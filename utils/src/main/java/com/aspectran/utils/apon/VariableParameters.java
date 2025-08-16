@@ -20,25 +20,48 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Parameters that determine the name and value type of each parameter in real time.
+ * Flexible {@link Parameters} implementation with a dynamic structure.
+ * <p>
+ * Parameter names and value types are discovered at runtime as values are put
+ * into the container. Useful for ad-hoc parameter sets without a predefined
+ * schema.
+ * </p>
  */
 public class VariableParameters extends AbstractParameters implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 4492298345259110525L;
 
+    /**
+     * Create an empty container with a dynamic structure.
+     */
     public VariableParameters() {
         super(null);
     }
 
+    /**
+     * Create a dynamic container and read APON text into it.
+     * @param apon APON text
+     * @throws IOException if reading fails
+     */
     public VariableParameters(String apon) throws IOException {
         this(null, apon);
     }
 
+    /**
+     * Create a container with optional predefined keys but still allowing dynamic additions.
+     * @param parameterKeys predefined keys (may be null)
+     */
     public VariableParameters(ParameterKey[] parameterKeys) {
         super(parameterKeys);
     }
 
+    /**
+     * Create a container with predefined keys and read APON text into it.
+     * @param parameterKeys predefined keys (may be null)
+     * @param apon APON text
+     * @throws AponParseException if parsing fails
+     */
     public VariableParameters(ParameterKey[] parameterKeys, String apon) throws AponParseException {
         super(parameterKeys);
         readFrom(apon);

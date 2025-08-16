@@ -24,7 +24,12 @@ import java.io.Writer;
 import java.util.Collection;
 
 /**
- * The Interface ResponseAdapter.
+ * Abstraction over an outgoing response in a given runtime environment.
+ * <p>
+ * Implementations encapsulate container-specific response objects and expose a
+ * consistent API for headers, status, encoding/content type, and output streams/writers,
+ * enabling uniform response handling across different execution environments.
+ * </p>
  *
  * @since 2011. 3. 13.
  */
@@ -170,6 +175,13 @@ public interface ResponseAdapter {
      */
     void setStatus(int status);
 
+    /**
+     * Transform a response path if necessary to the container-specific form.
+     * Implementations may rewrite or normalize the path before dispatch/redirect.
+     * Default implementations can return the path unchanged.
+     * @param path the original response path
+     * @return the transformed path
+     */
     String transformPath(String path);
 
 }

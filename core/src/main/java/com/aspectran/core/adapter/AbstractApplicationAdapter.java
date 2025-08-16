@@ -23,28 +23,57 @@ import java.nio.file.Path;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
 
 /**
- * The Class AbstractApplicationAdapter.
+ * Base implementation of {@link ApplicationAdapter} that provides common
+ * path resolution facilities relative to an optional application base path.
+ * <p>
+ * Implementations can delegate to this class to translate virtual paths into
+ * real file system paths while supporting fully qualified file URLs.
+ * </p>
  *
  * @since 2011. 3. 13.
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
+    /**
+     * The normalized, absolute base path of the application, or {@code null} if not set.
+     */
     private final Path basePath;
 
+    /**
+     * Create a new adapter with the given base path.
+     * @param basePath the application base path; may be {@code null}
+     */
     public AbstractApplicationAdapter(String basePath) {
         this.basePath = (basePath != null ? Path.of(basePath).normalize().toAbsolutePath() : null);
     }
 
+    /**
+     * Returns the application base path as a {@link Path}.
+     */
     @Override
     public Path getBasePath() {
         return basePath;
     }
 
+    /**
+     * Returns the application base path as a {@link String}.
+     */
     @Override
     public String getBasePathString() {
         return (basePath != null ? basePath.toString() : null);
     }
 
+    /**
+     * Resolve the given path to an absolute path.
+     * <ul>
+     *   <li>If the argument starts with the file: URL scheme, it is treated as a fully
+     *   qualified URL and converted directly to a Path.</li>
+     *   <li>Otherwise, the path is normalized. If a base path is configured and the
+     *   normalized path is not already under it, the path is resolved against the base.</li>
+     * </ul>
+     * @param path the virtual or absolute path to resolve (must not be {@code null})
+     * @return the resolved absolute path
+     */
     @Override
     public Path getRealPath(String path) {
         Assert.notNull(path, "path must not be null");

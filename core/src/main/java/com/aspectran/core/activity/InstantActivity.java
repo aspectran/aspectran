@@ -36,10 +36,19 @@ import java.util.Map;
  */
 public class InstantActivity extends CoreActivity {
 
+    /**
+     * The operating mode inherited from the original activity or default if standalone.
+     */
     private final Mode mode;
 
+    /**
+     * Optional request attributes to be applied to the internal RequestAdapter.
+     */
     private Map<String, Object> attributeMap;
 
+    /**
+     * Optional request parameters to be applied to the internal RequestAdapter.
+     */
     private ParameterMap parameterMap;
 
     /**
@@ -51,10 +60,20 @@ public class InstantActivity extends CoreActivity {
         mode = Mode.DEFAULT;
     }
 
+    /**
+     * Creates a new InstantActivity inheriting state from the given activity.
+     * The response adapter is inherited by default.
+     * @param activity the existing activity to inherit state from (must not be {@code null})
+     */
     public InstantActivity(@NonNull Activity activity) {
         this(activity, true);
     }
 
+    /**
+     * Creates a new InstantActivity inheriting state from the given activity.
+     * @param activity the existing activity to inherit state from (must not be {@code null})
+     * @param responseAdapterInheritable whether to inherit the response adapter as well
+     */
     public InstantActivity(@NonNull Activity activity, boolean responseAdapterInheritable) {
         super(activity.getActivityContext());
         this.mode = activity.getMode();
@@ -89,14 +108,28 @@ public class InstantActivity extends CoreActivity {
         super.setResponseAdapter(responseAdapter);
     }
 
+    /**
+     * Sets additional request attributes to be exposed to the instant activity.
+     * @param attributeMap attributes to add to the RequestAdapter (may be {@code null})
+     */
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
     }
 
+    /**
+     * Sets additional request parameters to be exposed to the instant activity.
+     * @param parameterMap parameters to add to the RequestAdapter (may be {@code null})
+     */
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
     }
 
+    /**
+     * Prepares this instant activity by ensuring adapters are initialized and by
+     * applying any configured attributes and parameters. Also ensures a writer-backed
+     * ResponseAdapter if none is present.
+     * @throws AdapterException if adapter initialization fails
+     */
     @Override
     protected void adapt() throws AdapterException {
         if (!hasSessionAdapter() && getPendingActivity() != null && getPendingActivity().hasSessionAdapter()) {
@@ -122,6 +155,9 @@ public class InstantActivity extends CoreActivity {
         super.adapt();
     }
 
+    /**
+     * Saves the current activity and marks session access when backed by a DefaultSessionAdapter.
+     */
     @Override
     protected void saveCurrentActivity() {
         super.saveCurrentActivity();
@@ -132,6 +168,9 @@ public class InstantActivity extends CoreActivity {
         }
     }
 
+    /**
+     * Restores the previous activity and marks session completion when backed by a DefaultSessionAdapter.
+     */
     @Override
     protected void removeCurrentActivity() {
         if (isOriginalActivity() && hasSessionAdapter() &&

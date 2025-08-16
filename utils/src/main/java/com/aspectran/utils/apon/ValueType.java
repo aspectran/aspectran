@@ -19,38 +19,72 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Defines the type of the parameter value.
- *
- * <p>Created: 2008. 03. 29 PM 3:47:00</p>
+ * Enumeration of APON value types and helpers to resolve them from hints and runtime values.
+ * <p>
+ * Each constant corresponds to a logical value category in APON and, by convention,
+ * maps to a representative Java type:
+ * <ul>
+ *   <li>STRING – java.lang.String for single-line text</li>
+ *   <li>TEXT – java.lang.String for multi-line text (contains a newline)</li>
+ *   <li>INT – java.lang.Integer</li>
+ *   <li>LONG – java.lang.Long</li>
+ *   <li>FLOAT – java.lang.Float</li>
+ *   <li>DOUBLE – java.lang.Double</li>
+ *   <li>BOOLEAN – java.lang.Boolean</li>
+ *   <li>OBJECT – arbitrary object without a specific APON type</li>
+ *   <li>VARIABLE – type decided at runtime from the actual value</li>
+ *   <li>PARAMETERS – nested parameter block ({@link Parameters})</li>
+ * </ul>
+ * The lowercase {@code alias} of each constant is what appears in APON text as a type hint,
+ * e.g. {@code name(int): 123}.
+ * </p>
  */
 public enum ValueType {
 
+    /** Single-line string value. */
     STRING("string"),
+    /** Multi-line string value (text). */
     TEXT("text"),
+    /** 32-bit integer value. */
     INT("int"),
+    /** 64-bit integer value. */
     LONG("long"),
+    /** 32-bit floating point value. */
     FLOAT("float"),
+    /** 64-bit floating point value. */
     DOUBLE("double"),
+    /** Boolean value (true/false). */
     BOOLEAN("boolean"),
+    /** Arbitrary object without a specific APON type. */
     OBJECT("object"),
+    /** Runtime-decided type when no explicit type is declared. */
     VARIABLE("variable"),
+    /** Nested parameter block value. */
     PARAMETERS("parameters");
 
+    /** Lowercase alias used in APON text for this type. */
     private final String alias;
 
+    /**
+     * Construct a value type with the given APON alias.
+     * @param alias the lowercase alias used in APON text
+     */
     ValueType(String alias) {
         this.alias = alias;
     }
 
+    /**
+     * Return the APON alias (lowercase) for this type.
+     */
     @Override
     public String toString() {
         return this.alias;
     }
 
     /**
-     * Returns a ValueType with a value represented by the specified String.
-     * @param alias the specified String
-     * @return the value type of the parameter
+     * Resolve a {@link ValueType} from its APON alias string (e.g., "int").
+     * @param alias the lowercase alias as it appears in APON text
+     * @return the corresponding {@link ValueType}, or {@code null} if unknown
      */
     @Nullable
     public static ValueType resolve(String alias) {
@@ -64,6 +98,12 @@ public enum ValueType {
         return null;
     }
 
+    /**
+     * Extract and resolve a type hint embedded in a parameter name, e.g.,
+     * {@code name(int)} -> {@link #INT}.
+     * @param name the parameter name possibly containing a type hint
+     * @return the hinted {@link ValueType}, or {@code null} if no valid hint
+     */
     @Nullable
     public static ValueType resolveByHint(@NonNull String name) {
         int start = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
@@ -77,6 +117,12 @@ public enum ValueType {
         return null;
     }
 
+    /**
+     * Remove any type hint suffix from the parameter name.
+     * For example, {@code stripHint("count(int)") == "count"}.
+     * @param name the original parameter name
+     * @return the name without a trailing type hint
+     */
     @NonNull
     public static String stripHint(@NonNull String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
@@ -86,6 +132,12 @@ public enum ValueType {
         return name;
     }
 
+    /**
+     * Infer a {@link ValueType} from a runtime object instance.
+     * Strings containing a newline are treated as {@link #TEXT}.
+     * @param value the runtime value
+     * @return the inferred value type (never {@code null})
+     */
     public static ValueType resolveFrom(Object value) {
         if (value == null) {
             return ValueType.OBJECT;

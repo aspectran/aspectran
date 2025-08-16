@@ -17,254 +17,224 @@ package com.aspectran.utils.apon;
 
 import java.util.List;
 
+/**
+ * Represents a single named parameter within an APON {@link Parameters} container.
+ * A parameter holds a name, a declared {@link ValueType} (which may be hinted or
+ * fixed), and an associated value which can be a scalar, an array, or a nested
+ * {@link Parameters} structure when the value type is {@code PARAMETERS}.
+ * Implementations also expose convenient typed accessors for retrieving values.
+ */
 public interface Parameter {
 
     /**
-     * Returns the {@code Parameters} that contains the {@code Parameter}.
-     * @return the {@code Parameters}
+     * Return the container that holds this parameter.
+     * @return the owning Parameters container (may be null while unattached)
      */
     Parameters getContainer();
 
     /**
-     * Returns the parameter name.
-     * @return the parameter name
+     * Return the local (unqualified) name of this parameter.
      */
     String getName();
 
     /**
-     * Returns the fully qualified parameter name.
-     * @return the qualified name
+     * Return the fully qualified name (including owner ancestry where applicable).
      */
     String getQualifiedName();
 
     /**
-     * Returns the value type of the parameter.
-     * @return the value type of the parameter
+     * Return the declared value type for this parameter.
      */
     ValueType getValueType();
 
     /**
-     * Sets the value type of the parameter.
-     * @param valueType the value type to set
+     * Change the declared value type for this parameter.
+     * @param valueType the new type
      */
     void setValueType(ValueType valueType);
 
     /**
-     * Returns whether this is a predefined parameter.
-     * @return {@code true} if this is a predefined parameter, otherwise {@code false}
+     * Whether the value type is fixed (not adjusted at runtime).
      */
     boolean isValueTypeFixed();
 
     /**
-     * Returns whether the value type is hinted.
-     * @return true if the value type is hinted; false otherwise
+     * Whether the value type originated from a name hint, e.g. name(int).
      */
     boolean isValueTypeHinted();
 
     /**
-     * Sets whether the value type is hinted.
-     * @param valueTypeHinted true if the value type is hinted; false otherwise
+     * Mark this parameter as having a hinted value type.
+     * @param valueTypeHinted true if hinted
      */
     void setValueTypeHinted(boolean valueTypeHinted);
 
     /**
-     * Returns whether the parameter value is an array.
-     * @return {@code true} if the parameter value is an array, otherwise {@code false}
+     * Whether the parameter accepts multiple values (array semantics).
      */
     boolean isArray();
 
     /**
-     * Returns whether the value of the array is represented using square brackets.
-     * @return {@code true} if the value of the array is represented using square brackets,
-     *      otherwise {@code false}
+     * Whether array values are represented with explicit square brackets in APON.
      */
     boolean isBracketed();
 
     /**
-     * Returns whether a parameter has been assigned a value.
-     * Even if a null is assigned, it is valid.
-     * @return {@code true} if a parameter has been assigned a value, otherwise {@code false}
+     * Whether any value (including null) has been assigned.
      */
     boolean isAssigned();
 
     /**
-     * Returns whether a non-null value has been assigned.
-     * @return {@code true} if a non-null value is assigned, otherwise {@code false}
+     * Whether a non-null value is present.
      */
     boolean hasValue();
 
     /**
-     * Returns the size of the array if the value is an array.
-     * @return the size of the array
+     * Return the number of elements if this parameter is an array; 0 for none.
      */
     int getArraySize();
 
     /**
-     * Returns a value as an {@code Object}.
-     * @return an {@code Object}
+     * Return the raw value (scalar, array, or nested Parameters) or null.
      */
     Object getValue();
 
     /**
-     * Change parameter type to array type.
+     * Convert the parameter to array form if not already; preserves existing value as first element.
      */
     void arraylize();
 
     /**
-     * Puts the parameter value.
-     * @param value the parameter value
+     * Put/append a value to this parameter (converts to array if needed).
+     * @param value the value to assign or append
      */
     void putValue(Object value);
 
     /**
-     * Removes the parameter value.
+     * Remove the current value (clears assigned state).
      */
     void removeValue();
 
     /**
-     * Returns a value as an {@code Object} array.
-     * @return an array of {@code Object}
+     * Return the values as an object array (may contain boxed primitives or Parameters).
      */
     Object[] getValues();
 
     /**
-     * Returns a value as a {@code List}.
-     * @return a {@code List}
+     * Return the values as an untyped list view.
      */
     List<?> getValueList();
 
     /**
-     * Returns a value as a {@code String}.
-     * @return a {@code String}
+     * Retrieve the value as a String, performing conversion as needed.
      */
     String getValueAsString();
 
     /**
-     * Returns a value as a {@code String} array.
-     * @return a {@code String} array
+     * Retrieve the value as an array of Strings.
      */
     String[] getValueAsStringArray();
 
     /**
-     * Returns a value as a {@code List<String>}.
-     * @return a {@code List<String>}
+     * Retrieve the value as a List of Strings.
      */
     List<String> getValueAsStringList();
 
     /**
-     * Returns a value as an {@code Integer}.
-     * @return an {@code Integer}
+     * Retrieve the value as an Integer.
      */
     Integer getValueAsInt();
 
     /**
-     * Returns a value as an {@code Integer} array.
-     * @return an {@code Integer} array
+     * Retrieve the value as an array of Integers.
      */
     Integer[] getValueAsIntArray();
 
     /**
-     * Returns a value as a {@code List<Integer>}.
-     * @return a {@code List<Integer>}
+     * Retrieve the value as a List of Integers.
      */
     List<Integer> getValueAsIntList();
 
     /**
-     * Returns a value as a {@code Long}.
-     * @return a {@code Long}
+     * Retrieve the value as a Long.
      */
     Long getValueAsLong();
 
     /**
-     * Returns a value as a {@code Long} array.
-     * @return a {@code Long} array
+     * Retrieve the value as an array of Longs.
      */
     Long[] getValueAsLongArray();
 
     /**
-     * Returns a value as a {@code List<Long>}.
-     * @return a {@code List<Long>}
+     * Retrieve the value as a List of Longs.
      */
     List<Long> getValueAsLongList();
 
     /**
-     * Returns a value as a {@code Float}.
-     * @return a {@code Float}
+     * Retrieve the value as a Float.
      */
     Float getValueAsFloat();
 
     /**
-     * Returns a value as a {@code Float} array.
-     * @return a {@code Float} array
+     * Retrieve the value as an array of Floats.
      */
     Float[] getValueAsFloatArray();
 
     /**
-     * Returns a value as a {@code List<Float>}.
-     * @return a {@code List<Float>}
+     * Retrieve the value as a List of Floats.
      */
     List<Float> getValueAsFloatList();
 
     /**
-     * Returns a value as a {@code Double}.
-     * @return a {@code Double}
+     * Retrieve the value as a Double.
      */
     Double getValueAsDouble();
 
     /**
-     * Returns a value as a {@code Double} array.
-     * @return a {@code Double} array
+     * Retrieve the value as an array of Doubles.
      */
     Double[] getValueAsDoubleArray();
 
     /**
-     * Returns a value as a {@code List<Double>}.
-     * @return a {@code List<Double>}
+     * Retrieve the value as a List of Doubles.
      */
     List<Double> getValueAsDoubleList();
 
     /**
-     * Returns a value as a {@code Boolean}.
-     * @return a {@code Boolean}
+     * Retrieve the value as a Boolean.
      */
     Boolean getValueAsBoolean();
 
     /**
-     * Returns a value as a {@code Boolean} array.
-     * @return a {@code Boolean} array
+     * Retrieve the value as an array of Booleans.
      */
     Boolean[] getValueAsBooleanArray();
 
     /**
-     * Returns a value as a {@code List<Boolean>}.
-     * @return a {@code List<Boolean>}
+     * Retrieve the value as a List of Booleans.
      */
     List<Boolean> getValueAsBooleanList();
 
     /**
-     * Returns a value as a {@code Parameters}.
-     * @return a {@code Parameters}
+     * Retrieve the value as a nested Parameters block.
      */
     Parameters getValueAsParameters();
 
     /**
-     * Returns a value as a {@code Parameters} array.
-     * @return a {@code Parameters} array
+     * Retrieve the value as an array of nested Parameters blocks.
      */
     Parameters[] getValueAsParametersArray();
 
     /**
-     * Returns a value as a {@code List<Parameters>}.
-     * @return a {@code List<Parameters>}
+     * Retrieve the value as a List of nested Parameters blocks.
      */
     List<Parameters> getValueAsParametersList();
 
     /**
-     * Creates a new instance of {@code Parameters} with the specified
-     * identifier {@code Parameter}.
-     * @param <T> the type of the new Parameters object
-     * @param identifier the specified identifier {@code Parameter}
-     * @return a {@code Parameters}
+     * Create and attach a new nested Parameters instance under this parameter (must be PARAMETERS type).
+     * @param identifier the parameter metadata or instance used to infer characteristics
+     * @param <T> the nested container type
+     * @return the created nested container
      */
     <T extends Parameters> T newParameters(Parameter identifier);
 

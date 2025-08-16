@@ -18,7 +18,8 @@ package com.aspectran.utils.apon;
 import java.io.Serial;
 
 /**
- * Exception thrown when an invalid parameter value is encountered.
+ * Thrown to indicate that a value cannot be assigned to a parameter due to
+ * type or format incompatibility.
  */
 public class InvalidParameterValueException extends RuntimeException {
 

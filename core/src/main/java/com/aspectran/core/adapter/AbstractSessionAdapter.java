@@ -21,30 +21,43 @@ import com.aspectran.utils.ToStringBuilder;
 import static com.aspectran.core.component.bean.scope.SessionScope.SESSION_SCOPE_ATTR_NAME;
 
 /**
- * The Abstract Class for session object adapter.
+ * Base implementation of {@link SessionAdapter} that stores a reference to the underlying
+ * session "adaptee" and lazily manages a {@link SessionScope} within the session attributes.
  *
  * @since 2011. 3. 13.
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 
+    /**
+     * The underlying session object being adapted (framework-specific).
+     */
     private final Object adaptee;
 
+    /**
+     * Lazily initialized {@link SessionScope} cached on this adapter and stored in the session.
+     */
     private volatile SessionScope sessionScope;
 
     /**
-     * Instantiates a new AbstractSessionAdapter.
-     * @param adaptee the adaptee object
+     * Create a new AbstractSessionAdapter.
+     * @param adaptee the native session object being adapted; may be {@code null}
      */
     public AbstractSessionAdapter(Object adaptee) {
         this.adaptee = adaptee;
     }
 
+    /**
+     * Return the underlying session adaptee.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)adaptee;
     }
 
+    /**
+     * Load or create a {@link SessionScope} and store it in the session attributes as needed.
+     */
     @Override
     public SessionScope getSessionScope(boolean create) {
         if (sessionScope == null) {
@@ -59,6 +72,9 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
         return sessionScope;
     }
 
+    /**
+     * Factory method to create a new {@link SessionScope} instance.
+     */
     protected SessionScope createSessionScope() {
         return new SessionScope();
     }

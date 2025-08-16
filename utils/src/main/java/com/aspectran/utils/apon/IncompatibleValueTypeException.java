@@ -17,9 +17,6 @@ package com.aspectran.utils.apon;
 
 import java.io.Serial;
 
-/**
- * The Class IncompatibleValueTypeException.
- */
 public class IncompatibleValueTypeException extends InvalidParameterValueException {
 
     @Serial

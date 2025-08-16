@@ -21,37 +21,57 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The Class DefaultApplicationAdapter.
+ * Simple in-memory {@link ApplicationAdapter} implementation backed by a concurrent map.
+ * <p>
+ * Useful for non-servlet environments or tests where application attributes and
+ * base-path resolution are needed without a full container.
+ * </p>
  *
  * @since 2016. 3. 26.
  */
 public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
 
+    /**
+     * Thread-safe storage for application-scoped attributes.
+     */
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     /**
-     * Instantiates a new DefaultApplicationAdapter.
+     * Create a new DefaultApplicationAdapter with an optional base path.
+     * @param basePath the application base path; may be {@code null}
      */
     public DefaultApplicationAdapter(String basePath) {
         super(basePath);
     }
 
+    /**
+     * Return the attribute with the specified name from the internal store.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         return (T)attributes.get(name);
     }
 
+    /**
+     * Store an attribute in the internal map, replacing any existing value.
+     */
     @Override
     public void setAttribute(String name, Object value) {
         attributes.put(name, value);
     }
 
+    /**
+     * Return an enumeration of all attribute names currently stored.
+     */
     @Override
     public Enumeration<String> getAttributeNames() {
         return Collections.enumeration(attributes.keySet());
     }
 
+    /**
+     * Remove the attribute with the specified name, if present.
+     */
     @Override
     public void removeAttribute(String name) {
         attributes.remove(name);

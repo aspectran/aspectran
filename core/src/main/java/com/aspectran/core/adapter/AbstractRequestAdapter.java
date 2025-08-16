@@ -23,37 +23,53 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.security.Principal;
 
 /**
- * The Class AbstractRequestAdapter.
-  *
+ * Base implementation of {@link RequestAdapter} that holds a reference to the
+ * underlying request "adaptee" and provides lazy creation of a {@link RequestScope}.
+ *
  * @since 2011. 3. 13.
 */
 public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
+    /**
+     * The underlying request object being adapted (framework-specific).
+     */
     protected final Object adaptee;
 
+    /**
+     * Lazily created per-request scope container.
+     */
     private RequestScope requestScope;
 
     /**
-     * Instantiates a new AbstractRequestAdapter.
-     * @param requestMethod the request method
-     * @param adaptee the adaptee object
+     * Create a new AbstractRequestAdapter.
+     * @param requestMethod the request method; may be {@code null} if unknown
+     * @param adaptee the native request object being adapted; may be {@code null}
      */
     public AbstractRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod);
         this.adaptee = adaptee;
     }
 
+    /**
+     * Return the underlying request adaptee.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)adaptee;
     }
 
+    /**
+     * Whether a {@link RequestScope} has already been associated with this adapter.
+     */
     @Override
     public boolean hasRequestScope() {
         return (requestScope == null);
     }
 
+    /**
+     * Obtain the {@link RequestScope}, creating it if necessary.
+     */
     @Override
     @NonNull
     public RequestScope getRequestScope() {
@@ -63,6 +79,10 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
         return requestScope;
     }
 
+    /**
+     * Return the current authenticated user {@link Principal}, if available.
+     * Default implementation returns {@code null}.
+     */
     @Override
     public Principal getPrincipal() {
         return null;

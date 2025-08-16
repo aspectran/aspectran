@@ -26,7 +26,13 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Converts JSON to APON.
+ * Utility that converts JSON into {@link Parameters}.
+ * <p>
+ * Accepts JSON from {@link String} or {@link Reader} and produces either a
+ * default {@link VariableParameters} container or a caller-provided/typed container.
+ * The conversion maps JSON objects to APON parameter blocks and arrays to
+ * APON arrays, preserving primitive types where possible.
+ * </p>
  *
  * @since 6.2.0
  */
@@ -34,31 +40,70 @@ public class JsonToParameters {
 
     private final Class<? extends Parameters> requiredType;
 
+    /**
+     * Create a converter that produces a default {@link VariableParameters} container.
+     */
     public JsonToParameters() {
         this.requiredType = null;
     }
 
+    /**
+     * Create a converter that will instantiate the given {@code requiredType}
+     * for the target {@link Parameters} container.
+     * @param requiredType the concrete Parameters implementation to instantiate (not null)
+     * @throws IllegalArgumentException if {@code requiredType} is null
+     */
     public JsonToParameters(final Class<? extends Parameters> requiredType) {
         Assert.notNull(requiredType, "requiredType must not be null");
         this.requiredType = requiredType;
     }
 
+    /**
+     * Parse a JSON {@link String} into a newly created {@link Parameters} container.
+     * @param <T> the container type
+     * @param json the JSON text (not null)
+     * @return the populated container
+     * @throws IOException if reading or conversion fails
+     */
     public <T extends Parameters> T read(String json) throws IOException {
         T container = createContainer();
         return read(json, container);
     }
 
+    /**
+     * Parse a JSON {@link String} into the supplied {@code container}.
+     * @param <T> the container type
+     * @param json the JSON text (not null)
+     * @param container the target container to populate (not null)
+     * @return the same {@code container} instance for chaining
+     * @throws IOException if reading or conversion fails
+     */
     public <T extends Parameters> T read(String json, T container) throws IOException {
         Assert.notNull(json, "json must not be null");
         read(new StringReader(json), container);
         return container;
     }
 
+    /**
+     * Parse JSON from a {@link Reader} into a newly created {@link Parameters} container.
+     * @param <T> the container type
+     * @param reader the character stream with JSON content (not null)
+     * @return the populated container
+     * @throws IOException if reading or conversion fails
+     */
     public <T extends Parameters> T read(Reader reader) throws IOException {
         T container = createContainer();
         return read(reader, container);
     }
 
+    /**
+     * Parse JSON from a {@link Reader} into the supplied container.
+     * @param <T> the container type
+     * @param reader the character stream with JSON content (not null)
+     * @param container the target container to populate (not null)
+     * @return the same {@code container} instance
+     * @throws IOException if reading or conversion fails
+     */
     public <T extends Parameters> T read(Reader reader, T container) throws IOException {
         Assert.notNull(reader, "reader must not be null");
         Assert.notNull(container, "container must not be null");
@@ -131,22 +176,50 @@ public class JsonToParameters {
         }
     }
 
+    /**
+     * Convenience factory to parse JSON text into a new {@link VariableParameters} container.
+     * @param json the JSON content
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(String json) throws IOException {
         return new JsonToParameters().read(json);
     }
 
+    /**
+     * Convenience factory to parse JSON text into a new container of the given type.
+     * @param <T> the container type
+     * @param json the JSON content
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(String json, Class<? extends Parameters> requiredType)
             throws IOException {
         return new JsonToParameters(requiredType).read(json);
     }
 
+    /**
+     * Convenience factory to parse JSON content from a reader into a new {@link VariableParameters} container.
+     * @param reader the JSON reader
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(Reader reader) throws IOException {
         return new JsonToParameters().read(reader);
     }
 
+    /**
+     * Convenience factory to parse JSON content from a reader into a new container of the given type.
+     * @param <T> the container type
+     * @param reader the JSON reader
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType)
             throws IOException {

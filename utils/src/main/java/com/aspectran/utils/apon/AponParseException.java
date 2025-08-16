@@ -19,41 +19,29 @@ import java.io.IOException;
 import java.io.Serial;
 
 /**
- * Base for Exceptions thrown during parsing of a APON-formatted document.
+ * Base class for exceptions thrown while reading or interpreting APON text.
+ * <p>
+ * Extends {@link IOException} so callers can uniformly handle I/O and parsing
+ * errors produced by {@link AponReader} and related utilities.
+ * </p>
  */
 public class AponParseException extends IOException {
 
     @Serial
     private static final long serialVersionUID = -8511680666286307705L;
 
-    /**
-     * Simple constructor.
-     */
     public AponParseException() {
         super();
     }
 
-    /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
-     */
     public AponParseException(String msg) {
         super(msg);
     }
 
-    /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
-     */
     public AponParseException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
-     */
     public AponParseException(String msg, Throwable cause) {
         super(msg, cause);
     }

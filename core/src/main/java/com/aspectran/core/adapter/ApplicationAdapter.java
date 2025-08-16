@@ -19,7 +19,13 @@ import java.nio.file.Path;
 import java.util.Enumeration;
 
 /**
- * The Interface ApplicationAdapter.
+ * Abstraction over an application/container environment.
+ * <p>
+ * Implementations adapt concrete runtime containers (e.g., servlet engines or
+ * embedded runtimes) to expose a small, consistent API for base-path resolution
+ * and application-scoped attributes. This allows the core framework to operate
+ * uniformly across different execution environments.
+ * </p>
  *
  * @since 2011. 3. 13.
  */

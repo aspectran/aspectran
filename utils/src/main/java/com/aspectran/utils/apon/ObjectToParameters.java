@@ -34,9 +34,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Converts Object to APON.
- *
- * <p>Created: 2015. 03. 16 PM 11:14:29</p>
+ * Utility that converts arbitrary Java objects to {@link Parameters}.
+ * <p>
+ * Supports {@link Map}, JavaBean-style objects (via reflection), collections,
+ * arrays, and common primitives/wrappers. Dates and time types can be formatted
+ * through an optional {@link com.aspectran.utils.StringifyContext}.
+ * </p>
  */
 public class ObjectToParameters {
 
@@ -44,33 +47,77 @@ public class ObjectToParameters {
 
     private StringifyContext stringifyContext;
 
+    /**
+     * Create a converter that produces a default {@link VariableParameters} container.
+     */
     public ObjectToParameters() {
         this.requiredType = null;
     }
 
+    /**
+     * Create a converter that will instantiate the given {@code requiredType}
+     * for the target {@link Parameters} container.
+     * @param requiredType the concrete Parameters implementation to instantiate (not null)
+     * @throws IllegalArgumentException if {@code requiredType} is null
+     */
     public ObjectToParameters(final Class<? extends Parameters> requiredType) {
         Assert.notNull(requiredType, "requiredType must not be null");
         this.requiredType = requiredType;
     }
 
+    /**
+     * Set an optional {@link StringifyContext} used to format date/time and other values
+     * during conversion.
+     * @param stringifyContext the formatting context to apply (may be null)
+     */
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
     }
 
+    /**
+     * Fluent variant of {@link #setStringifyContext(StringifyContext)}.
+     * @param stringifyContext the formatting context
+     * @return this converter instance for chaining
+     */
     public ObjectToParameters apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return this;
     }
 
+    /**
+     * Convert the given object into a new {@link Parameters} container.
+     * For {@link java.util.Map} inputs, entries are copied as-is; for beans, readable
+     * properties are reflected and added.
+     * @param <T> the container type
+     * @param object the source object (not null)
+     * @return a populated container instance
+     */
     public <T extends Parameters> T read(Object object) {
         return createContainer(object);
     }
 
+    /**
+     * Convert the given object into a new {@link Parameters} container and place it under
+     * the specified parameter {@code name} inside the new container.
+     * @param <T> the container type
+     * @param name the parameter name to assign
+     * @param object the source object (not null)
+     * @return the populated container
+     */
     public <T extends Parameters> T read(String name, Object object) {
         T container = createContainer();
         return read(name, object, container);
     }
 
+    /**
+     * Convert the given object and put the value under {@code name} in the provided
+     * {@code container}.
+     * @param <T> the container type
+     * @param name the parameter name (not null)
+     * @param object the source object (not null)
+     * @param container the target container (not null)
+     * @return the same {@code container} instance for chaining
+     */
     public <T extends Parameters> T read(String name, Object object, T container) {
         Assert.notNull(name, "name must not be null");
         Assert.notNull(object, "object must not be null");
@@ -79,6 +126,12 @@ public class ObjectToParameters {
         return container;
     }
 
+    /**
+     * Create a new container instance of {@code requiredType} if provided,
+     * otherwise a {@link VariableParameters}.
+     * @param <T> the container type
+     * @return a new container instance
+     */
     @NonNull
     @SuppressWarnings("unchecked")
     private <T extends Parameters> T createContainer() {
@@ -91,6 +144,13 @@ public class ObjectToParameters {
         return (T)container;
     }
 
+    /**
+     * Create a container suitable for the given source object and populate it
+     * if the object is a {@link Map}.
+     * @param <T> the container type
+     * @param object the source object (not null)
+     * @return a new container, possibly pre-populated
+     */
     @NonNull
     protected <T extends Parameters> T createContainer(Object object) {
         Assert.notNull(object, "object must not be null");
@@ -108,6 +168,13 @@ public class ObjectToParameters {
         }
     }
 
+    /**
+     * Put a value into the {@code container} under {@code name}, honoring
+     * null-handling settings.
+     * @param container the target Parameters (not null)
+     * @param name the parameter name (not null)
+     * @param value the value to put (may be null)
+     */
     protected void putValue(@NonNull Parameters container, @NonNull String name, Object value) {
         if (isNullWritable()) {
             container.putValue(name, normalize(value));
@@ -116,6 +183,12 @@ public class ObjectToParameters {
         }
     }
 
+    /**
+     * Merge the given value into the target container if it is itself a
+     * Parameters instance.
+     * @param container the target Parameters (not null)
+     * @param value the value to merge
+     */
     protected void putValue(@NonNull Parameters container, Object value) {
         Object obj = normalize(value);
         if (obj instanceof Parameters parameters) {
@@ -123,6 +196,14 @@ public class ObjectToParameters {
         }
     }
 
+    /**
+     * Normalize the given source value into a representation storable in {@link Parameters}:
+     * Maps become nested Parameters, collections and arrays are kept as-is, common primitives
+     * and wrappers are passed through, date/time types can be formatted via {@link StringifyContext},
+     * and arbitrary beans are reflected into a Parameters structure.
+     * @param object the source value (may be null)
+     * @return a normalized value suitable for storage
+     */
     private Object normalize(Object object) {
         if (object == null ||
                 object instanceof Parameters ||
@@ -189,10 +270,20 @@ public class ObjectToParameters {
         }
     }
 
+    /**
+     * Whether null values should be included when writing into the container.
+     * @return true if nulls are allowed to be written; false to skip nulls
+     */
     private boolean isNullWritable() {
         return (stringifyContext == null || stringifyContext.isNullWritable());
     }
 
+    /**
+     * Detect direct self-references to avoid infinite recursion when converting nested structures.
+     * @param wrapper the enclosing object
+     * @param member the member about to be added
+     * @throws InvalidParameterValueException if a circular reference is detected
+     */
     private void checkCircularReference(@NonNull Object wrapper, Object member) {
         if (wrapper == member) {
             throw new IllegalArgumentException("Serialization Failure: Circular reference was detected " +

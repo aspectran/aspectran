@@ -29,6 +29,14 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * A mutable set of options and helpers for converting dates/times and
+ * other values to and from strings in a consistent, locale-aware way.
+ * <p>
+ * This context encapsulates formatting flags such as pretty printing,
+ * indentation, null rendering, date/time formats, and {@link Locale}.
+ * It also offers parse utilities in the opposite direction.
+ * </p>
+ *
  * <p>Created: 2024. 11. 30.</p>
  */
 public class StringifyContext implements Cloneable {

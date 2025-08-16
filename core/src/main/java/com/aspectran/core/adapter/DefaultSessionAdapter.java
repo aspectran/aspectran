@@ -20,14 +20,15 @@ import com.aspectran.core.component.session.SessionAgent;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link SessionAgent} to Default {@link SessionAdapter}.
+ * Adapts a {@link SessionAgent} to the {@link SessionAdapter} API.
+ * Provides a thin wrapper delegating all operations to the underlying agent.
  *
  * @since 2.3.0
  */
 public class DefaultSessionAdapter extends AbstractSessionAdapter {
 
     /**
-     * Instantiates a new DefaultSessionAdapter.
+     * Create a new DefaultSessionAdapter using the given {@link SessionAgent}.
      * @param agent the session agent
      */
     public DefaultSessionAdapter(SessionAgent agent) {
@@ -54,6 +55,9 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
         return getSessionAgent().getMaxInactiveInterval();
     }
 
+    /**
+     * Set the maximum inactive interval in seconds on the underlying session agent.
+     */
     public void setMaxInactiveInterval(int secs) {
         getSessionAgent().setMaxInactiveInterval(secs);
     }
@@ -93,6 +97,9 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
         return getSessionAgent().isNew();
     }
 
+    /**
+     * Return the underlying {@link SessionAgent} adaptee.
+     */
     public SessionAgent getSessionAgent() {
         return super.getAdaptee();
     }

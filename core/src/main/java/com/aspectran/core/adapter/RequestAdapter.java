@@ -35,7 +35,13 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
- * The Interface RequestAdapter.
+ * Abstraction over an incoming request in a given runtime environment.
+ * <p>
+ * Implementations encapsulate container-specific request objects and expose a
+ * consistent API for accessing headers, parameters, files, attributes, locale,
+ * and other request metadata. This makes request handling uniform across
+ * different execution environments.
+ * </p>
  *
  * @since 2011. 3. 13.
  */
@@ -62,37 +68,37 @@ public interface RequestAdapter {
     RequestScope getRequestScope();
 
     /**
-     * Returns the value of the response header with the given name.
+     * Returns the value of the request header with the given name.
      *
-     * <p>If a response header with the given name exists and contains
+     * <p>If a request header with the given name exists and contains
      * multiple values, the value that was added first will be returned.
-     * @param name the name of the response header whose value to return
-     * @return the value of the response header with the given name,
+     * @param name the name of the request header whose value to return
+     * @return the value of the request header with the given name,
      *         or {@code null} if no header with the given name has been set
-     *         on this response
+     *         on this request
      */
     String getHeader(String name);
 
     /**
-     * Returns the values of the response header with the given name.
-     * @param name the name of the response header whose values to return
+     * Returns the values of the request header with the given name.
+     * @param name the name of the request header whose values to return
      * @return a (possibly empty) {@code Collection} of the values
-     *         of the response header with the given name
+     *         of the request header with the given name
      */
     List<String> getHeaderValues(String name);
 
     /**
-     * Returns the names of the headers of this response.
+     * Returns the names of the headers of this request.
      * @return a (possibly empty) {@code Collection} of the names
-     *         of the headers of this response
+     *         of the headers of this request
      */
     Set<String> getHeaderNames();
 
     /**
-     * Returns a boolean indicating whether the named response header
+     * Returns a boolean indicating whether the named request header
      * has already been set.
      * @param name the header name
-     * @return {@code true} if the named response header
+     * @return {@code true} if the named request header
      *         has already been set; {@code false} otherwise
      */
     boolean containsHeader(String name);

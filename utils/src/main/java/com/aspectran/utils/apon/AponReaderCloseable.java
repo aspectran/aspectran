@@ -19,14 +19,16 @@ import java.io.Closeable;
 import java.io.Reader;
 
 /**
- * Converts a string in APON format to a Parameters object.
- * <p>By default, the indentation string is "  " (two blanks)</p>
- * <p>Useful with Java 7 for example :
+ * A {@link AponReader} variant that implements {@link Closeable} for use with
+ * try-with-resources blocks.
+ * <p>
+ * Example:
  * <pre>{@code
- *   try(AponReaderCloseable aponReader = AponReaderCloseable(reader)) {
- *     ....
- *   }
- * }</pre></p>
+ * try (AponReaderCloseable reader = new AponReaderCloseable(myReader)) {
+ *     Parameters ps = reader.read();
+ * }
+ * }</pre>
+ * </p>
  */
 public class AponReaderCloseable extends AponReader implements Closeable {
 

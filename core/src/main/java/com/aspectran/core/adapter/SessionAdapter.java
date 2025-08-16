@@ -21,9 +21,15 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.Enumeration;
 
 /**
- * The Interface SessionAdapter.
+ * Abstraction over a user session in a given runtime environment.
+ * <p>
+ * Implementations adapt container-specific session objects and expose a
+ * consistent API for identity, lifecycle, attributes, and a lazily created
+ * {@link com.aspectran.core.component.bean.scope.SessionScope}. This enables
+ * session handling to be uniform across runtime environments.
+ * </p>
  *
- * @since 2011. 3. 13.
+ * @since 2011.  3. 13.
  */
 public interface SessionAdapter {
 

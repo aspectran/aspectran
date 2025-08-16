@@ -27,35 +27,54 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The Class DefaultResponseAdapter.
+ * Default in-memory {@link ResponseAdapter} implementation capturing headers, status,
+ * and an output target (OutputStream/Writer). Suitable for non-servlet and testing use.
  *
  * @since 2016. 2. 13.
  */
 public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
+    /**
+     * Case-insensitive multi-value header map.
+     */
     private MultiValueMap<String, String> headers;
 
+    /**
+     * Character encoding for the response body.
+     */
     private String encoding;
 
+    /**
+     * MIME content type for the response body.
+     */
     private String contentType;
 
+    /**
+     * Optional binary output target.
+     */
     private OutputStream outputStream;
 
+    /**
+     * Optional character output target.
+     */
     private Writer writer;
 
+    /**
+     * HTTP-like status code for this response.
+     */
     private int status;
 
     /**
-     * Instantiates a new default response adapter.
-     * @param adaptee the adaptee object
+     * Create a new default response adapter.
+     * @param adaptee the native response object being adapted; may be {@code null}
      */
     public DefaultResponseAdapter(Object adaptee) {
         super(adaptee);
     }
 
     /**
-     * Instantiates a new default response adapter.
-     * @param adaptee the adaptee object
+     * Create a new default response adapter with a pre-configured {@link Writer}.
+     * @param adaptee the native response object being adapted; may be {@code null}
      * @param writer the writer to output
      */
     public DefaultResponseAdapter(Object adaptee, Writer writer) {
@@ -186,6 +205,10 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         return outputStream;
     }
 
+    /**
+     * Configure the underlying {@link OutputStream} to be returned by {@link #getOutputStream()}.
+     * Intended for use by infrastructure code.
+     */
     protected void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
@@ -198,6 +221,10 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         return writer;
     }
 
+    /**
+     * Configure the underlying {@link Writer} to be returned by {@link #getWriter()}.
+     * Intended for use by infrastructure code.
+     */
     protected void setWriter(Writer writer) {
         this.writer = writer;
     }
@@ -243,6 +270,9 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         this.status = status;
     }
 
+    /**
+     * Transform a response path if necessary. Default implementation returns the path unchanged.
+     */
     @Override
     public String transformPath(String path) {
         return path;

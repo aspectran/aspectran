@@ -18,8 +18,6 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * The Class DefaultRequestAdapter.
-  *
  * @since 2016. 2. 13.
 */
 public class DefaultRequestAdapter extends AbstractRequestAdapter {

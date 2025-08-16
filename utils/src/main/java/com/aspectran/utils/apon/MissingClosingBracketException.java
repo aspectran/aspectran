@@ -18,7 +18,7 @@ package com.aspectran.utils.apon;
 import java.io.Serial;
 
 /**
- * This exception will be thrown when missing closing brackets.
+ * Thrown when a closing bracket is missing for a block/array/text value while parsing APON.
  */
 public class MissingClosingBracketException extends MalformedAponException {
 
@@ -26,10 +26,10 @@ public class MissingClosingBracketException extends MalformedAponException {
     private static final long serialVersionUID = -6294265620028959255L;
 
     /**
-     * Constructor to create exception with a message.
-     * @param bracketShape the bracket character
-     * @param name the parameter name
-     * @param parameterValue the parameter value
+     * Create the exception indicating the kind of bracket that was expected and the current parameter context.
+     * @param bracketShape textual description of the bracket type (e.g., "curly", "square", "round")
+     * @param name the parameter name, if available
+     * @param parameterValue the parameter value holder providing additional context; may be null
      */
     public MissingClosingBracketException(String bracketShape, String name, ParameterValue parameterValue) {
         super("The end of the string was reached with no closing " + bracketShape + " bracket found: " +

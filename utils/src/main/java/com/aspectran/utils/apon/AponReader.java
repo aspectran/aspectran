@@ -47,7 +47,14 @@ import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.TRUE;
 
 /**
- * Converts a string in APON format to a Parameters object.
+ * Streaming reader that parses APON (Aspectran Parameters Object Notation) text
+ * into {@link Parameters} containers.
+ * <p>
+ * Supports reading from strings, files, and generic {@link Reader} instances.
+ * The root can be either an object-like structure ({@link Parameters}) or a
+ * top-level array ({@link ArrayParameters}). The parser honors APON features such
+ * as explicit value types, arrays, and multi-line text values.
+ * </p>
  */
 public class AponReader {
 
@@ -523,7 +530,15 @@ public class AponReader {
         return read(apon, parameters);
     }
 
-    public static <T extends Parameters> T read(String apon, Class<T> requiredType) throws AponParseException {
+    /**
+         * Converts an APON formatted string into a new container of the given type.
+         * @param <T> the container type to create
+         * @param apon the APON formatted string
+         * @param requiredType the concrete Parameters implementation to instantiate
+         * @return a populated container instance
+         * @throws AponParseException if parsing fails
+         */
+        public static <T extends Parameters> T read(String apon, Class<T> requiredType) throws AponParseException {
         T parameters = ClassUtils.createInstance(requiredType);
         return read(apon, parameters);
     }

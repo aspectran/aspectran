@@ -45,28 +45,64 @@ import java.util.Map;
  */
 public abstract class AbstractActivity implements Activity {
 
+    /**
+     * Owning activity context providing access to environment, beans, adapters, etc.
+     */
     private final ActivityContext context;
 
+    /**
+     * Previously current activity to be restored after this activity completes.
+     */
     private Activity pendingActivity;
 
+    /**
+     * Session adapter associated with this activity (optional).
+     */
     private SessionAdapter sessionAdapter;
 
+    /**
+     * Request adapter associated with this activity (may be initialized lazily).
+     */
     private RequestAdapter requestAdapter;
 
+    /**
+     * Response adapter associated with this activity (may be initialized lazily).
+     */
     private ResponseAdapter responseAdapter;
 
+    /**
+     * The exception that was raised during processing, if any.
+     */
     private Throwable raisedException;
 
+    /**
+     * Arbitrary settings stored at the activity scope.
+     */
     private Map<String, Object> settings;
 
+    /**
+     * Lazily initialized stringify context for logging/debugging purposes.
+     */
     private StringifyContext stringifyContext;
 
+    /**
+     * Evaluator for token expressions, initialized on first use.
+     */
     private TokenEvaluator tokenEvaluator;
 
+    /**
+     * Evaluator for item expressions, initialized on first use.
+     */
     private ItemEvaluator itemEvaluator;
 
+    /**
+     * Manager for FlashMap to pass attributes across requests, optional.
+     */
     private FlashMapManager flashMapManager;
 
+    /**
+     * Resolver for determining the current locale, optional.
+     */
     private LocaleResolver localeResolver;
 
     /**
@@ -139,11 +175,20 @@ public abstract class AbstractActivity implements Activity {
         }
     }
 
+    /**
+     * Returns the pending (previous) activity saved before this one became current.
+     * @param <V> the activity subtype
+     * @return the pending activity or {@code null} if none
+     */
     @SuppressWarnings("unchecked")
     protected <V extends Activity> V getPendingActivity() {
         return (V)pendingActivity;
     }
 
+    /**
+     * Whether this activity replaced a previously current one (i.e., has a pending activity).
+     * @return {@code true} if there is a pending activity; {@code false} otherwise
+     */
     protected boolean isOriginalActivity() {
         return (pendingActivity != null);
     }

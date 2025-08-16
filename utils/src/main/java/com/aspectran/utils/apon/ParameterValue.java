@@ -22,6 +22,16 @@ import com.aspectran.utils.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default {@link Parameter} implementation that stores the parameter's
+ * metadata (name, declared {@link ValueType}, array/bracket flags, nesting
+ * class for {@code PARAMETERS}) and its value(s).
+ * <p>
+ * Supports both single values and arrays/lists, automatic adjustment of value
+ * type for {@link ValueType#VARIABLE}, and creation of nested {@link Parameters}
+ * instances when the value type is {@code PARAMETERS}.
+ * </p>
+ */
 public class ParameterValue implements Parameter {
 
     private Parameters container;
@@ -48,18 +58,44 @@ public class ParameterValue implements Parameter {
 
     private boolean assigned;
 
+    /**
+     * Create a parameter value of the specified {@link ValueType}.
+     * @param name the parameter name (not null)
+     * @param valueType the declared value type for this parameter (not null)
+     */
     public ParameterValue(String name, ValueType valueType) {
         this(name, valueType, false);
     }
 
+    /**
+     * Create a parameter value with an explicit array flag.
+     * @param name the parameter name (not null)
+     * @param valueType the declared value type (not null)
+     * @param array whether this parameter can hold multiple values (array)
+     */
     public ParameterValue(String name, ValueType valueType, boolean array) {
         this(name, valueType, array, false);
     }
 
+    /**
+     * Create a parameter value with array and bracket formatting controls.
+     * @param name the parameter name (not null)
+     * @param valueType the declared value type (not null)
+     * @param array whether this parameter can hold multiple values (array)
+     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     */
     public ParameterValue(String name, ValueType valueType, boolean array, boolean noBracket) {
         this(name, valueType, array, noBracket, false);
     }
 
+    /**
+     * Full constructor used internally to optionally fix the value type.
+     * @param name the parameter name (not null)
+     * @param valueType the declared value type (not null)
+     * @param array whether this parameter can hold multiple values (array)
+     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     * @param valueTypeFixed whether the value type is fixed (non-adjustable)
+     */
     protected ParameterValue(String name, ValueType valueType, boolean array,
                              boolean noBracket, boolean valueTypeFixed) {
         Assert.notNull(name, "Parameter name must not be null");
@@ -74,20 +110,46 @@ public class ParameterValue implements Parameter {
         }
     }
 
+    /**
+     * Create a parameter that holds nested {@link Parameters} of the given class.
+     * @param name the parameter name (not null)
+     * @param parametersClass the concrete Parameters implementation for nested values (not null)
+     */
     public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass) {
         this(name, parametersClass, false);
     }
 
+    /**
+     * Create a nested-parameters parameter with an explicit array flag.
+     * @param name the parameter name (not null)
+     * @param parametersClass the Parameters implementation for nested values (not null)
+     * @param array whether multiple nested elements are allowed
+     */
     public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
                           boolean array) {
         this(name, parametersClass, array, false);
     }
 
+    /**
+     * Create a nested-parameters parameter with array and bracket formatting controls.
+     * @param name the parameter name (not null)
+     * @param parametersClass the Parameters implementation for nested values (not null)
+     * @param array whether multiple nested elements are allowed
+     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     */
     public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
                           boolean array, boolean noBracket) {
         this(name, parametersClass, array, noBracket, false);
     }
 
+    /**
+     * Full constructor used internally for nested-parameters parameters.
+     * @param name the parameter name (not null)
+     * @param parametersClass the Parameters implementation for nested values (not null)
+     * @param array whether multiple nested elements are allowed
+     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     * @param valueTypeFixed whether the value type is fixed (non-adjustable)
+     */
     protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
                              boolean array, boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
@@ -101,20 +163,32 @@ public class ParameterValue implements Parameter {
         }
     }
 
+    /**
+     * Return the owning container for this parameter.
+     */
     @Override
     public Parameters getContainer() {
         return container;
     }
 
-    public void setContainer(Parameters container) {
+    /**
+         * Set the container that owns this parameter (internal use).
+         */
+        public void setContainer(Parameters container) {
         this.container = container;
     }
 
+    /**
+     * Return the local name of this parameter.
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Compute a qualified name using this parameter's owner chain.
+     */
     @Override
     public String getQualifiedName() {
         if (container == null) {
@@ -127,50 +201,80 @@ public class ParameterValue implements Parameter {
         return name;
     }
 
+    /**
+     * Return the current declared value type.
+     */
     @Override
     public ValueType getValueType() {
         return valueType;
     }
 
+    /**
+     * Set the declared value type.
+     */
     @Override
     public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
 
+    /**
+     * Whether this parameter's type is fixed and not auto-adjusted.
+     */
     @Override
     public boolean isValueTypeFixed() {
         return valueTypeFixed;
     }
 
+    /**
+     * Whether this parameter's type was derived from a name hint.
+     */
     @Override
     public boolean isValueTypeHinted() {
         return valueTypeHinted;
     }
 
+    /**
+     * Mark whether this parameter's type came from a hint.
+     */
     @Override
     public void setValueTypeHinted(boolean valueTypeHinted) {
         this.valueTypeHinted = valueTypeHinted;
     }
 
+    /**
+     * Whether this parameter holds multiple values.
+     */
     @Override
     public boolean isArray() {
         return array;
     }
 
+    /**
+     * Whether array values are written with square brackets in APON.
+     */
     @Override
     public boolean isBracketed() {
         return bracketed;
     }
 
-    public void setBracketed(boolean bracketed) {
+    /**
+         * Control whether array values are emitted with square brackets.
+         */
+        public void setBracketed(boolean bracketed) {
         this.bracketed = bracketed;
     }
 
+    /**
+     * Whether any value (including null) has been assigned to this parameter.
+     */
     @Override
     public boolean isAssigned() {
         return assigned;
     }
 
+    /**
+     * Whether a non-null value is present.
+     */
     @Override
     public boolean hasValue() {
         if (assigned) {
@@ -184,12 +288,19 @@ public class ParameterValue implements Parameter {
         }
     }
 
+    /**
+     * Return the number of elements when this parameter is in array form.
+     */
     @Override
     public int getArraySize() {
         List<?> list = getValueList();
         return (list != null ? list.size() : 0);
     }
 
+    /**
+     * Convert this parameter to an array-accepting parameter (fails if already assigned).
+     * @throws IllegalStateException if a value is already assigned
+     */
     @Override
     public void arraylize() {
         Assert.state(!assigned, "This parameter cannot be converted to " +
@@ -198,6 +309,11 @@ public class ParameterValue implements Parameter {
         bracketed = true;
     }
 
+    /**
+     * Assign or append a value to this parameter, converting or adjusting type as needed.
+     * If not fixed and a prior scalar exists, the parameter becomes an array.
+     * @param value the value to assign (may be null)
+     */
     @Override
     public void putValue(Object value) {
         if (value != null) {
@@ -231,6 +347,10 @@ public class ParameterValue implements Parameter {
         list.add(value);
     }
 
+    /**
+     * Remove the current value from this parameter and clear its assigned state.
+     * If the value type is not fixed, also resets array/bracket flags.
+     */
     @Override
     public void removeValue() {
         value = null;
@@ -242,11 +362,22 @@ public class ParameterValue implements Parameter {
         }
     }
 
+    /**
+     * Return the raw value assigned to this parameter.
+     * If this parameter is an array, returns the {@link #getValueList()} instead of a scalar.
+     * @return the current value or list of values, or {@code null}
+     */
     @Override
     public Object getValue() {
         return (array ? getValueList() : value);
     }
 
+    /**
+     * Return the internal list of values if this parameter is in array form.
+     * When the original type is VARIABLE and a scalar was previously assigned,
+     * this method may convert the scalar into a one-element list.
+     * @return the list of values or {@code null} if none
+     */
     @Override
     public List<?> getValueList() {
         if (!valueTypeFixed && value != null && list == null &&
@@ -256,17 +387,29 @@ public class ParameterValue implements Parameter {
         return list;
     }
 
+    /**
+     * Return the values as an Object array if this parameter is in array form.
+     * @return an array of values or {@code null} if no values exist
+     */
     @Override
     public Object[] getValues() {
         List<?> list = getValueList();
         return (list != null ? list.toArray(new Object[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a String. For non-string values, calls toString().
+     * @return string representation of the current scalar value, or {@code null}
+     */
     @Override
     public String getValueAsString() {
         return (value != null ? value.toString() : null);
     }
 
+    /**
+     * Retrieve the value as a String array. Converts each element via toString() when needed.
+     * @return the String array or {@code null} if no value exists
+     */
     @Override
     public String[] getValueAsStringArray() {
         if (array) {
@@ -284,6 +427,10 @@ public class ParameterValue implements Parameter {
         return null;
     }
 
+    /**
+     * Retrieve the value as a List of Strings. Non-string elements are converted via toString().
+     * @return the list of strings or {@code null}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getValueAsStringList() {
@@ -302,18 +449,33 @@ public class ParameterValue implements Parameter {
         }
     }
 
+    /**
+     * Retrieve the current value as an {@link Integer}.
+     * @return the integer value or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of INT type (and not VARIABLE)
+     */
     @Override
     public Integer getValueAsInt() {
         checkValueType(ValueType.INT);
         return (Integer)value;
     }
 
+    /**
+     * Retrieve the current value as an array of {@link Integer}.
+     * @return the integer array or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of INT type (and not VARIABLE)
+     */
     @Override
     public Integer[] getValueAsIntArray() {
         List<Integer> intList = getValueAsIntList();
         return (intList != null ? intList.toArray(new Integer[0]): null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of {@link Integer}.
+     * @return the list of integers or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of INT type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Integer> getValueAsIntList() {
@@ -321,18 +483,33 @@ public class ParameterValue implements Parameter {
         return (List<Integer>)getValueList();
     }
 
+    /**
+     * Retrieve the current value as a {@link Long}.
+     * @return the long value or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of LONG type (and not VARIABLE)
+     */
     @Override
     public Long getValueAsLong() {
         checkValueType(ValueType.LONG);
         return (Long)value;
     }
 
+    /**
+     * Retrieve the current value as an array of {@link Long}.
+     * @return the long array or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of LONG type (and not VARIABLE)
+     */
     @Override
     public Long[] getValueAsLongArray() {
         List<Long> longList = getValueAsLongList();
         return (longList != null ? longList.toArray(new Long[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of {@link Long}.
+     * @return the list of longs or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of LONG type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Long> getValueAsLongList() {
@@ -340,18 +517,33 @@ public class ParameterValue implements Parameter {
         return (List<Long>)getValueList();
     }
 
+    /**
+     * Retrieve the current value as a {@link Float}.
+     * @return the float value or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of FLOAT type (and not VARIABLE)
+     */
     @Override
     public Float getValueAsFloat() {
         checkValueType(ValueType.FLOAT);
         return (Float)value;
     }
 
+    /**
+     * Retrieve the current value as an array of {@link Float}.
+     * @return the float array or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of FLOAT type (and not VARIABLE)
+     */
     @Override
     public Float[] getValueAsFloatArray() {
         List<Float> floatList = getValueAsFloatList();
         return (floatList != null ? floatList.toArray(new Float[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of {@link Float}.
+     * @return the list of floats or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of FLOAT type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Float> getValueAsFloatList() {
@@ -359,18 +551,33 @@ public class ParameterValue implements Parameter {
         return (List<Float>)getValueList();
     }
 
+    /**
+     * Retrieve the current value as a {@link Double}.
+     * @return the double value or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of DOUBLE type (and not VARIABLE)
+     */
     @Override
     public Double getValueAsDouble() {
         checkValueType(ValueType.DOUBLE);
         return (Double)value;
     }
 
+    /**
+     * Retrieve the current value as an array of {@link Double}.
+     * @return the double array or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of DOUBLE type (and not VARIABLE)
+     */
     @Override
     public Double[] getValueAsDoubleArray() {
         List<Double> doubleList = getValueAsDoubleList();
         return (doubleList != null ? doubleList.toArray(new Double[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of {@link Double}.
+     * @return the list of doubles or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of DOUBLE type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Double> getValueAsDoubleList() {
@@ -378,18 +585,33 @@ public class ParameterValue implements Parameter {
         return (List<Double>)getValueList();
     }
 
+    /**
+     * Retrieve the current value as a {@link Boolean}.
+     * @return the boolean value or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of BOOLEAN type (and not VARIABLE)
+     */
     @Override
     public Boolean getValueAsBoolean() {
         checkValueType(ValueType.BOOLEAN);
         return (Boolean)value;
     }
 
+    /**
+     * Retrieve the current value as an array of {@link Boolean}.
+     * @return the boolean array or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of BOOLEAN type (and not VARIABLE)
+     */
     @Override
     public Boolean[] getValueAsBooleanArray() {
         List<Boolean> booleanList = getValueAsBooleanList();
         return (booleanList != null ? booleanList.toArray(new Boolean[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of {@link Boolean}.
+     * @return the list of booleans or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of BOOLEAN type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Boolean> getValueAsBooleanList() {
@@ -397,18 +619,33 @@ public class ParameterValue implements Parameter {
         return (List<Boolean>)getValueList();
     }
 
+    /**
+     * Retrieve the current value as nested {@link Parameters}.
+     * @return the nested container or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of PARAMETERS type (and not VARIABLE)
+     */
     @Override
     public Parameters getValueAsParameters() {
         checkValueType(ValueType.PARAMETERS);
         return (Parameters)value;
     }
 
+    /**
+     * Retrieve the current value as an array of nested {@link Parameters}.
+     * @return the array of nested containers or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of PARAMETERS type (and not VARIABLE)
+     */
     @Override
     public Parameters[] getValueAsParametersArray() {
         List<Parameters> parametersList = getValueAsParametersList();
         return (parametersList != null ? parametersList.toArray(new Parameters[0]) : null);
     }
 
+    /**
+     * Retrieve the current value as a {@link List} of nested {@link Parameters}.
+     * @return the list of nested containers or {@code null}
+     * @throws IncompatibleValueTypeException if this parameter is not of PARAMETERS type (and not VARIABLE)
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Parameters> getValueAsParametersList() {
@@ -418,6 +655,15 @@ public class ParameterValue implements Parameter {
         return (List<Parameters>)getValueList();
     }
 
+    /**
+     * Create and attach a new nested {@link Parameters} instance under this parameter.
+     * If the current type is VARIABLE, it is treated as PARAMETERS and a VariableParameters implementation is used by default.
+     * @param <T> the type of nested container to return
+     * @param identifier the parameter metadata/owner used to set the proprietor of the nested container
+     * @return the created nested container instance
+     * @throws IncompatibleValueTypeException if the declared type is not PARAMETERS (nor VARIABLE)
+     * @throws InvalidParameterValueException if instantiation of the nested container fails
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(Parameter identifier) {
@@ -515,6 +761,10 @@ public class ParameterValue implements Parameter {
         return value;
     }
 
+    /**
+     * Render a debug-friendly representation of this parameter including name, type, flags,
+     * qualified name, and array size or nested class information as applicable.
+     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

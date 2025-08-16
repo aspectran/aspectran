@@ -26,7 +26,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A Root Parameters to Represent an Array of Nameless Parameters.
+ * Root-level {@link Parameters} implementation representing an array of nameless
+ * parameter groups.
+ * <p>
+ * The synthetic name "<noname>" is used internally to store array elements.
+ * Provides convenient iteration and accessors for array contents.
+ * </p>
  *
  * @since 6.2.0
  */
@@ -39,36 +44,72 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
 
     private final Class<? extends AbstractParameters> elementClass;
 
+    /**
+     * Create an array container whose elements are {@link VariableParameters} blocks.
+     */
     public ArrayParameters() {
         this(VariableParameters.class);
     }
 
+    /**
+     * Parse APON text into a new array container whose elements are {@link VariableParameters}.
+     * @param apon APON text representing an array
+     * @throws AponParseException if parsing fails
+     */
     public ArrayParameters(String apon) throws AponParseException {
         this(VariableParameters.class, apon);
     }
 
+    /**
+     * Create an array container with the given element class for each entry.
+     * @param elementClass the Parameters implementation for array elements
+     */
     public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
         super(createParameterKeys(elementClass));
         this.elementClass = elementClass;
     }
 
+    /**
+     * Parse APON text into a new array container with the given element class.
+     * @param elementClass the Parameters implementation for array elements
+     * @param apon APON text representing an array
+     * @throws AponParseException if parsing fails
+     */
     public ArrayParameters(Class<? extends AbstractParameters> elementClass, String apon) throws AponParseException {
         this(elementClass);
         readFrom(StringUtils.trimWhitespace(apon));
     }
 
+    /**
+     * Append a Parameters block as the next element of this array.
+     * @param parameters the element to add
+     */
     public void addParameters(Parameters parameters) {
         putValue(NONAME, parameters);
     }
 
+    /**
+     * Return the contents as an array of parameter blocks.
+     * @param <T> the element type
+     * @return the array of elements or {@code null} if none
+     */
     public <T extends Parameters> T[] getParametersArray() {
         return getParametersArray(NONAME);
     }
 
+    /**
+     * Return the contents as a list of parameter blocks.
+     * @param <T> the element type
+     * @return the list of elements or {@code null} if none
+     */
     public <T extends Parameters> List<T> getParametersList() {
         return getParametersList(NONAME);
     }
 
+    /**
+     * Returns an iterator over the parameter blocks contained in this array.
+     * @return an iterator, possibly empty
+     */
     @Override
     @NonNull
     public Iterator<Parameters> iterator() {
@@ -80,6 +121,13 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
         }
     }
 
+    /**
+     * Create and add a new element Parameters instance under the synthetic noname key.
+     * @param <T> the element Parameters type
+     * @param name must be {@link #NONAME}
+     * @return the created element instance
+     * @throws UnknownParameterException if {@code name} is not supported
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(String name) {
@@ -97,6 +145,11 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
         }
     }
 
+    /**
+     * Create the single schema key used by this array container.
+     * @param elementClass the Parameters class used for elements
+     * @return a one-element key array for internal use
+     */
     @NonNull
     private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
         ParameterKey pk = new ParameterKey(NONAME, elementClass, true);

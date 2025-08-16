@@ -33,18 +33,23 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+/**
+ * Base implementation of {@link Parameters} that stores parameter definitions
+ * and values and provides convenient, type-safe accessors.
+ * <p>
+ * Instances may be created with a fixed structure (predefined {@link ParameterKey}s)
+ * or with a variable structure where parameters can be added at runtime. This class
+ * also supports hierarchical nesting of parameter groups (value type parameters).
+ * </p>
+ */
 public abstract class AbstractParameters implements Parameters {
 
     private final Map<String, ParameterValue> parameterValueMap;
 
     private final Map<String, ParameterValue> altParameterValueMap;
-
-    private final Set<String> parameterNames;
 
     private final boolean structureFixed;
 
@@ -56,12 +61,10 @@ public abstract class AbstractParameters implements Parameters {
         Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
             Map<String, ParameterValue> altValueMap = new HashMap<>();
-            Set<String> parameterNames = new LinkedHashSet<>();
             for (ParameterKey pk : parameterKeys) {
                 ParameterValue pv = pk.newParameterValue();
                 pv.setContainer(this);
                 valueMap.put(pk.getName(), pv);
-                parameterNames.add(pk.getName());
                 if (pk.getAltNames() != null) {
                     for (String altName : pk.getAltNames()) {
                         altValueMap.put(altName, pv);
@@ -71,12 +74,10 @@ public abstract class AbstractParameters implements Parameters {
             this.parameterValueMap = Collections.unmodifiableMap(valueMap);
             this.altParameterValueMap = (altValueMap.isEmpty() ?
                 Collections.emptyMap() : Collections.unmodifiableMap(altValueMap));
-            this.parameterNames = Collections.unmodifiableSet(parameterNames);
             this.structureFixed = true;
         } else {
             this.parameterValueMap = valueMap;
             this.altParameterValueMap = Collections.emptyMap();
-            this.parameterNames = null;
             this.structureFixed = false;
         }
     }

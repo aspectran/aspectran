@@ -23,30 +23,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * StringifyContext tailored for an {@link Activity}. It reads formatting
+ * preferences (indentation, pretty-print, null handling, date/time formats,
+ * and locale) from the current activity's settings and request adapter and
+ * configures itself accordingly.
+ *
+ * <p>Typical settings keys:</p>
+ * <ul>
+ *   <li>{@code format.prettyPrint} - enable pretty printing</li>
+ *   <li>{@code format.indentStyle} - {@code tab} or spaces</li>
+ *   <li>{@code format.indentSize} - number of spaces when using space indent</li>
+ *   <li>{@code format.nullWritable} - whether to render nulls</li>
+ *   <li>{@code format.dateTimeFormat}, {@code format.dateFormat}, {@code format.timeFormat}</li>
+ * </ul>
+ *
  * <p>Created: 2019-07-06</p>
  */
 public class ActivityStringifyContext extends StringifyContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ActivityStringifyContext.class);
 
+    /** Maximum allowed indent size when using spaces. */
     static final int MAX_INDENT_SIZE = 8;
 
+    /** Setting key to enable pretty printing. */
     public static final String FORMAT_PRETTY_PRINT = "format.prettyPrint";
 
+    /** Setting key to choose indent style: "tab" or spaces. */
     public static final String FORMAT_INDENT_STYLE = "format.indentStyle";
 
     private static final String FORMAT_INDENT_STYLE_TAB = "tab";
 
+    /** Setting key for number of spaces used when indenting. */
     public static final String FORMAT_INDENT_SIZE = "format.indentSize";
 
+    /** Setting key to control whether null values are rendered. */
     public static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
 
+    /** Setting key for LocalDateTime output format. */
     public static final String FORMAT_DATETIME_FORMAT = "format.dateTimeFormat";
 
+    /** Setting key for LocalDate output format. */
     public static final String FORMAT_DATE_FORMAT = "format.dateFormat";
 
+    /** Setting key for LocalTime output format. */
     public static final String FORMAT_TIME_FORMAT = "format.timeFormat";
 
+    /**
+     * Create an Activity-aware stringify context configured from the given activity.
+     * @param activity the current activity providing settings and locale (never {@code null})
+     */
     ActivityStringifyContext(@NonNull Activity activity) {
         String indentStyle = activity.getSetting(FORMAT_INDENT_STYLE);
         String dateTimeFormat = activity.getSetting(FORMAT_DATETIME_FORMAT);
@@ -105,6 +131,11 @@ public class ActivityStringifyContext extends StringifyContext {
         }
     }
 
+    /**
+     * Parse an indent size string into an int, capping the result at {@link #MAX_INDENT_SIZE}.
+     * @param indentSize the indent size string to parse
+     * @return a non-negative indent size not exceeding {@link #MAX_INDENT_SIZE}
+     */
     private static int parseIndentSize(String indentSize) {
         try {
             int size = Integer.parseInt(indentSize);

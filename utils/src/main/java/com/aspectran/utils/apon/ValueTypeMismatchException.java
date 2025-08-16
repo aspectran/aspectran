@@ -21,8 +21,13 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * This exception will be thrown when the value type of the parameter does not match.
- *
+ * Thrown when a value cannot be converted to the required target type due to
+ * an APON value-type mismatch (e.g., attempting to coerce a string to an int).
+ * <p>
+ * This is a specialization of {@link InvalidParameterValueException} used by
+ * converters and readers to signal type conversion errors while preserving the
+ * original cause and describing both the actual and required Java types.
+ * </p>
  * <p>Created: 2019. 06. 15</p>
  */
 public class ValueTypeMismatchException extends InvalidParameterValueException {
@@ -30,6 +35,12 @@ public class ValueTypeMismatchException extends InvalidParameterValueException {
     @Serial
     private static final long serialVersionUID = 3022910656886563259L;
 
+    /**
+     * Construct an exception describing a failed conversion due to incompatible value types.
+     * @param valueType the actual source type encountered
+     * @param requiredType the target type that was expected
+     * @param cause the underlying cause of the failure
+     */
     public ValueTypeMismatchException(@NonNull Class<?> valueType,
                                       @NonNull Class<?> requiredType,
                                       @NonNull Throwable cause) {
