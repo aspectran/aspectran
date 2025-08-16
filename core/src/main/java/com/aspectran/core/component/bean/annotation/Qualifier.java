@@ -21,11 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Qualifies an injection point or bean with a specific name or attribute,
+ * narrowing autowiring candidates when multiple beans of the same type exist.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface Qualifier {
 
+    /** The qualifier value to match against candidate beans. */
     String value();
 
 }

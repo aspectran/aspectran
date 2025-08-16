@@ -21,7 +21,12 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import java.io.Serial;
 
 /**
- * The Class BeanRuleException.
+ * Exception indicating an invalid or inconsistent {@link BeanRule}.
+ * <p>
+ * Thrown during analysis of annotation/XML configuration when a bean
+ * definition cannot be resolved (e.g., missing methods, duplicate lifecycle
+ * declarations, or invalid factory settings).
+ * </p>
  */
 public class BeanRuleException extends IllegalRuleException {
 

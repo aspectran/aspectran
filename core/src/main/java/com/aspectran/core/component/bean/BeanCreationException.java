@@ -21,7 +21,9 @@ import com.aspectran.utils.ExceptionUtils;
 import java.io.Serial;
 
 /**
- * The Class BeanCreationException.
+ * Thrown when the container fails to create a bean instance.
+ * Carries the associated {@link com.aspectran.core.context.rule.BeanRule}
+ * for diagnostics.
  */
 public class BeanCreationException extends BeanException {
 
@@ -30,50 +32,26 @@ public class BeanCreationException extends BeanException {
 
     private final BeanRule beanRule;
 
-    /**
-     * Instantiates a new BeanCreationException.
-     * @param beanRule the bean rule
-     */
     public BeanCreationException(BeanRule beanRule) {
         super("Cannot create a bean " + beanRule);
         this.beanRule = beanRule;
     }
 
-    /**
-     * Instantiates a new BeanCreationException.
-     * @param msg The detail message
-     * @param beanRule the bean rule
-     */
     public BeanCreationException(String msg, BeanRule beanRule) {
         super(msg + " " + beanRule);
         this.beanRule = beanRule;
     }
 
-    /**
-     * Instantiates a new BeanCreationException.
-     * @param beanRule the bean rule
-     * @param cause the root cause
-     */
     public BeanCreationException(BeanRule beanRule, Throwable cause) {
         super("Cannot create a bean " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
-    /**
-     * Instantiates a new BeanCreationException.
-     * @param msg the detail message
-     * @param beanRule the bean rule
-     * @param cause the root cause
-     */
     public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
         super(msg + " " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
-    /**
-     * Gets bean rule.
-     * @return the bean rule
-     */
     public BeanRule getBeanRule() {
         return beanRule;
     }

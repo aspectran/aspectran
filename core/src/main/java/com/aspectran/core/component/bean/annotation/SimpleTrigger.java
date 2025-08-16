@@ -21,23 +21,35 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Configuration for a simple, fixed-interval trigger.
+ * Use one of the interval properties to specify the period
+ * and optionally a start delay, repeat count, or repeat forever.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface SimpleTrigger {
 
+    /** Delay in seconds before the first execution. */
     int startDelaySeconds() default 0;
 
+    /** Interval between executions in milliseconds. */
     long intervalInMilliseconds() default 0L;
 
+    /** Interval between executions in seconds. */
     int intervalInSeconds() default 0;
 
+    /** Interval between executions in minutes. */
     int intervalInMinutes() default 0;
 
+    /** Interval between executions in hours. */
     int intervalInHours() default 0;
 
+    /** Number of times to repeat the job after the first run. */
     int repeatCount() default 0;
 
+    /** Whether to repeat the job indefinitely. */
     boolean repeatForever() default false;
 
 }

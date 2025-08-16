@@ -21,15 +21,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares a job to be executed by a {@link Schedule}.
+ * A job may reference a translet to run and can be selectively disabled.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Job {
 
+    /** Optional job id or name. */
     String value() default "";
 
+    /** Translet name to execute for this job. */
     String translet() default "";
 
+    /** Whether this job is disabled. */
     boolean disabled() default false;
 
 }

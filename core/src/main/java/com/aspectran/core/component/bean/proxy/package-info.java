@@ -13,25 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Marks a method as an executable action exposed by a bean.
- * The optional {@link #value()} may define an action name
- * used by the framework to route invocations.
+ * Bean proxy support for AOP-style interception.
+ * <p>
+ * Provides proxy implementations (e.g., JDK dynamic proxies and Javassist)
+ * and a factory for creating proxy beans.
+ * </p>
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Action {
-
-    /** Optional action name. */
-    String value() default "";
-
-}
+package com.aspectran.core.component.bean.proxy;

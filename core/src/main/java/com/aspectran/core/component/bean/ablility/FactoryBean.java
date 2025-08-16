@@ -15,23 +15,22 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-
 /**
- * The Interface FactoryBean.
+ * Contract for objects that are factories for other beans.
+ * A FactoryBean is used to encapsulate complex creation logic and
+ * allows the container to obtain the product object via {@link #getObject()}.
  *
- * @param <T> the type of the bean object
- *
- * @since 2015. 4. 2.
+ * @param <T> the type of object produced by this factory
  */
 public interface FactoryBean<T> {
 
+    /** The conventional factory method name. */
     String FACTORY_METHOD_NAME = "getObject";
 
     /**
-     * Return an instance (possibly shared or independent) of the object managed by this factory.
-     * As with a BeanFactory, this allows support for both the Singleton and Prototype design pattern.
-     * @return an instance of the bean (can be null)
-     * @throws Exception in case of creation errors
+     * Return an instance of the bean this factory manages.
+     * @return the created object
+     * @throws Exception if creation fails
      */
     T getObject() throws Exception;
 

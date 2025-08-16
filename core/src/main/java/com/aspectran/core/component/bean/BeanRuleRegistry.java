@@ -54,9 +54,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class BeanRuleRegistry.
- *
- * @since 2.0.0
+ * Central registry of {@link com.aspectran.core.context.rule.BeanRule} definitions.
+ * <p>
+ * Maintains mappings by id and type, tracks configurable and post-process
+ * bean rules, manages important beans, and provides base package scanning
+ * configuration. Also exposes hooks to ignore certain dependency types and
+ * interfaces during autowiring.
+ * </p>
  */
 public class BeanRuleRegistry {
 
@@ -198,11 +202,6 @@ public class BeanRuleRegistry {
         return result;
     }
 
-    /**
-     * Scans for annotated components.
-     * @param basePackages the base packages to scan for annotated components
-     * @throws BeanRuleException if an illegal bean rule is found
-     */
     public void scanConfigurableBeans(String... basePackages) throws BeanRuleException {
         if (basePackages == null || basePackages.length == 0) {
             return;
@@ -233,11 +232,6 @@ public class BeanRuleRegistry {
         }
     }
 
-    /**
-     * Adds a bean rule.
-     * @param beanRule the bean rule to add
-     * @throws IllegalRuleException if an error occurs while adding a bean rule
-     */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");

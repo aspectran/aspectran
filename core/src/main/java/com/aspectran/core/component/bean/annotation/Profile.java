@@ -21,11 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Restricts a bean type or method to a specific runtime profile.
+ * The annotated element will only be active when the given profile is enabled.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Profile {
 
+    /** The required profile name. */
     String value();
 
 }

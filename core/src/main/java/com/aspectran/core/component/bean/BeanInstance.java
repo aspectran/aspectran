@@ -19,11 +19,8 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Contains an object of the instantiated bean.
- *
- * <p>Created: 2016. 12. 27.</p>
- *
- * @since 3.2.0
+ * Simple serializable wrapper for a bean instance stored in scopes.
+ * Encapsulates the underlying bean object.
  */
 public final class BeanInstance implements Serializable {
 

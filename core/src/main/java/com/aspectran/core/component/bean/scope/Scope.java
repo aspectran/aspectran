@@ -24,9 +24,9 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * The Interface Scope.
- *
- * @since 2011. 3. 12.
+ * Strategy interface for a bean scope in Aspectran.
+ * Defines operations to store, retrieve, and destroy scoped bean instances,
+ * as well as metadata such as the {@link ScopeType} and optional scope lock.
  */
 public interface Scope extends NonPersistent {
 

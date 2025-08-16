@@ -15,16 +15,15 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-
 /**
- * The Interface DisposableBean.
- *
- * @since 2011. 2. 20.
+ * Interface to be implemented by beans that need to release resources on
+ * destruction. The container will invoke {@link #destroy()} when the bean
+ * is being removed from the container.
  */
 public interface DisposableBean {
 
     /**
-     * A DisposableBean implementation that calls the destroy() method.
+     * Destroy this bean, releasing any resources that it holds.
      * @throws Exception if destruction fails
      */
     void destroy() throws Exception;

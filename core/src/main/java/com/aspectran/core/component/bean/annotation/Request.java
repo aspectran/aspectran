@@ -23,19 +23,29 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Maps an incoming request to the annotated method.
+ * Supports specifying a path/value, a target translet, allowed HTTP methods,
+ * and async execution options.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Request {
 
+    /** The request mapping value or path. */
     String value() default "";
 
+    /** Optional translet name to execute for this request. */
     String translet() default "";
 
+    /** Allowed HTTP method(s) for this mapping. */
     MethodType[] method() default {};
 
+    /** Whether to execute asynchronously. */
     boolean async() default false;
 
+    /** Timeout in milliseconds for async execution (-1 for no timeout). */
     long timeout() default -1L;
 
 }

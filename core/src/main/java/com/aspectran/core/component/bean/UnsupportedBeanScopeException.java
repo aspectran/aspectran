@@ -21,18 +21,14 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import java.io.Serial;
 
 /**
- * The Class UnsupportedBeanScopeException.
+ * Thrown when a requested bean scope is not available in the current context.
+ * Provides the offending {@link ScopeType} and related bean information.
  */
 public class UnsupportedBeanScopeException extends BeanException {
 
     @Serial
     private static final long serialVersionUID = -5350555208208267662L;
 
-    /**
-     * Create a new UnsupportedBeanScopeException.
-     * @param scopeType the scope type
-     * @param beanRule the bean rule
-     */
     public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
         super("The " + scopeType + " scope is not available for bean " + beanRule);
     }

@@ -32,9 +32,13 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * The Class AbstractBeanRegistry.
- *
- * <p>Created: 2009. 03. 09 PM 23:48:09</p>
+ * Base implementation of the Aspectran {@link BeanRegistry}.
+ * <p>
+ * Provides retrieval and lifecycle management of beans across supported
+ * scopes (singleton, request, session). Delegates instantiation to the
+ * underlying {@link AbstractBeanFactory}, coordinates FactoryBean handling,
+ * and interacts with {@link BeanRuleRegistry} to resolve bean definitions.
+ * </p>
  */
 abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanRegistry {
 

@@ -27,7 +27,12 @@ import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
 import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 
 /**
- * The Class BeanClassScanner.
+ * Scanner that discovers candidate bean classes on the classpath.
+ * <p>
+ * Supports include/exclude wildcard patterns, id masking, and a
+ * pluggable {@link BeanClassFilter} to customize which classes are
+ * registered with the bean registry.
+ * </p>
  */
 public class BeanClassScanner extends ClassScanner {
 

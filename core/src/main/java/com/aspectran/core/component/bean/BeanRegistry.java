@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * The Interface BeanRegistry.
- *
- * @since 2012. 11. 9.
+ * Central registry and access point for Aspectran beans.
+ * Provides lookup operations by id and type, as well as lifecycle
+ * and scanning-related utilities used by the container.
  */
 public interface BeanRegistry {
 

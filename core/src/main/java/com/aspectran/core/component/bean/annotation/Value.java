@@ -21,11 +21,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Injects a literal or evaluated expression value into a field or parameter.
+ * Values may reference environment properties or expressions resolved by
+ * the container's value evaluation facilities.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface Value {
 
+    /** The expression or literal to inject. */
     String value();
 
 }

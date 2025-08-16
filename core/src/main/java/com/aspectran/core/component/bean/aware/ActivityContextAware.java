@@ -18,15 +18,16 @@ package com.aspectran.core.component.bean.aware;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link ActivityContext}.
- *
- * <p>Created: 2016. 1. 25.</p>
- *
- * @since 2.0.0
+ * Callback interface for beans that need access to the current
+ * {@link ActivityContext}. The container will supply the context
+ * via {@link #setActivityContext(ActivityContext)} during initialization.
  */
 public interface ActivityContextAware extends Aware {
 
+    /**
+     * Set the current {@link ActivityContext} for this bean.
+     * @param context the activity context in which the bean executes
+     */
     void setActivityContext(ActivityContext context);
 
 }

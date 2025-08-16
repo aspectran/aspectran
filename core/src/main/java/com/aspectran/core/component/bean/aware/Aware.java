@@ -16,11 +16,11 @@
 package com.aspectran.core.component.bean.aware;
 
 /**
- * Marker superinterface indicating that a bean is eligible to be notified.
- * 
- * <p>Created: 2016. 1. 25.</p>
- *
- * @since 2.0.0
+ * Marker super-interface for Aspectran-aware beans.
+ * Implementing one of the concrete XxxAware interfaces allows a bean
+ * to be notified of framework infrastructure objects (e.g. Environment,
+ * ActivityContext, ApplicationAdapter) during initialization, similar to
+ * Spring's Aware contracts.
  */
 public interface Aware {
 }

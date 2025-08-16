@@ -22,7 +22,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * The Class NoUniqueBeanException.
+ * Thrown when more than one bean matches a requested type.
+ * Provides the candidate {@link com.aspectran.core.context.rule.BeanRule}
+ * descriptors for diagnostics.
  */
 public class NoUniqueBeanException extends BeanException {
 
@@ -33,11 +35,6 @@ public class NoUniqueBeanException extends BeanException {
 
     private final BeanRule[] beanRules;
 
-    /**
-     * Instantiates a new NoUniqueBeanException.
-     * @param type the required type of the missing bean
-     * @param beanRules the bean rules
-     */
     public NoUniqueBeanException(Class<?> type, @NonNull BeanRule[] beanRules) {
         super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
@@ -45,18 +42,10 @@ public class NoUniqueBeanException extends BeanException {
         this.beanRules = beanRules;
     }
 
-    /**
-     * Returns the type required type of the missing bean.
-     * @return the required type
-     */
     public Class<?> getType() {
         return type;
     }
 
-    /**
-     * Gets the bean rules.
-     * @return the bean rules
-     */
     public BeanRule[] getBeanRules() {
         return beanRules;
     }

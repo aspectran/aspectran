@@ -18,44 +18,26 @@ package com.aspectran.core.component.bean;
 import java.io.Serial;
 
 /**
- * This class is the basic exception that gets thrown from the bean package.
- *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * Base runtime exception for Aspectran bean-related errors.
+ * Serves as the root of the bean exception hierarchy.
  */
 public class BeanException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 2598750999734896601L;
 
-    /**
-     * Creates a new BeanException without detail message.
-     */
     public BeanException() {
         super();
     }
 
-    /**
-     * Constructs a BeanException with the specified detail message.
-     * @param msg the detail message
-     */
     public BeanException(String msg) {
         super(msg);
     }
 
-    /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
-     */
     public BeanException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a BeanException with the specified error message and
-     * also the specified root cause exception.
-     * @param msg the detail message
-     * @param cause the real cause of the exception
-     */
     public BeanException(String msg, Throwable cause) {
         super(msg, cause);
     }

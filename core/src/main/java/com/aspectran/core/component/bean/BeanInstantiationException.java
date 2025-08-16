@@ -20,7 +20,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * Exception thrown when instantiation of a bean failed.
+ * Thrown when a bean class cannot be instantiated via reflection.
+ * Provides context about the failing bean class.
  */
 public class BeanInstantiationException extends BeanException {
 
@@ -29,40 +30,20 @@ public class BeanInstantiationException extends BeanException {
 
     private final Class<?> beanClass;
 
-    /**
-     * Create a new BeanInstantiationException.
-     * @param beanClass the offending bean class
-     * @param cause the root cause
-     */
     public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
         this(beanClass, cause.getMessage(), cause);
     }
 
-    /**
-     * Create a new BeanInstantiationException.
-     * @param beanClass the offending bean class
-     * @param msg the detail message
-     * @param cause the root cause
-     */
     public BeanInstantiationException(@NonNull Class<?> beanClass, String msg, Throwable cause) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
         this.beanClass = beanClass;
     }
 
-    /**
-     * Create a new BeanInstantiationException.
-     * @param beanClass the offending bean class
-     * @param msg the detail message
-     */
     public BeanInstantiationException(@NonNull Class<?> beanClass, String msg) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
         this.beanClass = beanClass;
     }
 
-    /**
-     * Return the offending bean class.
-     * @return the bean class
-     */
     public Class<?> getBeanClass() {
         return beanClass;
     }

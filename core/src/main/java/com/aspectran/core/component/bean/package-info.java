@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Marks a method as an executable action exposed by a bean.
- * The optional {@link #value()} may define an action name
- * used by the framework to route invocations.
+ * Core infrastructure for Aspectran's bean model.
+ * <p>
+ * Aspectran beans are similar to Spring Beans and support:
+ * </p>
+ * <ul>
+ *   <li>Automatic component scanning</li>
+ *   <li>Annotation- and XML-based configuration</li>
+ *   <li>Proxy beans for AOP and interception</li>
+ *   <li>Multiple bean scopes (singleton, session, request, etc.)</li>
+ * </ul>
+ * This package provides the registry, factory utilities, and exceptions used
+ * by the container.
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Action {
-
-    /** Optional action name. */
-    String value() default "";
-
-}
+package com.aspectran.core.component.bean;

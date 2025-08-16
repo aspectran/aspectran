@@ -21,15 +21,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares an HTTP redirect for an action/request method.
+ * Allows specifying a target URL/path and optional parameters to include
+ * in the redirect query string.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Redirect {
 
+    /** Optional name for this redirect mapping. */
     String value() default "";
 
+    /** The redirect target path or URL. */
     String path() default "";
 
+    /** Additional parameters to append to the redirect. */
     ParamItem[] parameters() default {};
 
 }

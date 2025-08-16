@@ -27,7 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 /**
- * <p>Created: 2024. 1. 12.</p>
+ * Utility methods for instantiating and constructing bean objects.
+ * <p>
+ * Provides constructor resolution, reflective invocation, and convenience
+ * helpers used by the bean factory/registry when creating beans.
+ * </p>
  */
 public abstract class BeanFactoryUtils {
 

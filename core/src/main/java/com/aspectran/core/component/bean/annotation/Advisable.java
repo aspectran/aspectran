@@ -22,7 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation indicating the methods to which proxy advice can be applied.
+ * Indicates that a type or method is eligible to be advised by Aspectran AOP.
+ * Applying this annotation serves as a hint for scanners/proxies to apply
+ * advice and create proxy beans where appropriate.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

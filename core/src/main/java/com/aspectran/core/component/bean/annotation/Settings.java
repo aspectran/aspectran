@@ -21,11 +21,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares settings to be applied to a component class.
+ * <p>
+ * Typically used in conjunction with scheduling/advice configuration or
+ * other infrastructure to mark a type with a set of configuration keys.
+ * </p>
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Settings {
 
+    /** One or more settings keys or profiles to apply to this component. */
     String[] value();
 
 }

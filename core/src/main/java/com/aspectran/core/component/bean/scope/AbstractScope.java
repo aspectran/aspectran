@@ -33,9 +33,12 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * Base class for {@link Scope} implementations.
- *
- * @since 2011. 3. 12.
+ * Base support implementation of {@link Scope} that manages storage and
+ * lifecycle of scoped beans.
+ * <p>
+ * Provides common facilities for retrieving, saving, and destroying
+ * bean instances held within a particular scope.
+ * </p>
  */
 public abstract class AbstractScope implements Scope {
 

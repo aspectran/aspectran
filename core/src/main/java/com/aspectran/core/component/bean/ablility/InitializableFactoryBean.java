@@ -16,11 +16,11 @@
 package com.aspectran.core.component.bean.ablility;
 
 /**
- * The Interface InitializableFactoryBean.
+ * Combination of {@link InitializableBean} and {@link FactoryBean}.
+ * Implementations are factories that also need an initialization callback
+ * after dependency injection and before their product objects are obtained.
  *
- * @param <T> the type of the bean object
- *
- * @since 8.3.1
+ * @param <T> the type of object produced by this factory
  */
 public interface InitializableFactoryBean<T> extends InitializableBean, FactoryBean<T> {
 }

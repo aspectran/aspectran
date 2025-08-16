@@ -23,8 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a method (typically a JavaBean setter method) as being 'required': that is,
- * the setter method must be configured to be dependency-injected with a value.
+ * Indicates that a method return value or parameter is required (non-null).
+ * This is a nickname for {@link javax.annotation.Nonnull}, useful in bean definitions and
+ * method signatures to express mandatory values.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})

@@ -21,11 +21,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares an after-throwing advice method in an aspect.
+ * The annotated method will be invoked when any of the specified
+ * exception types is thrown at the matched join point.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ExceptionThrown {
 
+    /** Exception types that trigger this advice. */
     Class<? extends Throwable>[] value() default {};
 
 }

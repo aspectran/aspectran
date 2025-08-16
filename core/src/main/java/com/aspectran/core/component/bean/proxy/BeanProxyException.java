@@ -21,7 +21,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import java.io.Serial;
 
 /**
- * Exception thrown when instantiation of a proxy bean failed.
+ * Exception thrown when creation or invocation of a proxy bean fails.
+ * Carries the associated {@link com.aspectran.core.context.rule.BeanRule}
+ * for diagnostics.
  */
 public class BeanProxyException extends BeanException {
 
@@ -30,20 +32,11 @@ public class BeanProxyException extends BeanException {
 
     private final BeanRule beanRule;
 
-    /**
-     * Create a new BeanProxyException.
-     * @param beanRule the bean rule
-     * @param cause the root cause
-     */
     public BeanProxyException(BeanRule beanRule, Throwable cause) {
         super("Could not instantiate proxy bean " + beanRule, cause);
         this.beanRule = beanRule;
     }
 
-    /**
-     * Return the offending bean rule.
-     * @return the bean rule
-     */
     public BeanRule getBeanRule() {
         return beanRule;
     }

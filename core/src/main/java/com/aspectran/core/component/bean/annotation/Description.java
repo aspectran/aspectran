@@ -21,11 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Provides a human-readable description for a component or bean method.
+ * Useful for documentation, tooling, or diagnostics.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Description {
 
+    /** The descriptive text. */
     String value();
 
 }

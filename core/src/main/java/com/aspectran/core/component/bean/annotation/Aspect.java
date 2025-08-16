@@ -21,17 +21,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a class as an Aspectran aspect containing advice and/or join point definitions.
+ * The aspect may be ordered and optionally isolated from other aspects.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Aspect {
 
+    /** Optional aspect name. */
     String value() default "";
 
+    /** Explicit identifier for the aspect. */
     String id() default "";
 
+    /** Ordering of this aspect relative to others (lower values have higher precedence). */
     int order() default Integer.MAX_VALUE;
 
+    /** Whether this aspect should be applied in isolation from other aspects. */
     boolean isolated() default false;
 
 }

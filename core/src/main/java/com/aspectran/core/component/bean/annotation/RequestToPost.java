@@ -21,15 +21,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Maps POST requests to the annotated method.
+ * Supports a path/value and async execution options.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RequestToPost {
 
+    /** The request mapping value or path. */
     String value() default "";
 
+    /** Whether to execute asynchronously. */
     boolean async() default false;
 
+    /** Timeout in milliseconds for async execution (-1 for no timeout). */
     long timeout() default -1L;
 
 }

@@ -21,15 +21,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares a forward instruction for an action/request method.
+ * Allows specifying a forward target (e.g., path), an optional translet to
+ * execute, and additional attribute items to pass along.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Forward {
 
+    /** The forward target/path. */
     String value() default "";
 
+    /** Optional translet name to invoke during forward. */
     String translet() default "";
 
+    /** Additional attributes to include with the forward. */
     AttrItem[] attributes() default {};
 
 }

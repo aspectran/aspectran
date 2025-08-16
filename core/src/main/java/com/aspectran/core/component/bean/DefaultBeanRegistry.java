@@ -25,9 +25,12 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 /**
- * The Class DefaultBeanRegistry.
- *
- * <p>Created: 2009. 03. 09 PM 23:48:09</p>
+ * Default implementation of the Aspectran {@link BeanRegistry}.
+ * <p>
+ * Provides standard lookup and containment operations by id and type,
+ * delegating to a parent registry when configured. Actual instantiation
+ * and scope handling are performed by the base {@link AbstractBeanRegistry}.
+ * </p>
  */
 public class DefaultBeanRegistry extends AbstractBeanRegistry {
 

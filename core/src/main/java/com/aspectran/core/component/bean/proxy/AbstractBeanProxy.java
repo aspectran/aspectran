@@ -35,7 +35,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * The Class AbstractBeanProxy.
+ * Base support class for bean proxies that apply Aspectran AOP advice.
+ * <p>
+ * Coordinates retrieval of applicable advice rules for a given invocation,
+ * executes before/after/finally advice, and delegates exception handling.
+ * Subclasses implement the proxy mechanism (JDK dynamic proxy, Javassist, etc.).
+ * </p>
  */
 public abstract class AbstractBeanProxy {
 

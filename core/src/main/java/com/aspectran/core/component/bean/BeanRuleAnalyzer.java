@@ -33,7 +33,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The Class BeanRuleAnalyzer.
+ * Analyzes {@link com.aspectran.core.context.rule.BeanRule} metadata to
+ * determine target bean classes, lifecycle methods, and proxying hints.
+ * <p>
+ * Resolves factory targets, init/destroy methods, and collects
+ * {@link com.aspectran.core.component.bean.annotation.Advisable} methods
+ * with lightweight caching to aid container setup.
+ * </p>
  */
 public class BeanRuleAnalyzer {
 

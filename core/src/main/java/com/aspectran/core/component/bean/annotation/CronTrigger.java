@@ -21,11 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Configuration for a cron-based trigger using a cron expression.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface CronTrigger {
 
+    /** Cron expression that defines the schedule. */
     String expression();
 
 }

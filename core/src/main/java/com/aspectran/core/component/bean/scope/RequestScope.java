@@ -21,9 +21,9 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * The Class RequestScope.
- *
- * @since 2011. 3. 12.
+ * Request scope implementation that stores beans for the lifetime of a
+ * single request. Non-locking scope (returns {@code null} lock) since access
+ * is typically confined to a single thread/request.
  */
 public final class RequestScope extends AbstractScope {
 

@@ -18,15 +18,17 @@ package com.aspectran.core.component.bean.aware;
 import com.aspectran.core.adapter.ApplicationAdapter;
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link ApplicationAdapter}.
- *
- * <p>Created: 2016. 1. 25.</p>
- *
- * @since 2.0.0
+ * Callback interface for beans that wish to be supplied with the
+ * {@link ApplicationAdapter} to interact with the underlying runtime
+ * environment. The container will invoke {@link #setApplicationAdapter(ApplicationAdapter)}
+ * during bean initialization.
  */
 public interface ApplicationAdapterAware extends Aware {
 
+    /**
+     * Set the {@link ApplicationAdapter} for this bean.
+     * @param applicationAdapter the application adapter provided by the container
+     */
     void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
 }

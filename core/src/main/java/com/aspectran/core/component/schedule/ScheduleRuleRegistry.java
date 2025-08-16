@@ -31,9 +31,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * The Class ScheduleRuleRegistry.
- */
 public class ScheduleRuleRegistry extends AbstractComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleRuleRegistry.class);

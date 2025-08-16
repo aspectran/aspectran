@@ -48,9 +48,12 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
- * The Class AbstractBeanFactory.
- *
- * <p>Created: 2009. 03. 09 PM 23:48:09</p>
+ * Base support class for creating and initializing Aspectran beans.
+ * <p>
+ * Handles instantiation, autowiring, invocation of Aspectran-aware callbacks
+ * (e.g., ActivityContextAware, EnvironmentAware), init methods, and
+ * FactoryBean handling. Also coordinates with scopes and proxy creation.
+ * </p>
  */
 abstract class AbstractBeanFactory extends AbstractComponent {
 

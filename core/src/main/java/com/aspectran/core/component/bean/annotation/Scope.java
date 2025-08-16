@@ -23,11 +23,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares the scope of a bean defined by a type or factory method.
+ * If not specified, beans default to {@link ScopeType#SINGLETON}.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Scope {
 
+    /** The scope to apply to the bean. */
     ScopeType value() default ScopeType.SINGLETON;
 
 }

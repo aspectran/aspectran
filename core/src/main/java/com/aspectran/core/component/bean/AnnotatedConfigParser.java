@@ -101,11 +101,14 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * The Class AnnotatedConfigParser.
- *
- * <p>Created: 2016. 2. 16.</p>
- *
- * @since 2.0.0
+ * Parses annotations on component classes and methods to build configuration
+ * metadata used by Aspectran.
+ * <p>
+ * Derives bean, aspect, schedule and request/translet rules from annotations
+ * such as {@code @Component}, {@code @Bean}, {@code @Aspect}, {@code @Schedule},
+ * and request mapping annotations, taking active environment profiles into
+ * account. Relations are delegated to {@link AnnotatedConfigRelater}.
+ * </p>
  */
 public class AnnotatedConfigParser {
 

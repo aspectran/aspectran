@@ -16,19 +16,15 @@
 package com.aspectran.core.component.bean.scan;
 
 /**
- * The Interface BeanClassFilter.
+ * Strategy interface used during classpath scanning to filter or rename
+ * discovered bean classes before registration.
+ * <p>
+ * Implementations may return a modified bean id, or {@code null} to
+ * exclude the class from registration.
+ * </p>
  */
 public interface BeanClassFilter {
 
-    /**
-     * Filter the retrieved candidate classes.
-     * If null is returned instead of the bean ID, the candidate class is
-     * discarded without being included.
-     * @param beanId the bean id
-     * @param resourceName the resource name
-     * @param retrievedClass the retrieved class
-     * @return the bean id
-     */
     String filter(String beanId, String resourceName, Class<?> retrievedClass);
 
 }

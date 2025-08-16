@@ -18,15 +18,16 @@ package com.aspectran.core.component.bean.aware;
 import com.aspectran.core.activity.Activity;
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * current {@link Activity} that it runs in.
- *
- * <p>Created: 2017. 10. 22.</p>
- *
- * @since 5.0.0
+ * Callback interface for beans that need a reference to the current
+ * {@link Activity}. The container will supply it via
+ * {@link #setCurrentActivity(Activity)} during initialization.
  */
 public interface CurrentActivityAware extends Aware {
 
+    /**
+     * Set the current {@link Activity}.
+     * @param activity the current activity
+     */
     void setCurrentActivity(Activity activity);
 
 }

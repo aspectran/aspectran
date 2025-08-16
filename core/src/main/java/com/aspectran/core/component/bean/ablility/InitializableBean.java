@@ -15,11 +15,10 @@
  */
 package com.aspectran.core.component.bean.ablility;
 
-
 /**
- * The Interface InitializableBean.
- *
- * @since 2011. 2. 20.
+ * Lifecycle callback interface triggered after dependency injection.
+ * Implementations perform custom initialization in {@link #initialize()} once
+ * all bean properties have been set by the container.
  */
 public interface InitializableBean {
 

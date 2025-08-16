@@ -21,11 +21,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares a formatting pattern or style for a method parameter.
+ * The actual interpretation of the value depends on the converter/formatter
+ * in use (e.g., date/time patterns, number formats).
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Format {
 
+    /** The formatting pattern or style. */
     String value();
 
 }

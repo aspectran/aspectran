@@ -22,14 +22,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Classes with this annotation are components
- * that are automatically scanned.
+ * Indicates that an annotated class is an Aspectran component.
+ * Such classes are detected during classpath scanning and registered
+ * in the bean registry. The optional {@link #value()} may declare a
+ * specific bean id; if omitted, a default id is derived from the class name.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Component {
 
+    /** Suggested bean id for the component. */
     String value() default "";
 
 }

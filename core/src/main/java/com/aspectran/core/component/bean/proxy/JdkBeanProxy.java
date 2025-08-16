@@ -31,7 +31,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * Create an instance of the dynamic proxy bean using JDK.
+ * JDK dynamic-proxy implementation that applies Aspectran AOP advice
+ * to beans exposing interfaces.
+ * <p>
+ * Delegates interception to {@link AbstractBeanProxy} facilities while
+ * creating a standard JDK proxy to wrap the target bean instance.
+ * </p>
  */
 public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler {
 

@@ -28,9 +28,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * The Class SessionScope.
- *
- * @since 2011. 3. 12.
+ * Session scope implementation storing beans for the lifetime of a user session.
+ * <p>
+ * Maintains a read/write lock for concurrent access and destroys contained
+ * beans when the scope is unbound from a session via {@link SessionBindingListener}.
+ * Includes matching logic so that lookups work across equivalent bean rules
+ * (e.g., across JVMs/nodes).
+ * </p>
  */
 public class SessionScope extends AbstractScope implements SessionBindingListener {
 
@@ -40,9 +44,6 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
 
     public static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
-    /**
-     * Instantiates a new Session scope.
-     */
     public SessionScope() {
         super();
     }

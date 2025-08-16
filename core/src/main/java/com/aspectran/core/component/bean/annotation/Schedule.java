@@ -21,19 +21,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Declares a scheduled job configuration at the type or method level.
+ * Supports simple and cron triggers and optional scheduler selection.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Schedule {
 
+    /** Unique identifier for this schedule. */
     String id();
 
+    /** Optional scheduler bean id to use. */
     String scheduler() default "";
 
+    /** Simple trigger configuration. */
     SimpleTrigger simpleTrigger() default @SimpleTrigger;
 
+    /** Cron trigger configuration. */
     CronTrigger cronTrigger() default @CronTrigger(expression = "");
 
+    /** Jobs to be executed by this schedule. */
     Job[] jobs() default {};
 
 }

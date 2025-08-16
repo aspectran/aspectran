@@ -30,9 +30,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * The Class JavassistBeanProxy.
- *
- * @since 1.1.0
+ * Javassist-based proxy that applies Aspectran AOP advice to concrete classes.
+ * <p>
+ * Generates a subclass at runtime and delegates interception logic to
+ * {@link AbstractBeanProxy} while invoking the original implementation
+ * via Javassist method handling.
+ * </p>
  */
 public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandler {
 

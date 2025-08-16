@@ -18,15 +18,16 @@ package com.aspectran.core.component.bean.aware;
 import com.aspectran.core.context.env.Environment;
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the
- * {@link Environment}.
- *
- * <p>Created: 2017. 11. 9.</p>
- *
- * @since 5.0.0
+ * Interface to be implemented by beans that wish to be notified of the
+ * {@link Environment} in which they run. The container will call
+ * {@link #setEnvironment(Environment)} during initialization.
  */
 public interface EnvironmentAware extends Aware {
 
+    /**
+     * Set the {@link Environment} that this bean runs in.
+     * @param environment the current environment
+     */
     void setEnvironment(Environment environment);
 
 }

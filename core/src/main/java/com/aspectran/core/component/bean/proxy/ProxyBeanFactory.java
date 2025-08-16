@@ -25,7 +25,12 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Proxy;
 
 /**
- * <p>Created: 2024. 1. 12.</p>
+ * Factory that creates proxy instances for beans requiring AOP advice.
+ * <p>
+ * Chooses between JDK dynamic proxies (for interface-based beans) and
+ * Javassist proxies (for concrete classes) and delegates creation to the
+ * corresponding proxy implementation.
+ * </p>
  */
 public class ProxyBeanFactory {
 

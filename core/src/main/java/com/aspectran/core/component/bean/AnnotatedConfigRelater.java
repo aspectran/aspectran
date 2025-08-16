@@ -23,9 +23,8 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
 
 /**
- * The Interface AnnotatedConfigRelater.
- *
- * <p>Created: 2016. 2. 21.</p>
+ * Strategy interface used by {@link AnnotatedConfigParser} to relate
+ * parsed annotation-based rules back into the container's model.
  */
 public interface AnnotatedConfigRelater {
 

@@ -21,11 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a method to be invoked during bean initialization, after dependency injection.
+ * Optionally restrict execution to a specific runtime profile.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Initialize {
 
+    /** Optional profile name under which this initialization should run. */
     String profile() default "";
 
 }

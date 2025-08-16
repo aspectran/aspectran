@@ -21,9 +21,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * The Class SingletonScope.
- *
- * @since 2011. 3. 12.
+ * Singleton scope implementation that stores one shared instance per bean
+ * definition for the lifetime of the container.
  */
 public final class SingletonScope extends AbstractScope {
 
@@ -31,9 +30,6 @@ public final class SingletonScope extends AbstractScope {
 
     private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-    /**
-     * Instantiates a new Singleton scope.
-     */
     public SingletonScope() {
         super();
     }
