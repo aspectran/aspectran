@@ -267,76 +267,195 @@ public class XmlToParameters {
         return location;
     }
 
+    /**
+     * Convenience factory to parse XML text into a new {@link VariableParameters} container.
+     * @param xml the XML content as a string
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(String xml) throws IOException {
         return new XmlToParameters().read(xml);
     }
 
+    /**
+     * Convenience factory to parse XML text into a new container of the given type.
+     * @param <T> the container type to create
+     * @param xml the XML content as a string
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(String xml, Class<? extends Parameters> requiredType) throws IOException {
         return new XmlToParameters(requiredType).read(xml);
     }
 
+    /**
+     * Convenience factory to parse XML text using a custom {@link EntityResolver} into a new container of the given type.
+     * @param <T> the container type to create
+     * @param xml the XML content as a string
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param entityResolver SAX entity resolver to apply during parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(String xml, Class<? extends Parameters> requiredType, EntityResolver entityResolver) throws IOException {
         return new XmlToParameters(requiredType, entityResolver).read(xml);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link Reader} into a new {@link VariableParameters} container.
+     * @param reader the XML reader
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(Reader reader) throws IOException {
         return new XmlToParameters().read(reader);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link Reader} into a new container of the given type.
+     * @param <T> the container type to create
+     * @param reader the XML reader
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType) throws IOException {
         return new XmlToParameters(requiredType).read(reader);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link Reader} with an {@link EntityResolver}
+     * into a new container of the given type.
+     * @param <T> the container type to create
+     * @param reader the XML reader
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param entityResolver SAX entity resolver to apply during parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType, EntityResolver entityResolver) throws IOException {
         return new XmlToParameters(requiredType, entityResolver).read(reader);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputStream} into a new {@link VariableParameters} container.
+     * @param inputStream the XML input stream
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(InputStream inputStream) throws IOException {
         return new XmlToParameters().read(inputStream);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputStream} into a new container of the given type.
+     * @param <T> the container type to create
+     * @param inputStream the XML input stream
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(InputStream inputStream, Class<? extends Parameters> requiredType) throws IOException {
         return new XmlToParameters(requiredType).read(inputStream);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputStream} with an {@link EntityResolver}
+     * into a new container of the given type.
+     * @param <T> the container type to create
+     * @param inputStream the XML input stream
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param entityResolver SAX entity resolver to apply during parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(InputStream inputStream, Class<? extends Parameters> requiredType, EntityResolver entityResolver) throws IOException {
         return new XmlToParameters(requiredType, entityResolver).read(inputStream);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link File} into a new {@link VariableParameters} container.
+     * @param file the XML file
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(File file) throws IOException {
         return new XmlToParameters().read(file);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link File} into a new container of the given type.
+     * @param <T> the container type to create
+     * @param file the XML file
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(File file, Class<? extends Parameters> requiredType) throws IOException {
         return new XmlToParameters(requiredType).read(file);
     }
 
+    /**
+     * Convenience factory to parse XML content from a {@link File} with an {@link EntityResolver}
+     * into a new container of the given type.
+     * @param <T> the container type to create
+     * @param file the XML file
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param entityResolver SAX entity resolver to apply during parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(File file, Class<? extends Parameters> requiredType, EntityResolver entityResolver) throws IOException {
         return new XmlToParameters(requiredType, entityResolver).read(file);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputSource} into a new {@link VariableParameters} container.
+     * @param inputSource the XML input source
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static Parameters from(InputSource inputSource) throws IOException {
         return new XmlToParameters().read(inputSource);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputSource} into a new container of the given type.
+     * @param <T> the container type to create
+     * @param inputSource the XML input source
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(InputSource inputSource, Class<? extends Parameters> requiredType) throws IOException {
         return new XmlToParameters(requiredType).read(inputSource);
     }
 
+    /**
+     * Convenience factory to parse XML content from an {@link InputSource} with an {@link EntityResolver}
+     * into a new container of the given type.
+     * @param <T> the container type to create
+     * @param inputSource the XML input source
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param entityResolver SAX entity resolver to apply during parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
     @NonNull
     public static <T extends Parameters> T from(InputSource inputSource, Class<? extends Parameters> requiredType, EntityResolver entityResolver) throws IOException {
         return new XmlToParameters(requiredType, entityResolver).read(inputSource);
