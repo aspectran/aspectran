@@ -21,6 +21,49 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Objects;
 
+/**
+ * Compiled wildcard pattern with optional segment separator.
+ * <p>
+ * This class tokenizes a pattern string into an efficient internal
+ * representation that can be matched against character sequences without using
+ * regular expressions. It supports the following tokens:
+ * </p>
+ * <ul>
+ *   <li><code>*</code> – zero or more characters within a single segment</li>
+ *   <li><code>?</code> – exactly one character within a segment</li>
+ *   <li><code>+</code> – one or more characters within a segment</li>
+ *   <li><code>**</code> – cross-segment wildcard; when a separator is configured it may span
+ *       across separators</li>
+ *   <li><code>\</code> – escape character to treat the following character as a literal</li>
+ * </ul>
+ *
+ * <p>
+ * Separator-aware matching: if a segment separator (e.g. '/') is provided at
+ * compile-time, single-segment tokens (<code>*</code>, <code>?</code>,
+ * <code>+</code>) will not cross the separator while the double-star token
+ * (<code>**</code>) may. When no separator is set, all wildcards behave as
+ * plain character wildcards.
+ * </p>
+ *
+ * <p>
+ * Instances are immutable and thread-safe after construction. For repeated
+ * matching or to navigate segments of a matched input, consider using
+ * {@link WildcardMatcher}. To produce a masked string that retains only literal
+ * parts matched by this pattern, see {@link WildcardMasker}.
+ * </p>
+ *
+ * <p>Examples:</p>
+ * <ul>
+ *   <li><code>com/example/*Service</code> – matches any single-segment prefix ending with "Service"</li>
+ *   <li><code>com/**&#47;internal/**</code> – matches paths that contain "internal" at any depth</li>
+ *   <li><code>log-????.txt</code> – matches exactly four characters between hyphen and extension</li>
+ *   <li><code>img+png</code> – requires at least one character between "img" and "png"</li>
+ * </ul>
+ *
+ * @see WildcardMatcher
+ * @see WildcardMasker
+ * @see WildcardPatterns
+ */
 public class WildcardPattern {
 
     /** Escape character to treat the next character as a literal. */

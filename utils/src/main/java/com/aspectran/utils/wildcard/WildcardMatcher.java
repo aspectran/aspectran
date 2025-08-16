@@ -40,13 +40,26 @@ public class WildcardMatcher {
     private int separatorIndex;
 
     /**
-     * Create a new matcher bound to the given pattern.
+     * Create a new matcher bound to the given compiled pattern.
+     * This instance can be reused across multiple inputs.
      * @param pattern the compiled wildcard pattern (must not be {@code null})
      */
     public WildcardMatcher(WildcardPattern pattern) {
         this.pattern = pattern;
     }
 
+    /**
+     * Evaluate whether the given input matches this matcher's compiled pattern.
+     * <p>
+     * This method resets internal separator tracking for the new input. When a
+     * separator is configured on the pattern and the input matches, the number
+     * of separators encountered is recorded and can be obtained via
+     * {@link #getSeparatorCount()} or iterated using {@link #first()},
+     * {@link #last()}, {@link #next()} and related methods.
+     * </p>
+     * @param input the input to test; if {@code null}, returns {@code false}
+     * @return {@code true} if the input matches; {@code false} otherwise
+     */
     public boolean matches(CharSequence input) {
         separatorCount = -1;
         separatorIndex = 0;
@@ -71,6 +84,17 @@ public class WildcardMatcher {
         return result;
     }
 
+    /**
+     * Scan the given input and record separator positions based on the
+     * configured separator of the underlying {@link WildcardPattern}.
+     * <p>
+     * This method does not perform wildcard matching; it only prepares internal
+     * state for segment navigation with {@link #first()}, {@link #last()},
+     * {@link #next()} and {@link #previous()}.
+     * </p>
+     * @param input the input to separate; if {@code null}, returns {@code 0}
+     * @return the number of separators found in the input
+     */
     public int separate(CharSequence input) {
         separatorCount = -1;
         separatorIndex = 0;
@@ -95,11 +119,19 @@ public class WildcardMatcher {
         return separatorCount;
     }
 
+    /**
+     * Move the internal segment cursor to the first segment.
+     * @return this matcher for method chaining
+     */
     public WildcardMatcher first() {
         separatorIndex = 0;
         return this;
     }
 
+    /**
+     * Move the internal segment cursor to the last segment (if known).
+     * @return this matcher for method chaining
+     */
     public WildcardMatcher last() {
         if (separatorCount > -1) {
             separatorIndex = separatorCount;
@@ -107,14 +139,25 @@ public class WildcardMatcher {
         return this;
     }
 
+    /**
+     * Whether a call to {@link #next()} would return a segment.
+     */
     public boolean hasNext() {
         return separatorIndex <= separatorCount;
     }
 
+    /**
+     * Whether a call to {@link #previous()} would return a segment.
+     */
     public boolean hasPrev() {
         return separatorIndex >= 0;
     }
 
+    /**
+     * Return the next segment based on the current cursor position and then
+     * advance the cursor.
+     * @return the next segment string, or {@code null} if there is none
+     */
     public String next() {
         if (separatorIndex > separatorCount) {
             return null;
@@ -122,6 +165,11 @@ public class WildcardMatcher {
         return find(separatorIndex++);
     }
 
+    /**
+     * Return the previous segment based on the current cursor position and then
+     * move the cursor backwards.
+     * @return the previous segment string, or {@code null} if there is none
+     */
     public String previous() {
         if (separatorIndex < 0) {
             return null;
@@ -129,10 +177,26 @@ public class WildcardMatcher {
         return find(separatorIndex--);
     }
 
+    /**
+     * Return the segment at the current cursor position without changing the
+     * cursor.
+     * @return the current segment, or {@code null} if unavailable
+     */
     public String find() {
         return find(separatorIndex);
     }
 
+    /**
+     * Return the segment at the given group index.
+     * <p>
+     * Group indices range from {@code 0} (before the first separator) to
+     * {@code getSeparatorCount()} (after the last separator). When the input
+     * starts with a separator, the first group may be an empty string.
+     * </p>
+     * @param group the zero-based segment index
+     * @return the segment value, or {@code null} if not available
+     * @throws IndexOutOfBoundsException if {@code group} is outside the valid range
+     */
     public String find(int group) {
         if (separatorCount == 0) {
             if (input == null) {
@@ -183,14 +247,27 @@ public class WildcardMatcher {
         }
     }
 
+    /**
+     * Return the number of separators found in the last processed input.
+     * @return the separator count, or {@code -1} if unknown (no match yet)
+     */
     public int getSeparatorCount() {
         return separatorCount;
     }
 
+    /**
+     * Return the compiled {@link WildcardPattern} used by this matcher.
+     */
     public WildcardPattern getWildcardPattern() {
         return pattern;
     }
 
+    /**
+     * Static convenience to evaluate a single input against a pattern.
+     * @param pattern the compiled pattern (must not be {@code null})
+     * @param input the input character sequence (may be {@code null})
+     * @return {@code true} if the input matches; {@code false} otherwise
+     */
     public static boolean matches(WildcardPattern pattern, CharSequence input) {
         return matches(pattern, input, null);
     }
