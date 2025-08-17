@@ -23,8 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents the result data for the advice.
- * Additionally, it holds the bean object of the advice.
+ * Represents the result data for advice execution in Aspectran.
+ * This class holds the results from different types of advice (before, after, around, finally)
+ * and also maintains references to the advice bean objects.
+ *
+ * @since 2.0.0
  */
 public class AdviceResult {
 
