@@ -31,20 +31,45 @@ import java.util.Map;
  */
 public class AdviceResult {
 
+    /**
+     * Maps an aspect ID to its corresponding advice bean instance.
+     */
     private Map<String, Object> adviceBeanMap;
 
+    /**
+     * Stores the result of BEFORE advice executions keyed by aspect ID.
+     */
     private Map<String, Object> beforeAdviceResultMap;
 
+    /**
+     * Stores the result of AFTER advice executions keyed by aspect ID.
+     */
     private Map<String, Object> afterAdviceResultMap;
 
+    /**
+     * Stores the result of AROUND advice executions keyed by aspect ID.
+     */
     private Map<String, Object> aroundAdviceResultMap;
 
+    /**
+     * Stores the result of FINALLY advice executions keyed by aspect ID.
+     */
     private Map<String, Object> finallyAdviceResultMap;
 
+    /**
+     * Retrieves the advice bean instance associated with the given aspect ID.
+     * @param aspectId the unique identifier of the aspect
+     * @return the advice bean object, or {@code null} if none is registered
+     */
     public Object getAdviceBean(String aspectId) {
         return (adviceBeanMap != null ? adviceBeanMap.get(aspectId) : null);
     }
 
+    /**
+     * Stores the advice bean instance associated with the given aspect ID.
+     * @param aspectId the unique identifier of the aspect
+     * @param adviceBean the advice bean object
+     */
     public void putAdviceBean(String aspectId, Object adviceBean) {
         if (adviceBeanMap == null) {
             adviceBeanMap = new HashMap<>();
@@ -56,6 +81,11 @@ public class AdviceResult {
         return (beforeAdviceResultMap != null ? beforeAdviceResultMap.get(aspectId) : null);
     }
 
+    /**
+     * Stores the result of a BEFORE advice execution for the specified aspect.
+     * @param aspectId the unique identifier of the aspect
+     * @param actionResult the result produced by the BEFORE advice
+     */
     private void putBeforeAdviceResult(String aspectId, Object actionResult) {
         if (beforeAdviceResultMap == null) {
             beforeAdviceResultMap = new HashMap<>();
@@ -67,6 +97,11 @@ public class AdviceResult {
         return (afterAdviceResultMap != null ? afterAdviceResultMap.get(aspectId) : null);
     }
 
+    /**
+     * Stores the result of an AFTER advice execution for the specified aspect.
+     * @param aspectId the unique identifier of the aspect
+     * @param actionResult the result produced by the AFTER advice
+     */
     private void putAfterAdviceResult(String aspectId, Object actionResult) {
         if (afterAdviceResultMap == null) {
             afterAdviceResultMap = new HashMap<>();
@@ -78,6 +113,11 @@ public class AdviceResult {
         return (aroundAdviceResultMap != null ? aroundAdviceResultMap.get(aspectId) : null);
     }
 
+    /**
+     * Stores the result of an AROUND advice execution for the specified aspect.
+     * @param aspectId the unique identifier of the aspect
+     * @param actionResult the result produced by the AROUND advice
+     */
     private void putAroundAdviceResult(String aspectId, Object actionResult) {
         if (aroundAdviceResultMap == null) {
             aroundAdviceResultMap = new HashMap<>();
@@ -89,6 +129,11 @@ public class AdviceResult {
         return (finallyAdviceResultMap != null ? finallyAdviceResultMap.get(aspectId) : null);
     }
 
+    /**
+     * Stores the result of a FINALLY advice execution for the specified aspect.
+     * @param aspectId the unique identifier of the aspect
+     * @param actionResult the result produced by the FINALLY advice
+     */
     private void putFinallyAdviceResult(String aspectId, Object actionResult) {
         if (finallyAdviceResultMap == null) {
             finallyAdviceResultMap = new HashMap<>();
@@ -96,6 +141,12 @@ public class AdviceResult {
         finallyAdviceResultMap.put(aspectId, actionResult);
     }
 
+    /**
+     * Stores the result of an advice execution based on its {@link AdviceType}.
+     * @param adviceRule the rule describing the advice, including its type and aspect ID
+     * @param adviceResult the result produced by the advice
+     * @throws UnsupportedOperationException if the advice type is not supported
+     */
     public void putAdviceResult(@NonNull AdviceRule adviceRule, Object adviceResult) {
         if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
             putBeforeAdviceResult(adviceRule.getAspectId(), adviceResult);
