@@ -22,6 +22,10 @@ import java.io.Serial;
 
 /**
  * Checked exception thrown if an error occurs while executing the advice.
+ * <p>
+ * This exception is typically thrown by the framework when a problem arises while
+ * invoking advice code. It preserves the original {@code Throwable} cause and
+ * retains a reference to the {@code AdviceRule} that was being processed.</p>
  */
 public class AdviceException extends ActivityException {
 
@@ -31,10 +35,12 @@ public class AdviceException extends ActivityException {
     private final AdviceRule adviceRule;
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg a message to associate with the exception
-     * @param adviceRule the advice rule
-     * @param cause the real cause of the exception
+     * Creates a new {@code AdviceException} with the specified detail message,
+     * associated {@link AdviceRule}, and root cause.
+     *
+     * @param msg        the detail message explaining the error
+     * @param adviceRule the {@code AdviceRule} that was being executed when the error occurred
+     * @param cause      the underlying exception that caused this failure (may be {@code null})
      */
     public AdviceException(String msg, AdviceRule adviceRule, Throwable cause) {
         super(msg, cause);
@@ -42,8 +48,9 @@ public class AdviceException extends ActivityException {
     }
 
     /**
-     * Returns the advice rule.
-     * @return the advice rule
+     * Returns the {@link AdviceRule}
+     * that was executing when this exception was thrown.
+     * @return the associated {@code AdviceRule}
      */
     public AdviceRule getAdviceRule() {
         return adviceRule;
