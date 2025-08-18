@@ -74,10 +74,15 @@ public abstract class AbstractRequest {
 
     private String body;
 
+    /**
+     * Creates a new request with the specified method type.
+     * @param requestMethod the request method (e.g., GET, POST)
+     */
     public AbstractRequest(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
+    /** @return the request method used (e.g., GET, POST). */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
@@ -157,19 +162,31 @@ public abstract class AbstractRequest {
         return headers;
     }
 
+    /**
+     * Sets the header map for this request.
+     */
     public void setHeaderMap(MultiValueMap<String, String> headers) {
         this.headers = headers;
     }
 
+    /**
+     * @return whether this request has any headers.
+     */
     public boolean hasHeaders() {
         return (headers != null && !headers.isEmpty());
     }
 
+    /**
+     * Retrieves an attribute by name.
+     */
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         return (T)getAttributeMap().get(name);
     }
 
+    /**
+     * Sets an attribute by name.
+     */
     public void setAttribute(String name, Object value) {
         if (value == null) {
             // If the object passed in is null, the effect is the same
@@ -180,18 +197,30 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * @return the names of all attributes associated with this request.
+     */
     public Set<String> getAttributeNames() {
         return getAttributeMap().keySet();
     }
 
+    /**
+     * Removes the attribute with the given name.
+     */
     public void removeAttribute(String name) {
         getAttributeMap().remove(name);
     }
 
+    /**
+     * Adds all attributes from the provided map.
+     */
     public void putAllAttributes(Map<String, Object> attributes) {
         getAttributeMap().putAll(attributes);
     }
 
+    /**
+     * Extracts attributes into the provided target map.
+     */
     public void extractAttributes(Map<String, Object> targetMap) {
         if (targetMap == null) {
             throw new IllegalArgumentException("targetMap must not be null");
@@ -213,14 +242,23 @@ public abstract class AbstractRequest {
         return attributes;
     }
 
+    /**
+     * Replaces the attribute map for this request.
+     */
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributes = attributeMap;
     }
 
+    /**
+     * @return whether any attributes exist.
+     */
     public boolean hasAttributes() {
         return (attributes != null && !attributes.isEmpty());
     }
 
+    /**
+     * @return whether the given attribute exists.
+     */
     public boolean hasAttribute(String name) {
         if (attributes != null) {
             return attributes.containsKey(name);
@@ -229,22 +267,37 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * Retrieves a single parameter value.
+     */
     public String getParameter(String name) {
         return getParameterMap().getParameter(name);
     }
 
+    /**
+     * Retrieves multiple values for a parameter.
+     */
     public String[] getParameterValues(String name) {
         return getParameterMap().getParameterValues(name);
     }
 
+    /**
+     * @return the names of all available parameters.
+     */
     public Set<String> getParameterNames() {
         return getParameterMap().getParameterNames();
     }
 
+    /**
+     * Sets a single parameter value.
+     */
     public void setParameter(String name, String value) {
         getParameterMap().setParameter(name, value);
     }
 
+    /**
+     * Sets multiple values for a parameter.
+     */
     public void setParameter(String name, String[] values) {
         getParameterMap().put(name, values);
     }
@@ -257,10 +310,16 @@ public abstract class AbstractRequest {
         return getParameterMap().extractAsMap();
     }
 
+    /**
+     * Adds parameters from a {@link ParameterMap}.
+     */
     public void putAllParameters(ParameterMap parameterMap) {
         getParameterMap().putAll(parameterMap);
     }
 
+    /**
+     * Adds parameters from a {@link MultiValueMap}.
+     */
     public void putAllParameters(MultiValueMap<String, String> multiValueMap) {
         if (multiValueMap != null && !multiValueMap.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : multiValueMap.entrySet()) {
@@ -272,6 +331,9 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * Extracts parameters into the provided target map.
+     */
     public void extractParameters(Map<String, Object> targetMap) {
         if (hasParameters()) {
             getParameterMap().extractAsMap(targetMap);
@@ -290,14 +352,23 @@ public abstract class AbstractRequest {
         return parameterMap;
     }
 
+    /**
+     * Replaces the parameter map for this request.
+     */
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
     }
 
+    /**
+     * @return whether any parameters exist.
+     */
     public boolean hasParameters() {
         return (parameterMap != null && !parameterMap.isEmpty());
     }
 
+    /**
+     * @return whether a parameter with the given name exists.
+     */
     public boolean hasParameter(String name) {
         if (parameterMap != null) {
             return parameterMap.containsKey(name);
@@ -306,30 +377,51 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * Retrieves the first uploaded file for the given name.
+     */
     public FileParameter getFileParameter(String name) {
         return getFileParameterMap().getFileParameter(name);
     }
 
+    /**
+     * Retrieves all uploaded files for the given name.
+     */
     public FileParameter[] getFileParameterValues(String name) {
         return getFileParameterMap().getFileParameterValues(name);
     }
 
+    /**
+     * @return the names of all file parameters.
+     */
     public Set<String> getFileParameterNames() {
         return getFileParameterMap().keySet();
     }
 
+    /**
+     * Associates a single file parameter with the given name.
+     */
     public void setFileParameter(String name, FileParameter fileParameter) {
         getFileParameterMap().setFileParameter(name, fileParameter);
     }
 
+    /**
+     * Associates multiple file parameters with the given name.
+     */
     public void setFileParameter(String name, FileParameter[] fileParameters) {
         getFileParameterMap().setFileParameterValues(name, fileParameters);
     }
 
+    /**
+     * Removes all file parameters under the given name.
+     */
     public void removeFileParameter(String name) {
         getFileParameterMap().remove(name);
     }
 
+    /**
+     * @return the file parameter map.
+     */
     public FileParameterMap getFileParameterMap() {
         if (fileParameterMap == null) {
             fileParameterMap = new FileParameterMap();
@@ -337,6 +429,9 @@ public abstract class AbstractRequest {
         return fileParameterMap;
     }
 
+    /**
+     * Adds all file parameters from the provided map.
+     */
     public void putAllFileParameters(MultiValueMap<String, FileParameter> fileParameterMap) {
         if (fileParameterMap != null && !fileParameterMap.isEmpty()) {
             for (Map.Entry<String, List<FileParameter>> entry : fileParameterMap.entrySet()) {
@@ -348,54 +443,73 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * @return whether any file parameters exist.
+     */
     public boolean hasFileParameters() {
         return (fileParameterMap != null && !fileParameterMap.isEmpty());
     }
 
+    /**
+     * @return the character encoding of the request body.
+     */
     public String getEncoding() {
         return encoding;
     }
 
+    /**
+     * Sets the character encoding for the request body.
+     */
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         this.encoding = encoding;
     }
 
+    /**
+     * @return the locale of this request.
+     */
     public Locale getLocale() {
         return locale;
     }
 
     /**
-     * Sets the locale.
-     * @param locale the locale
+     * Sets the locale of this request.
      */
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
     /**
-     * Gets the time zone.
-     * @return the time zone
+     * @return the time zone associated with this request.
      */
     public TimeZone getTimeZone() {
         return timeZone;
     }
 
     /**
-     * Sets the time zone.
-     * @param timeZone the time zone
+     * Sets the time zone for this request.
      */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
+    /**
+     * @return the maximum request size in bytes.
+     */
     public long getMaxRequestSize() {
         return maxRequestSize;
     }
 
+    /**
+     * Sets the maximum request size in bytes.
+     */
     public void setMaxRequestSize(long maxRequestSize) {
         this.maxRequestSize = maxRequestSize;
     }
 
+    /**
+     * @return an input stream for reading the request body
+     * @throws IOException if the stream cannot be opened
+     */
     public InputStream getInputStream() throws IOException {
         if (getBody() != null) {
             return new ByteArrayInputStream(getBody().getBytes());
@@ -404,26 +518,53 @@ public abstract class AbstractRequest {
         }
     }
 
+    /**
+     * @return the request body as a string.
+     */
     public String getBody() {
         return body;
     }
 
+    /**
+     * Sets the request body content.
+     */
     public void setBody(String body) {
         this.body = body;
     }
 
+    /**
+     * Parses the body into a {@link Parameters} object.
+     * @return parsed parameters
+     * @throws RequestParseException if parsing fails
+     */
     public Parameters getBodyAsParameters() throws RequestParseException {
         return getBodyAsParameters(VariableParameters.class);
     }
 
+    /**
+     * Parses the body into the specified type of {@link Parameters}.
+     * @param requiredType the parameter type to return
+     * @param <T> a subtype of {@link Parameters}
+     * @return parsed parameters of the given type
+     * @throws RequestParseException if parsing fails
+     */
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
         return RequestBodyParser.parseBodyAsParameters(getBody(), requiredType);
     }
 
+    /**
+     * @return all request parameters as a {@link Parameters} object.
+     */
     public Parameters getParameters() {
         return getParameters(VariableParameters.class);
     }
 
+    /**
+     * Returns request parameters as a specific subclass of {@link Parameters}.
+     * @param requiredType the parameter type to return
+     * @param <T> a subtype of {@link Parameters}
+     * @return parsed parameters of the given type
+     */
     public <T extends Parameters> T getParameters(Class<T> requiredType) {
         T parameters = ClassUtils.createInstance(requiredType);
         for (Map.Entry<String, String[]> entry : getParameterMap().entrySet()) {

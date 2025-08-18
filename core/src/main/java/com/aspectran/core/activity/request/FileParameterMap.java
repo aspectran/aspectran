@@ -19,18 +19,13 @@ import java.io.Serial;
 import java.util.LinkedHashMap;
 
 /**
- * A specialized map for managing {@link FileParameter} objects associated with a request.
+ * A specialized map for managing arrays of {@link FileParameter} objects
+ * associated with a request.
  * <p>
- * Supports lookup of uploaded files by parameter name and may hold multiple
- * {@link FileParameter} instances for the same key when a field allows multiple file uploads.
+ * Each key corresponds to a parameter name in the request, and its value
+ * is one or more uploaded files submitted under that field name.
+ * This class simplifies handling single or multiple file uploads.
  * </p>
- *
- * <p>Responsibilities may include:</p>
- * <ul>
- *   <li>Storing uploaded files indexed by parameter name</li>
- *   <li>Retrieving single or multiple files associated with a given field</li>
- *   <li>Supporting iteration across all uploaded files</li>
- * </ul>
  *
  * <p>Created: 2008. 03. 29 PM 6:23:00</p>
  */
@@ -39,19 +34,40 @@ public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
     @Serial
     private static final long serialVersionUID = -2589963778315184242L;
 
+    /**
+     * Returns the first file parameter associated with the given name.
+     * @param name the parameter name
+     * @return the first {@link FileParameter}, or {@code null} if none exist
+     */
     public FileParameter getFileParameter(String name) {
         FileParameter[] fileParameters = get(name);
         return (fileParameters != null && fileParameters.length > 0 ? fileParameters[0] : null);
     }
 
+    /**
+     * Returns all file parameters associated with the given name.
+     * @param name the parameter name
+     * @return an array of {@link FileParameter} objects, or {@code null} if none exist
+     */
     public FileParameter[] getFileParameterValues(String name) {
         return get(name);
     }
 
+    /**
+     * Associates a single {@link FileParameter} with the given name.
+     * <p>If multiple files already exist under this name, they will be replaced.</p>
+     * @param name the parameter name
+     * @param fileParameter the file parameter to store
+     */
     public void setFileParameter(String name, FileParameter fileParameter) {
         put(name, new FileParameter[] { fileParameter });
     }
 
+    /**
+     * Associates multiple {@link FileParameter} objects with the given name.
+     * @param name the parameter name
+     * @param fileParameters the array of file parameters to store
+     */
     public void setFileParameterValues(String name, FileParameter[] fileParameters) {
         put(name, fileParameters);
     }
