@@ -20,35 +20,42 @@ import com.aspectran.core.activity.process.ProcessException;
 import java.io.Serial;
 
 /**
- * Thrown when an error occurs while executing an action.
- *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * Exception thrown when an error occurs during the execution of an action in the process.
  */
 public class ActionExecutionException extends ProcessException {
 
     @Serial
     private static final long serialVersionUID = 3568162614053964319L;
 
+    /**
+     * Stores the executable action that caused this exception.
+     */
     private Executable action;
 
     /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
+     * Constructs a new ActionExecutionException with the specified detail message.
+     * @param msg the detail message
      */
     public ActionExecutionException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a
-     * message.
+     * Constructs a new ActionExecutionException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the cause (which is saved for later retrieval by the
+     *         {@link Throwable#getCause()} method)
      */
     public ActionExecutionException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
+    /**
+     * Constructs a new ActionExecutionException with the specified executable action and cause.
+     * @param action the executable action that caused the exception
+     * @param cause the cause (which is saved for later retrieval by the
+     *         {@link Throwable#getCause()} method)
+     */
     public ActionExecutionException(Executable action, Throwable cause) {
         super("Failed to execute action " + action + "; Cause: " +
                 (cause.getMessage() != null ? cause.getMessage() : cause.toString()),

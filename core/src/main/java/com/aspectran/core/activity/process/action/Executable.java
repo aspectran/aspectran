@@ -19,42 +19,44 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
- * The Interface Executable.
- *
- * <p>Created: 2008. 03. 23 AM 10:38:29</p>
+ * Defines an interface for actions that can be executed within an {@link Activity}.
+ * <p>
+ * An {@code Activity} represents a set of actions that an Aspectran service performs
+ * to process a request. Implementations of this interface encapsulate the execution
+ * logic of a single action and provide basic metadata about the action.
  */
 public interface Executable {
 
     /**
-     * Execute this action.
-     * @param activity the activity
-     * @return the result of action execution
-     * @throws Exception if the action fails to execute
+     * Executes the action and returns the result.
+     * @param activity the {@link Activity} object on which the action will be executed.
+     * @return the result of executing the action.
+     * @throws Exception an exception that may occur during the execution of the action
      */
     Object execute(Activity activity) throws Exception;
 
     /**
-     * Gets the action id.
-     * @return the action id
+     * Returns the unique identifier of the action.
+     * @return the action ID, or {@code null} if not specified
      */
     default String getActionId() {
         return null;
     }
 
     /**
-     * Returns whether this action is hidden.
-     * @return true, if is hidden action
+     * Indicates whether the action is hidden or not.
+     * @return {@code true} if the action is hidden; {@code false} otherwise.
      */
     default boolean isHidden() {
         return false;
     }
 
     /**
-     * Gets the Action Type.
-     * @return the Action Type
+     * Returns the type of the action.
+     * @return the {@link ActionType} of this action, or {@code null} if not specified
      */
     default ActionType getActionType() {
         return null;
     }
-
 }
+
