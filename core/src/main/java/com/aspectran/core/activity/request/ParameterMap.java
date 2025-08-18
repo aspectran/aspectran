@@ -24,19 +24,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A map-like structure for storing request parameters.
+ * A specialized {@link LinkedHashMap} implementation for storing and extracting
+ * request parameters.
  * <p>
- * Provides convenient access to request parameters supplied by clients
- * (such as query parameters, form fields, or command-line arguments).
- * Supports retrieval of single or multiple values for each parameter name.
+ * Provides convenient methods for converting multi-valued parameter arrays into
+ * a simple key-value map structure, which is often required for template processing
+ * or activity execution.
  * </p>
- *
- * <p>Features may include:</p>
- * <ul>
- *   <li>Case-sensitive or case-insensitive parameter name handling</li>
- *   <li>Support for multiple values per parameter key</li>
- *   <li>Conversion utilities for accessing parameter values as various data types</li>
- * </ul>
  *
  * <p>Created: 2008. 06. 11 PM 8:55:13</p>
  */
@@ -136,11 +130,28 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
         }
     }
 
+    /**
+     * Extracts the parameters into a new map structure.
+     * <p>
+     * The resulting map may flatten multi-value arrays into single objects
+     * depending on the implementation strategy.
+     * </p>
+     * @return a new map containing parameter names and values
+     */
     public Map<String, Object> extractAsMap() {
         Map<String, Object> map = new HashMap<>();
         return extractAsMap(map);
     }
 
+    /**
+     * Extracts the parameters and populates the specified target map.
+     * <p>
+     * This method is useful when merging parameters into an existing data model
+     * (e.g., for use in templates or translets).
+     * </p>
+     * @param targetMap the map into which parameters should be inserted
+     * @return the updated {@code targetMap} containing parameters
+     */
     public Map<String, Object> extractAsMap(Map<String, Object> targetMap) {
         Assert.notNull(targetMap, "targetMap must not be null");
         for (Map.Entry<String, String[]> entry : this.entrySet()) {

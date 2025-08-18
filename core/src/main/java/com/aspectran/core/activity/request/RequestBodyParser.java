@@ -21,25 +21,26 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 
 /**
- * Parses the body of a request into a usable format.
+ * Utility class for parsing a request body into a {@link Parameters} object.
  * <p>
- * Provides strategies for interpreting request payloads such as JSON, XML,
- * form-encoded data, or custom formats. Implementations convert raw request
- * body streams into structured objects or maps accessible by activities.
+ * Provides static helper methods to interpret raw request content (typically
+ * text or form-encoded data) and populate a parameters map that can be used
+ * by an activity.
  * </p>
- *
- * <p>Common responsibilities include:</p>
- * <ul>
- *   <li>Reading raw request body content from an input stream</li>
- *   <li>Determining the appropriate parsing strategy based on content type</li>
- *   <li>Converting parsed content into a format consumable by the activity</li>
- *   <li>Handling parsing errors gracefully by throwing exceptions</li>
- * </ul>
  *
  * @since 6.2.0
  */
 public abstract class RequestBodyParser {
 
+    /**
+     * Parses the request body into a {@link Parameters}-compatible map.
+     * @param body the raw request body as a string (e.g., form-encoded or JSON text)
+     * @param requiredType the concrete type of {@link Parameters} to return
+     * @param <T> a subclass of {@link Parameters}
+     * @return a populated instance of {@code requiredType}, containing parameters
+     *         parsed from the body
+     * @throws IllegalArgumentException if parsing fails or the type is unsupported
+     */
     @Nullable
     public static <T extends Parameters> T parseBodyAsParameters(String body, Class<T> requiredType)
             throws RequestParseException {

@@ -199,10 +199,24 @@ public class FileParameter {
         return destFile;
     }
 
+    /**
+     * Renames the uploaded file to the specified destination.
+     * @param destFile the destination file
+     * @return the renamed file reference
+     * @throws IOException if the file cannot be moved or renamed
+     */
     public File renameTo(File destFile) throws IOException {
         return renameTo(destFile, false);
     }
 
+    /**
+     * Renames the uploaded file to the specified destination, with an option
+     * to overwrite existing files.
+     * @param destFile the destination file
+     * @param overwrite whether to overwrite the destination file if it exists
+     * @return the renamed file reference
+     * @throws IOException if the file cannot be moved or renamed
+     */
     public File renameTo(File destFile, boolean overwrite) throws IOException {
         File srcFile = getFile();
         if (srcFile == null) {
@@ -227,6 +241,14 @@ public class FileParameter {
         return destFile;
     }
 
+    /**
+     * Determines the destination file location based on the provided
+     * target and overwrite flag.
+     * @param destFile the desired destination
+     * @param overwrite whether existing files may be replaced
+     * @return the resolved destination file
+     * @throws IOException if the destination cannot be resolved
+     */
     protected File determineDestinationFile(File destFile, boolean overwrite) throws IOException {
         if (overwrite) {
             if (destFile.exists() && !destFile.delete()) {
@@ -240,17 +262,25 @@ public class FileParameter {
     }
 
     /**
-     * Returns the saved file.
-     * @return the saved file
+     * Returns the file currently saved on disk for this parameter.
+     * @return the saved file, or {@code null} if none has been persisted
      */
     public File getSavedFile() {
         return savedFile;
     }
 
+    /**
+     * Sets the file reference to indicate the file has been persisted on disk.
+     * @param savedFile the saved file
+     */
     protected void setSavedFile(File savedFile) {
         this.savedFile = savedFile;
     }
 
+    /**
+     * Releases the reference to the saved file without deleting it.
+     * Typically used for cleanup after processing.
+     */
     protected void releaseSavedFile() {
         if (savedFile != null) {
             savedFile.setWritable(true);
@@ -259,7 +289,7 @@ public class FileParameter {
     }
 
     /**
-     * Delete a file.
+     * Deletes the saved file associated with this parameter, if it exists.
      */
     public void delete() {
         if (file != null) {

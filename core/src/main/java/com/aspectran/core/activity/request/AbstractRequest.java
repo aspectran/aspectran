@@ -84,7 +84,6 @@ public abstract class AbstractRequest {
 
     /**
      * Returns the value of the response header with the given name.
-     *
      * <p>If a response header with the given name exists and contains
      * multiple values, the value that was added first will be returned.</p>
      * @param name the name of the response header whose value to return

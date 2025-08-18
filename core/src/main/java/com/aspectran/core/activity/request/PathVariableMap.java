@@ -26,19 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A map that holds path variables extracted from a request URI.
+ * A specialized map that binds {@link Token} objects to resolved path variable values.
  * <p>
- * Path variables are dynamic segments of a URI template (e.g., <code>/users/${id}</code>)
- * that are resolved at runtime. This class provides lookup access to those values,
- * allowing activities to adapt behavior based on request paths.
+ * Path variables are typically extracted from request URIs using a template pattern
+ * and are then made available to an {@link com.aspectran.core.activity.Translet}.
  * </p>
- *
- * <p>Responsibilities may include:</p>
- * <ul>
- *   <li>Mapping variable names defined in URI templates to actual values in the request</li>
- *   <li>Supporting type conversion of path variable values</li>
- *   <li>Providing iteration over available variables</li>
- * </ul>
  *
  * <p>Created: 2016. 2. 13.</p>
  */
@@ -47,6 +39,14 @@ public class PathVariableMap extends HashMap<Token, String> {
     @Serial
     private static final long serialVersionUID = -3327966082696522044L;
 
+    /**
+     * Applies the stored path variables to the given {@link Translet}.
+     * <p>
+     * This typically involves making the variable values accessible
+     * to expressions or parameters within the translet execution context.
+     * </p>
+     * @param translet the translet to which variables should be applied
+     */
     public void applyTo(Translet translet) {
         for (Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
@@ -58,6 +58,15 @@ public class PathVariableMap extends HashMap<Token, String> {
         }
     }
 
+
+    /**
+     * Parses a set of name tokens against the provided request name and produces
+     * a {@code PathVariableMap} containing matched variables.
+     * @param nameTokens the template tokens representing variable names in the path
+     * @param requestName the actual request path to match
+     * @return a {@code PathVariableMap} containing resolved variables, or an empty
+     *         map if none were matched
+     */
     @Nullable
     public static PathVariableMap parse(Token[] nameTokens, String requestName) {
         Assert.notNull(nameTokens, "nameTokens must not be null");
