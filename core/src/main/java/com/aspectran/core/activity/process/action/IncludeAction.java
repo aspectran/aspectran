@@ -28,7 +28,13 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Map;
 
 /**
- * {@code IncludeAction} to get the execution result of another translet.
+ * The {@code IncludeAction} class is responsible for executing another activity by
+ * including its execution flow within the current activity context.
+ * <p>It evaluates attributes and parameters from the current activity, passes them
+ * to the included activity, and executes the target activity using the specified
+ * translet name and method type.</p>
+ * <p>After execution, the result of the included activity is returned as a {@link ProcessResult}
+ * or {@code Void}, depending on whether a result was produced.</p>
  *
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
@@ -36,14 +42,26 @@ public class IncludeAction implements Executable {
 
     private final IncludeActionRule includeActionRule;
 
-    /**
-     * Instantiates a new IncludeAction.
-     * @param includeActionRule the process call action rule
-     */
     public IncludeAction(IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 
+    /**
+     * Executes the included activity by creating a new {@link InstantActivity} instance
+     * with the current activity's context.
+     * <p>This method evaluates attribute and parameter rules from the included action rule
+     * to extract values from the current activity context.</p>
+     * <p>It sets the attribute and parameter maps on the included activity instance,
+     * prepares it using the specified translet name and method type, and then performs the execution.</p>
+     * <p>If the included activity produces a result, it is returned as a {@link ProcessResult};
+     * otherwise, {@code Void.TYPE} is returned.</p>
+     * <p>Any exception during execution is wrapped in an {@link ActionExecutionException} and
+     * rethrown to maintain error propagation.</p>
+     * @param activity the current activity that provides the context for attribute and parameter evaluation
+     * @return the result of the included activity as a {@link ProcessResult}, or {@code Void.TYPE}
+     *      if no result was produced
+     * @throws Exception if an error occurs during execution of the included activity
+     */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         try {
@@ -67,10 +85,6 @@ public class IncludeAction implements Executable {
         }
     }
 
-    /**
-     * Returns the include action rule.
-     * @return the include action rule
-     */
     public IncludeActionRule getIncludeActionRule() {
         return includeActionRule;
     }
@@ -85,6 +99,9 @@ public class IncludeAction implements Executable {
         return includeActionRule.isHidden();
     }
 
+    /**
+     * Returns the type of this action, which is always {@link ActionType#INCLUDE}.
+     */
     @Override
     public ActionType getActionType() {
         return ActionType.INCLUDE;

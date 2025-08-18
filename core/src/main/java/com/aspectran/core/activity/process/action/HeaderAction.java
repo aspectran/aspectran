@@ -29,7 +29,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@code HeaderAction} to set response headers.
+ * {@code HeaderAction} is an executable action that sets HTTP response headers based on configured
+ * header rules. It evaluates a rule map that maps header names to values, resolves those values
+ * using the activity's item evaluator, and then applies them to the response using the response
+ * adapter. This action is typically used in web applications to set headers such as Content-Type,
+ * Cache-Control, or X-Frame-Options.
+ *
+ * <p>For example, a rule like {@code "Content-Type: application/json"} would result in the response
+ * header being set to {@code "application/json"}. Multiple values per header are supported via
+ * multi-value maps.</p>
  *
  * <p>Created: 2016. 08. 23.</p>
  *
@@ -47,6 +55,19 @@ public class HeaderAction implements Executable {
         this.headerActionRule = headerActionRule;
     }
 
+    /**
+     * Executes the header action by evaluating the header rules and setting response headers.
+     * <p>
+     * This method retrieves the header item rule map from the action rule, evaluates it using the
+     * activity's item evaluator to produce a map of header names to values, and then sets each
+     * header in the response using the response adapter. If no headers are defined or the evaluation
+     * results in an empty map, this method returns {@code Void.TYPE} and does not modify the response.
+     * </p>
+     * @param activity the current activity context containing the request and response objects
+     * @return the evaluated header map, or {@code Void.TYPE} if no headers are defined
+     * @throws Exception if an error occurs during evaluation or header setting, wrapped in an
+     *                   {@link ActionExecutionException}
+     */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         ItemRuleMap itemRuleMap = headerActionRule.getHeaderItemRuleMap();
@@ -72,10 +93,6 @@ public class HeaderAction implements Executable {
         }
     }
 
-    /**
-     * Returns the header action rule.
-     * @return the headerActionRule
-     */
     public HeaderActionRule getHeaderActionRule() {
         return headerActionRule;
     }

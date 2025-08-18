@@ -34,9 +34,18 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * {@code InvokeAction} that invokes a method of the bean instance.
- *
- * <p>Created: 2008. 03. 22 PM 5:50:35</p>
+ * {@code InvokeAction} is a framework-level action that invokes a specified method on a configured bean instance.
+ * <p>
+ * This action is used to execute methods on managed beans within the Aspectran application context. It supports both
+ * method invocation via a method name and a method reference, and allows dynamic argument resolution using item rules.
+ * The action can be configured to require a translet context for method invocation, enabling integration with view rendering
+ * and data binding operations.
+ * </p>
+ * <p>
+ * The action supports bean resolution through class name or bean ID, and provides mechanisms to set property values
+ * before method execution using property item rules. It also handles argument mapping through argument item rules,
+ * ensuring that input data is properly converted and passed to the target method.
+ * </p>
  */
 public class InvokeAction implements Executable {
 
