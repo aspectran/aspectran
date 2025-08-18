@@ -160,6 +160,10 @@ public class InvokeAction implements Executable {
         return ActionType.INVOKE;
     }
 
+    /**
+     * Returns a string representation of this action, including the rule configuration.
+     * This is useful for debugging and logging purposes.
+     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

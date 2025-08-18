@@ -44,7 +44,7 @@ public interface Executable {
     }
 
     /**
-     * Indicates whether the action is hidden or not.
+     * Indicates whether to expose the result of this action.
      * @return {@code true} if the action is hidden; {@code false} otherwise.
      */
     default boolean isHidden() {

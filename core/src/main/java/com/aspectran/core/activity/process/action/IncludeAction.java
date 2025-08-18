@@ -28,13 +28,13 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Map;
 
 /**
- * The {@code IncludeAction} class is responsible for executing another activity by
- * including its execution flow within the current activity context.
+ * {@code IncludeAction} is responsible for executing another activity by including
+ * its execution flow within the current activity context.
  * <p>It evaluates attributes and parameters from the current activity, passes them
  * to the included activity, and executes the target activity using the specified
  * translet name and method type.</p>
- * <p>After execution, the result of the included activity is returned as a {@link ProcessResult}
- * or {@code Void}, depending on whether a result was produced.</p>
+ * <p>After execution, the result of the included activity is returned as a
+ * {@link ProcessResult} or {@code Void}, depending on whether a result was produced.</p>
  *
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
@@ -107,6 +107,10 @@ public class IncludeAction implements Executable {
         return ActionType.INCLUDE;
     }
 
+    /**
+     * Returns a string representation of this action, including the rule configuration.
+     * This is useful for debugging and logging purposes.
+     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
