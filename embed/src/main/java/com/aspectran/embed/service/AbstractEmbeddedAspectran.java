@@ -30,9 +30,15 @@ import com.aspectran.utils.Assert;
 import java.util.Locale;
 
 /**
- * Provides an interface that can be used by embedding Aspectran in Java applications.
+ * Abstract base class for embedding Aspectran functionality within a standalone or web application.
+ * This class provides common infrastructure for session management, bean access, and message lookup.
+ * It implements the {@link EmbeddedAspectran} interface and delegates session and bean operations
+ * to the underlying Aspectran context.
  *
- * @since 3.0.0
+ * <p>Subclasses should implement specific behavior for service initialization and lifecycle management.</p>
+ *
+ * @see EmbeddedAspectran
+ * @see DefaultCoreService
  */
 public abstract class AbstractEmbeddedAspectran extends DefaultCoreService implements EmbeddedAspectran {
 
@@ -40,10 +46,19 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
 
     private SessionAgent sessionAgent;
 
+    /**
+     * Default constructor for instantiation.
+     */
     AbstractEmbeddedAspectran() {
         super();
     }
 
+    /**
+     * Creates and returns a session adapter based on the current session agent.
+     * If a session agent is available, it wraps it in an Aspectran-specific session adapter.
+     * Otherwise, returns null.
+     * @return a new {@code SessionAdapter} instance, or null if no session agent is configured
+     */
     @Override
     public SessionAdapter newSessionAdapter() {
         if (sessionAgent != null) {
@@ -53,6 +68,13 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
         }
     }
 
+    /**
+     * Initializes the session manager using configuration from the embedded Aspectran setup.
+     * This method creates a {@code DefaultSessionManager} and configures it with the provided
+     * session manager configuration and activity context. If the session manager is already
+     * created, this method will throw an exception.
+     * @throws CoreServiceException if session manager creation fails
+     */
     protected void createSessionManager() {
         Assert.state(this.sessionManager == null,
                 "Session Manager is already exists for " + getServiceName());
@@ -74,6 +96,11 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
         }
     }
 
+    /**
+     * Destroys the session manager and its associated session agent.
+     * This method invalidates the session agent and releases resources.
+     * Should be called during application shutdown or when the embedded aspect is no longer needed.
+     */
     protected void destroySessionManager() {
         if (sessionAgent != null) {
             sessionAgent.invalidate();

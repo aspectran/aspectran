@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * Provides an interface that can be used by embedding Aspectran in Java applications.
- * @since 3.0.0
+ * This class provides the default implementation of the EmbeddedAspectran service.
+ * It handles the execution of activities and the translation of translets.
  */
 public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
@@ -108,6 +108,21 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return translate(name, method, attributeMap, parameterMap, null);
     }
 
+    /**
+     * Translates a request to a translet based on the provided parameters.
+     * This method handles request routing, parameter binding, and execution.
+     * <p>If the service is paused, returns {@code null}. If the request name is invalid,
+     * logs an error and returns {@code null}. Otherwise, creates an {@code AspectranActivity}
+     * with the specified request details, performs preparation and execution, and returns
+     * the resulting translet.
+     * @param name the name of the translet to execute; must not be null
+     * @param method the request method (e.g., GET, POST); defaults to GET if null
+     * @param attributeMap additional application-level attributes for the request
+     * @param parameterMap request parameters (e.g., query or form parameters)
+     * @param body the request body (if applicable, e.g., for POST)
+     * @return the resulting translet, or {@code null} if the request is invalid or paused
+     * @throws CoreServiceException if an error occurs during processing (wrapped in the exception)
+     */
     @Override
     public Translet translate(
             String name, @Nullable MethodType method,
@@ -168,6 +183,18 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return render(templateId, null, parameterMap);
     }
 
+    /**
+     * Renders a template using the provided template ID and optional attributes and parameters.
+     * This method creates an {@code InstantActivity} to manage the rendering context,
+     * sets the template and attributes, and executes the rendering logic.
+     * <p>If the service is paused, returns {@code null}. Otherwise, the template is rendered
+     * and the output is returned as a string.
+     * @param templateId the ID of the template to render
+     * @param attributeMap additional attributes to pass to the renderer
+     * @param parameterMap request parameters to pass to the renderer (e.g., query params)
+     * @return the rendered text as a string, or {@code null} if the service is paused
+     * @throws CoreServiceException if an error occurs during rendering (wrapped in exception)
+     */
     @Override
     public String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (checkPaused()) {
@@ -188,9 +215,13 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     /**
-     * Returns a new instance of {@code DefaultEmbeddedAspectran}.
-     * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code DefaultEmbeddedAspectran}
+     * Returns a new instance of {@code DefaultEmbeddedAspectran} configured with the
+     * provided configuration. This method initializes the service, sets up lifecycle
+     * listeners, and configures internal state.
+     * <p>Use this factory method to obtain a fully configured instance of the service.
+     * The service will automatically register lifecycle callbacks for start/stop/pause/resume.
+     * @param aspectranConfig the configuration for the aspectran
+     * @return a configured instance of {@code DefaultEmbeddedAspectran}
      */
     @NonNull
     static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
@@ -198,6 +229,28 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         aspectran.configure(aspectranConfig);
         setServiceStateListener(aspectran);
         return aspectran;
+    }
+
+    /**
+     * Determines whether the service is currently paused based on a timeout.
+     * Returns {@code true} if the service is paused (i.e., paused for more than the
+     * specified duration), otherwise returns {@code false}.
+     * <p>Pausing is used to temporarily suspend processing (e.g., for maintenance).
+     * When paused, no new requests are processed.
+     * @return {@code true} if the service is paused, {@code false} otherwise
+     */
+    private boolean checkPaused() {
+        if (pauseTimeout != 0L) {
+            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is paused", getServiceName());
+                }
+                return true;
+            } else {
+                pauseTimeout = 0L;
+            }
+        }
+        return false;
     }
 
     private static void setServiceStateListener(@NonNull final DefaultEmbeddedAspectran aspectran) {
@@ -235,20 +288,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 aspectran.pauseTimeout = 0L;
             }
         });
-    }
-
-    private boolean checkPaused() {
-        if (pauseTimeout != 0L) {
-            if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("{} is paused", getServiceName());
-                }
-                return true;
-            } else {
-                pauseTimeout = 0L;
-            }
-        }
-        return false;
     }
 
 }

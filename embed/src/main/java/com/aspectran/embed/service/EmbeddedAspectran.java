@@ -37,9 +37,12 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Interface EmbeddedAspectran.
+ * An interface for embedding the Aspectran framework.
+ * This interface provides a way to run embedded Aspectran activities.
  *
  * <p>Created: 2017. 10. 28.</p>
+ *
+ * @since 3.0.0
  */
 public interface EmbeddedAspectran {
 
@@ -171,8 +174,8 @@ public interface EmbeddedAspectran {
     String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
-     * Gets the environment.
-     * @return the environment
+     * Retrieves the current environment context for the application.
+     * @return the environment instance associated with the current activity context
      */
     Environment getEnvironment();
 
@@ -269,7 +272,8 @@ public interface EmbeddedAspectran {
     SessionAdapter newSessionAdapter();
 
     /**
-     * Stop the service and release all allocated resources.
+     * Releases resources associated with this embedded aspectran.
+     * This method stops the service and performs cleanup operations.
      */
     void release();
 
