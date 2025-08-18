@@ -19,7 +19,18 @@ import java.io.Serial;
 import java.util.LinkedHashMap;
 
 /**
- * The Class FileParameterMap.
+ * A specialized map for managing {@link FileParameter} objects associated with a request.
+ * <p>
+ * Supports lookup of uploaded files by parameter name and may hold multiple
+ * {@link FileParameter} instances for the same key when a field allows multiple file uploads.
+ * </p>
+ *
+ * <p>Responsibilities may include:</p>
+ * <ul>
+ *   <li>Storing uploaded files indexed by parameter name</li>
+ *   <li>Retrieving single or multiple files associated with a given field</li>
+ *   <li>Supporting iteration across all uploaded files</li>
+ * </ul>
  *
  * <p>Created: 2008. 03. 29 PM 6:23:00</p>
  */

@@ -24,7 +24,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class ParameterMap.
+ * A map-like structure for storing request parameters.
+ * <p>
+ * Provides convenient access to request parameters supplied by clients
+ * (such as query parameters, form fields, or command-line arguments).
+ * Supports retrieval of single or multiple values for each parameter name.
+ * </p>
+ *
+ * <p>Features may include:</p>
+ * <ul>
+ *   <li>Case-sensitive or case-insensitive parameter name handling</li>
+ *   <li>Support for multiple values per parameter key</li>
+ *   <li>Conversion utilities for accessing parameter values as various data types</li>
+ * </ul>
  *
  * <p>Created: 2008. 06. 11 PM 8:55:13</p>
  */

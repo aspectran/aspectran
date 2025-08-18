@@ -21,7 +21,20 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 
 /**
- * Provides convenient methods to parse the request body.
+ * Parses the body of a request into a usable format.
+ * <p>
+ * Provides strategies for interpreting request payloads such as JSON, XML,
+ * form-encoded data, or custom formats. Implementations convert raw request
+ * body streams into structured objects or maps accessible by activities.
+ * </p>
+ *
+ * <p>Common responsibilities include:</p>
+ * <ul>
+ *   <li>Reading raw request body content from an input stream</li>
+ *   <li>Determining the appropriate parsing strategy based on content type</li>
+ *   <li>Converting parsed content into a format consumable by the activity</li>
+ *   <li>Handling parsing errors gracefully by throwing exceptions</li>
+ * </ul>
  *
  * @since 6.2.0
  */

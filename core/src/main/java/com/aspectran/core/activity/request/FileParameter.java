@@ -27,7 +27,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * The Class FileParameter.
+ * Represents a file submitted as part of a request, typically through multipart form data.
+ * <p>
+ * Encapsulates the file's metadata (such as name, size, and content type) along with
+ * access to the file's content stream. Used when requests include file uploads.
+ * </p>
+ *
+ * <p>Typical usage:</p>
+ * <ul>
+ *   <li>Inspect file attributes (original filename, content type, size)</li>
+ *   <li>Read or stream the file's binary contents</li>
+ *   <li>Store or process the uploaded file within an activity</li>
+ * </ul>
  *
  * <p>Created: 2008. 04. 11 PM 4:19:40</p>
  */

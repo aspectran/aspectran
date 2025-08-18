@@ -26,10 +26,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Class PathVariableMap.
+ * A map that holds path variables extracted from a request URI.
+ * <p>
+ * Path variables are dynamic segments of a URI template (e.g., <code>/users/${id}</code>)
+ * that are resolved at runtime. This class provides lookup access to those values,
+ * allowing activities to adapt behavior based on request paths.
+ * </p>
  *
- * <p>This class is generally not thread-safe.
- * It is primarily designed for use in a single thread only.</p>
+ * <p>Responsibilities may include:</p>
+ * <ul>
+ *   <li>Mapping variable names defined in URI templates to actual values in the request</li>
+ *   <li>Supporting type conversion of path variable values</li>
+ *   <li>Providing iteration over available variables</li>
+ * </ul>
  *
  * <p>Created: 2016. 2. 13.</p>
  */

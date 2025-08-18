@@ -34,7 +34,21 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
- * The Class AbstractRequest.
+ * An abstract base class for request implementations within the Aspectran framework.
+ * <p>
+ * Provides common functionality for handling request parameters, headers, body content,
+ * and path variables. Concrete subclasses typically adapt input from specific sources
+ * such as HTTP, CLI, or daemon processes. This class serves as a foundation to reduce
+ * duplication and enforce a consistent request handling model.
+ * </p>
+ *
+ * <p>Responsibilities may include:</p>
+ * <ul>
+ *   <li>Managing parameter maps and path variable maps</li>
+ *   <li>Parsing and exposing the request body via a {@link RequestBodyParser}</li>
+ *   <li>Handling file upload parameters</li>
+ *   <li>Providing access to metadata such as request content type</li>
+ * </ul>
  *
  * @since 2011. 3. 12.
  */
