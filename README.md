@@ -8,40 +8,45 @@
 
 [![asciicast](https://asciinema.org/a/325210.png)](https://asciinema.org/a/325210)
 
-Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM. It emphasizes an intuitive POJO‑centric programming model while providing powerful infrastructure features such as IoC, DI, AOP, REST support, and embedded web servers.
+Aspectran is a lightweight, high‑performance framework for building both simple shell applications and
+large enterprise web services on the JVM. It emphasizes an intuitive POJO‑centric programming model while
+providing powerful infrastructure features such as IoC, DI, AOP, REST support, and embedded web servers.
 
 ## Features
 
-| Feature | Description |
-| --- | --- |
-| **POJO Programming** | Developers interact with the framework using plain Java objects; no need to understand complex internal APIs. |
-| **Inversion of Control (IoC)** | The framework creates and manages object lifecycles, freeing developers to focus on business logic. |
-| **Dependency Injection (DI)** | Modules are wired at runtime for low coupling and high reusability. |
-| **Aspect‑Oriented Programming (AOP)** | Supports cross‑cutting concerns like transactions, logging, security, and exception handling. |
-| **RESTful Web Services** | Designed from the ground up for REST APIs, optimized for microservice architectures. |
-| **Fast Development & Startup** | Intuitive model leads to rapid prototyping and faster runtime compared to many other frameworks. |
-| **Production‑grade Applications** | Runs on multiple OSes; can be deployed as a standalone JVM app, servlet in Tomcat/WildFly, or embedded in another Java application. |
+- **POJO Programming**  
+  Developers interact with the framework using plain Java objects; no need to understand complex internal APIs.
+- **Inversion of Control (IoC)**  
+  The framework creates and manages object lifecycles, freeing developers to focus on business logic.
+- **Dependency Injection (DI)**  
+  Modules are wired at runtime for low coupling and high reusability.
+- **Aspect‑Oriented Programming (AOP)**  
+  Supports cross‑cutting concerns like transactions, logging, security, and exception handling.
+- **RESTful Web Services**  
+  Designed from the ground up for REST APIs, optimized for microservice architectures.
+- **Fast Development & Startup**  
+  Intuitive model leads to rapid prototyping and faster runtime compared to many other frameworks.
+- **Production‑grade Applications**  
+  Runs on multiple OSes; can be deployed as a standalone JVM app, servlet in Tomcat/WildFly, or embedded in another Java application.
 
 ## Packages
 
-| Package | Purpose |
-| --- | --- |
-| **`com.aspectran.core`** | Core framework functionality. |
-| **`com.aspectran.daemon`** | Run Aspectran as a background process (Unix/Windows service). |
-| **`com.aspectran.embed`** | Embed Aspectran into non‑Aspectran Java apps. |
-| **`com.aspectran.logging`** | Logback integration. |
-| **`com.aspectran.shell`** | Build simple interactive shell (CLI) apps. |
-| **`com.aspectran.shell-jline`** | Feature‑rich shell using JLine 3. |
-| **`com.aspectran.utils`** | Misc utilities shared across modules. |
-| **`com.aspectran.web`** | Jakarta EE compatible web support. |
-| **`com.aspectran.rss-lettuce`** | Redis session store via Lettuce client. |
-| **`com.aspectran.jetty`** | Embedded Jetty servlet container. |
-| **`com.aspectran.undertow`** | Embedded Undertow servlet container. |
-| **`com.aspectran.jpa`** | Jakarta Persistence API (JPA 3.2) integration. |
-| **`com.aspectran.mybatis`** | MyBatis ORM support. |
-| **`com.aspectran.freemarker`** | Freemarker templating engine. |
-| **`com.aspectran.pebble`** | Pebble templating engine. |
-| **`com.aspectran.thymeleaf`** | Thymeleaf templating engine. |
+- **`com.aspectran.core`** - Core framework functionality.
+- **`com.aspectran.daemon`** - Run Aspectran as a background process (Unix/Windows service).
+- **`com.aspectran.embed`** - Embed Aspectran into non‑Aspectran-based Java apps.
+- **`com.aspectran.logging`** - Logback integration.
+- **`com.aspectran.shell`** - Build simple interactive shell (CLI) apps.
+- **`com.aspectran.shell-jline`** - Feature‑rich shell using JLine 3.
+- **`com.aspectran.utils`** - Misc utilities shared across modules.
+- **`com.aspectran.web`** - Jakarta EE compatible web support.
+- **`com.aspectran.rss-lettuce`** - Redis session store via Lettuce client.
+- **`com.aspectran.jetty`** - Embedded Jetty servlet container.
+- **`com.aspectran.undertow`** - Embedded Undertow servlet container.
+- **`com.aspectran.jpa`** - Jakarta Persistence API (JPA 3.2) integration.
+- **`com.aspectran.mybatis`** - MyBatis ORM support.
+- **`com.aspectran.freemarker`** - Freemarker templating engine.
+- **`com.aspectran.pebble`** - Pebble templating engine.
+- **`com.aspectran.thymeleaf`** - Thymeleaf templating engine.
 
 _**`with-logback` POM module** – Packages all Logback dependencies and is primarily used for building and testing other modules._
 
