@@ -25,7 +25,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * The set of Content is called Contents or ContentList.
+ * A container for a structured collection of {@link ActionList} objects, representing a
+ * major section of a translet's executable content (e.g., a {@code <contents>}
+ * or {@code <response>} block).
+ *
+ * <p>This class allows for the hierarchical organization of the process flow, where
+ * different groups of actions can be defined and executed as part of a larger
+ * transaction. This structure is key to how Aspectran models request processing
+ * in a way that can be represented like an XML document.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
@@ -39,6 +46,10 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
     @Nullable
     private String name;
 
+    /**
+     * Instantiates a new ContentList.
+     * @param explicit whether this content list was explicitly defined
+     */
     public ContentList(boolean explicit) {
         super(3);
         this.explicit = explicit;
@@ -50,19 +61,36 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         this.name = contentList.getName();
     }
 
+    /**
+     * Returns whether this content list was explicitly defined in the configuration.
+     * @return true if the content list was explicit, false otherwise
+     */
     public boolean isExplicit() {
         return explicit;
     }
 
+    /**
+     * Returns the name of this content list.
+     * @return the name of the content list
+     */
     @Nullable
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this content list.
+     * @param name the name of the content list
+     */
     public void setName(@Nullable String name) {
         this.name = name;
     }
 
+    /**
+     * Retrieves an {@link ActionList} by its name.
+     * @param name the name of the action list to find
+     * @return the corresponding {@link ActionList}, or {@code null} if not found
+     */
     public ActionList getActionList(String name) {
         for (ActionList actionList : this) {
             if (Objects.equals(name, actionList.getName())) {
@@ -72,6 +100,10 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         return null;
     }
 
+    /**
+     * Adds an {@link ActionList} to this content list.
+     * @param actionList the action list to add
+     */
     public void addActionList(ActionList actionList) {
         if (actionList != null) {
             add(actionList);
@@ -91,6 +123,11 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         return tsb.toString();
     }
 
+    /**
+     * A factory method to create a new instance of ContentList.
+     * @param name the name of the content list
+     * @return the new ContentList instance
+     */
     @NonNull
     public static ContentList newInstance(String name) {
         ContentList contentList = new ContentList(true);

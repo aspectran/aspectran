@@ -26,8 +26,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
- * {@code AnnotatedMethodAction} that invokes a method of the bean instance
- * specified by the annotation.
+ * An action that executes a method on a bean, where the target method is identified
+ * by specific Aspectran annotations.
+ *
+ * <p>This allows for a convention-over-configuration approach, where actions can be
+ * discovered and executed based on annotations rather than explicit XML rules.</p>
  *
  * <p>Created: 2016. 2. 9.</p>
  *
@@ -38,13 +41,19 @@ public class AnnotatedAction implements Executable {
     private final AnnotatedActionRule annotatedActionRule;
 
     /**
-     * Instantiates a new AnnotatedMethodAction.
-     * @param annotatedActionRule the annotated method action rule
+     * Instantiates a new AnnotatedAction.
+     * @param annotatedActionRule the rule that defines this annotated action
      */
     public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
         this.annotatedActionRule = annotatedActionRule;
     }
 
+    /**
+     * Executes the annotated action method.
+     * @param activity the current activity
+     * @return the result of the method invocation
+     * @throws Exception if an error occurs during method invocation
+     */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         try {
@@ -62,6 +71,12 @@ public class AnnotatedAction implements Executable {
         }
     }
 
+    /**
+     * Resolves the bean instance on which the annotated method will be invoked.
+     * @param activity the current activity
+     * @return the resolved bean instance
+     * @throws Exception if the bean cannot be resolved
+     */
     protected Object resolveBean(@NonNull Activity activity) throws Exception {
         Object bean = null;
         if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
@@ -71,8 +86,8 @@ public class AnnotatedAction implements Executable {
     }
 
     /**
-     * Returns the annotated bean method action rule.
-     * @return the annotated bean method action rule
+     * Returns the rule that defines this annotated action.
+     * @return the annotated action rule
      */
     public AnnotatedActionRule getAnnotatedActionRule() {
         return annotatedActionRule;

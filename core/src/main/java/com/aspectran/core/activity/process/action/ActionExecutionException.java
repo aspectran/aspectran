@@ -20,20 +20,20 @@ import com.aspectran.core.activity.process.ProcessException;
 import java.io.Serial;
 
 /**
- * Exception thrown when an error occurs during the execution of an action in the process.
+ * Thrown when an error occurs during the execution of an {@link Executable} action.
+ *
+ * <p>This exception wraps the underlying cause of the failure, providing context
+ * about which action failed.</p>
  */
 public class ActionExecutionException extends ProcessException {
 
     @Serial
-    private static final long serialVersionUID = 3568162614053964319L;
+    private static final long serialVersionUID = -8738207032715935543L;
 
-    /**
-     * Stores the executable action that caused this exception.
-     */
     private Executable action;
 
     /**
-     * Constructs a new ActionExecutionException with the specified detail message.
+     * Creates a new ActionExecutionException with a specified detail message.
      * @param msg the detail message
      */
     public ActionExecutionException(String msg) {
@@ -41,30 +41,22 @@ public class ActionExecutionException extends ProcessException {
     }
 
     /**
-     * Constructs a new ActionExecutionException with the specified detail message and cause.
-     * @param msg the detail message
-     * @param cause the cause (which is saved for later retrieval by the
-     *         {@link Throwable#getCause()} method)
-     */
-    public ActionExecutionException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
-    /**
-     * Constructs a new ActionExecutionException with the specified executable action and cause.
-     * @param action the executable action that caused the exception
-     * @param cause the cause (which is saved for later retrieval by the
-     *         {@link Throwable#getCause()} method)
+     * Creates a new ActionExecutionException with a specified detail message and a nested cause.
+     * @param action the action that failed
+     * @param cause the nested exception
      */
     public ActionExecutionException(Executable action, Throwable cause) {
-        super("Failed to execute action " + action + "; Cause: " +
-                (cause.getMessage() != null ? cause.getMessage() : cause.toString()),
-                cause);
+        super("Failed to execute action " + action + "; cause: " + cause, cause);
         this.action = action;
     }
 
+    /**
+     * Returns the action that caused this exception.
+     * @return the failed action
+     */
     public Executable getAction() {
         return action;
     }
 
 }
+

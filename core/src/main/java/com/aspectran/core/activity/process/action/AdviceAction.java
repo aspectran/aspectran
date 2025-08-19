@@ -22,7 +22,13 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * Action that calls a method of an advice bean.
+ * A specialized {@link InvokeAction} for executing a method on an advice bean as part of an
+ * AOP aspect.
+ *
+ * <p>This action is used internally by the framework to run advice logic (e.g., @Before,
+ * @After) defined in an {@link com.aspectran.core.context.rule.AspectRule}.
+ * It overrides the bean resolution logic to first look for the bean within the
+ * current AOP advice context.</p>
  *
  * <p>Created: 2019. 07. 18</p>
  */
@@ -32,8 +38,8 @@ public class AdviceAction extends InvokeAction {
 
     /**
      * Instantiates a new AdviceAction.
-     * @param adviceRule the advice rule
-     * @param invokeActionRule the invoke action rule
+     * @param adviceRule the advice rule that this action executes
+     * @param invokeActionRule the invoke action rule for the method call
      */
     public AdviceAction(AdviceRule adviceRule, InvokeActionRule invokeActionRule) {
         super(invokeActionRule);
@@ -41,13 +47,21 @@ public class AdviceAction extends InvokeAction {
     }
 
     /**
-     * Gets the advice rule.
+     * Returns the advice rule associated with this action.
      * @return the advice rule
      */
     public AdviceRule getAdviceRule() {
         return adviceRule;
     }
 
+    /**
+     * Resolves the target bean instance. This implementation first attempts to retrieve
+     * the bean from the AOP advice context. If not found, it falls back to the
+     * default bean resolution mechanism of the superclass.
+     * @param activity the current activity
+     * @return the resolved advice bean instance
+     * @throws Exception if the bean cannot be found
+     */
     @Override
     protected Object resolveBean(@NonNull Activity activity) throws Exception {
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {

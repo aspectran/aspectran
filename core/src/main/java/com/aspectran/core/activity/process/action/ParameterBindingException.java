@@ -23,8 +23,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * This exception will be thrown when failing to bind the request parameter
- * to the action method parameter.
+ * An exception that is thrown when a parameter binding fails.
+ *
+ * <p>This exception is typically thrown when there is an error during the process of
+ * binding request parameters or other data sources to the arguments of a method
+ * being invoked by an action.</p>
  *
  * <p>Created: 2009. 02. 26</p>
  */
@@ -35,6 +38,11 @@ public class ParameterBindingException extends ProcessException {
 
     private final ParameterBindingRule parameterBindingRule;
 
+    /**
+     * Creates a new ParameterBindingException.
+     * @param parameterBindingRule the parameter binding rule that caused the exception
+     * @param cause the root cause
+     */
     public ParameterBindingException(
             @NonNull ParameterBindingRule parameterBindingRule, @NonNull Throwable cause) {
         super("Failed to bind request parameter to action method parameter " +
@@ -44,6 +52,10 @@ public class ParameterBindingException extends ProcessException {
         this.parameterBindingRule = parameterBindingRule;
     }
 
+    /**
+     * Returns the parameter binding rule that caused this exception.
+     * @return the parameter binding rule
+     */
     @NonNull
     public ParameterBindingRule getParameterBindingRule() {
         return parameterBindingRule;

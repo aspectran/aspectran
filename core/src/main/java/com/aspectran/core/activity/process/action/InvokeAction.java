@@ -34,18 +34,12 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * {@code InvokeAction} is a framework-level action that invokes a specified method on a configured bean instance.
- * <p>
- * This action is used to execute methods on managed beans within the Aspectran application context. It supports both
- * method invocation via a method name and a method reference, and allows dynamic argument resolution using item rules.
- * The action can be configured to require a translet context for method invocation, enabling integration with view rendering
- * and data binding operations.
- * </p>
- * <p>
- * The action supports bean resolution through class name or bean ID, and provides mechanisms to set property values
- * before method execution using property item rules. It also handles argument mapping through argument item rules,
- * ensuring that input data is properly converted and passed to the target method.
- * </p>
+ * An action that invokes a specified method on a managed bean.
+ *
+ * <p>This is a core action used to execute business logic by calling methods on
+ * beans defined in the application context. It supports dynamic argument resolution
+ * from the current {@link Translet} and can set properties on the bean before
+ * invocation.</p>
  */
 public class InvokeAction implements Executable {
 
@@ -56,9 +50,8 @@ public class InvokeAction implements Executable {
     private volatile Boolean requiresTranslet;
 
     /**
-     * Constructs a new InvokeAction instance with the specified action rule.
-     * @param invokeActionRule the rule defining how to invoke the method on the bean
-     * @throws IllegalArgumentException if the rule is null
+     * Instantiates a new InvokeAction.
+     * @param invokeActionRule the rule that defines the bean and method to invoke
      */
     public InvokeAction(InvokeActionRule invokeActionRule) {
         this.invokeActionRule = invokeActionRule;
@@ -71,10 +64,11 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Resolves the target bean instance using the specified bean class or bean ID.
-     * @param activity the current activity instance
+     * Resolves the target bean instance from the activity context using the bean ID
+     * or class specified in the rule.
+     * @param activity the current activity
      * @return the resolved bean instance
-     * @throws Exception if bean resolution fails
+     * @throws Exception if the bean cannot be found
      */
     protected Object resolveBean(@NonNull Activity activity) throws Exception {
         Object bean = null;
@@ -91,9 +85,10 @@ public class InvokeAction implements Executable {
 
     /**
      * Executes the method invocation on the specified bean instance.
-     * @param activity the current activity instance containing the request and session information
-     * @return the result of the method execution, or {@code Void.TYPE} if the method is void
-     * @throws Exception if an error occurs during method execution
+     * @param activity the current activity
+     * @param bean the target bean instance
+     * @return the result of the method execution
+     * @throws Exception if an error occurs during method invocation
      */
     private Object execute(Activity activity, Object bean) throws Exception {
         try {
@@ -151,8 +146,8 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Returns the action rule that defines the method invocation configuration.
-     * @return the action rule
+     * Returns the rule that defines this invoke action.
+     * @return the invoke action rule
      */
     public InvokeActionRule getInvokeActionRule() {
         return invokeActionRule;
@@ -168,18 +163,11 @@ public class InvokeAction implements Executable {
         return invokeActionRule.isHidden();
     }
 
-    /**
-     * Returns the type of this action, which is always {@link ActionType#INCLUDE}.
-     */
     @Override
     public ActionType getActionType() {
         return ActionType.INVOKE;
     }
 
-    /**
-     * Returns a string representation of this action, including the rule configuration.
-     * This is useful for debugging and logging purposes.
-     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

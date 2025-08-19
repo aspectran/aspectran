@@ -36,7 +36,9 @@ import java.io.Serial;
 import java.util.ArrayList;
 
 /**
- * The set of actions is called a Content or ActionList.
+ * An ordered collection of {@link Executable} actions that are executed sequentially.
+ * This class represents a single, flat sequence of operations within a larger,
+ * potentially nested {@link ContentList}.
  *
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
@@ -49,19 +51,35 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
     private String name;
 
+    /**
+     * Instantiates a new ActionList.
+     * @param explicit whether this action list was explicitly defined
+     */
     public ActionList(boolean explicit) {
         super(5);
         this.explicit = explicit;
     }
 
+    /**
+     * Returns whether this action list was explicitly defined in the configuration.
+     * @return true if the action list was explicit, false otherwise
+     */
     public boolean isExplicit() {
         return explicit;
     }
 
+    /**
+     * Returns the name of this action list.
+     * @return the name of the action list
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this action list.
+     * @param name the name of the action list
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -121,6 +139,11 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
         return tsb.toString();
     }
 
+    /**
+     * A factory method to create a new instance of ActionList.
+     * @param name the name of the action list
+     * @return the new ActionList instance
+     */
     @NonNull
     public static ActionList newInstance(String name) {
         ActionList actionList = new ActionList(true);

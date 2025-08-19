@@ -20,7 +20,11 @@ import com.aspectran.core.activity.ActivityException;
 import java.io.Serial;
 
 /**
- * This exception will be thrown if the translet processing fails.
+ * A generic base exception for errors that occur during the processing phase of an
+ * {@link com.aspectran.core.activity.Activity}.
+ *
+ * <p>This exception is thrown when a problem occurs while executing the defined
+ * process flow, such as running actions from an {@link ActionList}.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -30,7 +34,7 @@ public class ProcessException extends ActivityException {
     private static final long serialVersionUID = 7290974002627109441L;
 
     /**
-     * Constructor to create exception with a message.
+     * Creates a new ProcessException with a specified detail message.
      * @param msg a message to associate with the exception
      */
     public ProcessException(String msg) {
@@ -38,9 +42,9 @@ public class ProcessException extends ActivityException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Creates a new ProcessException with a specified detail message and a nested cause.
+     * @param msg the detail message
+     * @param cause the nested exception
      */
     public ProcessException(String msg, Throwable cause) {
         super(msg, cause);

@@ -22,8 +22,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * This exception will be thrown when failing to bind the request parameter
- * to the action method parameter.
+ * Exception thrown when a method argument is not of the expected type or cannot be
+ * converted to the expected type.
+ *
+ * <p>This provides more specific error information than a general
+ * {@link ParameterBindingException} when a type conversion fails.</p>
  *
  * <p>Created: 2009. 02. 26</p>
  */
@@ -34,6 +37,12 @@ public class MethodArgumentTypeMismatchException extends ProcessException {
 
     private final Throwable cause;
 
+    /**
+     * Creates a new MethodArgumentTypeMismatchException.
+     * @param valueType the actual type of the value
+     * @param requiredType the required type of the method argument
+     * @param cause the root cause of the type mismatch
+     */
     public MethodArgumentTypeMismatchException(
             @NonNull Class<?> valueType, @NonNull Class<?> requiredType, Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +

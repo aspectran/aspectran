@@ -29,15 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@code HeaderAction} is an executable action that sets HTTP response headers based on configured
- * header rules. It evaluates a rule map that maps header names to values, resolves those values
- * using the activity's item evaluator, and then applies them to the response using the response
- * adapter. This action is typically used in web applications to set headers such as Content-Type,
- * Cache-Control, or X-Frame-Options.
+ * An action that sets one or more headers on the HTTP response.
  *
- * <p>For example, a rule like {@code "Content-Type: application/json"} would result in the response
- * header being set to {@code "application/json"}. Multiple values per header are supported via
- * multi-value maps.</p>
+ * <p>This action is used in web applications to dynamically add or modify response
+ * headers, such as {@code Content-Type} or {@code Cache-Control}, based on the
+ * current context.</p>
  *
  * <p>Created: 2016. 08. 23.</p>
  *
@@ -49,24 +45,17 @@ public class HeaderAction implements Executable {
 
     /**
      * Instantiates a new HeaderAction.
-     * @param headerActionRule the header action rule
+     * @param headerActionRule the rule that defines the headers to be set
      */
     public HeaderAction(HeaderActionRule headerActionRule) {
         this.headerActionRule = headerActionRule;
     }
 
     /**
-     * Executes the header action by evaluating the header rules and setting response headers.
-     * <p>
-     * This method retrieves the header item rule map from the action rule, evaluates it using the
-     * activity's item evaluator to produce a map of header names to values, and then sets each
-     * header in the response using the response adapter. If no headers are defined or the evaluation
-     * results in an empty map, this method returns {@code Void.TYPE} and does not modify the response.
-     * </p>
-     * @param activity the current activity context containing the request and response objects
-     * @return the evaluated header map, or {@code Void.TYPE} if no headers are defined
-     * @throws Exception if an error occurs during evaluation or header setting, wrapped in an
-     *      {@link ActionExecutionException}
+     * Executes the action, evaluating the header values and setting them on the response.
+     * @param activity the current activity, which provides the response adapter
+     * @return the evaluated header map
+     * @throws Exception if an error occurs during value evaluation or header setting
      */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
@@ -93,6 +82,10 @@ public class HeaderAction implements Executable {
         }
     }
 
+    /**
+     * Returns the rule that defines this header action.
+     * @return the header action rule
+     */
     public HeaderActionRule getHeaderActionRule() {
         return headerActionRule;
     }
@@ -112,10 +105,6 @@ public class HeaderAction implements Executable {
         return ActionType.HEADER;
     }
 
-    /**
-     * Returns a string representation of this action, including the rule configuration.
-     * This is useful for debugging and logging purposes.
-     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

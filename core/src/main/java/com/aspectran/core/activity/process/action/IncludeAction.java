@@ -28,13 +28,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Map;
 
 /**
- * {@code IncludeAction} is responsible for executing another activity by including
- * its execution flow within the current activity context.
- * <p>It evaluates attributes and parameters from the current activity, passes them
- * to the included activity, and executes the target activity using the specified
- * translet name and method type.</p>
- * <p>After execution, the result of the included activity is returned as a
- * {@link ProcessResult} or {@code Void}, depending on whether a result was produced.</p>
+ * An action that executes another translet and includes its result.
+ *
+ * <p>This action allows for modularization of translets by enabling one translet
+ * to call another and incorporate its {@link ProcessResult}. It passes parameters
+ * and attributes to the target translet, executes it, and returns the result.</p>
  *
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
@@ -43,29 +41,20 @@ public class IncludeAction implements Executable {
     private final IncludeActionRule includeActionRule;
 
     /**
-     * Constructs an {@code IncludeAction} with the specified rule configuration.
-     * @param includeActionRule the rule that defines how to include another activity
-     *      including translet name, method type, attribute rules, and parameter rules
+     * Instantiates a new IncludeAction.
+     * @param includeActionRule the rule that defines the target translet to include
      */
     public IncludeAction(IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 
     /**
-     * Executes the included activity by creating a new {@link InstantActivity} instance
-     * with the current activity's context.
-     * <p>This method evaluates attribute and parameter rules from the included action rule
-     * to extract values from the current activity context.</p>
-     * <p>It sets the attribute and parameter maps on the included activity instance,
-     * prepares it using the specified translet name and method type, and then performs the execution.</p>
-     * <p>If the included activity produces a result, it is returned as a {@link ProcessResult};
-     * otherwise, {@code Void.TYPE} is returned.</p>
-     * <p>Any exception during execution is wrapped in an {@link ActionExecutionException} and
-     * rethrown to maintain error propagation.</p>
-     * @param activity the current activity that provides the context for attribute and parameter evaluation
-     * @return the result of the included activity as a {@link ProcessResult}, or {@code Void.TYPE}
+     * Executes the include action by creating and running an {@link InstantActivity}
+     * for the target translet.
+     * @param activity the current activity providing the context
+     * @return the {@link ProcessResult} of the included activity, or {@link Void#TYPE}
      *      if no result was produced
-     * @throws Exception if an error occurs during execution of the included activity
+     * @throws Exception if an error occurs during the execution of the included activity
      */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
@@ -91,8 +80,8 @@ public class IncludeAction implements Executable {
     }
 
     /**
-     * Retrieves the rule configuration that defines how to include another activity.
-     * @return the {@link IncludeActionRule} that defines the inclusion behavior
+     * Returns the rule that defines this include action.
+     * @return the include action rule
      */
     public IncludeActionRule getIncludeActionRule() {
         return includeActionRule;
@@ -108,18 +97,11 @@ public class IncludeAction implements Executable {
         return includeActionRule.isHidden();
     }
 
-    /**
-     * Returns the type of this action, which is always {@link ActionType#INCLUDE}.
-     */
     @Override
     public ActionType getActionType() {
         return ActionType.INCLUDE;
     }
 
-    /**
-     * Returns a string representation of this action, including the rule configuration.
-     * This is useful for debugging and logging purposes.
-     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
