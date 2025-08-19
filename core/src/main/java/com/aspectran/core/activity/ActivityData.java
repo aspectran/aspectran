@@ -33,11 +33,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A map of data for saving activity results.
- * It is often used as a model for providing data used in views.
+ * Provides a unified, map-like facade for accessing all data related to an {@link Activity}.
+ * This class consolidates data from multiple sources within the activity's context—such as
+ * request parameters, request attributes, session attributes, and action results—into a
+ * single, convenient view.
  *
- * <p>This class is generally not thread-safe.
- * It is primarily designed for use in a single thread only.</p>
+ * <p>It employs a lazy-loading strategy: when a key is accessed, if it's not already
+ * present in the map, {@code ActivityData} attempts to resolve it from the underlying
+ * {@code Activity}'s data sources in a predefined order. This makes it an efficient
+ * data container, especially for use as a data model for views (e.g., in a web MVC context),
+ * where templates can seamlessly access any piece of data from the current request lifecycle
+ * without needing to know its specific origin.</p>
+ *
+ * <p>This class is primarily designed for use in a single thread only and is not thread-safe.</p>
  */
 public class ActivityData extends HashMap<String, Object> {
 

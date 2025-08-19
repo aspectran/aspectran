@@ -37,8 +37,23 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Translet provides the parsed request data to the user and
- * processes the user's response command.
+ * Represents the central context for a single transaction, encapsulating all data and
+ * control logic related to a request lifecycle. The Translet serves as the primary API
+ * for actions and user code to interact with the current request's state.
+ *
+ * <p>This interface provides a stateful, request-scoped view of the transaction,
+ * acting as both a data container and a control interface:
+ * <ul>
+ *   <li><b>Data Container:</b> It aggregates all request-related information, including
+ *       request parameters, attributes, file parameters, and the results of executed
+ *       actions (via {@link com.aspectran.core.activity.process.result.ProcessResult}).</li>
+ *   <li><b>Control Interface:</b> It offers methods to direct the response flow, such as
+ *       {@link #redirect(String)}, {@link #forward(String)}, and {@link #dispatch(String)},
+ *       allowing actions to command the framework to alter the execution path.</li>
+ * </ul>
+ * The {@link Activity} engine creates and manages the Translet instance, which is then
+ * passed to and manipulated by each {@link com.aspectran.core.activity.process.action.Executable}
+ * action in the processing chain.</p>
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */

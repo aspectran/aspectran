@@ -40,7 +40,26 @@ import com.aspectran.utils.StringifyContext;
 import java.util.List;
 
 /**
- * An activity is a set of actions that an Aspectran service performs to process a request.
+ * Represents the central execution object for a single request-response lifecycle.
+ * The Activity is the runtime engine that manages the entire process of handling a request,
+ * from creation to completion.
+ *
+ * <p>As the primary orchestrator, an Activity instance holds all the contextual information
+ * required for processing. This includes access to the core {@link ActivityContext},
+ * environment-specific adapters (request, response, session), and the bean registry.
+ * It is responsible for:
+ * <ul>
+ *   <li>Interpreting the {@code <translet>} rule that matches the incoming request.</li>
+ *   <li>Creating and managing the {@link Translet} data context.</li>
+ *   <li>Executing the defined lifecycle, which includes AOP advice (aspects) and a
+ *       sequence of {@link com.aspectran.core.activity.process.action.Executable} actions.</li>
+ *   <li>Maintaining the state of the ongoing process, such as handling exceptions and
+ *       managing response flows (e.g., forward, redirect).</li>
+ *   <li>Providing services like bean retrieval and expression evaluation to all
+ *       framework components involved in the request.</li>
+ * </ul>
+ * This interface serves as the main entry point for the framework's internal components
+ * to interact with the current request processing environment.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
