@@ -18,11 +18,22 @@ package com.aspectran.core.activity.process.result;
 import java.io.Serial;
 import java.util.LinkedHashMap;
 
+/**
+ * A specialized {@link java.util.LinkedHashMap} used to hold action results, particularly
+ * when an action produces a nested or map-like structure.
+ *
+ * <p>This class serves as a standard map implementation for storing key-value results
+ * within an {@link ActionResult}, allowing for complex, structured data to be returned
+ * from a single action execution.</p>
+ */
 public class ResultValueMap extends LinkedHashMap<String, Object> {
 
     @Serial
     private static final long serialVersionUID = 1904311925549971136L;
 
+    /**
+     * Constructs a new ResultValueMap.
+     */
     protected ResultValueMap() {
         super(1 << 3);
     }

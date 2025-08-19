@@ -20,7 +20,12 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 /**
- * Holds the result of an action's execution.
+ * Encapsulates the result of executing a single {@link com.aspectran.core.activity.process.action.Executable}
+ * action. This class is the most granular unit in the structured result hierarchy.
+ *
+ * <p>It stores the action's unique identifier ({@code actionId}) and the value returned
+ * by its execution. A collection of these objects is held by a {@link ContentResult} to
+ * represent the outcomes of a group of actions.</p>
  *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
@@ -31,15 +36,15 @@ public class ActionResult {
     private Object resultValue;
 
     /**
-     * Gets the action id.
-     * @return the action id
+     * Returns the unique identifier of the action.
+     * @return the action ID
      */
     public String getActionId() {
         return actionId;
     }
 
     /**
-     * Gets the result value of the action.
+     * Returns the value produced by the action's execution.
      * @return the result value of the action
      */
     public Object getResultValue() {
@@ -47,9 +52,10 @@ public class ActionResult {
     }
 
     /**
-     * Sets the result value of the action.
-     * @param actionId the new action id
-     * @param resultValue the new result value of the action
+     * Sets the result value for the action. If the provided {@code actionId} contains
+     * an ID separator, it will be parsed into a nested {@link ResultValueMap}.
+     * @param actionId the unique identifier for the action
+     * @param resultValue the value returned by the action
      */
     public void setResultValue(String actionId, Object resultValue) {
         if (actionId == null || !actionId.contains(ActivityContext.ID_SEPARATOR)) {

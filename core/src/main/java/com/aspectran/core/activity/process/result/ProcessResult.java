@@ -26,7 +26,14 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * The Class ProcessResult.
+ * Represents the top-level container for all execution results within a single
+ * {@link com.aspectran.core.activity.Activity} lifecycle. It provides a structured
+ * view of the activity's outcome by holding a collection of {@link ContentResult} objects.
+ *
+ * <p>Each {@code ContentResult} corresponds to a logical grouping of actions (e.g., a
+ * {@code <contents>} block), allowing for an organized, hierarchical representation of
+ * what occurred during the request processing. This class serves as the final, aggregated
+ * result of a translet execution.</p>
  *
  * <p>Created: 2008. 06. 09 PM 4:13:40</p>
  */
@@ -39,38 +46,67 @@ public class ProcessResult extends ArrayList<ContentResult> {
 
     private boolean explicit;
 
+    /**
+     * Instantiates a new ProcessResult with a default initial capacity.
+     */
     public ProcessResult() {
         this(5);
     }
 
+    /**
+     * Instantiates a new ProcessResult with the specified initial capacity.
+     * @param initialCapacity the initial capacity of the list
+     */
     public ProcessResult(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Returns the name of this process result.
+     * @return the name of the process result
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this process result.
+     * @param name the name of the process result
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns whether this process result was explicitly defined in the configuration.
+     * @return true if the process result was explicit, false otherwise
+     */
     public boolean isExplicit() {
         return explicit;
     }
 
+    /**
+     * Sets whether this process result was explicitly defined.
+     * @param explicit true if the process result was explicit, false otherwise
+     */
     public void setExplicit(boolean explicit) {
         this.explicit = explicit;
     }
 
     /**
-     * Adds the content result.
-     * @param contentResult the content result
+     * Adds a {@link ContentResult} to this process result. This method is intended
+     * for internal use by the framework.
+     * @param contentResult the content result to add
      */
     protected void addContentResult(ContentResult contentResult) {
         add(contentResult);
     }
 
+    /**
+     * Retrieves a {@link ContentResult} by its name.
+     * @param name the name of the content group to find
+     * @return the corresponding {@link ContentResult}, or {@code null} if not found
+     */
     public ContentResult getContentResult(String name) {
         for (ContentResult contentResult : this) {
             if (Objects.equals(name, contentResult.getName())) {
@@ -80,6 +116,12 @@ public class ProcessResult extends ArrayList<ContentResult> {
         return null;
     }
 
+    /**
+     * Retrieves a {@link ContentResult} by its name and explicit flag.
+     * @param name the name of the content group to find
+     * @param explicit the explicit flag of the content group
+     * @return the corresponding {@link ContentResult}, or {@code null} if not found
+     */
     public ContentResult getContentResult(String name, boolean explicit) {
         for (ContentResult contentResult : this) {
             if (Objects.equals(name, contentResult.getName()) && contentResult.isExplicit() == explicit) {
@@ -89,14 +131,19 @@ public class ProcessResult extends ArrayList<ContentResult> {
         return null;
     }
 
+    /**
+     * Returns the last {@link ContentResult} in this process result.
+     * @return the last added {@link ContentResult}, or {@code null} if this result is empty
+     */
     public ContentResult lastContentResult() {
         return (isEmpty() ? null : get(size() - 1));
     }
 
     /**
-     * Returns the result of the action as an {@code ActionResult}.
-     * @param actionId the action id
-     * @return the result of the action
+     * Retrieves an {@link ActionResult} by its action ID, searching through all contained
+     * content results.
+     * @param actionId the ID of the action to find
+     * @return the corresponding {@link ActionResult}, or {@code null} if not found
      */
     public ActionResult getActionResult(String actionId) {
         if (actionId == null) {
@@ -113,9 +160,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
     }
 
     /**
-     * Returns the result value of the action as an {@code Object}.
-     * @param actionId the action id
-     * @return the result value of the action
+     * Retrieves the value of an action's result by its ID. This method can also
+     * access nested values if the action ID contains separators.
+     * @param actionId the ID of the action whose result value is to be returned
+     * @return the result value, or {@code null} if not found
      */
     public Object getResultValue(String actionId) {
         if (actionId == null) {
@@ -145,6 +193,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
         }
     }
 
+    /**
+     * Returns a descriptive string representation of this process result, intended for debugging.
+     * @return a string describing the contents of this result
+     */
     public String describe() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);

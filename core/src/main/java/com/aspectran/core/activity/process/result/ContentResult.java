@@ -27,7 +27,14 @@ import java.util.ListIterator;
 import java.util.Set;
 
 /**
- * The Class ContentResult.
+ * Represents a container for the results of a logically grouped set of actions.
+ * Typically, an instance of this class corresponds to a {@code <contents>}
+ * block within a translet rule.
+ *
+ * <p>It holds a collection of {@link ActionResult} objects, each representing the
+ * outcome of a single action. This class provides a mid-level grouping in the
+ * result hierarchy ({@link ProcessResult} -> {@code ContentResult} -> {@link ActionResult}),
+ * enabling structured access to the results of a specific action group.</p>
  *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
@@ -42,10 +49,19 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     private boolean explicit;
 
+    /**
+     * Instantiates a new ContentResult with a default initial capacity.
+     * @param parent the parent {@link ProcessResult} that will contain this result
+     */
     public ContentResult(ProcessResult parent) {
         this(parent, 5);
     }
 
+    /**
+     * Instantiates a new ContentResult with the specified initial capacity.
+     * @param parent the parent {@link ProcessResult} that will contain this result
+     * @param initialCapacity the initial capacity of the list
+     */
     public ContentResult(ProcessResult parent, int initialCapacity) {
         super(initialCapacity);
         this.parent = parent;
@@ -56,26 +72,52 @@ public class ContentResult extends ArrayList<ActionResult> {
         }
     }
 
+    /**
+     * Returns the parent {@link ProcessResult} that contains this result.
+     * @return the parent process result
+     */
     public ProcessResult getParent() {
         return parent;
     }
 
+    /**
+     * Returns the name of this content group.
+     * @return the name of the content group
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this content group.
+     * @param name the name of the content group
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns whether this content group was explicitly defined in the configuration.
+     * @return true if the content group was explicit, false otherwise
+     */
     public boolean isExplicit() {
         return explicit;
     }
 
+    /**
+     * Sets whether this content group was explicitly defined.
+     * @param explicit true if the content group was explicit, false otherwise
+     */
     public void setExplicit(boolean explicit) {
         this.explicit = explicit;
     }
 
+    /**
+     * Retrieves an {@link ActionResult} by its action ID.
+     * It searches backwards from the end of the list.
+     * @param actionId the ID of the action to find
+     * @return the corresponding {@link ActionResult}, or {@code null} if not found
+     */
     public ActionResult getActionResult(String actionId) {
         if (actionId == null) {
             return null;
@@ -90,8 +132,9 @@ public class ContentResult extends ArrayList<ActionResult> {
     }
 
     /**
-     * Adds the action result.
-     * @param actionResult the action result
+     * Adds an {@link ActionResult} to this content group. If an action result with the
+     * same ID already exists and both are map-like, their values are merged.
+     * @param actionResult the action result to add
      */
     public void addActionResult(@NonNull ActionResult actionResult) {
         ActionResult existing = getActionResult(actionResult.getActionId());
@@ -104,6 +147,11 @@ public class ContentResult extends ArrayList<ActionResult> {
         }
     }
 
+    /**
+     * A convenience method to create and add an {@link ActionResult}.
+     * @param action the executed action
+     * @param resultValue the value returned by the action
+     */
     public void addActionResult(Executable action, Object resultValue) {
         if (action == null) {
             throw new IllegalArgumentException("action must not be null");
@@ -113,6 +161,12 @@ public class ContentResult extends ArrayList<ActionResult> {
         addActionResult(actionResult);
     }
 
+    /**
+     * Adds all action results from a nested {@link ProcessResult}, prepending the
+     * parent action's ID to each nested action ID to maintain a hierarchical structure.
+     * @param parentAction the action that produced the nested process result
+     * @param processResult the nested process result to import
+     */
     public void addActionResult(Executable parentAction, ProcessResult processResult) {
         if (parentAction == null) {
             throw new IllegalArgumentException("action must not be null");
@@ -138,6 +192,10 @@ public class ContentResult extends ArrayList<ActionResult> {
         }
     }
 
+    /**
+     * Returns an array of all unique action IDs contained within this result.
+     * @return an array of action IDs
+     */
     public String[] getActionIds() {
         Set<String> set = new LinkedHashSet<>();
         for (ActionResult actionResult : this) {
