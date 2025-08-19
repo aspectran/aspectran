@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 /**
- * Provides classes and interfaces for representing and handling responses
- * within an {@link com.aspectran.core.activity.Activity}.
- * <p>
- * The response package defines abstractions that allow activities to produce
- * output in a consistent manner. Typical responsibilities include:
+ * Contains classes and interfaces for modeling and handling various types of responses.
+ *
+ * <p>This package provides the core components for generating a response after an
+ * {@link com.aspectran.core.activity.Activity} has processed a request. It supports
+ * different response strategies, such as:
  * <ul>
- *   <li>Encapsulating response content such as text, binary data, or structured data</li>
- *   <li>Supporting multiple response formats and output streams</li>
- *   <li>Providing adapters to write responses to various targets (e.g., HTTP, console, files)</li>
- *   <li>Managing response metadata such as status codes, headers, and content type</li>
+ *   <li>Transforming content into a specific format (e.g., JSON, XML)</li>
+ *   <li>Redirecting the client to a new URL</li>
+ *   <li>Forwarding the request to another resource on the server</li>
+ *   <li>Dispatching to a view technology (e.g., JSP)</li>
  * </ul>
- * These components decouple the activity execution from the output mechanism,
- * enabling flexible integration with different environments.
- * </p>
+ * The base {@link com.aspectran.core.activity.response.Response} interface defines the
+ * contract for all response types.
  */
 package com.aspectran.core.activity.response;

@@ -24,57 +24,69 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 
 /**
- * The Interface ActionRuleApplicable.
+ * Defines a contract for objects that can accept and apply various action rules.
+ *
+ * <p>This interface acts as a factory or builder for creating {@link Executable} action
+ * instances from their corresponding rule definitions. It is a core part of how Aspectran's
+ * configuration parser translates rule definitions (e.g., from XML) into executable
+ * objects. The primary implementor is typically
+ * {@link com.aspectran.core.activity.process.ActionList}.</p>
  *
  * @since 2011. 2. 21.
  */
 public interface ActionRuleApplicable {
 
     /**
-     * Adds the header action rule.
-     * @param headerActionRule the header action rule
-     * @return an instance of the executable action
+     * Applies a header action rule, creating and adding a
+     * {@link com.aspectran.core.activity.process.action.HeaderAction} to the current context.
+     * @param headerActionRule the header action rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(HeaderActionRule headerActionRule);
 
     /**
-     * Adds the echo action rule.
-     * @param echoActionRule the echo action rule
-     * @return an instance of the executable action
+     * Applies an echo action rule, creating and adding an
+     * {@link com.aspectran.core.activity.process.action.EchoAction} to the current context.
+     * @param echoActionRule the echo action rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(EchoActionRule echoActionRule);
 
     /**
-     * Adds the invoke action rule.
-     * @param invokeActionRule the invoke action rule
-     * @return an instance of the executable action
+     * Applies an invoke action rule, creating and adding an
+     * {@link com.aspectran.core.activity.process.action.InvokeAction} to the current context.
+     * @param invokeActionRule the invoke action rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(InvokeActionRule invokeActionRule);
 
     /**
-     * Adds the annotated method action rule.
-     * @param annotatedActionRule the annotated method action rule
-     * @return an instance of the executable action
+     * Applies an annotated action rule, creating and adding an
+     * {@link com.aspectran.core.activity.process.action.AnnotatedAction} to the current context.
+     * @param annotatedActionRule the annotated action rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(AnnotatedActionRule annotatedActionRule);
 
     /**
-     * Adds the include action rule.
-     * @param includeActionRule the include action rule
-     * @return an instance of the executable action
+     * Applies an include action rule, creating and adding an
+     * {@link com.aspectran.core.activity.process.action.IncludeAction} to the current context.
+     * @param includeActionRule the include action rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(IncludeActionRule includeActionRule);
 
     /**
-     * Adds a list of action instances that can be executed.
-     * @param chooseRule the choose rule
-     * @return an instance of the executable action
+     * Applies a choose rule, creating and adding a
+     * {@link com.aspectran.core.activity.process.action.ChooseAction} to the current context.
+     * @param chooseRule the choose rule to apply
+     * @return the created {@link Executable} action instance
      */
     Executable applyActionRule(ChooseRule chooseRule);
 
     /**
-     * Adds an executable action instance.
-     * @param action an executable action instance
+     * Applies a pre-existing executable action instance.
+     * @param action an executable action instance to apply
      */
     void applyActionRule(Executable action);
 

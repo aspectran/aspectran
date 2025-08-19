@@ -16,17 +16,28 @@
 package com.aspectran.core.context.rule.ability;
 
 /**
- * The Interface Replicable.
- * 
+ * Defines a contract for objects that can create a deep copy (replica) of themselves.
+ *
+ * <p>This interface is primarily implemented by rule objects within the Aspectran context.
+ * Replication is crucial for ensuring that the original, cached rule definitions remain
+ * immutable. At runtime, when a rule is needed for a specific request, a mutable replica
+ * is created and used instead. This prevents any state modifications during a single
+ * request from affecting the shared, canonical rule definition, which is essential for
+ * thread safety and context integrity.</p>
+ *
  * <p>Created: 2016. 2. 2.</p>
- * 
+ *
  * @since 2.0.0
+ * @param <T> the type of the object to be replicated
  */
 public interface Replicable<T> {
 
     /**
-     * Creates and returns a new instance after replicating a rule or Object.
-     * @return replicated rule or new instance of Object
+     * Creates and returns a new, deep-copied instance of this object.
+     * The returned replica should be an independent object, meaning that modifications
+     * to the replica should not affect the original object.
+     *
+     * @return a new, replicated instance of the object
      */
     T replicate();
 

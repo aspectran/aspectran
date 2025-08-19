@@ -20,19 +20,15 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
- * The Interface Response.
+ * Defines the contract for generating a response after an activity has processed a request.
  *
- * <p>Created: 2008. 03. 23 PM 12:52:04</p>
+ * <p>Implementations of this interface are responsible for a specific response strategy,
+ * such as transforming content, redirecting, or forwarding. The {@link Activity} engine
+ * invokes the {@link #respond(Activity)} method to produce the final output.</p>
+ *
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public interface Response extends Replicable<Response> {
-
-    /**
-     * The result of the activity is processed into a specific response
-     * form and then sent to the client.
-     * @param activity the current Activity
-     * @throws ResponseException the response exception
-     */
-    void respond(Activity activity) throws ResponseException;
 
     /**
      * Gets the response type.
@@ -47,9 +43,13 @@ public interface Response extends Replicable<Response> {
     String getContentType();
 
     /**
-     * Replicates and returns this response.
-     * @return the new response
+     * Generates the response based on the current state of the activity.
+     * @param activity the current activity, which provides access to the translet,
+     *      adapters, and results
+     * @throws ResponseException if an error occurs during response generation
      */
+    void respond(Activity activity) throws ResponseException;
+
     Response replicate();
 
 }

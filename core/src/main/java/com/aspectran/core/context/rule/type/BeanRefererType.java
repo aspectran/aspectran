@@ -18,18 +18,50 @@ package com.aspectran.core.context.rule.type;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Supported bean referer types.
- * 
+ * An enum that categorizes the different ways a bean can be referenced by a rule
+ * within the framework.
+ *
+ * <p>Each constant represents a specific context in which a bean is used, which is
+ * useful for introspection and for analyzing dependency relationships.</p>
+ *
  * <p>Created: 2016. 2. 20.</p>
  */
 public enum BeanRefererType {
 
+    /**
+     * Indicates that the bean is referenced as an AOP advice within an aspect rule.
+     */
     ASPECT_RULE("aspectRule"),
+
+    /**
+     * Indicates that the bean is referenced for autowiring into another bean's properties.
+     */
     AUTOWIRE_RULE("autowireRule"),
+
+    /**
+     * Indicates that the bean is referenced as an executable action.
+     */
     BEAN_METHOD_ACTION_RULE("invokeActionRule"),
+
+    /**
+     * Indicates that the bean is referenced by another bean definition, typically as a
+     * constructor argument or property value.
+     */
     BEAN_RULE("beanRule"),
+
+    /**
+     * Indicates that the bean is referenced as a scheduled job.
+     */
     SCHEDULE_RULE("scheduleRule"),
+
+    /**
+     * Indicates that the bean is referenced as a template engine or processor.
+     */
     TEMPLATE_RULE("templateRule"),
+
+    /**
+     * Indicates that the bean is referenced within a token in a template or string.
+     */
     TOKEN("token");
 
     private final String alias;
@@ -44,10 +76,10 @@ public enum BeanRefererType {
     }
 
     /**
-     * Returns a {@code BeanReferrerType} with a value represented
+     * Returns a {@code BeanRefererType} with a value represented
      * by the specified {@code String}.
      * @param alias the bean referrer type as a {@code String}
-     * @return a {@code BeanReferrerType}, may be {@code null}
+     * @return a {@code BeanRefererType}, may be {@code null}
      */
     @Nullable
     public static BeanRefererType resolve(String alias) {

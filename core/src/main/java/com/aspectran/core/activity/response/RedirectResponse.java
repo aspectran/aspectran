@@ -25,7 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class RedirectResponse.
+ * A response that sends a redirect (HTTP 3xx) to the client, instructing it to
+ * request a different URL.
+ *
+ * <p>This class uses the underlying {@link ResponseAdapter} to send the redirect
+ * command and also handles FlashMap attributes for passing data across redirects.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -37,12 +41,18 @@ public class RedirectResponse implements Response {
 
     /**
      * Instantiates a new RedirectResponse.
-     * @param redirectRule the redirect rule
+     * @param redirectRule the rule that defines the redirect target and parameters
      */
     public RedirectResponse(RedirectRule redirectRule) {
         this.redirectRule = redirectRule;
     }
 
+    /**
+     * Executes the redirect by sending the redirect command to the client via the
+     * response adapter.
+     * @param activity the current activity
+     * @throws ResponseException if an error occurs during the redirect
+     */
     @Override
     public void respond(Activity activity) throws ResponseException {
         RedirectRule newRedirectRule = redirectRule.replicate();
@@ -97,7 +107,7 @@ public class RedirectResponse implements Response {
     }
 
     /**
-     * Returns the redirect rule.
+     * Returns the rule that defines the redirect target.
      * @return the redirect rule
      */
     public RedirectRule getRedirectRule() {

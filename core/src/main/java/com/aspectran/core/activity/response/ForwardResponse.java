@@ -25,7 +25,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * The Class ForwardResponse.
+ * A response that performs a server-side forward to another resource (e.g., a
+ * different translet or a JSP page).
+ *
+ * <p>This response type evaluates the attributes specified in the forward rule and
+ * sets them on the request adapter, making them available to the target resource.
+ * The actual forwarding is then handled by the underlying adapter (e.g., using
+ * {@code RequestDispatcher.forward()}).</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -37,12 +43,17 @@ public class ForwardResponse implements Response {
 
     /**
      * Instantiates a new ForwardResponse.
-     * @param forwardRule the forward rule
+     * @param forwardRule the rule that defines the forwarding target and attributes
      */
     public ForwardResponse(ForwardRule forwardRule) {
         this.forwardRule = forwardRule;
     }
 
+    /**
+     * Executes the forward by evaluating and setting attributes on the request adapter.
+     * @param activity the current activity
+     * @throws ResponseException if an error occurs during attribute evaluation
+     */
     @Override
     public void respond(Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
@@ -80,7 +91,7 @@ public class ForwardResponse implements Response {
     }
 
     /**
-     * Returns the forward rule.
+     * Returns the rule that defines the forwarding parameters.
      * @return the forward rule
      */
     public ForwardRule getForwardRule() {

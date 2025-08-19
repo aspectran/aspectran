@@ -18,7 +18,12 @@ package com.aspectran.core.context.rule.ability;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 
 /**
- * The Interface BeanReferenceable.
+ * Defines a contract for rule classes that can reference a managed bean.
+ *
+ * <p>This interface is used to identify which rules hold a reference to a bean
+ * and to understand how that bean is being referenced (e.g., as a property of an
+ * action, as an advice bean, etc.). This is useful for introspection and for
+ * analyzing the dependency relationships within the application context.</p>
  *
  * <p>Created: 2016. 2. 20.</p>
  *
@@ -27,9 +32,9 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 public interface BeanReferenceable {
 
     /**
-     * Returns the Bean Referrer Type.
-     * @return the Bean Referrer Type
+     * Returns the type of the bean referrer, indicating how the bean is being used.
+     * @return the {@link BeanRefererType} which categorizes the reference
      */
     BeanRefererType getBeanRefererType();
-    
+
 }

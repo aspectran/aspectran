@@ -22,35 +22,45 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
- * The Interface ResponseRuleApplicable.
+ * Defines a contract for objects that can accept and apply various response rules.
+ *
+ * <p>This interface acts as a factory for creating specific {@link Response} objects
+ * from their corresponding rule definitions. It is a core part of how Aspectran's
+ * configuration parser translates response-related rules into executable response
+ * handler objects. The primary implementor is typically
+ * {@link com.aspectran.core.context.rule.ResponseRule}.</p>
  */
 public interface ResponseRuleApplicable {
 
     /**
-     * Apply the transform rule to the response rule.
-     * @param transformRule the transform rule
-     * @return the response
+     * Applies a transform rule, creating a response that will transform the content
+     * (e.g., to JSON or XML).
+     * @param transformRule the transform rule to apply
+     * @return the created {@link Response} instance
      */
     Response applyResponseRule(TransformRule transformRule);
 
     /**
-     * Apply the dispatch rule to the response rule.
-     * @param dispatchRule the dispatch rule
-     * @return the response
+     * Applies a dispatch rule, creating a response that will dispatch the request
+     * to a view technology (e.g., JSP).
+     * @param dispatchRule the dispatch rule to apply
+     * @return the created {@link Response} instance
      */
     Response applyResponseRule(DispatchRule dispatchRule);
 
     /**
-     * Apply the forward rule to the response rule.
-     * @param forwardRule the forward rule
-     * @return the response
+     * Applies a forward rule, creating a response that will perform a server-side
+     * forward to another resource.
+     * @param forwardRule the forward rule to apply
+     * @return the created {@link Response} instance
      */
     Response applyResponseRule(ForwardRule forwardRule);
 
     /**
-     * Apply the redirect rule to the response rule.
-     * @param redirectRule the redirect rule
-     * @return the response
+     * Applies a redirect rule, creating a response that will send a client-side
+     * redirect to a new URL.
+     * @param redirectRule the redirect rule to apply
+     * @return the created {@link Response} instance
      */
     Response applyResponseRule(RedirectRule redirectRule);
 
