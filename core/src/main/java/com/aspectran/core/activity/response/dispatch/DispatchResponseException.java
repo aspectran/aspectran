@@ -22,7 +22,11 @@ import com.aspectran.utils.ExceptionUtils;
 import java.io.Serial;
 
 /**
- * The Class DispatchResponseException.
+ * Exception thrown when an error occurs during the dispatching phase of a response.
+ *
+ * <p>This is a specific type of {@link ResponseException} that indicates a failure
+ * in the {@link DispatchResponse} or its associated {@link ViewDispatcher}. It holds a
+ * reference to the {@link DispatchRule} that was being processed when the error occurred.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -34,9 +38,9 @@ public class DispatchResponseException extends ResponseException {
     private final DispatchRule dispatchRule;
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param dispatchRule the dispatch rule
-     * @param cause the real cause of the exception
+     * Creates a new DispatchResponseException.
+     * @param dispatchRule the dispatch rule that was being processed when the exception occurred
+     * @param cause the root cause of the exception
      */
     public DispatchResponseException(DispatchRule dispatchRule, Throwable cause) {
         super("Error responding with dispatch rule " + dispatchRule + "; Cause: " +
@@ -45,7 +49,7 @@ public class DispatchResponseException extends ResponseException {
     }
 
     /**
-     * Gets the dispatch rule.
+     * Returns the dispatch rule that was being processed when the exception occurred.
      * @return the dispatch rule
      */
     public DispatchRule getDispatchRule() {

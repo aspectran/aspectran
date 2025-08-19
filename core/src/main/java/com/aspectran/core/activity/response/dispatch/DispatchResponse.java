@@ -32,7 +32,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * JSP or other web resource integration.
+ * A {@link Response} implementation that dispatches the request to a view technology
+ * for rendering.
+ *
+ * <p>This class resolves a {@link ViewDispatcher} bean and delegates the dispatching
+ * task to it. It acts as the bridge between the response phase of an activity and the
+ * underlying view layer (e.g., JSP).</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -45,13 +50,19 @@ public class DispatchResponse implements Response {
     private final DispatchRule dispatchRule;
 
     /**
-     * Instantiates a new DispatchResponse with specified DispatchRule.
-     * @param dispatchRule the dispatch rule
+     * Instantiates a new DispatchResponse.
+     * @param dispatchRule the rule that defines the dispatch target and parameters
      */
     public DispatchResponse(DispatchRule dispatchRule) {
         this.dispatchRule = dispatchRule;
     }
 
+    /**
+     * Executes the dispatch by resolving and invoking a {@link ViewDispatcher}.
+     * @param activity the current activity
+     * @throws ResponseException if the view dispatcher cannot be found or if an error
+     *      occurs during dispatch
+     */
     @Override
     public void respond(Activity activity) throws ResponseException {
         try {
@@ -67,7 +78,7 @@ public class DispatchResponse implements Response {
     }
 
     /**
-     * Gets the dispatch rule.
+     * Returns the rule that defines the dispatch target.
      * @return the dispatch rule
      */
     public DispatchRule getDispatchRule() {
@@ -90,9 +101,10 @@ public class DispatchResponse implements Response {
     }
 
     /**
-     * Determine the view dispatcher.
+     * Determines and returns the appropriate {@link ViewDispatcher} for this response.
      * @param activity the current Activity
-     * @throws ViewDispatcherException if ViewDispatcher cannot be determined
+     * @return the resolved view dispatcher
+     * @throws ViewDispatcherException if the ViewDispatcher cannot be determined
      */
     private ViewDispatcher getViewDispatcher(Activity activity) throws ViewDispatcherException {
         if (dispatchRule.getViewDispatcher() != null) {
@@ -141,9 +153,10 @@ public class DispatchResponse implements Response {
     }
 
     /**
-     * Save processing results as request attributes.
-     * @param requestAdapter the request adapter
-     * @param processResult the process result
+     * A static helper method to save the results of an activity as request attributes,
+     * making them accessible to the dispatched view.
+     * @param requestAdapter the request adapter to which attributes will be saved
+     * @param processResult the process result containing the data to be saved
      */
     public static void saveAttributes(RequestAdapter requestAdapter, ProcessResult processResult) {
         if (processResult != null) {

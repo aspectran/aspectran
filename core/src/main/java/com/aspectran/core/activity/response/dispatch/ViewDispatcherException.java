@@ -20,7 +20,10 @@ import com.aspectran.core.activity.response.ResponseException;
 import java.io.Serial;
 
 /**
- * Base class for exceptions thrown during view dispatching.
+ * Exception thrown when a {@link ViewDispatcher} fails to dispatch a request.
+ *
+ * <p>This may be caused by an inability to resolve the view resource or an internal
+ * error within the view technology itself.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -30,12 +33,13 @@ public class ViewDispatcherException extends ResponseException {
     private static final long serialVersionUID = 5341799597740412582L;
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Creates a new ViewDispatcherException with a specified detail message and a nested cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the nested exception
      */
     public ViewDispatcherException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
 }
+

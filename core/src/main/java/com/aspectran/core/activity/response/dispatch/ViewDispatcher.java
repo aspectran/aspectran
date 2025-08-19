@@ -19,21 +19,25 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.DispatchRule;
 
 /**
- * The Interface ViewDispatcher.
- * 
- * @since 2008. 03. 23
+ * Defines a contract for dispatching a request to a specific view technology for rendering.
+ *
+ * <p>Implementations of this interface are responsible for integrating with view layers
+ * like JSP, Thymeleaf, or others, by forwarding the request and response to the
+ * appropriate view resource.</p>
  */
 public interface ViewDispatcher {
 
+    /**
+     * The default name of the view dispatcher bean.
+     */
     String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 
     String getContentType();
 
     /**
-     * Dispatch to other resources as the given rule.
+     * Dispatches the request to the specified view.
      * @param activity the current activity
-     * @param dispatchRule the dispatch rule
-     * @throws ViewDispatcherException the view dispatch exception
+     * @throws ViewDispatcherException if an error occurs during dispatch
      */
     void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException;
 
@@ -44,3 +48,4 @@ public interface ViewDispatcher {
     boolean isSingleton();
 
 }
+

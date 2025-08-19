@@ -20,6 +20,12 @@ import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Abstract base class for {@link ViewDispatcher} implementations.
+ *
+ * <p>Provides common functionality, such as saving the activity's process results
+ * as request attributes to make them accessible to the target view.</p>
+ */
 public abstract class AbstractViewDispatcher implements ViewDispatcher {
 
     private String contentType;
@@ -42,20 +48,24 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Sets the prefix for the template name.
-     * @param prefix the new prefix for the template name
+     * Sets the prefix that is prepended to view names when building a URL.
+     * @param prefix the prefix for view names
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
-    protected String getSuffix() {
+    /**
+     * Gets the suffix that is appended to view names when building a URL.
+     * @return the suffix for view names
+     */
+    public String getSuffix() {
         return suffix;
     }
 
     /**
-     * Sets the suffix for the template name.
-     * @param suffix the new suffix for the template name
+     * Sets the suffix that is appended to view names when building a URL.
+     * @param suffix the suffix for view names
      */
     public void setSuffix(String suffix) {
         this.suffix = suffix;
@@ -96,3 +106,4 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
 }
+
