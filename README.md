@@ -12,7 +12,7 @@ Aspectran is a lightweight, high‑performance framework for building both simpl
 large enterprise web services on the JVM. It emphasizes an intuitive POJO‑centric programming model while
 providing powerful infrastructure features such as IoC, DI, AOP, REST support, and embedded web servers.
 
-## Features
+## Key Features
 
 - **POJO Programming**  
   Developers interact with the framework using plain Java objects; no need to understand complex internal APIs.
@@ -29,7 +29,7 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 - **Production‑grade Applications**  
   Runs on multiple OSes; can be deployed as a standalone JVM app, servlet in Tomcat/WildFly, or embedded in another Java application.
 
-## Packages
+## Core Packages
 
 - **`com.aspectran.core`** - Core framework functionality.
 - **`com.aspectran.daemon`** - Run Aspectran as a background process (Unix/Windows service).

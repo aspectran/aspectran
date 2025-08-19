@@ -56,8 +56,9 @@ public class InvokeAction implements Executable {
     private volatile Boolean requiresTranslet;
 
     /**
-     * Instantiates a new InvokeAction.
-     * @param invokeActionRule the invoke action rule
+     * Constructs a new InvokeAction instance with the specified action rule.
+     * @param invokeActionRule the rule defining how to invoke the method on the bean
+     * @throws IllegalArgumentException if the rule is null
      */
     public InvokeAction(InvokeActionRule invokeActionRule) {
         this.invokeActionRule = invokeActionRule;
@@ -69,6 +70,12 @@ public class InvokeAction implements Executable {
         return execute(activity, bean);
     }
 
+    /**
+     * Resolves the target bean instance using the specified bean class or bean ID.
+     * @param activity the current activity instance
+     * @return the resolved bean instance
+     * @throws Exception if bean resolution fails
+     */
     protected Object resolveBean(@NonNull Activity activity) throws Exception {
         Object bean = null;
         if (invokeActionRule.getBeanClass() != null) {
@@ -82,6 +89,12 @@ public class InvokeAction implements Executable {
         return bean;
     }
 
+    /**
+     * Executes the method invocation on the specified bean instance.
+     * @param activity the current activity instance containing the request and session information
+     * @return the result of the method execution, or {@code Void.TYPE} if the method is void
+     * @throws Exception if an error occurs during method execution
+     */
     private Object execute(Activity activity, Object bean) throws Exception {
         try {
             ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
@@ -138,8 +151,8 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Returns the invoke action rule.
-     * @return the invoke action rule
+     * Returns the action rule that defines the method invocation configuration.
+     * @return the action rule
      */
     public InvokeActionRule getInvokeActionRule() {
         return invokeActionRule;
@@ -155,6 +168,9 @@ public class InvokeAction implements Executable {
         return invokeActionRule.isHidden();
     }
 
+    /**
+     * Returns the type of this action, which is always {@link ActionType#INCLUDE}.
+     */
     @Override
     public ActionType getActionType() {
         return ActionType.INVOKE;

@@ -59,26 +59,33 @@ public interface Translet {
 
     /**
      * Returns the request name for this {@code Translet}.
+     * This is the name of the request as it is identified in the system.
      * @return the request name
+     * @see #getActualRequestName for the actual request name with context path
      */
     String getRequestName();
 
     /**
-     * Returns the actual request name. It may or may not
-     * have a context path.
+     * Returns the actual request name.
+     * This must be the actual request path as perceived by the client,
+     * including the context path if present.
      * @return the actual request name
      */
     String getActualRequestName();
 
     /**
-     * Returns the request method. This is similar to the HTTP
-     * request method.
+     * Returns the request method.
+     * This corresponds to the HTTP request method (e.g., GET, POST).
+     * This value is used to determine how the request should be handled by the translet.
      * @return the request method
+     * @see MethodType for possible values
      */
     MethodType getRequestMethod();
 
     /**
      * Returns the translet name.
+     * This identifies the specific Translet instance being executed
+     * and maps it to the request path.
      * @return the translet name
      */
     String getTransletName();
@@ -97,6 +104,7 @@ public interface Translet {
 
     /**
      * Gets the application adapter.
+     * This adapter provides access to application-level resources and services.
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
@@ -160,6 +168,7 @@ public interface Translet {
 
     /**
      * Returns the process result.
+     * This contains the result of the translet processing.
      * @return the process result
      */
     ProcessResult getProcessResult();
@@ -174,18 +183,23 @@ public interface Translet {
 
     /**
      * Sets the process result.
+     * This method allows updating the process result with new data.
      * @param processResult the new process result
      */
     void setProcessResult(ProcessResult processResult);
 
     /**
      * Returns an Activity Data containing the activity result data.
+     * This data holds the result of the current activity.
      * @return the activity data
      */
     ActivityData getActivityData();
 
     /**
      * Gets the setting value in the translet scope.
+     * This allows retrieval of configuration settings.
+     * Settings are stored in the translet scope and can be accessed by any method
+     * in the translet.
      * @param <V> the type of the value
      * @param settingName the setting name
      * @return the setting value
@@ -194,6 +208,8 @@ public interface Translet {
 
     /**
      * Returns the value of the property on environment.
+     * This allows retrieval of environment-specific properties.
+     * Environment properties are used to configure the runtime environment.
      * @param <V> the type of the value
      * @param name the given property name
      * @return the value of the property on environment
@@ -204,9 +220,8 @@ public interface Translet {
      * Returns the value of an activity's request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
      * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code String} representing the
-     *            single value of the parameter
-     * @see #getParameterValues
+     * @return a {@code String} representing the single value of the parameter
+     * @see #getParameterValues for retrieving multiple values
      */
     String getParameter(String name);
 
@@ -215,9 +230,8 @@ public interface Translet {
      * the values the given activity's request parameter has,
      * or {@code null} if the parameter does not exist.
      * @param name a {@code String} specifying the name of the parameter
-     * @return an array of {@code String} objects
-     *            containing the parameter's values
-     * @see #getParameter
+     * @return an array of {@code String} objects containing the parameter's values
+     * @see #getParameter for retrieving a single value
      */
     String[] getParameterValues(String name);
 
@@ -226,8 +240,8 @@ public interface Translet {
      * the names of the parameters contained in this request.
      * If the request has no parameters, the method returns an empty {@code Collection}.
      * @return an {@code Collection} of {@code String} objects, each {@code String}
-     *             containing the name of a request parameter;
-     *             or an empty {@code Collection} if the request has no parameters
+     *         containing the name of a request parameter;
+     *         or an empty {@code Collection} if the request has no parameters
      */
     Collection<String> getParameterNames();
 

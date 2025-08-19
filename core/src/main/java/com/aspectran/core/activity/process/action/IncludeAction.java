@@ -42,6 +42,11 @@ public class IncludeAction implements Executable {
 
     private final IncludeActionRule includeActionRule;
 
+    /**
+     * Constructs an {@code IncludeAction} with the specified rule configuration.
+     * @param includeActionRule the rule that defines how to include another activity
+     *      including translet name, method type, attribute rules, and parameter rules
+     */
     public IncludeAction(IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
@@ -85,6 +90,10 @@ public class IncludeAction implements Executable {
         }
     }
 
+    /**
+     * Retrieves the rule configuration that defines how to include another activity.
+     * @return the {@link IncludeActionRule} that defines the inclusion behavior
+     */
     public IncludeActionRule getIncludeActionRule() {
         return includeActionRule;
     }

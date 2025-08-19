@@ -66,7 +66,7 @@ public class HeaderAction implements Executable {
      * @param activity the current activity context containing the request and response objects
      * @return the evaluated header map, or {@code Void.TYPE} if no headers are defined
      * @throws Exception if an error occurs during evaluation or header setting, wrapped in an
-     *                   {@link ActionExecutionException}
+     *      {@link ActionExecutionException}
      */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
