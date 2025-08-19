@@ -28,7 +28,7 @@ import java.io.Serial;
 public class ActionExecutionException extends ProcessException {
 
     @Serial
-    private static final long serialVersionUID = -8738207032715935543L;
+    private static final long serialVersionUID = 3568162614053964319L;
 
     private Executable action;
 
@@ -38,6 +38,17 @@ public class ActionExecutionException extends ProcessException {
      */
     public ActionExecutionException(String msg) {
         super(msg);
+    }
+
+    /**
+     * Constructor to create exception to wrap another exception and pass a
+     * message.
+     * Constructs a new ActionExecutionException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the nested exception
+     */
+    public ActionExecutionException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 
     /**

@@ -25,8 +25,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  * A specialized {@link InvokeAction} for executing a method on an advice bean as part of an
  * AOP aspect.
  *
- * <p>This action is used internally by the framework to run advice logic (e.g., @Before,
- * @After) defined in an {@link com.aspectran.core.context.rule.AspectRule}.
+ * <p>This action is used internally by the framework to run advice logic (e.g., @Before, @After)
+ * defined in an {@link com.aspectran.core.context.rule.AspectRule}.
  * It overrides the bean resolution logic to first look for the bean within the
  * current AOP advice context.</p>
  *
