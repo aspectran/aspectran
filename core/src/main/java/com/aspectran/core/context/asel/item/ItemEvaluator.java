@@ -24,68 +24,82 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Defines the contract for evaluating {@link com.aspectran.core.context.rule.ItemRule}
- * instances to resolve their runtime values.
- * <p>This interface provides methods to convert item definitions into various
- * data structures, such as maps, lists, or simple values, by evaluating any
- * embedded AsEL tokens or bean references.</p>
+ * Represents a core component responsible for evaluating {@link ItemRule} definitions
+ * to produce runtime values.
+ * <p>This evaluator is the bridge between the static rules defined in configuration
+ * and the dynamic objects used during an activity's execution. It processes item
+ * rules, resolves any embedded AsEL tokens or bean references, and constructs the
+ * final data structures (like Maps, Lists, or simple objects).</p>
  *
  * @since 2010. 5. 6.
  */
 public interface ItemEvaluator {
 
     /**
-     * Evaluates an {@link ItemRuleMap} and returns the results as a map of item names to their resolved values.
+     * Evaluates all item rules within the given {@link ItemRuleMap} and returns the
+     * results as a map of item names to their resolved values.
+     * <p>Each item's value is resolved by evaluating its defined tokens or bean references.</p>
      * @param itemRuleMap the map of item rules to evaluate
-     * @return a map containing the evaluated key-value pairs
+     * @return a new map containing the evaluated key-value pairs
      */
     Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
 
     /**
-     * Evaluates an {@link ItemRuleMap} and populates the given map with the results.
+     * Evaluates all item rules within the given {@link ItemRuleMap} and populates an
+     * existing map with the results.
+     * <p>This method is useful for aggregating values into a pre-existing map.</p>
      * @param itemRuleMap the map of item rules to evaluate
      * @param valueMap the map to be populated with the evaluated key-value pairs
      */
     void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 
     /**
-     * Evaluates a single {@link ItemRule} and returns its resolved value.
-     * @param <V> the expected type of the resolved value
+     * Evaluates a single {@link ItemRule} and returns its fully resolved value.
+     * <p>The type of the returned object depends on the item's definition (e.g.,
+     * String, List, Map, or a bean instance).</p>
+     * @param <T> the expected type of the resolved value
      * @param itemRule the item rule to evaluate
      * @return the resolved value of the item
      */
-    <V> V evaluate(ItemRule itemRule);
+    <T> T evaluate(ItemRule itemRule);
 
     /**
-     * Evaluates an {@link ItemRuleMap} and returns the results as a {@link MultiValueMap}.
+     * Evaluates an {@link ItemRuleMap} and converts the results into a {@link MultiValueMap},
+     * where each value is represented as a string.
      * @param itemRuleMap the map of item rules to evaluate
-     * @return a {@code MultiValueMap} containing the evaluated key-value pairs
+     * @return a new {@code MultiValueMap} containing the evaluated key-value pairs
      */
     MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
 
     /**
-     * Evaluates a collection of {@link ItemRule} instances and returns the results as a {@link MultiValueMap}.
-     * @param itemRuleList the collection of item rules to evaluate
-     * @return a {@code MultiValueMap} containing the evaluated key-value pairs
+     * Evaluates a collection of {@link ItemRule} instances and converts the results into a
+     * {@link MultiValueMap}, where each value is represented as a string.
+     * @param itemRules the collection of item rules to evaluate
+     * @return a new {@code MultiValueMap} containing the evaluated key-value pairs
      */
-    MultiValueMap<String, String> evaluateAsMultiValueMap(Collection<ItemRule> itemRuleList);
+    MultiValueMap<String, String> evaluateAsMultiValueMap(Collection<ItemRule> itemRules);
 
     /**
-     * Evaluates an {@link ItemRuleMap} and returns the results as a {@link ParameterMap}.
+     * Evaluates an {@link ItemRuleMap} and converts the results into a {@link ParameterMap},
+     * a structure commonly used for request parameters.
      * @param itemRuleMap the map of item rules to evaluate
-     * @return a {@code ParameterMap} containing the evaluated key-value pairs
+     * @return a new {@code ParameterMap} containing the evaluated key-value pairs
      */
     ParameterMap evaluateAsParameterMap(ItemRuleMap itemRuleMap);
 
     /**
-     * Evaluates a collection of {@link ItemRule} instances and returns the results as a {@link ParameterMap}.
+     * Evaluates a collection of {@link ItemRule} instances and converts the results into a
+     * {@link ParameterMap}.
      * @param itemRules the collection of item rules to evaluate
-     * @return a {@code ParameterMap} containing the evaluated key-value pairs
+     * @return a new {@code ParameterMap} containing the evaluated key-value pairs
      */
     ParameterMap evaluateAsParameterMap(Collection<ItemRule> itemRules);
 
     /**
-     * Evaluates a single {@link ItemRule} and returns its resolved value(s) as a string array.
+     * Evaluates a single {@link ItemRule} and coerces its resolved value(s) into a
+     * string array.
+     * <p>If the item resolves to a single value, it will be an array with one element.
+     * If it resolves to a collection or array, each element will be converted to a string.</p>
      * @param itemRule the item rule to evaluate
      * @return a string array representing the resolved value(s)
      */

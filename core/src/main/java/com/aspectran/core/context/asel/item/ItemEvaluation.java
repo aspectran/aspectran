@@ -44,10 +44,12 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The default implementation of the {@link ItemEvaluator} interface.
- * <p>This class uses a {@link TokenEvaluator} to resolve the values defined in
- * {@link ItemRule} instances, converting them into the appropriate data types
- * and collection structures.</p>
+ * The default, concrete implementation of the {@link ItemEvaluator}.
+ * <p>This class orchestrates the evaluation process by recursively resolving values
+ * defined in an {@link ItemRule}. It uses a {@link TokenEvaluator} to handle the
+ * low-level resolution of AsEL tokens and bean references, and then assembles the
+ * results into the final, typed data structures (e.g., {@link List}, {@link Map},
+ * {@link Properties}) as specified by the item rule.</p>
  *
  * @since 2008. 06. 19
  */
