@@ -18,7 +18,14 @@ package com.aspectran.core.context.asel.value;
 import com.aspectran.core.activity.Activity;
 
 /**
- * The Expression Evaluator.
+ * Defines the contract for a "ValueEvaluator" that evaluates expressions, which can
+ * contain both AsEL token expressions and OGNL expressions.
+ *
+ * <p>This interface represents the core mechanism for resolving dynamic values.
+ * The evaluation process typically involves two stages: first, any embedded AsEL
+ * tokens (e.g., <code>${...}</code>, <code>#{...}</code>) are resolved to their
+ * corresponding objects. Second, the resulting string is evaluated as an OGNL
+ * expression, allowing for complex logic, method calls, and property access.</p>
  *
  * <p>Created: 2021/01/31</p>
  *
@@ -27,11 +34,16 @@ import com.aspectran.core.activity.Activity;
 public interface ValueEvaluator {
 
     /**
-     * Evaluates an expression.
-     * @param activity the aspectran activity
-     * @param resultType the expected type of the result of the evaluation
-     * @param <V> the type of the result
-     * @return the result of the expression evaluation
+     * Evaluates the underlying expression and returns the result.
+     * <p>The evaluation process involves resolving any AsEL tokens first, followed by
+     * executing the resulting OGNL expression. The final value is then converted to
+     * the specified {@code resultType}.</p>
+     * @param activity the current activity context, used to resolve tokens and provide
+     *      the root object for OGNL evaluation
+     * @param resultType the expected type of the result
+     * @param <V> the generic type of the result
+     * @return the result of the expression evaluation, converted to the specified type
+     * @throws com.aspectran.core.context.asel.ExpressionEvaluationException if an error occurs during evaluation
      */
     <V> V evaluate(Activity activity, Class<V> resultType);
 

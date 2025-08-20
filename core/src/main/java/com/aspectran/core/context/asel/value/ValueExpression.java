@@ -30,12 +30,22 @@ import ognl.OgnlContext;
 import java.util.Map;
 
 /**
- * ValueEvaluator implementation that evaluates expressions written in
- * OGNL-based Aspectran expression language.
+ * A concrete implementation of {@link ValueEvaluator} that parses and evaluates
+ * expressions containing both AsEL tokens and OGNL syntax.
+ *
+ * <p>This class acts as a primary entry point for expression evaluation. It internally
+ * parses an expression string into a reusable, tokenized representation and caches
+ * the result for performance. The actual evaluation logic is delegated to the
+ * underlying {@link ExpressionEvaluator} instance.</p>
+ *
+ * <p>It also provides static helper methods for convenient, one-off expression
+ * evaluations.</p>
  *
  * <p>Created: 2021/01/31</p>
  *
  * @since 6.11.0
+ * @see ValueEvaluator
+ * @see TokenizedExpression
  */
 public class ValueExpression implements ValueEvaluator {
 
@@ -43,25 +53,49 @@ public class ValueExpression implements ValueEvaluator {
 
     private final ExpressionEvaluator expressionEvaluator;
 
+    /**
+     * Constructs a new {@code ValueExpression}, parsing the given expression string.
+     * <p>The parsed representation is retrieved from a cache if available, or created
+     * and cached for future use.</p>
+     * @param expression the expression string to parse
+     * @throws ExpressionParserException if the expression has a syntax error
+     */
     public ValueExpression(String expression) throws ExpressionParserException {
         this.expressionEvaluator = parseExpression(expression);
     }
 
+    /**
+     * Returns the original expression string.
+     * @return the expression string
+     */
     @Nullable
     public String getExpressionString() {
         return expressionEvaluator.getExpressionString();
     }
 
+    /**
+     * Returns the parsed OGNL expression object.
+     * @return the parsed expression, or {@code null} if not applicable
+     */
     @Nullable
     public Object getParsedExpression() {
         return expressionEvaluator.getParsedExpression();
     }
 
+    /**
+     * Returns the array of tokens parsed from the expression.
+     * @return the array of tokens, or {@code null} if not applicable
+     */
     @Nullable
     public Token[] getTokens() {
         return expressionEvaluator.getTokens();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation delegates the evaluation to the underlying, cached
+     * {@link ExpressionEvaluator}, providing it with a default OGNL context.</p>
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <V> V evaluate(Activity activity, Class<V> resultType) {
@@ -74,24 +108,25 @@ public class ValueExpression implements ValueEvaluator {
     }
 
     /**
-     * Evaluates an expression.
+     * A convenience method to parse and evaluate an expression in a single call.
      * @param expression the expression to be evaluated
-     * @param activity the aspectran activity
+     * @param activity the current activity context
      * @return the result of the expression evaluation
-     * @throws ExpressionEvaluationException thrown when an error occurs during expression evaluation
+     * @throws ExpressionEvaluationException if an error occurs during parsing or evaluation
      */
     public static Object evaluate(String expression, Activity activity) {
         return evaluate(expression, activity, null);
     }
 
     /**
-     * Evaluates an expression.
+     * A convenience method to parse and evaluate an expression in a single call,
+     * converting the result to the specified type.
      * @param expression the expression to be evaluated
-     * @param activity the aspectran activity
+     * @param activity the current activity context
      * @param resultType the expected type of the result of the evaluation
      * @param <V> the type of the result
      * @return the result of the expression evaluation
-     * @throws ExpressionEvaluationException thrown when an error occurs during expression evaluation
+     * @throws ExpressionEvaluationException if an error occurs during parsing or evaluation
      */
     public static <V> V evaluate(String expression, Activity activity, Class<V> resultType) {
         try {
@@ -102,6 +137,13 @@ public class ValueExpression implements ValueEvaluator {
         }
     }
 
+    /**
+     * Parses an expression string into an {@link ExpressionEvaluator}.
+     * <p>Uses a static cache to avoid re-parsing the same expression string.</p>
+     * @param expression the expression string to parse
+     * @return a cached or new {@code ExpressionEvaluator} instance
+     * @throws ExpressionParserException if the expression has a syntax error
+     */
     private static ExpressionEvaluator parseExpression(String expression) throws ExpressionParserException {
         ExpressionEvaluator evaluator = cache.get(expression);
         if (evaluator == null) {
