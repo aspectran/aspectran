@@ -37,8 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>Created: 2017. 6. 12.</p>
  */
-public class DefaultSessionManager extends AbstractSessionManager
-        implements SessionManager, ActivityContextAware, DisposableBean {
+public class DefaultSessionManager
+        extends AbstractSessionManager implements ActivityContextAware, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
 

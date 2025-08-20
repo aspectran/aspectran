@@ -30,7 +30,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -264,8 +263,9 @@ public class SessionData implements Serializable {
      * @param nonPersistentAttributes the attribute names to be excluded from serialization
      * @throws IOException if an I/O error has occurred
      */
-    public static void serialize(@NonNull SessionData data, OutputStream outputStream,
-                                 Set<String> nonPersistentAttributes) throws IOException {
+    public static void serialize(
+            @NonNull SessionData data, OutputStream outputStream, Set<String> nonPersistentAttributes)
+            throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         dataOutputStream.writeUTF(data.getId());
         dataOutputStream.writeLong(data.getCreated());
@@ -324,24 +324,11 @@ public class SessionData implements Serializable {
         data.setExtraInactiveInterval(extraInactiveInterval);
         data.setExpiry(expiry);
 
-        // Attributes
-        restoreAttributes(dataInputStream, entries, data);
-
-        return data;
-    }
-
-    /**
-     * Load attributes from an input stream that contains session data.
-     * @param inputStream the input stream containing session data
-     * @param entries number of attributes
-     * @param data the data to restore to
-     * @throws Exception if the input stream is invalid or fails to read
-     */
-    private static void restoreAttributes(InputStream inputStream, int entries, SessionData data) throws Exception {
+        // Load all attributes
         if (entries > 0) {
+            Map<String, Object> attributes = new ConcurrentHashMap<>();
             // input stream should not be closed here
-            Map<String, Object> attributes = new HashMap<>();
-            ObjectInputStream objectInputStream =  new CustomObjectInputStream(inputStream);
+            ObjectInputStream objectInputStream =  new CustomObjectInputStream(dataInputStream);
             for (int i = 0; i < entries; i++) {
                 String key = objectInputStream.readUTF();
                 Object value = objectInputStream.readObject();
@@ -349,6 +336,8 @@ public class SessionData implements Serializable {
             }
             data.putAllAttributes(attributes);
         }
+
+        return data;
     }
 
 }

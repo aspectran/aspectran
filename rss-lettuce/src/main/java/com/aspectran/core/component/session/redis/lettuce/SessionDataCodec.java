@@ -63,8 +63,9 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
         try {
             byte[] array = new byte[bytes.remaining()];
             bytes.get(array);
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(array);
-            return SessionData.deserialize(inputStream);
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(array)) {
+                return SessionData.deserialize(inputStream);
+            }
         } catch (Exception e) {
             throw new SessionDataSerializationException("Error decoding session data", e);
         }
