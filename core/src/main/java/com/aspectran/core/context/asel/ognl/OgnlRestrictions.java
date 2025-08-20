@@ -69,7 +69,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * <p>Created: 2024. 11. 23.</p>
+ * A utility class that defines and enforces security restrictions for OGNL expressions.
+ * <p>This class maintains allowlists and blocklists for Java packages, classes, and
+ * methods to prevent the execution of potentially malicious code through expression
+ * evaluation. It is used by {@link OgnlMemberAccess} to determine whether a specific
+ * member access is permitted.</p>
  */
 public class OgnlRestrictions {
 

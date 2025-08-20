@@ -44,7 +44,10 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class ItemEvaluation.
+ * The default implementation of the {@link ItemEvaluator} interface.
+ * <p>This class uses a {@link TokenEvaluator} to resolve the values defined in
+ * {@link ItemRule} instances, converting them into the appropriate data types
+ * and collection structures.</p>
  *
  * @since 2008. 06. 19
  */
@@ -53,7 +56,9 @@ public class ItemEvaluation implements ItemEvaluator {
     private final TokenEvaluator tokenEvaluator;
 
     /**
-     * Instantiates a new ItemEvaluation.
+     * Instantiates a new {@code ItemEvaluation}.
+     * This evaluator relies on a token evaluator to resolve the underlying values
+     * of items.
      * @param tokenEvaluator the token evaluator
      */
     public ItemEvaluation(TokenEvaluator tokenEvaluator) {

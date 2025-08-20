@@ -26,23 +26,40 @@ import ognl.TypeConverter;
 import java.util.Map;
 
 /**
- * Support for expressions using OGNL.
- *
- * @since 6.0.0
+ * A central utility class providing support for OGNL (Object-Graph Navigation Language)
+ * expression evaluation.
+ * <p>This class offers static helper methods and constants for creating a default,
+ * security-restricted OGNL context and for evaluating parsed OGNL expression trees.
+ * It integrates custom components like {@link OgnlClassResolver} and {@link OgnlMemberAccess}.</p>
  */
 public abstract class OgnlSupport {
 
+    /** A shared, reusable instance of the custom OGNL class resolver. */
     public static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
 
+    /** A shared, reusable instance of the default OGNL type converter. */
     public static final TypeConverter TYPE_CONVERTER = new DefaultTypeConverter();
 
+    /** A shared, reusable instance of the custom OGNL member access controller. */
     public static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
+    /**
+     * Creates a default {@link OgnlContext} configured with security restrictions.
+     * <p>The returned context uses a custom {@link OgnlClassResolver} for class resolution,
+     * a default {@link TypeConverter}, and a security-enforcing {@link OgnlMemberAccess}.</p>
+     * @return a new, pre-configured {@code OgnlContext} instance
+     */
     @NonNull
     public static OgnlContext createDefaultContext() {
         return new OgnlContext(CLASS_RESOLVER, TYPE_CONVERTER, MEMBER_ACCESS);
     }
 
+    /**
+     * Creates a default {@link OgnlContext} configured with security restrictions and
+     * populated with the given context variables.
+     * @param contextVariables a map of variables to be added to the OGNL context
+     * @return a new, pre-configured and populated {@code OgnlContext} instance
+     */
     @NonNull
     public static OgnlContext createDefaultContext(Map<String, Object> contextVariables) {
         OgnlContext ognlContext = createDefaultContext();
@@ -52,10 +69,28 @@ public abstract class OgnlSupport {
         return ognlContext;
     }
 
+    /**
+     * Evaluates the given OGNL expression tree against the root object.
+     * @param tree the parsed OGNL expression tree (as a {@link Node})
+     * @param ognlContext the OGNL context for the evaluation
+     * @param root the root object for the expression
+     * @return the result of the expression evaluation
+     * @throws OgnlException if an error occurs during evaluation
+     */
     public static Object getValue(Object tree, OgnlContext ognlContext, Object root) throws OgnlException {
         return getValue(tree, ognlContext, root, null);
     }
 
+    /**
+     * Evaluates the given OGNL expression tree against the root object and converts
+     * the result to the specified type.
+     * @param tree the parsed OGNL expression tree (as a {@link Node})
+     * @param ognlContext the OGNL context for the evaluation
+     * @param root the root object for the expression
+     * @param resultType the desired type for the result
+     * @return the result of the expression evaluation, converted to the {@code resultType}
+     * @throws OgnlException if an error occurs during evaluation or type conversion
+     */
     public static Object getValue(Object tree, OgnlContext ognlContext, Object root, Class<?> resultType) throws OgnlException {
         Assert.notNull(tree, "tree must not be null");
         Assert.notNull(ognlContext, "ognlContext must not be null");

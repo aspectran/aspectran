@@ -18,17 +18,30 @@ package com.aspectran.core.context.asel.ognl;
 import java.io.Serial;
 
 /**
- * <p>Created: 2024. 11. 24.</p>
+ * Thrown when an OGNL expression attempts to access a class, method, or field
+ * that is forbidden by the current security restrictions.
+ *
+ * @see OgnlRestrictions
+ * @see OgnlMemberAccess
  */
 public class OgnlRestrictionException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = -8829028434827240355L;
 
+    /**
+     * Constructs a new {@code OgnlRestrictionException} with the specified detail message.
+     * @param message the detail message
+     */
     public OgnlRestrictionException(String message) {
         super(message);
     }
 
+    /**
+     * Constructs a new {@code OgnlRestrictionException} with the specified detail message and cause.
+     * @param message the detail message
+     * @param cause the root cause
+     */
     public OgnlRestrictionException(String message, Throwable cause) {
         super(message, cause);
     }

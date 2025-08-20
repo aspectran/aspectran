@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import java.io.Serial;
 
 /**
- * The Class ItemEvaluationException.
+ * Thrown when an error occurs during the evaluation of an {@link ItemRule}.
  */
 public class ItemEvaluationException extends RuntimeException {
 
@@ -30,8 +30,8 @@ public class ItemEvaluationException extends RuntimeException {
     private final ItemRule itemRule;
 
     /**
-     * Instantiates a new item evaluation exception.
-     * @param itemRule the item rule
+     * Instantiates a new {@code ItemEvaluationException}.
+     * @param itemRule the item rule that could not be evaluated
      * @param cause the root cause
      */
     public ItemEvaluationException(ItemRule itemRule, Throwable cause) {
@@ -40,7 +40,7 @@ public class ItemEvaluationException extends RuntimeException {
     }
 
     /**
-     * Gets the item rule which is failed to evaluate expression.
+     * Returns the {@link ItemRule} that failed to be evaluated.
      * @return the item rule
      */
     public ItemRule getItemRule() {

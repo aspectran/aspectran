@@ -23,6 +23,13 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/**
+ * A custom OGNL {@link MemberAccess} implementation that enforces security restrictions
+ * on member access during expression evaluation.
+ * <p>This class prevents OGNL expressions from accessing potentially dangerous or
+ * unauthorized classes and methods by consulting the rules defined in {@link OgnlRestrictions}.
+ * It ensures that only public members of allowed types can be accessed.</p>
+ */
 public class OgnlMemberAccess implements MemberAccess {
 
     @Override

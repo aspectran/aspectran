@@ -22,7 +22,9 @@ import ognl.OgnlContext;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Custom ognl {@code ClassResolver}.
+ * A custom OGNL {@link ClassResolver} that resolves class names within an expression.
+ * <p>This implementation uses a cache to store resolved classes, improving performance
+ * by avoiding repeated lookups for the same class name.</p>
  *
  * <p>Created: 2021/02/07</p>
  */
@@ -30,11 +32,26 @@ public class OgnlClassResolver implements ClassResolver {
 
     private final ConcurrentHashMap<String, Class<?>> classes = new ConcurrentHashMap<>(101);
 
+    /**
+     * Instantiates a new OGNL class resolver.
+     */
     public OgnlClassResolver() {
         super();
     }
 
+    /**
+     * Resolves a class by its name from the cache or by loading it.
+     * <p>This implementation first checks a local cache for the class. If not found,
+     * it attempts to load the class using the default class loader. For class names
+     * without a package qualifier, a {@code ClassNotFoundException} is suppressed,
+     * allowing OGNL to attempt resolution in the default package (e.g., {@code java.lang}).</p>
+     * @param className the name of the class to resolve
+     * @param context the current OGNL context (unused)
+     * @return the resolved {@link Class} object, or {@code null} if not found and the name is unqualified
+     * @throws ClassNotFoundException if the class cannot be found and the name is qualified
+     */
     @SuppressWarnings("unchecked")
+    @Override
     public <T> Class<T> classForName(String className, OgnlContext context) throws ClassNotFoundException {
         Class<?> result = classes.get(className);
         if (result != null) {
@@ -51,6 +68,13 @@ public class OgnlClassResolver implements ClassResolver {
         return (Class<T>)result;
     }
 
+    /**
+     * Loads a class using the default class loader.
+     * <p>This method can be overridden by subclasses to provide custom class loading logic.</p>
+     * @param className the name of the class to load
+     * @return the loaded {@link Class} object
+     * @throws ClassNotFoundException if the class cannot be found
+     */
     protected Class<?> toClassForName(String className) throws ClassNotFoundException {
         return ClassUtils.getDefaultClassLoader().loadClass(className);
     }
