@@ -49,7 +49,10 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class TokenEvaluation.
+ * The default implementation of the {@link TokenEvaluator} interface.
+ * <p>This class provides the logic for resolving token values from various
+ * sources within an {@link Activity}, such as parameters, attributes, beans,
+ * properties, and templates.</p>
  *
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
@@ -195,12 +198,10 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Returns an array of {@code String} objects containing all
-     * of the values the given activity's request parameter has,
-     * or {@code null} if the parameter does not exist.
+     * Retrieves all values for a given request parameter name.
      * @param name a {@code String} specifying the name of the parameter
-     * @return an array of {@code String} objects
-     *      containing the parameter's values
+     * @return an array of {@code String} objects containing the parameter's values,
+     *      or {@code null} if the parameter does not exist
      */
     protected String[] getParameterValues(String name) {
         if (activity.getRequestAdapter() != null) {
@@ -211,11 +212,12 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Returns the value of the named attribute as an {@code Object}
-     * of the activity's request attributes or action results.
+     * Retrieves the value of a named attribute from the activity context.
+     * <p>It first checks for an action result, then for a request attribute.
+     * If a getter name is specified in the token, it attempts to invoke it on the
+     * retrieved object.</p>
      * @param token the token
-     * @return an {@code Object} containing the value of the attribute,
-     *       or {@code null} if the attribute does not exist
+     * @return the attribute value, or the token's default value if not found
      */
     protected Object getAttribute(Token token) {
         Object object = null;
@@ -232,9 +234,11 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Returns the bean instance that matches the given token.
+     * Retrieves a bean instance from the bean registry based on the token's definition.
+     * <p>This method handles various bean access directives, such as retrieving a bean
+     * by its ID or class, and invoking static or instance fields/methods.</p>
      * @param token the token
-     * @return an instance of the bean
+     * @return the resolved bean instance or property value
      */
     protected Object getBean(@NonNull Token token) {
         Object value;
@@ -303,10 +307,10 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Return the value of the specified property of the specified bean.
+     * Retrieves the value of a specified property from a bean object.
      * @param bean the bean object
      * @param propertyName the property name
-     * @return the object
+     * @return the property value, or {@code null} if an invocation error occurs
      */
     protected Object getBeanProperty(Object bean, String propertyName) {
         Object value;
@@ -319,13 +323,14 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Returns an Environment variable that matches the given token.
+     * Retrieves a property from the environment.
      * <p>Example usage:
      * <pre>
      *   %{classpath:com/aspectran/sample.properties}
      *   %{classpath:com/aspectran/sample.properties^propertyName:defaultValue}
      *   %{system:test.url}
-     * </pre></p>
+     *   %{property.name^getterName:defaultValue}
+     * </pre>
      * @param token the token
      * @return an environment variable
      * @throws Exception if an error has occurred
@@ -357,9 +362,11 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Executes template, returns the generated output.
+     * Renders a template specified by the token and returns the generated output.
+     * <p>This is done by creating a new {@link InstantActivity} to isolate the
+     * template rendering process.</p>
      * @param token the token
-     * @return the generated output as {@code String}
+     * @return the rendered template content as a string
      */
     protected String getTemplate(@NonNull Token token) throws ActivityPerformException {
         InstantActivity instantActivity = new InstantActivity(activity, false);

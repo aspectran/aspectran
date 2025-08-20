@@ -18,7 +18,7 @@ package com.aspectran.core.context.asel.token;
 import java.io.Serial;
 
 /**
- * The Class TokenEvaluationException.
+ * Thrown when an error occurs during the evaluation of an AsEL token.
  */
 public class TokenEvaluationException extends RuntimeException {
 
@@ -38,7 +38,7 @@ public class TokenEvaluationException extends RuntimeException {
     }
 
     /**
-     * Gets the token which is failed to evaluate expression.
+     * Returns the token that failed to be evaluated.
      * @return the token
      */
     public Token getToken() {

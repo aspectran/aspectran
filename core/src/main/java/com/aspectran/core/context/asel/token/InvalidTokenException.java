@@ -18,7 +18,8 @@ package com.aspectran.core.context.asel.token;
 import java.io.Serial;
 
 /**
- * The Class InvalidTokenException.
+ * Thrown to indicate that a token is malformed or used in an invalid context
+ * during parsing or evaluation.
  */
 public class InvalidTokenException extends RuntimeException {
 
@@ -45,6 +46,10 @@ public class InvalidTokenException extends RuntimeException {
         this.token = token;
     }
 
+    /**
+     * Returns the token that caused this exception.
+     * @return the invalid token
+     */
     public Token getToken() {
         return this.token;
     }

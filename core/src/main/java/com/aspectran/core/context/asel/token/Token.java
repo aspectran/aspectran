@@ -27,8 +27,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * A token has a string value of its own or contains information
- * for fetching a specific value from another provider.
+ * Represents a parsed token from an Aspectran Expression Language (AsEL) string.
+ * <p>A token can be a special expression that is resolved at runtime or a plain
+ * text segment. Special tokens are identified by symbols and are used to access
+ * various data within the application context.
+ *
+ * <p>The supported token types are:
+ * <ul>
+ *   <li><code>${...}</code> for parameters</li>
+ *   <li><code>@{...}</code> for attributes</li>
+ *   <li><code>%{...}</code> for properties</li>
+ *   <li><code>#{...}</code> for beans</li>
+ *   <li><code>~{...}</code> for templates</li>
+ * </ul>
+ *
+ * <p>A special token can also include a name, an optional default value, and a
+ * getter name, following the format:
+ * <br><code>token_symbol{token_name:default_value^getter_name}</code>
  *
  * <p>The following symbols are used to distinguish the providers of values:</p>
  * <dl>
@@ -88,22 +103,31 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.TOKEN;
 
+    /** The character that identifies a bean token. */
     public static final char BEAN_SYMBOL = '#';
 
+    /** The character that identifies a parameter token. */
     public static final char PARAMETER_SYMBOL = '$';
 
+    /** The character that identifies an attribute token. */
     public static final char ATTRIBUTE_SYMBOL = '@';
 
+    /** The character that identifies a property token. */
     public static final char PROPERTY_SYMBOL = '%';
 
+    /** The character that identifies a template token. */
     public static final char TEMPLATE_SYMBOL = '~';
 
+    /** The character that opens a token expression. */
     public static final char BRACKET_OPEN = '{';
 
+    /** The character that closes a token expression. */
     public static final char BRACKET_CLOSE = '}';
 
+    /** The character that separates a token's name from its default value. */
     public static final char VALUE_DELIMITER = ':';
 
+    /** The character that separates a token's name/value from its getter name. */
     public static final char GETTER_DELIMITER = '^';
 
     private final TokenType type;
@@ -121,8 +145,8 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     private String defaultValue;
 
     /**
-     * Instantiates a new Token.
-     * @param defaultValue the default value
+     * Constructs a new text token.
+     * @param defaultValue the plain text content of the token
      */
     public Token(String defaultValue) {
         this.type = TokenType.TEXT;
@@ -131,9 +155,10 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Instantiates a new Token.
+     * Constructs a new special token (e.g., parameter, attribute).
      * @param type the token type
      * @param name the token name
+     * @throws UnsupportedOperationException if the token type is {@code TEXT}
      */
     public Token(TokenType type, String name) {
         if (type == TokenType.TEXT) {
@@ -150,10 +175,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Instantiates a new Token.
+     * Constructs a new special token with a directive.
      * @param type the token type
      * @param directiveType the token directive type
      * @param value the token value
+     * @throws IllegalArgumentException if type or directiveType is null
      */
     public Token(TokenType type, TokenDirectiveType directiveType, String value) {
         if (type == null) {
@@ -169,16 +195,19 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Gets the token type.
-     * @return the token type
+     * Returns the type of this token (e.g., TEXT, PARAMETER, BEAN).
+     * @return the token type, never {@code null}
      */
     public TokenType getType() {
         return type;
     }
 
     /**
-     * Gets the token directive type.
-     * @return the token directive type
+     * Returns the directive type for this token, if any.
+     * <p>Directives provide special instructions for how to resolve a token's value,
+     * such as accessing a bean by class name ({@code CLASS}) or loading a properties
+     * file from the classpath ({@code CLASSPATH}).</p>
+     * @return the token directive type, or {@code null} if none is specified
      * @see TokenDirectiveType
      */
     public TokenDirectiveType getDirectiveType() {
@@ -186,93 +215,101 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Gets the token name.
-     * @return the token name
+     * Returns the name of the token, which is used as the key for value retrieval.
+     * For a text token, this will be {@code null}.
+     * @return the token name, or {@code null} for a text token
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the class name of the bean or the classpath of the Properties file,
-     * depending on the type of token.
-     * For example, if the token type is "bean" and the token name is "class",
-     * the value of the token is the class name of the bean.
-     * Also, if the token type is "property" and the token name is "classpath",
-     * the value of the token is the path to reference in the Properties file.
-     * @return the default value or bean's class name
+     * Returns the value associated with a token's directive.
+     * <p>This is typically a class name for a bean token or a resource path for
+     * a property token.</p>
+     * @return the directive value, or {@code null} if not applicable
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * Sets the class name of the bean or the classpath of the Properties file,
-     * depending on the type of the token.
-     * @param value the class name of the bean or the classpath of the Properties file
+     * Sets the value associated with a token's directive.
+     * @param value the directive value
      */
     public void setValue(String value) {
         this.value = value;
     }
 
     /**
-     * Gets the name of the property whose value is to be retrieved.
-     * @return the name of the property whose value is to be retrieved
+     * Returns the name of a getter method or property to be invoked on the resolved token value.
+     * @return the getter name, or {@code null} if not specified
      */
     public String getGetterName() {
         return getterName;
     }
 
     /**
-     * Gets an object that is able to provide the values of a token.
-     * It could be a field, a method or a class, depending on the directive type.
-     * @return the alternative value
+     * Returns a pre-resolved object that can provide the token's value, such as a
+     * {@link Method}, {@link Field}, or {@link Class}. This is used for optimization
+     * to avoid repeated lookups.
+     * @return the value provider, or {@code null} if not resolved
      */
     public Object getValueProvider() {
         return valueProvider;
     }
 
     /**
-     * Sets an object that is able to provide the values of a token.
-     * It could be a field, a method or a class, depending on the directive type.
-     * @param valueProvider the value provider
+     * Sets a pre-resolved object that can provide the token's value, such as a
+     * {@link Method}, {@link Field}, or {@link Class}. This is used for optimization
+     * to avoid repeated reflection lookups.
+     * @param valueProvider the pre-resolved value provider object
      */
     public void setValueProvider(Object valueProvider) {
         this.valueProvider = valueProvider;
     }
 
     /**
-     * Sets the name of the property whose value is to be retrieved.
-     * @param getterName the name of the property whose value is to be retrieved
+     * Sets the name of a getter method or property to be invoked on the resolved token value.
+     * @param getterName the name of the getter method or property to invoke
      */
     public void setGetterName(String getterName) {
         this.getterName = getterName;
     }
 
     /**
-     * Gets the default value.
-     * @return the default value
+     * Returns the default value to be used if the token cannot be resolved.
+     * For a text token, this holds the plain text content.
+     * @return the default value, or {@code null} if not specified
      */
     public String getDefaultValue() {
         return defaultValue;
     }
 
     /**
-     * Sets the default value.
-     * @param defaultValue the new default value
+     * Sets the default value for this token.
+     * @param defaultValue the default value
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
+    /**
+     * Returns the type of the bean referer, which is always {@link BeanRefererType#TOKEN}
+     * for this class.
+     * @return the bean referer type
+     */
     @Override
     public BeanRefererType getBeanRefererType() {
         return BEAN_REFERER_TYPE;
     }
 
     /**
-     * Convert a Token object into a string.
-     * @return a string representation of the token
+     * Converts this token back into its original string representation.
+     * <p>This method reconstructs the expression string (e.g., <code>${name:defaultValue}</code>)
+     * from the token's properties, effectively reversing the parsing process.</p>
+     * @return the string representation of the token
+     * @throws InvalidTokenException if the token type is unknown
      */
     public String stringify() {
         if (type == TokenType.TEXT) {
@@ -389,6 +426,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return result;
     }
 
+    /**
+     * Creates and returns a deep copy of this token.
+     * @return a new, replicated {@code Token} instance
+     * @see Replicable#replicate()
+     */
     @Override
     public Token replicate() {
         Token token;
@@ -409,6 +451,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return token;
     }
 
+    /**
+     * Creates and returns a deep copy of the given token array.
+     * @param tokens the array of tokens to replicate
+     * @return a new array containing replicated tokens
+     */
     public Token[] replicate(Token[] tokens) {
         if (tokens == null) {
             return null;
@@ -432,9 +479,10 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Returns whether a specified character is the token symbol.
-     * @param c a character
-     * @return true, if a specified character is one of the token symbols
+     * Checks if the given character is a special symbol that marks the beginning
+     * of a token expression (e.g., '$', '@', '#').
+     * @param c the character to check
+     * @return {@code true} if the character is a token symbol; {@code false} otherwise
      */
     public static boolean isTokenSymbol(char c) {
         return (c == BEAN_SYMBOL
@@ -444,6 +492,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 || c == PROPERTY_SYMBOL);
     }
 
+    /**
+     * Checks if the given expression string contains any AsEL tokens.
+     * @param expression the string to check
+     * @return {@code true} if the string contains tokens; {@code false} otherwise
+     */
     public static boolean hasToken(@NonNull String expression) {
         char[] ca = expression.toCharArray();
         boolean open = false;
@@ -459,9 +512,10 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Returns the token type for the specified character.
+     * Resolves a token symbol character to its corresponding {@link TokenType}.
      * @param symbol the token symbol character
      * @return the token type
+     * @throws IllegalArgumentException if the symbol is unknown
      */
     public static TokenType resolveTypeAsSymbol(char symbol) {
         TokenType type;
@@ -481,6 +535,13 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return type;
     }
 
+    /**
+     * Resolves and sets the {@code valueProvider} for a bean token by loading the
+     * specified class, field, or method. This is a pre-processing step to optimize
+     * evaluation by caching reflection lookups.
+     * @param token the bean token to resolve
+     * @param classLoader the class loader to use for loading classes
+     */
     public static void resolveValueProvider(Token token, ClassLoader classLoader) {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
@@ -520,6 +581,13 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         }
     }
 
+    /**
+     * Formats a raw expression string into a valid AsEL token string by wrapping
+     * it with the appropriate symbols (e.g., "name" becomes "#{name}").
+     * @param type the {@link TokenType} to apply
+     * @param expression the raw expression content
+     * @return the formatted token string
+     */
     public static String format(TokenType type, String expression) {
         if (type == null) {
             throw new IllegalArgumentException("Token type must not be null");

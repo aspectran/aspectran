@@ -24,9 +24,14 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * The Class Tokenizer.
+ * A utility class that tokenizes strings containing Aspectran Expression Language (AsEL) tokens.
+ * <p>This class scans a character sequence and splits it into a list of {@link Token}
+ * objects. It recognizes the syntax for different token types (e.g., <code>${...}</code>,
+ * <code>@{...}</code>), including their names, default values, and getter directives. The
+ * maximum length for a token name is 256 characters; longer names will be treated as
+ * plain text.</p>
  *
- * <p>Created: 2008. 03. 29 AM 1:55:03</p>
+ * @see Token
  */
 public class Tokenizer {
 
@@ -45,10 +50,12 @@ public class Tokenizer {
     private static final char LF = '\n';
 
     /**
-     * Returns a list of {@code Token} objects separated by token expression.
-     * @param chars the char values to tokenize
-     * @param textTrim whether to trim text
-     * @return a list of tokens
+     * Tokenizes a character sequence into a list of {@link Token} objects.
+     * <p>This is the core tokenizing method that drives the parsing process.</p>
+     * @param chars the character sequence to tokenize
+     * @param textTrim whether to trim whitespace from the start and end of plain text tokens
+     * @return a list of parsed tokens
+     * @throws IllegalArgumentException if the input character sequence is null
      */
     @NonNull
     public static List<Token> tokenize(CharSequence chars, boolean textTrim) {
@@ -148,11 +155,12 @@ public class Tokenizer {
     }
 
     /**
-     * Create a token.
-     * @param symbol the token symbol
-     * @param nameBuf the name buffer
-     * @param valueBuf the value buffer
-     * @return the token
+     * Creates a special token (e.g., parameter, attribute) from its constituent parts.
+     * This method also handles parsing of getter names and default values from the token's name and value buffers.
+     * @param symbol the special character that identifies the token type (e.g., '$', '@')
+     * @param nameBuf the buffer containing the token's name and optional getter
+     * @param valueBuf the buffer containing the token's default value, or null if not present
+     * @return a new {@link Token} instance representing the special token
      */
     @NonNull
     private static Token createToken(char symbol, StringBuilder nameBuf, StringBuilder valueBuf) {
@@ -229,6 +237,14 @@ public class Tokenizer {
         }
     }
 
+    /**
+     * Creates a plain text token from a subsequence of the input characters.
+     * @param chars the original character sequence
+     * @param start the start index of the text segment
+     * @param end the end index of a text segment
+     * @param trim whether to apply special trimming logic to the text
+     * @return a new text {@link Token}
+     */
     @NonNull
     private static Token createToken(CharSequence chars, int start, int end, boolean trim) {
         String text = extract(chars, start, end, trim);
@@ -241,10 +257,10 @@ public class Tokenizer {
      * "   \r\n   aaa  \r\n  bbb  "   ==&gt;   "\naaa  \n  bbb"
      * "  aaa    \r\n   bbb   \r\n  "   ==&gt;   "aaa\nbbb\n"
      * </pre>
-     * @param chars the char values
-     * @param start the start index of a sequence of char values
-     * @param end the end index of a sequence of char values
-     * @param trim whether to trim white space characters
+     * @param chars the original character sequence
+     * @param start the start index of the text segment
+     * @param end the end index of a text segment
+     * @param trim whether to apply special trimming logic to the text
      * @return the extracted string
      */
     private static String extract(CharSequence chars, int start, int end, boolean trim) {
@@ -296,10 +312,10 @@ public class Tokenizer {
     }
 
     /**
-     * Returns an array of tokens that is optimized.
-     * Eliminates unnecessary white spaces for the first and last tokens.
-     * @param tokens the tokens before optimizing
-     * @return the optimized tokens
+     * Optimizes an array of tokens by trimming leading and trailing whitespace
+     * from the first and last text tokens, respectively.
+     * @param tokens the array of tokens to optimize
+     * @return the optimized array of tokens, or {@code null} if the input is null
      */
     public static Token[] optimize(Token[] tokens) {
         if (tokens == null) {
@@ -335,10 +351,9 @@ public class Tokenizer {
     }
 
     /**
-     * Returns a string that contains a copy of a specified string
-     * without leading whitespaces.
-     * @param str the string to trim leading whitespaces
-     * @return a string with leading whitespaces trimmed
+     * Trims leading whitespace from a string.
+     * @param str the string to trim
+     * @return the trimmed string
      */
     @NonNull
     private static String trimLeadingWhitespace(@NonNull String str) {
@@ -361,10 +376,9 @@ public class Tokenizer {
     }
 
     /**
-     * Returns a string that contains a copy of a specified string
-     * without trailing whitespaces.
-     * @param str the string to trim trailing whitespaces
-     * @return a string with trailing whitespaces trimmed
+     * Trims trailing whitespace from a string.
+     * @param str the string to trim
+     * @return the trimmed string
      */
     private static String trimTrailingWhitespace(@NonNull String str) {
         int end = 0;
