@@ -16,7 +16,6 @@
 package com.aspectran.daemon.adapter;
 
 import com.aspectran.core.adapter.DefaultResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
 
 import java.io.Writer;

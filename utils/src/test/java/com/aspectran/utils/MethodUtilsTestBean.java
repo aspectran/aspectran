@@ -25,17 +25,14 @@ public class MethodUtilsTestBean {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodUtilsTestBean.class);
 
-    @SuppressWarnings("unused")
     public void primitiveArray(int num) {
         logger.debug("specified args: {}", num);
     }
 
-    @SuppressWarnings("unused")
     public void primitiveArray(int[] intArray) {
         logger.debug("specified args: {}", Arrays.toString(intArray));
     }
 
-    @SuppressWarnings("unused")
     public String countTo10() {
         StringBuilder sb = new StringBuilder();
 
@@ -46,22 +43,18 @@ public class MethodUtilsTestBean {
         return sb.toString();
     }
 
-    @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean sampleBean) {
         logger.debug("specified args: {}", sampleBean);
     }
 
-    @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean[] sampleBean) {
         logger.debug("specified args: {}", Arrays.toString(sampleBean));
     }
 
-    @SuppressWarnings("unused")
     public void setSampleBean(List<MethodUtilsTestBean> list) {
         logger.debug("specified args: {}", list);
     }
 
-    @SuppressWarnings("unused")
     public static class ExtendedMethodUtilsTestBean extends MethodUtilsTestBean {
     }
 

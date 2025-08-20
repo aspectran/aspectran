@@ -16,7 +16,6 @@
 package com.aspectran.daemon.adapter;
 
 import com.aspectran.core.adapter.DefaultRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**

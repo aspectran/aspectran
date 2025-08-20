@@ -664,7 +664,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
             return new Reference[size];
         }
 
-        @NonNull
         private int getIndex(int hash, @NonNull Reference<K, V>[] references) {
             return (hash & (references.length - 1));
         }
