@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * <p>Created: 2021/02/04</p>
@@ -78,6 +79,17 @@ class ValueExpressionTest {
     @Test
     void evaluate4() {
         assertEquals("[bar1, bar2, bar3]", ValueExpression.evaluate("'${bars}'", activity));
+    }
+
+    @Test
+    void failed() {
+        // This should fail because there is no operator between tokens,
+        // resulting in an invalid OGNL expression.
+        // This test verifies an important design principle that AsEL does not allow
+        // ambiguous expressions and forces developers to explicitly state their intentions
+        // using operators such as '+'.
+        assertThrows(ExpressionEvaluationException.class, () ->
+                ValueExpression.evaluate("${foo}${bar}", activity));
     }
 
 }

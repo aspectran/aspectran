@@ -120,8 +120,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
                     } else {
                         String tokenVarName = createTokenVarName(token);
                         tokenVars.putIfAbsent(tokenVarName, token);
-                        substitutedExpression = createTokenVarRefName(tokenVarName);
-                        sb.append(substitutedExpression);
+                        sb.append(createTokenVarRefName(tokenVarName));
                     }
                 }
                 substitutedExpression = sb.toString();

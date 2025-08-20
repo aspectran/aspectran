@@ -420,7 +420,7 @@
                 <jdk>(,22)</jdk>
             </activation>
             <properties>
-                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet.css</stylesheetfile>
             </properties>
         </profile>
         <profile>
@@ -429,7 +429,7 @@
                 <jdk>[22,23)</jdk>
             </activation>
             <properties>
-                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet-java22.css</stylesheetfile>
+                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet-java22.css</stylesheetfile>
             </properties>
         </profile>
         <profile>
@@ -438,7 +438,7 @@
                 <jdk>[23,)</jdk>
             </activation>
             <properties>
-                <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet-java23.css</stylesheetfile>
+                <stylesheetfile>${main.basedir}/all/src/main/javadoc/stylesheet-java23.css</stylesheetfile>
             </properties>
         </profile>
         <profile>
