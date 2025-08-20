@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * A central utility class providing support for OGNL (Object-Graph Navigation Language)
  * expression evaluation. This class is the core executor for what can be considered
- * Aspectran's "Value Expressions" and "Boolean Expressions".
+ * Aspectran's "Value Expressions".
  *
  * <p>This class acts as a facade for the underlying OGNL library, offering static helper
  * methods and constants for common OGNL operations within Aspectran. It is responsible for:
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * <p>It does not handle the initial parsing of expression strings; rather, it focuses on
  * the secure execution of already-parsed expressions. The result of an evaluation can be
- * any object (a Value Expression) or be specifically used as a condition (a Boolean Expression).
+ * any object (a Value Expression).
  */
 public abstract class OgnlSupport {
 

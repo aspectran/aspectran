@@ -24,11 +24,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Defines the contract for an evaluator that processes {@link ItemRule} instances
- * to produce runtime objects.
- * <p>This evaluator is the bridge between the static rules defined in configuration
- * and the dynamic objects used during an activity's execution. It processes item
- * rules, resolves any embedded AsEL tokens or bean references, and constructs the
+ * Defines the contract for an evaluator that evaluates item rules containing AsEL token expressions.
+ * <p>This evaluator is the bridge between the static rules defined in the configuration
+ * and the dynamic objects used during an activity's execution. It processes {@link ItemRule}
+ * instances, resolves any embedded AsEL tokens or bean references, and constructs the
  * final data structures (like Maps, Lists, or simple objects).</p>
  *
  * @since 2010. 5. 6.

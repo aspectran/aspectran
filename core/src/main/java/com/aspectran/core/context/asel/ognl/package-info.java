@@ -15,22 +15,21 @@
  */
 /**
  * Provides the OGNL (Object-Graph Navigation Language) integration for AsEL.
- * <p>This package contains the necessary components to parse and evaluate complex
- * OGNL expressions, which form the basis of Aspectran's "Value Expressions" and
- * "Boolean Expressions". A key feature is the two-stage evaluation process: AsEL
- * tokens (like <code>${...}</code> or <code>#{...}</code>) embedded within an OGNL
- * expression are resolved first. The resulting objects are then used as inputs for
- * the final OGNL evaluation.
+ * <p>This package, in conjunction with the {@link com.aspectran.core.context.asel.item.ItemEvaluator},
+ * forms the basis of Aspectran's "ValueEvaluator" concept, which handles both AsEL tokens
+ * and OGNL expressions. While the {@code ItemEvaluator} handles the resolution of AsEL
+ * tokens within item rules, the classes in this package are responsible for parsing and
+ * evaluating complex OGNL expressions that may use the results of that token evaluation.
  *
- * <p>A "Boolean Expression" is a specific type of Value Expression that resolves to
- * a boolean result, often used for conditional logic. For example:
+ * <p>This two-stage process allows for powerful "Value Expressions".
+ * For example, an expression used for conditional logic might look like:
  * <pre>
  *   #{userBean.role} == 'ADMIN' &amp;&amp; ${loginAttempts} &lt; 5
  * </pre>
  * In this case, the AsEL tokens <code>#{userBean.role}</code> and
- * <code>${loginAttempts}</code> are resolved first. Then, the OGNL engine evaluates
- * the entire expression to produce a final boolean value. This mechanism is
- * fundamental to features like conditional actions (e.g., <code>&lt;if&gt;</code>,
- * <code>&lt;choose&gt;</code>) in Aspectran.
+ * <code>${loginAttempts}</code> are resolved first by the token evaluation mechanism.
+ * Then, the OGNL engine in this package evaluates the entire expression to produce a
+ * final value. This mechanism is fundamental to features like conditional
+ * actions (e.g., <code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>) in Aspectran.
  */
 package com.aspectran.core.context.asel.ognl;
