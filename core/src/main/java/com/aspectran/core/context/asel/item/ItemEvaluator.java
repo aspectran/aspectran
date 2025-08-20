@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Represents a core component responsible for evaluating {@link ItemRule} definitions
- * to produce runtime values.
+ * Defines the contract for an evaluator that processes {@link ItemRule} instances
+ * to produce runtime objects.
  * <p>This evaluator is the bridge between the static rules defined in configuration
  * and the dynamic objects used during an activity's execution. It processes item
  * rules, resolves any embedded AsEL tokens or bean references, and constructs the
@@ -36,8 +36,8 @@ import java.util.Map;
 public interface ItemEvaluator {
 
     /**
-     * Evaluates all item rules within the given {@link ItemRuleMap} and returns the
-     * results as a map of item names to their resolved values.
+     * Evaluates all item rules within the given {@link ItemRuleMap} and returns the results
+     * as a map of item names to their resolved values.
      * <p>Each item's value is resolved by evaluating its defined tokens or bean references.</p>
      * @param itemRuleMap the map of item rules to evaluate
      * @return a new map containing the evaluated key-value pairs
@@ -45,8 +45,8 @@ public interface ItemEvaluator {
     Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
 
     /**
-     * Evaluates all item rules within the given {@link ItemRuleMap} and populates an
-     * existing map with the results.
+     * Evaluates all item rules within the given {@link ItemRuleMap} and populates an existing
+     * map with the results.
      * <p>This method is useful for aggregating values into a pre-existing map.</p>
      * @param itemRuleMap the map of item rules to evaluate
      * @param valueMap the map to be populated with the evaluated key-value pairs
