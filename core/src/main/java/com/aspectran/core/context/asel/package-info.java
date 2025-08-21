@@ -15,25 +15,25 @@
  */
 /**
  * Contains the Aspectran Expression Language (AsEL) classes.
- * <p>AsEL is a powerful expression language that supports querying and manipulating
- * an object graph at runtime. It has its own token expression format for simple
- * value retrieval and internally uses OGNL (Object-Graph Navigation Language)
- * to handle more complex expressions.
+ * <p>AsEL is a powerful expression language based on OGNL (Object-Graph Navigation Language)
+ * that allows querying and manipulating an object graph at runtime.
  *
- * <p>The Aspectran Token expression provides a simple and consistent way to access
- * various data within the application context. Tokens are identified by special
- * symbols and can be embedded within strings to be resolved at runtime.
- * The supported token types are:</p>
+ * <p>AsEL is composed of two main components:
+ * <ol>
+ *   <li><b>Token Expression</b>: Aspectran's own simple expression syntax for direct
+ *       access to framework components. Tokens are identified by special symbols.</li>
+ *   <li><b>AsEL Expression</b>: A full-featured expression that combines Token Expressions
+ *       with OGNL's capabilities, such as method calls, property navigation, and
+ *       conditional logic.</li>
+ * </ol>
+ *
+ * <p>The supported token types are:</p>
  * <ul>
- *   <li><code>${parameterName}</code>: Accesses a request parameter.</li>
- *   <li><code>@{attributeName}</code>: Accesses an attribute from the current activity context.</li>
- *   <li><code>%{propertyName}</code>: Accesses a property from the environment.</li>
  *   <li><code>#{beanId}</code>: Accesses a bean from the bean registry.</li>
- *   <li><code>~{templateId}</code>: Accesses a compiled template.</li>
+ *   <li><code>@{attributeName}</code>: Accesses an attribute from the current activity context.</li>
+ *   <li><code>${parameterName}</code>: Accesses a request parameter.</li>
+ *   <li><code>%{propertyName}</code>: Accesses a property from the environment.</li>
+ *   <li><code>~{templateId}</code>: Renders a template and includes its output.</li>
  * </ul>
- * <p>These tokens are parsed and evaluated to dynamically insert values into
- * strings or to retrieve objects for further processing. For more complex logic,
- * such as method calls or conditional operations, AsEL delegates the evaluation
- * to OGNL.</p>
  */
 package com.aspectran.core.context.asel;

@@ -45,11 +45,11 @@ import java.util.Set;
 
 /**
  * The default, concrete implementation of the {@link ItemEvaluator}.
- * <p>This class orchestrates the evaluation process by recursively resolving values
- * defined in an {@link ItemRule}. It uses a {@link TokenEvaluator} to handle the
- * low-level resolution of AsEL tokens and bean references, and then assembles the
- * results into the final, typed data structures (e.g., {@link List}, {@link Map},
- * {@link Properties}) as specified by the item rule.</p>
+ * <p>This class orchestrates the evaluation process for {@link ItemRule} instances.
+ * It uses a {@link TokenEvaluator} to handle the low-level resolution of AsEL token
+ * expressions, and then assembles the results into the final, typed data structures
+ * (e.g., {@link java.util.List}, {@link java.util.Map}, {@link java.util.Properties})
+ * as specified by the item rule.</p>
  *
  * @since 2008. 06. 19
  */

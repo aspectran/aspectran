@@ -15,21 +15,20 @@
  */
 /**
  * Provides the OGNL (Object-Graph Navigation Language) integration for AsEL.
- * <p>This package, in conjunction with the {@link com.aspectran.core.context.asel.item.ItemEvaluator},
- * forms the basis of Aspectran's "ValueEvaluator" concept, which handles both AsEL tokens
- * and OGNL expressions. While the {@code ItemEvaluator} handles the resolution of AsEL
- * tokens within item rules, the classes in this package are responsible for parsing and
- * evaluating complex OGNL expressions that may use the results of that token evaluation.
+ * <p>This package is responsible for the second stage of AsEL evaluation. After
+ * Aspectran's own token expressions (e.g., <code>#{...}</code>, <code>${...}</code>)
+ * are resolved into objects, the classes in this package parse and evaluate the
+ * resulting OGNL expression.
  *
- * <p>This two-stage process allows for powerful "Value Expressions".
+ * <p>This two-stage process allows for powerful "AsEL Expressions".
  * For example, an expression used for conditional logic might look like:
  * <pre>
- *   #{userBean.role} == 'ADMIN' &amp;&amp; ${loginAttempts} &lt; 5
+ *   #{user^getRole()} == 'ADMIN' &amp;&amp; ${loginAttempts} &lt; 5
  * </pre>
- * In this case, the AsEL tokens <code>#{userBean.role}</code> and
- * <code>${loginAttempts}</code> are resolved first by the token evaluation mechanism.
- * Then, the OGNL engine in this package evaluates the entire expression to produce a
- * final value. This mechanism is fundamental to features like conditional
- * actions (e.g., <code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>) in Aspectran.
+ * In this case, the token expressions <code>#{user^getRole()}</code> and
+ * <code>${loginAttempts}</code> are resolved first. Then, the OGNL engine in this
+ * package evaluates the entire expression to produce a final boolean value.
+ * This mechanism is fundamental to features like conditional actions
+ * (e.g., <code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>) in Aspectran.
  */
 package com.aspectran.core.context.asel.ognl;

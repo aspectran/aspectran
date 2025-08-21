@@ -24,14 +24,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A utility class that tokenizes strings containing Aspectran Expression Language (AsEL) tokens.
+ * A low-level utility class that tokenizes strings containing AsEL token expressions.
  * <p>This class scans a character sequence and splits it into a list of {@link Token}
- * objects. It recognizes the syntax for different token types (e.g., <code>${...}</code>,
- * <code>@{...}</code>), including their names, default values, and getter directives. The
- * maximum length for a token name is 256 characters; longer names will be treated as
- * plain text.</p>
+ * objects. It recognizes the syntax for different token expression types (e.g., <code>${...}</code>,
+ * <code>@{...}</code>), including their names, default values, directives, and property
+ * accessors (getters). The maximum length for a token name is 256 characters; longer
+ * names will be treated as plain text.</p>
  *
  * @see Token
+ * @see TokenParser
  */
 public class Tokenizer {
 

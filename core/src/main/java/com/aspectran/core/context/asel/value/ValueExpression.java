@@ -31,12 +31,11 @@ import java.util.Map;
 
 /**
  * A concrete implementation of {@link ValueEvaluator} that parses and evaluates
- * expressions containing both AsEL tokens and OGNL syntax.
- *
- * <p>This class acts as a primary entry point for expression evaluation. It internally
- * parses an expression string into a reusable, tokenized representation and caches
- * the result for performance. The actual evaluation logic is delegated to the
- * underlying {@link ExpressionEvaluator} instance.</p>
+ * AsEL expressions.
+ * <p>This class acts as a primary entry point for AsEL expression evaluation. It internally
+ * parses an expression string into a reusable, tokenized representation (an instance of
+ * {@link ExpressionEvaluator}) and caches the result for performance. The actual
+ * evaluation logic is delegated to the underlying {@link ExpressionEvaluator} instance.</p>
  *
  * <p>It also provides static helper methods for convenient, one-off expression
  * evaluations.</p>

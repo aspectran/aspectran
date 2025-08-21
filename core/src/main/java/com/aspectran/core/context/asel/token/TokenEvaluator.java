@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Defines the contract for evaluating Aspectran Expression Language (AsEL) tokens.
- * <p>This interface provides methods to resolve token values against the current
- * activity context, handling various data types and collections.</p>
+ * Defines the contract for evaluating parsed AsEL tokens.
+ * <p>This interface provides methods to resolve {@link Token} objects into their actual
+ * values against the current activity context. It handles the logic for retrieving
+ * values from various sources like beans, parameters, attributes, and properties.</p>
  *
  * <p>Created: 2010. 5. 6. AM 1:35:16</p>
  */

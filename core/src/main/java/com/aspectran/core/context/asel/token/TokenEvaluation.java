@@ -50,9 +50,10 @@ import java.util.Set;
 
 /**
  * The default implementation of the {@link TokenEvaluator} interface.
- * <p>This class provides the logic for resolving token values from various
- * sources within an {@link Activity}, such as parameters, attributes, beans,
- * properties, and templates.</p>
+ * <p>This class provides the concrete logic for resolving {@link Token} values from
+ * various sources within an {@link Activity}, such as parameters, attributes, beans,
+ * properties, and templates. It interprets the token's type, name, and directives
+ * to fetch the appropriate data.</p>
  *
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */

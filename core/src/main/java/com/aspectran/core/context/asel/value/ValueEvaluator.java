@@ -18,12 +18,12 @@ package com.aspectran.core.context.asel.value;
 import com.aspectran.core.activity.Activity;
 
 /**
- * Defines the contract for a "ValueEvaluator" that evaluates expressions, which can
- * contain both AsEL token expressions and OGNL expressions.
+ * Defines the contract for a "ValueEvaluator" that evaluates AsEL expressions.
+ * <p>This interface represents the core mechanism for resolving dynamic values that
+ * combine Aspectran's token expressions with OGNL expressions.
  *
- * <p>This interface represents the core mechanism for resolving dynamic values.
- * The evaluation process typically involves two stages: first, any embedded AsEL
- * tokens (e.g., <code>${...}</code>, <code>#{...}</code>) are resolved to their
+ * <p>The evaluation process is two-staged: first, any embedded token expressions
+ * (e.g., <code>${...}</code>, <code>#{...}</code>) are resolved to their
  * corresponding objects. Second, the resulting string is evaluated as an OGNL
  * expression, allowing for complex logic, method calls, and property access.</p>
  *

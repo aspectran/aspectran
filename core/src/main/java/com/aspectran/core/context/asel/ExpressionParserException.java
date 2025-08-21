@@ -20,7 +20,10 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import java.io.Serial;
 
 /**
- * Exception for all errors occurring during expression parsing.
+ * Thrown when an error occurs while parsing an AsEL expression string.
+ * <p>This exception typically occurs during the first stage of AsEL processing,
+ * such as when the expression contains malformed token syntax or an invalid OGNL
+ * structure.</p>
  */
 public class ExpressionParserException extends IllegalRuleException {
 

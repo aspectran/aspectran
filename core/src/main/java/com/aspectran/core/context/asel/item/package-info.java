@@ -16,8 +16,9 @@
 /**
  * Contains classes for evaluating item rules defined in Aspectran.
  * <p>This package provides the mechanism for interpreting and resolving the values
- * of {@link com.aspectran.core.context.rule.ItemRule} instances. The evaluator
- * handles the dynamic resolution of item values, which can be simple literals,
- * references to other beans, or complex expressions involving AsEL tokens.</p>
+ * of {@link com.aspectran.core.context.rule.ItemRule} instances. This corresponds to
+ * the simple evaluation context of AsEL, where token expressions are used for direct
+ * value retrieval or default value assignment, without involving complex OGNL
+ * expressions.</p>
  */
 package com.aspectran.core.context.asel.item;

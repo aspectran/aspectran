@@ -19,12 +19,12 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.ExpressionParserException;
 
 /**
- * Represents an expression that is expected to evaluate to a boolean value.
- * <p>This class is a specialized wrapper around a {@link ValueEvaluator} and is
+ * Represents an AsEL expression that is expected to evaluate to a boolean value.
+ * <p>This class is a specialized wrapper around a {@link ValueExpression} and is
  * typically used for conditional logic within Aspectran rules, such as in
  * <code>&lt;if&gt;</code> or <code>&lt;choose&gt;</code> elements.
- * The underlying expression can contain both AsEL tokens and OGNL syntax. It
- * follows the standard two-stage evaluation: AsEL tokens are resolved first,
+ * <p>The underlying expression can contain both token expressions and OGNL syntax.
+ * It follows the standard two-stage evaluation: token expressions are resolved first,
  * and the resulting string is then evaluated as an OGNL expression. The final
  * result is coerced into a boolean.</p>
  *

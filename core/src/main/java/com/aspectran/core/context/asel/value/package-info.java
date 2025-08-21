@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 /**
- * Contains classes for representing and evaluating various types of values.
- * <p>This package provides a structured way to handle values that can be simple
- * literals, collections (lists, maps), or complex expressions involving AsEL tokens.
- * These classes are used to encapsulate value definitions from rules and resolve
- * them at runtime.
+ * Contains classes for representing and evaluating AsEL expressions.
+ * <p>This package provides a structured way to handle the evaluation of complex
+ * AsEL expressions, which combine Aspectran's token expressions with the full power
+ * of OGNL. This corresponds to the dynamic value evaluation context of AsEL.
  *
- * <p>Notably, AsEL expressions (typically OGNL) can embed AsEL tokens. In such
- * cases, the tokens are evaluated first to retrieve their corresponding objects,
- * which are then used as part of the larger OGNL expression evaluation.</p>
+ * <p>The evaluation process is two-staged: first, any token expressions
+ * (e.g., <code>#{...}</code>, <code>${...}</code>) are resolved to their respective
+ * objects. Then, the entire expression is evaluated by the OGNL engine.
  *
  * <p>For example, in the expression:
  * <pre>
- *   #{myBean}.calculate(1 + ${someNumber})
+ *   #{myBean^calculate}(1 + ${someNumber})
  * </pre>
  * The <code>${someNumber}</code> token is resolved to a numeric value first. Then, the OGNL
  * expression is evaluated, calling the <code>calculate</code> method on the bean retrieved

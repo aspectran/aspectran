@@ -36,6 +36,16 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * The default, concrete implementation of the {@link ExpressionEvaluator} interface.
+ * <p>This class orchestrates the two-stage evaluation of an AsEL expression. First, it
+ * parses a raw expression string, separating Aspectran's token expressions from plain
+ * text. It then substitutes each token expression with a temporary variable reference
+ * (e.g., "#{@user.name}" becomes "#__var1__"). The resulting string is then parsed
+ * into a compiled OGNL expression tree.
+ * <p>During evaluation, it resolves the value of each token and places it into the
+ * OGNL context using the temporary variable name. Finally, it invokes the OGNL
+ * engine to evaluate the expression, producing the final result.</p>
+ *
  * <p>Created: 2024. 11. 26.</p>
  */
 public class TokenizedExpression implements ExpressionEvaluator {

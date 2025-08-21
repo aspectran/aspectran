@@ -18,7 +18,10 @@ package com.aspectran.core.context.asel;
 import java.io.Serial;
 
 /**
- * Error during evaluation of expression.
+ * Thrown when an error occurs during the evaluation of a parsed AsEL expression.
+ * <p>This exception typically occurs during the second stage of AsEL processing, when
+ * the OGNL engine executes the expression after all token expressions have been
+ * resolved.</p>
  */
 public class ExpressionEvaluationException extends RuntimeException {
 

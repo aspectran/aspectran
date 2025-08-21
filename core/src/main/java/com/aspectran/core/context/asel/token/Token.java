@@ -28,71 +28,62 @@ import java.lang.reflect.Method;
 
 /**
  * Represents a parsed token from an Aspectran Expression Language (AsEL) string.
- * <p>A token can be a special expression that is resolved at runtime or a plain
- * text segment. Special tokens are identified by symbols and are used to access
- * various data within the application context.
+ * <p>A token can be a special token expression that is resolved at runtime or a plain
+ * text segment. Special token expressions are identified by their wrapper symbols
+ * and are used to access various data within the application context.
  *
- * <p>The supported token types are:
+ * <p>The supported token expression formats are:
  * <ul>
- *   <li><code>${...}</code> for parameters</li>
- *   <li><code>@{...}</code> for attributes</li>
- *   <li><code>%{...}</code> for properties</li>
  *   <li><code>#{...}</code> for beans</li>
+ *   <li><code>@{...}</code> for attributes</li>
+ *   <li><code>${...}</code> for parameters</li>
+ *   <li><code>%{...}</code> for properties</li>
  *   <li><code>~{...}</code> for templates</li>
  * </ul>
  *
- * <p>A special token can also include a name, an optional default value, and a
- * getter name, following the format:
- * <br><code>token_symbol{token_name:default_value^getter_name}</code>
+ * <p>A special token can also include a name, a directive, a getter, and an optional
+ * default value, following the format:
+ * <br><code>token_symbol{directive:token_name^getter_name:default_value}</code>
  *
  * <p>The following symbols are used to distinguish the providers of values:</p>
  * <dl>
- *     <dt>#</dt>
- *     <dd><p>Refers to a bean specified by the Bean Registry.</p>
- *         ex)
+ *     <dt># - Bean</dt>
+ *     <dd>Refers to a bean from the Bean Registry.
  *         <ul>
- *         <li>#{beanId}
- *         <li>#{beanId^getterName}
- *         <li>#{beanId^getterName:defaultString}
- *         <li>#{class:className}
- *         <li>#{class:className^getterName}
- *         <li>#{class:className^getterName:defaultString}
+ *         <li><code>#{beanId}</code></li>
+ *         <li><code>#{beanId^propertyName}</code></li>
+ *         <li><code>#{class:className^staticPropertyName}</code></li>
+ *         <li><code>#{field:className^staticFieldName}</code></li>
  *         </ul>
  *     </dd>
- *     <dt>~</dt>
- *     <dd><p>Refers to a string formatted from the Template Rule Registry.</p>
- *         ex)
+ *     <dt>@ - Attribute</dt>
+ *     <dd>Refers to an attribute value in the current activity context.
  *         <ul>
- *         <li>~{templateId}
- *         <li>~{templateId:defaultString}
+ *         <li><code>@{attributeName}</code></li>
+ *         <li><code>@{attributeName^propertyName}</code></li>
+ *         <li><code>@{attributeName:defaultValue}</code></li>
  *         </ul>
  *     </dd>
- *     <dt>$</dt>
- *     <dd><p>Refers to a parameter value.</p>
- *         ex)
+ *     <dt>$ - Parameter</dt>
+ *     <dd>Refers to a request parameter value.
  *         <ul>
- *         <li>${parameterName}
- *         <li>${parameterName:defaultString}
+ *         <li><code>${parameterName}</code></li>
+ *         <li><code>${parameterName:defaultValue}</code></li>
  *         </ul>
  *     </dd>
- *     <dt>@</dt>
- *     <dd><p>Refers to an attribute value.</p>
- *         ex)
+ *     <dt>% - Property</dt>
+ *     <dd>Refers to a property from the environment.
  *         <ul>
- *         <li>{@literal @}{attributeName}
- *         <li>{@literal @}{attributeName:defaultString}
- *         <li>{@literal @}{attributeName^getterName:defaultString}
+ *         <li><code>%{propertyName}</code></li>
+ *         <li><code>%{system:java.version}</code></li>
+ *         <li><code>%{classpath:path/to/file.properties^propName}</code></li>
  *         </ul>
  *     </dd>
- *     <dt>%</dt>
- *     <dd><p>Refers to a property from the specified Properties file or environment variables.</p>
- *         ex)
+ *     <dt>~ - Template</dt>
+ *     <dd>Renders a template and includes its output.
  *         <ul>
- *         <li>%{environmentPropertyName}
- *         <li>%{classpath:propertiesPath^getterName}
- *         <li>%{classpath:propertiesPath^getterName:defaultString}
- *         <li>%{system:propertiesName}
- *         <li>%{system:propertiesName:defaultString}
+ *         <li><code>~{templateId}</code></li>
+ *         <li><code>~{templateId:defaultContent}</code></li>
  *         </ul>
  *     </dd>
  * </dl>

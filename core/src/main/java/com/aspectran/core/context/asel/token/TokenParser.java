@@ -26,10 +26,10 @@ import java.util.Map;
 
 /**
  * A utility class for parsing strings containing Aspectran Expression Language (AsEL) tokens.
- * <p>This parser identifies and extracts special tokens (e.g., <code>${...}</code>,
- * <code>@{...}</code>) and plain text from a given string, converting them into an
- * array of {@link Token} objects. These tokens can then be evaluated at runtime
- * to dynamically resolve values from the application context.</p>
+ * <p>This class acts as a high-level parser that uses a {@link Tokenizer} to split an
+ * expression string into a series of {@link Token} objects. It provides methods to
+ * handle different parsing scenarios, such as simple tokenization, optimization
+ * (trimming whitespace), and parsing into specific collection types like lists or maps.</p>
  *
  * @see Token
  * @see Tokenizer
