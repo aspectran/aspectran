@@ -61,6 +61,9 @@ import java.util.Set;
  * configuration. Also exposes hooks to ignore certain dependency types and
  * interfaces during autowiring.
  * </p>
+ * @see com.aspectran.core.context.rule.BeanRule
+ * @see BeanClassScanner
+ * @see AnnotatedConfigParser
  */
 public class BeanRuleRegistry {
 
@@ -106,18 +109,35 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.io.Closeable.class);
     }
 
+    /**
+     * Returns an unmodifiable set of base packages to scan for beans.
+     * @return a set of base package names
+     */
     public Set<String> getBasePackages() {
         return Collections.unmodifiableSet(basePackages);
     }
 
+    /**
+     * Ignores the given dependency type for autowiring.
+     * @param type the dependency type to ignore
+     */
     public void ignoreDependencyType(Class<?> type) {
         this.ignoredDependencyTypes.add(type);
     }
 
+    /**
+     * Ignores the given dependency interface for autowiring.
+     * @param ifc the dependency interface to ignore
+     */
     public void ignoreDependencyInterface(Class<?> ifc) {
         this.ignoredDependencyInterfaces.add(ifc);
     }
 
+    /**
+     * Returns the bean rule for the given id.
+     * @param id the bean id
+     * @return the bean rule, or {@code null} if not found
+     */
     public BeanRule getBeanRule(String id) {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
@@ -125,6 +145,13 @@ public class BeanRuleRegistry {
         return idBasedBeanRuleMap.get(id);
     }
 
+    /**
+     * Returns an array of bean rules for the given name.
+     * The name can be a bean ID or a class name with the prefix "class:".
+     * @param name the bean id or class name
+     * @return an array of bean rules, or {@code null} if not found
+     * @throws ClassNotFoundException if the class specified in the name is not found
+     */
     public BeanRule[] getBeanRules(String name) throws ClassNotFoundException {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
@@ -143,6 +170,11 @@ public class BeanRuleRegistry {
         }
     }
 
+    /**
+     * Returns an array of bean rules for the given type.
+     * @param type the bean type
+     * @return an array of bean rules, or {@code null} if not found
+     */
     public BeanRule[] getBeanRules(Class<?> type) {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
@@ -155,6 +187,11 @@ public class BeanRuleRegistry {
         }
     }
 
+    /**
+     * Returns the configurable bean rule for the given type.
+     * @param type the bean type
+     * @return the configurable bean rule, or {@code null} if not found
+     */
     public BeanRule getBeanRuleForConfig(Class<?> type) {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
@@ -162,6 +199,11 @@ public class BeanRuleRegistry {
         return configurableBeanRuleMap.get(type);
     }
 
+    /**
+     * Checks if a bean rule with the given id is registered.
+     * @param id the bean id
+     * @return {@code true} if a bean rule with the given id is registered, {@code false} otherwise
+     */
     public boolean containsBeanRule(String id) {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
@@ -169,6 +211,11 @@ public class BeanRuleRegistry {
         return idBasedBeanRuleMap.containsKey(id);
     }
 
+    /**
+     * Checks if a bean rule with the given type is registered.
+     * @param type the bean type
+     * @return {@code true} if a bean rule with the given type is registered, {@code false} otherwise
+     */
     public boolean containsBeanRule(Class<?> type) {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
@@ -176,18 +223,35 @@ public class BeanRuleRegistry {
         return typeBasedBeanRuleMap.containsKey(type);
     }
 
+    /**
+     * Returns a collection of all id-based bean rules.
+     * @return a collection of bean rules
+     */
     public Collection<BeanRule> getIdBasedBeanRules() {
         return idBasedBeanRuleMap.values();
     }
 
+    /**
+     * Returns a collection of all type-based bean rule sets.
+     * @return a collection of bean rule sets
+     */
     public Collection<Set<BeanRule>> getTypeBasedBeanRules() {
         return typeBasedBeanRuleMap.values();
     }
 
+    /**
+     * Returns a collection of all configurable bean rules.
+     * @return a collection of configurable bean rules
+     */
     public Collection<BeanRule> getConfigurableBeanRules() {
         return configurableBeanRuleMap.values();
     }
 
+    /**
+     * Finds all configurable bean classes that are annotated with the given annotation type.
+     * @param annotationType the annotation type to look for
+     * @return a collection of bean classes
+     */
     public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
         if (annotationType == null) {
             throw new IllegalArgumentException("annotationType must not be null");
@@ -202,6 +266,11 @@ public class BeanRuleRegistry {
         return result;
     }
 
+    /**
+     * Scans the given base packages for configurable beans annotated with {@link Component}.
+     * @param basePackages the base packages to scan
+     * @throws BeanRuleException if an error occurs during bean rule creation
+     */
     public void scanConfigurableBeans(String... basePackages) throws BeanRuleException {
         if (basePackages == null || basePackages.length == 0) {
             return;
@@ -232,6 +301,12 @@ public class BeanRuleRegistry {
         }
     }
 
+    /**
+     * Adds a bean rule to the registry.
+     * If the rule specifies a scan pattern, it will be expanded into multiple bean rules.
+     * @param beanRule the bean rule to add
+     * @throws IllegalRuleException if the bean rule is invalid
+     */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
@@ -375,6 +450,11 @@ public class BeanRuleRegistry {
         configurableBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
+    /**
+     * Adds an inner bean rule to the registry.
+     * @param beanRule the inner bean rule to add
+     * @throws BeanRuleException if the bean rule is not an inner bean or is invalid
+     */
     public void addInnerBeanRule(BeanRule beanRule) throws BeanRuleException {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule cannot be null");
@@ -388,6 +468,12 @@ public class BeanRuleRegistry {
         }
     }
 
+    /**
+     * Performs post-processing of bean rules.
+     * This includes resolving factory-offered beans and parsing annotated configurations.
+     * @param assistant the activity rule assistant
+     * @throws IllegalRuleException if an error occurs during post-processing
+     */
     public void postProcess(ActivityRuleAssistant assistant) throws IllegalRuleException {
         if (assistant == null) {
             throw new IllegalArgumentException("assistant cannot be null");

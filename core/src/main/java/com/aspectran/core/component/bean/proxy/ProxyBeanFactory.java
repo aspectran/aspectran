@@ -42,6 +42,15 @@ public class ProxyBeanFactory {
         this.context = context;
     }
 
+    /**
+     * Creates a proxy instance for the given bean rule.
+     * <p>The factory determines whether to use a JDK dynamic proxy or a
+     * Javassist-based proxy based on the bean's class (interface vs. concrete class).</p>
+     * @param beanRule the rule for the bean to be proxied
+     * @param args the constructor arguments for the bean instance, may be {@code null}
+     * @param argTypes the constructor argument types for the bean instance, may be {@code null}
+     * @return a new proxy object for the bean
+     */
     public Object createProxy(@NonNull BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Class<?> superClass = beanRule.getBeanClass();
         Object bean;

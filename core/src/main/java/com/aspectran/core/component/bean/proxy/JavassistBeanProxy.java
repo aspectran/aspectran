@@ -112,8 +112,8 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
      * Creates a proxy class of bean and returns an instance of that class.
      * @param context the activity context
      * @param beanRule the bean rule
-     * @param args the arguments passed to a constructor
-     * @param argTypes the parameter types for a constructor
+     * @param args the arguments passed to a constructor, may be {@code null}
+     * @param argTypes the parameter types for a constructor, may be {@code null}
      * @return a new proxy bean object
      */
     public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {

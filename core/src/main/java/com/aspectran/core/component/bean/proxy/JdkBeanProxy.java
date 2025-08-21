@@ -112,6 +112,14 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         }
     }
 
+    /**
+     * Creates a new proxy instance for a bean that implements interfaces.
+     * @param context the activity context
+     * @param beanRule the bean rule for the bean to be proxied
+     * @param args the constructor arguments for the bean instance, may be {@code null}
+     * @param argTypes the constructor argument types for the bean instance, may be {@code null}
+     * @return a new proxy object that implements the bean's interfaces
+     */
     @NonNull
     public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
