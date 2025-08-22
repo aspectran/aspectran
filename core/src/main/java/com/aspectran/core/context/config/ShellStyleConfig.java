@@ -20,22 +20,20 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
- * Configuration holder for shell text style presets used by console UIs.
+ * Configuration for shell text style presets used by the console UI.
  * <p>
- * Each preset is represented as a delimited string that can be split into
- * an array of style tokens (e.g., "bold,fg:green"). These tokens are later
- * interpreted by a ConsoleStyler implementation to apply platform-specific
- * styling or treated as no-ops when styling is not supported.
- * </p>
+ * Each preset is a delimited string that can be split into an array of style
+ * tokens (e.g., "bold,fg:green"). These tokens are interpreted by a styler
+ * to apply platform-specific formatting.
  *
- * <p>Presets supported:</p>
+ * <p>Supported presets:
  * <ul>
- *   <li>primary — default/prompt text</li>
- *   <li>secondary — secondary text</li>
- *   <li>success — success messages</li>
- *   <li>danger — error/warning messages</li>
- *   <li>warning — caution messages</li>
- *   <li>info — informational messages</li>
+ *   <li>primary: Default or prompt text</li>
+ *   <li>secondary: Secondary text</li>
+ *   <li>success: Success messages</li>
+ *   <li>danger: Error or warning messages</li>
+ *   <li>warning: Caution messages</li>
+ *   <li>info: Informational messages</li>
  * </ul>
  */
 public class ShellStyleConfig extends AbstractParameters {

@@ -18,9 +18,9 @@ package com.aspectran.core.context.builder;
 import java.io.Serial;
 
 /**
- * This exception is thrown when ActivityContext building fails.
+ * Exception thrown when an {@link com.aspectran.core.context.ActivityContext} fails to build.
  *
- * <p>Created: 2017. 04. 08 PM 8:17:55</p>
+ * @since 2017. 4. 8.
  */
 public class ActivityContextBuilderException extends Exception {
 
@@ -28,14 +28,14 @@ public class ActivityContextBuilderException extends Exception {
     private static final long serialVersionUID = -276971044899838358L;
 
     /**
-     * Simple constructor.
+     * Instantiates a new ActivityContextBuilderException.
      */
     public ActivityContextBuilderException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Instantiates a new ActivityContextBuilderException with the specified detail message.
      * @param msg the specific message
      */
     public ActivityContextBuilderException(String msg) {
@@ -43,7 +43,7 @@ public class ActivityContextBuilderException extends Exception {
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Instantiates a new ActivityContextBuilderException with the specified cause.
      * @param cause the real cause of the exception
      */
     public ActivityContextBuilderException(Throwable cause) {
@@ -51,7 +51,7 @@ public class ActivityContextBuilderException extends Exception {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Instantiates a new ActivityContextBuilderException with the specified detail message and cause.
      * @param msg the specific message
      * @param cause the real cause of the exception
      */

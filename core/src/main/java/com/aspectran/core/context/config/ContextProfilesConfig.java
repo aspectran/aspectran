@@ -19,6 +19,11 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Configuration for environment profiles.
+ * <p>Allows for the registration of beans and properties to be conditional
+ * based on the active, default, or base profiles.
+ */
 public class ContextProfilesConfig extends AbstractParameters {
 
     private static final ParameterKey baseProfiles;
@@ -43,46 +48,88 @@ public class ContextProfilesConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the base profiles.
+     * @return the base profiles
+     */
     public String[] getBaseProfiles() {
         return getStringArray(baseProfiles);
     }
 
+    /**
+     * Sets the base profiles.
+     * @param baseProfiles the base profiles
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig setBaseProfiles(String[] baseProfiles) {
         removeValue(ContextProfilesConfig.baseProfiles);
         putValue(ContextProfilesConfig.baseProfiles, baseProfiles);
         return this;
     }
 
+    /**
+     * Adds a base profile.
+     * @param baseProfile the base profile to add
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig addBaseProfile(String baseProfile) {
         putValue(ContextProfilesConfig.baseProfiles, baseProfile);
         return this;
     }
 
+    /**
+     * Returns the default profiles.
+     * @return the default profiles
+     */
     public String[] getDefaultProfiles() {
         return getStringArray(defaultProfiles);
     }
 
+    /**
+     * Sets the default profiles.
+     * @param defaultProfiles the default profiles
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig setDefaultProfiles(String[] defaultProfiles) {
         removeValue(ContextProfilesConfig.defaultProfiles);
         putValue(ContextProfilesConfig.defaultProfiles, defaultProfiles);
         return this;
     }
 
+    /**
+     * Adds a default profile.
+     * @param defaultProfile the default profile to add
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig addDefaultProfile(String defaultProfile) {
         putValue(ContextProfilesConfig.defaultProfiles, defaultProfile);
         return this;
     }
 
+    /**
+     * Returns the active profiles.
+     * @return the active profiles
+     */
     public String[] getActiveProfiles() {
         return getStringArray(activeProfiles);
     }
 
+    /**
+     * Sets the active profiles.
+     * @param activeProfiles the active profiles
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig setActiveProfiles(String[] activeProfiles) {
         removeValue(ContextProfilesConfig.activeProfiles);
         putValue(ContextProfilesConfig.activeProfiles, activeProfiles);
         return this;
     }
 
+    /**
+     * Adds an active profile.
+     * @param activeProfile the active profile to add
+     * @return this {@code ContextProfilesConfig} instance
+     */
     public ContextProfilesConfig addActiveProfile(String activeProfile) {
         putValue(ContextProfilesConfig.activeProfiles, activeProfile);
         return this;

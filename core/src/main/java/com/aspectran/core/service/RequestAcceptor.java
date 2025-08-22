@@ -21,12 +21,18 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 
 /**
- * <p>Created: 4/21/24</p>
+ * Determines whether a request should be accepted based on configured wildcard patterns.
+ * <p>This class uses an {@link IncludeExcludeWildcardPatterns} instance, initialized
+ * from an {@link AcceptableConfig}, to match against request names.
  */
 public class RequestAcceptor {
 
     private final IncludeExcludeWildcardPatterns acceptableRequestNamePatterns;
 
+    /**
+     * Instantiates a new RequestAcceptor.
+     * @param acceptableConfig the configuration containing include/exclude patterns
+     */
     public RequestAcceptor(AcceptableConfig acceptableConfig) {
         Assert.notNull(acceptableConfig, "acceptableConfig must not be null");
         if (acceptableConfig.hasPatterns()) {
@@ -37,6 +43,12 @@ public class RequestAcceptor {
         }
     }
 
+    /**
+     * Checks if the given request name is acceptable according to the configured patterns.
+     * <p>If no patterns are configured, all request names are considered acceptable.
+     * @param requestName the name of the request to check
+     * @return true if the request is acceptable, otherwise false
+     */
     public boolean isAcceptable(String requestName) {
         return (acceptableRequestNamePatterns == null || acceptableRequestNamePatterns.matches(requestName));
     }

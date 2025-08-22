@@ -19,6 +19,11 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Configuration for a file-based session store.
+ * <p>This class holds settings for the directory where session data is stored,
+ * save intervals, and other persistence-related options.
+ */
 public class SessionFileStoreConfig extends AbstractParameters {
 
     private static final ParameterKey storeDir;
@@ -96,16 +101,30 @@ public class SessionFileStoreConfig extends AbstractParameters {
         return hasValue(deleteUnrestorableFiles);
     }
 
+    /**
+     * Returns the attributes that should not be persisted.
+     * @return an array of non-persistent attribute names
+     */
     public String[] getNonPersistentAttributes() {
         return getStringArray(nonPersistentAttributes);
     }
 
+    /**
+     * Sets the attributes that should not be persisted.
+     * @param nonPersistentAttributes an array of non-persistent attribute names
+     * @return this {@code SessionFileStoreConfig} instance
+     */
     public SessionFileStoreConfig setNonPersistentAttributes(String[] nonPersistentAttributes) {
         removeValue(SessionFileStoreConfig.nonPersistentAttributes);
         putValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttributes);
         return this;
     }
 
+    /**
+     * Adds an attribute that should not be persisted.
+     * @param nonPersistentAttribute the non-persistent attribute name to add
+     * @return this {@code SessionFileStoreConfig} instance
+     */
     public SessionFileStoreConfig addNonPersistentAttributes(String nonPersistentAttribute) {
         putValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttribute);
         return this;

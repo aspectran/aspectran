@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Configuration for the interactive shell (CLI).
+ */
 public class ShellConfig extends AbstractParameters {
 
     private static final ParameterKey style;
@@ -103,14 +106,26 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the session manager configuration.
+     * @return the {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
+    /**
+     * Creates a new session manager configuration.
+     * @return the new {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
+    /**
+     * Returns the existing session manager configuration or creates a new one if it does not exist.
+     * @return a non-null {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
@@ -133,14 +148,27 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the configuration for acceptable request patterns.
+     * @return the {@code AcceptableConfig} instance
+     */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
     }
 
+    /**
+     * Creates a new configuration for acceptable request patterns.
+     * @return the new {@code AcceptableConfig} instance
+     */
     public AcceptableConfig newAcceptableConfig() {
         return newParameters(acceptable);
     }
 
+    /**
+     * Returns the existing configuration for acceptable request patterns
+     * or creates a new one if it does not exist.
+     * @return a non-null {@code AcceptableConfig} instance
+     */
     public AcceptableConfig touchAcceptableConfig() {
         return touchParameters(acceptable);
     }

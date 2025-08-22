@@ -21,6 +21,11 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Configuration for the automatic context reloading feature.
+ * <p>This allows the application context to be automatically reloaded
+ * when configuration files are modified.
+ */
 public class ContextAutoReloadConfig extends AbstractParameters {
 
     /**
@@ -57,28 +62,55 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the reload mode.
+     * @return the reload mode ("hard" or "soft")
+     */
     public String getReloadMode() {
         return getString(reloadMode);
     }
 
+    /**
+     * Sets the reload mode.
+     * @param autoReloadType the reload mode type
+     * @return this {@code ContextAutoReloadConfig} instance
+     */
     public ContextAutoReloadConfig setReloadMode(@NonNull AutoReloadType autoReloadType) {
         putValue(reloadMode, autoReloadType.toString());
         return this;
     }
 
+    /**
+     * Returns the interval in seconds for scanning file changes.
+     * @return the scan interval in seconds
+     */
     public int getScanIntervalSeconds() {
         return getInt(scanIntervalSeconds, -1);
     }
 
+    /**
+     * Sets the interval in seconds for scanning file changes.
+     * @param scanIntervalSeconds the scan interval in seconds
+     * @return this {@code ContextAutoReloadConfig} instance
+     */
     public ContextAutoReloadConfig setScanIntervalSeconds(int scanIntervalSeconds) {
         putValue(ContextAutoReloadConfig.scanIntervalSeconds, scanIntervalSeconds);
         return this;
     }
 
+    /**
+     * Returns whether automatic reloading is enabled.
+     * @return true if enabled, otherwise false
+     */
     public boolean isEnabled() {
         return getBoolean(enabled, false);
     }
 
+    /**
+     * Sets whether to enable automatic reloading.
+     * @param enabled true to enable, false to disable
+     * @return this {@code ContextAutoReloadConfig} instance
+     */
     public ContextAutoReloadConfig setEnabled(boolean enabled) {
         putValue(ContextAutoReloadConfig.enabled, enabled);
         return this;

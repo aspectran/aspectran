@@ -22,6 +22,10 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.VariableParameters;
 
+/**
+ * Configuration for the session manager.
+ * <p>This class holds settings for session timeout, persistence, clustering, etc.
+ */
 public class SessionManagerConfig extends AbstractParameters {
 
     private static final ParameterKey workerName;
@@ -216,14 +220,27 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the configuration for the file-based session store.
+     * @return the {@code SessionFileStoreConfig} instance
+     */
     public SessionFileStoreConfig getFileStoreConfig() {
         return getParameters(fileStore);
     }
 
+    /**
+     * Creates a new configuration for the file-based session store.
+     * @return the new {@code SessionFileStoreConfig} instance
+     */
     public SessionFileStoreConfig newFileStoreConfig() {
         return newParameters(fileStore);
     }
 
+    /**
+     * Returns the existing configuration for the file-based session store
+     * or creates a new one if it does not exist.
+     * @return a non-null {@code SessionFileStoreConfig} instance
+     */
     public SessionFileStoreConfig touchFileStoreConfig() {
         return touchParameters(fileStore);
     }

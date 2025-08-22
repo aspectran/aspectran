@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Contains web-specific configuration settings.
+ */
 public class WebConfig extends AbstractParameters {
 
     private static final ParameterKey uriDecoding;
@@ -93,14 +96,27 @@ public class WebConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the configuration for acceptable request patterns.
+     * @return the {@code AcceptableConfig} instance
+     */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
     }
 
+    /**
+     * Creates a new configuration for acceptable request patterns.
+     * @return the new {@code AcceptableConfig} instance
+     */
     public AcceptableConfig newAcceptableConfig() {
         return newParameters(acceptable);
     }
 
+    /**
+     * Returns the existing configuration for acceptable request patterns
+     * or creates a new one if it does not exist.
+     * @return a non-null {@code AcceptableConfig} instance
+     */
     public AcceptableConfig touchAcceptableConfig() {
         return touchParameters(acceptable);
     }

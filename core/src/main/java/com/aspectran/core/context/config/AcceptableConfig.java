@@ -17,6 +17,11 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 
+/**
+ * Defines include/exclude wildcard patterns to determine whether a request should be accepted.
+ * <p>This configuration is used by a {@link com.aspectran.core.service.RequestAcceptor}
+ * to filter requests based on their names.
+ */
 public class AcceptableConfig extends IncludeExcludeParameters {
 
     public AcceptableConfig() {

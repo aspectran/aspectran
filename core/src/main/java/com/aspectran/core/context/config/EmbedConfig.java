@@ -19,6 +19,7 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
 /**
+ * Configuration for running Aspectran in an embedded mode within another application.
  * @since 6.3.0
  */
 public class EmbedConfig extends AbstractParameters {

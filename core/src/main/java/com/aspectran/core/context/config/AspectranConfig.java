@@ -30,6 +30,21 @@ import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * The root configuration class for the Aspectran framework.
+ * <p>This class acts as a container for all modular configuration sections.
+ * It serves as the main entry point for loading configuration from a file or
+ * other sources. The main configuration sections are:
+ * <ul>
+ *   <li>{@code system}: Configures system-level properties.</li>
+ *   <li>{@code context}: The core and mandatory configuration for the ActivityContext.</li>
+ *   <li>{@code scheduler}: Configures the built-in job scheduler.</li>
+ *   <li>{@code web}: Web-specific settings for running as a web application.</li>
+ *   <li>{@code daemon}: Settings for running as a non-interactive background service.</li>
+ *   <li>{@code shell}: Settings for running as an interactive command-line interface.</li>
+ *   <li>{@code embed}: Settings for running in an embedded mode within another application.</li>
+ * </ul>
+ */
 public class AspectranConfig extends AbstractParameters {
 
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
@@ -67,138 +82,274 @@ public class AspectranConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new AspectranConfig.
+     */
     public AspectranConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Instantiates a new AspectranConfig and reads the configuration from the given APON text.
+     * @param apon the APON text
+     * @throws AponParseException if the APON text is invalid
+     */
     public AspectranConfig(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }
 
+    /**
+     * Instantiates a new AspectranConfig and reads the configuration from the given parameters.
+     * @param parameters the parameters
+     * @throws AponParseException if the parameters are invalid
+     */
     public AspectranConfig(VariableParameters parameters) throws AponParseException {
         this();
         readFrom(parameters);
     }
 
+    /**
+     * Instantiates a new AspectranConfig and reads the configuration from the given file.
+     * @param configFile the configuration file
+     * @throws AponParseException if the file content is invalid
+     */
     public AspectranConfig(File configFile) throws AponParseException {
         this();
         readFrom(configFile);
     }
 
+    /**
+     * Instantiates a new AspectranConfig and reads the configuration from the given reader.
+     * @param reader the reader
+     * @throws AponParseException if the content is invalid
+     */
     public AspectranConfig(Reader reader) throws AponParseException {
         this();
         readFrom(reader);
     }
 
+    /**
+     * Returns the system configuration section.
+     * @return the {@code SystemConfig} instance, or {@code null} if not defined
+     */
     public SystemConfig getSystemConfig() {
         return getParameters(system);
     }
 
+    /**
+     * Creates a new system configuration section.
+     * @return the new {@code SystemConfig} instance
+     */
     public SystemConfig newSystemConfig() {
         return newParameters(system);
     }
 
+    /**
+     * Returns the existing system configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code SystemConfig} instance
+     */
     public SystemConfig touchSystemConfig() {
         return touchParameters(system);
     }
 
+    /**
+     * Returns whether the system configuration section exists.
+     * @return true if the system configuration section exists, otherwise false
+     */
     public boolean hasSystemConfig() {
         return hasValue(system);
     }
 
+    /**
+     * Returns the core context configuration section.
+     * @return the {@code ContextConfig} instance, or {@code null} if not defined
+     */
     public ContextConfig getContextConfig() {
         return getParameters(context);
     }
 
+    /**
+     * Creates a new core context configuration section.
+     * @return the new {@code ContextConfig} instance
+     */
     public ContextConfig newContextConfig() {
         return newParameters(context);
     }
 
+    /**
+     * Returns the existing core context configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code ContextConfig} instance
+     */
     public ContextConfig touchContextConfig() {
         return touchParameters(context);
     }
 
+    /**
+     * Returns whether the core context configuration section exists.
+     * @return true if the core context configuration section exists, otherwise false
+     */
     public boolean hasContextConfig() {
         return hasValue(context);
     }
 
+    /**
+     * Returns the scheduler configuration section.
+     * @return the {@code SchedulerConfig} instance, or {@code null} if not defined
+     */
     public SchedulerConfig getSchedulerConfig() {
         return getParameters(scheduler);
     }
 
+    /**
+     * Creates a new scheduler configuration section.
+     * @return the new {@code SchedulerConfig} instance
+     */
     public SchedulerConfig newSchedulerConfig() {
         return newParameters(scheduler);
     }
 
+    /**
+     * Returns the existing scheduler configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code SchedulerConfig} instance
+     */
     public SchedulerConfig touchSchedulerConfig() {
         return touchParameters(scheduler);
     }
 
+    /**
+     * Returns whether the scheduler configuration section exists.
+     * @return true if the scheduler configuration section exists, otherwise false
+     */
     public boolean hasSchedulerConfig() {
         return hasValue(scheduler);
     }
 
+    /**
+     * Returns the embed configuration section.
+     * @return the {@code EmbedConfig} instance, or {@code null} if not defined
+     */
     public EmbedConfig getEmbedConfig() {
         return getParameters(embed);
     }
 
+    /**
+     * Creates a new embed configuration section.
+     * @return the new {@code EmbedConfig} instance
+     */
     public EmbedConfig newEmbedConfig() {
         return newParameters(embed);
     }
 
+    /**
+     * Returns the existing embed configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code EmbedConfig} instance
+     */
     public EmbedConfig touchEmbedConfig() {
         return touchParameters(embed);
     }
 
+    /**
+     * Returns the shell configuration section.
+     * @return the {@code ShellConfig} instance, or {@code null} if not defined
+     */
     public ShellConfig getShellConfig() {
         return getParameters(shell);
     }
 
+    /**
+     * Sets the shell configuration section.
+     * @param shellConfig the shell configuration
+     */
     public void setShellConfig(ShellConfig shellConfig) {
         putValue(AspectranConfig.shell, shellConfig);
     }
 
+    /**
+     * Creates a new shell configuration section.
+     * @return the new {@code ShellConfig} instance
+     */
     public ShellConfig newShellConfig() {
         return newParameters(shell);
     }
 
+    /**
+     * Returns the existing shell configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code ShellConfig} instance
+     */
     public ShellConfig touchShellConfig() {
         return touchParameters(shell);
     }
 
+    /**
+     * Returns the daemon configuration section.
+     * @return the {@code DaemonConfig} instance, or {@code null} if not defined
+     */
     public DaemonConfig getDaemonConfig() {
         return getParameters(daemon);
     }
 
+    /**
+     * Sets the daemon configuration section.
+     * @param daemonConfig the daemon configuration
+     */
     public void setDaemonConfig(DaemonConfig daemonConfig) {
         putValue(AspectranConfig.daemon, daemonConfig);
     }
 
+    /**
+     * Creates a new daemon configuration section.
+     * @return the new {@code DaemonConfig} instance
+     */
     public DaemonConfig newDaemonConfig() {
         return newParameters(daemon);
     }
 
+    /**
+     * Returns the existing daemon configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code DaemonConfig} instance
+     */
     public DaemonConfig touchDaemonConfig() {
         return touchParameters(daemon);
     }
 
+    /**
+     * Returns whether the web configuration section exists.
+     * @return true if the web configuration section exists, otherwise false
+     */
     public boolean hasWebConfig() {
         return hasValue(web);
     }
 
+    /**
+     * Returns the web configuration section.
+     * @return the {@code WebConfig} instance, or {@code null} if not defined
+     */
     public WebConfig getWebConfig() {
         return getParameters(web);
     }
 
+    /**
+     * Creates a new web configuration section.
+     * @return the new {@code WebConfig} instance
+     */
     public WebConfig newWebConfig() {
         return newParameters(web);
     }
 
+    /**
+     * Returns the existing web configuration section or creates a new one if it does not exist.
+     * @return a non-null {@code WebConfig} instance
+     */
     public WebConfig touchWebConfig() {
         return touchParameters(web);
     }
 
+    /**
+     * Determines the base path from the given arguments or system properties.
+     * @param args the command line arguments
+     * @return the canonical base path, or {@code null} if not found
+     */
     public static String determineBasePath(@Nullable String[] args) {
         String basePath;
         if (args == null || args.length < 2) {
@@ -218,6 +369,12 @@ public class AspectranConfig extends AbstractParameters {
         return basePath;
     }
 
+    /**
+     * Determines the Aspectran configuration file from the given arguments or system properties.
+     * @param args the command line arguments
+     * @return the canonical configuration file
+     * @throws IllegalArgumentException if the configuration file cannot be determined
+     */
     @NonNull
     public static File determineAspectranConfigFile(@Nullable String[] args) {
         File file;

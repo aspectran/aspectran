@@ -20,6 +20,7 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
+ * Configuration for running Aspectran as a background daemon.
  * @since 5.1.0
  */
 public class DaemonConfig extends AbstractParameters {
@@ -91,26 +92,51 @@ public class DaemonConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the session manager configuration.
+     * @return the {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
+    /**
+     * Creates a new session manager configuration.
+     * @return the new {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
+    /**
+     * Returns the existing session manager configuration or creates a new one if it does not exist.
+     * @return a non-null {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
 
+    /**
+     * Returns the configuration for acceptable request patterns.
+     * @return the {@code AcceptableConfig} instance
+     */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
     }
 
+    /**
+     * Creates a new configuration for acceptable request patterns.
+     * @return the new {@code AcceptableConfig} instance
+     */
     public AcceptableConfig newAcceptableConfig() {
         return newParameters(acceptable);
     }
 
+    /**
+     * Returns the existing configuration for acceptable request patterns
+     * or creates a new one if it does not exist.
+     * @return a non-null {@code AcceptableConfig} instance
+     */
     public AcceptableConfig touchAcceptableConfig() {
         return touchParameters(acceptable);
     }

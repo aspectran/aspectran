@@ -14,11 +14,28 @@
  * limitations under the License.
  */
 /**
- * Configuration model objects for Aspectran application context settings.
- * <p>
- * This package contains APON-backed parameter classes (e.g., {@code *Config})
- * that capture user-provided settings for core services such as the shell,
- * scheduler, session, and general runtime environment.
- * </p>
+ * Provides classes for holding Aspectran's various configuration settings.
+ *
+ * <p>This package contains a set of Plain Old Java Objects (POJOs) that model the
+ * configuration for different parts of the Aspectran framework. These classes are
+ * designed to be populated from external sources like APON or XML files.
+ *
+ * <p>The configuration is hierarchical and modular, with
+ * {@link com.aspectran.core.context.config.AspectranConfig} serving as the root container.
+ * The primary configuration modules include:
+ * <ul>
+ *   <li>{@link com.aspectran.core.context.config.SystemConfig}: For system-level properties.</li>
+ *   <li>{@link com.aspectran.core.context.config.ContextConfig}: The core and mandatory
+ *       configuration for the ActivityContext, defining rules, component scanning, profiles, etc.</li>
+ *   <li>{@link com.aspectran.core.context.config.SchedulerConfig}: For the built-in job scheduler.</li>
+ *   <li>{@link com.aspectran.core.context.config.WebConfig}: For web application environments.</li>
+ *   <li>{@link com.aspectran.core.context.config.DaemonConfig}: For background daemon services.</li>
+ *   <li>{@link com.aspectran.core.context.config.ShellConfig}: For interactive CLI applications.</li>
+ *   <li>{@link com.aspectran.core.context.config.EmbedConfig}: For embedded mode integration.</li>
+ * </ul>
+ *
+ * These classes serve as data containers, making configuration information
+ * easily and safely accessible to the framework's components during the
+ * application startup process.
  */
 package com.aspectran.core.context.config;

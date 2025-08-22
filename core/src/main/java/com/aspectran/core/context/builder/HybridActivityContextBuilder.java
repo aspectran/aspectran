@@ -33,6 +33,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The primary, concrete implementation of {@link ActivityContextBuilder}.
+ *
+ * <p>This builder is responsible for orchestrating the entire process of parsing
+ * configurations, creating component registries, and initializing a fully-functional
+ * {@link com.aspectran.core.context.ActivityContext}. It is designed to be thread-safe
+ * with respect to its build and destroy operations.
+ *
+ * <p>For standalone applications (i.e., not managed by a {@link CoreService}),
+ * it automatically registers a shutdown hook to ensure graceful destruction of the context.
+ */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(HybridActivityContextBuilder.class);

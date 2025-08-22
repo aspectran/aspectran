@@ -31,6 +31,12 @@ import java.util.TimerTask;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
 import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
+/**
+ * A {@link java.util.TimerTask} that detects changes in configuration and resource files
+ * to trigger a context reload.
+ * <p>It periodically checks the {@code lastModified} timestamp of registered resource files.
+ * If a change is detected, it triggers a service restart via the {@link ServiceLifeCycle} interface.
+ */
 public class ContextReloadingTask extends TimerTask {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTask.class);

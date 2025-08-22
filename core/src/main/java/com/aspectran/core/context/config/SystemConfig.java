@@ -21,6 +21,7 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 
 /**
+ * Configuration for system-level properties.
  * @since 6.6.4
  */
 public class SystemConfig extends AbstractParameters {

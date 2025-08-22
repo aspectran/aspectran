@@ -20,8 +20,7 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
- * <p>Created: 2017. 12. 12.</p>
- *
+ * Configuration for the daemon's command executor thread pool.
  * @since 5.1.0
  */
 public class DaemonExecutorConfig extends AbstractParameters {
@@ -42,10 +41,20 @@ public class DaemonExecutorConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the maximum number of threads in the pool.
+     * @param defaultMaxThreads the default value to return if maxThreads is not set
+     * @return the maximum number of threads
+     */
     public int getMaxThreads(int defaultMaxThreads) {
         return getInt(maxThreads, defaultMaxThreads);
     }
 
+    /**
+     * Sets the maximum number of threads in the pool.
+     * @param maxThreads the maximum number of threads
+     * @return this {@code DaemonExecutorConfig} instance
+     */
     public DaemonExecutorConfig setMaxThreads(int maxThreads) {
         putValue(DaemonExecutorConfig.maxThreads, maxThreads);
         return this;

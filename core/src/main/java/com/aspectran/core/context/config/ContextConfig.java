@@ -21,6 +21,12 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Contains the core settings for the ActivityContext.
+ * <p>This class holds essential information for building the context,
+ * such as the application's base path, configuration rule files,
+ * component scan packages, profiles, and auto-reloading settings.
+ */
 public class ContextConfig extends AbstractParameters {
 
     private static final ParameterKey name;
@@ -191,18 +197,34 @@ public class ContextConfig extends AbstractParameters {
         return this;
     }
 
+    /**
+     * Returns the Aspectran parameters containing the context rules.
+     * @return the {@code AspectranParameters} instance
+     */
     public AspectranParameters getAspectranParameters() {
         return getParameters(parameters);
     }
 
+    /**
+     * Creates a new Aspectran parameters section for context rules.
+     * @return the new {@code AspectranParameters} instance
+     */
     public AspectranParameters newAspectranParameters() {
         return newParameters(parameters);
     }
 
+    /**
+     * Returns the existing Aspectran parameters section or creates a new one if it does not exist.
+     * @return a non-null {@code AspectranParameters} instance
+     */
     public AspectranParameters touchAspectranParameters() {
         return touchParameters(parameters);
     }
 
+    /**
+     * Returns whether the Aspectran parameters section exists.
+     * @return true if the Aspectran parameters section exists, otherwise false
+     */
     public boolean hasAspectranParameters() {
         return hasValue(parameters);
     }

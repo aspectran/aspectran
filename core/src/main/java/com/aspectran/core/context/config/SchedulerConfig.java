@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Configuration for the job scheduler.
+ */
 public class SchedulerConfig extends AbstractParameters {
 
     private static final ParameterKey startDelaySeconds;

@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Timer;
 
 /**
- * Provides timer control to reload the ActivityContext.
+ * Manages the timer for automatic reloading of the {@link com.aspectran.core.context.ActivityContext}.
+ * <p>This class wraps a {@link java.util.Timer} to schedule a {@link ContextReloadingTask}
+ * at a fixed interval, enabling the hot-reloading feature.
  */
 public class ContextReloadingTimer {
 

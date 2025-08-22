@@ -70,6 +70,19 @@ import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPER
 import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
+/**
+ * Abstract base class for {@link ActivityContextBuilder} implementations.
+ *
+ * <p>This class provides the common functionality for building an {@link com.aspectran.core.context.ActivityContext},
+ * including:
+ * <ul>
+ *   <li>Managing configuration properties (e.g., base path, context rules, profiles).</li>
+ *   <li>Handling the creation of a {@link com.aspectran.core.context.resource.SiblingClassLoader}.</li>
+ *   <li>Setting up the application's directory structure (base, work, temp).</li>
+ *   <li>Orchestrating the creation of the context and its internal components.</li>
+ *   <li>Managing the context reloading timer.</li>
+ * </ul>
+ */
 public abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractActivityContextBuilder.class);

@@ -20,8 +20,7 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
- * <p>Created: 2017. 12. 12.</p>
- *
+ * Configuration for the daemon's polling mechanism.
  * @since 5.1.0
  */
 public class DaemonPollingConfig extends AbstractParameters {
