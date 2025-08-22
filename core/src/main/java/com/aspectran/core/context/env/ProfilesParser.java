@@ -26,9 +26,15 @@ import java.util.StringTokenizer;
 import java.util.function.Predicate;
 
 /**
- * Internal parser used by {@link Profiles#of}.
+ * Internal parser for profile expressions, used by {@link Profiles#of(String)}.
+ *
+ * <p>This parser transforms a profile expression string into a {@link Profiles}
+ * predicate that can be evaluated against the active environment. It supports
+ * logical operators for AND, OR, and NOT, as well as grouping for complex
+ * expressions.
  *
  * @since 7.5.0
+ * @see Profiles
  */
 final class ProfilesParser {
 
@@ -37,6 +43,12 @@ final class ProfilesParser {
     private ProfilesParser() {
     }
 
+    /**
+     * Parses the given profile expression string into a {@link Profiles} instance.
+     * @param expression the profile expression to parse
+     * @return a {@link Profiles} instance representing the parsed expression
+     * @throws IllegalArgumentException if the expression is null or malformed
+     */
     @NonNull
     static Profiles parse(String expression) {
         Profiles parsed = parseExpression(expression);

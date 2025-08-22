@@ -20,51 +20,56 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.function.Predicate;
 
 /**
- * Profile predicate that may be {@linkplain Environment#acceptsProfiles(Profiles)
- * accepted} by an {@link Environment}.
+ * A predicate for checking whether a given profile or profile expression is active.
  *
- * <p>May be implemented directly or, more usually, created using the
- * {@link #of(String) of()} factory method.
+ * <p>This is a {@link FunctionalInterface} that can be implemented directly or,
+ * more commonly, created using the {@link #of(String)} factory method.
+ * It allows for sophisticated profile matching logic using a flexible
+ * expression language.
+ *
+ * <p>Profile expressions support the following operators:
+ * <ul>
+ *     <li>{@code !}: Logical NOT</li>
+ *     <li>{@code ,}: Delimiter for separating profiles</li>
+ *     <li>{@code ()}: Logical AND for grouping profiles</li>
+ *     <li>{@code []}: Logical OR for grouping profiles (can be omitted for a single OR set)</li>
+ * </ul>
+ *
+ * <p>Examples:
+ * <ul>
+ *     <li>{@code "production"}: Matches if the "production" profile is active.</li>
+ *     <li>{@code "!production"}: Matches if the "production" profile is not active.</li>
+ *     <li>{@code "(p1, p2)"}: Matches if both "p1" and "p2" profiles are active.</li>
+ *     <li>{@code "[p1, p2]"}: Matches if either "p1" or "p2" profile is active.</li>
+ *     <li>{@code "(!p1, p2)"}: Matches if "p1" is not active and "p2" is active.</li>
+ * </ul>
  *
  * @since 7.5.0
  * @see Environment#acceptsProfiles(Profiles)
  * @see Environment#matchesProfiles(String)
+ * @see ProfilesParser
  */
 @FunctionalInterface
 public interface Profiles {
 
     /**
-     * Test if this {@code Profiles} instance <em>matches</em> against the given
-     * predicate.
+     * Tests if this {@code Profiles} instance matches against the given predicate.
      * @param isProfileActive a predicate that tests whether a given profile is
-     * currently active
+     *      currently active
+     * @return {@code true} if the profile is active, {@code false} otherwise
      */
     boolean matches(Predicate<String> isProfileActive);
 
     /**
-     * Create a new {@link Profiles} instance that checks for matches against
-     * the given <em>profile expressions</em>.
+     * Creates a new {@link Profiles} instance that checks for matches against
+     * the given profile expression.
      * <p>The returned instance will {@linkplain Profiles#matches(Predicate) match}
-     * if any one of the given profile expressions matches.
-     * <p>A profile expression may contain a simple profile name (for example
-     * {@code "production"}) or a compound expression. A compound expression allows
-     * for more complicated profile logic to be expressed, for example
-     * {@code "(production, cloud)"}.
-     * <p>The following operators are supported in profile expressions.
-     * <ul>
-     * <li>{@code !} - A logical <em>NOT</em> of the profile name or set of them</li>
-     * <li>{@code ,} - A delimiter to separate profile names or sets of them</li>
-     * </ul>
-     * <p>The following parentheses are used for compound expressions:
-     * <ul>
-     * <li>{@code ()} - A logical AND operation is applied to all profile names
-     *                  enclosed by this; aka AND set</li>
-     * <li>{@code []} - A logical OR operation is applied to all profile names
-     *                  enclosed by this; aka OR set, it can be omitted in compound
-     *                  expressions that have only one OR set.</li>
-     * </ul>
+     * if the given profile expression is satisfied.
+     * <p>A profile expression may contain a simple profile name (e.g., {@code "production"})
+     * or a compound expression with logical operators (e.g., {@code "(production, cloud)"}).
      * @param profileExpression the expression for profiles to include or exclude
-     * @return a new {@link Profiles} instance
+     * @return a new {@link Profiles} instance for the given expression
+     * @see ProfilesParser#parse(String)
      */
     @NonNull
     static Profiles of(String profileExpression) {

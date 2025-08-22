@@ -21,7 +21,13 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.Assert;
 
 /**
- * <p>Created: 2024-12-06</p>
+ * A builder class for creating {@link ActivityEnvironment} instances.
+ *
+ * <p>This class provides a fluent API for setting the necessary components,
+ * such as {@link EnvironmentProfiles} and property {@link ItemRule}s,
+ * before constructing the final {@link ActivityEnvironment} object.
+ *
+ * @since 7.5.0
  */
 public class ActivityEnvironmentBuilder {
 
@@ -29,14 +35,27 @@ public class ActivityEnvironmentBuilder {
 
     private EnvironmentProfiles environmentProfiles;
 
+    /**
+     * Instantiates a new activity environment builder.
+     */
     public ActivityEnvironmentBuilder() {
     }
 
+    /**
+     * Sets the environment profiles.
+     * @param environmentProfiles the environment profiles
+     * @return this builder
+     */
     public ActivityEnvironmentBuilder setEnvironmentProfiles(EnvironmentProfiles environmentProfiles) {
         this.environmentProfiles = environmentProfiles;
         return this;
     }
 
+    /**
+     * Adds all the property item rules from the given map.
+     * @param propertyItemRuleMap a map of property item rules
+     * @return this builder
+     */
     public ActivityEnvironmentBuilder putPropertyItemRules(ItemRuleMap propertyItemRuleMap) {
         if (propertyItemRuleMap != null) {
             this.propertyItemRuleMap.putAll(propertyItemRuleMap);
@@ -44,6 +63,11 @@ public class ActivityEnvironmentBuilder {
         return this;
     }
 
+    /**
+     * Builds the activity environment.
+     * @param context the activity context
+     * @return the activity environment
+     */
     public ActivityEnvironment build(ActivityContext context) {
         Assert.notNull(context, "ActivityContext must not be null");
         Assert.notNull(environmentProfiles, "EnvironmentProfiles is not set");

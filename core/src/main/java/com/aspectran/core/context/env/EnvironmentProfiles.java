@@ -27,8 +27,26 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Environment profiles provide baseline information for applications to recognize
- * different execution environments. e.g. development, test, production etc.
+ * Manages the profiles for the application environment.
+ * <p>Profiles are logical groups of bean definitions and configuration that are
+ * only active in specific environments (e.g., 'development', 'test', 'production').
+ * This class provides mechanisms to set, get, and validate these profiles.
+ *
+ * <p>Profiles can be activated through system properties or programmatically.
+ * The following system properties are used:
+ * <ul>
+ *     <li>{@link #BASE_PROFILES_PROPERTY_NAME}: Specifies the base profiles, which are
+ *         always active.</li>
+ *     <li>{@link #DEFAULT_PROFILES_PROPERTY_NAME}: Specifies the default profiles,
+ *         active when no other profiles are explicitly set.</li>
+ *     <li>{@link #ACTIVE_PROFILES_PROPERTY_NAME}: Specifies the currently active profiles.</li>
+ * </ul>
+ *
+ * <p>This class also supports complex profile expressions with logical operators,
+ * allowing for fine-grained control over when configurations are applied.
+ *
+ * @see Environment
+ * @see Profiles
  */
 public class EnvironmentProfiles {
 

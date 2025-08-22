@@ -23,7 +23,17 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import java.util.Iterator;
 
 /**
- * The Class ActivityEnvironment.
+ * {@link Environment} implementation for use in {@code ActivityContext}.
+ *
+ * <p>This class manages the environment for an {@link com.aspectran.core.context.ActivityContext},
+ * providing access to profiles and properties. Profiles are managed via the
+ * {@link EnvironmentProfiles} class, while properties are resolved dynamically
+ * by evaluating {@link com.aspectran.core.context.rule.ItemRule} instances
+ * within the current {@link com.aspectran.core.activity.Activity}.
+ *
+ * <p>This approach allows for a flexible and powerful way to manage
+ * environment-specific configurations, where property values can be determined
+ * at runtime based on the activity's context.
  */
 public class ActivityEnvironment implements Environment {
 
@@ -33,6 +43,11 @@ public class ActivityEnvironment implements Environment {
 
     private final ItemRuleMap propertyItemRuleMap = new ItemRuleMap();
 
+    /**
+     * Instantiates a new activity environment.
+     * @param context the activity context
+     * @param environmentProfiles the environment profiles
+     */
     public ActivityEnvironment(ActivityContext context, EnvironmentProfiles environmentProfiles) {
         this.context = context;
         this.environmentProfiles = environmentProfiles;
@@ -103,6 +118,10 @@ public class ActivityEnvironment implements Environment {
         return propertyItemRuleMap.keySet().iterator();
     }
 
+    /**
+     * Adds an item rule for a property.
+     * @param propertyItemRule the property item rule
+     */
     protected void putPropertyItemRule(ItemRule propertyItemRule) {
         this.propertyItemRuleMap.putItemRule(propertyItemRule);
     }
