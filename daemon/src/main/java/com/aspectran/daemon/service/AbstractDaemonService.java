@@ -30,15 +30,10 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * Base support class for daemon-specific {@link DaemonService} implementations.
- * <p>
- * Extends {@link com.aspectran.core.service.DefaultCoreService} to provide common
- * wiring for daemon environments, including optional session management backed by
- * {@link com.aspectran.core.component.session.DefaultSessionManager} and request
- * acceptability configuration through {@link com.aspectran.core.service.RequestAcceptor}.
- * Subclasses can call {@link #createSessionManager()} and {@link #destroySessionManager()}
- * at appropriate lifecycle phases to manage session infrastructure.
- * </p>
+ * Abstract base class for {@link DaemonService} implementations.
+ * <p>This class extends {@link DefaultCoreService} to provide common wiring for
+ * daemon environments. It adds support for session management in a non-web context
+ * and handles daemon-specific configuration from {@link DaemonConfig}.
  *
  * @since 5.1.0
  */
@@ -49,24 +44,12 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     private SessionAgent sessionAgent;
 
     /**
-     * Constructs the service base.
-     * <p>
-     * Protected/package-private to restrict direct instantiation to the framework
-     * and subclasses within the daemon module.
-     * </p>
+     * Instantiates a new Abstract daemon service.
      */
     AbstractDaemonService() {
         super();
     }
 
-    /**
-     * Creates a new {@link SessionAdapter} bound to this service's session infrastructure.
-     * <p>
-     * Returns {@code null} when session management is not configured or has not been initialized
-     * (i.e., when no {@link SessionAgent} is available).
-     * </p>
-     * @return a new {@code SessionAdapter}, or {@code null} if sessions are not available
-     */
     @Override
     public SessionAdapter newSessionAdapter() {
         if (sessionAgent != null) {
@@ -77,16 +60,12 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     }
 
     /**
-         * Initializes session management if enabled by daemon configuration.
-         * <p>
-         * Reads {@link DaemonConfig} from the current {@link AspectranConfig} and, when a
-         * {@link SessionManagerConfig} is present and enabled, instantiates and initializes a
-         * {@link DefaultSessionManager} bound to this service's activity context. Also creates a
-         * {@link SessionAgent} for adapter creation.
-         * </p>
-         * @throws CoreServiceException if initialization fails for any reason
-         */
-        protected void createSessionManager() {
+     * Creates and initializes a session manager for the daemon service.
+     * The session manager is configured based on the {@link SessionManagerConfig}
+     * within the daemon configuration.
+     * @throws CoreServiceException if the session manager fails to initialize
+     */
+    protected void createSessionManager() {
         Assert.state(this.sessionManager == null,
                 "Session Manager is already exists for " + getServiceName());
         DaemonConfig daemonConfig = getAspectranConfig().getDaemonConfig();
@@ -108,11 +87,7 @@ public abstract class AbstractDaemonService extends DefaultCoreService implement
     }
 
     /**
-     * Shuts down and clears session infrastructure if previously initialized.
-     * <p>
-     * This method invalidates the {@link SessionAgent} (if any) and destroys the
-     * underlying {@link DefaultSessionManager}. It is safe to call multiple times.
-     * </p>
+     * Destroys the session manager and releases its resources.
      */
     protected void destroySessionManager() {
         if (sessionAgent != null) {

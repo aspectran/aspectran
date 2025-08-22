@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the service interface for Aspectran Daemon.
+ * Provides a service implementation for running Aspectran in a daemon or
+ * background process.
+ * <p>This package adapts the core Aspectran service for standalone applications
+ * that are not running within a web server. The main entry point is the
+ * {@link com.aspectran.daemon.service.DaemonService#translate(String, java.util.Map, com.aspectran.core.activity.request.ParameterMap)}
+ * method, which allows the application to programmatically trigger the execution
+ * of its own internal services (translets).
  */
 package com.aspectran.daemon.service;

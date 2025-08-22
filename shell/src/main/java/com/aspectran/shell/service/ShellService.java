@@ -23,62 +23,67 @@ import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
 
 /**
- * The Interface ShellService.
+ * The main interface for the Aspectran Shell service.
+ * <p>This service provides an interactive command-line interface for an Aspectran
+ * application. It extends {@link CoreService} to provide access to the core
+ * application context and lifecycle management, while adding features specific
+ * to a console environment.
  *
- * <p>Created: 2017. 10. 28.</p>
+ * @since 2.0.0
  */
 public interface ShellService extends CoreService {
 
+    /**
+     * Returns the shell console used for input and output.
+     * @return the shell console
+     */
     ShellConsole getConsole();
 
     /**
-     * Tests if the verbose mode is enabled.
-     * If verbose mode is on, a detailed description is printed each time the command is executed.
-     * Returns a flag indicating whether to show the description or not.
-     * @return true if the verbose mode is enabled
+     * Returns whether verbose mode is enabled.
+     * @return true if verbose mode is enabled, false otherwise
      */
     boolean isVerbose();
 
     /**
-     * Enables or disables the verbose mode.
-     * If verbose mode is on, a detailed description is printed each time the command is executed.
-     * Sets a flag indicating whether to show the description or not.
-     * @param verbose true to enable the verbose mode; false to disable
+     * Sets whether verbose mode is enabled.
+     * @param verbose true to enable verbose mode, false to disable
      */
     void setVerbose(boolean verbose);
 
     /**
-     * Returns the greeting message.
-     * @return the greeting message
+     * Returns the greetings message displayed when the shell starts.
+     * @return the greetings message
      */
     String getGreetings();
 
     /**
-     * Specifies the greeting message.
-     * @param greetings the greeting message
+     * Sets the greetings message to be displayed when the shell starts.
+     * @param greetings the greetings message
      */
     void setGreetings(String greetings);
 
     /**
-     * Prints greeting message.
+     * Prints the greetings message to the console.
      */
     void printGreetings();
 
     /**
-     * Prints help information.
+     * Prints help information to the console.
      */
     void printHelp();
 
     /**
-     * Create and return a new session adapter from the shell service.
-     * @return the session adapter
+     * Creates and returns a new session adapter for the shell environment.
+     * @return a new {@link SessionAdapter}
      */
     SessionAdapter newSessionAdapter();
 
     /**
-     * Executes translet.
-     * @param transletCommandLine the translet command line
-     * @return the {@code Translet} instance
+     * Executes a translet based on a parsed command line.
+     * @param transletCommandLine the parsed command line representing the request
+     * @return the result of the translet execution
+     * @throws TransletNotFoundException if the requested translet does not exist
      */
     Translet translate(TransletCommandLine transletCommandLine) throws TransletNotFoundException;
 

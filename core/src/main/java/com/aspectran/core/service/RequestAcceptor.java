@@ -23,7 +23,8 @@ import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 /**
  * Determines whether a request should be accepted based on configured wildcard patterns.
  * <p>This class uses an {@link IncludeExcludeWildcardPatterns} instance, initialized
- * from an {@link AcceptableConfig}, to match against request names.
+ * from an {@link AcceptableConfig}, to match against request names. It allows services
+ * to filter which incoming requests they are willing to process.
  */
 public class RequestAcceptor {
 

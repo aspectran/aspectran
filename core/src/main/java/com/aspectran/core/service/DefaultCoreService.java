@@ -32,7 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class DefaultCoreService.
+ * The default concrete implementation of the {@link CoreService} interface.
+ * <p>This class is responsible for bootstrapping the entire Aspectran application.
+ * It takes an {@link AspectranConfig} and uses an {@link ActivityContextBuilder}
+ * to parse the configuration and build the central {@link ActivityContext}.
+ * It also manages the lifecycle of the {@link SchedulerService}, handles singleton
+ * instance locking, and registers a JVM shutdown hook for graceful termination.
  */
 public class DefaultCoreService extends AbstractCoreService {
 

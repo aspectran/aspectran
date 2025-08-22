@@ -18,9 +18,11 @@ package com.aspectran.core.service;
 import java.io.Serial;
 
 /**
- * The Class CoreServiceException.
+ * Generic exception class for errors occurring within the Aspectran core service layer.
+ * <p>This exception is a {@code RuntimeException}, meaning it is typically not checked
+ * and indicates a serious problem that prevents the normal operation of the service.
  *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * @since 2008-01-07
  */
 public class CoreServiceException extends RuntimeException {
 
@@ -28,32 +30,36 @@ public class CoreServiceException extends RuntimeException {
     private static final long serialVersionUID = -7460804495296696284L;
 
     /**
-     * Simple constructor
+     * Constructs a new {@code CoreServiceException} with no detail message.
      */
     public CoreServiceException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
+     * Constructs a new {@code CoreServiceException} with the specified detail message.
+     * @param msg the detail message
      */
     public CoreServiceException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new {@code CoreServiceException} with the specified cause and a
+     * detail message of {@code (cause == null ? null : cause.toString())}
+     * (which typically contains the class and detail message of {@code cause}).
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
+     *      (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CoreServiceException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Constructs a new {@code CoreServiceException} with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
+     *      (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CoreServiceException(String msg, Throwable cause) {
         super(msg, cause);

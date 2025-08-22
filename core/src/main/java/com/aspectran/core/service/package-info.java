@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 /**
- * A Package for providing core components and configuring an execution environment.
+ * Provides the core service interfaces and classes for the Aspectran framework.
+ * <p>This package defines the fundamental concepts of a "service" in Aspectran,
+ * including its lifecycle management and how it interacts with the core application
+ * context. The central component is the {@link com.aspectran.core.service.CoreService},
+ * which acts as the main entry point for an Aspectran application and provides
+ * access to the {@link com.aspectran.core.context.ActivityContext}.
+ *
+ * <p>It establishes a hierarchical service model, allowing for parent-child
+ * relationships between services and providing a robust foundation for building
+ * various types of Aspectran applications (e.g., web, daemon, shell, embedded).
  */
 package com.aspectran.core.service;

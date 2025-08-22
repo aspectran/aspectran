@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the service interface for embedded Aspectran.
+ * Provides a service implementation for embedding Aspectran within another
+ * Java application.
+ * <p>This package provides a high-level facade, {@link com.aspectran.embed.service.EmbeddedAspectran},
+ * which simplifies the process of bootstrapping and interacting with the Aspectran
+ * framework. It is the ideal entry point for developers who want to use Aspectran
+ * as a library or component.
  */
 package com.aspectran.embed.service;

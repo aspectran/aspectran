@@ -16,13 +16,25 @@
 package com.aspectran.core.service;
 
 /**
- * <p>Created: 2025-02-13</p>
+ * Listener interface for receiving events related to a {@link CoreService} being held or released
+ * by the {@link CoreServiceHolder}.
+ * <p>This allows external components to react when a service becomes globally available or is removed.
+ *
+ * @since 2025-02-13
  */
 public interface ServiceHoldingListener {
 
+    /**
+     * Called after a {@link CoreService} has been successfully held by the {@link CoreServiceHolder}.
+     * @param service the service that was held
+     */
     default void afterServiceHolding(CoreService service) {
     }
 
+    /**
+     * Called before a {@link CoreService} is released from the {@link CoreServiceHolder}.
+     * @param service the service that is about to be released
+     */
     default void beforeServiceRelease(CoreService service) {
     }
 

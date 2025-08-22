@@ -18,33 +18,35 @@ package com.aspectran.core.service;
 import java.util.EventListener;
 
 /**
- * The listener interface for receiving service state change events.
+ * Listener interface for receiving service state change events.
+ * <p>Implementations of this interface can react to various lifecycle events
+ * of a {@link ServiceLifeCycle}, such as starting, stopping, pausing, and resuming.
  */
 public interface ServiceStateListener extends EventListener {
 
     /**
-     * This method is called when the service is started.
+     * Called when the service has been successfully started.
      */
     void started();
 
     /**
-     * This method is called when the service is stopped.
+     * Called when the service has been successfully stopped.
      */
     void stopped();
 
     /**
-     * This method is called when the service is paused.
-     * @param millis the number of seconds the service should pause execution
+     * Called when the service has been paused for a specific duration.
+     * @param millis the number of milliseconds the service should pause execution
      */
     void paused(long millis);
 
     /**
-     * This method is called when the service is paused for a period of time.
+     * Called when the service has been paused indefinitely.
      */
     void paused();
 
     /**
-     * This method is called when the service is resumed.
+     * Called when the service has been resumed after being paused.
      */
     void resumed();
 

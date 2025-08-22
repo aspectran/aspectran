@@ -23,10 +23,23 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A builder class for creating and configuring {@link DefaultSchedulerService} instances.
+ * <p>This class provides a static factory method to construct a scheduler service,
+ * linking it to a parent {@link CoreService} and applying configuration from a
+ * {@link SchedulerConfig} object. It also sets up a {@link ServiceStateListener}
+ * to integrate the scheduler's pause/resume lifecycle with the main service.
+ */
 public class DefaultSchedulerServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSchedulerServiceBuilder.class);
 
+    /**
+     * Builds a new {@link DefaultSchedulerService}.
+     * @param parentService the parent core service
+     * @param schedulerConfig the scheduler configuration
+     * @return a new, configured {@code DefaultSchedulerService} instance
+     */
     @NonNull
     public static DefaultSchedulerService build(CoreService parentService, SchedulerConfig schedulerConfig) {
         Assert.notNull(parentService, "parentService must not be null");

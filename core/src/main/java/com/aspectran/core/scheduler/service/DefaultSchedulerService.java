@@ -20,7 +20,10 @@ import org.quartz.Scheduler;
 import org.quartz.impl.matchers.GroupMatcher;
 
 /**
- * The Class DefaultSchedulerService.
+ * The default implementation of the {@link SchedulerService} interface.
+ * <p>This class extends {@link AbstractSchedulerService} and provides concrete
+ * implementations for pausing and resuming scheduler jobs. It delegates these
+ * control operations to the underlying Quartz {@link Scheduler} instances.
  */
 public class DefaultSchedulerService extends AbstractSchedulerService {
 

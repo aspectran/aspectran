@@ -37,139 +37,143 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * An interface for embedding the Aspectran framework.
- * This interface provides a way to run embedded Aspectran activities.
- *
- * <p>Created: 2017. 10. 28.</p>
+ * An interface for embedding the Aspectran framework into existing Java applications.
+ * <p>This interface provides a high-level, simplified API to interact with an embedded
+ * Aspectran instance, allowing programmatic execution of translets, rendering of templates,
+ * and access to managed beans and messages. It acts as a facade over the more complex
+ * {@link com.aspectran.core.service.CoreService} layer.
  *
  * @since 3.0.0
  */
 public interface EmbeddedAspectran {
 
     /**
-     * Executes an instant activity.
-     * @param instantAction the instant action
-     * @return An object that is the result of performing an instant activity
+     * Executes an instant action within the Aspectran context.
+     * <p>This method allows for executing a piece of code that can access Aspectran's
+     * managed components (beans, environment, etc.) without needing to define a translet.
+     * @param instantAction the instant action to execute
+     * @param <V> the return type of the instant action
+     * @return the result of performing the instant action
      * @since 6.5.1
      */
     <V> V execute(InstantAction<V> instantAction);
 
     /**
-     * Executes the translet.
-     * @param name the translet name
-     * @return the {@code Translet} object
+     * Executes the translet with the given name.
+     * @param name the translet name to execute
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name);
 
     /**
-     * Executes the translet.
-     * @param name the translet name
-     * @param body the request body
-     * @return the {@code Translet} object
+     * Executes the translet with the given name and request body.
+     * @param name the translet name to execute
+     * @param body the request body content
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, String body);
 
     /**
-     * Executes the translet with the given parameters.
-     * @param name the translet name
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name and attributes.
+     * @param name the translet name to execute
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, Map<String, Object> attributeMap);
 
     /**
-     * Executes the translet with the given parameters.
-     * @param name the translet name
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name and parameters.
+     * @param name the translet name to execute
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, ParameterMap parameterMap);
 
     /**
-     * Executes the translet with the given attributes and parameters.
-     * @param name the translet name
-     * @param attributeMap the attribute map
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name, attributes, and parameters.
+     * @param name the translet name to execute
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
-     * Executes the translet without the supplied variables.
-     * @param name the translet name
-     * @param method the request method
-     * @return the {@code Translet} object
+     * Executes the translet with the given name and request method.
+     * @param name the translet name to execute
+     * @param method the request method (e.g., GET, POST)
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, MethodType method);
 
     /**
-     * Executes the translet with the given attributes.
-     * @param name the translet name
-     * @param method the request method
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name, request method, and attributes.
+     * @param name the translet name to execute
+     * @param method the request method (e.g., GET, POST)
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap);
 
     /**
-     * Executes the translet with the given parameters.
-     * @param name the translet name
-     * @param method the request method
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name, request method, and parameters.
+     * @param name the translet name to execute
+     * @param method the request method (e.g., GET, POST)
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, MethodType method, ParameterMap parameterMap);
 
     /**
-     * Executes the translet with the given attributes and parameters.
-     * @param name the translet name
-     * @param method the request method
-     * @param attributeMap the attribute map
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
+     * Executes the translet with the given name, request method, attributes, and parameters.
+     * @param name the translet name to execute
+     * @param method the request method (e.g., GET, POST)
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
-     * Executes the translet with the given attributes and parameters.
-     * @param name the translet name
-     * @param method the request method
-     * @param attributeMap the attribute map
-     * @param parameterMap the parameter map
-     * @param body the request body
-     * @return the {@code Translet} object
+     * Executes the translet with the given name, request method, attributes, parameters, and request body.
+     * @param name the translet name to execute
+     * @param method the request method (e.g., GET, POST)
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @param body the request body content
+     * @return the {@link Translet} object representing the execution result
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap, String body);
 
     /**
-     * Renders the template without the supplied variables.
-     * @param templateId the template id
-     * @return the output string of the template
+     * Renders a template with the given ID.
+     * @param templateId the ID of the template to render
+     * @return the rendered text as a string
      */
     String render(String templateId);
 
     /**
-     * Renders the template with the given attributes.
-     * @param templateId the template id
-     * @param attributeMap the attribute map
-     * @return the output string of the template
+     * Renders a template with the given ID and attributes.
+     * @param templateId the ID of the template to render
+     * @param attributeMap a map of attributes to be passed to the template renderer
+     * @return the rendered text as a string
      */
     String render(String templateId, Map<String, Object> attributeMap);
 
     /**
-     * Renders the template with the given parameters.
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @return the output string of the template
+     * Renders a template with the given ID and parameters.
+     * @param templateId the ID of the template to render
+     * @param parameterMap a map of parameters to be passed to the template renderer
+     * @return the rendered text as a string
      */
     String render(String templateId, ParameterMap parameterMap);
 
     /**
-     * Renders the template with the given attributes and parameters.
-     * @param templateId the template id
-     * @param attributeMap the attribute map
-     * @param parameterMap the parameter map
-     * @return the output string of the template
+     * Renders a template with the given ID, attributes, and parameters.
+     * @param templateId the ID of the template to render
+     * @param attributeMap a map of attributes to be passed to the template renderer
+     * @param parameterMap a map of parameters to be passed to the template renderer
+     * @return the rendered text as a string
      */
     String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
@@ -180,69 +184,65 @@ public interface EmbeddedAspectran {
     Environment getEnvironment();
 
     /**
-     * Gets the application adapter.
+     * Returns the application adapter.
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
-     * Return an instance of the bean that matches the given id.
+     * Returns an instance of the bean that matches the given ID.
      * @param <V> the type of bean object retrieved
-     * @param id the id of the bean to retrieve
+     * @param id the ID of the bean to retrieve
      * @return an instance of the bean
      */
     <V> V getBean(String id);
 
     /**
-     * Return an instance of the bean that matches the given object type.
+     * Returns an instance of the bean that matches the given object type.
      * @param <V> the type of bean object retrieved
      * @param type the type the bean must match; can be an interface or superclass.
-     *      {@code null} is disallowed.
      * @return an instance of the bean
      * @since 1.3.1
      */
     <V> V getBean(Class<V> type);
 
     /**
-     * Return an instance of the bean that matches the given object type.
+     * Returns an instance of the bean that matches the given object type and ID.
      * @param <V> the type of bean object retrieved
-     * @param type type the bean must match; can be an interface or superclass.
-     *      {@code null} is allowed.
-     * @param id the id of the bean to retrieve
+     * @param type the type the bean must match; can be an interface or superclass.
+     * @param id the ID of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
     <V> V getBean(Class<V> type, String id);
 
     /**
-     * Return whether a bean with the specified id is present.
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified id is present
+     * Returns whether a bean with the specified ID is present.
+     * @param id the ID of the bean to query
+     * @return {@code true} if a bean with the specified ID is present, {@code false} otherwise
      */
     boolean containsBean(String id);
 
     /**
-     * Return whether a bean with the specified object type is present.
+     * Returns whether a bean with the specified object type is present.
      * @param type the object type of the bean to query
-     * @return whether a bean with the specified type is present
+     * @return {@code true} if a bean with the specified type is present, {@code false} otherwise
      */
     boolean containsBean(Class<?> type);
 
     /**
      * Returns whether the bean corresponding to the specified object type and ID exists.
      * @param type the object type of the bean to query
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified type is present
+     * @param id the ID of the bean to query
+     * @return {@code true} if a bean with the specified type and ID is present, {@code false} otherwise
      */
     boolean containsBean(Class<?> type, String id);
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args Array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param locale the Locale in which to do the lookup
+     * Tries to resolve the message for the given code and locale.
+     * @param code the code to lookup, such as 'calculator.noRateSet'
+     * @param args arguments that will be filled in for parameters within the message (e.g., "{0}", "{1,date}")
+     * @param locale the {@link Locale} in which to do the lookup
      * @return the resolved message
      * @throws NoSuchMessageException if the message wasn't found
      * @see java.text.MessageFormat
@@ -250,36 +250,31 @@ public interface EmbeddedAspectran {
     String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param args array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param defaultMessage String to return if the lookup fails
-     * @param locale the Locale in which to do the lookup
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
+     * Tries to resolve the message for the given code and locale. Returns a default message if not found.
+     * @param code the code to lookup, such as 'calculator.noRateSet'
+     * @param args arguments that will be filled in for parameters within the message
+     * @param defaultMessage the default message to return if the lookup fails
+     * @param locale the {@link Locale} in which to do the lookup
+     * @return the resolved message if successful, otherwise the default message
      * @see java.text.MessageFormat
      */
     String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
 
     /**
-     * Create and return a new session adapter from the embedded aspectran.
+     * Creates and returns a new session adapter from the embedded Aspectran instance.
      * @return the session adapter
      */
     SessionAdapter newSessionAdapter();
 
     /**
-     * Releases resources associated with this embedded aspectran.
+     * Releases resources associated with this embedded Aspectran instance.
      * This method stops the service and performs cleanup operations.
      */
     void release();
 
     /**
-     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     * @param aspectranConfigFile the aspectran configuration file
+     * Creates and starts a new {@code DefaultEmbeddedAspectran} instance from a configuration file path.
+     * @param aspectranConfigFile the path to the Aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
     @NonNull
@@ -292,8 +287,8 @@ public interface EmbeddedAspectran {
     }
 
     /**
-     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     * @param aspectranConfigFile the aspectran configuration file
+     * Creates and starts a new {@code DefaultEmbeddedAspectran} instance from a configuration {@link File}.
+     * @param aspectranConfigFile the Aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
     @NonNull
@@ -312,8 +307,8 @@ public interface EmbeddedAspectran {
     }
 
     /**
-     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     * @param configFileReader the aspectran configuration file reader
+     * Creates and starts a new {@code DefaultEmbeddedAspectran} instance from a configuration {@link Reader}.
+     * @param configFileReader the Aspectran configuration file reader
      * @return the instance of {@code EmbeddedAspectran}
      */
     @NonNull
@@ -331,8 +326,8 @@ public interface EmbeddedAspectran {
     }
 
     /**
-     * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     * @param aspectranConfig the parameters for aspectran configuration
+     * Creates and starts a new {@code DefaultEmbeddedAspectran} instance from an {@link AspectranConfig} object.
+     * @param aspectranConfig the Aspectran configuration
      * @return the instance of {@code EmbeddedAspectran}
      */
     @NonNull

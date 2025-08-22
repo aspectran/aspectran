@@ -24,53 +24,44 @@ import com.aspectran.core.service.CoreService;
 import java.util.Map;
 
 /**
- * Service facade used by the Aspectran Daemon runtime to execute named requests (translets)
- * programmatically.
- * <p>
- * Extends {@link CoreService} to expose the activity context, lifecycle, and common helpers
- * required to run background tasks. Implementations typically create a daemon-friendly
- * {@link com.aspectran.core.adapter.SessionAdapter SessionAdapter} and provide
- * {@code translate(...)} overloads to run a translet with optional attributes and parameters.
- * </p>
+ * The main interface for the Aspectran Daemon service.
+ * <p>This service provides a way to run Aspectran in a standalone, non-web environment,
+ * allowing for the programmatic execution of translets. It extends {@link CoreService}
+ * to provide access to the core application context and lifecycle management.
  *
- * <p>Created: 2017. 10. 28.</p>
+ * <p>The primary method for interacting with this service is {@link #translate},
+ * which triggers the execution of a specified translet.
+ *
+ * @since 5.1.0
  */
 public interface DaemonService extends CoreService {
 
     /**
-     * Create and return a new session adapter from the daemon service.
-     * @return the session adapter
+     * Creates and returns a new session adapter for the daemon environment.
+     * This allows for session management in a non-web context.
+     * @return a new {@link SessionAdapter}
      */
     SessionAdapter newSessionAdapter();
 
     /**
-     * Executes the translet identified by {@code name} using the default request method
-     * (typically {@link MethodType#GET}) and the given attributes and parameters.
-     * <p>
-     * Implementations should treat {@code attributeMap} and {@code parameterMap} as optional;
-     * they may be {@code null} to indicate no attributes or parameters.
-     * </p>
-     * @param name the translet (request) name to execute
-     * @param attributeMap attributes to expose to the request scope (may be {@code null})
-     * @param parameterMap parameters to expose to the request (may be {@code null})
-     * @return the resulting {@link Translet} bound to the execution
-     * @throws IllegalArgumentException if {@code name} is {@code null} or empty
+     * Executes the translet with the given name.
+     * <p>The request method is determined by parsing the name; if the name is prefixed
+     * with a method type (e.g., "POST /path/to/translet"), that method is used.
+     * Otherwise, it defaults to {@link MethodType#GET}.
+     * @param name the name of the translet to execute, optionally prefixed with a method
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the result of the translet execution
      */
     Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
-     * Executes the translet identified by {@code name} with the specified request {@code method},
-     * applying the given attributes and parameters.
-     * <p>
-     * Implementations should treat {@code attributeMap} and {@code parameterMap} as optional;
-     * they may be {@code null} to indicate no attributes or parameters.
-     * </p>
-     * @param name the translet (request) name to execute
-     * @param method the request method to use (e.g., {@link MethodType#GET} or {@link MethodType#POST}); must not be {@code null}
-     * @param attributeMap attributes to expose to the request scope (may be {@code null})
-     * @param parameterMap parameters to expose to the request (may be {@code null})
-     * @return the resulting {@link Translet} bound to the execution
-     * @throws IllegalArgumentException if {@code name} is {@code null} or empty
+     * Executes the translet with the given name and request method.
+     * @param name the name of the translet to execute
+     * @param method the request method to use
+     * @param attributeMap a map of attributes to be passed to the activity
+     * @param parameterMap a map of parameters to be passed to the activity
+     * @return the result of the translet execution
      */
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
 

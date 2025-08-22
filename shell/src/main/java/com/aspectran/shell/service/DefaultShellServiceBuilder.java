@@ -25,23 +25,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory for constructing and wiring a {@link DefaultShellService} instance.
- * <p>
- * Applies {@link AspectranConfig}, registers a {@link ServiceStateListener} to
- * manage session lifecycle and console UI (greetings/help), and returns a ready
- * service instance to be started by the shell.
- * </p>
- * <p>Created: 4/1/24</p>
+ * A builder class for creating and configuring {@link DefaultShellService} instances.
+ * <p>This class provides a static factory method to construct a shell service,
+ * applying configuration from an {@link AspectranConfig} object and linking it
+ * with a {@link ShellConsole}. It also sets up a {@link ServiceStateListener} to
+ * manage the service's lifecycle, including session management, console initialization,
+ * and registration with the {@link CoreServiceHolder}.
  */
 public class DefaultShellServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultShellServiceBuilder.class);
 
     /**
-     * Returns a new instance of {@code DefaultShellService}.
-     * @param aspectranConfig the aspectran configuration
-     * @param console the {@code Console} instance
-     * @return the instance of {@code DefaultShellService}
+     * Builds a new {@link DefaultShellService} instance.
+     * @param aspectranConfig the Aspectran configuration
+     * @param console the shell console for I/O
+     * @return a new, configured {@code DefaultShellService} instance
      */
     @NonNull
     public static DefaultShellService build(AspectranConfig aspectranConfig, ShellConsole console) {

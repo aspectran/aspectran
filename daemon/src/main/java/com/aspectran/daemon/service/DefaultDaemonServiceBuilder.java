@@ -24,29 +24,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Builder utility for creating and wiring a DefaultDaemonService instance.
- * <p>
- * This class centralizes the bootstrapping of the daemon-oriented CoreService including
- * configuration and lifecycle listeners. The {@link #build(AspectranConfig)} method:
- * </p>
- * <ul>
- *   <li>creates a new {@link DefaultDaemonService}</li>
- *   <li>applies the provided {@link AspectranConfig} via {@code configure(...)};</li>
- *   <li>registers a {@link ServiceStateListener} to manage global service exposure
- *       ({@link CoreServiceHolder}) and session manager lifecycle, and to control
- *       pause/resume semantics through the service's {@code pauseTimeout} flag</li>
- * </ul>
- *
- * <p>Created: 4/1/24</p>
+ * A builder class for creating and configuring {@link DefaultDaemonService} instances.
+ * <p>This class provides a static factory method to construct a daemon service,
+ * applying configuration from an {@link AspectranConfig} object. It also sets up
+ * a {@link ServiceStateListener} to manage the service's lifecycle, including
+ * session management, registration with the {@link CoreServiceHolder}, and
+ * pause/resume state.
  */
 public abstract class DefaultDaemonServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultDaemonServiceBuilder.class);
 
     /**
-     * Returns a new instance of {@code DefaultDaemonService}.
-     * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code DefaultDaemonService}
+     * Builds a new {@link DefaultDaemonService} instance from the given configuration.
+     * @param aspectranConfig the Aspectran configuration
+     * @return a new, configured {@code DefaultDaemonService} instance
      */
     @NonNull
     public static DefaultDaemonService build(AspectranConfig aspectranConfig) {
@@ -58,20 +50,8 @@ public abstract class DefaultDaemonServiceBuilder {
     }
 
     /**
-     * Registers a {@link ServiceStateListener} on the given service to coordinate global exposure
-     * and pause/resume semantics.
-     * <p>Listener behavior:</p>
-     * <ul>
-     *   <li><b>started()</b>: exposes the service via {@link com.aspectran.core.service.CoreServiceHolder};
-     *       creates the session manager; clears pause state ({@code pauseTimeout = 0}).</li>
-     *   <li><b>stopped()</b>: destroys the session manager; removes the service from
-     *       {@link com.aspectran.core.service.CoreServiceHolder}.</li>
-     *   <li><b>paused(long)</b>: sets {@code pauseTimeout} to a future instant (now + millis) if the
-     *       value is positive, otherwise logs a warning.</li>
-     *   <li><b>paused()</b>: pauses indefinitely by setting {@code pauseTimeout = -1}.</li>
-     *   <li><b>resumed()</b>: clears pause state by setting {@code pauseTimeout = 0}.</li>
-     * </ul>
-     * @param daemonService the service to attach the listener to (never {@code null})
+     * Sets up a {@link ServiceStateListener} to manage the daemon service's lifecycle events.
+     * @param daemonService the daemon service to configure
      */
     private static void setServiceStateListener(@NonNull final DefaultDaemonService daemonService) {
         daemonService.setServiceStateListener(new ServiceStateListener() {

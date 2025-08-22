@@ -49,7 +49,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class AbstractSchedulerService.
+ * Abstract base class for {@link SchedulerService} implementations.
+ * <p>This class provides the core functionality for integrating with the Quartz
+ * scheduler. It manages the lifecycle of Quartz {@link Scheduler} instances,
+ * builds jobs and triggers from Aspectran's {@link ScheduleRule} configuration,
+ * and handles the startup and shutdown of the schedulers.
+ *
+ * <p>It is designed to be a sub-service of a {@link CoreService}, inheriting its
+ * lifecycle and accessing the main {@link ActivityContext}.
  */
 public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle implements SchedulerService {
 

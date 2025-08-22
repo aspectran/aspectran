@@ -38,10 +38,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Provides an interactive shell that lets you use or control Aspectran directly
- * from the command line.
+ * Default implementation of the {@link ShellService} interface.
+ * <p>This class provides an interactive shell that allows users to execute
+ * translets from the command line. It handles command parsing, output redirection,
+ * and both synchronous and asynchronous activity execution.
  *
- * @since 2016. 1. 18.
+ * @since 2.0.0
  */
 public class DefaultShellService extends AbstractShellService {
 

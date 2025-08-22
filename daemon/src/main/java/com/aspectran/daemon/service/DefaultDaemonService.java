@@ -28,23 +28,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * Default implementation of {@link DaemonService} that executes named requests (translets)
- * within a daemon-oriented {@link com.aspectran.daemon.activity.DaemonActivity}.
- * <p>
- * Features:
- * </p>
- * <ul>
- *   <li>Accepts request names optionally prefixed with an HTTP-like method token
- *       (e.g., "POST foo/bar"). If present the token is parsed into a {@link MethodType}.</li>
- *   <li>Validates availability of the target translet via {@link #isRequestAcceptable(String)}.</li>
- *   <li>Builds and prepares a {@link com.aspectran.daemon.activity.DaemonActivity},
- *       performs it, and returns the bound {@link Translet}.</li>
- *   <li>Maps failures to {@link CoreServiceException} with a concise root-cause message.</li>
- *   <li>Honors a pause window via {@link #pauseTimeout}: if paused, the request is skipped.</li>
- * </ul>
- *
- * <p>Thread-safety: instances are typically used as singleton services.
- * The {@code pauseTimeout} flag is {@code volatile} to allow concurrent checks.</p>
+ * Default implementation of the {@link DaemonService} interface.
+ * <p>This class is responsible for executing translets in a non-web, background
+ * environment. It creates and manages a {@link DaemonActivity} for each
+ * incoming request, handling the full lifecycle from preparation to execution.
+ * It also supports a pause mechanism to temporarily halt request processing.
  *
  * @since 5.1.0
  */

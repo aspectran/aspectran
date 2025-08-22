@@ -30,15 +30,12 @@ import com.aspectran.utils.Assert;
 import java.util.Locale;
 
 /**
- * Abstract base class for embedding Aspectran functionality within a standalone or web application.
- * This class provides common infrastructure for session management, bean access, and message lookup.
- * It implements the {@link EmbeddedAspectran} interface and delegates session and bean operations
- * to the underlying Aspectran context.
- *
- * <p>Subclasses should implement specific behavior for service initialization and lifecycle management.</p>
- *
- * @see EmbeddedAspectran
- * @see DefaultCoreService
+ * Abstract base class for {@link EmbeddedAspectran} implementations.
+ * <p>This class extends {@link DefaultCoreService} and provides the foundational
+ * infrastructure for embedding Aspectran within another application. It implements
+ * the {@link EmbeddedAspectran} interface by delegating calls to the underlying
+ * {@link com.aspectran.core.context.ActivityContext} for bean access, message lookup,
+ * and session management.
  */
 public abstract class AbstractEmbeddedAspectran extends DefaultCoreService implements EmbeddedAspectran {
 

@@ -35,7 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class AbstractCoreService.
+ * Abstract base class for {@link CoreService} implementations.
+ * <p>This class provides a skeletal implementation of the {@link CoreService} interface,
+ * handling common functionalities such as managing the {@link ActivityContext},
+ * {@link AspectranConfig}, and {@link SchedulerService}. It also provides mechanisms
+ * for handling derived services, class loaders, and request acceptability.
  */
 public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
 

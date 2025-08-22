@@ -19,7 +19,14 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.ServiceLifeCycle;
 
 /**
- * The Interface SchedulerService.
+ * The main interface for the Aspectran scheduling service.
+ * <p>This service is responsible for managing the lifecycle of scheduled jobs,
+ * which are defined in the Aspectran configuration. It acts as a bridge to the
+ * underlying Quartz scheduler, allowing Aspectran translets to be executed
+ * at specified times or intervals.
+ *
+ * <p>The SchedulerService is a sub-service of the {@link com.aspectran.core.service.CoreService}
+ * and its lifecycle is managed by it.
  */
 public interface SchedulerService extends ServiceLifeCycle {
 
@@ -27,20 +34,52 @@ public interface SchedulerService extends ServiceLifeCycle {
 
     String JOB_RULE_DATA_KEY = "JOB_RULE";
 
+    /**
+     * Returns the activity context.
+     * @return the activity context
+     */
     ActivityContext getActivityContext();
 
+    /**
+     * Returns the number of seconds to delay before starting the scheduler.
+     * @return the start delay in seconds
+     */
     int getStartDelaySeconds();
 
+    /**
+     * Returns whether to wait for jobs to complete on shutdown.
+     * @return true to wait, false otherwise
+     */
     boolean isWaitOnShutdown();
 
+    /**
+     * Returns the logging group name.
+     * @return the logging group name
+     */
     String getLoggingGroup();
 
+    /**
+     * Pauses all jobs in the scheduler.
+     */
     void pauseAll();
 
+    /**
+     * Resumes all paused jobs in the scheduler.
+     */
     void resumeAll();
 
+    /**
+     * Pauses the schedule with the given ID.
+     * @param scheduleId the ID of the schedule to pause
+     * @throws SchedulerServiceException if the schedule cannot be paused
+     */
     void pause(String scheduleId) throws SchedulerServiceException;
 
+    /**
+     * Resumes the schedule with the given ID.
+     * @param scheduleId the ID of the schedule to resume
+     * @throws SchedulerServiceException if the schedule cannot be resumed
+     */
     void resume(String scheduleId) throws SchedulerServiceException;
 
 }

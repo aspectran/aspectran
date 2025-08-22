@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the service interface for command-line application.
+ * Provides a service implementation for running Aspectran as an interactive
+ * command-line shell.
+ * <p>This package adapts the core Aspectran service for a console-based, user-driven
+ * environment. The main entry point is the
+ * {@link com.aspectran.shell.service.ShellService#translate(com.aspectran.shell.command.TransletCommandLine)}
+ * method, which takes a parsed command line and executes the corresponding translet.
  */
 package com.aspectran.shell.service;

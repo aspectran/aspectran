@@ -20,7 +20,9 @@ import com.aspectran.core.service.CoreServiceException;
 import java.io.Serial;
 
 /**
- * The Class SchedulerServiceException.
+ * Exception thrown when a problem occurs within the scheduler service.
+ * <p>This exception extends {@link CoreServiceException} and is used to indicate
+ * errors specific to the lifecycle and operation of the {@link SchedulerService}.
  *
  * @since 2.0.0
  */

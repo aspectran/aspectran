@@ -36,8 +36,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * This class provides the default implementation of the EmbeddedAspectran service.
- * It handles the execution of activities and the translation of translets.
+ * Default implementation of the {@link EmbeddedAspectran} service.
+ * <p>This class provides the concrete implementation for executing instant actions,
+ * translating translets, and rendering templates within an embedded Aspectran instance.
+ * It manages the lifecycle of activities and integrates with the core service holder
+ * for global service management.
  */
 public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 

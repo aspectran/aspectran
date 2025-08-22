@@ -37,9 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base class for {@code ShellService} implementations.
+ * Abstract base class for {@link ShellService} implementations.
+ * <p>This class extends {@link DefaultCoreService} to provide common functionality
+ * for an interactive shell environment. It manages the {@link ShellConsole},
+ * handles shell-specific configuration from {@link ShellConfig}, and provides
+ * hooks for session management.
  *
- * <p>Created: 2017. 10. 30.</p>
+ * @since 2.0.0
  */
 public abstract class AbstractShellService extends DefaultCoreService implements ShellService {
 

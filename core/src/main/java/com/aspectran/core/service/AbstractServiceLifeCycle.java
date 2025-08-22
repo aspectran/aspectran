@@ -26,7 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class AbstractServiceLifeCycle.
+ * Abstract base class providing a skeletal implementation of the {@link ServiceLifeCycle} interface.
+ * <p>This class handles the common logic for managing service states (started, stopped, paused, resumed),
+ * and orchestrates the lifecycle of sub-services. It ensures thread-safe operations for lifecycle
+ * transitions and provides hooks for custom startup and shutdown logic.
  */
 public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
