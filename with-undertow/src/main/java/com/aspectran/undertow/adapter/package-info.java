@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides simple, in-memory adapters for embedding Aspectran within another Java application.
- * <p>This is particularly useful for unit testing business logic without a full runtime environment.</p>
+ * Provides high-performance adapter implementations for the Undertow web server.
+ * <p>These adapters use Undertow's native APIs directly for better performance.</p>
  */
-package com.aspectran.embed.adapter;
+package com.aspectran.undertow.adapter;

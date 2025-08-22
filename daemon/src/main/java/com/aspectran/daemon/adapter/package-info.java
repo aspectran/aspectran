@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-present The Aspectran Project
+ * Copyright (c) 2008-2024 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the adapter interface for Aspectran Daemon.
+ * Provides adapter implementations for a non-interactive, long-running daemon environment.
+ * <p>In this context, a "request" is typically triggered programmatically or by a scheduler.</p>
  */
 package com.aspectran.daemon.adapter;
