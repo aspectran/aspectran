@@ -174,8 +174,8 @@ public class AnnotatedConfigParser {
             if (logger.isDebugEnabled()) {
                 logger.debug("Parsing for type-based bean rules: {}", typeBasedBeanRules.size());
             }
-            for (Set<BeanRule> set : typeBasedBeanRules) {
-                for (BeanRule beanRule : set) {
+            for (Set<BeanRule> beanRules : typeBasedBeanRules) {
+                for (BeanRule beanRule : beanRules) {
                     if (!beanRule.isFactoryOffered()) {
                         if (logger.isTraceEnabled()) {
                             logger.trace("typeBasedBeanRule {}", beanRule);
