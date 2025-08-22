@@ -18,7 +18,13 @@ package com.aspectran.core.context;
 import java.io.Serial;
 
 /**
- * Exception occurs when there is no current activity.
+ * Exception thrown when an attempt is made to access the current activity,
+ * but no activity is associated with the current thread.
+ *
+ * <p>This typically occurs when {@link ActivityContext#getCurrentActivity()} is called
+ * outside the scope of an active request or execution.
+ *
+ * @see ActivityContext#getCurrentActivity()
  */
 public class NoActivityStateException extends IllegalStateException {
 
@@ -26,10 +32,10 @@ public class NoActivityStateException extends IllegalStateException {
     private static final long serialVersionUID = 8373382682956966522L;
 
     /**
-     * Constructs a NoActivityStateException.
+     * Constructs a new NoActivityStateException.
      */
     public NoActivityStateException() {
-        super("No Activity");
+        super("No activity is currently bound to the current thread");
     }
 
 }

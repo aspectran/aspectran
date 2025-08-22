@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 /**
- * A Package for providing core components and configuring an execution environment.
+ * Provides the core classes for the Aspectran execution context.
+ * <p>This package contains the {@link com.aspectran.core.context.ActivityContext} interface,
+ * which is the central container for an Aspectran application. It manages the lifecycle
+ * of all components, provides access to configuration, and handles the execution
+ * of activities in a multi-threaded environment.
+ *
+ * <p>The main components of this package include:
+ * <ul>
+ *     <li>{@link com.aspectran.core.context.ActivityContext}: The central interface
+ *         for the application context.</li>
+ *     <li>{@link com.aspectran.core.context.DefaultActivityContext}: The default
+ *         implementation of the ActivityContext.</li>
+ *     <li>com.aspectran.core.context.builder.ActivityContextBuilder: The builder
+ *         responsible for creating and initializing the ActivityContext.</li>
+ * </ul>
  */
 package com.aspectran.core.context;

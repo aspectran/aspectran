@@ -30,9 +30,17 @@ import com.aspectran.utils.statistic.CounterStatistic;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Central interface to provide configuration for performing various activities.
+ * Central interface to provide configuration for an application. This is the heart of the Aspectran framework.
  *
- * <p>Created: 2008. 06. 09 PM 2:12:40</p>
+ * <p>It is responsible for holding and managing all the Aspectran components, such as
+ * rule registries, the environment, and the application adapter. It also manages the
+ * lifecycle of activities, which represent single units of work (e.g., handling a web request).
+ *
+ * <p>The {@code ActivityContext} is thread-safe and provides a way to access the
+ * current activity via a {@link ThreadLocal} mechanism, making it suitable for
+ * multi-threaded environments.
+ *
+ * @since 2008. 06. 09
  */
 public interface ActivityContext {
 
@@ -49,118 +57,119 @@ public interface ActivityContext {
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
     /**
-     * Returns the name of this ActivityContext or {@code null} if
-     * this ActivityContext is not named.
-     * @return name of this ActivityContext; or {@code null} if
-     * this ActivityContext is not named.
+     * Returns the name of this context.
+     * @return the name of this context, or {@code null} if it is not named
      */
     String getName();
 
     /**
-     * Returns the description of this ActivityContext or {@code null} if
-     * this ActivityContext has no description.
-     * @return description of this ActivityContext or {@code null} if
-     * this ActivityContext has no description.
+     * Returns a description of this context.
+     * @return a description of this context, or {@code null} if no description is available
      */
     String getDescription();
 
     /**
-     * Returns the first created CoreService that holds the ActivityContext.
-     * @return the master service
+     * Returns the master service that holds this context.
+     * @return the master {@link CoreService} instance
      */
     CoreService getMasterService();
 
     /**
-     * Returns the class loader used by the current application.
-     * @return the class loader
+     * Returns the application adapter for the current environment.
+     * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
-     * Returns the ClassLoader for this service.
-     * @return the ClassLoader for this service
+     * Returns the class loader for this context.
+     * @return the class loader
      */
     ClassLoader getClassLoader();
 
     /**
-     * Gets the environment.
+     * Returns the environment for this context.
      * @return the environment
      */
     Environment getEnvironment();
 
     /**
-     * Gets the aspect rule registry.
+     * Returns the aspect rule registry.
      * @return the aspect rule registry
      */
     AspectRuleRegistry getAspectRuleRegistry();
 
     /**
-     * Gets the bean registry.
+     * Returns the bean registry.
      * @return the bean registry
      */
     BeanRegistry getBeanRegistry();
 
     /**
-     * Gets the schedule rule registry.
+     * Returns the schedule rule registry.
      * @return the schedule rule registry
      */
     ScheduleRuleRegistry getScheduleRuleRegistry();
 
     /**
-     * Gets the template renderer.
+     * Returns the template renderer.
      * @return the template renderer
      */
     TemplateRenderer getTemplateRenderer();
 
     /**
-     * Gets the translet rule registry.
+     * Returns the translet rule registry.
      * @return the translet rule registry
      */
     TransletRuleRegistry getTransletRuleRegistry();
 
     /**
-     * Gets the message source.
+     * Returns the message source for internationalization (i18n).
      * @return the message source
      */
     MessageSource getMessageSource();
 
     /**
-     * Gets the default activity.
+     * Returns the default activity for this context.
      * @return the default activity
      */
     Activity getDefaultActivity();
 
     /**
-     * Gets the available activity.
-     * If there is no current activity, the application default activity is returned.
+     * Returns the currently available activity.
+     * If there is a current activity for the thread, it is returned.
+     * Otherwise, the default activity is returned.
      * @return the available activity
      */
     Activity getAvailableActivity();
 
     /**
-     * Gets the current activity.
+     * Returns the current activity for the current thread.
      * @return the current activity
-     * @throws NoActivityStateException if there is no current activity
+     * @throws NoActivityStateException if no activity is currently associated with the thread
      */
     Activity getCurrentActivity();
 
     /**
-     * Sets the current activity.
-     * @param activity the new current activity
+     * Sets the current activity for the current thread.
+     * @param activity the activity to set as current
      */
     void setCurrentActivity(Activity activity);
 
     /**
-     * Removes the current activity.
+     * Removes the current activity for the current thread.
      */
     void removeCurrentActivity();
 
     /**
-     * Returns whether there is current activity.
-     * @return {@code true} if there is current activity, {@code false} otherwise
+     * Returns whether a current activity exists for the current thread.
+     * @return {@code true} if a current activity exists, {@code false} otherwise
      */
     boolean hasCurrentActivity();
 
+    /**
+     * Returns the statistics counter for activities.
+     * @return the activity counter
+     */
     CounterStatistic getActivityCounter();
 
 }

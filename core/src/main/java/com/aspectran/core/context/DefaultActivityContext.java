@@ -39,9 +39,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class DefaultActivityContext.
+ * The default implementation of the {@link ActivityContext} interface.
  *
- * <p>Created: 2008. 06. 09 PM 2:12:40</p>
+ * <p>This class is the core of an Aspectran application, responsible for
+ * managing the lifecycle of all components, holding configuration, and providing
+ * access to various services. It uses a {@link ThreadLocal} to manage the
+ * current {@link Activity} for each thread, ensuring thread safety.
+ *
+ * @since 2008. 06. 09
  */
 public class DefaultActivityContext extends AbstractComponent implements ActivityContext {
 
@@ -79,8 +84,9 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Instantiates a new DefaultActivityContext.
-     * @param classLoader the class loader
-     * @param applicationAdapter the application adapter
+     * @param classLoader the class loader for the context
+     * @param applicationAdapter the application adapter for the environment
+     * @param masterService the master service holding this context
      */
     public DefaultActivityContext(ClassLoader classLoader,
                                   ApplicationAdapter applicationAdapter,
@@ -152,8 +158,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     /**
-     * Sets the default bean registry.
-     * @param beanRegistry the new default bean registry
+     * Sets the bean registry.
+     * @param beanRegistry the new bean registry
      */
     public void setBeanRegistry(DefaultBeanRegistry beanRegistry) {
         checkInitializable();
@@ -167,8 +173,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     /**
-     * Sets the template processor.
-     * @param templateRenderer the new template processor
+     * Sets the template renderer.
+     * @param templateRenderer the new template renderer
      */
     public void setTemplateRenderer(DefaultTemplateRenderer templateRenderer) {
         checkInitializable();
@@ -262,8 +268,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     /**
-     * Initialize the MessageSource.
-     * Use parent's if none defined in this context.
+     * Resolves the {@link MessageSource} for this context.
+     * <p>If a bean with the specific name {@link #MESSAGE_SOURCE_BEAN_ID} is defined,
+     * it will be used. Otherwise, an empty {@link DelegatingMessageSource} will be
+     * created.</p>
      */
     private void resolveMessageSource() {
         if (beanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
