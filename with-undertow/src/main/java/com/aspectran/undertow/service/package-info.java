@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 /**
- * Provides a service implementation for running Aspectran in a Java Servlet-based
- * web environment.
+ * Provides a service implementation for running Aspectran on top of the
+ * Undertow web server.
  * <p>This package acts as a bridge between the generic Aspectran core and the
- * specific world of {@code HttpServletRequest}, {@code HttpServletResponse},
- * and {@code ServletContext}. The central component is the
- * {@link com.aspectran.web.service.WebService}, which handles incoming HTTP requests
- * and dispatches them to Aspectran's processing pipeline.</p>
+ * specific Undertow server API, allowing Aspectran to handle web requests
+ * directly using Undertow's native {@code HttpServerExchange} objects.
  */
-package com.aspectran.web.service;
+package com.aspectran.undertow.service;

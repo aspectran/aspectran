@@ -29,9 +29,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * The Interface WebService.
+ * The main interface for the Aspectran Web service.
+ * <p>This service specializes the core Aspectran service for a Java Servlet-based
+ * web environment. It acts as the bridge between the generic Aspectran core and
+ * the specific world of {@link jakarta.servlet.http.HttpServletRequest},
+ * {@link jakarta.servlet.http.HttpServletResponse}, and {@link jakarta.servlet.ServletContext}.
  *
- * <p>Created: 2017. 10. 28.</p>
+ * @since 2.0.0
  */
 public interface WebService extends CoreService {
 
@@ -52,22 +56,39 @@ public interface WebService extends CoreService {
      */
     ServletContext getServletContext();
 
+    /**
+     * Returns whether session adaptation is enabled for this web service.
+     * @return {@code true} if session adaptation is enabled, {@code false} otherwise
+     */
     boolean isSessionAdaptable();
 
     /**
-     * Executes web activity.
-     * @param request current HTTP servlet request
-     * @param response current HTTP servlet response
-     * @throws IOException If an error occurs during Activity execution
+     * Processes an incoming HTTP request and generates a response.
+     * This is the main entry point for handling web requests in Aspectran.
+     * @param request the current HTTP servlet request
+     * @param response the current HTTP servlet response
+     * @throws IOException if an input or output error occurs while handling the request
      */
     void service(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+    /**
+     * Binds a {@link WebService} instance to the {@link ServletContext}.
+     * This makes the service globally accessible within the web application.
+     * @param servletContext the servlet context to bind to
+     * @param service the web service instance to bind
+     */
     static void bind(ServletContext servletContext, WebService service) {
         Assert.notNull(servletContext, "servletContext must not be null");
         Assert.notNull(service, "service must not be null");
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
     }
 
+    /**
+     * Binds a {@link WebService} instance to a {@link WebActivity}'s request attributes.
+     * This is typically used for derived services within a specific request scope.
+     * @param activity the web activity to bind to
+     * @param service the web service instance to bind
+     */
     static void bind(WebActivity activity, WebService service) {
         Assert.notNull(activity, "activity must not be null");
         Assert.notNull(service, "service must not be null");
@@ -75,9 +96,10 @@ public interface WebService extends CoreService {
     }
 
     /**
-     * Find the root web service from ServletContext.
-     * @param servletContext ServletContext to find the root web service for
+     * Finds the root {@link DefaultWebService} from the {@link ServletContext}.
+     * @param servletContext the servlet context to search within
      * @return the root web service
+     * @throws IllegalStateException if no WebService is found
      */
     @NonNull
     static DefaultWebService findWebService(ServletContext servletContext) {
@@ -89,6 +111,13 @@ public interface WebService extends CoreService {
         return webService;
     }
 
+    /**
+     * Finds the {@link DefaultWebService} associated with the given {@link ServletRequest}.
+     * It first checks for a derived service, then falls back to the root service.
+     * @param servletRequest the servlet request to search within
+     * @return the found web service
+     * @throws IllegalStateException if no WebService is found
+     */
     @NonNull
     static DefaultWebService findWebService(ServletRequest servletRequest) {
         Assert.notNull(servletRequest, "servletRequest must not be null");
@@ -103,9 +132,9 @@ public interface WebService extends CoreService {
     }
 
     /**
-     * Finds the root web service from the ServletContext and returns its ActivityContext.
-     * @param servletContext ServletContext to find the root web service for
-     * @return ActivityContext of root web service
+     * Finds the {@link ActivityContext} associated with the root web service from the {@link ServletContext}.
+     * @param servletContext the servlet context to search within
+     * @return the {@link ActivityContext} of the root web service
      */
     @NonNull
     static ActivityContext findActivityContext(ServletContext servletContext) {
@@ -113,19 +142,19 @@ public interface WebService extends CoreService {
     }
 
     /**
-     * Finds the derived web service from the ServletRequest and returns its ActivityContext.
-     * @param servletRequest ServletRequest to find the derived web service for
-     * @return ActivityContext of derived web service
+     * Finds the {@link ActivityContext} associated with the web service linked to the given {@link ServletRequest}.
+     * @param servletRequest the servlet request to search within
+     * @return the {@link ActivityContext} of the web service
      */
     static ActivityContext findActivityContext(ServletRequest servletRequest) {
         return findWebService(servletRequest).getActivityContext();
     }
 
     /**
-     * Find the root web service from ServletContext.
-     * @param servletContext ServletContext to find the root web service for
-     * @param attrName the name of the ServletContext attribute to look for
-     * @return the root web service
+     * Internal helper method to find a {@link DefaultWebService} from a {@link ServletContext} attribute.
+     * @param servletContext the servlet context to search within
+     * @param attrName the name of the {@link ServletContext} attribute to look for
+     * @return the found {@link DefaultWebService}, or {@code null} if not found or not of the correct type
      */
     @Nullable
     private static DefaultWebService findWebService(@NonNull ServletContext servletContext, String attrName) {
@@ -141,10 +170,10 @@ public interface WebService extends CoreService {
     }
 
     /**
-     * Find the derived web service from ServletRequest.
-     * @param servletRequest ServletRequest to find the derived web service for
-     * @param attrName the name of the ServletRequest attribute to look for
-     * @return the derived web service
+     * Internal helper method to find a {@link DefaultWebService} from a {@link ServletRequest} attribute.
+     * @param servletRequest the servlet request to search within
+     * @param attrName the name of the {@link ServletRequest} attribute to look for
+     * @return the found {@link DefaultWebService}, or {@code null} if not found or not of the correct type
      */
     @Nullable
     private static DefaultWebService findWebService(@NonNull ServletRequest servletRequest, String attrName) {

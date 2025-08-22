@@ -21,17 +21,28 @@ import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 
 /**
- * <p>Created: 2019-07-27</p>
+ * The main interface for the Aspectran Undertow service.
+ * <p>This service specializes the core Aspectran service for the Undertow web server.
+ * It allows Aspectran to handle web requests directly using Undertow's native
+ * {@link io.undertow.server.HttpServerExchange} objects, providing a high-performance
+ * and Servlet-less web environment.
+ *
+ * @since 2019-07-27
  */
 public interface TowService extends CoreService {
 
+    /**
+     * Returns whether session adaptation is enabled for this Undertow service.
+     * @return {@code true} if session adaptation is enabled, {@code false} otherwise
+     */
     boolean isSessionAdaptable();
 
     /**
-     * Executes web activity.
+     * Processes an incoming HTTP request using the Undertow {@link HttpServerExchange}.
+     * This is the main entry point for handling web requests in this service.
      * @param exchange the HTTP request/response exchange
-     * @return true if the activity was handled; false otherwise
-     * @throws IOException If an error occurs during Activity execution
+     * @return {@code true} if the activity was handled by Aspectran; {@code false} otherwise
+     * @throws IOException if an input or output error occurs during activity execution
      */
     boolean service(HttpServerExchange exchange) throws IOException;
 

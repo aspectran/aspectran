@@ -20,8 +20,18 @@ import com.aspectran.utils.ClassUtils;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * A custom {@link URLClassLoader} for the web service.
+ * <p>This class loader is typically used to provide a specific class loading
+ * hierarchy for web-related components, ensuring proper isolation and resource
+ * loading within the web application context.
+ */
 public class WebServiceClassLoader extends URLClassLoader {
 
+    /**
+     * Constructs a new WebServiceClassLoader.
+     * @param parent the parent class loader
+     */
     public WebServiceClassLoader(ClassLoader parent) {
         super((parent != null ? parent.getName() : null),
             new URL[] {}, (parent != null ? parent : ClassUtils.getDefaultClassLoader()));

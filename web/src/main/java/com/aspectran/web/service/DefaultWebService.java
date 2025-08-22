@@ -48,8 +48,11 @@ import java.net.URLDecoder;
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
 /**
- * Provides overall functionality for building web applications within a web
- * application container.
+ * Default implementation of the {@link WebService} interface.
+ * <p>This class provides the core functionality for building web applications
+ * within a Servlet container. It handles incoming HTTP requests, dispatches them
+ * to Aspectran's processing pipeline, and manages web-specific concerns like
+ * URI decoding, static resource handling, and asynchronous request processing.
  */
 public class DefaultWebService extends AbstractWebService {
 

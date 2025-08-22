@@ -35,6 +35,14 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A builder class for creating and configuring {@link DefaultWebService} instances.
+ * <p>This class provides static factory methods to construct a web service,
+ * applying configuration from an {@link AspectranConfig} object and integrating it
+ * with a {@link ServletContext}. It also sets up a {@link ServiceStateListener} to
+ * manage the service's lifecycle, including session management, registration with
+ * the {@link com.aspectran.core.service.CoreServiceHolder}, and pause/resume state.
+ */
 public class DefaultWebServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultWebServiceBuilder.class);
@@ -42,9 +50,9 @@ public class DefaultWebServiceBuilder {
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Builds a new {@link DefaultWebService} instance for the given {@link ServletContext}.
      * @param servletContext the servlet context
-     * @return the instance of {@code DefaultWebService}
+     * @return a new, configured {@code DefaultWebService} instance
      */
     @NonNull
     public static DefaultWebService build(ServletContext servletContext) {
@@ -52,10 +60,10 @@ public class DefaultWebServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Builds a new {@link DefaultWebService} instance for the given {@link ServletContext} and parent service.
      * @param servletContext the servlet context
-     * @param parentService the parent service
-     * @return the instance of {@code DefaultWebService}
+     * @param parentService the parent service (optional)
+     * @return a new, configured {@code DefaultWebService} instance
      */
     @NonNull
     public static DefaultWebService build(ServletContext servletContext, CoreService parentService) {
@@ -84,9 +92,9 @@ public class DefaultWebServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Builds a new {@link DefaultWebService} instance from a {@link WebActivityServlet}.
      * @param servlet the web activity servlet
-     * @return the instance of {@code DefaultWebService}
+     * @return a new, configured {@code DefaultWebService} instance
      */
     @Nullable
     public static DefaultWebService build(WebActivityServlet servlet) {
@@ -94,10 +102,10 @@ public class DefaultWebServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Builds a new {@link DefaultWebService} instance from a {@link WebActivityServlet} and a root web service.
      * @param servlet the web activity servlet
-     * @param rootWebService the root web service
-     * @return the instance of {@code DefaultWebService}
+     * @param rootWebService the root web service (optional)
+     * @return a new, configured {@code DefaultWebService} instance
      */
     @Nullable
     public static DefaultWebService build(WebActivityServlet servlet, WebService rootWebService) {
@@ -119,10 +127,10 @@ public class DefaultWebServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Internal helper method to build a derived {@link DefaultWebService}.
      * @param servletContext the servlet context
      * @param parentService the parent service
-     * @return the instance of {@code DefaultWebService}
+     * @return a new, configured derived {@code DefaultWebService} instance
      */
     @NonNull
     private static DefaultWebService doBuild(ServletContext servletContext, @NonNull CoreService parentService) {
@@ -133,11 +141,11 @@ public class DefaultWebServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultWebService}.
+     * Internal helper method to build a new {@link DefaultWebService}.
      * @param servletContext the servlet context
-     * @param parentService the parent service
+     * @param parentService the parent service (optional)
      * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code DefaultWebService}
+     * @return a new, configured {@code DefaultWebService} instance
      */
     @NonNull
     private static DefaultWebService doBuild(

@@ -41,7 +41,13 @@ import java.net.URLDecoder;
 import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
 /**
- * <p>Created: 2019-07-27</p>
+ * Default implementation of the {@link TowService} interface.
+ * <p>This class provides the core functionality for building web applications
+ * on Undertow. It handles incoming {@link HttpServerExchange} requests,
+ * dispatches them to Aspectran's processing pipeline, and manages web-specific
+ * concerns like URI decoding and request filtering.
+ *
+ * @since 2019-07-27
  */
 public class DefaultTowService extends AbstractTowService {
 

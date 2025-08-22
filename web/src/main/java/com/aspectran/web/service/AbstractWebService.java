@@ -30,6 +30,13 @@ import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abstract base class for {@link WebService} implementations.
+ * <p>This class extends {@link DefaultCoreService} and provides common infrastructure
+ * for running Aspectran within a Servlet container. It handles the integration with
+ * the {@link ServletContext}, manages web-specific configurations from {@link WebConfig},
+ * and provides a mechanism for handling static resource requests via a default servlet.
+ */
 public abstract class AbstractWebService extends DefaultCoreService implements WebService {
 
     private final String contextPath;

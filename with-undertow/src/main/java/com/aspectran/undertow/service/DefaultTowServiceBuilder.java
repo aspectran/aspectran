@@ -25,16 +25,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>Created: 4/1/24</p>
+ * A builder class for creating and configuring {@link DefaultTowService} instances.
+ * <p>This class provides static factory methods to construct an Undertow service,
+ * applying configuration from an {@link AspectranConfig} object and linking it
+ * to a parent {@link CoreService}. It also sets up a {@link ServiceStateListener}
+ * to manage the service's lifecycle, including pause/resume state.
+ *
+ * @since 2024-04-01
  */
 public class DefaultTowServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowServiceBuilder.class);
 
     /**
-     * Returns a new instance of {@code DefaultTowService}.
+     * Builds a new {@link DefaultTowService} instance for the given parent service.
      * @param parentService the parent service
-     * @return the instance of {@code DefaultTowService}
+     * @return a new, configured {@code DefaultTowService} instance
      */
     @NonNull
     public static DefaultTowService build(CoreService parentService) {
@@ -52,10 +58,10 @@ public class DefaultTowServiceBuilder {
     }
 
     /**
-     * Returns a new instance of {@code DefaultTowService}.
+     * Builds a new {@link DefaultTowService} instance for the given parent service and Aspectran configuration.
      * @param parentService the parent service
-     * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code DefaultTowService}
+     * @param aspectranConfig the Aspectran configuration
+     * @return a new, configured {@code DefaultTowService} instance
      */
     @NonNull
     public static DefaultTowService build(CoreService parentService, AspectranConfig aspectranConfig) {

@@ -27,9 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract base class for {@code TowService} implementations.
+ * Abstract base class for {@link TowService} implementations.
+ * <p>This class extends {@link DefaultCoreService} and provides common infrastructure
+ * for running Aspectran on Undertow. It handles web-specific configurations from
+ * {@link WebConfig} (reused from the generic web module) and provides properties
+ * for URI decoding, trailing slash redirects, and session adaptability.
  *
- * <p>Created: 2019-07-27</p>
+ * @since 2019-07-27
  */
 public abstract class AbstractTowService extends DefaultCoreService implements TowService {
 
