@@ -34,14 +34,13 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * Activity specialization used by the daemon runtime.
- * <p>
- * It prepares adapters suitable for background execution (daemon request/response
- * and session), delegates to the configured {@link DaemonService}, and runs
- * a named request with a specific {@link MethodType}.
- * </p>
+ * Activity implementation used by the daemon runtime to execute programmatic requests.
+ * <p>This class extends {@link CoreActivity} and adapts the core Aspectran processing
+ * pipeline to a non-web, background execution context. It provides daemon-specific
+ * request and response adapters, allowing translets to be triggered by internal calls
+ * rather than external HTTP requests.
  *
- * <p>Created: 2017. 12. 11.</p>
+ * @since 2017-12-11
  */
 public class DaemonActivity extends CoreActivity {
 
@@ -56,8 +55,8 @@ public class DaemonActivity extends CoreActivity {
     private ParameterMap parameterMap;
 
     /**
-     * Instantiates a new daemon activity.
-     * @param daemonService the daemon service
+     * Instantiates a new DaemonActivity.
+     * @param daemonService the daemon service instance
      */
     public DaemonActivity(@NonNull DaemonService daemonService) {
         super(daemonService.getActivityContext());
@@ -69,26 +68,42 @@ public class DaemonActivity extends CoreActivity {
         return Mode.DAEMON;
     }
 
+    /**
+     * Returns the name of the request being processed by this activity.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Sets the name of the request to be processed by this activity.
+     * @param requestName the request name
+     */
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
+    /**
+     * Returns the method type of the request being processed by this activity.
+     * @return the request method type
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the method type of the request to be processed by this activity.
+     * @param requestMethod the request method type
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
     /**
      * Returns a human-readable representation of the request, combining
-     * method and name when both are available.
-     * @return e.g., "GET foo/bar" or just the name if no method is set
+     * method and name when both are available (e.g., "GET foo/bar").
+     * @return the combined method and request name, or just the name if no method is set
      */
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
@@ -100,10 +115,18 @@ public class DaemonActivity extends CoreActivity {
         }
     }
 
+    /**
+     * Sets a map of attributes to be passed to the request scope.
+     * @param attributeMap the attribute map
+     */
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
     }
 
+    /**
+     * Sets a map of parameters to be passed to the request.
+     * @param parameterMap the parameter map
+     */
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
     }

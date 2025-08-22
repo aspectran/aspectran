@@ -41,20 +41,12 @@ import java.io.Writer;
 
 /**
  * Activity implementation used by Aspectran Shell to execute a translet from the console.
- * <p>
- * A {@code ShellActivity} is created per shell invocation and wired with shell-specific
- * adapters:
- * <ul>
- *   <li>{@link com.aspectran.shell.adapter.ShellRequestAdapter} to provide request
- *   parameters gathered from the command line</li>
- *   <li>{@link com.aspectran.shell.adapter.ShellResponseAdapter} to render output to the
- *   interactive console (or a redirected {@link java.io.Writer})</li>
- * </ul>
- * It also honours shell features such as procedural prompting for missing inputs, verbose
- * description printing, and async/timeout hints taken from the target {@link TransletRule}.
- * </p>
+ * <p>This class extends {@link CoreActivity} and adapts the core Aspectran processing
+ * pipeline to an interactive command-line environment. It provides shell-specific
+ * request and response adapters, handles procedural prompting for missing inputs,
+ * and supports features like verbose output and output redirection.
  *
- * @since 2016. 1. 18.
+ * @since 2016-01-18
  */
 public class ShellActivity extends CoreActivity {
 
@@ -80,7 +72,7 @@ public class ShellActivity extends CoreActivity {
 
     /**
      * Instantiates a new ShellActivity.
-     * @param shellService the {@code ShellService} instance
+     * @param shellService the {@link ShellService} instance
      */
     public ShellActivity(@NonNull ShellService shellService) {
         super(shellService.getActivityContext());
@@ -94,42 +86,74 @@ public class ShellActivity extends CoreActivity {
         return Mode.SHELL;
     }
 
+    /**
+     * Returns whether procedural prompting for missing inputs is enabled.
+     * @return {@code true} if procedural prompting is enabled, {@code false} otherwise
+     */
     public boolean isProcedural() {
         return procedural;
     }
 
+    /**
+     * Sets whether procedural prompting for missing inputs should be enabled.
+     * @param procedural {@code true} to enable, {@code false} to disable
+     */
     public void setProcedural(boolean procedural) {
         this.procedural = procedural;
     }
 
+    /**
+     * Returns whether verbose mode is enabled.
+     * @return {@code true} if verbose mode is enabled, {@code false} otherwise
+     */
     public boolean isVerbose() {
         return verbose;
     }
 
+    /**
+     * Sets whether verbose mode is enabled.
+     * @param verbose {@code true} to enable, {@code false} to disable
+     */
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 
+    /**
+     * Returns the name of the request being processed by this activity.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Sets the name of the request to be processed by this activity.
+     * @param requestName the request name
+     */
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
+    /**
+     * Returns the method type of the request being processed by this activity.
+     * @return the request method type
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the method type of the request to be processed by this activity.
+     * @param requestMethod the request method type
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
     /**
-     * Returns the request name prefixed with the HTTP-like method when available.
-     * For example, {@code GET /path}.
-     * @return the combined method and request name, or an empty string if none
+     * Returns a human-readable representation of the request, combining
+     * method and name when both are available (e.g., "GET foo/bar").
+     * @return the combined method and request name, or just the name if no method is set
      */
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
@@ -141,26 +165,50 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
+    /**
+     * Returns the parameter map associated with this activity.
+     * @return the parameter map
+     */
     public ParameterMap getParameterMap() {
         return parameterMap;
     }
 
+    /**
+     * Sets the parameter map for this activity.
+     * @param parameterMap the parameter map
+     */
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
     }
 
+    /**
+     * Returns the output writer for this activity.
+     * @return the output writer
+     */
     public Writer getOutputWriter() {
         return outputWriter;
     }
 
+    /**
+     * Sets the output writer for this activity.
+     * @param outputWriter the output writer
+     */
     public void setOutputWriter(Writer outputWriter) {
         this.outputWriter = outputWriter;
     }
 
+    /**
+     * Returns whether this activity is configured for asynchronous execution.
+     * @return {@code true} if asynchronous execution is enabled, {@code false} otherwise
+     */
     public boolean isAsync() {
         return async;
     }
 
+    /**
+     * Returns the timeout for asynchronous execution in milliseconds.
+     * @return the timeout in milliseconds, or {@code null} if no timeout is set
+     */
     public Long getTimeout() {
         return timeout;
     }

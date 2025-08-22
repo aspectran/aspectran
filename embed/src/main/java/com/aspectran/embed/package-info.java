@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Package for embedding Aspectran in non-Aspectran-based Java applications.
+ * Provides the core classes for embedding Aspectran within another Java application.
+ * <p>This package defines the top-level entry points and utility classes for integrating
+ * Aspectran as a library or component. It offers a simplified facade,
+ * {@link com.aspectran.embed.service.EmbeddedAspectran}, to interact with the framework
+ * programmatically, allowing developers to leverage Aspectran's features without
+ * needing to manage its full lifecycle directly.</p>
  */
 package com.aspectran.embed;

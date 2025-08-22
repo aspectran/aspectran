@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 /**
- * Package for running Aspectran-based Java applications as background
- * processes on Unix-based or Windows operating systems.
+ * Provides the core classes for running Aspectran as a daemon process.
+ * <p>This package defines the top-level interfaces and abstract classes for creating
+ * and managing Aspectran-based daemon applications. It integrates with the
+ * {@link com.aspectran.daemon.service.DaemonService} to provide a robust
+ * background execution environment, including command handling and lifecycle
+ * management for long-running, non-interactive processes.</p>
  */
 package com.aspectran.daemon;

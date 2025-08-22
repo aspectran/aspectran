@@ -63,9 +63,9 @@ public class TowActivity extends CoreActivity {
     private MethodType requestMethod;
 
     /**
-     * Instantiates a new tow service
-     * @param towService the tow service
-     * @param exchange the adaptee object
+     * Instantiates a new TowActivity.
+     * @param towService the {@link TowService} instance
+     * @param exchange the Undertow {@link HttpServerExchange} for the current request
      */
     public TowActivity(@NonNull TowService towService, HttpServerExchange exchange) {
         super(towService.getActivityContext());
@@ -78,26 +78,51 @@ public class TowActivity extends CoreActivity {
         return Mode.WEB;
     }
 
+    /**
+     * Returns the underlying Undertow {@link HttpServerExchange} object.
+     * @return the HTTP server exchange
+     */
     public HttpServerExchange getExchange() {
         return exchange;
     }
 
+    /**
+     * Returns the name of the request being processed by this activity.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Sets the name of the request to be processed by this activity.
+     * @param requestName the request name
+     */
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
+    /**
+     * Returns the method type of the request being processed by this activity.
+     * @return the request method type
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the method type of the request to be processed by this activity.
+     * @param requestMethod the request method type
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns a human-readable representation of the request, combining
+     * method and name (e.g., "GET /path/to/translet").
+     * @return the combined request information
+     */
     public String getFullRequestName() {
         if (requestMethod != null && requestName != null) {
             return requestMethod + " " + requestName;
@@ -106,6 +131,12 @@ public class TowActivity extends CoreActivity {
         }
     }
 
+    /**
+     * Prepares this activity for execution by validating and applying the
+     * configured request name and method.
+     * @throws TransletNotFoundException if the target request cannot be found
+     * @throws ActivityPrepareException if preparation fails for any reason
+     */
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
         Assert.state(requestName != null, "requestName is not set");
         Assert.state(requestMethod != null, "requestMethod is not set");

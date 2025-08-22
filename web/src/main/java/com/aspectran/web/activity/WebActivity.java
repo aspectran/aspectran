@@ -44,9 +44,14 @@ import java.io.UnsupportedEncodingException;
 import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUEST_SIZE_SETTING_NAME;
 
 /**
- * An activity that processes a web request.
+ * Activity implementation used by the web service to process HTTP requests.
+ * <p>This class extends {@link CoreActivity} and adapts the core Aspectran processing
+ * pipeline to a Servlet-based web environment. It wraps the native {@link HttpServletRequest}
+ * and {@link HttpServletResponse} objects, providing web-specific request and response
+ * adapters, and handling concerns like URI decoding, static resource handling, and
+ * asynchronous request processing.
  *
- * @since 2008. 4. 28.
+ * @since 2008-04-28
  */
 public class WebActivity extends CoreActivity {
 
@@ -68,7 +73,9 @@ public class WebActivity extends CoreActivity {
 
     /**
      * Instantiates a new WebActivity.
-     * @param webService the {@code WebService} instance
+     * @param webService the {@link WebService} instance
+     * @param contextPath the context path of the web application
+     * @param reverseContextPath the reverse context path for URL generation
      * @param request the HTTP request
      * @param response the HTTP response
      */
@@ -91,30 +98,59 @@ public class WebActivity extends CoreActivity {
         return reverseContextPath;
     }
 
+    /**
+     * Returns the underlying {@link HttpServletRequest} object.
+     * @return the HTTP servlet request
+     */
     public HttpServletRequest getRequest() {
         return request;
     }
 
+    /**
+     * Returns the underlying {@link HttpServletResponse} object.
+     * @return the HTTP servlet response
+     */
     public HttpServletResponse getResponse() {
         return response;
     }
 
+    /**
+     * Returns the name of the request being processed by this activity.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Sets the name of the request to be processed by this activity.
+     * @param requestName the request name
+     */
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
+    /**
+     * Returns the method type of the request being processed by this activity.
+     * @return the request method type
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the method type of the request to be processed by this activity.
+     * @param requestMethod the request method type
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns a human-readable representation of the request, combining
+     * method, reverse context path, and name (e.g., "GET /context/path/to/translet").
+     * @return the combined request information
+     */
     public String getFullRequestName() {
         StringBuilder sb = new StringBuilder();
         if (requestMethod != null) {
@@ -129,14 +165,28 @@ public class WebActivity extends CoreActivity {
         return sb.toString();
     }
 
+    /**
+     * Returns whether this activity is configured for asynchronous execution.
+     * @return {@code true} if asynchronous execution is enabled, {@code false} otherwise
+     */
     public boolean isAsync() {
         return async;
     }
 
+    /**
+     * Returns the timeout for asynchronous execution in milliseconds.
+     * @return the timeout in milliseconds, or {@code null} if no timeout is set
+     */
     public Long getTimeout() {
         return timeout;
     }
 
+    /**
+     * Prepares this activity for execution by validating and applying the
+     * configured request name and method.
+     * @throws TransletNotFoundException if the target request cannot be found
+     * @throws ActivityPrepareException if preparation fails for any reason
+     */
     public void prepare() throws TransletNotFoundException, ActivityPrepareException {
         Assert.state(requestName != null, "requestName is not set");
         Assert.state(requestMethod != null, "requestMethod is not set");

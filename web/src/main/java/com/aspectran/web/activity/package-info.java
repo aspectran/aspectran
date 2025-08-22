@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the activity interface for web application.
+ * Provides the specialized {@link com.aspectran.core.activity.Activity} implementation
+ * for the Java Servlet-based web environment.
+ * <p>This package contains {@link com.aspectran.web.activity.WebActivity}, which
+ * adapts the core Aspectran activity to handle HTTP requests and responses. It acts
+ * as the crucial bridge between the Servlet API and Aspectran's internal processing
+ * pipeline, enabling full-featured web application development.</p>
  */
 package com.aspectran.web.activity;

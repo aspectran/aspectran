@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Package for building Jakarta EE compatible web applications.
+ * Provides the core classes for building Jakarta EE compatible web applications with Aspectran.
+ * <p>This package defines the top-level components and entry points for deploying
+ * Aspectran applications within any standard Java Servlet container. It integrates
+ * Aspectran's core processing pipeline with the Servlet API, enabling full-featured
+ * web development.</p>
  */
 package com.aspectran.web;

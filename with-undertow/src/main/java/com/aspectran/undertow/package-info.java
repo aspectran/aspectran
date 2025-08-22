@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Undertow as the embedded servlet container.
+ * Provides integration for using Undertow as the embedded web server for Aspectran applications.
+ * <p>This package enables Aspectran to run as a high-performance, Servlet-less web framework
+ * on top of Undertow. It includes core components for adapting Undertow's native
+ * {@code HttpServerExchange} objects to Aspectran's processing pipeline, offering a
+ * lightweight and efficient alternative to traditional Servlet-based deployments.</p>
  */
 package com.aspectran.undertow;

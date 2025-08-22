@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Package for building interactive shell (aka command line) applications based on Aspectran.
+ * Provides the core classes for building interactive shell (command-line) applications based on Aspectran.
+ * <p>This package defines the top-level entry points and components for creating
+ * a rich command-line interface (CLI) that leverages Aspectran's full processing
+ * capabilities. It integrates with the {@link com.aspectran.shell.service.ShellService}
+ * to provide features like command execution, console interaction, and session management.</p>
  */
 package com.aspectran.shell;
