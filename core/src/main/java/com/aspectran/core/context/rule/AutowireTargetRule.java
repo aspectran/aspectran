@@ -34,6 +34,8 @@ public class AutowireTargetRule {
 
     private ValueExpression valueExpression;
 
+    private boolean optional;
+
     private boolean innerBean;
 
     public Class<?> getType() {
@@ -58,6 +60,14 @@ public class AutowireTargetRule {
 
     public void setExpression(String expression) throws IllegalRuleException {
         this.valueExpression = new ValueExpression(expression);
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
     public boolean isInnerBean() {

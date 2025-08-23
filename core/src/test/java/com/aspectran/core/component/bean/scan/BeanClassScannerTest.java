@@ -74,15 +74,15 @@ class BeanClassScannerTest {
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {
             FilterParameters filterParameters = beanRule.getFilterParameters();
-            String beanClassFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-            if (beanClassFilterClassName != null) {
+            String filterClassName = filterParameters.getString(FilterParameters.filterClass);
+            if (filterClassName != null) {
                 BeanClassFilter beanClassFilter;
                 try {
-                    Class<?> filterClass = classLoader.loadClass(beanClassFilterClassName);
+                    Class<?> filterClass = classLoader.loadClass(filterClassName);
                     beanClassFilter = (BeanClassFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
                     throw new IllegalRuleException("Failed to instantiate BeanClassFilter [" +
-                            beanClassFilterClassName + "]", e);
+                            filterClassName + "]", e);
                 }
                 scanner.setBeanClassFilter(beanClassFilter);
             }

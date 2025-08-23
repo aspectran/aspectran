@@ -97,7 +97,11 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -834,17 +838,28 @@ public class AnnotatedConfigParser {
     @Nullable
     private AutowireRule createAutowireRuleForConstructor(@NonNull Constructor<?> constructor)
             throws IllegalRuleException {
-        java.lang.reflect.Parameter[] params = constructor.getParameters();
+        Parameter[] params = constructor.getParameters();
         if (params.length == 0) {
             return null;
         }
 
         AutowireTargetRule[] autowireTargetRules = AutowireTargetRule.newArrayInstance(params.length);
         for (int i = 0; i < params.length; i++) {
-            if (params[i].getType().isArray()) {
-                autowireTargetRules[i].setType(params[i].getType().getComponentType());
+            Parameter param = params[i];
+            Class<?> paramType = param.getType();
+            if (paramType == Optional.class) {
+                autowireTargetRules[i].setOptional(true);
+                Type parameterizedType = param.getParameterizedType();
+                if (parameterizedType instanceof ParameterizedType) {
+                    Type actualType = ((ParameterizedType)parameterizedType).getActualTypeArguments()[0];
+                    autowireTargetRules[i].setType((Class<?>)actualType);
+                } else {
+                    throw new IllegalRuleException("Cannot determine generic type for Optional parameter at " + constructor);
+                }
+            } else if (paramType.isArray()) {
+                autowireTargetRules[i].setType(paramType.getComponentType());
             } else {
-                autowireTargetRules[i].setType(params[i].getType());
+                autowireTargetRules[i].setType(paramType);
             }
             Value ValueAnno = params[i].getAnnotation(Value.class);
             if (ValueAnno != null) {
@@ -930,7 +945,7 @@ public class AnnotatedConfigParser {
 
     @Nullable
     private AutowireRule createAutowireRuleForMethod(@NonNull Method method) throws IllegalRuleException {
-        java.lang.reflect.Parameter[] params = method.getParameters();
+        Parameter[] params = method.getParameters();
         if (params.length == 0) {
             return null;
         }
@@ -943,10 +958,21 @@ public class AnnotatedConfigParser {
 
         AutowireTargetRule[] autowireTargetRules = AutowireTargetRule.newArrayInstance(params.length);
         for (int i = 0; i < params.length; i++) {
-            if (params[i].getType().isArray()) {
-                autowireTargetRules[i].setType(params[i].getType().getComponentType());
+            Parameter param = params[i];
+            Class<?> paramType = param.getType();
+            if (paramType == Optional.class) {
+                autowireTargetRules[i].setOptional(true);
+                Type parameterizedType = param.getParameterizedType();
+                if (parameterizedType instanceof ParameterizedType) {
+                    Type actualType = ((ParameterizedType)parameterizedType).getActualTypeArguments()[0];
+                    autowireTargetRules[i].setType((Class<?>)actualType);
+                } else {
+                    throw new IllegalRuleException("Cannot determine generic type for Optional parameter at " + method);
+                }
+            } else if (paramType.isArray()) {
+                autowireTargetRules[i].setType(paramType.getComponentType());
             } else {
-                autowireTargetRules[i].setType(params[i].getType());
+                autowireTargetRules[i].setType(paramType);
             }
             Value ValueAnno = params[i].getAnnotation(Value.class);
             if (ValueAnno != null) {

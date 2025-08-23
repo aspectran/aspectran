@@ -89,10 +89,10 @@ class BeanNodeParser implements SubnodeParser {
         });
         parser.setXpath(xpath + "/bean/filter");
         parser.addNodelet(attrs -> {
-            String classScanFilterClassName = attrs.get("class");
+            String filterClassName = attrs.get("class");
             FilterParameters filterParameters = new FilterParameters();
-            if (StringUtils.hasText(classScanFilterClassName)) {
-                filterParameters.putValue(FilterParameters.filterClass, classScanFilterClassName);
+            if (StringUtils.hasText(filterClassName)) {
+                filterParameters.putValue(FilterParameters.filterClass, filterClassName);
             }
             parser.pushObject(filterParameters);
         });

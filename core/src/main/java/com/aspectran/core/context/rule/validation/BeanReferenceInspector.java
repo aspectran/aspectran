@@ -60,13 +60,13 @@ public class BeanReferenceInspector {
      */
     public void reserve(String beanId, Class<?> beanClass, BeanReferenceable referenceable, RuleAppender ruleAppender) {
         RefererKey key = new RefererKey(beanClass, beanId);
-        Set<RefererInfo> refererInfoSet = refererInfoMap.get(key);
-        if (refererInfoSet == null) {
-            refererInfoSet = new LinkedHashSet<>();
-            refererInfoSet.add(new RefererInfo(referenceable, ruleAppender));
-            refererInfoMap.put(key, refererInfoSet);
+        Set<RefererInfo> infoSet = refererInfoMap.get(key);
+        if (infoSet == null) {
+            infoSet = new LinkedHashSet<>();
+            infoSet.add(new RefererInfo(referenceable, ruleAppender));
+            refererInfoMap.put(key, infoSet);
         } else {
-            refererInfoSet.add(new RefererInfo(referenceable, ruleAppender));
+            infoSet.add(new RefererInfo(referenceable, ruleAppender));
         }
     }
 

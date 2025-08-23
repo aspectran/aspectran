@@ -3,7 +3,13 @@
         "https://aspectran.com/dtd/aspectran-8.dtd">
 <aspectran>
 
-    <bean id="bean.*" scan="com.aspectran.core.component.**.Test*Bean?" mask="com.aspectran.core.component.bean.**.*"/>
+    <bean id="bean.*" scan="com.aspectran.core.component.**.Test*Bean?" mask="com.aspectran.core.component.bean.**.*">
+        <filter>
+            exclude: [
+                com.aspectran.core.component.bean.TestNeverDefinedBean
+            ]
+        </filter>
+    </bean>
 
     <bean id="bean.TestFieldValueAutowireBean2" class="com.aspectran.core.component.bean.TestFieldValueAutowireBean"/>
 

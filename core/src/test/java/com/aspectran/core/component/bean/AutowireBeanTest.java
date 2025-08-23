@@ -30,7 +30,9 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for beans.
@@ -139,6 +141,14 @@ class AutowireBeanTest {
         assertEquals("property-4", bean.getBean1().getProperty4());
         assertEquals(223, bean.getNumber());
         assertNull(bean.getBean2()); // Undefined bean
+    }
+
+    @Test
+    void testOptionalAutowire() {
+        TestOptionalAutowireBean bean = beanRegistry.getBean(TestOptionalAutowireBean.class);
+        assertNotNull(bean.getPresentBean());
+        assertEquals("Property-1", bean.getPresentBean().bean1.getProperty1());
+        assertTrue(bean.getAbsentBean().isEmpty());
     }
 
 }

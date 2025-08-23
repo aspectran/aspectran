@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Base support class for creating and initializing Aspectran beans.
@@ -147,32 +148,45 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     args = new Object[autowireTargetRules.length];
                     argTypes = new Class<?>[autowireTargetRules.length];
                     for (int i = 0; i < autowireTargetRules.length; i++) {
-                        Class<?> type = autowireTargetRules[i].getType();
-                        ValueEvaluator valueEvaluator = autowireTargetRules[i].getValueExpression();
-                        if (valueEvaluator != null) {
-                            args[i] = valueEvaluator.evaluate(activity, null);
-                            if (ctorAutowireRule.isRequired() && args[i] == null) {
-                                throw new BeanCreationException("Could not autowire constructor: " +
-                                        ctorAutowireRule, beanRule);
+                        AutowireTargetRule targetRule = autowireTargetRules[i];
+                        Class<?> type = targetRule.getType();
+                        if (targetRule.isOptional()) {
+                            try {
+                                String qualifier = targetRule.getQualifier();
+                                Object bean = activity.getBean(type, qualifier);
+                                args[i] = Optional.of(bean);
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                args[i] = Optional.empty();
+                                logger.trace("No bean found for optional autowiring target {}, " +
+                                        "providing Optional.empty()", targetRule);
                             }
                         } else {
-                            String qualifier = autowireTargetRules[i].getQualifier();
-                            if (ctorAutowireRule.isRequired()) {
-                                try {
-                                    args[i] = activity.getBean(type, qualifier);
-                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    logger.error("No bean found for autowiring target {} of {}",
-                                            autowireTargetRules[i], ctorAutowireRule, e);
+                            ValueEvaluator valueEvaluator = targetRule.getValueExpression();
+                            if (valueEvaluator != null) {
+                                args[i] = valueEvaluator.evaluate(activity, null);
+                                if (ctorAutowireRule.isRequired() && args[i] == null) {
                                     throw new BeanCreationException("Could not autowire constructor: " +
-                                            ctorAutowireRule, beanRule, e);
+                                            ctorAutowireRule, beanRule);
                                 }
                             } else {
-                                try {
-                                    args[i] = activity.getBean(type, qualifier);
-                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    args[i] = null;
-                                    logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
-                                            autowireTargetRules[i], ctorAutowireRule, e.toString());
+                                String qualifier = targetRule.getQualifier();
+                                if (ctorAutowireRule.isRequired()) {
+                                    try {
+                                        args[i] = activity.getBean(type, qualifier);
+                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                        logger.error("No bean found for autowiring target {} of {}",
+                                                targetRule, ctorAutowireRule, e);
+                                        throw new BeanCreationException("Could not autowire constructor: " +
+                                                ctorAutowireRule, beanRule, e);
+                                    }
+                                } else {
+                                    try {
+                                        args[i] = activity.getBean(type, qualifier);
+                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                        args[i] = null;
+                                        logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                                targetRule, ctorAutowireRule, e.toString());
+                                    }
                                 }
                             }
                         }
@@ -283,31 +297,43 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         if (beanRule.getAutowireRuleList() != null) {
             for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                    AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
-                    if (autowireTargetRule != null) {
+                    AutowireTargetRule targetRule = AutowireRule.getAutowireTargetRule(autowireRule);
+                    if (targetRule != null) {
                         Object value;
-                        ValueEvaluator valueEvaluator = autowireTargetRule.getValueExpression();
-                        if (valueEvaluator != null) {
-                            value = valueEvaluator.evaluate(activity, null);
+                        if (targetRule.isOptional()) {
+                            try {
+                                Class<?> type = targetRule.getType();
+                                String qualifier = targetRule.getQualifier();
+                                value = Optional.of(activity.getBean(type, qualifier));
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                value = Optional.empty();
+                                logger.trace("No bean found for optional autowiring target {}, " +
+                                        "providing Optional.empty()", targetRule);
+                            }
                         } else {
-                            Class<?> type = autowireTargetRule.getType();
-                            String qualifier = autowireTargetRule.getQualifier();
-                            if (autowireRule.isRequired()) {
-                                try {
-                                    value = activity.getBean(type, qualifier);
-                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    logger.error("No bean found for autowiring target {} of {}",
-                                            autowireTargetRule, autowireRule, e);
-                                    throw new BeanCreationException("Could not autowire field: " +
-                                            autowireRule, beanRule, e);
-                                }
+                            ValueEvaluator valueEvaluator = targetRule.getValueExpression();
+                            if (valueEvaluator != null) {
+                                value = valueEvaluator.evaluate(activity, null);
                             } else {
-                                try {
-                                    value = activity.getBean(type, qualifier);
-                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    value = null;
-                                    logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
-                                            autowireTargetRule, autowireRule, e.toString());
+                                Class<?> type = targetRule.getType();
+                                String qualifier = targetRule.getQualifier();
+                                if (autowireRule.isRequired()) {
+                                    try {
+                                        value = activity.getBean(type, qualifier);
+                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                        logger.error("No bean found for autowiring target {} of {}",
+                                                targetRule, autowireRule, e);
+                                        throw new BeanCreationException("Could not autowire field: " +
+                                                autowireRule, beanRule, e);
+                                    }
+                                } else {
+                                    try {
+                                        value = activity.getBean(type, qualifier);
+                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                        value = null;
+                                        logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                                targetRule, autowireRule, e.toString());
+                                    }
                                 }
                             }
                         }
@@ -323,36 +349,49 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                         }
                     }
                 } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules != null) {
-                        Object[] args = new Object[autowireTargetRules.length];
-                        for (int i = 0; i < autowireTargetRules.length; i++) {
-                            ValueEvaluator valueEvaluator = autowireTargetRules[i].getValueExpression();
-                            if (valueEvaluator != null) {
-                                args[i] = valueEvaluator.evaluate(activity, null);
-                                if (autowireRule.isRequired() && args[i] == null) {
-                                    throw new BeanCreationException("Autowiring failed for method: " +
-                                            autowireRule, beanRule);
+                    AutowireTargetRule[] targetRules = autowireRule.getAutowireTargetRules();
+                    if (targetRules != null) {
+                        Object[] args = new Object[targetRules.length];
+                        for (int i = 0; i < targetRules.length; i++) {
+                            AutowireTargetRule targetRule = targetRules[i];
+                            if (targetRule.isOptional()) {
+                                try {
+                                    Class<?> type = targetRule.getType();
+                                    String qualifier = targetRule.getQualifier();
+                                    args[i] = Optional.of(activity.getBean(type, qualifier));
+                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                    args[i] = Optional.empty();
+                                    logger.trace("No bean found for optional autowiring target {}, " +
+                                            "providing Optional.empty()", targetRule);
                                 }
                             } else {
-                                Class<?> type = autowireTargetRules[i].getType();
-                                String qualifier = autowireTargetRules[i].getQualifier();
-                                if (autowireRule.isRequired()) {
-                                    try {
-                                        args[i] = activity.getBean(type, qualifier);
-                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                        logger.error("No bean found for autowiring target {} of {}",
-                                                autowireTargetRules[i], autowireRule, e);
-                                        throw new BeanCreationException("Could not autowire method: " +
-                                                autowireRule, beanRule, e);
+                                ValueEvaluator valueEvaluator = targetRule.getValueExpression();
+                                if (valueEvaluator != null) {
+                                    args[i] = valueEvaluator.evaluate(activity, null);
+                                    if (autowireRule.isRequired() && args[i] == null) {
+                                        throw new BeanCreationException("Autowiring failed for method: " +
+                                                autowireRule, beanRule);
                                     }
                                 } else {
-                                    try {
-                                        args[i] = activity.getBean(type, qualifier);
-                                    } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                        args[i] = null;
-                                        logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
-                                                autowireTargetRules[i], autowireRule, e.toString());
+                                    Class<?> type = targetRule.getType();
+                                    String qualifier = targetRule.getQualifier();
+                                    if (autowireRule.isRequired()) {
+                                        try {
+                                            args[i] = activity.getBean(type, qualifier);
+                                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                            logger.error("No bean found for autowiring target {} of {}",
+                                                    targetRule, autowireRule, e);
+                                            throw new BeanCreationException("Could not autowire method: " +
+                                                    autowireRule, beanRule, e);
+                                        }
+                                    } else {
+                                        try {
+                                            args[i] = activity.getBean(type, qualifier);
+                                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                            args[i] = null;
+                                            logger.warn("No bean found for autowiring target {} of {}; Cause: {}",
+                                                    targetRule, autowireRule, e.toString());
+                                        }
                                     }
                                 }
                             }

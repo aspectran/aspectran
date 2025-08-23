@@ -30,9 +30,9 @@ public interface BeanClassFilter {
      * Determine whether the given class is eligible for bean registration.
      * @param beanId the bean id
      * @param resourceName the resource name
-     * @param retrievedClass the class to check
+     * @param targetClass the target class to check
      * @return the bean id if the class is eligible, or {@code null} if it is not
      */
-    String filter(String beanId, String resourceName, Class<?> retrievedClass);
+    String filter(String beanId, String resourceName, Class<?> targetClass);
 
 }

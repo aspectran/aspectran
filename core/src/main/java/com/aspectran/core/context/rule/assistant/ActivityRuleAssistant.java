@@ -531,9 +531,9 @@ public class ActivityRuleAssistant {
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
                 AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                if (autowireRule.isRequired() && autowireTargetRules != null) {
+                if (autowireTargetRules != null && autowireRule.isRequired()) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
-                        if (!autowireTargetRule.isInnerBean()) {
+                        if (!autowireTargetRule.isOptional() && !autowireTargetRule.isInnerBean()) {
                             resolveBeanClassOrReference(autowireRule, autowireTargetRule, true);
                         }
                     }
