@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 /**
- * Provides support for classpath scanning to detect bean classes.
- * <p>
- * This package includes scanners and filters that discover component and
- * configuration classes to be registered with the bean registry.
- * </p>
+ * Provides classes for defining and managing pointcuts within Aspectran's AOP framework.
+ *
+ * <p>This package contains the core components that enable the specification of join points
+ * where aspects should be applied. It includes interfaces and implementations for defining
+ * pointcut expressions, allowing developers to precisely target methods or execution flows
+ * for aspect weaving.</p>
  */
-package com.aspectran.core.component.bean.scan;
+package com.aspectran.core.component.aspect.pointcut;

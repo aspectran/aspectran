@@ -16,15 +16,23 @@
 package com.aspectran.core.component.bean.scan;
 
 /**
- * Strategy interface used during classpath scanning to filter or rename
- * discovered bean classes before registration.
- * <p>
- * Implementations may return a modified bean id, or {@code null} to
- * exclude the class from registration.
- * </p>
+ * A filter for determining the eligibility of bean classes during component scanning.
+ *
+ * <p>This class allows for defining include and exclude patterns to control which classes
+ * are considered for automatic bean registration. It provides methods to check if a class
+ * should be excluded, included, or is generally eligible based on its type and name.</p>
+ *
+ * <p>Created: 2016. 3. 13.</p>
  */
 public interface BeanClassFilter {
 
+    /**
+     * Determine whether the given class is eligible for bean registration.
+     * @param beanId the bean id
+     * @param resourceName the resource name
+     * @param retrievedClass the class to check
+     * @return the bean id if the class is eligible, or {@code null} if it is not
+     */
     String filter(String beanId, String resourceName, Class<?> retrievedClass);
 
 }

@@ -20,26 +20,41 @@ import com.aspectran.core.component.bean.BeanException;
 import java.io.Serial;
 
 /**
- * Runtime exception thrown when classpath scanning for beans fails.
- * Wraps underlying I/O or reflection issues encountered during scan.
+ * Exception thrown when classpath scanning for beans fails.
  */
 public class BeanClassScanException extends BeanException {
 
     @Serial
     private static final long serialVersionUID = -1301450076259511066L;
 
+    /**
+     * Instantiates a new BeanClassScanException.
+     */
     public BeanClassScanException() {
         super();
     }
 
+    /**
+     * Instantiates a new BeanClassScanException.
+     * @param msg the detail message
+     */
     public BeanClassScanException(String msg) {
         super(msg);
     }
 
+    /**
+     * Instantiates a new BeanClassScanException.
+     * @param cause the root cause
+     */
     public BeanClassScanException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Instantiates a new BeanClassScanException.
+     * @param msg the detail message
+     * @param cause the root cause
+     */
     public BeanClassScanException(String msg, Throwable cause) {
         super(msg, cause);
     }

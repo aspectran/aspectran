@@ -44,14 +44,26 @@ public class BeanClassScanner extends ClassScanner {
 
     private WildcardPattern[] excludePatterns;
 
+    /**
+     * Instantiates a new Bean class scanner.
+     * @param classLoader the class loader to use
+     */
     public BeanClassScanner(ClassLoader classLoader) {
         super(classLoader);
     }
 
+    /**
+     * Sets the bean class filter.
+     * @param beanClassFilter the bean class filter
+     */
     public void setBeanClassFilter(BeanClassFilter beanClassFilter) {
         this.beanClassFilter = beanClassFilter;
     }
 
+    /**
+     * Sets patterns for classes to exclude.
+     * @param excludePatterns an array of wildcard patterns for classes to exclude
+     */
     public void setExcludePatterns(String[] excludePatterns) {
         if (excludePatterns != null && excludePatterns.length > 0) {
             this.excludePatterns = new WildcardPattern[excludePatterns.length];
@@ -64,6 +76,10 @@ public class BeanClassScanner extends ClassScanner {
         }
     }
 
+    /**
+     * Sets the bean id mask pattern.
+     * @param beanIdMaskPattern the bean id mask pattern
+     */
     public void setBeanIdMaskPattern(String beanIdMaskPattern) {
         if (beanIdMaskPattern == null) {
             throw new IllegalArgumentException("beanIdMaskPattern must not be null");
@@ -85,6 +101,10 @@ public class BeanClassScanner extends ClassScanner {
 
         private final SaveHandler saveHandler;
 
+        /**
+         * Instantiates a new Bean save handler.
+         * @param saveHandler the save handler
+         */
         public BeanSaveHandler(SaveHandler saveHandler) {
             this.saveHandler = saveHandler;
         }
