@@ -23,6 +23,7 @@ import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.SystemConfig;
+import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;

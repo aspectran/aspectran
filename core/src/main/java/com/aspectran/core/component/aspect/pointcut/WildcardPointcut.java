@@ -25,18 +25,34 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Pointcut using Wildcard Matching to identify joinpoints.
+ * A concrete {@link Pointcut} implementation that uses wildcard matching
+ * for pattern matching to identify join points.
+ * <p>This class supports wildcard characters (`*`, `?`) and OR-matching (`|`)
+ * within patterns. It utilizes a cache for compiled wildcard patterns to
+ * optimize performance.
+ * </p>
  */
 public class WildcardPointcut extends AbstractPointcut {
 
     private static final String OR_MATCH_DELIMITER = "|";
 
+    /** Cache for compiled wildcard patterns. */
     private final Map<String, WildcardPattern> cache = new ConcurrentReferenceHashMap<>();
 
+    /**
+     * Creates a new WildcardPointcut with the given list of pointcut pattern rules.
+     * @param pointcutPatternRuleList the list of pointcut pattern rules
+     */
     public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation supports wildcard characters (`*`, `?`) and OR-matching (`|`).
+     * </p>
+     * @throws IllegalArgumentException if the patternString is null
+     */
     @Override
     public boolean patternMatches(String patternString, String compareString) {
         if (patternString == null) {
@@ -55,6 +71,13 @@ public class WildcardPointcut extends AbstractPointcut {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation supports wildcard characters (`*`, `?`) and OR-matching (`|`),
+     * and can use a specified separator for path-like patterns.
+     * </p>
+     * @throws IllegalArgumentException if the patternString is null
+     */
     @Override
     public boolean patternMatches(String patternString, String compareString, char separator) {
         if (patternString == null) {
@@ -73,6 +96,12 @@ public class WildcardPointcut extends AbstractPointcut {
         }
     }
 
+    /**
+     * Performs wildcard pattern matching without considering OR-delimiters.
+     * @param patternString the wildcard pattern string
+     * @param compareString the string to compare
+     * @return true if the string matches the pattern, false otherwise
+     */
     private boolean wildcardPatternMatches(String patternString, String compareString) {
         if (!WildcardPattern.hasWildcards(patternString)) {
             return patternString.equals(compareString);
@@ -89,6 +118,13 @@ public class WildcardPointcut extends AbstractPointcut {
         return wildcardPattern.matches(compareString);
     }
 
+    /**
+     * Performs wildcard pattern matching with a specified separator.
+     * @param patternString the wildcard pattern string
+     * @param compareString the string to compare
+     * @param separator the separator character
+     * @return true if the string matches the pattern, false otherwise
+     */
     private boolean wildcardPatternMatches(@NonNull String patternString, String compareString, char separator) {
         if (patternString.indexOf(separator) == -1 && !WildcardPattern.hasWildcards(patternString)) {
             return patternString.equals(compareString);
@@ -106,6 +142,11 @@ public class WildcardPointcut extends AbstractPointcut {
         return wildcardPattern.matches(compareString);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation clears the internal cache of compiled wildcard patterns.
+     * </p>
+     */
     @Override
     public void clear() {
         cache.clear();

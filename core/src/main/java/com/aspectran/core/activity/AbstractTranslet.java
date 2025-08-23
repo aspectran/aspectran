@@ -35,14 +35,17 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  */
 public abstract class AbstractTranslet implements Translet {
 
+    /** The rule that defines this translet. */
     private final TransletRule transletRule;
 
+    /** The name of the current request. */
     private String requestName;
 
+    /** The method of the current request. */
     private MethodType requestMethod;
 
     /**
-     * Create a new AbstractTranslet backed by the given {@link TransletRule}.
+     * Creates a new AbstractTranslet backed by the given {@link TransletRule}.
      * @param transletRule the rule describing this translet (must not be {@code null})
      */
     protected AbstractTranslet(@NonNull TransletRule transletRule) {
@@ -50,8 +53,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Returns the request name associated with this translet.
-     * @return the request name, or {@code null} if not initialized yet
+     * {@inheritDoc}
      */
     @Override
     public String getRequestName() {
@@ -59,7 +61,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Set the request name for this translet.
+     * Sets the request name for this translet.
      * @param requestName the request name
      */
     protected void setRequestName(String requestName) {
@@ -67,8 +69,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Returns the request method (e.g., GET/POST) for this translet.
-     * @return the request method, or {@code null} if not initialized yet
+     * {@inheritDoc}
      */
     @Override
     public MethodType getRequestMethod() {
@@ -76,7 +77,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Set the request method for this translet.
+     * Sets the request method for this translet.
      * @param requestMethod the request method
      */
     protected void setRequestMethod(MethodType requestMethod) {
@@ -84,8 +85,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Returns the translet name as declared in the {@link TransletRule}.
-     * @return the translet name
+     * {@inheritDoc}
      */
     @Override
     public String getTransletName() {
@@ -93,28 +93,32 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
-     * Return the underlying {@link TransletRule}.
+     * Returns the underlying {@link TransletRule} that defines this translet.
+     * @return the translet rule
      */
     protected TransletRule getTransletRule() {
         return transletRule;
     }
 
     /**
-     * Return the {@link RequestRule} associated with this translet.
+     * Returns the {@link RequestRule} associated with this translet.
+     * @return the request rule
      */
     protected RequestRule getRequestRule() {
         return transletRule.getRequestRule();
     }
 
     /**
-     * Return the {@link ResponseRule} associated with this translet.
+     * Returns the {@link ResponseRule} associated with this translet.
+     * @return the response rule
      */
     protected ResponseRule getResponseRule() {
         return transletRule.getResponseRule();
     }
 
     /**
-     * Return the optional {@link DescriptionRule} for this translet, or {@code null}.
+     * Returns the optional {@link DescriptionRule} for this translet.
+     * @return the description rule, or {@code null} if not defined
      */
     public DescriptionRule getDescriptionRule() {
         return transletRule.getDescriptionRule();

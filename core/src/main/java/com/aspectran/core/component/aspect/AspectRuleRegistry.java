@@ -39,7 +39,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static com.aspectran.utils.ConcurrentReferenceHashMap.ReferenceType;
 
 /**
- * The Class AspectRuleRegistry.
+ * A central registry for all {@link AspectRule}s in the application context.
+ * <p>This class manages the lifecycle of aspect rules and provides a caching mechanism
+ * to quickly find aspects that are relevant to a specific join point (represented by a
+ * {@link PointcutPattern}). This caching is a key performance optimization.
+ * </p>
  */
 public class AspectRuleRegistry extends AbstractComponent {
 
@@ -47,9 +51,11 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
+    /** Cache for relevant aspect rules with soft references, allowing garbage collection under memory pressure. */
     private final Cache<PointcutPattern, RelevantAspectRuleHolder> softCache =
             new ConcurrentReferenceCache<>(ReferenceType.SOFT, this::createRelevantAspectRuleHolder);
 
+    /** Cache for relevant aspect rules with weak references, allowing for more eager garbage collection. */
     private final Cache<PointcutPattern, RelevantAspectRuleHolder> weakCache =
             new ConcurrentReferenceCache<>(ReferenceType.WEAK, this::createRelevantAspectRuleHolder);
 
@@ -57,34 +63,57 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private final List<AspectRule> aspectRules = new CopyOnWriteArrayList<>();
 
+    /** Keeps track of aspect rules added dynamically after initialization. */
     private final List<String> newAspectRules = new CopyOnWriteArrayList<>();
 
+    /**
+     * Instantiates a new AspectRuleRegistry.
+     */
     public AspectRuleRegistry() {
     }
 
+    /**
+     * Returns all registered aspect rules.
+     * @return a collection of {@link AspectRule}s
+     */
     public Collection<AspectRule> getAspectRules() {
         return aspectRules;
     }
 
+    /**
+     * Returns the aspect rule for the given aspect ID.
+     * @param aspectId the ID of the aspect
+     * @return the {@link AspectRule}, or {@code null} if not found
+     */
     public AspectRule getAspectRule(String aspectId) {
         return aspectRuleMap.get(aspectId);
     }
 
+    /**
+     * Checks if an aspect rule with the given ID is registered.
+     * @param aspectId the ID of the aspect
+     * @return true if the aspect rule exists, false otherwise
+     */
     public boolean contains(String aspectId) {
         return aspectRuleMap.containsKey(aspectId);
     }
 
-    public void addAspectRule(AspectRule aspectRule) throws IllegalRuleException {
+    /**
+     * Adds a new aspect rule to the registry.
+     * @param aspectRule the aspect rule to add
+     * @throws IllegalRuleException if an aspect rule with the same ID already exists
+     */
+    public void addAspectRule(@NonNull AspectRule aspectRule) throws IllegalRuleException {
         Assert.notNull(aspectRule, "aspectRule must not be null");
         Assert.notNull(aspectRule.getId(), "Aspect ID must not be null");
+
         if (logger.isTraceEnabled()) {
             logger.trace("add AspectRule {}", aspectRule);
         }
+
         determineBeanRelevant(aspectRule);
-        AspectRule existing = aspectRuleMap.get(aspectRule.getId());
-        if (existing == null) {
-            existing = aspectRuleMap.putIfAbsent(aspectRule.getId(), aspectRule);
-        }
+
+        AspectRule existing = aspectRuleMap.putIfAbsent(aspectRule.getId(), aspectRule);
         if (existing == null) {
             aspectRules.add(aspectRule);
             if (isInitialized()) {
@@ -97,6 +126,10 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Removes an aspect rule from the registry.
+     * @param aspectId the ID of the aspect to remove
+     */
     public void removeAspectRule(String aspectId) {
         AspectRule existing = aspectRuleMap.remove(aspectId);
         if (existing != null) {
@@ -111,6 +144,10 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Checks if there are any dynamically added aspect rules since initialization.
+     * @return true if new aspect rules have been added, false otherwise
+     */
     public boolean hasNewAspectRules() {
         return !newAspectRules.isEmpty();
     }
@@ -123,16 +160,39 @@ public class AspectRuleRegistry extends AbstractComponent {
     @Override
     protected void doDestroy() {
         aspectRuleMap.clear();
+        aspectRules.clear();
+        newAspectRules.clear();
+        softCache.clear();
+        weakCache.clear();
     }
 
+    /**
+     * Retrieves a holder of relevant aspect rules for a given pointcut pattern from the soft cache.
+     * This cache is suitable for frequently accessed, non-dynamic pointcuts.
+     * @param pointcutPattern the pointcut pattern to match
+     * @return a holder containing the relevant aspect rules
+     */
     public RelevantAspectRuleHolder retrieveFromSoftCache(PointcutPattern pointcutPattern) {
         return softCache.get(pointcutPattern);
     }
 
+    /**
+     * Retrieves a holder of relevant aspect rules for a given pointcut pattern from the weak cache.
+     * This cache is suitable for pointcuts that are less frequently accessed.
+     * @param pointcutPattern the pointcut pattern to match
+     * @return a holder containing the relevant aspect rules
+     */
     public RelevantAspectRuleHolder retrieveFromWeakCache(PointcutPattern pointcutPattern) {
         return weakCache.get(pointcutPattern);
     }
 
+    /**
+     * Creates a {@link RelevantAspectRuleHolder} for a given pointcut pattern.
+     * This method is used by the caches to generate a new holder when one is not found.
+     * It iterates through all registered aspect rules to find matches.
+     * @param pointcutPattern the pointcut pattern to match against
+     * @return a new holder containing the matched aspect rules
+     */
     private RelevantAspectRuleHolder createRelevantAspectRuleHolder(PointcutPattern pointcutPattern) {
         AdviceRulePostRegister postRegister = new AdviceRulePostRegister();
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
@@ -162,6 +222,12 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Determines if an aspect rule is relevant to bean proxying.
+     * An aspect is considered relevant if its joinpoint target is a method, or if its
+     * pointcut specifies any bean, class, or method patterns.
+     * @param aspectRule the aspect rule to check
+     */
     private void determineBeanRelevant(@NonNull AspectRule aspectRule) {
         JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
         if (joinpointTargetType == JoinpointTargetType.METHOD) {

@@ -65,8 +65,8 @@ public class ActivityData extends HashMap<String, Object> {
     private final Activity activity;
 
     /**
-     * Instantiates a new ActivityData.
-     * @param activity the activity
+     * Creates a new ActivityData instance.
+     * @param activity the activity associated with this data
      */
     ActivityData(Activity activity) {
         super();
@@ -79,6 +79,7 @@ public class ActivityData extends HashMap<String, Object> {
      * from action results, request attributes/parameters, and session attributes if not
      * already cached in this map. Successfully resolved values are cached for subsequent
      * access; missing values are marked to avoid repeated lookups.
+     * <p>The lookup order is: action results, request attributes, request parameters, session attributes.</p>
      * @param key the key whose associated value is to be returned
      * @return the mapped value, or {@code null} if none
      */
@@ -138,7 +139,7 @@ public class ActivityData extends HashMap<String, Object> {
 
     /**
      * Returns {@code true} if this map contains a mapping for the specified key.
-     * This method triggers lazy resolution for preempted keys.
+     * This method triggers lazy resolution for preempted keys if necessary.
      * @param key key whose presence in this map is to be tested
      * @return {@code true} if this map contains a mapping for the specified key
      */
@@ -149,7 +150,7 @@ public class ActivityData extends HashMap<String, Object> {
 
     /**
      * Returns a Collection view of the values contained in this map.
-     * Values are resolved lazily for preempted entries.
+     * Values are resolved lazily for preempted entries upon access.
      * @return a collection view of the values contained in this map
      */
     @Override

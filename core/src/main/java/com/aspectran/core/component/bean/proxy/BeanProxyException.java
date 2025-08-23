@@ -32,11 +32,20 @@ public class BeanProxyException extends BeanException {
 
     private final BeanRule beanRule;
 
+    /**
+     * Creates a new BeanProxyException with the specified bean rule and cause.
+     * @param beanRule the bean rule associated with the proxy creation failure
+     * @param cause the cause of the exception
+     */
     public BeanProxyException(BeanRule beanRule, Throwable cause) {
         super("Could not instantiate proxy bean " + beanRule, cause);
         this.beanRule = beanRule;
     }
 
+    /**
+     * Returns the bean rule associated with this exception.
+     * @return the bean rule
+     */
     public BeanRule getBeanRule() {
         return beanRule;
     }

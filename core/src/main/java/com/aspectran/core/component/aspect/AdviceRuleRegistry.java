@@ -29,7 +29,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The Class AdviceRuleRegistry.
+ * A registry that collects and organizes advice rules based on their type
+ * (e.g., before, after, finally) and exception handling rules.
+ * <p>This class is typically used to aggregate all the rules from aspects
+ * that match a specific join point.
+ * </p>
  */
 public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
@@ -43,6 +47,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     private List<ExceptionRule> exceptionRuleList;
 
+    /**
+     * Extracts and registers all advice rules and exception handling rules
+     * from the given {@link AspectRule}.
+     * @param aspectRule the aspect rule to register
+     */
     public void register(AspectRule aspectRule) {
         if (aspectRule != null) {
             if (aspectRule.getSettingsAdviceRule() != null) {
@@ -59,6 +68,10 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Merges all rules from another registry into this one.
+     * @param adviceRuleRegistry the source registry to merge from
+     */
     public void merge(@NonNull AdviceRuleRegistry adviceRuleRegistry) {
         if (adviceRuleRegistry.getSettingsAdviceRuleList() != null) {
             for (SettingsAdviceRule sar : adviceRuleRegistry.getSettingsAdviceRuleList()) {
@@ -87,6 +100,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Creates a shallow copy of this registry.
+     * The rule lists themselves are new, but the rule objects within them are not cloned.
+     * @return a replicated {@code AdviceRuleRegistry}
+     */
     @Override
     public AdviceRuleRegistry replicate() {
         AdviceRuleRegistry adviceRuleRegistry = new AdviceRuleRegistry();
@@ -147,6 +165,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         settingsAdviceRuleList.add(0, settingsAdviceRule);
     }
 
+    /**
+     * Adds an advice rule, dispatching it to the appropriate list based on its type.
+     * 'AROUND' advice is added to both the 'before' and 'after' lists.
+     * @param adviceRule the advice rule to add
+     */
     public void addAdviceRule(@NonNull AdviceRule adviceRule) {
         if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
             addBeforeAdviceRule(adviceRule);
@@ -160,6 +183,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Adds a 'before' advice rule, inserting it into the list according to the
+     * aspect's order of precedence (ascending).
+     * @param adviceRule the advice rule to add
+     */
     private void addBeforeAdviceRule(AdviceRule adviceRule) {
         if (beforeAdviceRuleList == null) {
             beforeAdviceRuleList = new LinkedList<>();
@@ -171,6 +199,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Adds an 'after' advice rule, inserting it into the list according to the
+     * aspect's order of precedence (ascending).
+     * @param adviceRule the advice rule to add
+     */
     private void addAfterAdviceRule(AdviceRule adviceRule) {
         if (afterAdviceRuleList == null) {
             afterAdviceRuleList = new LinkedList<>();
@@ -182,6 +215,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Adds a 'finally' advice rule, inserting it into the list according to the
+     * aspect's order of precedence (ascending).
+     * @param adviceRule the advice rule to add
+     */
     private void addFinallyAdviceRule(AdviceRule adviceRule) {
         if (finallyAdviceRuleList == null) {
             finallyAdviceRuleList = new LinkedList<>();

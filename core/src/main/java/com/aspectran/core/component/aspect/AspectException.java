@@ -18,7 +18,7 @@ package com.aspectran.core.component.aspect;
 import java.io.Serial;
 
 /**
- * This class is the basic exception that gets thrown from the aspect package.
+ * The base runtime exception for errors that occur during aspect processing.
  */
 public class AspectException extends RuntimeException {
 
@@ -26,33 +26,32 @@ public class AspectException extends RuntimeException {
     private static final long serialVersionUID = 3778865608683444815L;
 
     /**
-     * Creates a new AspectException without detail message.
+     * Creates a new AspectException.
      */
     public AspectException() {
         super();
     }
 
     /**
-     * Constructs a AspectException with the specified detail message.
-     * @param msg a message to associate with the exception
+     * Creates a new AspectException with the specified detail message.
+     * @param msg the detail message
      */
     public AspectException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Creates a new AspectException with the specified cause.
+     * @param cause the root cause
      */
     public AspectException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a AspectException with the specified error message and
-     * also the specified root cause exception.
+     * Creates a new AspectException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the root cause
      */
     public AspectException(String msg, Throwable cause) {
         super(msg, cause);

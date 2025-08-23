@@ -88,103 +88,104 @@ public interface Activity {
 
     /**
      * Returns the operating mode of the currently running activity.
-     * @return {@link Mode} for the currently running activity
+     * @return the {@link Mode} for the currently running activity
      */
     Mode getMode();
 
     /**
-     * Gets the activity context.
+     * Returns the {@link ActivityContext} associated with this activity.
      * @return the activity context
      */
     ActivityContext getActivityContext();
 
     /**
-     * Returns the ClassLoader associated with this activity's context.
+     * Returns the {@link ClassLoader} associated with this activity's context.
      * @return the active ClassLoader
      */
     ClassLoader getClassLoader();
 
     /**
-     * Returns the environment of the current activity context.
+     * Returns the {@link Environment} of the current activity context.
      * @return the environment
      */
     Environment getEnvironment();
 
     /**
-     * Gets the application adapter.
+     * Returns the {@link ApplicationAdapter} for the current application environment.
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
-     * Returns whether a session adapter is available for this activity.
+     * Returns whether a {@link SessionAdapter} is available for this activity.
      * @return {@code true} if a session adapter is present; {@code false} otherwise
      */
     boolean hasSessionAdapter();
 
     /**
-     * Gets the session adapter.
+     * Returns the {@link SessionAdapter} for the current session environment.
      * @return the session adapter
      */
     SessionAdapter getSessionAdapter();
 
     /**
-     * Gets the request adapter.
+     * Returns the {@link RequestAdapter} for the current request.
      * @return the request adapter
      */
     RequestAdapter getRequestAdapter();
 
     /**
-     * Gets the response adapter.
+     * Returns the {@link ResponseAdapter} for the current response.
      * @return the response adapter
      */
     ResponseAdapter getResponseAdapter();
 
     /**
-     * Returns the context path. If the context path is not specified,
-     * {@code null} is returned rather than an empty string.
-     * @return the context path of this activity, or {@code null} for
-     *      the root context
+     * Returns the context path of the current activity.
+     * @return the context path, or {@code null} for the root context
      */
     String getContextPath();
 
     /**
      * Returns the reverse context path used as a prefix to the actual request name.
+     * This is typically used in web environments for URL rewriting.
      * @return the reverse context path
      */
     String getReverseContextPath();
 
     /**
-     * Performs the prepared activity.
-     * @throws ActivityPerformException thrown when an exception occurs while performing an activity
+     * Performs the prepared activity, executing the translet's lifecycle.
+     * @throws ActivityPerformException if an exception occurs during activity execution
      */
     void perform() throws ActivityPerformException;
 
     /**
-     * Performs the given instant activity.
+     * Performs the given instant action within the context of this activity.
+     * An instant action is a lightweight, short-lived operation.
      * @param <V> the result type of the instant action
-     * @param instantAction the instant action
-     * @return An object that is the result of performing an instant activity
-     * @throws ActivityPerformException thrown when an exception occurs while performing an activity
+     * @param instantAction the instant action to perform
+     * @return the result of performing the instant action
+     * @throws ActivityPerformException if an exception occurs while performing the instant action
      */
     <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException;
 
     /**
-     * Throws an ActivityTerminatedException to terminate the current activity.
-     * @throws ActivityTerminatedException if an activity terminated without completion
+     * Throws an {@link ActivityTerminatedException} to terminate the current activity.
+     * This method is used to gracefully exit the activity processing flow.
+     * @throws ActivityTerminatedException if the activity is terminated
      */
     void terminate() throws ActivityTerminatedException;
 
     /**
-     * Throws an ActivityTerminatedException with the reason for terminating the current activity.
-     * @param cause the termination cause
-     * @throws ActivityTerminatedException the exception to terminate activity
+     * Throws an {@link ActivityTerminatedException} with a specified cause to terminate the current activity.
+     * @param cause the reason for terminating the activity
+     * @throws ActivityTerminatedException if the activity is terminated
      */
     void terminate(String cause) throws ActivityTerminatedException;
 
     /**
-     * Returns an instance of the current translet.
-     * @return an instance of the current translet
+     * Returns the {@link Translet} instance associated with this activity.
+     * @return the current translet
      */
     Translet getTranslet();
 
@@ -195,126 +196,131 @@ public interface Activity {
     boolean hasTranslet();
 
     /**
-     * Returns the process result.
+     * Returns the {@link ProcessResult} of the activity's execution.
+     * This contains results from actions performed during the activity lifecycle.
      * @return the process result
      */
     ProcessResult getProcessResult();
 
     /**
-     * Returns an action result for the specified action id from the process result,
-     * or {@code null} if the action does not exist.
-     * @param actionId the specified action id
-     * @return an action result
+     * Returns the result of a specific action identified by its ID from the {@link ProcessResult}.
+     * @param actionId the ID of the action whose result is to be retrieved
+     * @return the action result, or {@code null} if the action does not exist or has no result
      */
     Object getProcessResult(String actionId);
 
     /**
      * Returns the mutable data map associated with this activity's execution.
+     * This map can be used to store and retrieve data within the activity's scope.
      * @return the current {@link ActivityData}
      */
     ActivityData getActivityData();
 
     /**
-     * Returns the originally declared response.
+     * Returns the originally declared {@link Response} for this activity.
      * @return the declared response
-     * @since 5.2.0
      */
     Response getDeclaredResponse();
 
     /**
-     * Returns whether the response is reserved.
-     * @return true, if the response is reserved
+     * Returns whether the response has been reserved (e.g., for a redirect or forward).
+     * @return {@code true} if the response is reserved; {@code false} otherwise
      */
     boolean isResponseReserved();
 
     /**
-     * Returns whether a response was attempted after performing the activity.
-     * @return true if a response was attempted, false otherwise
+     * Returns whether a response has been attempted after performing the activity.
+     * @return {@code true} if a response was attempted; {@code false} otherwise
      */
     boolean isResponded();
 
     /**
-     * Returns whether an exception was thrown in the activity.
-     * @return true if there was an exception thrown by the activity, false otherwise
+     * Returns whether an exception was raised during the activity's execution.
+     * @return {@code true} if an exception was raised; {@code false} otherwise
      */
     boolean isExceptionRaised();
 
     /**
-     * Returns an instance of the currently raised exception.
-     * @return an instance of the currently raised exception
+     * Returns the exception that was raised during the activity's execution.
+     * @return the raised exception, or {@code null} if no exception was raised
      */
     Throwable getRaisedException();
 
     /**
-     * Returns the innermost one of the chained (wrapped) exceptions.
-     * @return the innermost one of the chained (wrapped) exceptions
+     * Returns the innermost cause of the chained (wrapped) exceptions that were raised.
+     * @return the root cause of the raised exception, or {@code null} if no exception was raised
      */
     Throwable getRootCauseOfRaisedException();
 
     /**
-     * Sets an instance of the currently raised exception.
-     * @param raisedException an instance of the currently raised exception
+     * Sets the exception that was raised during the activity's execution.
+     * @param raisedException the exception to set
      */
     void setRaisedException(Throwable raisedException);
 
     /**
-     * Clears the exception that occurred during activity processing.
+     * Clears any exception that was previously set for this activity.
      */
     void clearRaisedException();
 
     /**
-     * Register an aspect rule dynamically.
-     * @param aspectRule the aspect rule
-     * @throws AdviceConstraintViolationException thrown when an Advice Constraint Violation occurs
-     * @throws AdviceException thrown when an error occurs while running advice
+     * Dynamically registers an aspect rule with the current activity context.
+     * This allows for runtime modification of AOP behavior.
+     * @param aspectRule the aspect rule to register
+     * @throws AdviceConstraintViolationException if an advice constraint is violated during registration
+     * @throws AdviceException if an error occurs during advice processing
      */
     void registerAdviceRule(AspectRule aspectRule)
             throws AdviceConstraintViolationException, AdviceException;
 
     /**
-     * Register a settings advice rule dynamically.
-     * @param settingsAdviceRule the settings advice rule
+     * Dynamically registers a settings advice rule with the current activity context.
+     * Settings advice rules are applied to the activity's settings.
+     * @param settingsAdviceRule the settings advice rule to register
      */
     void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**
-     * Execute advice actions with given rules.
-     * @param adviceRuleList the advice rules
-     * @throws AdviceException thrown when an error occurs while running advice
+     * Executes a list of advice actions.
+     * @param adviceRuleList the list of advice rules to execute
+     * @throws AdviceException if an error occurs during advice execution
      */
     void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException;
 
     /**
-     * Executes an advice action with a given rule.
-     * @param adviceRule the advice rule
-     * @throws AdviceException thrown when an error occurs while running advice
+     * Executes a single advice action.
+     * @param adviceRule the advice rule to execute
+     * @throws AdviceException if an error occurs during advice execution
      */
     void executeAdvice(AdviceRule adviceRule) throws AdviceException;
 
     /**
-     * Exception handling.
-     * @param exceptionRuleList the exception rule list
-     * @throws ActionExecutionException thrown when an error occurs while executing an action
+     * Handles exceptions based on a list of exception rules.
+     * This method typically dispatches to an error handling translet or performs other recovery actions.
+     * @param exceptionRuleList the list of exception rules to apply
+     * @throws ActionExecutionException if an error occurs while executing an action during exception handling
      */
     void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException;
 
     /**
-     * Gets the specified setting value from the current activity scope.
-     * @param <V> the type of the value
-     * @param name the setting name
-     * @return the setting value
+     * Returns the value of a specified setting from the current activity scope.
+     * Settings are typically configured in the translet rule or dynamically added.
+     * @param <V> the type of the setting value
+     * @param name the name of the setting
+     * @return the setting value, or {@code null} if not found
      */
     <V> V getSetting(String name);
 
     /**
-     * Puts the specified setting value in the current activity scope.
-     * @param name the setting name
-     * @param value the setting value
+     * Puts a specified setting value into the current activity scope.
+     * @param name the name of the setting
+     * @param value the value to set for the setting
      */
     void putSetting(String name, Object value);
 
     /**
      * Returns whether a {@link StringifyContext} is available for this activity.
+     * The stringify context is used for converting objects to string representations.
      * @return {@code true} if a stringify context is present; {@code false} otherwise
      */
     boolean hasStringifyContext();
@@ -326,25 +332,25 @@ public interface Activity {
     StringifyContext getStringifyContext();
 
     /**
-     * Returns the template renderer used to render views/templates.
+     * Returns the {@link TemplateRenderer} used to render views or templates.
      * @return the template renderer
      */
     TemplateRenderer getTemplateRenderer();
 
     /**
-     * Returns the token evaluator used to evaluate template tokens.
+     * Returns the {@link TokenEvaluator} used to evaluate template tokens.
      * @return the token evaluator
      */
     TokenEvaluator getTokenEvaluator();
 
     /**
-     * Returns the item evaluator used to evaluate ASEL items.
+     * Returns the {@link ItemEvaluator} used to evaluate ASEL (Aspectran Scripting Expression Language) items.
      * @return the item evaluator
      */
     ItemEvaluator getItemEvaluator();
 
     /**
-     * Returns the {@link FlashMapManager} for storing attributes across requests.
+     * Returns the {@link FlashMapManager} for storing attributes across requests or successive interactions.
      * @return the flash map manager
      */
     FlashMapManager getFlashMapManager();
@@ -356,15 +362,15 @@ public interface Activity {
     LocaleResolver getLocaleResolver();
 
     /**
-     * Gets the advice bean.
-     * @param <V> the type of the bean
-     * @param aspectId the aspect id
-     * @return the advice bean object
+     * Returns the advice bean instance associated with the given aspect ID.
+     * @param <V> the type of the advice bean
+     * @param aspectId the ID of the aspect
+     * @return the advice bean object, or {@code null} if not found
      */
     <V> V getAdviceBean(String aspectId);
 
     /**
-     * Returns the value produced by the registered BEFORE advice for the given aspect id.
+     * Returns the value produced by the registered BEFORE advice for the given aspect ID.
      * @param <V> the result type
      * @param aspectId the aspect identifier
      * @return the BEFORE advice result, or {@code null} if none
@@ -372,7 +378,7 @@ public interface Activity {
     <V> V getBeforeAdviceResult(String aspectId);
 
     /**
-     * Returns the value produced by the registered AFTER advice for the given aspect id.
+     * Returns the value produced by the registered AFTER advice for the given aspect ID.
      * @param <V> the result type
      * @param aspectId the aspect identifier
      * @return the AFTER advice result, or {@code null} if none
@@ -380,7 +386,7 @@ public interface Activity {
     <V> V getAfterAdviceResult(String aspectId);
 
     /**
-     * Returns the value produced by the registered AROUND advice for the given aspect id.
+     * Returns the value produced by the registered AROUND advice for the given aspect ID.
      * @param <V> the result type
      * @param aspectId the aspect identifier
      * @return the AROUND advice result, or {@code null} if none
@@ -388,7 +394,7 @@ public interface Activity {
     <V> V getAroundAdviceResult(String aspectId);
 
     /**
-     * Returns the value produced by the registered FINALLY advice for the given aspect id.
+     * Returns the value produced by the registered FINALLY advice for the given aspect ID.
      * @param <V> the result type
      * @param aspectId the aspect identifier
      * @return the FINALLY advice result, or {@code null} if none
@@ -396,10 +402,12 @@ public interface Activity {
     <V> V getFinallyAdviceResult(String aspectId);
 
     /**
-     * Returns an instance of the bean that matches the given id.
+     * Returns an instance of the bean that matches the given ID.
      * @param <V> the type of bean object retrieved
-     * @param id the id of the bean to retrieve
+     * @param id the ID of the bean to retrieve
      * @return an instance of the bean
+     * @throws com.aspectran.core.component.bean.NoSuchBeanException if the bean is not found
+     * @throws com.aspectran.core.component.bean.BeanException if an error occurs during bean retrieval
      */
     <V> V getBean(String id);
 
@@ -407,20 +415,22 @@ public interface Activity {
      * Returns an instance of the bean that matches the given object type.
      * @param <V> the type of bean object retrieved
      * @param type the type the bean must match; can be an interface or superclass.
-     *      {@code null} is disallowed.
      * @return an instance of the bean
-     * @since 1.3.1
+     * @throws IllegalArgumentException if the type is null
+     * @throws com.aspectran.core.component.bean.NoSuchBeanException if the bean is not found
+     * @throws com.aspectran.core.component.bean.NoUniqueBeanException if multiple beans of the same type are found
+     * @throws com.aspectran.core.component.bean.BeanException if an error occurs during bean retrieval
      */
     <V> V getBean(Class<V> type);
 
     /**
-     * Returns an instance of the bean that matches the given object type.
+     * Returns an instance of the bean that matches the given object type and ID.
      * @param <V> the type of bean object retrieved
-     * @param type type the bean must match; can be an interface or superclass.
-     *      {@code null} is allowed.
-     * @param id the id of the bean to retrieve
+     * @param type the type the bean must match; can be an interface or superclass.
+     * @param id the ID of the bean to retrieve
      * @return an instance of the bean
-     * @since 2.0.0
+     * @throws com.aspectran.core.component.bean.NoSuchBeanException if the bean is not found
+     * @throws com.aspectran.core.component.bean.BeanException if an error occurs during bean retrieval
      */
     <V> V getBean(Class<V> type, String id);
 
@@ -429,28 +439,29 @@ public interface Activity {
      * @param <V> the bean type
      * @param beanRule the bean rule describing the prototype
      * @return a newly created bean instance
+     * @throws com.aspectran.core.component.bean.BeanException if an error occurs during bean creation
      */
     <V> V getPrototypeScopeBean(BeanRule beanRule);
 
     /**
-     * Returns whether a bean with the specified id is present.
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified id is present
+     * Returns whether a bean with the specified ID is present in the context.
+     * @param id the ID of the bean to query
+     * @return {@code true} if a bean with the specified ID is present; {@code false} otherwise
      */
     boolean containsBean(String id);
 
     /**
-     * Returns whether a bean with the specified object type is present.
+     * Returns whether a bean with the specified object type is present in the context.
      * @param type the object type of the bean to query
-     * @return whether a bean with the specified type is present
+     * @return {@code true} if a bean with the specified type is present; {@code false} otherwise
      */
     boolean containsBean(Class<?> type);
 
     /**
-     * Returns whether the bean corresponding to the specified object type and ID exists.
+     * Returns whether the bean corresponding to the specified object type and ID exists in the context.
      * @param type the object type of the bean to query
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified type is present
+     * @param id the ID of the bean to query
+     * @return {@code true} if a bean with the specified type and ID is present; {@code false} otherwise
      */
     boolean containsBean(Class<?> type, String id);
 

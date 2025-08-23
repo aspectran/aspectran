@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 /**
- * Bean proxy support for AOP-style interception.
+ * Provides support for creating dynamic proxies for beans, primarily for AOP-style interception.
  * <p>
- * Provides proxy implementations (e.g., JDK dynamic proxies and Javassist)
- * and a factory for creating proxy beans.
+ * This package includes implementations for different proxying mechanisms, such as
+ * JDK dynamic proxies and Javassist-based proxies, along with a factory for their creation.
  * </p>
  */
 package com.aspectran.core.component.bean.proxy;

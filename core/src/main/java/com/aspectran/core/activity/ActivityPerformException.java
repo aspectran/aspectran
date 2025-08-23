@@ -28,32 +28,32 @@ public class ActivityPerformException extends ActivityException {
     private static final long serialVersionUID = 2728451652587414622L;
 
     /**
-     * Instantiates a new ActivityPerformException.
+     * Creates a new ActivityPerformException.
      */
     public ActivityPerformException() {
         super();
     }
 
     /**
-     * Instantiates a new ActivityPerformException.
-     * @param msg the message
+     * Creates a new ActivityPerformException with the specified detail message.
+     * @param msg the detail message
      */
     public ActivityPerformException(String msg) {
         super(msg);
     }
 
     /**
-     * Instantiates a new ActivityPerformException.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Creates a new ActivityPerformException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the root cause
      */
     public ActivityPerformException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
     /**
-     * Instantiates a new ActivityPerformException.
-     * @param cause the real cause of the exception
+     * Creates a new ActivityPerformException with the specified cause.
+     * @param cause the root cause
      */
     public ActivityPerformException(Throwable cause) {
         super(cause);

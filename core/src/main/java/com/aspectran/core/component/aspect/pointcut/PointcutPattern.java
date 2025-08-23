@@ -20,22 +20,40 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Objects;
 
+/**
+ * Represents a single pattern within a pointcut, defining criteria for matching
+ * translet names, bean IDs, class names, and method names.
+ * <p>This class is used to specify a precise target for aspect advice.</p>
+ */
 public class PointcutPattern {
 
+    /** The delimiter character used to separate the translet name pattern from the bean name pattern. */
     private static final char POINTCUT_BEAN_NAME_DELIMITER = '@';
 
+    /** The delimiter character used to separate the bean/class name pattern from the method name pattern. */
     private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
+    /** The pattern for matching translet names. */
     private final String transletNamePattern;
 
+    /** The pattern for matching bean IDs. */
     private final String beanIdPattern;
 
+    /** The pattern for matching class names. */
     private final String classNamePattern;
 
+    /** The pattern for matching method names. */
     private final String methodNamePattern;
 
     private volatile int hashCode;
 
+    /**
+     * Creates a new PointcutPattern with the specified matching criteria.
+     * @param transletNamePattern the pattern for translet names
+     * @param beanIdPattern the pattern for bean IDs
+     * @param classNamePattern the pattern for class names
+     * @param methodNamePattern the pattern for method names
+     */
     public PointcutPattern(String transletNamePattern, String beanIdPattern,
                            String classNamePattern, String methodNamePattern) {
         this.transletNamePattern = transletNamePattern;
@@ -44,22 +62,44 @@ public class PointcutPattern {
         this.methodNamePattern = methodNamePattern;
     }
 
+    /**
+     * Returns the pattern for matching translet names.
+     * @return the translet name pattern
+     */
     public String getTransletNamePattern() {
         return transletNamePattern;
     }
 
+    /**
+     * Returns the pattern for matching bean IDs.
+     * @return the bean ID pattern
+     */
     public String getBeanIdPattern() {
         return beanIdPattern;
     }
 
+    /**
+     * Returns the pattern for matching class names.
+     * @return the class name pattern
+     */
     public String getClassNamePattern() {
         return classNamePattern;
     }
 
+    /**
+     * Returns the pattern for matching method names.
+     * @return the method name pattern
+     */
     public String getMethodNamePattern() {
         return methodNamePattern;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Compares this PointcutPattern to the specified object. The result is true if and only if
+     * the argument is not null and is a PointcutPattern object that has the same pattern values.
+     * </p>
+     */
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -74,6 +114,10 @@ public class PointcutPattern {
                 Objects.equals(methodNamePattern, that.getMethodNamePattern()));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns a hash code for this PointcutPattern. The hash code is computed based on the pattern values.</p>
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -89,17 +133,35 @@ public class PointcutPattern {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns a string representation of this PointcutPattern by combining its individual patterns.</p>
+     */
     @Override
     public String toString() {
         return combinePattern(this);
     }
 
+    /**
+     * Combines the patterns from a {@link PointcutPattern} object into a single string.
+     * @param pointcutPattern the pointcut pattern object
+     * @return the combined pattern string
+     */
     @NonNull
     public static String combinePattern(@NonNull PointcutPattern pointcutPattern) {
         return combinePattern(pointcutPattern.getTransletNamePattern(), pointcutPattern.getBeanIdPattern(),
                 pointcutPattern.getClassNamePattern(), pointcutPattern.getMethodNamePattern());
     }
 
+    /**
+     * Combines individual pattern strings into a single pointcut pattern string.
+     * The format is typically `transletName@beanId^methodName` or `transletName@class:className^methodName`.
+     * @param transletName the translet name pattern
+     * @param beanId the bean ID pattern
+     * @param className the class name pattern
+     * @param methodName the method name pattern
+     * @return the combined pattern string
+     */
     @NonNull
     public static String combinePattern(String transletName, String beanId, String className, String methodName) {
         int len = 0;
@@ -134,6 +196,11 @@ public class PointcutPattern {
         return sb.toString();
     }
 
+    /**
+     * Parses a combined pointcut pattern string into a {@link PointcutPattern} object.
+     * @param patternString the combined pattern string (e.g., `transletName@beanId^methodName`)
+     * @return a new {@link PointcutPattern} object
+     */
     @NonNull
     public static PointcutPattern parsePattern(@NonNull String patternString) {
         String transletNamePattern = null;

@@ -39,34 +39,37 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The Class AbstractActivity.
- *
- * <p>Created: 2008. 03. 22 PM 5:48:09</p>
+ * Abstract base class for {@link Activity} implementations.
+ * <p>This class provides common functionality and manages the core components
+ * and state required for processing a request. It handles the lifecycle of adapters
+ * (request, response, session), manages exceptions, and provides access to various
+ * evaluators and managers within the activity scope.
+ * </p>
  */
 public abstract class AbstractActivity implements Activity {
 
     /**
-     * Owning activity context providing access to environment, beans, adapters, etc.
+     * The owning activity context, providing access to environment, beans, adapters, etc.
      */
     private final ActivityContext context;
 
     /**
-     * Previously current activity to be restored after this activity completes.
+     * The previously current activity, to be restored after this activity completes.
      */
     private Activity pendingActivity;
 
     /**
-     * Session adapter associated with this activity (optional).
+     * The session adapter associated with this activity (optional).
      */
     private SessionAdapter sessionAdapter;
 
     /**
-     * Request adapter associated with this activity (may be initialized lazily).
+     * The request adapter associated with this activity (may be initialized lazily).
      */
     private RequestAdapter requestAdapter;
 
     /**
-     * Response adapter associated with this activity (may be initialized lazily).
+     * The response adapter associated with this activity (may be initialized lazily).
      */
     private ResponseAdapter responseAdapter;
 
@@ -86,12 +89,12 @@ public abstract class AbstractActivity implements Activity {
     private StringifyContext stringifyContext;
 
     /**
-     * Evaluator for token expressions, initialized on first use.
+     * Lazily initialized evaluator for token expressions.
      */
     private TokenEvaluator tokenEvaluator;
 
     /**
-     * Evaluator for item expressions, initialized on first use.
+     * Lazily initialized evaluator for item expressions.
      */
     private ItemEvaluator itemEvaluator;
 
@@ -106,8 +109,9 @@ public abstract class AbstractActivity implements Activity {
     private LocaleResolver localeResolver;
 
     /**
-     * Instantiates a new abstract activity.
+     * Creates a new AbstractActivity.
      * @param context the activity context
+     * @throws IllegalArgumentException if the context is null
      */
     protected AbstractActivity(ActivityContext context) {
         if (context == null) {
@@ -146,7 +150,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Gets the current activity.
+     * Returns the current activity instance from the {@link ActivityContext}.
      * @return the current activity
      */
     protected Activity getCurrentActivity() {
@@ -154,7 +158,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Saves the current activity.
+     * Saves the current activity in the {@link ActivityContext} and sets this activity as the current one.
      */
     protected void saveCurrentActivity() {
         if (context.hasCurrentActivity()) {
@@ -164,7 +168,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Removes the current activity.
+     * Removes this activity as the current one and restores the previously saved activity (if any).
      */
     protected void removeCurrentActivity() {
         if (pendingActivity != null) {
@@ -176,7 +180,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Returns the pending (previous) activity saved before this one became current.
+     * Returns the pending (previous) activity that was saved before this activity became current.
      * @param <V> the activity subtype
      * @return the pending activity or {@code null} if none
      */
@@ -186,7 +190,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Whether this activity replaced a previously current one (i.e., has a pending activity).
+     * Checks if this activity replaced a previously current one (i.e., has a pending activity).
      * @return {@code true} if there is a pending activity; {@code false} otherwise
      */
     protected boolean isOriginalActivity() {
@@ -212,8 +216,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Sets the session adapter.
-     * @param sessionAdapter the new session adapter
+     * Sets the session adapter for this activity.
+     * @param sessionAdapter the session adapter
      */
     protected void setSessionAdapter(SessionAdapter sessionAdapter) {
         this.sessionAdapter = sessionAdapter;
@@ -225,8 +229,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Sets the request adapter.
-     * @param requestAdapter the new request adapter
+     * Sets the request adapter for this activity.
+     * @param requestAdapter the request adapter
      */
     protected void setRequestAdapter(RequestAdapter requestAdapter) {
         this.requestAdapter = requestAdapter;
@@ -238,8 +242,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     /**
-     * Sets the response adapter.
-     * @param responseAdapter the new response adapter
+     * Sets the response adapter for this activity.
+     * @param responseAdapter the response adapter
      */
     protected void setResponseAdapter(ResponseAdapter responseAdapter) {
         this.responseAdapter = responseAdapter;

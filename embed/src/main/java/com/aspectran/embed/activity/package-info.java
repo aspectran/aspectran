@@ -16,7 +16,7 @@
 /**
  * Provides the specialized {@link com.aspectran.core.activity.Activity} implementation
  * for an embedded Aspectran environment.
- * <p>This package contains {@link com.aspectran.embed.activity.EmbeddedActivity}, which
+ * <p>This package contains {@link com.aspectran.embed.activity.AspectranActivity}, which
  * is used when Aspectran is invoked programmatically from a host Java application,
  * allowing for seamless integration and execution of Aspectran's features within
  * another program.

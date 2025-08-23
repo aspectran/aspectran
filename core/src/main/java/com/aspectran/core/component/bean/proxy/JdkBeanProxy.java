@@ -46,6 +46,12 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
 
     private final Object bean;
 
+    /**
+     * Creates a new JdkBeanProxy.
+     * @param context the activity context
+     * @param beanRule the bean rule for which the proxy is being created
+     * @param bean the target bean instance to be proxied
+     */
     private JdkBeanProxy(@NonNull ActivityContext context, @NonNull BeanRule beanRule, @NonNull Object bean) {
         super(context.getAspectRuleRegistry());
 
@@ -54,6 +60,13 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         this.bean = bean;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This method is the entry point for method interception by JDK dynamic proxies.
+     * It checks if the method is advisable and then orchestrates the execution
+     * of advice (before, after, finally) and exception handling.
+     * </p>
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (!isAdvisableMethod(method)) {
@@ -72,6 +85,14 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         }
     }
 
+    /**
+     * Internal method to execute advice and the target method within an activity context.
+     * @param method the method being intercepted
+     * @param args the arguments for the method call
+     * @param activity the current activity
+     * @return the result of the method invocation
+     * @throws Throwable if an error occurs during advice or method execution
+     */
     @Nullable
     private Object invoke(@NonNull Method method, Object[] args, Activity activity) throws Throwable {
         String beanId = beanRule.getId();
@@ -104,6 +125,13 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
         }
     }
 
+    /**
+     * Invokes the original method implementation on the target bean.
+     * @param method the method to invoke
+     * @param args the arguments for the method call
+     * @return the result of the original method invocation
+     * @throws Throwable if an error occurs during the original method invocation
+     */
     private Object invokeSuper(@NonNull Method method, Object[] args) throws Throwable {
         try {
             return method.invoke(bean, args);
@@ -114,11 +142,14 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
 
     /**
      * Creates a new proxy instance for a bean that implements interfaces.
+     * This method first instantiates the target bean and then creates a JDK dynamic proxy
+     * that wraps the bean and intercepts method calls.
      * @param context the activity context
      * @param beanRule the bean rule for the bean to be proxied
      * @param args the constructor arguments for the bean instance, may be {@code null}
-     * @param argTypes the constructor argument types for the bean instance, may be {@code null}
+     * @param argTypes the parameter types for the bean instance's constructor, may be {@code null}
      * @return a new proxy object that implements the bean's interfaces
+     * @throws BeanProxyException if an error occurs during bean instantiation or proxy creation
      */
     @NonNull
     public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {

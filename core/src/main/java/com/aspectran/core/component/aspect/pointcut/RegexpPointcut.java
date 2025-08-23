@@ -24,17 +24,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Pointcut using Regular Expression Matching to identify joinpoints.
+ * A concrete {@link Pointcut} implementation that uses regular expressions
+ * for pattern matching to identify join points.
+ * <p>This class extends {@link AbstractPointcut} and utilizes a cache for
+ * compiled regular expression {@link Pattern} objects to optimize performance.
+ * </p>
  */
 public class RegexpPointcut extends AbstractPointcut {
 
+    /** Cache for compiled regular expression patterns. */
     private final Cache<String, Pattern> cache =
             new ConcurrentReferenceCache<>(Pattern::compile);
 
+    /**
+     * Creates a new RegexpPointcut with the given list of pointcut pattern rules.
+     * @param pointcutPatternRuleList the list of pointcut pattern rules
+     */
     public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation uses regular expression matching to compare the string against the pattern.</p>
+     * @throws IllegalArgumentException if the patternString is null
+     */
     @Override
     public boolean patternMatches(String patternString, String compareString) {
         if (patternString == null) {
@@ -45,11 +59,21 @@ public class RegexpPointcut extends AbstractPointcut {
         return matcher.matches();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation delegates to {@link #patternMatches(String, String)} as separators are not
+     * typically used in regular expression matching for this context.
+     * </p>
+     */
     @Override
     public boolean patternMatches(String patternString, String compareString, char separator) {
         return patternMatches(patternString, compareString);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation clears the internal cache of compiled regular expression patterns.</p>
+     */
     @Override
     public void clear() {
         cache.clear();

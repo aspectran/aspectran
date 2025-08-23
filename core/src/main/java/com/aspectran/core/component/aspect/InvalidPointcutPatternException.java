@@ -20,7 +20,8 @@ import com.aspectran.core.context.rule.AspectRule;
 import java.io.Serial;
 
 /**
- * The Class InvalidPointcutPatternException.
+ * Exception thrown when a pointcut pattern is invalid.
+ * <p>This occurs if a pattern is malformed during parsing or compilation.</p>
  */
 public class InvalidPointcutPatternException extends AspectException {
 
@@ -28,45 +29,45 @@ public class InvalidPointcutPatternException extends AspectException {
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**
-     * Creates a new InvalidPointcutPatternException without detail message.
+     * Creates a new InvalidPointcutPatternException.
      */
     public InvalidPointcutPatternException() {
         super();
     }
 
     /**
-     * Constructs a InvalidPointcutPatternException with the specified detail message.
-     * @param msg a message to associate with the exception
+     * Creates a new InvalidPointcutPatternException with the specified detail message.
+     * @param msg the detail message
      */
     public InvalidPointcutPatternException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Creates a new InvalidPointcutPatternException with the specified cause.
+     * @param cause the root cause
      */
     public InvalidPointcutPatternException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a InvalidPointcutPatternException with the specified error message and
-     * also the specified root cause exception.
+     * Creates a new InvalidPointcutPatternException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the root cause
      */
     public InvalidPointcutPatternException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
     /**
-     * Instantiates a new InvalidPointcutPatternException.
-     * @param aspectRule the aspect rule
-     * @param msg the msg
+     * Creates a new InvalidPointcutPatternException with a message that includes context
+     * from the problematic {@link AspectRule}.
+     * @param aspectRule the aspect rule containing the invalid pointcut
+     * @param msg the detail message
      */
     public InvalidPointcutPatternException(AspectRule aspectRule, String msg) {
-        super(msg + " : aspectRule " + aspectRule);
+        super(msg + " in " + aspectRule);
     }
 
 }

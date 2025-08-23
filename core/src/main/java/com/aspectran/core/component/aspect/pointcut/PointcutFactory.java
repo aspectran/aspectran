@@ -23,14 +23,20 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.List;
 
 /**
- * A factory for creating Pointcut objects.
+ * A factory class for creating concrete {@link Pointcut} implementations.
+ * <p>This factory is responsible for instantiating the correct type of pointcut
+ * (e.g., {@link RegexpPointcut} or {@link WildcardPointcut}) based on the
+ * {@link PointcutType} specified in a {@link PointcutRule}.
+ * </p>
  */
 public class PointcutFactory {
 
     /**
-     * Creates a new Pointcut instance.
-     * @param pointcutRule the pointcut rule
-     * @return the pointcut
+     * Creates a new {@link Pointcut} instance based on the provided {@link PointcutRule}.
+     * The type of pointcut created (e.g., regular expression or wildcard) depends on the rule's configuration.
+     * @param pointcutRule the rule defining the pointcut
+     * @return a concrete {@link Pointcut} implementation
+     * @throws IllegalArgumentException if the pointcutRule is null
      */
     public static Pointcut createPointcut(PointcutRule pointcutRule) {
         if (pointcutRule == null) {
@@ -44,9 +50,9 @@ public class PointcutFactory {
     }
 
     /**
-     * Creates a new WildcardPointcut instance.
-     * @param pointcutPatternRuleList the pointcut pattern rule list
-     * @return the pointcut
+     * Creates a new {@link WildcardPointcut} instance.
+     * @param pointcutPatternRuleList the list of pointcut pattern rules for the wildcard pointcut
+     * @return a new {@link WildcardPointcut}
      */
     @NonNull
     private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
@@ -54,9 +60,9 @@ public class PointcutFactory {
     }
 
     /**
-     * Creates a new RegexpPointcut instance.
-     * @param pointcutPatternRuleList the pointcut pattern rule list
-     * @return the pointcut
+     * Creates a new {@link RegexpPointcut} instance.
+     * @param pointcutPatternRuleList the list of pointcut pattern rules for the regular expression pointcut
+     * @return a new {@link RegexpPointcut}
      */
     @NonNull
     private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {

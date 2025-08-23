@@ -23,7 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class RelevantAspectRuleHolder.
+ * A holder for aspect rules that are relevant to a specific join point.
+ * <p>This object is typically cached by the {@link AspectRuleRegistry} to improve
+ * performance. It separates statically-defined advice (pre-organized in an
+ * {@link AdviceRuleRegistry}) from dynamic aspect rules that may need further
+ * evaluation.
+ * </p>
  */
 public class RelevantAspectRuleHolder {
 
@@ -32,7 +37,8 @@ public class RelevantAspectRuleHolder {
     private List<AspectRule> dynamicAspectRuleList;
 
     /**
-     * Gets the advice rule registry.
+     * Returns the registry containing advice rules that are statically determined
+     * to be relevant.
      * @return the advice rule registry
      */
     public AdviceRuleRegistry getAdviceRuleRegistry() {
@@ -40,7 +46,7 @@ public class RelevantAspectRuleHolder {
     }
 
     /**
-     * Sets the advice rule registry.
+     * Sets the registry for statically relevant advice rules.
      * @param adviceRuleRegistry the new advice rule registry
      */
     public void setAdviceRuleRegistry(AdviceRuleRegistry adviceRuleRegistry) {
@@ -48,7 +54,8 @@ public class RelevantAspectRuleHolder {
     }
 
     /**
-     * Gets the dynamic aspect rule list.
+     * Returns the list of aspect rules that require dynamic evaluation to determine
+     * if they apply to the join point.
      * @return the dynamic aspect rule list
      */
     public List<AspectRule> getDynamicAspectRuleList() {
@@ -56,8 +63,8 @@ public class RelevantAspectRuleHolder {
     }
 
     /**
-     * Sets the relevant aspect rule list.
-     * @param dynamicAspectRuleList the new relevant aspect rule list
+     * Sets the list of dynamically relevant aspect rules.
+     * @param dynamicAspectRuleList the new dynamic aspect rule list
      */
     public void setDynamicAspectRuleList(List<AspectRule> dynamicAspectRuleList) {
         this.dynamicAspectRuleList = dynamicAspectRuleList;

@@ -28,32 +28,32 @@ public class ActivityException extends Exception {
     private static final long serialVersionUID = -4400747654771758521L;
 
     /**
-     * Instantiates a new ActivityException.
+     * Creates a new ActivityException.
      */
     public ActivityException() {
         super();
     }
 
     /**
-     * Instantiates a new ActivityException.
-     * @param msg a message to associate with the exception
+     * Creates a new ActivityException with the specified detail message.
+     * @param msg the detail message
      */
     public ActivityException(String msg) {
         super(msg);
     }
 
     /**
-     * Instantiates a new ActivityException.
-     * @param cause the real cause of the exception
+     * Creates a new ActivityException with the specified cause.
+     * @param cause the root cause
      */
     public ActivityException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Instantiates a new ActivityException.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Creates a new ActivityException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the root cause
      */
     public ActivityException(String msg, Throwable cause) {
         super(msg, cause);

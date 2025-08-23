@@ -22,7 +22,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.List;
 
 /**
- * The Class AbstractPointcut.
+ * Abstract base class for {@link Pointcut} implementations.
+ * <p>This class manages a list of {@link PointcutPatternRule}s and implements
+ * the core matching logic, including support for exclusion patterns.
+ * Subclasses must provide the specific pattern matching implementation.
+ * </p>
  */
 public abstract class AbstractPointcut implements Pointcut {
 
@@ -30,6 +34,10 @@ public abstract class AbstractPointcut implements Pointcut {
 
     private final boolean existsMethodNamePattern;
 
+    /**
+     * Creates a new AbstractPointcut with the given list of pattern rules.
+     * @param pointcutPatternRuleList the list of pointcut pattern rules
+     */
     public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         this.pointcutPatternRuleList = pointcutPatternRuleList;
 
@@ -68,6 +76,11 @@ public abstract class AbstractPointcut implements Pointcut {
         return matches(transletName, beanId, className, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation iterates through all pattern rules. A match is found if
+     * a rule's inclusion patterns match and none of its exclusion patterns match.
+     */
     @Override
     public boolean matches(String transletName, String beanId, String className, String methodName) {
         if (pointcutPatternRuleList != null) {
@@ -104,6 +117,11 @@ public abstract class AbstractPointcut implements Pointcut {
         return exists(transletName, beanId, className, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation checks if any inclusion pattern could potentially match.
+     * It does not evaluate exclusion patterns.
+     */
     @Override
     public boolean exists(String transletName, String beanId, String className, String methodName) {
         if (pointcutPatternRuleList != null) {
@@ -126,14 +144,14 @@ public abstract class AbstractPointcut implements Pointcut {
     }
 
     /**
-     * Returns whether corresponding to the point-cut-pattern rules.
-     * It is recognized to {@code true} if the operands are {@code null}.
-     * @param pointcutPatternRule the pointcut pattern
-     * @param transletName the translet name
-     * @param beanId the bean id
-     * @param className the bean class name
-     * @param methodName the name of the method that is executed in the bean
-     * @return true if exists matched; false otherwise
+     * Checks if the given join point attributes match a single pointcut pattern rule.
+     * A null attribute is considered a match for a non-null pattern (wildcard behavior).
+     * @param pointcutPatternRule the rule containing the patterns to check against
+     * @param transletName the translet name to match
+     * @param beanId the bean ID to match
+     * @param className the class name to match
+     * @param methodName the method name to match
+     * @return true if all non-null patterns in the rule match the corresponding attributes
      */
     protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName,
                              String beanId, String className, String methodName) {

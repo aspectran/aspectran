@@ -43,12 +43,24 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
 
     private final BeanRule beanRule;
 
+    /**
+     * Creates a new JavassistBeanProxy.
+     * @param context the activity context
+     * @param beanRule the bean rule for which the proxy is being created
+     */
     private JavassistBeanProxy(@NonNull ActivityContext context, @NonNull BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
         this.context = context;
         this.beanRule = beanRule;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This method is the entry point for method interception by Javassist.
+     * It checks if the method is advisable and then orchestrates the execution
+     * of advice (before, after, finally) and exception handling.
+     * </p>
+     */
     @Override
     public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Throwable {
         if (!isAdvisableMethod(overridden)) {
@@ -67,6 +79,16 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
         }
     }
 
+    /**
+     * Internal method to execute advice and the target method within an activity context.
+     * @param self the proxy instance
+     * @param overridden the method being intercepted
+     * @param proceed the method to call the original implementation
+     * @param args the arguments for the method call
+     * @param activity the current activity
+     * @return the result of the method invocation
+     * @throws Throwable if an error occurs during advice or method execution
+     */
     @Nullable
     private Object invoke(Object self, @NonNull Method overridden, Method proceed, Object[] args, Activity activity)
             throws Throwable {
@@ -100,6 +122,14 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
         }
     }
 
+    /**
+     * Invokes the original (super) method implementation.
+     * @param self the proxy instance
+     * @param proceed the method to call the original implementation
+     * @param args the arguments for the method call
+     * @return the result of the original method invocation
+     * @throws Throwable if an error occurs during the original method invocation
+     */
     private Object invokeSuper(Object self, @NonNull Method proceed, Object[] args) throws Throwable {
         try {
             return proceed.invoke(self, args);
@@ -109,12 +139,13 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     }
 
     /**
-     * Creates a proxy class of bean and returns an instance of that class.
+     * Creates a Javassist-based proxy instance for the given bean rule.
      * @param context the activity context
-     * @param beanRule the bean rule
-     * @param args the arguments passed to a constructor, may be {@code null}
-     * @param argTypes the parameter types for a constructor, may be {@code null}
+     * @param beanRule the bean rule for which to create the proxy
+     * @param args the arguments passed to the bean's constructor, may be {@code null}
+     * @param argTypes the parameter types for the bean's constructor, may be {@code null}
      * @return a new proxy bean object
+     * @throws BeanProxyException if an error occurs during proxy creation
      */
     public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         try {

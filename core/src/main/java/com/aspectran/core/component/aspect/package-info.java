@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 /**
- * Provides simple, in-memory adapters for embedding Aspectran within another Java application.
- * <p>This is particularly useful for unit testing business logic without a full runtime environment.</p>
+ * Contains the core components for aspect-oriented programming (AOP).
+ * <p>This package provides the runtime infrastructure for managing aspects,
+ * advice, and pointcuts. It includes the primary executor for applying
+ * advice to join points and classes that represent the parsed aspect rules.
+ * </p>
  */
-package com.aspectran.embed.adapter;
+package com.aspectran.core.component.aspect;

@@ -38,6 +38,10 @@ public class ProxyBeanFactory {
 
     private final ActivityContext context;
 
+    /**
+     * Creates a new ProxyBeanFactory.
+     * @param context the activity context
+     */
     public ProxyBeanFactory(ActivityContext context) {
         this.context = context;
     }
@@ -45,7 +49,14 @@ public class ProxyBeanFactory {
     /**
      * Creates a proxy instance for the given bean rule.
      * <p>The factory determines whether to use a JDK dynamic proxy or a
-     * Javassist-based proxy based on the bean's class (interface vs. concrete class).</p>
+     * Javassist-based proxy based on the bean's class:
+     * <ul>
+     *     <li>If the bean class is an interface, a JDK dynamic proxy is used.</li>
+     *     <li>If the bean class is already a JDK proxy class, a JDK dynamic proxy is used.</li>
+     *     <li>If the bean class is a lambda class, a JDK dynamic proxy is used.</li>
+     *     <li>Otherwise (for concrete classes), a Javassist-based proxy is used.</li>
+     * </ul>
+     * </p>
      * @param beanRule the rule for the bean to be proxied
      * @param args the constructor arguments for the bean instance, may be {@code null}
      * @param argTypes the constructor argument types for the bean instance, may be {@code null}
