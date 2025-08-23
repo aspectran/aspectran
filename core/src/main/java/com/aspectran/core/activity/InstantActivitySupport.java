@@ -67,15 +67,6 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     }
 
     /**
-     * Returns the central event publisher for this application context.
-     * @return the {@code EventPublisher} instance
-     * @since 7.0.0
-     */
-    protected EventPublisher getEventPublisher() {
-        return getActivityContext().getEventPublisher();
-    }
-
-    /**
      * Returns an activity that is available to run work right now, creating an
      * instant activity if necessary.
      * @return an available activity bound to the current thread/context
@@ -138,6 +129,15 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
      */
     protected MessageSource getMessageSource() {
         return getActivityContext().getMessageSource();
+    }
+
+    /**
+     * Returns the central event publisher for this application context.
+     * @return the {@code EventPublisher} instance
+     * @since 8.6.0
+     */
+    protected EventPublisher getEventPublisher() {
+        return getActivityContext().getEventPublisher();
     }
 
     /**
