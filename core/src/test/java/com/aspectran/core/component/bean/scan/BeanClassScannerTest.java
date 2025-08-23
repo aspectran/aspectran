@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -86,9 +87,10 @@ class BeanClassScannerTest {
                 }
                 scanner.setBeanClassFilter(beanClassFilter);
             }
-            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-            if (excludePatterns != null) {
-                scanner.setExcludePatterns(excludePatterns);
+            IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                    filterParameters, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+            if (filterPatterns.hasIncludePatterns()) {
+                scanner.setFilterPatterns(filterPatterns);
             }
         }
         if (beanRule.getMaskPattern() != null) {

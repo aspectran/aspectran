@@ -16,6 +16,7 @@
 package com.aspectran.core.component.translet.scan;
 
 import com.aspectran.utils.FileScanner;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardMatcher;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
-import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class TransletScanner.
@@ -39,7 +39,7 @@ public class TransletScanner extends FileScanner {
 
     private WildcardPattern transletNameMaskPattern;
 
-    private WildcardPattern[] excludePatterns;
+    private IncludeExcludeWildcardPatterns filterPatterns;
 
     public TransletScanner(String basePath) {
         super(basePath);
@@ -49,16 +49,8 @@ public class TransletScanner extends FileScanner {
         this.transletScanFilter = transletScanFilter;
     }
 
-    public void setExcludePatterns(String[] excludePatterns) {
-        if (excludePatterns != null && excludePatterns.length > 0) {
-            this.excludePatterns = new WildcardPattern[excludePatterns.length];
-            for (int i = 0; i < excludePatterns.length; i++) {
-                WildcardPattern pattern = new WildcardPattern(excludePatterns[i], REGULAR_FILE_SEPARATOR_CHAR);
-                this.excludePatterns[i] = pattern;
-            }
-        } else {
-            this.excludePatterns = null;
-        }
+    public void setFilterPatterns(IncludeExcludeWildcardPatterns filterPatterns) {
+        this.filterPatterns = filterPatterns;
     }
 
     public void setTransletNameMaskPattern(String transletNameMaskPattern) {
@@ -107,12 +99,8 @@ public class TransletScanner extends FileScanner {
                 }
             }
 
-            if (excludePatterns != null) {
-                for (WildcardPattern pattern : excludePatterns) {
-                    if (pattern.matches(filePath)) {
-                        return;
-                    }
-                }
+            if (filterPatterns != null && filterPatterns.matches(filePath)) {
+                return;
             }
 
             saveHandler.save(transletName, scannedFile);

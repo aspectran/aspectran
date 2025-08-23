@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -80,6 +81,10 @@ public abstract class AbstractParameters implements Parameters {
             this.altParameterValueMap = Collections.emptyMap();
             this.structureFixed = false;
         }
+    }
+
+    protected AbstractParameters(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
+        this(mergeParameterKeys(topParameterKeys, bottomParameterKeys));
     }
 
     @Override
@@ -869,6 +874,16 @@ public abstract class AbstractParameters implements Parameters {
         } catch (IOException e) {
             return StringUtils.EMPTY;
         }
+    }
+
+    @NonNull
+    private static ParameterKey[] mergeParameterKeys(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
+        Assert.notEmpty(topParameterKeys, "Top parameter keys must not be empty");
+        Assert.notEmpty(bottomParameterKeys, "Bottom parameter keys must not be empty");
+        List<ParameterKey> keys = new ArrayList<>(topParameterKeys.length + bottomParameterKeys.length);
+        Collections.addAll(keys, topParameterKeys);
+        Collections.addAll(keys, bottomParameterKeys);
+        return keys.toArray(new ParameterKey[0]);
     }
 
     private void checkKey(ParameterKey key) {

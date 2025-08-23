@@ -18,6 +18,7 @@ package com.aspectran.core.component.translet;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.translet.scan.TransletScanFilter;
 import com.aspectran.core.component.translet.scan.TransletScanner;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.Tokenizer;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -33,6 +34,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,9 +245,10 @@ public class TransletRuleRegistry extends AbstractComponent {
                 }
                 scanner.setTransletScanFilter(transletScanFilter);
             }
-            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-            if (excludePatterns != null) {
-                scanner.setExcludePatterns(excludePatterns);
+            IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                    filterParameters, ActivityContext.NAME_SEPARATOR_CHAR);
+            if (filterPatterns.hasIncludePatterns()) {
+                scanner.setFilterPatterns(filterPatterns);
             }
         }
         if (transletRule.getMaskPattern() != null) {

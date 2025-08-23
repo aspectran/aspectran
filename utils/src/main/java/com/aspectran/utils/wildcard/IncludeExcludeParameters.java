@@ -55,6 +55,13 @@ public class IncludeExcludeParameters extends AbstractParameters {
     /**
      * Create an empty parameter bean with include/exclude keys registered.
      */
+    protected IncludeExcludeParameters(ParameterKey[] parameterKeys) {
+        super(parameterKeys, IncludeExcludeParameters.parameterKeys);
+    }
+
+    /**
+     * Create an empty parameter bean with include/exclude keys registered.
+     */
     public IncludeExcludeParameters() {
         super(parameterKeys);
     }

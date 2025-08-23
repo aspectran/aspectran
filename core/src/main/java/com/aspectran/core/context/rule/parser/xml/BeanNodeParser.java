@@ -102,8 +102,7 @@ class BeanNodeParser implements SubnodeParser {
                 filterParameters = new FilterParameters();
                 filterParameters.readFrom(text);
             }
-            if (filterParameters.hasValue(FilterParameters.filterClass) ||
-                    filterParameters.hasValue(FilterParameters.exclude)) {
+            if (filterParameters.hasFilterClass() || filterParameters.hasPatterns()) {
                 BeanRule beanRule = parser.peekObject();
                 beanRule.setFilterParameters(filterParameters);
             }

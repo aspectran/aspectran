@@ -15,24 +15,22 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
+import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 
-public class FilterParameters extends AbstractParameters {
+public class FilterParameters extends IncludeExcludeParameters {
 
     public static final ParameterKey filterClass;
-    public static final ParameterKey exclude;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         filterClass = new ParameterKey("class", ValueType.STRING);
-        exclude = new ParameterKey("exclude", ValueType.STRING, true);
 
         parameterKeys = new ParameterKey[] {
-                filterClass,
-                exclude
+                filterClass
         };
     }
 
@@ -49,19 +47,8 @@ public class FilterParameters extends AbstractParameters {
         return this;
     }
 
-    public String[] getExcludePatterns() {
-        return getStringArray(exclude);
-    }
-
-    public FilterParameters setExcludePattern(String[] excludePatterns) {
-        removeValue(exclude);
-        putValue(exclude, excludePatterns);
-        return this;
-    }
-
-    public FilterParameters addExcludePattern(String excludePattern) {
-        putValue(exclude, excludePattern);
-        return this;
+    public boolean hasFilterClass() {
+        return !StringUtils.hasText(getFilterClass());
     }
 
 }

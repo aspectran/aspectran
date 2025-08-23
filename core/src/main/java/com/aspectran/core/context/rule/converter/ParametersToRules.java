@@ -407,8 +407,7 @@ public class ParametersToRules {
         }
 
         FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
-        if (filterParameters != null && (filterParameters.hasValue(FilterParameters.filterClass) ||
-            filterParameters.hasValue(FilterParameters.exclude))) {
+            if (filterParameters != null && (filterParameters.hasFilterClass() || filterParameters.hasPatterns())) {
             beanRule.setFilterParameters(filterParameters);
         }
 

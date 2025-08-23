@@ -39,6 +39,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -351,21 +352,22 @@ public class BeanRuleRegistry {
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {
             FilterParameters filterParameters = beanRule.getFilterParameters();
-            String beanClassFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-            if (beanClassFilterClassName != null) {
+            String filterClassName = filterParameters.getString(FilterParameters.filterClass);
+            if (filterClassName != null) {
                 BeanClassFilter beanClassFilter;
                 try {
-                    Class<?> filterClass = classLoader.loadClass(beanClassFilterClassName);
+                    Class<?> filterClass = classLoader.loadClass(filterClassName);
                     beanClassFilter = (BeanClassFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
                     throw new IllegalRuleException("Failed to instantiate BeanClassFilter [" +
-                            beanClassFilterClassName + "]", e);
+                            filterClassName + "]", e);
                 }
                 scanner.setBeanClassFilter(beanClassFilter);
             }
-            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-            if (excludePatterns != null) {
-                scanner.setExcludePatterns(excludePatterns);
+            IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                    filterParameters, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+            if (filterPatterns.hasIncludePatterns()) {
+                scanner.setFilterPatterns(filterPatterns);
             }
         }
         if (beanRule.getMaskPattern() != null) {

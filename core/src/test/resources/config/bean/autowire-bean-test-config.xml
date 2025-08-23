@@ -4,10 +4,9 @@
 <aspectran>
 
     <bean id="bean.*" scan="com.aspectran.core.component.**.Test*Bean?" mask="com.aspectran.core.component.bean.**.*">
+        <!-- For optional dependency injection testing -->
         <filter>
-            exclude: [
-                com.aspectran.core.component.bean.TestNeverDefinedBean
-            ]
+            +: com.aspectran.core.component.bean.TestNeverDefinedBean
         </filter>
     </bean>
 

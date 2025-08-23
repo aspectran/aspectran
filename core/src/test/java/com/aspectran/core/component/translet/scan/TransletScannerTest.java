@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.translet.scan;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -22,6 +23,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -80,9 +82,10 @@ class TransletScannerTest {
                 }
                 scanner.setTransletScanFilter(transletScanFilter);
             }
-            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-            if (excludePatterns != null) {
-                scanner.setExcludePatterns(excludePatterns);
+            IncludeExcludeWildcardPatterns filterPatterns = IncludeExcludeWildcardPatterns.of(
+                    filterParameters, ActivityContext.NAME_SEPARATOR_CHAR);
+            if (filterPatterns.hasIncludePatterns()) {
+                scanner.setFilterPatterns(filterPatterns);
             }
         }
         if (transletRule.getMaskPattern() != null) {

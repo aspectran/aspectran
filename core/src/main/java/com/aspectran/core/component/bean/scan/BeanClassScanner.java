@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.scan;
 
 import com.aspectran.utils.ClassScanner;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Modifier;
 
 import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
-import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 
 /**
  * Scanner that discovers candidate bean classes on the classpath.
@@ -42,7 +42,7 @@ public class BeanClassScanner extends ClassScanner {
 
     private WildcardPattern beanIdMaskPattern;
 
-    private WildcardPattern[] excludePatterns;
+    private IncludeExcludeWildcardPatterns filterPatterns;
 
     /**
      * Instantiates a new Bean class scanner.
@@ -62,18 +62,9 @@ public class BeanClassScanner extends ClassScanner {
 
     /**
      * Sets patterns for classes to exclude.
-     * @param excludePatterns an array of wildcard patterns for classes to exclude
      */
-    public void setExcludePatterns(String[] excludePatterns) {
-        if (excludePatterns != null && excludePatterns.length > 0) {
-            this.excludePatterns = new WildcardPattern[excludePatterns.length];
-            for (int i = 0; i < excludePatterns.length; i++) {
-                WildcardPattern pattern = new WildcardPattern(excludePatterns[i], PACKAGE_SEPARATOR_CHAR);
-                this.excludePatterns[i] = pattern;
-            }
-        } else {
-            this.excludePatterns = null;
-        }
+    public void setFilterPatterns(IncludeExcludeWildcardPatterns filterPatterns) {
+        this.filterPatterns = filterPatterns;
     }
 
     /**
@@ -136,12 +127,8 @@ public class BeanClassScanner extends ClassScanner {
                 }
             }
 
-            if (excludePatterns != null) {
-                for (WildcardPattern pattern : excludePatterns) {
-                    if (pattern.matches(className)) {
-                        return;
-                    }
-                }
+            if (filterPatterns != null && filterPatterns.matches(className)) {
+                return;
             }
 
             saveHandler.save(beanId, targetClass);
