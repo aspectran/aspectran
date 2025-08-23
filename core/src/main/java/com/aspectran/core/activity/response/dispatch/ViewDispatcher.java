@@ -21,9 +21,10 @@ import com.aspectran.core.context.rule.DispatchRule;
 /**
  * Defines a contract for dispatching a request to a specific view technology for rendering.
  *
- * <p>Implementations of this interface are responsible for integrating with view layers
- * like JSP, Thymeleaf, or others, by forwarding the request and response to the
- * appropriate view resource.</p>
+ * <p>Implementations of this interface are responsible for integrating with various view layers
+ * (e.g., JSP, Thymeleaf, FreeMarker) by forwarding the request and response to the
+ * appropriate view resource. This allows Aspectran to remain decoupled from specific
+ * view technologies while providing a flexible rendering mechanism.</p>
  */
 public interface ViewDispatcher {
 
@@ -48,4 +49,3 @@ public interface ViewDispatcher {
     boolean isSingleton();
 
 }
-

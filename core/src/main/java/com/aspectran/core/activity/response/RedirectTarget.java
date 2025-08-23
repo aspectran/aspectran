@@ -19,6 +19,12 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
+ * Represents the target of a redirect operation, encapsulating both the internal
+ * request name and the external location URL.
+ *
+ * <p>This class provides a structured way to manage the destination of a redirect,
+ * allowing the framework to track the intended next step in the request flow.</p>
+ *
  * <p>Created: 2025-05-16</p>
  */
 public class RedirectTarget {
@@ -32,14 +38,29 @@ public class RedirectTarget {
         this.location = location;
     }
 
+    /**
+     * Returns the internal request name of the redirect target.
+     * @return the request name
+     */
     public String getRequestName() {
         return requestName;
     }
 
+    /**
+     * Returns the external URL location of the redirect target.
+     * @return the location URL
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Creates a new {@code RedirectTarget} instance.
+     * @param requestName the internal request name
+     * @param location the external location URL
+     * @return a new {@code RedirectTarget} instance
+     * @throws IllegalArgumentException if {@code requestName} is {@code null}
+     */
     @NonNull
     public static RedirectTarget of(String requestName, String location) {
         Assert.notNull(requestName, "requestName must not be null");

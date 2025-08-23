@@ -27,7 +27,12 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 
 /**
- * JSON Transform Response converts the response data to JSON and outputs it.
+ * {@code JsonTransformResponse} converts the activity's processing results into JSON format and outputs it.
+ *
+ * <p>This response type is responsible for taking the structured data from the
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
+ * into a JSON string. It supports configuration for content type, encoding, pretty-printing,
+ * and JSONP (JSON with Padding) for cross-domain communication.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

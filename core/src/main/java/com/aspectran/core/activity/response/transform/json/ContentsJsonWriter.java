@@ -25,7 +25,14 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Converts a ProcessResult object to a JSON formatted string.
+ * A specialized {@link JsonWriter} that converts a {@link ProcessResult} object
+ * into a JSON formatted string.
+ *
+ * <p>This class extends the basic JSON writing capabilities to specifically handle
+ * the hierarchical structure of Aspectran's activity results ({@code ProcessResult},
+ * {@link ContentResult}, and {@link ActionResult}), mapping them into a corresponding
+ * JSON object or array structure. It supports pretty-printing and null value handling
+ * through its {@link com.aspectran.utils.StringifyContext}.</p>
  *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  */

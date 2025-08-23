@@ -18,8 +18,14 @@ package com.aspectran.core.activity.response.transform;
 import com.aspectran.core.activity.Activity;
 
 /**
- * The Interface CustomTransformer.
- * 
+ * Defines the contract for custom transformation of activity results.
+ *
+ * <p>Implementations of this interface provide a flexible mechanism to define
+ * custom logic for converting the data produced by an {@link Activity}
+ * into any desired output format. This allows developers to integrate
+ * proprietary or specialized transformation processes into Aspectran's
+ * response generation pipeline.</p>
+ *
  * <p>Created: 2019. 06. 15</p>
  */
 public interface CustomTransformer {

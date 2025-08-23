@@ -23,8 +23,10 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 /**
  * Abstract base class for {@link ViewDispatcher} implementations.
  *
- * <p>Provides common functionality, such as saving the activity's process results
- * as request attributes to make them accessible to the target view.</p>
+ * <p>Provides common functionality for view dispatchers, such as managing content type,
+ * prefixes, and suffixes for view names. It also includes a utility method to resolve
+ * the final view name based on the {@link DispatchRule} and the current {@link Activity}.
+ * Implementations typically extend this class to integrate with specific view technologies.</p>
  */
 public abstract class AbstractViewDispatcher implements ViewDispatcher {
 
@@ -34,15 +36,27 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
 
     private String suffix;
 
+    /**
+     * Returns the content type of the view being dispatched.
+     * @return the content type
+     */
     @Override
     public String getContentType() {
         return contentType;
     }
 
+    /**
+     * Sets the content type for the view being dispatched.
+     * @param contentType the content type to set
+     */
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
+    /**
+     * Returns the prefix that is prepended to view names when building a URL.
+     * @return the prefix for view names
+     */
     protected String getPrefix() {
         return prefix;
     }
@@ -76,6 +90,14 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
         return true;
     }
 
+    /**
+     * Resolves the final view name by applying configured prefixes and suffixes to the
+     * name specified in the {@code DispatchRule}.
+     * @param dispatchRule the rule that defines the view name
+     * @param activity the current activity, used for dynamic name resolution
+     * @return the resolved view name, ready for dispatching
+     * @throws IllegalArgumentException if the dispatch rule does not have a name or the view name cannot be resolved
+     */
     @NonNull
     protected String resolveViewName(@NonNull DispatchRule dispatchRule, Activity activity) {
         if (dispatchRule.getName() == null) {
@@ -106,4 +128,3 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
 }
-

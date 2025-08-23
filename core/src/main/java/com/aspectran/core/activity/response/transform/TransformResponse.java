@@ -26,7 +26,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class TransformResponse.
+ * Abstract base class for all transformation responses in Aspectran.
+ *
+ * <p>Implementations of this class are responsible for converting the activity's
+ * processing results (typically a {@link com.aspectran.core.activity.process.result.ProcessResult})
+ * into a specific output format (e.g., JSON, XML, APON, plain text). This class provides
+ * the common framework for handling transformation rules, content types, and encoding.</p>
+ *
+ * <p>Subclasses must implement the {@link #transform(Activity)} method to define
+ * their specific transformation logic.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

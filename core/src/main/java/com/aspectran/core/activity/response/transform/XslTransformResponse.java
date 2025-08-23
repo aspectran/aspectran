@@ -46,7 +46,13 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * XSL Transform Response converts the response data to XML and applies XSLT transformation to it.
+ * {@code XslTransformResponse} converts the activity's processing results into XML format
+ * and then applies an XSLT transformation to it.
+ *
+ * <p>This response type is used for scenarios where the activity produces structured data
+ * that needs to be transformed into a different XML structure, HTML, or plain text
+ * using an XSLT stylesheet. It dynamically loads and caches XSLT templates based on
+ * the configured {@link TemplateRule}.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

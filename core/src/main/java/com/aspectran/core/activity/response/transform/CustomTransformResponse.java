@@ -30,7 +30,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ListIterator;
 
 /**
- * Responding with user-implemented {@link CustomTransformer}.
+ * A {@link Response} implementation that delegates the transformation of activity results
+ * to a user-implemented {@link CustomTransformer}.
+ *
+ * <p>This class provides a flexible way to integrate custom data transformation logic
+ * into Aspectran's response generation pipeline. It can either use a pre-configured
+ * {@code CustomTransformer} or dynamically discover one from the activity's process results.</p>
  *
  * <p>Created: 2019. 06. 15</p>
  */

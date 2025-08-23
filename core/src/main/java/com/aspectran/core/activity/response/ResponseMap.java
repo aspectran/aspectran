@@ -22,7 +22,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
- * The Class ResponseMap.
+ * A specialized {@link LinkedHashMap} for storing and managing multiple {@link Response} objects.
+ *
+ * <p>This map allows for associating different response configurations with unique names,
+ * providing a flexible way to define and select various output strategies within a translet.
+ * It maintains the insertion order of responses.</p>
  *
  * <p>Created: 2008. 03. 29 PM 11:50:02</p>
  */
@@ -31,6 +35,10 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
     @Serial
     private static final long serialVersionUID = 2093093144584776388L;
 
+    /**
+     * Returns the first {@link Response} object in this map.
+     * @return the first {@link Response} object, or {@code null} if the map is empty
+     */
     public Response getFirst() {
         if (!isEmpty()) {
             return (Response)values().toArray()[0];
@@ -39,6 +47,11 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
         }
     }
 
+    /**
+     * Returns an iterator over the {@link Response} objects in this map.
+     * The elements are returned in insertion order.
+     * @return an iterator over the {@link Response} objects
+     */
     @Override
     @NonNull
     public Iterator<Response> iterator() {

@@ -22,7 +22,12 @@ import com.aspectran.utils.ExceptionUtils;
 import java.io.Serial;
 
 /**
- * Thrown if an error occurs while transforming the data needed for a response.
+ * Exception thrown if an error occurs while transforming the data needed for a response.
+ *
+ * <p>This exception wraps the underlying cause of the transformation failure and provides
+ * context about the {@link TransformRule} that was being processed. It extends
+ * {@link ResponseException} to indicate that the error occurred during the response
+ * transformation phase.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 /**
- * Contains classes and interfaces for modeling and handling various types of responses.
+ * Provides classes and interfaces for modeling and handling various types of responses
+ * within the Aspectran framework.
  *
- * <p>This package provides the core components for generating a response after an
- * {@link com.aspectran.core.activity.Activity} has processed a request. It supports
- * different response strategies, such as:
+ * <p>This package defines the core components responsible for generating a response
+ * after an {@link com.aspectran.core.activity.Activity} has processed a request.
+ * It supports diverse response strategies, including:</p>
  * <ul>
- *   <li>Transforming content into a specific format (e.g., JSON, XML)</li>
- *   <li>Redirecting the client to a new URL</li>
- *   <li>Forwarding the request to another resource on the server</li>
- *   <li>Dispatching to a view technology (e.g., JSP)</li>
+ *   <li>Transforming activity results into specific output formats (e.g., JSON, XML, APON).</li>
+ *   <li>Redirecting the client to a new URL, potentially with FlashMap attributes.</li>
+ *   <li>Forwarding the request to another internal resource on the server (e.g., another translet or a view).</li>
+ *   <li>Dispatching to a view technology for rendering (e.g., JSP, Thymeleaf).</li>
+ *   <li>Providing dynamic, programmatic control over the response (e.g., direct {@code OutputStream} writing, setting HTTP status codes).</li>
  * </ul>
- * The base {@link com.aspectran.core.activity.response.Response} interface defines the
- * contract for all response types.
+ * <p>The foundational {@link com.aspectran.core.activity.response.Response} interface establishes
+ * the contract for all response types, ensuring a consistent approach to output generation.</p>
  */
 package com.aspectran.core.activity.response;

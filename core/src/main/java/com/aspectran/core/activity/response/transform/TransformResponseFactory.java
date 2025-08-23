@@ -22,7 +22,12 @@ import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * A factory for creating TransformResponse objects.
+ * A factory for creating various {@link TransformResponse} objects based on a {@link TransformRule}.
+ *
+ * <p>This factory analyzes the {@code FormatType} specified in the {@code TransformRule}
+ * and instantiates the appropriate concrete {@code TransformResponse} implementation
+ * (e.g., {@link AponTransformResponse}, {@link JsonTransformResponse}, {@link XmlTransformResponse}).
+ * It also sets default content types if not explicitly defined in the rule.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

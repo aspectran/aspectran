@@ -36,7 +36,6 @@ public interface Replicable<T> {
      * Creates and returns a new, deep-copied instance of this object.
      * The returned replica should be an independent object, meaning that modifications
      * to the replica should not affect the original object.
-     *
      * @return a new, replicated instance of the object
      */
     T replicate();

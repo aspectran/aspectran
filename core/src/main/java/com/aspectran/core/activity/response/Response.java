@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
  * Defines the contract for generating a response after an activity has processed a request.
  *
  * <p>Implementations of this interface are responsible for a specific response strategy,
- * such as transforming content, redirecting, or forwarding. The {@link Activity} engine
- * invokes the {@link #respond(Activity)} method to produce the final output.</p>
+ * such as transforming content, redirecting, forwarding, or dynamically writing output.
+ * The {@link Activity} engine invokes the {@link #respond(Activity)} method to produce the final output.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -50,6 +50,12 @@ public interface Response extends Replicable<Response> {
      */
     void respond(Activity activity) throws ResponseException;
 
+    /**
+     * Creates and returns a new {@code Response} instance that is a replica of this object.
+     * The replicated instance will have the same configuration but will be independent
+     * of the original, allowing for safe modification or concurrent use.
+     * @return a replicated {@code Response} instance
+     */
     Response replicate();
 
 }

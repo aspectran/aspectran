@@ -18,8 +18,12 @@ package com.aspectran.core.activity.response.transform.xml;
 import org.xml.sax.InputSource;
 
 /**
- * The Class ContentsInputSource.
- * 
+ * A specialized {@link InputSource} that wraps an arbitrary Java object as its data source.
+ *
+ * <p>This class is used in conjunction with {@link ContentsXMLReader} to allow Aspectran's
+ * structured activity results (e.g., {@link com.aspectran.core.activity.process.result.ProcessResult})
+ * to be treated as an XML source for transformation processes (e.g., XSLT).</p>
+ *
  * <p>Created: 2008. 05. 26 PM 2:03:25</p>
  */
 public class ContentsInputSource extends InputSource {

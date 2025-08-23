@@ -35,7 +35,12 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 
 /**
- * XML Transform Response converts the response data to XML and outputs it.
+ * {@code XmlTransformResponse} converts the activity's processing results into XML format and outputs it.
+ *
+ * <p>This response type is responsible for taking the structured data from the
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
+ * into an XML string. It leverages JAXP (Java API for XML Processing) to perform
+ * the transformation, supporting configuration for content type, encoding, and pretty-printing.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

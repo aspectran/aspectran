@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 /**
- * Contains classes related to dispatching the response to a view layer for rendering.
+ * Provides classes related to dispatching the response to a view layer for rendering.
  *
- * <p>This package provides the mechanism Aspectran uses to integrate with various
- * view technologies like JSP. The main components are:
+ * <p>This package defines the mechanism Aspectran employs to integrate with various
+ * view technologies (e.g., JSP, Thymeleaf, FreeMarker). It facilitates the forwarding
+ * of control to a view resource for generating the final client response.</p>
+ *
+ * <p>The primary components within this package include:</p>
  * <ul>
  *   <li>{@link com.aspectran.core.activity.response.dispatch.DispatchResponse}:
  *       A {@link com.aspectran.core.activity.response.Response} implementation that
- *       represents a dispatch action.</li>
+ *       orchestrates the dispatch action, often delegating to a {@code ViewDispatcher}.</li>
  *   <li>{@link com.aspectran.core.activity.response.dispatch.ViewDispatcher}:
- *       An interface for dispatching to a specific view technology.</li>
+ *       An interface defining the contract for dispatching to a specific view technology,
+ *       handling the actual rendering process.</li>
  * </ul>
  */
 package com.aspectran.core.activity.response.dispatch;

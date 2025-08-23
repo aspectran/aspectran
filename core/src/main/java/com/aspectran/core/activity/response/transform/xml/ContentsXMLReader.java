@@ -47,7 +47,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Converts a ProcessResult object to a XML string.
+ * A specialized {@link XMLReader} that converts an arbitrary Java object (typically a
+ * {@link com.aspectran.core.activity.process.result.ProcessResult}) into a stream of SAX events.
+ *
+ * <p>This class enables Aspectran's structured activity results to be processed as if they
+ * were an XML document, allowing for integration with XML transformation technologies
+ * like XSLT. It traverses the object graph and generates corresponding XML elements
+ * and character data.</p>
  *
  * <p>Created: 2008. 05. 26 PM 2:03:15</p>
  */

@@ -28,7 +28,12 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 
 /**
- * Text Transform Response converts the response data to plain text and outputs it.
+ * {@code TextTransformResponse} converts the activity's processing results into plain text format and outputs it.
+ *
+ * <p>This response type is responsible for taking the structured data from the
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} and rendering it
+ * as plain text. It can also integrate with a template engine if a {@link TemplateRule}
+ * is specified, or directly write the string representation of action results to the response output.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

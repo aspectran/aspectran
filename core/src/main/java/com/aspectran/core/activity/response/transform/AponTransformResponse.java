@@ -30,7 +30,13 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * APON Transform Response converts the response data to APON and outputs it.
+ * {@code AponTransformResponse} converts the activity's processing results into
+ * APON (Aspectran Plain Object Notation) format and outputs it.
+ *
+ * <p>This response type is responsible for taking the structured data from the
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
+ * into a human-readable and machine-parsable APON string. It supports configuration
+ * for content type, encoding, and pretty-printing.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

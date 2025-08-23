@@ -37,7 +37,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>This class resolves a {@link ViewDispatcher} bean and delegates the dispatching
  * task to it. It acts as the bridge between the response phase of an activity and the
- * underlying view layer (e.g., JSP).</p>
+ * underlying view layer (e.g., JSP). This response type is responsible for preparing
+ * the necessary data (e.g., activity results as request attributes) for the view
+ * and then invoking the appropriate dispatcher.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -85,16 +87,30 @@ public class DispatchResponse implements Response {
         return dispatchRule;
     }
 
+    /**
+     * Returns the type of this response, which is {@link ResponseType#DISPATCH}.
+     * @return the response type
+     */
     @Override
     public ResponseType getResponseType() {
         return DispatchRule.RESPONSE_TYPE;
     }
 
+    /**
+     * Returns the content type specified in the underlying {@code DispatchRule}.
+     * @return the content type
+     */
     @Override
     public String getContentType() {
         return dispatchRule.getContentType();
     }
 
+    /**
+     * Creates and returns a new {@code DispatchResponse} instance that is a replica of this object.
+     * The replicated instance will have the same {@code DispatchRule} but will be independent
+     * of the original, allowing for safe modification or concurrent use.
+     * @return a replicated {@code DispatchResponse} instance
+     */
     @Override
     public Response replicate() {
         return new DispatchResponse(dispatchRule.replicate());

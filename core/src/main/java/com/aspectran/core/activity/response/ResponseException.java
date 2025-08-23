@@ -20,7 +20,12 @@ import com.aspectran.core.activity.ActivityException;
 import java.io.Serial;
 
 /**
- * The Class ResponseException.
+ * A generic base exception for errors that occur during the response generation phase of an
+ * {@link com.aspectran.core.activity.Activity}.
+ *
+ * <p>This exception serves as the root for all response-related exceptions within Aspectran,
+ * providing a common superclass for more specific issues like transformation failures
+ * or dispatch errors.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -30,32 +35,38 @@ public class ResponseException extends ActivityException {
     private static final long serialVersionUID = -7446545758142913255L;
 
     /**
-     * Simple constructor.
+     * Constructs a new {@code ResponseException} with no specified detail message.
      */
     public ResponseException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
+     * Constructs a new {@code ResponseException} with the specified detail message.
+     * @param msg the detail message
      */
     public ResponseException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new {@code ResponseException} with the specified cause and a
+     * detail message of {@code (cause == null ? null : cause.toString())}
+     * (which typically contains the class and detail message of {@code cause}).
+     * @param cause the cause (which is saved for later retrieval by the
+     *              {@link Throwable#getCause()} method). (A {@code null} value is
+     *              permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public ResponseException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Constructs a new {@code ResponseException} with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the cause (which is saved for later retrieval by the
+     *              {@link Throwable#getCause()} method). (A {@code null} value is
+     *              permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public ResponseException(String msg, Throwable cause) {
         super(msg, cause);

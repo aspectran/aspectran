@@ -26,7 +26,12 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 
 /**
- * Converts a ProcessResult object to an APON object.
+ * Converts a {@link ProcessResult} object into an APON (Aspectran Plain Object Notation) {@link Parameters} object.
+ *
+ * <p>This utility class extends {@link ObjectToParameters} to specifically handle the hierarchical
+ * structure of {@code ProcessResult}, {@link ContentResult}, and {@link ActionResult},
+ * mapping them into a corresponding APON structure. It provides static factory methods
+ * for convenient conversion.</p>
  *
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
