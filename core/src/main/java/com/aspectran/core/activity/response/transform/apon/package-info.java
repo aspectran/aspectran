@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Provides classes for transforming activity results into APON (Aspectran Plain Object Notation) format.
+ *
+ * <p>This package contains utilities and components specifically designed to convert
+ * the structured data produced by an {@link com.aspectran.core.activity.Activity}
+ * into APON, a human-readable and machine-parsable data format. It supports the
+ * serialization of {@link com.aspectran.core.activity.process.result.ProcessResult}
+ * into APON {@link com.aspectran.utils.apon.Parameters} objects.</p>
+ */
+package com.aspectran.core.activity.response.transform.apon;
