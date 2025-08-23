@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checked exception thrown when Advice Constraint Violation occurs.
+ * Checked exception thrown when an Advice Constraint Violation occurs.
  * <p>
  * This exception is raised by the {@code Activity} whenever a
  * configured {@link AspectRule} fails to meet its
  * constraints during execution. The exception keeps track of all relevant
- * aspect rules and human‑readable violation messages so that callers can
+ * aspect rules and human-readable violation messages so that callers can
  * diagnose the problem.</p>
  */
 public class AdviceConstraintViolationException extends ActivityException {

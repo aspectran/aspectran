@@ -77,6 +77,11 @@ public class AdviceResult {
         adviceBeanMap.put(aspectId, adviceBean);
     }
 
+    /**
+     * Retrieves the result of a BEFORE advice execution for the specified aspect.
+     * @param aspectId the unique identifier of the aspect
+     * @return the result produced by the BEFORE advice, or {@code null} if not found
+     */
     public Object getBeforeAdviceResult(String aspectId) {
         return (beforeAdviceResultMap != null ? beforeAdviceResultMap.get(aspectId) : null);
     }
