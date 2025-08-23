@@ -26,18 +26,34 @@ public class BeanException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 2598750999734896601L;
 
+    /**
+     * Instantiates a new Bean exception.
+     */
     public BeanException() {
         super();
     }
 
+    /**
+     * Instantiates a new Bean exception.
+     * @param msg the detail message
+     */
     public BeanException(String msg) {
         super(msg);
     }
 
+    /**
+     * Instantiates a new Bean exception.
+     * @param cause the root cause
+     */
     public BeanException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Instantiates a new Bean exception.
+     * @param msg the detail message
+     * @param cause the root cause
+     */
     public BeanException(String msg, Throwable cause) {
         super(msg, cause);
     }

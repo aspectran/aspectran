@@ -30,20 +30,40 @@ public class BeanInstantiationException extends BeanException {
 
     private final Class<?> beanClass;
 
+    /**
+     * Instantiates a new BeanInstantiationException.
+     * @param beanClass the bean class
+     * @param cause the root cause
+     */
     public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
         this(beanClass, cause.getMessage(), cause);
     }
 
+    /**
+     * Instantiates a new BeanInstantiationException.
+     * @param beanClass the bean class
+     * @param msg the detail message
+     * @param cause the root cause
+     */
     public BeanInstantiationException(@NonNull Class<?> beanClass, String msg, Throwable cause) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
         this.beanClass = beanClass;
     }
 
+    /**
+     * Instantiates a new BeanInstantiationException.
+     * @param beanClass the bean class
+     * @param msg the detail message
+     */
     public BeanInstantiationException(@NonNull Class<?> beanClass, String msg) {
         super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
         this.beanClass = beanClass;
     }
 
+    /**
+     * Returns the bean class.
+     * @return the bean class
+     */
     public Class<?> getBeanClass() {
         return beanClass;
     }

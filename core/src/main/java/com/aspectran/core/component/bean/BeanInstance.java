@@ -29,10 +29,18 @@ public final class BeanInstance implements Serializable {
 
     private final Object bean;
 
+    /**
+     * Instantiates a new Bean instance.
+     * @param bean the bean instance
+     */
     public BeanInstance(Object bean) {
         this.bean = bean;
     }
 
+    /**
+     * Returns the bean instance.
+     * @return the bean instance
+     */
     public Object getBean() {
         return bean;
     }

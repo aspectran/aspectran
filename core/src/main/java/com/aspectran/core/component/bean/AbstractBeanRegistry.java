@@ -48,11 +48,20 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     private final BeanRuleRegistry beanRuleRegistry;
 
+    /**
+     * Instantiates a new Abstract bean registry.
+     * @param context the activity context
+     * @param beanRuleRegistry the bean rule registry
+     */
     AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry) {
         super(context);
         this.beanRuleRegistry = beanRuleRegistry;
     }
 
+    /**
+     * Returns the bean rule registry.
+     * @return the bean rule registry
+     */
     protected BeanRuleRegistry getBeanRuleRegistry() {
         return beanRuleRegistry;
     }
@@ -62,6 +71,12 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return beanRuleRegistry.getBasePackages();
     }
 
+    /**
+     * Returns the bean instance for the given bean rule.
+     * @param beanRule the bean rule
+     * @param <V> the type of the bean
+     * @return the bean instance
+     */
     @SuppressWarnings("unchecked")
     protected <V> V getBean(@NonNull BeanRule beanRule) {
         if (beanRule.getScopeType() == ScopeType.SINGLETON) {

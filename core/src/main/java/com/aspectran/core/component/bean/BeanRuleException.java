@@ -66,8 +66,8 @@ public class BeanRuleException extends IllegalRuleException {
 
     /**
      * Instantiates a new BeanRuleException.
-     * @param beanRule the bean rule
      * @param msg the detail message
+     * @param beanRule the bean rule
      * @param cause the root cause
      */
     public BeanRuleException(String msg, BeanRule beanRule, Throwable cause) {

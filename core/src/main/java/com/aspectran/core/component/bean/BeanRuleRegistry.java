@@ -89,6 +89,10 @@ public class BeanRuleRegistry {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Instantiates a new Bean rule registry.
+     * @param classLoader the class loader
+     */
     public BeanRuleRegistry(ClassLoader classLoader) {
         this.classLoader = classLoader;
 

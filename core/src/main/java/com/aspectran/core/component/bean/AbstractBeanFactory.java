@@ -63,19 +63,38 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
     private final ProxyBeanFactory proxyBeanFactory;
 
+    /**
+     * Instantiates a new Abstract bean factory.
+     * @param context the activity context
+     */
     AbstractBeanFactory(ActivityContext context) {
         this.context = context;
         this.proxyBeanFactory = new ProxyBeanFactory(context);
     }
 
+    /**
+     * Returns the activity context.
+     * @return the activity context
+     */
     protected ActivityContext getActivityContext() {
         return context;
     }
 
+    /**
+     * Create a bean instance for the given bean rule.
+     * @param beanRule the bean rule to create an instance for
+     * @return the new bean instance
+     */
     protected Object createBean(BeanRule beanRule) {
         return createBean(beanRule, null);
     }
 
+    /**
+     * Create a bean instance for the given bean rule.
+     * @param beanRule the bean rule to create an instance for
+     * @param scope the scope to create the bean in
+     * @return the new bean instance
+     */
     protected Object createBean(@NonNull BeanRule beanRule, Scope scope) {
         Activity activity = context.getAvailableActivity();
         Object bean;
@@ -87,6 +106,12 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return bean;
     }
 
+    /**
+     * Returns the object produced by the factory bean.
+     * @param beanRule the bean rule
+     * @param bean the bean instance
+     * @return the object produced by the factory bean
+     */
     protected Object getFactoryProducedObject(@NonNull BeanRule beanRule, Object bean) {
         if (beanRule.isFactoryBean()) {
             return invokeMethodOfFactoryBean(beanRule, bean);

@@ -35,6 +35,12 @@ import java.util.Arrays;
  */
 public abstract class BeanFactoryUtils {
 
+    /**
+     * Convenience method to instantiate a class using its no-arg constructor.
+     * @param beanClass the class to instantiate
+     * @return the new instance
+     * @throws BeanInstantiationException if the bean cannot be instantiated
+     */
     @NonNull
     public static Object newInstance(@NonNull Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
         if (beanClass.isInterface()) {
@@ -52,6 +58,12 @@ public abstract class BeanFactoryUtils {
         return newInstance(constructorToUse, args);
     }
 
+    /**
+     * Convenience method to instantiate a class using its no-arg constructor.
+     * @param beanClass the class to instantiate
+     * @return the new instance
+     * @throws BeanInstantiationException if the bean cannot be instantiated
+     */
     @NonNull
     public static Object newInstance(Class<?> beanClass) {
         return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);

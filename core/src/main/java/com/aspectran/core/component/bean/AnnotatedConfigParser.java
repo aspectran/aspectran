@@ -124,6 +124,11 @@ public class AnnotatedConfigParser {
 
     private final AnnotatedConfigRelater relater;
 
+    /**
+     * Instantiates a new Annotated config parser.
+     * @param assistant the activity rule assistant
+     * @param relater the annotated config relater
+     */
     public AnnotatedConfigParser(@NonNull ActivityRuleAssistant assistant, AnnotatedConfigRelater relater) {
         this.environmentProfiles = assistant.getEnvironmentProfiles();
         this.idBasedBeanRules = assistant.getBeanRuleRegistry().getIdBasedBeanRules();
@@ -132,6 +137,10 @@ public class AnnotatedConfigParser {
         this.relater = relater;
     }
 
+    /**
+     * Parses the annotated configuration.
+     * @throws IllegalRuleException if an illegal rule is found
+     */
     public void parse() throws IllegalRuleException {
         if (configurableBeanRules.isEmpty() && idBasedBeanRules.isEmpty() && typeBasedBeanRules.isEmpty()) {
             return;

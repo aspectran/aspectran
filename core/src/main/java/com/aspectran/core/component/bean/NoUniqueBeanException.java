@@ -22,9 +22,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Serial;
 
 /**
- * Thrown when more than one bean matches a requested type.
- * Provides the candidate {@link com.aspectran.core.context.rule.BeanRule}
- * descriptors for diagnostics.
+ * Thrown when a bean registry is asked for a bean instance, but more than
+ * one matching instance is found.
  */
 public class NoUniqueBeanException extends BeanException {
 
@@ -35,6 +34,11 @@ public class NoUniqueBeanException extends BeanException {
 
     private final BeanRule[] beanRules;
 
+    /**
+     * Create a new NoUniqueBeanException.
+     * @param type the required type of the missing bean
+     * @param beanRules the bean rules
+     */
     public NoUniqueBeanException(Class<?> type, @NonNull BeanRule[] beanRules) {
         super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
@@ -42,14 +46,27 @@ public class NoUniqueBeanException extends BeanException {
         this.beanRules = beanRules;
     }
 
+    /**
+     * Returns the required type of the missing bean.
+     * @return the required type of the missing bean
+     */
     public Class<?> getType() {
         return type;
     }
 
+    /**
+     * Returns the bean rules.
+     * @return the bean rules
+     */
     public BeanRule[] getBeanRules() {
         return beanRules;
     }
 
+    /**
+     * Returns the bean descriptions.
+     * @param beanRules the bean rules
+     * @return the bean descriptions
+     */
     public static String getBeanDescriptions(@NonNull BeanRule[] beanRules) {
         String[] describes = new String[beanRules.length];
         for (int i = 0; i < describes.length; i++) {

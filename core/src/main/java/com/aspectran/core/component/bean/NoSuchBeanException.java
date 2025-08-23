@@ -18,7 +18,7 @@ package com.aspectran.core.component.bean;
 import java.io.Serial;
 
 /**
- * Thrown when a requested bean cannot be found by id or type.
+ * Thrown when a bean instance cannot be found.
  */
 public class NoSuchBeanException extends BeanException {
 
@@ -29,28 +29,49 @@ public class NoSuchBeanException extends BeanException {
 
     private final Class<?> type;
 
+    /**
+     * Create a new NoSuchBeanException.
+     * @param id the id of the missing bean
+     */
     public NoSuchBeanException(String id) {
         super("No bean named '" + id + "' available");
         this.id = id;
         this.type = null;
     }
 
+    /**
+     * Create a new NoSuchBeanException.
+     * @param type the required type of the missing bean
+     */
     public NoSuchBeanException(Class<?> type) {
         super("No qualifying bean of type '" + type + "' available");
         this.type = type;
         this.id = null;
     }
 
+    /**
+     * Create a new NoSuchBeanException.
+     * @param type the required type of the missing bean
+     * @param id the id of the missing bean
+     */
     public NoSuchBeanException(Class<?> type, String id) {
         super("No qualifying bean with name '" + id + "' of type '" + type + "' available");
         this.type = type;
         this.id = id;
     }
 
+    /**
+     * Returns the id of the missing bean.
+     * @return the id of the missing bean
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Returns the required type of the missing bean.
+     * @return the required type of the missing bean
+     */
     public Class<?> getType() {
         return type;
     }

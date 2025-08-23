@@ -19,14 +19,13 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Supported bean scope types.
- * 
+ *
  * <p>Created: 2008. 12. 22 PM 2:48:00</p>
  */
 public enum ScopeType {
 
     SINGLETON("singleton"),
     PROTOTYPE("prototype"),
-    ASPECT("aspect"),
     REQUEST("request"),
     SESSION("session");
 

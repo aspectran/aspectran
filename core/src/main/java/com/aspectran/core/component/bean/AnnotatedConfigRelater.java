@@ -28,14 +28,40 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 public interface AnnotatedConfigRelater {
 
+    /**
+     * Relate the given bean rule to the target bean class.
+     * @param targetBeanClass the target bean class
+     * @param beanRule the bean rule to relate
+     * @throws IllegalRuleException if the rule is invalid
+     */
     void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException;
 
+    /**
+     * Relate the given aspect rule.
+     * @param aspectRule the aspect rule to relate
+     * @throws IllegalRuleException if the rule is invalid
+     */
     void relate(AspectRule aspectRule) throws IllegalRuleException;
 
+    /**
+     * Relate the given schedule rule.
+     * @param scheduleRule the schedule rule to relate
+     * @throws IllegalRuleException if the rule is invalid
+     */
     void relate(ScheduleRule scheduleRule) throws IllegalRuleException;
 
+    /**
+     * Relate the given translet rule.
+     * @param transletRule the translet rule to relate
+     * @throws IllegalRuleException if the rule is invalid
+     */
     void relate(TransletRule transletRule) throws IllegalRuleException;
 
+    /**
+     * Relate the given autowire rule.
+     * @param autowireRule the autowire rule to relate
+     * @throws IllegalRuleException if the rule is invalid
+     */
     void relate(AutowireRule autowireRule) throws IllegalRuleException;
 
 }

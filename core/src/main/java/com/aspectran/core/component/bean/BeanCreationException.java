@@ -32,26 +32,50 @@ public class BeanCreationException extends BeanException {
 
     private final BeanRule beanRule;
 
+    /**
+     * Instantiates a new BeanCreationException.
+     * @param beanRule the bean rule that failed to create an instance
+     */
     public BeanCreationException(BeanRule beanRule) {
         super("Cannot create a bean " + beanRule);
         this.beanRule = beanRule;
     }
 
+    /**
+     * Instantiates a new BeanCreationException.
+     * @param msg the detail message
+     * @param beanRule the bean rule that failed to create an instance
+     */
     public BeanCreationException(String msg, BeanRule beanRule) {
         super(msg + " " + beanRule);
         this.beanRule = beanRule;
     }
 
+    /**
+     * Instantiates a new BeanCreationException.
+     * @param beanRule the bean rule that failed to create an instance
+     * @param cause the root cause
+     */
     public BeanCreationException(BeanRule beanRule, Throwable cause) {
         super("Cannot create a bean " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
+    /**
+     * Instantiates a new BeanCreationException.
+     * @param msg the detail message
+     * @param beanRule the bean rule that failed to create an instance
+     * @param cause the root cause
+     */
     public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
         super(msg + " " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
+    /**
+     * Returns the bean rule that failed to create an instance.
+     * @return the bean rule
+     */
     public BeanRule getBeanRule() {
         return beanRule;
     }

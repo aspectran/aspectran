@@ -29,6 +29,10 @@ import java.util.Set;
  */
 public interface BeanRegistry {
 
+    /**
+     * Returns the base packages for scanning.
+     * @return a set of base packages
+     */
     Set<String> getBasePackages();
 
     /**
@@ -67,6 +71,12 @@ public interface BeanRegistry {
      */
     <V> V[] getBeansOfType(Class<V> type);
 
+    /**
+     * Returns a prototype-scoped bean instance for the given bean rule.
+     * @param <V> the type of bean object retrieved
+     * @param beanRule the bean rule
+     * @return an instance of the bean
+     */
     <V> V getPrototypeScopeBean(BeanRule beanRule);
 
     /**
@@ -91,18 +101,53 @@ public interface BeanRegistry {
      */
     boolean containsBean(Class<?> type, String id);
 
+    /**
+     * Returns whether a single bean of the given type is present.
+     * @param type the object type of the bean to query
+     * @return whether a single bean of the given type is present
+     */
     boolean containsSingleBean(Class<?> type);
 
+    /**
+     * Finds all bean classes that have the specified annotation.
+     * @param annotationType the annotation type to look for
+     * @return a collection of bean classes
+     */
     Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);
 
+    /**
+     * Returns whether the given bean is a singleton.
+     * @param bean the bean instance to check
+     * @return whether the given bean is a singleton
+     */
     boolean hasSingleton(Object bean);
 
+    /**
+     * Returns whether a singleton bean of the given type is present.
+     * @param type the object type of the bean to query
+     * @return whether a singleton bean of the given type is present
+     */
     boolean hasSingleton(@NonNull Class<?> type);
 
+    /**
+     * Returns whether a singleton bean of the given type and id is present.
+     * @param type the object type of the bean to query
+     * @param id the id of the bean to query
+     * @return whether a singleton bean of the given type and id is present
+     */
     boolean hasSingleton(Class<?> type, String id);
 
+    /**
+     * Destroys the given singleton bean.
+     * @param bean the bean instance to destroy
+     * @throws Exception if an error occurs during destruction
+     */
     void destroySingleton(Object bean) throws Exception;
 
+    /**
+     * Returns whether this bean registry is available.
+     * @return whether this bean registry is available
+     */
     boolean isAvailable();
 
 }

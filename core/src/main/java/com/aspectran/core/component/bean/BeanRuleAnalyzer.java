@@ -183,12 +183,21 @@ public class BeanRuleAnalyzer {
         return name;
     }
 
+    /**
+     * Determines whether the bean should be proxied.
+     * @param beanRule the bean rule
+     */
     public static void determineProxyBean(@NonNull BeanRule beanRule) {
         if (beanRule.getProxied() == null && !beanRule.isFactoryable() && !getAdvisableMethods(beanRule).isEmpty()) {
             beanRule.setProxied(true);
         }
     }
 
+    /**
+     * Returns a list of advisable methods for the given bean rule.
+     * @param beanRule the bean rule
+     * @return a list of advisable methods
+     */
     public static List<Method> getAdvisableMethods(@NonNull BeanRule beanRule) {
         return advisableMethodsCache.get(beanRule.getTargetBeanClass());
     }
@@ -212,6 +221,9 @@ public class BeanRuleAnalyzer {
         }
     }
 
+    /**
+     * Clears the advisable methods cache.
+     */
     public static void clearAdvisableMethodsCache() {
         advisableMethodsCache.clear();
     }

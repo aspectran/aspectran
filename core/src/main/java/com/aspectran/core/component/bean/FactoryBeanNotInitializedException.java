@@ -20,18 +20,29 @@ import com.aspectran.core.context.rule.BeanRule;
 import java.io.Serial;
 
 /**
- * Thrown when attempting to obtain a product object from a FactoryBean
- * that has not completed initialization.
+ * Exception thrown when a {@link FactoryBean} is not yet fully initialized,
+ * for example because it is involved in a circular reference.
+ *
+ * @since 2.0.0
  */
 public class FactoryBeanNotInitializedException extends BeanCreationException {
 
     @Serial
     private static final long serialVersionUID = 5961471681939634699L;
 
+    /**
+     * Create a new FactoryBeanNotInitializedException.
+     * @param beanRule the bean rule
+     */
     public FactoryBeanNotInitializedException(BeanRule beanRule) {
         super("FactoryBean is not fully initialized yet", beanRule);
     }
 
+    /**
+     * Create a new FactoryBeanNotInitializedException.
+     * @param msg the detail message
+     * @param beanRule the bean rule
+     */
     public FactoryBeanNotInitializedException(String msg, BeanRule beanRule) {
         super(msg, beanRule);
     }
