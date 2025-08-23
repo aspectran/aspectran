@@ -33,7 +33,8 @@ import java.util.Map;
  *
  * <p>This action is used in web applications to dynamically add or modify response
  * headers, such as {@code Content-Type} or {@code Cache-Control}, based on the
- * current context.</p>
+ * current context. It evaluates configured item rules to determine the header names
+ * and values.</p>
  *
  * <p>Created: 2016. 08. 23.</p>
  *

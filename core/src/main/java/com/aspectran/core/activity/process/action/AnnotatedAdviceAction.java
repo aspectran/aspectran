@@ -27,7 +27,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>This class is used internally by the framework to implement Aspectran's AOP features
  * for annotated advice beans, handling the invocation of methods marked with advice
- * annotations like {@code @Before}, {@code @After}, etc.</p>
+ * annotations like {@code @Before}, {@code @After}, etc. It extends {@link AnnotatedAction}
+ * and overrides bean resolution to fetch the advice bean from the AOP context.</p>
  *
  * <p>Created: 2019. 07. 18</p>
  */

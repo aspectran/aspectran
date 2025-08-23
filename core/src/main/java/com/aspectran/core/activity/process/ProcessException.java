@@ -24,7 +24,8 @@ import java.io.Serial;
  * {@link com.aspectran.core.activity.Activity}.
  *
  * <p>This exception is thrown when a problem occurs while executing the defined
- * process flow, such as running actions from an {@link ActionList}.</p>
+ * process flow, such as running actions from an {@link ActionList} or {@link ContentList}.
+ * It serves as the root exception for all processing-related failures within Aspectran.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 /**
- * Contains the concrete implementations of the
+ * Provides concrete implementations of the
  * {@link com.aspectran.core.activity.process.action.Executable} interface.
  *
- * <p>This package provides the standard, built-in actions available in Aspectran.
- * Each action is a command that performs a specific, well-defined operation during
- * the processing of a request. These operations include invoking user-defined beans,
- * manipulating the response, controlling execution flow, and rendering data.
+ * <p>This package contains the standard, built-in actions available in Aspectran.
+ * Each action represents a command that performs a specific, well-defined operation
+ * during the processing of a request. These operations include, but are not limited to:
+ * <ul>
+ *   <li>Invoking methods on user-defined beans (e.g., {@link InvokeAction}, {@link AnnotatedAction})</li>
+ *   <li>Manipulating the HTTP response (e.g., {@link HeaderAction})</li>
+ *   <li>Controlling the execution flow (e.g., {@link ChooseAction}, {@link IncludeAction})</li>
+ *   <li>Rendering data back to the client (e.g., {@link EchoAction})</li>
+ *   <li>Executing AOP advice (e.g., {@link AdviceAction}, {@link AnnotatedAdviceAction})</li>
+ * </ul>
+ * These actions are fundamental building blocks for defining the behavior of translets.</p>
  */
 package com.aspectran.core.activity.process.action;

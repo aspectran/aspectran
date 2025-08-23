@@ -26,10 +26,10 @@ import com.aspectran.core.context.rule.type.ActionType;
  * of this interface carries out a distinct, concrete task. The range of tasks is diverse,
  * including:
  * <ul>
- *   <li>Invoking methods on user-defined beans (e.g., {@code InvokeAction})</li>
- *   <li>Manipulating the HTTP response (e.g., {@code HeaderAction})</li>
- *   <li>Controlling the execution flow (e.g., {@code ChooseAction}, {@code IncludeAction})</li>
- *   <li>Rendering data back to the client (e.g., {@code EchoAction})</li>
+ *   <li>Invoking methods on user-defined beans (e.g., {@link InvokeAction})</li>
+ *   <li>Manipulating the HTTP response (e.g., {@link HeaderAction})</li>
+ *   <li>Controlling the execution flow (e.g., {@link ChooseAction}, {@link IncludeAction})</li>
+ *   <li>Rendering data back to the client (e.g., {@link EchoAction})</li>
  * </ul>
  * All actions are executed by the {@link Activity} engine and operate on the data
  * contained within the {@link com.aspectran.core.activity.Translet} context.</p>
@@ -67,5 +67,5 @@ public interface Executable {
     default ActionType getActionType() {
         return null;
     }
-}
 
+}

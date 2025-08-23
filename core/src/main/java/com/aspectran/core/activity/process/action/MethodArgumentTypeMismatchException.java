@@ -26,7 +26,9 @@ import java.io.Serial;
  * converted to the expected type.
  *
  * <p>This provides more specific error information than a general
- * {@link ParameterBindingException} when a type conversion fails.</p>
+ * {@link ParameterBindingException} when a type conversion fails. It indicates that
+ * the value provided for a method parameter could not be successfully converted
+ * to the parameter's declared type.</p>
  *
  * <p>Created: 2009. 02. 26</p>
  */

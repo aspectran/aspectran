@@ -24,7 +24,9 @@ import java.util.LinkedHashMap;
  *
  * <p>This class serves as a standard map implementation for storing key-value results
  * within an {@link ActionResult}, allowing for complex, structured data to be returned
- * from a single action execution.</p>
+ * from a single action execution. It maintains insertion order of elements.</p>
+ *
+ * @since 2008
  */
 public class ResultValueMap extends LinkedHashMap<String, Object> {
 

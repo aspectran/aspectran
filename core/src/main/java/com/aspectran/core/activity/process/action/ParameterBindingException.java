@@ -27,7 +27,8 @@ import java.io.Serial;
  *
  * <p>This exception is typically thrown when there is an error during the process of
  * binding request parameters or other data sources to the arguments of a method
- * being invoked by an action.</p>
+ * being invoked by an action. It extends {@link ProcessException} to indicate that
+ * the error occurred during the parameter binding phase of action execution.</p>
  *
  * <p>Created: 2009. 02. 26</p>
  */

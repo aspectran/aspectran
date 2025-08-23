@@ -25,7 +25,9 @@ import com.aspectran.utils.ToStringBuilder;
  *
  * <p>It stores the action's unique identifier ({@code actionId}) and the value returned
  * by its execution. A collection of these objects is held by a {@link ContentResult} to
- * represent the outcomes of a group of actions.</p>
+ * represent the outcomes of a group of actions. If the {@code actionId} contains
+ * an ID separator (e.g., "."), the result value can be parsed into a nested
+ * {@link ResultValueMap} to represent complex data structures.</p>
  *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */

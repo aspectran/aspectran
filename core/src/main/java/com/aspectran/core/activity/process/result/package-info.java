@@ -21,14 +21,18 @@
  * The core structure is as follows:
  * <ul>
  *   <li>{@link com.aspectran.core.activity.process.result.ProcessResult}: The top-level
- *       container holding the results for the entire activity.</li>
+ *       container holding the aggregated results for the entire activity lifecycle.</li>
  *   <li>{@link com.aspectran.core.activity.process.result.ContentResult}: A container for
  *       the results of a logical group of actions, typically corresponding to a
- *       {@code <contents>} block.</li>
+ *       {@code <contents>} or {@code <response>} block within a translet definition.</li>
  *   <li>{@link com.aspectran.core.activity.process.result.ActionResult}: A simple object
- *       that holds the result of a single action execution.</li>
+ *       that holds the result of a single action execution, including its ID and value.</li>
+ *   <li>{@link com.aspectran.core.activity.process.result.ResultValueMap}: A specialized map
+ *       for storing nested or complex action result values.</li>
  * </ul>
- * This structure allows for a detailed and organized representation of the activity's
- * outcome, which is useful for subsequent processing, view rendering, or debugging.
+ * This structured model allows for a detailed and organized representation of the activity's
+ * outcome, which is useful for subsequent processing, view rendering, or debugging.</p>
+ *
+ * @since 2008
  */
 package com.aspectran.core.activity.process.result;

@@ -30,7 +30,8 @@ import java.lang.reflect.Modifier;
  * by specific Aspectran annotations.
  *
  * <p>This allows for a convention-over-configuration approach, where actions can be
- * discovered and executed based on annotations rather than explicit XML rules.</p>
+ * discovered and executed based on annotations rather than explicit XML rules.
+ * It leverages {@link AnnotatedMethodInvoker} to handle parameter binding and method invocation.</p>
  *
  * <p>Created: 2016. 2. 9.</p>
  *

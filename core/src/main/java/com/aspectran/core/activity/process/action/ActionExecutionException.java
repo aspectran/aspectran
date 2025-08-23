@@ -23,7 +23,8 @@ import java.io.Serial;
  * Thrown when an error occurs during the execution of an {@link Executable} action.
  *
  * <p>This exception wraps the underlying cause of the failure, providing context
- * about which action failed.</p>
+ * about which action failed. It extends {@link ProcessException} to indicate that
+ * the error occurred specifically during an action's execution phase.</p>
  */
 public class ActionExecutionException extends ProcessException {
 
@@ -70,4 +71,3 @@ public class ActionExecutionException extends ProcessException {
     }
 
 }
-

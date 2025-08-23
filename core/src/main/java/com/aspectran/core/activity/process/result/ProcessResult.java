@@ -35,7 +35,7 @@ import java.util.Objects;
  * what occurred during the request processing. This class serves as the final, aggregated
  * result of a translet execution.</p>
  *
- * <p>Created: 2008. 06. 09 PM 4:13:40</p>
+ * @since 2008
  */
 public class ProcessResult extends ArrayList<ContentResult> {
 

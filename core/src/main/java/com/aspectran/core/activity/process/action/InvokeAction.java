@@ -38,7 +38,7 @@ import java.util.Map;
  *
  * <p>This is a core action used to execute business logic by calling methods on
  * beans defined in the application context. It supports dynamic argument resolution
- * from the current {@link Translet} and can set properties on the bean before
+ * from the current {@link com.aspectran.core.activity.Translet} and can set properties on the bean before
  * invocation.</p>
  */
 public class InvokeAction implements Executable {

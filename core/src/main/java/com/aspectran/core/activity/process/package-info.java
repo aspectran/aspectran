@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 /**
- * Contains classes that model the executable process flow of a translet.
+ * Provides classes that model and manage the executable process flow within an Aspectran translet.
  *
- * <p>This package defines the hierarchical structure of actions that are executed by the
- * {@link com.aspectran.core.activity.Activity} engine. The structure is composed of:
+ * <p>This package defines the hierarchical structure of actions executed by the
+ * {@link com.aspectran.core.activity.Activity} engine during request processing.
+ * The core components of this structure include:</p>
  * <ul>
  *   <li>{@link com.aspectran.core.activity.process.ContentList}: A top-level container
- *       that holds groups of action lists, representing a major section of a translet's
- *       executable content (e.g., {@code <contents>}).</li>
+ *       that organizes groups of action lists, representing a major section of a translet's
+ *       executable content (e.g., {@code <contents>} or {@code <response>} blocks).</li>
  *   <li>{@link com.aspectran.core.activity.process.ActionList}: An ordered collection of
  *       {@link com.aspectran.core.activity.process.action.Executable} actions that are
- *       executed sequentially.</li>
+ *       executed sequentially within a content block.</li>
  * </ul>
- * This structured model allows the process flow to be represented hierarchically,
- * much like an XML document, providing a clear and organized definition of the work
- * to be performed during a request.
+ * <p>This structured model enables the process flow to be defined hierarchically,
+ * similar to an XML document, offering a clear and organized representation of the work
+ * to be performed during a request's lifecycle.</p>
  */
 package com.aspectran.core.activity.process;

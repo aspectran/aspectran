@@ -40,6 +40,10 @@ import java.util.ArrayList;
  * This class represents a single, flat sequence of operations within a larger,
  * potentially nested {@link ContentList}.
  *
+ * <p>Actions within this list are executed in the order they are added, forming a fundamental
+ * part of the translet's processing flow. It implements {@link ActionRuleApplicable} to allow
+ * various types of actions to be dynamically added based on configuration rules.</p>
+ *
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
