@@ -23,53 +23,48 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.security.Principal;
 
 /**
- * Base implementation of {@link RequestAdapter} that holds a reference to the
- * underlying request "adaptee" and provides lazy creation of a {@link RequestScope}.
+ * Abstract base implementation of {@link RequestAdapter}.
+ * <p>This class extends {@link AbstractRequest} and holds a reference to the
+ * underlying native request object (the "adaptee"). It also provides lazy
+ * creation and management of a {@link RequestScope} for request-scoped beans.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
-*/
+ */
 public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
     /**
-     * The underlying request object being adapted (framework-specific).
+     * The underlying, framework-specific request object.
      */
     protected final Object adaptee;
 
     /**
-     * Lazily created per-request scope container.
+     * The lazily-created container for request-scoped beans.
      */
     private RequestScope requestScope;
 
     /**
-     * Create a new AbstractRequestAdapter.
-     * @param requestMethod the request method; may be {@code null} if unknown
-     * @param adaptee the native request object being adapted; may be {@code null}
+     * Creates a new {@code AbstractRequestAdapter}.
+     * @param requestMethod the request method (e.g., GET, POST), may be {@code null}
+     * @param adaptee the native, framework-specific request object to adapt, may be {@code null}
      */
     public AbstractRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod);
         this.adaptee = adaptee;
     }
 
-    /**
-     * Return the underlying request adaptee.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)adaptee;
     }
 
-    /**
-     * Whether a {@link RequestScope} has already been associated with this adapter.
-     */
     @Override
     public boolean hasRequestScope() {
-        return (requestScope == null);
+        return (requestScope != null);
     }
 
-    /**
-     * Obtain the {@link RequestScope}, creating it if necessary.
-     */
     @Override
     @NonNull
     public RequestScope getRequestScope() {
@@ -80,8 +75,9 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
     }
 
     /**
-     * Return the current authenticated user {@link Principal}, if available.
-     * Default implementation returns {@code null}.
+     * {@inheritDoc}
+     * <p>This default implementation always returns {@code null}.
+     * Subclasses should override this method to provide the actual principal.
      */
     @Override
     public Principal getPrincipal() {

@@ -16,22 +16,23 @@
 package com.aspectran.daemon.adapter;
 
 import com.aspectran.core.adapter.DefaultSessionAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Session adapter used by the daemon runtime.
- * <p>
- * This class delegates to {@link com.aspectran.core.adapter.DefaultSessionAdapter}
- * and is created by daemon services to provide session access within
- * {@link com.aspectran.daemon.activity.DaemonActivity} executions.
+ * The session adapter for the daemon environment.
+ * <p>This class extends {@link DefaultSessionAdapter} to provide session management
+ * capabilities within a daemon context. It wraps a {@link SessionAgent} that handles
+ * the underlying session state, making it available to daemon activities.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 12. 12.
  */
 public class DaemonSessionAdapter extends DefaultSessionAdapter {
 
     /**
-     * Instantiates a new DaemonSessionAdapter.
-     * @param agent the session agent
+     * Creates a new {@code DaemonSessionAdapter} that delegates to the given agent.
+     * @param agent the session agent that manages the session state
      */
     public DaemonSessionAdapter(SessionAgent agent) {
         super(agent);

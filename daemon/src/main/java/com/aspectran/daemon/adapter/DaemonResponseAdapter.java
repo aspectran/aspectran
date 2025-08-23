@@ -21,19 +21,20 @@ import com.aspectran.core.context.rule.type.ContentType;
 import java.io.Writer;
 
 /**
- * Response adapter used by the daemon runtime.
- * <p>
- * This specialization of {@link com.aspectran.core.adapter.DefaultResponseAdapter}
- * initializes the response content type to plain text and writes output to the
- * provided {@link Writer}. It is typically created by
- * {@link com.aspectran.daemon.activity.DaemonActivity}.
+ * The response adapter for the daemon environment.
+ * <p>This class is a specialization of {@link DefaultResponseAdapter} that directs
+ * all response output to a provided {@link Writer}, such as a log file or console.
+ * It automatically sets the content type to {@code text/plain}.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 12. 12.
  */
 public class DaemonResponseAdapter extends DefaultResponseAdapter {
 
     /**
-     * Instantiates a new DaemonResponseAdapter.
-     * @param outputWriter the writer to output
+     * Creates a new {@code DaemonResponseAdapter} that writes to the specified writer.
+     * @param outputWriter the writer to which response content will be written
      */
     public DaemonResponseAdapter(Writer outputWriter) {
         super(null, outputWriter);

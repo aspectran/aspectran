@@ -16,7 +16,6 @@
 package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -26,18 +25,31 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link HttpServerExchange} to Core {@link SessionAdapter}.
+ * An adapter that wraps an {@link HttpServerExchange} to expose session management
+ * capabilities via the {@link com.aspectran.core.adapter.SessionAdapter} interface.
+ * <p>This class uses the {@link SessionManager} and {@link SessionConfig} attached to the
+ * exchange to lazily retrieve and manage the underlying Undertow {@link Session}.
+ * </p>
  *
- * @since 2011. 3. 13.
+ * @author Juho Jeong
+ * @since 2019-07-27
  */
 public class TowSessionAdapter extends AbstractSessionAdapter {
 
     private boolean newSession;
 
+    /**
+     * Creates a new {@code TowSessionAdapter}.
+     * @param exchange the native {@link HttpServerExchange} from which the session is obtained
+     */
     public TowSessionAdapter(HttpServerExchange exchange) {
         super(exchange);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns the underlying Undertow {@link Session}, creating it if necessary.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
@@ -71,29 +83,28 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
     @Override
     public Enumeration<String> getAttributeNames() {
         Session session = getSession(false);
-        if (session != null) {
-            return Collections.enumeration(session.getAttributeNames());
-        } else {
-            return null;
-        }
+        return (session != null ? Collections.enumeration(session.getAttributeNames()) : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         Session session = getSession(false);
-        if (session != null) {
-            return (T)session.getAttribute(name);
-        } else {
-            return null;
-        }
+        return (session != null ? (T)session.getAttribute(name) : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Creates a session if one does not exist and the value is not null.
+     */
     @Override
     public void setAttribute(String name, Object value) {
         if (value != null) {
-            Session session = getSession(true);
-            session.setAttribute(name, value);
+            getSession(true).setAttribute(name, value);
         } else {
             Session session = getSession(false);
             if (session != null) {
@@ -102,6 +113,10 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     public void removeAttribute(String name) {
         Session session = getSession(false);
@@ -110,6 +125,10 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     public void invalidate() {
         Session session = getSession(false);
@@ -118,10 +137,13 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>A session is considered valid if it exists.
+     */
     @Override
     public boolean isValid() {
-        Session session = getSession(false);
-        return (session != null);
+        return (getSession(false) != null);
     }
 
     @Override
@@ -130,6 +152,11 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         return (session == null || newSession);
     }
 
+    /**
+     * Gets the underlying Undertow {@link Session}, creating it if necessary.
+     * @param create {@code true} to create a new session if one does not exist
+     * @return the session, or {@code null} if {@code create} is false and no session exists
+     */
     public Session getSession(boolean create) {
         HttpServerExchange exchange = super.getAdaptee();
         SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);

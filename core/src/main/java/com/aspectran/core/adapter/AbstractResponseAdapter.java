@@ -16,29 +16,30 @@
 package com.aspectran.core.adapter;
 
 /**
- * Base implementation of {@link ResponseAdapter} that holds a reference to the
- * underlying response "adaptee" and provides a type-safe accessor.
+ * Abstract base implementation of {@link ResponseAdapter}.
+ * <p>This class holds a reference to the underlying native response object
+ * (the "adaptee") and provides a type-safe accessor for it. Subclasses must
+ * implement all other methods from the {@link ResponseAdapter} interface.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public abstract class AbstractResponseAdapter implements ResponseAdapter {
 
     /**
-     * The underlying response object being adapted (framework-specific).
+     * The underlying, framework-specific response object.
      */
     private final Object adaptee;
 
     /**
-     * Create a new AbstractResponseAdapter.
-     * @param adaptee the native response object being adapted; may be {@code null}
+     * Creates a new {@code AbstractResponseAdapter}.
+     * @param adaptee the native, framework-specific response object to adapt, may be {@code null}
      */
     public AbstractResponseAdapter(Object adaptee) {
         this.adaptee = adaptee;
     }
 
-    /**
-     * Return the underlying response adaptee.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {

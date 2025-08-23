@@ -21,19 +21,22 @@ import com.aspectran.shell.console.ShellConsole;
 import java.io.Writer;
 
 /**
- * Shell response adapter that writes translet output to the interactive console or a provided writer.
- * <p>
- * Created and configured by {@link com.aspectran.shell.activity.ShellActivity}, this adapter
- * delegates rendering to the {@link ShellConsole} while also supporting redirection to an
- * arbitrary {@link Writer} when requested by the user.
+ * The response adapter for the interactive shell environment.
+ * <p>This adapter directs response output to the {@link ShellConsole}. It is
+ * configured with a {@link Writer} that typically points to the console, but can
+ * also be redirected to a file or other destination. The {@link ShellConsole}
+ * itself is provided as the adaptee for potential access to console-specific features.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 3. 4.
  */
 public class ShellResponseAdapter extends DefaultResponseAdapter {
 
     /**
-     * Create a new ShellResponseAdapter that renders through the given console/writer.
-     * @param console the shell console used for styling and terminal output
-     * @param writer the writer to receive output (may be a redirected destination)
+     * Creates a new {@code ShellResponseAdapter}.
+     * @param console the shell console, which serves as the adaptee
+     * @param writer the writer to which response content will be written
      */
     public ShellResponseAdapter(ShellConsole console, Writer writer) {
         super(console, writer);

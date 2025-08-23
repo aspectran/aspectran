@@ -21,7 +21,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
@@ -34,8 +33,13 @@ import java.io.Writer;
 import java.util.Collection;
 
 /**
- * Adapt {@link HttpServletResponse} to Core {@link ResponseAdapter}.
+ * An adapter that wraps a {@link HttpServletResponse}, exposing it as a
+ * {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
+ * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
+ * allowing the framework to write to the servlet response in a consistent, abstracted manner.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
@@ -49,9 +53,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     private String reservedRedirectLocation;
 
     /**
-     * Instantiates a new HttpServletResponseAdapter.
-     * @param response the HTTP response
-     * @param activity the activity
+     * Creates a new {@code HttpServletResponseAdapter}.
+     * @param response the native {@link HttpServletResponse} to wrap
+     * @param activity the current activity
      */
     public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
         super(response);
@@ -108,18 +112,30 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         getHttpServletResponse().setContentType(contentType);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation performs a pre-commit check before returning the stream.
+     */
     @Override
     public OutputStream getOutputStream() throws IOException {
         precommit();
         return getHttpServletResponse().getOutputStream();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation performs a pre-commit check before returning the writer.
+     */
     @Override
     public Writer getWriter() throws IOException {
         precommit();
         return getHttpServletResponse().getWriter();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>If a redirect location has been reserved, this method sends the redirect.
+     */
     @Override
     public void commit() throws IOException {
         if (reservedRedirectLocation != null) {
@@ -128,12 +144,21 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletResponse#reset()}.
+     */
     @Override
     public void reset() {
         getHttpServletResponse().reset();
         reservedRedirectLocation = null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation reserves the redirect location. The actual redirect is
+     * sent when {@link #commit()} is called.
+     */
     @Override
     public void redirect(String location) throws IOException {
         boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
@@ -143,6 +168,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         reservedRedirectLocation = location;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation builds a redirect URL and reserves it.
+     */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
         RedirectTarget redirectTarget = WebUtils.getRedirectTarget(redirectRule, activity);
@@ -162,15 +191,28 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         getHttpServletResponse().setStatus(status);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletResponse#encodeURL(String)}.
+     */
     @Override
     public String transformPath(String path) {
         return getHttpServletResponse().encodeURL(path);
     }
 
+    /**
+     * Returns the underlying {@link HttpServletResponse}.
+     * @return the native servlet response
+     */
     private HttpServletResponse getHttpServletResponse() {
         return getAdaptee();
     }
 
+    /**
+     * Performs a pre-commit action, which may involve executing a transform response
+     * before the main response is written.
+     * @throws IOException if an error occurs during the response
+     */
     private void precommit() throws IOException {
         if (!precommitDone) {
             precommitDone = true;

@@ -23,62 +23,56 @@ import java.nio.file.Path;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
 
 /**
- * Base implementation of {@link ApplicationAdapter} that provides common
- * path resolution facilities relative to an optional application base path.
- * <p>
- * Implementations can delegate to this class to translate virtual paths into
- * real file system paths while supporting fully qualified file URLs.
+ * Abstract base implementation of {@link ApplicationAdapter}.
+ * <p>This adapter provides common facilities for resolving file system paths
+ * relative to a specified application base path. It also supports fully
+ * qualified file URLs. Subclasses should handle attribute management.
  * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
-*/
+ */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     /**
-     * The normalized, absolute base path of the application, or {@code null} if not set.
+     * The normalized, absolute base path of the application.
      */
     private final Path basePath;
 
     /**
-     * Create a new adapter with the given base path.
-     * @param basePath the application base path; may be {@code null}
+     * Creates a new adapter with the given application base path.
+     * @param basePath the application base path, may be {@code null}
      */
     public AbstractApplicationAdapter(String basePath) {
         this.basePath = (basePath != null ? Path.of(basePath).normalize().toAbsolutePath() : null);
     }
 
-    /**
-     * Returns the application base path as a {@link Path}.
-     */
     @Override
     public Path getBasePath() {
         return basePath;
     }
 
-    /**
-     * Returns the application base path as a {@link String}.
-     */
     @Override
     public String getBasePathString() {
         return (basePath != null ? basePath.toString() : null);
     }
 
     /**
-     * Resolve the given path to an absolute path.
+     * Resolves the given path to an absolute, real file system path.
+     * <p>The resolution logic is as follows:
      * <ul>
-     *   <li>If the argument starts with the file: URL scheme, it is treated as a fully
-     *   qualified URL and converted directly to a Path.</li>
-     *   <li>Otherwise, the path is normalized. If a base path is configured and the
-     *   normalized path is not already under it, the path is resolved against the base.</li>
+     *   <li>If the path starts with "file:", it is treated as a fully qualified URL.
+     *   <li>Otherwise, the path is resolved relative to the application base path.
+     *   If no base path is configured, it is resolved relative to the current working directory.</li>
      * </ul>
-     * @param path the virtual or absolute path to resolve (must not be {@code null})
-     * @return the resolved absolute path
+     * @param path the path to resolve (must not be {@code null})
+     * @return the resolved absolute {@link Path}
      */
     @Override
     public Path getRealPath(String path) {
         Assert.notNull(path, "path must not be null");
         if (path.startsWith(FILE_URL_PREFIX)) {
-            // Using url fully qualified paths
+            // A fully qualified URL
             return Path.of(URI.create(path));
         } else {
             Path normalized = Path.of(path).normalize();

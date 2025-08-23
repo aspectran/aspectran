@@ -16,17 +16,25 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.DefaultSessionAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
+import com.aspectran.embed.service.EmbeddedAspectran;
 
 /**
- * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
+ * The session adapter for an embedded Aspectran environment.
+ * <p>This adapter extends {@link DefaultSessionAdapter} to provide session management
+ * capabilities when Aspectran is running in an embedded mode. It wraps a
+ * {@link SessionAgent} that handles the underlying session state.
+ * </p>
+ *
+ * @author Juho Jeong
+ * @since 2016. 11. 26.
+ * @see EmbeddedAspectran
  */
 public class AspectranSessionAdapter extends DefaultSessionAdapter {
 
     /**
-     * Instantiates a new AspectranSessionAdapter.
-     * @param agent the session agent
+     * Creates a new {@code AspectranSessionAdapter} that delegates to the given agent.
+     * @param agent the session agent that manages the session state
      */
     public AspectranSessionAdapter(SessionAgent agent) {
         super(agent);

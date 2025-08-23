@@ -19,64 +19,66 @@ import java.nio.file.Path;
 import java.util.Enumeration;
 
 /**
- * Abstraction over an application/container environment.
+ * Provides an abstraction for the application or container environment.
  * <p>
- * Implementations adapt concrete runtime containers (e.g., servlet engines or
- * embedded runtimes) to expose a small, consistent API for base-path resolution
- * and application-scoped attributes. This allows the core framework to operate
- * uniformly across different execution environments.
+ * This interface is implemented to adapt to a specific runtime container
+ * (e.g., Servlet container, command-line shell, etc.). It exposes a consistent API
+ * for resolving application base paths and managing application-scoped attributes.
+ * This allows the core framework to operate uniformly across different execution
+ * environments.
  * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ApplicationAdapter {
 
     /**
-     * Returns the base path that the current application is mapped to.
-     * @return the base path for the current application
+     * Returns the base path of the application as a {@link Path} object.
+     * @return the application's base path
      */
     Path getBasePath();
 
     /**
-     * Returns the base path that the current application is mapped to.
-     * @return the base path for the current application
+     * Returns the base path of the application as a string.
+     * @return the application's base path as a string
+     * @see #getBasePath()
      */
     String getBasePathString();
 
     /**
-     * Returns the real file system path for a given virtual path relative
-     * to the base path of the current application.
-     * @param path the virtual path to be translated to a real path
-     * @return the real path
+     * Returns the real file system path for a given virtual path.
+     * The path is resolved relative to the application's base path.
+     * @param path the virtual path to translate to a real path
+     * @return the resolved, absolute file system path
      */
     Path getRealPath(String path);
 
     /**
-     * Returns the value for an attribute with the given name.
-     * @param <T> the value type
+     * Returns the application-scoped attribute with the given name.
+     * @param <T> the type of the attribute
      * @param name the name of the attribute
-     * @return the value for the attribute
+     * @return the attribute value, or {@code null} if it does not exist
      */
     <T> T getAttribute(String name);
 
     /**
-     * Sets the value for the attribute of the given name,
-     * replacing an existing value (if any).
+     * Sets an application-scoped attribute.
+     * If an attribute with the same name already exists, it will be replaced.
      * @param name the name of the attribute
-     * @param value the value for the attribute
+     * @param value the value to set for the attribute
      */
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@link Enumeration} containing the names
-     * of the attributes available to this application.
-     * @return the attribute names
+     * Returns an {@link Enumeration} of all application-scoped attribute names.
+     * @return an enumeration of attribute names
      */
     Enumeration<String> getAttributeNames();
 
     /**
-     * Removes an attribute set with the given name.
-     * @param name the name of the attribute to be removed
+     * Removes the application-scoped attribute with the given name.
+     * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
 

@@ -35,387 +35,405 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
- * Abstraction over an incoming request in a given runtime environment.
+ * Provides an abstraction for an incoming request within a specific runtime environment.
  * <p>
- * Implementations encapsulate container-specific request objects and expose a
- * consistent API for accessing headers, parameters, files, attributes, locale,
- * and other request metadata. This makes request handling uniform across
- * different execution environments.
+ * Implementations of this interface encapsulate a container-specific request object
+ * (e.g., {@code HttpServletRequest} in a web environment), exposing a consistent API
+ * for accessing request data such as headers, parameters, attributes, and uploaded files.
+ * This allows request handling logic to remain uniform across different execution contexts.
  * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface RequestAdapter {
 
     /**
-     * Returns the adaptee object to provide request information.
+     * Returns the underlying native request object that this adapter wraps.
      * @param <T> the type of the adaptee object
      * @return the adaptee object
      */
     <T> T getAdaptee();
 
     /**
-     * Returns whether the request scope exists in this request.
-     * @return true if request scope exists, false otherwise
+     * Checks if a request scope has been created for this request.
+     * @return true if the request scope exists, false otherwise
      */
     boolean hasRequestScope();
 
     /**
-     * Returns the request scope in this request.
-     * If the request scope does not exist, it is created.
+     * Returns the request scope associated with this request.
+     * If a scope does not already exist, a new one is created and associated.
      * @return the request scope
      */
     RequestScope getRequestScope();
 
     /**
-     * Returns the value of the request header with the given name.
-     *
-     * <p>If a request header with the given name exists and contains
-     * multiple values, the value that was added first will be returned.
-     * @param name the name of the request header whose value to return
-     * @return the value of the request header with the given name,
-     *         or {@code null} if no header with the given name has been set
-     *         on this request
+     * Returns the value of the specified request header.
+     * If the header has multiple values, the first value is returned.
+     * @param name the name of the header
+     * @return the header value, or {@code null} if the header is not found
      */
     String getHeader(String name);
 
     /**
-     * Returns the values of the request header with the given name.
-     * @param name the name of the request header whose values to return
-     * @return a (possibly empty) {@code Collection} of the values
-     *         of the request header with the given name
+     * Returns all values of the specified request header.
+     * @param name the name of the header
+     * @return a list of header values, or {@code null} if the header is not found
      */
     List<String> getHeaderValues(String name);
 
     /**
-     * Returns the names of the headers of this request.
-     * @return a (possibly empty) {@code Collection} of the names
-     *         of the headers of this request
+     * Returns a set of all header names in this request.
+     * @return a set of header names
      */
     Set<String> getHeaderNames();
 
     /**
-     * Returns a boolean indicating whether the named request header
-     * has already been set.
-     * @param name the header name
-     * @return {@code true} if the named request header
-     *         has already been set; {@code false} otherwise
+     * Checks if the specified request header exists.
+     * @param name the name of the header
+     * @return true if the header exists, false otherwise
      */
     boolean containsHeader(String name);
 
     /**
-     * Set the given single header value under the given header name.
-     * @param name the header name
-     * @param value the header value to set
+     * Sets a header, overwriting any existing value.
+     * @param name the name of the header
+     * @param value the header value
      */
     void setHeader(String name, String value);
 
     /**
-     * Add the given single header value to the current list of values
-     * for the given header.
-     * @param name the header name
-     * @param value the header value to be added
+     * Adds a header value to the specified header.
+     * If the header already exists, the new value is added to the list of existing values.
+     * @param name the name of the header
+     * @param value the header value to add
      */
     void addHeader(String name, String value);
 
     /**
-     * Returns a map of the request headers that can be modified.
-     * @return an {@code MultiValueMap<String, String>} object, may be {@code null}
+     * Returns a mutable map of all request headers.
+     * @return a {@link MultiValueMap} of headers
      */
     MultiValueMap<String, String> getHeaderMap();
 
     /**
-     * Returns whether it has headers.
+     * Checks if this request has any headers.
      * @return true if headers exist, false otherwise
      */
     boolean hasHeaders();
 
     /**
-     * Returns the value of the named attribute as a given type,
-     * or {@code null} if no attribute of the given name exists.
-     * @param <T> the generic type
-     * @param name a {@code String} specifying the name of the attribute
-     * @return an {@code Object} containing the value of the attribute,
-     *         or {@code null} if the attribute does not exist
+     * Returns the value of the specified request-scoped attribute.
+     * @param <T> the type of the attribute
+     * @param name the name of the attribute
+     * @return the attribute value, or {@code null} if it does not exist
      */
     <T> T getAttribute(String name);
 
     /**
-     * Stores an attribute in this request.
-     * @param name specifying the name of the attribute
-     * @param value the {@code Object} to be stored
+     * Sets a request-scoped attribute.
+     * @param name the name of the attribute
+     * @param value the attribute value to set
      */
     void setAttribute(String name, Object value);
 
     /**
-     * Returns a {@code Collection} containing the
-     * names of the attributes available to this request.
-     * This method returns an empty {@code Collection}
-     * if the request has no attributes available to it.
-     * @return the attribute names
+     * Returns a set of all attribute names in this request.
+     * @return a set of attribute names
      */
     Set<String> getAttributeNames();
 
     /**
-     * Removes an attribute from this request.
-     * @param name a {@code String} specifying the name of the attribute to remove
+     * Removes the specified request-scoped attribute.
+     * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
 
     /**
-     * Copies all of the mappings from the specified attributes.
-     * @param attributes the specified attributes
+     * Copies all mappings from the given map to this request's attributes.
+     * @param attributes the map of attributes to copy
      */
     void putAllAttributes(Map<String, Object> attributes);
 
     /**
-     * Extracts all the attributes and fills in the specified map.
-     * @param targetAttributes the target attribute map to be filled
-     * @since 2.0.0
+     * Extracts all attributes from this request and populates the given map.
+     * @param targetAttributes the map to populate with attributes
      */
     void extractAttributes(Map<String, Object> targetAttributes);
 
     /**
-     * Returns a mutable map of the attributes,
-     * with attribute names as map keys and attribute value as map value.
-     * @return a modifiable map of the attributes
+     * Returns a mutable map of all request-scoped attributes.
+     * @return a map of attributes
      */
     Map<String, Object> getAttributeMap();
 
     /**
-     * Returns whether the request has attributes.
-     * @return true if attributes exists, false otherwise
+     * Checks if this request has any attributes.
+     * @return true if attributes exist, false otherwise
      */
     boolean hasAttributes();
 
+    /**
+     * Checks if the specified request-scoped attribute exists.
+     * @param name the name of the attribute
+     * @return true if the attribute exists, false otherwise
+     */
     boolean hasAttribute(String name);
 
     /**
-     * Returns the value of a request parameter as a {@code String},
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code String} representing the
-     *         single value of the parameter
+     * Returns the value of a request parameter.
+     * If the parameter has multiple values, the first value is returned.
+     * @param name the name of the parameter
+     * @return the parameter value, or {@code null} if it does not exist
      * @see #getParameterValues
      */
     String getParameter(String name);
 
     /**
-     * Returns an array of {@code String} objects containing all
-     * of the values the given activity's request parameter has,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return an array of {@code String} objects
-     *         containing the parameter's values
+     * Returns all values of a request parameter.
+     * @param name the name of the parameter
+     * @return an array of parameter values, or {@code null} if the parameter does not exist
      * @see #getParameter
      */
     String[] getParameterValues(String name);
 
     /**
-     * Returns a {@code Collection} of {@code String} objects containing
-     * the names of the parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Enumeration}.
-     * @return a {@code Collection} of {@code String} objects, each {@code String}
-     *         containing the name of a request parameter;
-     *         or an empty {@code Enumeration} if the request has no parameters
+     * Returns a collection of all parameter names in this request.
+     * @return a collection of parameter names
      */
     Collection<String> getParameterNames();
 
     /**
-     * Sets the value to the parameter with the given name.
-     * @param name a {@code String} specifying the name of the parameter
-     * @param value a {@code String} representing the
-     *         single value of the parameter
+     * Sets a parameter value, overwriting any existing value.
+     * @param name the name of the parameter
+     * @param value the parameter value
      * @see #setParameter(String, String[])
      */
     void setParameter(String name, String value);
 
     /**
-     * Sets the value to the parameter with the given name.
-     * @param name a {@code String} specifying the name of the parameter
-     * @param values an array of {@code String} objects
-     *         containing the parameter's values
+     * Sets a parameter with multiple values.
+     * @param name the name of the parameter
+     * @param values an array of parameter values
      * @see #setParameter(String, String)
      */
     void setParameter(String name, String[] values);
 
     /**
-     * Returns a map of the request parameters that can be modified.
-     * @return an {@code Map<String, Object>} object, must not be {@code null}
+     * Returns a map of all request parameters.
+     * The map values can be of type String or String[].
+     * @return a map of all parameters
      */
     Map<String, Object> getAllParameters();
 
     /**
-     * Copies all of the mappings from the specified parameters.
-     * @param parameterMap the specified parameters
+     * Copies all mappings from the given {@link ParameterMap} to this request's parameters.
+     * @param parameterMap the parameters to copy
      * @since 5.2.3
      */
     void putAllParameters(ParameterMap parameterMap);
 
     /**
-     * Copies all of the mappings from the specified parameters.
-     * @param multiValueMap the specified parameters
+     * Copies all mappings from the given {@link MultiValueMap} to this request's parameters.
+     * @param multiValueMap the parameters to copy
      * @since 6.1.2
      */
     void putAllParameters(MultiValueMap<String, String> multiValueMap);
 
     /**
-     * Extracts all the parameters and fills in the specified map.
-     * @param targetParameters the target parameter map to be filled
-     * @since 2.0.0
+     * Extracts all parameters from this request and populates the given map.
+     * @param targetParameters the map to populate with parameters
      */
     void extractParameters(Map<String, Object> targetParameters);
 
     /**
-     * Return a mutable Map of the request parameters,
-     * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
-     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
-     * @return the mutable parameter map
+     * Returns a mutable {@link ParameterMap} of all request parameters.
+     * @return the parameter map
      * @since 1.4.0
      */
     ParameterMap getParameterMap();
 
     /**
-     * Returns whether the request has parameters.
-     * @return true if parameters exists, false otherwise
+     * Checks if this request has any parameters.
+     * @return true if parameters exist, false otherwise
      */
     boolean hasParameters();
 
+    /**
+     * Checks if the specified parameter exists.
+     * @param name the name of the parameter
+     * @return true if the parameter exists, false otherwise
+     */
     boolean hasParameter(String name);
 
     /**
-     * Returns a {@code FileParameter} object as a given request parameter name,
-     * or {@code null} if the file parameter does not exist.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @return a {@code FileParameter} representing the
-     *         single value of the parameter
+     * Returns the uploaded file for the specified parameter name.
+     * If there are multiple files with the same name, the first one is returned.
+     * @param name the name of the file parameter
+     * @return the {@link FileParameter} object, or {@code null} if it does not exist
      * @see #getFileParameterValues
      */
     FileParameter getFileParameter(String name);
 
     /**
-     * Returns an array of {@code FileParameter} objects containing all
-     * of the values the given request parameter has,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @return an array of {@code FileParameter} objects
-     *         containing the parameter's values
+     * Returns all uploaded files for the specified parameter name.
+     * @param name the name of the file parameter
+     * @return an array of {@link FileParameter} objects, or {@code null} if none exist
      * @see #getFileParameter
      */
     FileParameter[] getFileParameterValues(String name);
 
     /**
-     * Returns a {@code Collection} of {@code String} objects containing
-     * the names of the file parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Collection}.
-     * @return a {@code Collection} of {@code String} objects, each {@code String}
-     *         containing the name of a file parameter;
-     *         or an empty {@code Collection} if the request has no file parameters
+     * Returns a set of all file parameter names in this request.
+     * @return a set of file parameter names
      */
     Set<String> getFileParameterNames();
 
     /**
-     * Sets the {@code FileParameter} object to the file parameter with the given name.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @param fileParameter a {@code FileParameter} representing the
-     *         single value of the parameter
+     * Sets a file parameter.
+     * @param name the name of the file parameter
+     * @param fileParameter the {@link FileParameter} object
      * @see #setFileParameter(String, FileParameter[])
      */
     void setFileParameter(String name, FileParameter fileParameter);
 
     /**
-     * Sets the value to the file parameter with the given name.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @param fileParameters an array of {@code FileParameter} objects
-     *         containing the file parameter's values
-     * @see #setFileParameter
+     * Sets a file parameter with multiple files.
+     * @param name the name of the file parameter
+     * @param fileParameters an array of {@link FileParameter} objects
+     * @see #setFileParameter(String, FileParameter)
      */
     void setFileParameter(String name, FileParameter[] fileParameters);
 
     /**
-     * Removes the file parameter with the specified name.
-     * @param name a {@code String} specifying the name of the file parameter
+     * Removes the specified file parameter.
+     * @param name the name of the file parameter to remove
      */
     void removeFileParameter(String name);
 
     /**
-     * Copies all of the mappings from the specified file parameters.
-     * @param fileParameterMap the specified file parameters
+     * Copies all mappings from the given map to this request's file parameters.
+     * @param fileParameterMap the map of file parameters to copy
      * @since 6.1.2
      */
     void putAllFileParameters(MultiValueMap<String, FileParameter> fileParameterMap);
 
     /**
-     * Returns whether the request has file parameters.
-     * @return true if file parameters exists, false otherwise
+     * Checks if this request has any file parameters.
+     * @return true if file parameters exist, false otherwise
      */
     boolean hasFileParameters();
 
     /**
-     * Returns the method used for the request.
-     * @return a {@code MethodType} object
+     * Returns the request method (e.g., GET, POST).
+     * @return the {@link MethodType}
      */
     MethodType getRequestMethod();
 
     /**
-     * Returns the name of the character encoding used in the body of this request.
-     * @return a {@code String} containing the name of the character encoding,
-     *         or {@code null} if the request does not specify a character encoding
+     * Returns the character encoding of the request body.
+     * @return the character encoding name, or {@code null} if not specified
      */
     String getEncoding();
 
     /**
-     * Overrides the name of the character encoding used in the body of this request.
-     * This method must be called prior to reading request parameters
-     * or reading input using getReader(). Otherwise, it has no effect.
-     * @param encoding a {@code String} containing the name of the character encoding.
-     * @throws UnsupportedEncodingException if the specified encoding is invalid
+     * Sets the character encoding of the request body.
+     * This should be called before reading parameters or the request body.
+     * @param encoding the character encoding name
+     * @throws UnsupportedEncodingException if the specified encoding is not supported
      */
     void setEncoding(String encoding) throws UnsupportedEncodingException;
 
     /**
-     * Returns the preferred {@code Locale}.
-     * @return a preferred {@code Locale}
+     * Returns the preferred locale of the client.
+     * @return the preferred {@link Locale}
      */
     Locale getLocale();
 
     /**
-     * Sets the preferred {@code Locale}.
-     * @param locale a given {@code Locale}
+     * Sets the locale for this request.
+     * @param locale the {@link Locale} to set
      */
     void setLocale(Locale locale);
 
     /**
-     * Returns the preferred {@code TimeZone}.
-     * @return a preferred {@code TimeZone}
+     * Returns the preferred time zone of the client.
+     * @return the preferred {@link TimeZone}
      */
     TimeZone getTimeZone();
 
     /**
-     * Sets the preferred {@code TimeZone}.
-     * @param timeZone a given {@code TimeZone}
+     * Sets the time zone for this request.
+     * @param timeZone the {@link TimeZone} to set
      */
     void setTimeZone(TimeZone timeZone);
 
+    /**
+     * Gets the maximum size allowed for the request body.
+     * @return the maximum request size in bytes
+     */
     long getMaxRequestSize();
 
+    /**
+     * Sets the maximum size allowed for the request body.
+     * @param maxRequestSize the maximum request size in bytes
+     */
     void setMaxRequestSize(long maxRequestSize);
 
+    /**
+     * Returns an input stream for reading the request body.
+     * @return the {@link InputStream}
+     * @throws IOException if an I/O error occurs
+     */
     InputStream getInputStream() throws IOException;
 
+    /**
+     * Returns the request body as a string.
+     * @return the request body, or {@code null} if not available
+     */
     String getBody();
 
+    /**
+     * Sets the request body as a string.
+     * @param body the request body string
+     */
     void setBody(String body);
 
+    /**
+     * Parses the request body into a {@link Parameters} object.
+     * @return the parsed parameters
+     * @throws RequestParseException if an error occurs during parsing
+     */
     Parameters getBodyAsParameters() throws RequestParseException;
 
+    /**
+     * Parses the request body into an object of the specified {@link Parameters} type.
+     * @param <T> the type of the parameters object
+     * @param requiredType the class of the parameters object to return
+     * @return the parsed parameters object
+     * @throws RequestParseException if an error occurs during parsing
+     */
     <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException;
 
+    /**
+     * Returns all request parameters (from query string and body) as a {@link Parameters} object.
+     * @return the parameters object
+     */
     Parameters getParameters();
 
+    /**
+     * Returns all request parameters (from query string and body) as an object of the specified type.
+     * @param <T> the type of the parameters object
+     * @param requiredType the class of the parameters object to return
+     * @return the parameters object
+     */
     <T extends Parameters> T getParameters(Class<T> requiredType);
 
+    /**
+     * Returns the {@link Principal} object representing the authenticated user.
+     * @return the user principal, or {@code null} if the user is not authenticated
+     */
     Principal getPrincipal();
 
 }

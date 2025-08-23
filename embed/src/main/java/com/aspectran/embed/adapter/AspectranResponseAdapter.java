@@ -16,23 +16,30 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.DefaultResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.embed.service.EmbeddedAspectran;
 
 import java.io.Writer;
 
 /**
- * Adapt Aspectran Response to Core {@link ResponseAdapter}.
+ * The response adapter for an embedded Aspectran environment.
+ * <p>This adapter extends {@link DefaultResponseAdapter} and is used to capture
+ * the output of a translet execution. It directs all response content to a
+ * provided {@link Writer} and defaults the content type to {@code text/plain}.
+ * </p>
+ *
+ * @author Juho Jeong
+ * @since 2016. 11. 26.
+ * @see EmbeddedAspectran
  */
 public class AspectranResponseAdapter extends DefaultResponseAdapter {
 
     /**
-     * Instantiates a new AspectranResponseAdapter.
-     * @param outputWriter the writer to output
+     * Creates a new {@code AspectranResponseAdapter} that writes to the specified writer.
+     * @param outputWriter the writer to which response content will be written
      */
     public AspectranResponseAdapter(Writer outputWriter) {
         super(null, outputWriter);
-
         setContentType(ContentType.TEXT_PLAIN.toString());
     }
 

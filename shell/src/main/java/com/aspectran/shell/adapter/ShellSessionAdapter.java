@@ -19,17 +19,21 @@ import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Shell session adapter that exposes session access within shell activities when enabled.
- * <p>
- * Wraps a {@link SessionAgent} created by the shell service's session manager and provides
- * access to session attributes and lifecycle hooks via the core base class.
+ * The session adapter for the interactive shell environment.
+ * <p>This adapter provides session capabilities for shell activities, allowing state
+ * to be maintained across multiple command executions. It extends
+ * {@link DefaultSessionAdapter} and wraps a {@link SessionAgent} that manages the
+ * underlying session state.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 3. 4.
  */
 public class ShellSessionAdapter extends DefaultSessionAdapter {
 
     /**
-     * Create a new ShellSessionAdapter backed by the given session agent.
-     * @param agent the session agent managing session state
+     * Creates a new {@code ShellSessionAdapter} that delegates to the given agent.
+     * @param agent the session agent that manages the session state
      */
     public ShellSessionAdapter(SessionAgent agent) {
         super(agent);

@@ -24,162 +24,155 @@ import java.io.Writer;
 import java.util.Collection;
 
 /**
- * Abstraction over an outgoing response in a given runtime environment.
+ * Provides an abstraction for an outgoing response within a specific runtime environment.
  * <p>
- * Implementations encapsulate container-specific response objects and expose a
- * consistent API for headers, status, encoding/content type, and output streams/writers,
- * enabling uniform response handling across different execution environments.
+ * Implementations of this interface encapsulate a container-specific response object
+ * (e.g., {@code HttpServletResponse} in a web environment), exposing a consistent API
+ * for managing headers, status codes, content type, and the response body via an
+ * {@link OutputStream} or {@link Writer}. This allows response generation logic to
+ * remain uniform across different execution contexts.
  * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ResponseAdapter {
 
     /**
-     * Returns the adaptee object to provide response information.
+     * Returns the underlying native response object that this adapter wraps.
      * @param <T> the type of the adaptee object
      * @return the adaptee object
      */
     <T> T getAdaptee();
 
     /**
-     * Returns the value of the response header with the given name.
-     *
-     * <p>If a response header with the given name exists and contains
-     * multiple values, the value that was added first will be returned.
-     * @param name the name of the response header whose value to return
-     * @return the value of the response header with the given name,
-     *         or {@code null} if no header with the given name has been set
-     *         on this response
+     * Returns the value of the specified response header.
+     * If the header has multiple values, the first value is returned.
+     * @param name the name of the header
+     * @return the header value, or {@code null} if the header is not found
      */
     String getHeader(String name);
 
     /**
-     * Returns the values of the response header with the given name.
-     * @param name the name of the response header whose values to return
-     * @return a (possibly empty) {@code Collection} of the values
-     *         of the response header with the given name
+     * Returns all values for the specified response header.
+     * @param name the name of the header
+     * @return a collection of header values, which may be empty
      */
     Collection<String> getHeaders(String name);
 
     /**
-     * Returns the names of the headers of this response.
-     * @return a (possibly empty) {@code Collection} of the names
-     *         of the headers of this response
+     * Returns a collection of all header names set in this response.
+     * @return a collection of header names
      */
     Collection<String> getHeaderNames();
 
     /**
-     * Returns a boolean indicating whether the named response header
-     * has already been set.
-     * @param name the header name
-     * @return {@code true} if the named response header
-     *         has already been set; {@code false} otherwise
+     * Checks if the specified response header has been set.
+     * @param name the name of the header
+     * @return true if the header is set, false otherwise
      */
     boolean containsHeader(String name);
 
     /**
-     * Set the given single header value under the given header name.
-     * If the header had already been set, the new value overwrites the previous one.
-     * @param name the header name
-     * @param value the header value to set
+     * Sets a response header, overwriting any existing value.
+     * @param name the name of the header
+     * @param value the header value
      */
     void setHeader(String name, String value);
 
     /**
-     * Add the given single header value to the current list of values
-     * for the given header.
-     * @param name the header name
-     * @param value the header value to be added
+     * Adds a value to the specified response header.
+     * @param name the name of the header
+     * @param value the header value to add
      */
     void addHeader(String name, String value);
 
     /**
-     * Returns the name of the character encoding (MIME charset) used for the body
-     * sent in this response.
-     * @return a {@code String} specifying the name of the character encoding,
-     *         for example, UTF-8
+     * Returns the character encoding for the response body.
+     * @return the character encoding name (e.g., "UTF-8")
      */
     String getEncoding();
 
     /**
-     * Sets the character encoding of the response being sent to the client.
-     * @param encoding a {@code String} specifying only the character set
-     *         defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
+     * Sets the character encoding for the response body.
+     * @param encoding the character encoding name
      */
     void setEncoding(String encoding);
 
     /**
-     * Returns the content type used for the MIME body sent in this response.
-     * @return a {@code String} specifying the content type,
-     *         for example, {@code text/html}, or null
+     * Returns the content type for the response body.
+     * @return the content type string (e.g., "text/html")
      */
     String getContentType();
 
     /**
-     * Sets the content type of the response being sent to the client,
-     * if the response has not been committed yet.
-     * @param contentType a {@code String} specifying the MIME type of the content
+     * Sets the content type for the response body.
+     * This should be set before the response is committed.
+     * @param contentType the MIME type of the content
      */
     void setContentType(String contentType);
 
     /**
-     * Returns a {@code OutputStream} suitable for writing binary data in the response.
-     * @return a {@code OutputStream} for writing binary data
-     * @throws IOException if an input or output exception occurs
+     * Returns an {@link OutputStream} for writing binary data to the response body.
+     * Calling this method may prevent {@link #getWriter()} from being used.
+     * @return the output stream for binary data
+     * @throws IOException if an I/O error occurs
      */
     OutputStream getOutputStream() throws IOException;
 
     /**
-     * Returns a {@code Writer} object that can send character text to the client.
-     * @return a {@code Writer} object that can return character data to the client
-     * @throws IOException if an input or output exception occurs
+     * Returns a {@link Writer} for writing character data to the response body.
+     * Calling this method may prevent {@link #getOutputStream()} from being used.
+     * @return the writer for character data
+     * @throws IOException if an I/O error occurs
      */
     Writer getWriter() throws IOException;
 
     /**
-     * If a redirect response is pending, commit the actual response.
-     * @throws IOException if an output exception occurs
+     * Flushes the response buffer and commits the response, writing any pending data
+     * to the client. This method is typically called after all headers and content
+     * have been set.
+     * @throws IOException if an I/O error occurs
      */
     void commit() throws IOException;
 
     /**
-     * Clears any data that exists in the buffer as well as the status code, headers.
+     * Clears any buffered data, status code, and headers from the response.
+     * This method can only be called if the response has not yet been committed.
      */
     void reset();
 
     /**
-     * Sends a temporary redirect response to the client using the specified redirect location.
-     * @param location the redirect location
-     * @throws IOException if an input or output exception occurs
+     * Sends a redirect response to the client using the specified location URL.
+     * @param location the URL to redirect to
+     * @throws IOException if an I/O error occurs
      */
     void redirect(String location) throws IOException;
 
     /**
-     * Redirects a client to a new URL.
-     * @param redirectRule the redirect rule
-     * @return the redirect target information
-     * @throws IOException if an input or output exception occurs
+     * Sends a redirect response based on a configured {@link RedirectRule}.
+     * @param redirectRule the rule defining the redirect behavior
+     * @return information about the redirect target
+     * @throws IOException if an I/O error occurs
      */
     RedirectTarget redirect(RedirectRule redirectRule) throws IOException;
 
     /**
-     * Returns the status code.
-     * @return the status
+     * Returns the HTTP status code of the response.
+     * @return the status code
      */
     int getStatus();
 
     /**
-     * Sets the status code.
-     * @param status the status code
+     * Sets the HTTP status code of the response.
+     * @param status the status code to set
      */
     void setStatus(int status);
 
     /**
-     * Transform a response path if necessary to the container-specific form.
-     * Implementations may rewrite or normalize the path before dispatch/redirect.
-     * Default implementations can return the path unchanged.
-     * @param path the original response path
+     * Transforms a given path into a URL suitable for the container.
+     * For example, in a web environment, this might encode the URL.
+     * @param path the path to transform
      * @return the transformed path
      */
     String transformPath(String path);

@@ -21,131 +21,119 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.Enumeration;
 
 /**
- * Abstraction over a user session in a given runtime environment.
+ * Provides an abstraction for a user session within a specific runtime environment.
  * <p>
- * Implementations adapt container-specific session objects and expose a
- * consistent API for identity, lifecycle, attributes, and a lazily created
- * {@link com.aspectran.core.component.bean.scope.SessionScope}. This enables
- * session handling to be uniform across runtime environments.
+ * Implementations of this interface encapsulate a container-specific session object
+ * (e.g., {@code HttpSession} in a web environment), exposing a consistent API for
+ * managing session identity, lifecycle, attributes, and a lazily created
+ * {@link SessionScope}. This allows session handling logic to remain uniform
+ * across different execution contexts.
  * </p>
  *
- * @since 2011.  3. 13.
+ * @author Juho Jeong
+ * @since 2011. 3. 13.
  */
 public interface SessionAdapter {
 
     /**
-     * Returns the adaptee object to provide session information.
+     * Returns the underlying native session object that this adapter wraps.
      * @param <T> the type of the adaptee object
      * @return the adaptee object
      */
     <T> T getAdaptee();
 
     /**
-     * Returns the current session scope.
-     * @param create if true, if there is no currently created session area, a new one is created.
-     * @return the session scope
+     * Returns the session scope associated with this session.
+     * The session scope is used to manage session-scoped beans.
+     * @param create if {@code true}, a new session scope will be created if one does not exist
+     * @return the session scope, or {@code null} if {@code create} is false and no scope exists
      */
     SessionScope getSessionScope(boolean create);
 
     /**
-     * Returns a string containing the unique identifier assigned to this session.
-     * The identifier is assigned by the session manager and is implementation dependent.
-     * @return a string specifying the identifier assigned to this session
+     * Returns the unique identifier assigned to this session.
+     * @return the session ID
      * @since 1.5.0
      */
     String getId();
 
     /**
-     * Returns the time when this session was created, measured
-     * in milliseconds since midnight January 1, 1970 GMT.
-     * @return a long specifying when this session was created,
-     *         expressed in milliseconds since 1/1/1970 GMT
+     * Returns the time this session was created, in milliseconds since the epoch.
+     * @return the session creation time
      * @since 1.5.0
      */
     long getCreationTime();
 
     /**
      * Returns the last time the client sent a request associated with this session,
-     * as the number of milliseconds since midnight January 1, 1970 GMT,
-     * and marked by the time the container received the request.
-     *
-     * Actions that your application takes, such as getting or setting a value associated with the session,
-     * do not affect the access time.
-     * @return a long representing the last time the client sent a request associated with this session,
-     *         expressed in milliseconds since 1/1/1970 GMT
+     * in milliseconds since the epoch.
+     * @return the last accessed time
      * @since 1.5.0
      */
     long getLastAccessedTime();
 
     /**
-     * Specifies the time, in seconds, between client requests before invalidating the
-     * session. A negative time indicates the session should never timeout.
-     * @param interval an integer specifying the number of seconds
+     * Sets the maximum time interval, in seconds, that the session will be kept open
+     * between client accesses. A negative or zero value indicates that the session
+     * should never time out.
+     * @param interval the maximum inactive interval, in seconds
      */
     void setMaxInactiveInterval(int interval);
 
     /**
-     * Returns the maximum time interval, in seconds, that the session manager will keep
-     * this session open between client accesses.
-     * After this interval, the session manager will invalidate the session.
-     * The maximum time interval can be set with the {@code setMaxInactiveInterval} method.
-     * A negative time indicates the session should never time out.
-     * @return an integer specifying the number of seconds this session
-     *         remains open between client requests
+     * Returns the maximum time interval, in seconds, that the session will be kept open
+     * between client accesses.
+     * @return the maximum inactive interval, in seconds
      * @since 1.5.0
      */
     int getMaxInactiveInterval();
 
     /**
-     * Returns an Enumeration of String objects containing the names
-     * of all the objects bound to this session.
-     * @return an Enumeration of String objects specifying the names
-     *         of all the objects bound to this session
+     * Returns an enumeration of all attribute names bound to this session.
+     * @return an enumeration of attribute names, or {@code null} if the session is invalid
      * @since 1.5.0
      */
     @Nullable
     Enumeration<String> getAttributeNames();
 
     /**
-     * Returns the value of the named attribute as a given type,
-     * or {@code null} if no attribute of the given name exists.
-     * @param <T> the generic type
-     * @param name a {@code String} specifying the name of the attribute
-     * @return an {@code Object} containing the value of the attribute,
-     *         or {@code null} if the attribute does not exist
+     * Returns the session attribute with the specified name.
+     * @param <T> the type of the attribute
+     * @param name the name of the attribute
+     * @return the attribute value, or {@code null} if the attribute is not found
      */
     <T> T getAttribute(String name);
 
     /**
-     * Stores an attribute in this session.
-     * @param name specifying the name of the attribute
-     * @param value the {@code Object} to be stored
+     * Binds an object as an attribute to this session.
+     * @param name the name of the attribute
+     * @param value the attribute value
      */
     void setAttribute(String name, Object value);
 
     /**
-     * Removes the object bound with the specified name from this session.
-     * If the session does not have an object bound with the specified name,
-     * this method does nothing.
-     * @param name the name of the object to remove from this session
+     * Removes the attribute with the specified name from this session.
+     * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
 
     /**
-     * Invalidates this session then unbinds any objects bound to it.
+     * Invalidates this session and unbinds any objects bound to it.
      */
     void invalidate();
 
     /**
-     * Returns whether it is a valid session or not.
-     * @return true if valid session, false otherwise
+     * Checks if this session is still valid.
+     * A session is valid if it has not been invalidated.
+     * @return {@code true} if the session is valid, {@code false} otherwise
      */
     boolean isValid();
 
     /**
-     * Returns true if a new session was created for this request.
-     * @return true if the server has created a session,
-     *      but the client has not yet joined
+     * Checks if this session was newly created for the current request.
+     * A session is considered new if it was created by the server but the client
+     * has not yet acknowledged it.
+     * @return {@code true} if the session is new, {@code false} otherwise
      */
     boolean isNew();
 

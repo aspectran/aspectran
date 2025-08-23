@@ -19,18 +19,20 @@ import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * Request adapter used by the daemon runtime.
- * <p>
- * This is a thin specialization of {@link com.aspectran.core.adapter.DefaultRequestAdapter}
- * that is instantiated with the daemon’s request method and optionally pre-populated
- * attributes/parameters by {@link com.aspectran.daemon.activity.DaemonActivity}.
+ * The request adapter for the daemon environment.
+ * <p>This class is a specialization of {@link DefaultRequestAdapter} used for
+ * activities triggered within a daemon, such as scheduled jobs or background tasks.
+ * It is typically instantiated by a {@link com.aspectran.daemon.activity.DaemonActivity}.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 12. 12.
  */
 public class DaemonRequestAdapter extends DefaultRequestAdapter {
 
     /**
-     * Instantiates a new DaemonRequestAdapter.
-     * @param requestMethod the request method
+     * Creates a new {@code DaemonRequestAdapter} with the specified request method.
+     * @param requestMethod the method of the request (e.g., GET, POST)
      */
     public DaemonRequestAdapter(MethodType requestMethod) {
         super(requestMethod);

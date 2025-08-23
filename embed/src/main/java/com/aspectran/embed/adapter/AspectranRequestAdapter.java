@@ -16,17 +16,25 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.DefaultRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.embed.service.EmbeddedAspectran;
 
 /**
- * Adapt Aspectran Request to Core {@link RequestAdapter}.
+ * The request adapter for an embedded Aspectran environment.
+ * <p>This adapter is used when triggering activities programmatically via an
+ * {@link EmbeddedAspectran} instance. It extends {@link DefaultRequestAdapter}
+ * and allows the caller to specify a request method.
+ * </p>
+ *
+ * @author Juho Jeong
+ * @since 2016. 11. 26.
+ * @see EmbeddedAspectran
  */
 public class AspectranRequestAdapter extends DefaultRequestAdapter {
 
     /**
-     * Instantiates a new AspectranRequestAdapter.
-     * @param requestMethod the request method
+     * Creates a new {@code AspectranRequestAdapter} with the specified request method.
+     * @param requestMethod the method for the request (e.g., GET, POST)
      */
     public AspectranRequestAdapter(MethodType requestMethod) {
         super(requestMethod);

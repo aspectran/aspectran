@@ -21,12 +21,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Simple in-memory {@link ApplicationAdapter} implementation backed by a concurrent map.
- * <p>
- * Useful for non-servlet environments or tests where application attributes and
- * base-path resolution are needed without a full container.
+ * A simple, concrete implementation of {@link ApplicationAdapter} that stores
+ * application-scoped attributes in a thread-safe {@link ConcurrentHashMap}.
+ * <p>This adapter is useful for non-web environments, such as command-line
+ * applications or tests, where a basic application context is required.
+ * It extends {@link AbstractApplicationAdapter} to inherit base path resolution
+ * capabilities.
  * </p>
  *
+ * @author Juho Jeong
  * @since 2016. 3. 26.
  */
 public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
@@ -37,15 +40,16 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     /**
-     * Create a new DefaultApplicationAdapter with an optional base path.
-     * @param basePath the application base path; may be {@code null}
+     * Creates a new {@code DefaultApplicationAdapter} with the specified base path.
+     * @param basePath the application base path, may be {@code null}
      */
     public DefaultApplicationAdapter(String basePath) {
         super(basePath);
     }
 
     /**
-     * Return the attribute with the specified name from the internal store.
+     * {@inheritDoc}
+     * <p>This implementation retrieves the attribute from the internal map.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -54,7 +58,8 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
     }
 
     /**
-     * Store an attribute in the internal map, replacing any existing value.
+     * {@inheritDoc}
+     * <p>This implementation stores the attribute in the internal map.
      */
     @Override
     public void setAttribute(String name, Object value) {
@@ -62,7 +67,8 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
     }
 
     /**
-     * Return an enumeration of all attribute names currently stored.
+     * {@inheritDoc}
+     * <p>This implementation returns an enumeration of keys from the internal map.
      */
     @Override
     public Enumeration<String> getAttributeNames() {
@@ -70,7 +76,8 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
     }
 
     /**
-     * Remove the attribute with the specified name, if present.
+     * {@inheritDoc}
+     * <p>This implementation removes the attribute from the internal map.
      */
     @Override
     public void removeAttribute(String name) {

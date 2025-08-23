@@ -35,23 +35,33 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class TowRequestAdapter.
+ * An adapter that wraps an {@link HttpServerExchange}, exposing it as a
+ * {@link WebRequestAdapter} for the Aspectran framework.
+ * <p>This class acts as a bridge between the Undertow API and the Aspectran core,
+ * allowing the framework to handle Undertow requests in a consistent, abstracted manner.
+ * </p>
  *
- * <p>Created: 2019-07-27</p>
+ * @author Juho Jeong
+ * @since 2019-07-27
  */
 public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
     private boolean headersObtained;
 
     /**
-     * Instantiates a new TowRequestAdapter.
+     * Creates a new {@code TowRequestAdapter}.
      * @param requestMethod the request method
-     * @param exchange the adaptee object
+     * @param exchange the native {@link HttpServerExchange} to wrap
      */
     public TowRequestAdapter(MethodType requestMethod, HttpServerExchange exchange) {
         super(requestMethod, exchange);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation lazily populates the header map from the underlying
+     * {@link HttpServerExchange} on first access.
+     */
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
         if (!headersObtained) {
@@ -70,6 +80,10 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         return super.getHeaderMap();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation starts blocking I/O on the exchange if not already started.
+     */
     @Override
     public InputStream getInputStream() throws IOException {
         if (!getHttpServerExchange().isBlocking()) {
@@ -78,10 +92,19 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         return getHttpServerExchange().getInputStream();
     }
 
+    /**
+     * Returns the underlying {@link HttpServerExchange}.
+     * @return the native Undertow exchange
+     */
     private HttpServerExchange getHttpServerExchange() {
         return getAdaptee();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation initializes the adapter by extracting query parameters,
+     * content type, and locale from the native {@link HttpServerExchange}.
+     */
     @Override
     public void preparse() {
         HttpServerExchange exchange = getAdaptee();
@@ -99,7 +122,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
                     setEncoding(mediaType.getCharset().name());
                 }
             } catch (Exception e) {
-                // ignored
+                // ignore
             }
         }
         String acceptLanguage = exchange.getRequestHeaders().getFirst(Headers.ACCEPT_LANGUAGE);
@@ -109,6 +132,10 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if attempting to replicate from itself
+     */
     @Override
     public void preparse(WebRequestAdapter requestAdapter) {
         if (requestAdapter == this) {

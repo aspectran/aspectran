@@ -21,34 +21,35 @@ import com.aspectran.utils.ToStringBuilder;
 import static com.aspectran.core.component.bean.scope.SessionScope.SESSION_SCOPE_ATTR_NAME;
 
 /**
- * Base implementation of {@link SessionAdapter} that stores a reference to the underlying
- * session "adaptee" and lazily manages a {@link SessionScope} within the session attributes.
+ * Abstract base implementation of {@link SessionAdapter}.
+ * <p>This class holds a reference to the underlying native session object (the "adaptee")
+ * and provides lazy management of a {@link SessionScope} instance. The session scope is
+ * stored as an attribute in the native session.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     /**
-     * The underlying session object being adapted (framework-specific).
+     * The underlying, framework-specific session object.
      */
     private final Object adaptee;
 
     /**
-     * Lazily initialized {@link SessionScope} cached on this adapter and stored in the session.
+     * The lazily-initialized {@link SessionScope}, cached on this adapter after first access.
      */
     private volatile SessionScope sessionScope;
 
     /**
-     * Create a new AbstractSessionAdapter.
-     * @param adaptee the native session object being adapted; may be {@code null}
+     * Creates a new {@code AbstractSessionAdapter}.
+     * @param adaptee the native, framework-specific session object to adapt, may be {@code null}
      */
     public AbstractSessionAdapter(Object adaptee) {
         this.adaptee = adaptee;
     }
 
-    /**
-     * Return the underlying session adaptee.
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
@@ -56,7 +57,11 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     }
 
     /**
-     * Load or create a {@link SessionScope} and store it in the session attributes as needed.
+     * {@inheritDoc}
+     * <p>This implementation lazily loads the {@link SessionScope} from a session
+     * attribute. If the scope does not exist and {@code create} is true, it uses
+     * the {@link #createSessionScope()} factory method to instantiate a new one.
+     * </p>
      */
     @Override
     public SessionScope getSessionScope(boolean create) {
@@ -74,6 +79,9 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     /**
      * Factory method to create a new {@link SessionScope} instance.
+     * <p>The default implementation returns a plain {@link SessionScope}.
+     * Subclasses can override this to provide a custom scope implementation.
+     * @return a new {@code SessionScope}
      */
     protected SessionScope createSessionScope() {
         return new SessionScope();

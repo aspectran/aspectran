@@ -24,6 +24,16 @@ import com.aspectran.web.support.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Abstract base class for {@link WebRequestAdapter} implementations.
+ * <p>This class extends {@link AbstractRequestAdapter} and provides common
+ * functionality for web-based request adapters, such as handling the request's
+ * {@link MediaType} and parsing the request body on demand.
+ * </p>
+ *
+ * @author Juho Jeong
+ * @since 6.3.0
+ */
 public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter implements WebRequestAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractWebRequestAdapter.class);
@@ -32,18 +42,33 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
 
     private boolean bodyObtained;
 
+    /**
+     * Creates a new {@code AbstractWebRequestAdapter}.
+     * @param requestMethod the request method
+     * @param adaptee the native request object to adapt
+     */
     public AbstractWebRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod, adaptee);
     }
 
+    @Override
     public MediaType getMediaType() {
         return mediaType;
     }
 
+    /**
+     * Sets the {@link MediaType} of the request body.
+     * @param mediaType the media type
+     */
     protected void setMediaType(MediaType mediaType) {
         this.mediaType = mediaType;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation parses the request body using {@link WebRequestBodyParser}
+     * on the first call and caches the result.
+     */
     @Override
     public String getBody() {
         if (!bodyObtained) {
@@ -61,6 +86,11 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
         return super.getBody();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation parses the request body as parameters using
+     * {@link WebRequestBodyParser}.
+     */
     @Override
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
         if (getMediaType() != null) {

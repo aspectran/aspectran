@@ -16,7 +16,6 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,26 +23,39 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link HttpServletRequest} to Core {@link SessionAdapter}.
+ * An adapter that wraps an {@link HttpServletRequest} to expose session management
+ * capabilities via the {@link com.aspectran.core.adapter.SessionAdapter} interface.
+ * <p>This class lazily retrieves the underlying {@link HttpSession} from the request
+ * as needed, providing a bridge between the Servlet API and the Aspectran core.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
-     * Instantiates a new HttpSessionAdapter.
-     * @param request the HTTP request
+     * Creates a new {@code HttpSessionAdapter}.
+     * @param request the native {@link HttpServletRequest} from which the session is obtained
      */
     public HttpSessionAdapter(HttpServletRequest request) {
         super(request);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns the underlying {@link HttpSession}, creating it if necessary.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)getSession(true);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns a new {@link HttpSessionScope} instance.
+     */
     @Override
     public SessionScope createSessionScope() {
         return new HttpSessionScope();
@@ -56,7 +68,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public long getCreationTime() {
-       return getSession(true).getCreationTime();
+        return getSession(true).getCreationTime();
     }
 
     @Override
@@ -73,32 +85,35 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         getSession(true).setMaxInactiveInterval(interval);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     public Enumeration<String> getAttributeNames() {
         HttpSession session = getSession(false);
-        if (session != null) {
-            return session.getAttributeNames();
-        } else {
-            return null;
-        }
+        return (session != null ? session.getAttributeNames() : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         HttpSession session = getSession(false);
-        if (session != null) {
-            return (T)session.getAttribute(name);
-        } else {
-            return null;
-        }
+        return (session != null ? (T)session.getAttribute(name) : null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Creates a session if one does not exist and the value is not null.
+     */
     @Override
     public void setAttribute(String name, Object value) {
         if (value != null) {
-            HttpSession session = getSession(true);
-            session.setAttribute(name, value);
+            getSession(true).setAttribute(name, value);
         } else {
             HttpSession session = getSession(false);
             if (session != null) {
@@ -115,6 +130,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Does not create a session if one does not exist.
+     */
     @Override
     public void invalidate() {
         HttpSession session = getSession(false);
@@ -123,10 +142,13 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>A session is considered valid if it exists.
+     */
     @Override
     public boolean isValid() {
-        HttpSession session = getSession(false);
-        return (session != null);
+        return (getSession(false) != null);
     }
 
     @Override
@@ -135,6 +157,11 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         return (session == null || session.isNew());
     }
 
+    /**
+     * Gets the underlying {@link HttpSession}, creating it if necessary.
+     * @param create {@code true} to create a new session if one does not exist
+     * @return the session, or {@code null} if {@code create} is false and no session exists
+     */
     public HttpSession getSession(boolean create) {
         return ((HttpServletRequest)super.getAdaptee()).getSession(create);
     }

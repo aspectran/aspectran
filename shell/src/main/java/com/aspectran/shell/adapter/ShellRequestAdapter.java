@@ -19,19 +19,21 @@ import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * Shell request adapter that supplies request metadata and parameters to the core.
- * <p>
- * Instances are created by {@link com.aspectran.shell.activity.ShellActivity} for the
- * current invocation, using the HTTP-like {@link MethodType} parsed from the command line.
- * Parameters collected by the shell are later injected via {@link #setParameterMap} on the
- * base adapter.
+ * The request adapter for the interactive shell environment.
+ * <p>This adapter represents a command-line invocation as a request. It is created
+ * by a {@link com.aspectran.shell.activity.ShellActivity} and holds the
+ * request method (e.g., GET, POST) parsed from the command. Parameters from the
+ * command line are subsequently added to this adapter.
  * </p>
+ *
+ * @author Juho Jeong
+ * @since 2017. 3. 4.
  */
 public class ShellRequestAdapter extends DefaultRequestAdapter {
 
     /**
-     * Create a new ShellRequestAdapter for the given request method.
-     * @param requestMethod the method to associate (e.g. GET, POST)
+     * Creates a new {@code ShellRequestAdapter} for the specified request method.
+     * @param requestMethod the request method parsed from the shell command
      */
     public ShellRequestAdapter(MethodType requestMethod) {
         super(requestMethod);

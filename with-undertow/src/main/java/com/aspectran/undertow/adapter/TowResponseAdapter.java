@@ -43,9 +43,14 @@ import java.util.stream.Collectors;
 import static com.aspectran.web.adapter.HttpServletResponseAdapter.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
- * The Class TowResponseAdapter.
+ * An adapter that wraps an {@link HttpServerExchange}, exposing it as a
+ * {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
+ * <p>This class acts as a bridge between the Undertow API and the Aspectran core,
+ * allowing the framework to write to the Undertow response in a consistent manner.
+ * </p>
  *
- * <p>Created: 2019-07-27</p>
+ * @author Juho Jeong
+ * @since 2019-07-27
  */
 public class TowResponseAdapter extends AbstractResponseAdapter {
 
@@ -61,6 +66,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     private String reservedRedirectLocation;
 
+    /**
+     * Creates a new {@code TowResponseAdapter}.
+     * @param exchange the native {@link HttpServerExchange} to wrap
+     * @param activity the current activity
+     */
     public TowResponseAdapter(HttpServerExchange exchange, TowActivity activity) {
         super(exchange);
         this.activity = activity;
@@ -167,6 +177,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if {@link #getWriter()} has already been called
+     */
     @Override
     public OutputStream getOutputStream() throws IOException {
         Assert.state(responseState != ResponseState.WRITER,
@@ -176,6 +190,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         return getHttpServerExchange().getOutputStream();
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if {@link #getOutputStream()} has already been called
+     */
     @Override
     public Writer getWriter() throws IOException {
         if (writer == null) {
@@ -188,6 +206,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         return writer;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>If a redirect location has been reserved, this method sets the Location header.
+     * It also flushes the underlying writer or output stream.
+     */
     @Override
     public void commit() throws IOException {
         if (reservedRedirectLocation != null) {
@@ -201,6 +224,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation clears all response headers and resets the status to 200 OK.
+     */
     @Override
     public void reset() {
         if (responseState == ResponseState.WRITER) {
@@ -210,6 +237,11 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         setStatus(HttpStatus.OK.value());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation reserves the redirect location. The actual redirect is
+     * sent when {@link #commit()} is called.
+     */
     @Override
     public void redirect(String location) throws IOException {
         setStatus(HttpStatus.FOUND.value());
@@ -236,6 +268,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation builds a redirect URL and reserves it.
+     */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
         RedirectTarget redirectTarget = WebUtils.getRedirectTarget(redirectRule, activity);
@@ -254,6 +290,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         getHttpServerExchange().setStatusCode(status);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation returns the path unchanged.
+     */
     @Override
     public String transformPath(String path) {
         return path;
@@ -276,6 +316,9 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         return getAdaptee();
     }
 
+    /**
+     * Represents the state of the response output.
+     */
     public enum ResponseState {
         NONE,
         STREAM,

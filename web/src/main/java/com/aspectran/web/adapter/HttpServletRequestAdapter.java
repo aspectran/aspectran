@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.adapter;
 
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
@@ -31,8 +30,13 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * Adapt {@link HttpServletRequest} to Core {@link RequestAdapter}.
+ * An adapter that wraps a {@link HttpServletRequest}, exposing it as a
+ * {@link WebRequestAdapter} for the Aspectran framework.
+ * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
+ * allowing the framework to handle web requests in a consistent, abstracted manner.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
@@ -40,14 +44,19 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     private boolean headersObtained;
 
     /**
-     * Instantiates a new HttpServletRequestAdapter.
+     * Creates a new {@code HttpServletRequestAdapter}.
      * @param requestMethod the request method
-     * @param request the activity request wrapper
+     * @param request the native {@link HttpServletRequest} to wrap
      */
     public HttpServletRequestAdapter(MethodType requestMethod, HttpServletRequest request) {
         super(requestMethod, request);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation lazily populates the header map from the underlying
+     * {@link HttpServletRequest} on first access.
+     */
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
         if (!headersObtained) {
@@ -68,30 +77,55 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
         return super.getHeaderMap();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletRequest#getCharacterEncoding()}.
+     */
     @Override
     public String getEncoding() {
         return getHttpServletRequest().getCharacterEncoding();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletRequest#setCharacterEncoding(String)}.
+     */
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
         getHttpServletRequest().setCharacterEncoding(encoding);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletRequest#getInputStream()}.
+     */
     @Override
     public InputStream getInputStream() throws IOException {
         return getHttpServletRequest().getInputStream();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Delegates to {@link HttpServletRequest#getUserPrincipal()}.
+     */
     @Override
     public Principal getPrincipal() {
         return getHttpServletRequest().getUserPrincipal();
     }
 
+    /**
+     * Returns the underlying {@link HttpServletRequest}.
+     * @return the native servlet request
+     */
     private HttpServletRequest getHttpServletRequest() {
         return getAdaptee();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation initializes the adapter by extracting attributes, parameters,
+     * content type, and locale from the native {@link HttpServletRequest}.
+     */
     @Override
     public void preparse() {
         HttpServletRequest request = getAdaptee();
@@ -114,13 +148,17 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
                     setEncoding(mediaType.getCharset().name());
                 }
             } catch (Exception e) {
-                // ignored
+                // ignore
             }
         }
 
         setLocale(request.getLocale());
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if attempting to replicate from itself
+     */
     @Override
     public void preparse(WebRequestAdapter requestAdapter) {
         if (requestAdapter == this) {

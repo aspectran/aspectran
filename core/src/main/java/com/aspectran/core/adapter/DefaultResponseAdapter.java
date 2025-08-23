@@ -27,114 +27,69 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Default in-memory {@link ResponseAdapter} implementation capturing headers, status,
- * and an output target (OutputStream/Writer). Suitable for non-servlet and testing use.
+ * A default, in-memory implementation of {@link ResponseAdapter}.
+ * <p>This class captures response data such as headers, status, and content type
+ * in memory. It can be configured with an {@link OutputStream} or {@link Writer}
+ * to capture the response body. It is suitable for testing or for non-HTTP
+ * environments where a concrete response object is needed.
+ * Redirection and reset operations are not supported.
+ * </p>
  *
+ * @author Juho Jeong
  * @since 2016. 2. 13.
  */
 public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
-    /**
-     * Case-insensitive multi-value header map.
-     */
     private MultiValueMap<String, String> headers;
 
-    /**
-     * Character encoding for the response body.
-     */
     private String encoding;
 
-    /**
-     * MIME content type for the response body.
-     */
     private String contentType;
 
-    /**
-     * Optional binary output target.
-     */
     private OutputStream outputStream;
 
-    /**
-     * Optional character output target.
-     */
     private Writer writer;
 
-    /**
-     * HTTP-like status code for this response.
-     */
     private int status;
 
     /**
-     * Create a new default response adapter.
-     * @param adaptee the native response object being adapted; may be {@code null}
+     * Creates a new {@code DefaultResponseAdapter}.
+     * @param adaptee the native response object to adapt, may be {@code null}
      */
     public DefaultResponseAdapter(Object adaptee) {
         super(adaptee);
     }
 
     /**
-     * Create a new default response adapter with a pre-configured {@link Writer}.
-     * @param adaptee the native response object being adapted; may be {@code null}
-     * @param writer the writer to output
+     * Creates a new {@code DefaultResponseAdapter} with a pre-configured {@link Writer}.
+     * @param adaptee the native response object to adapt, may be {@code null}
+     * @param writer the writer to which response content will be written
      */
     public DefaultResponseAdapter(Object adaptee, Writer writer) {
         super(adaptee);
         setWriter(writer);
     }
 
-    /**
-     * Returns the value of the response header with the given name.
-     *
-     * <p>If a response header with the given name exists and contains
-     * multiple values, the value that was added first will be returned.
-     * @param name the name of the response header whose value to return
-     * @return the value of the response header with the given name,
-     *         or {@code null} if no header with the given name has been set
-     *         on this response
-     */
     @Override
     public String getHeader(String name) {
         return (headers != null ? headers.getFirst(name) : null);
     }
 
-    /**
-     * Returns the values of the response header with the given name.
-     * @param name the name of the response header whose values to return
-     * @return a (possibly empty) {@code Collection} of the values
-     *         of the response header with the given name
-     */
     @Override
     public List<String> getHeaders(String name) {
         return (headers != null ? headers.get(name) : null);
     }
 
-    /**
-     * Returns the names of the headers of this response.
-     * @return a (possibly empty) {@code Collection} of the names
-     *         of the headers of this response
-     */
     @Override
     public Set<String> getHeaderNames() {
         return (headers != null ? headers.keySet() : null);
     }
 
-    /**
-     * Returns a boolean indicating whether the named response header
-     * has already been set.
-     * @param name the header name
-     * @return {@code true} if the named response header
-     *         has already been set; {@code false} otherwise
-     */
     @Override
     public boolean containsHeader(String name) {
-        return (headers != null && headers.get(name) != null && !headers.get(name).isEmpty());
+        return (headers != null && headers.containsKey(name));
     }
 
-    /**
-     * Set the given single header value under the given header name.
-     * @param name the header name
-     * @param value the header value to set
-     */
     @Override
     public void setHeader(String name, String value) {
         if (name == null) {
@@ -143,12 +98,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         touchHeaders().set(name, value);
     }
 
-    /**
-     * Add the given single header value to the current list of values
-     * for the given header.
-     * @param name the header name
-     * @param value the header value to be added
-     */
     @Override
     public void addHeader(String name, String value) {
         if (name == null) {
@@ -157,19 +106,10 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         touchHeaders().add(name, value);
     }
 
-    /**
-     * Returns a map of the request headers that can be modified.
-     * @return an {@code MultiValueMap} object, may be {@code null}
-     */
     public MultiValueMap<String, String> getAllHeaders() {
         return headers;
     }
 
-    /**
-     * Returns a map of the response headers that can be modified.
-     * If not yet instantiated then create a new one.
-     * @return an {@code MultiValueMap} object, may not be {@code null}
-     */
     public MultiValueMap<String, String> touchHeaders() {
         if (headers == null) {
             headers = new LinkedCaseInsensitiveMultiValueMap<>();
@@ -197,6 +137,10 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         this.contentType = contentType;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if an output stream is not configured
+     */
     @Override
     public OutputStream getOutputStream() {
         if (outputStream == null) {
@@ -206,13 +150,17 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     /**
-     * Configure the underlying {@link OutputStream} to be returned by {@link #getOutputStream()}.
-     * Intended for use by infrastructure code.
+     * Sets the {@link OutputStream} to be returned by {@link #getOutputStream()}.
+     * @param outputStream the output stream to use
      */
     protected void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws IllegalStateException if a writer is not configured
+     */
     @Override
     public Writer getWriter() {
         if (writer == null) {
@@ -222,13 +170,17 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     /**
-     * Configure the underlying {@link Writer} to be returned by {@link #getWriter()}.
-     * Intended for use by infrastructure code.
+     * Sets the {@link Writer} to be returned by {@link #getWriter()}.
+     * @param writer the writer to use
      */
     protected void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation flushes the configured {@link OutputStream} or {@link Writer}.
+     */
     @Override
     public void commit() throws IOException {
         if (outputStream != null) {
@@ -239,39 +191,49 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This operation is not supported by this adapter.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void reset() {
         throw new UnsupportedOperationException("reset");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This operation is not supported by this adapter.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void redirect(String location) {
         throw new UnsupportedOperationException("redirect");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This operation is not supported by this adapter.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) {
         throw new UnsupportedOperationException("redirect");
     }
 
-    /**
-     * Returns the status code.
-     */
     @Override
     public int getStatus() {
         return status;
     }
 
-    /**
-     * Sets the status code.
-     */
     @Override
     public void setStatus(int status) {
         this.status = status;
     }
 
     /**
-     * Transform a response path if necessary. Default implementation returns the path unchanged.
+     * {@inheritDoc}
+     * <p>This implementation returns the path unchanged.
      */
     @Override
     public String transformPath(String path) {

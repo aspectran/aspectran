@@ -18,19 +18,27 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
+ * A generic, concrete implementation of {@link AbstractRequestAdapter}.
+ * <p>This adapter serves as a default, mutable {@link RequestAdapter}
+ * suitable for internal use, testing, or for environments that do not have a
+ * specific request-response model. It provides constructors to set the request
+ * method and the underlying adaptee object.
+ * </p>
+ *
+ * @author Juho Jeong
  * @since 2016. 2. 13.
-*/
+ */
 public class DefaultRequestAdapter extends AbstractRequestAdapter {
 
     /**
-     * Instantiates a new DefaultRequestAdapter.
+     * Creates a new {@code DefaultRequestAdapter} with no request method or adaptee.
      */
     public DefaultRequestAdapter() {
         this(null, null);
     }
 
     /**
-     * Instantiates a new DefaultRequestAdapter.
+     * Creates a new {@code DefaultRequestAdapter} with the specified request method.
      * @param requestMethod the request method
      */
     public DefaultRequestAdapter(MethodType requestMethod) {
@@ -38,9 +46,10 @@ public class DefaultRequestAdapter extends AbstractRequestAdapter {
     }
 
     /**
-     * Instantiates a new DefaultRequestAdapter.
+     * Creates a new {@code DefaultRequestAdapter} with the specified request method
+     * and adaptee object.
      * @param requestMethod the request method
-     * @param adaptee the adaptee object
+     * @param adaptee the native object to adapt
      */
     public DefaultRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod, adaptee);

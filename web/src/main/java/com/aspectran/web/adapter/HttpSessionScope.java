@@ -25,7 +25,15 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * The Class HttpSessionScope.
+ * A specialized {@link SessionScope} for the Servlet environment.
+ * <p>This class implements {@link HttpSessionBindingListener} to receive notifications
+ * when it is bound to or unbound from an {@link jakarta.servlet.http.HttpSession}.
+ * When unbound, it automatically calls the {@link #destroy()} method to clean up all
+ * session-scoped beans.
+ * </p>
+ *
+ * @author Juho Jeong
+ * @since 2.0.0
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {
 
@@ -35,25 +43,33 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
     private static final Logger logger = LoggerFactory.getLogger(HttpSessionScope.class);
 
     /**
-     * Instantiates a new HttpSessionScope.
+     * Creates a new {@code HttpSessionScope}.
      */
     public HttpSessionScope() {
         super();
     }
 
-    @Override /* Explicit overrides for backward compatibility with Servlet 3.x */
-    public  void valueBound(HttpSessionBindingEvent event) {
+    /**
+     * {@inheritDoc}
+     * <p>This method is called by the servlet container when this object is bound to a session.
+     */
+    @Override
+    public void valueBound(HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("New HttpSessionScope bound in session {}", event.getSession());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This method is called by the servlet container when this object is unbound
+     * from a session. It triggers the destruction of all beans in this scope.
+     */
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("HttpSessionScope removed from session {}", event.getSession());
         }
-
         destroy();
     }
 
