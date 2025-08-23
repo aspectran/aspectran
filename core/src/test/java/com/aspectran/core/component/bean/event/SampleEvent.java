@@ -15,19 +15,25 @@
  */
 package com.aspectran.core.component.bean.event;
 
-/**
- * A central interface for publishing events.
- * Implementations of this interface are responsible for dispatching events to
- * registered listeners.
- *
- * @since 8.6.0
- */
-public interface EventPublisher {
+import com.aspectran.utils.ToStringBuilder;
 
-    /**
-     * Notify all matching listeners of a given event.
-     * @param event the event to publish; can be any object
-     */
-    void publish(Object event);
+public class SampleEvent {
+
+    private final String message;
+
+    public SampleEvent(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder("SampleEvent")
+                .append("message", message)
+                .toString();
+    }
 
 }

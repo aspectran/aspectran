@@ -18,6 +18,7 @@ package com.aspectran.core.activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
@@ -63,6 +64,15 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     public void setActivityContext(@NonNull ActivityContext context) {
         Assert.state(this.context == null, "ActivityContext already injected");
         this.context = context;
+    }
+
+    /**
+     * Returns the central event publisher for this application context.
+     * @return the {@code EventPublisher} instance
+     * @since 7.0.0
+     */
+    protected EventPublisher getEventPublisher() {
+        return getActivityContext().getEventPublisher();
     }
 
     /**

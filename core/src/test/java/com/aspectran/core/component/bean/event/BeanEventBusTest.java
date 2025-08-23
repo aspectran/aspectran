@@ -29,6 +29,9 @@ import org.junit.jupiter.api.TestInstance;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * Test case for beans.
  *
@@ -52,7 +55,7 @@ class BeanEventBusTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean.event");
-        ActivityContext context = builder.build();
+        context = builder.build();
         beanRegistry = context.getBeanRegistry();
     }
 
@@ -61,6 +64,30 @@ class BeanEventBusTest {
         if (builder != null) {
             builder.destroy();
         }
+    }
+
+    @Test
+    void testEventBus() {
+        SamplePublisher publisher = beanRegistry.getBean(SamplePublisher.class);
+        SampleListener listener = beanRegistry.getBean(SampleListener.class);
+
+        assertNotNull(publisher);
+        assertNotNull(listener);
+
+        listener.clear();
+        assertEquals(0, listener.getReceivedEvents().size());
+
+        String message1 = "Hello, Aspectran Event Bus!";
+        publisher.publish(message1);
+
+        assertEquals(1, listener.getReceivedEvents().size());
+        assertEquals(message1, listener.getReceivedEvents().get(0).getMessage());
+
+        String message2 = "This is the second event.";
+        publisher.publish(message2);
+
+        assertEquals(2, listener.getReceivedEvents().size());
+        assertEquals(message2, listener.getReceivedEvents().get(1).getMessage());
     }
 
 }

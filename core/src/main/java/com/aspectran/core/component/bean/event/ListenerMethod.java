@@ -15,25 +15,38 @@
  */
 package com.aspectran.core.component.bean.event;
 
+import com.aspectran.core.component.bean.annotation.EventListener;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * A wrapper for a method that is annotated with @EventListener.
+ * Represents a method that is annotated with {@link EventListener}.
+ * This class encapsulates the target bean instance and the listener method to be invoked.
  *
  * @since 8.6.0
  */
-public class ListenerMethod {
+class ListenerMethod {
 
     private final Object bean;
 
     private final Method method;
 
+    /**
+     * Instantiates a new Listener method.
+     * @param bean the bean instance
+     * @param method the listener method
+     */
     ListenerMethod(Object bean, Method method) {
         this.bean = bean;
         this.method = method;
     }
 
+    /**
+     * Invokes the listener method with the given event.
+     * @param event the event to pass to the listener method
+     * @throws Exception if the underlying method throws an exception
+     */
     void invoke(Object event) throws Exception {
         try {
             method.invoke(bean, event);

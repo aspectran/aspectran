@@ -15,19 +15,15 @@
  */
 package com.aspectran.core.component.bean.event;
 
-/**
- * A central interface for publishing events.
- * Implementations of this interface are responsible for dispatching events to
- * registered listeners.
- *
- * @since 8.6.0
- */
-public interface EventPublisher {
+import com.aspectran.core.activity.InstantActivitySupport;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
 
-    /**
-     * Notify all matching listeners of a given event.
-     * @param event the event to publish; can be any object
-     */
-    void publish(Object event);
+@Component
+public class SamplePublisher extends InstantActivitySupport {
+
+    public void publish(String message) {
+        getEventPublisher().publish(new SampleEvent(message));
+    }
 
 }

@@ -20,6 +20,8 @@ import com.aspectran.core.component.Component;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.EnvironmentProfiles;
+import com.aspectran.core.context.rule.appender.RuleAppendHandler;
+import com.aspectran.core.context.rule.appender.ShallowRuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
@@ -154,6 +156,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 }
                 assistant = parser.getContextRuleAssistant();
                 assistant.clearCurrentRuleAppender();
+            } else {
+                RuleAppendHandler ruleAppendHandler = new ShallowRuleAppendHandler(assistant);
+                assistant.setRuleAppendHandler(ruleAppendHandler);
             }
 
             activityContext = createActivityContext(assistant);

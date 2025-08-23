@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * The default implementation of the EventPublisher interface.
+ * The default implementation of the {@link EventPublisher} interface.
+ * It dispatches events to all matching listeners synchronously.
  *
  * @since 8.6.0
  */
@@ -31,6 +32,10 @@ public class DefaultEventPublisher implements EventPublisher {
 
     private final EventListenerRegistry listenerRegistry;
 
+    /**
+     * Instantiates a new Default event publisher.
+     * @param listenerRegistry the listener registry
+     */
     public DefaultEventPublisher(EventListenerRegistry listenerRegistry) {
         this.listenerRegistry = listenerRegistry;
     }

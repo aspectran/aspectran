@@ -15,19 +15,28 @@
  */
 package com.aspectran.core.component.bean.event;
 
-/**
- * A central interface for publishing events.
- * Implementations of this interface are responsible for dispatching events to
- * registered listeners.
- *
- * @since 8.6.0
- */
-public interface EventPublisher {
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.EventListener;
 
-    /**
-     * Notify all matching listeners of a given event.
-     * @param event the event to publish; can be any object
-     */
-    void publish(Object event);
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class SampleListener {
+
+    private final List<SampleEvent> receivedEvents = new ArrayList<>();
+
+    @EventListener
+    public void onSampleEvent(SampleEvent event) {
+        receivedEvents.add(event);
+    }
+
+    public List<SampleEvent> getReceivedEvents() {
+        return receivedEvents;
+    }
+
+    public void clear() {
+        receivedEvents.clear();
+    }
 
 }

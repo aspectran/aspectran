@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A registry for methods that are annotated with @EventListener.
+ * Manages the registration of {@link EventListener} methods.
+ * This class scans all singleton beans upon initialization, finds methods annotated
+ * with {@code @EventListener}, and stores them in a map for quick retrieval by event type.
  *
  * @since 8.6.0
  */
@@ -38,6 +40,10 @@ public class EventListenerRegistry {
 
     private final Map<Class<?>, List<ListenerMethod>> listenerMap = new ConcurrentHashMap<>();
 
+    /**
+     * Registers all {@code @EventListener} annotated methods on the given bean.
+     * @param bean the bean instance to scan for listener methods
+     */
     public void registerListener(Object bean) {
         Assert.notNull(bean, "bean must not be null");
         for (Method method : bean.getClass().getMethods()) {
@@ -59,10 +65,18 @@ public class EventListenerRegistry {
         }
     }
 
+    /**
+     * Gets the list of listeners for a given event type.
+     * @param eventType the event type
+     * @return a list of listener methods, or {@code null} if no listeners are found
+     */
     public List<ListenerMethod> getListeners(Class<?> eventType) {
         return listenerMap.get(eventType);
     }
 
+    /**
+     * Clears all registered listeners.
+     */
     public void clear() {
         listenerMap.clear();
     }
