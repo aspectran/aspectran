@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
@@ -127,6 +128,8 @@ public interface ActivityContext {
      * @return the message source
      */
     MessageSource getMessageSource();
+
+    EventPublisher getEventPublisher();
 
     /**
      * Returns the default activity for this context.

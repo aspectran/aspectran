@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.bean.event.EventListenerRegistry;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.bean.scope.SessionScope;
@@ -46,6 +47,8 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     private final SingletonScope singletonScope = new SingletonScope();
 
+    private final EventListenerRegistry eventListenerRegistry = new  EventListenerRegistry();
+
     private final BeanRuleRegistry beanRuleRegistry;
 
     /**
@@ -56,6 +59,10 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry) {
         super(context);
         this.beanRuleRegistry = beanRuleRegistry;
+    }
+
+    public EventListenerRegistry getEventListenerRegistry() {
+        return eventListenerRegistry;
     }
 
     /**
@@ -212,6 +219,15 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         } else {
             return null;
         }
+    }
+
+    @Override
+    protected Object createBean(@NonNull BeanRule beanRule, Scope scope) {
+        Object bean = super.createBean(beanRule, scope);
+        if (beanRule.isSingleton()) {
+            eventListenerRegistry.registerListener(bean);
+        }
+        return bean;
     }
 
     @Override

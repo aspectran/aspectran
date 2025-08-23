@@ -22,6 +22,9 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
+import com.aspectran.core.component.bean.event.DefaultEventPublisher;
+import com.aspectran.core.component.bean.event.EventListenerRegistry;
+import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRenderer;
@@ -81,6 +84,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     private TransletRuleRegistry transletRuleRegistry;
 
     private MessageSource messageSource;
+
+    private EventPublisher eventPublisher;
 
     /**
      * Instantiates a new DefaultActivityContext.
@@ -228,6 +233,12 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
+    public EventPublisher getEventPublisher() {
+        checkAvailable();
+        return eventPublisher;
+    }
+
+    @Override
     public Activity getDefaultActivity() {
         return defaultActivity;
     }
@@ -305,12 +316,14 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
             transletRuleRegistry.initialize();
             templateRenderer.initialize();
             resolveMessageSource();
+            eventPublisher = new DefaultEventPublisher(beanRegistry.getEventListenerRegistry());
         });
     }
 
     @Override
     protected void doDestroy() {
         ThreadContextHelper.run(getClassLoader(), () -> {
+            beanRegistry.getEventListenerRegistry().clear();
             if (beanRegistry != null) {
                 beanRegistry.destroy();
                 beanRegistry = null;
