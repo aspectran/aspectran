@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the activity interface for Aspectran Daemon.
+ * Provides the specialized {@link com.aspectran.core.activity.Activity} implementation
+ * for the daemon environment.
+ * <p>This package contains {@link com.aspectran.daemon.activity.DaemonActivity}, which
+ * adapts the core Aspectran activity to handle non-interactive, background execution
+ * such as scheduled jobs or other automated tasks.
+ * </p>
  */
 package com.aspectran.daemon.activity;
