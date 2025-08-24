@@ -34,8 +34,6 @@ import java.lang.reflect.Modifier;
  * It leverages {@link AnnotatedMethodInvoker} to handle parameter binding and method invocation.</p>
  *
  * <p>Created: 2016. 2. 9.</p>
- *
- * @since 2.0.0
  */
 public class AnnotatedAction implements Executable {
 

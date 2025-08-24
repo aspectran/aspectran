@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.Advisable;
+import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.MethodUtils;
@@ -188,8 +189,17 @@ public class BeanRuleAnalyzer {
      * @param beanRule the bean rule
      */
     public static void determineProxyBean(@NonNull BeanRule beanRule) {
-        if (beanRule.getProxied() == null && !beanRule.isFactoryable() && !getAdvisableMethods(beanRule).isEmpty()) {
-            beanRule.setProxied(true);
+        if (beanRule.getProxied() == null) {
+            if (!beanRule.isFactoryable() && !getAdvisableMethods(beanRule).isEmpty()) {
+                beanRule.setProxied(true);
+                return;
+            }
+            for (Method method : beanRule.getTargetBeanClass().getMethods()) {
+                if (method.isAnnotationPresent(Async.class)) {
+                    beanRule.setProxied(true);
+                    return;
+                }
+            }
         }
     }
 

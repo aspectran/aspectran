@@ -35,6 +35,7 @@ public class ContextConfig extends AbstractParameters {
     private static final ParameterKey encoding;
     private static final ParameterKey resources;
     private static final ParameterKey scan;
+    private static final ParameterKey async;
     private static final ParameterKey profiles;
     private static final ParameterKey autoReload;
     private static final ParameterKey singleton;
@@ -50,6 +51,7 @@ public class ContextConfig extends AbstractParameters {
         resources = new ParameterKey("resources", ValueType.STRING, true);
         scan = new ParameterKey("scan", ValueType.STRING, true);
         profiles = new ParameterKey("profiles", ContextProfilesConfig.class);
+        async = new ParameterKey("async", AsyncConfig.class);
         autoReload = new ParameterKey("autoReload", ContextAutoReloadConfig.class);
         singleton = new ParameterKey("singleton", ValueType.BOOLEAN);
         parameters = new ParameterKey("parameters", AspectranParameters.class);
@@ -62,6 +64,7 @@ public class ContextConfig extends AbstractParameters {
                 resources,
                 scan,
                 profiles,
+                async,
                 autoReload,
                 singleton,
                 parameters
@@ -176,6 +179,26 @@ public class ContextConfig extends AbstractParameters {
         return hasValue(profiles);
     }
 
+    /**
+     * Returns whether the Aspectran parameters section exists.
+     * @return true if the Aspectran parameters section exists, otherwise false
+     */
+    public boolean hasAspectranParameters() {
+        return hasValue(parameters);
+    }
+
+    public AsyncConfig getAsyncConfig() {
+        return getParameters(async);
+    }
+
+    public AsyncConfig newAsyncConfig() {
+        return newParameters(async);
+    }
+
+    public AsyncConfig touchAsyncConfig() {
+        return touchParameters(async);
+    }
+
     public ContextAutoReloadConfig getAutoReloadConfig() {
         return getParameters(autoReload);
     }
@@ -219,14 +242,6 @@ public class ContextConfig extends AbstractParameters {
      */
     public AspectranParameters touchAspectranParameters() {
         return touchParameters(parameters);
-    }
-
-    /**
-     * Returns whether the Aspectran parameters section exists.
-     * @return true if the Aspectran parameters section exists, otherwise false
-     */
-    public boolean hasAspectranParameters() {
-        return hasValue(parameters);
     }
 
 }

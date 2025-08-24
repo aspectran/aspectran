@@ -23,6 +23,7 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
+import com.aspectran.core.component.bean.support.PredefinedBeanRules;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
@@ -392,6 +393,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         context.setEnvironment(activityEnvironment);
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
+
+        if (contextConfig != null && contextConfig.getAsyncConfig() != null && contextConfig.getAsyncConfig().isEnabled()) {
+            assistant.addBeanRule(PredefinedBeanRules.createDefaultAsyncTaskExecutorBeanRule(contextConfig.getAsyncConfig()));
+        }
 
         BeanRuleRegistry beanRuleRegistry = initBeanRuleRegistry(assistant);
         DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(context, beanRuleRegistry);

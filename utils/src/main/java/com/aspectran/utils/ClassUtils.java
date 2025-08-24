@@ -32,6 +32,9 @@ public abstract class ClassUtils {
     /** The ".class" file suffix */
     public static final String CLASS_FILE_SUFFIX = ".class";
 
+    /** The nested class separator character: {@code '$'}. */
+    private static final char NESTED_CLASS_SEPARATOR = '$';
+
     /** CGLIB or Javassist class separator: {@code "$$"}. */
     public static final String PROXY_CLASS_SEPARATOR = "$$";
 
@@ -169,7 +172,6 @@ public abstract class ClassUtils {
      * @return true if the given class is loadable; otherwise false
      * @since 6.0.0
      */
-    @NonNull
     private static boolean isLoadable(@NonNull Class<?> clazz, ClassLoader classLoader) {
         Assert.notNull(classLoader, "classLoader must not be null");
         try {
@@ -259,6 +261,36 @@ public abstract class ClassUtils {
             currentClass = currentClass.getSuperclass();
         }
         return false;
+    }
+
+    /**
+     * Get the class name without the qualified package name.
+     * @param className the className to get the short name for
+     * @return the class name of the class without the package name
+     * @throws IllegalArgumentException if the className is empty
+     */
+    @NonNull
+    public static String getShortName(String className) {
+        Assert.hasLength(className, "Class name must not be empty");
+        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
+        int nameEndIndex = className.indexOf(PROXY_CLASS_SEPARATOR);
+        if (nameEndIndex == -1) {
+            nameEndIndex = className.length();
+        }
+        String shortName = className.substring(lastDotIndex + 1, nameEndIndex);
+        shortName = shortName.replace(NESTED_CLASS_SEPARATOR, PACKAGE_SEPARATOR_CHAR);
+        return shortName;
+    }
+
+    /**
+     * Get the class name without the qualified package name.
+     * @param clazz the class to get the short name for
+     * @return the class name of the class without the package name
+     */
+    @NonNull
+    public static String getShortName(Class<?> clazz) {
+        Assert.notNull(clazz, "Class must not be null");
+        return getShortName(clazz.getTypeName());
     }
 
 }

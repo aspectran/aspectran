@@ -36,7 +36,7 @@ import java.util.Set;
  * result hierarchy ({@link ProcessResult} -> {@code ContentResult} -> {@link ActionResult}),
  * enabling structured access to the results of a specific action group.</p>
  *
- * @since 2008
+ * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ContentResult extends ArrayList<ActionResult> {
 
