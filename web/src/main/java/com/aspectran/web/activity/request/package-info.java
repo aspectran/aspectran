@@ -17,7 +17,7 @@
  * Provides web-specific implementations and extensions for handling incoming HTTP requests.
  *
  * <p>This package extends the core request processing mechanisms defined in
- * {@link com.aspectran.core.activity.request} to integrate with the Jakarta Servlet API
+ * {@code com.aspectran.core.activity.request} to integrate with the Jakarta Servlet API
  * and provide functionalities tailored for web environments. It focuses on aspects such as
  * multipart form data parsing, request attribute management, and HTTP header analysis.</p>
  */

@@ -17,7 +17,7 @@
  * Provides web-specific implementations and extensions for handling responses.
  *
  * <p>This package builds upon the core response mechanisms defined in
- * {@link com.aspectran.core.activity.response} to provide functionalities
+ * {@code com.aspectran.core.activity.response} to provide functionalities
  * tailored for web environments. It primarily focuses on RESTful responses,
  * offering abstractions and concrete implementations for generating various
  * HTTP responses with structured data.</p>

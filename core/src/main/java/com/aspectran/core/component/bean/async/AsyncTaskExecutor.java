@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2024 The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean.async;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  * A simple task executor interface that abstracts the execution of a {@link Runnable}.
@@ -38,6 +38,6 @@ public interface AsyncTaskExecutor {
      * @param task the {@code Callable} to execute
      * @return a {@code Future} representing that task
      */
-    <V> CompletableFuture<V> submit(Callable<V> task);
+    <V> Future<V> submit(Callable<V> task);
 
 }

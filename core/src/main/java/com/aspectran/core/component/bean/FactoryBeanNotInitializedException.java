@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanRule;
 
 import java.io.Serial;

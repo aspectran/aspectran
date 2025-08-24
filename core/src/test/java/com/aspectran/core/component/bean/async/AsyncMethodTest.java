@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2024 The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -84,10 +83,10 @@ class AsyncMethodTest {
 
         String mainThread = Thread.currentThread().getName();
 
-        CompletableFuture<String> future1 = testBean.noActivitySameThread();
-        String asyncThread1 = future1.get();
+        Future<String> future1 = testBean.noActivitySameThread();
+        Future<String> future2 = testBean.noActivityDifferentThread();
 
-        CompletableFuture<String> future2 = testBean.noActivityDifferentThread();
+        String asyncThread1 = future1.get();
         String asyncThread2 = future2.get();
 
         assertNotNull(asyncThread1);
@@ -96,7 +95,7 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testVoidMethod() throws ActivityPerformException {
+    void testVoidMethod() throws ActivityPerformException, InterruptedException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -108,9 +107,12 @@ class AsyncMethodTest {
             return activity.getActivityData();
         });
 
+        Thread.sleep(500);
+
         String asyncThread = activityData.get("threadName").toString();
         assertNotNull(asyncThread);
-        assertEquals(mainThread, asyncThread);
+        assertNotEquals(mainThread, asyncThread);
+        assertTrue(asyncThread.startsWith("DefaultAsyncTaskExecutor-"));
     }
 
     @Test
@@ -122,6 +124,8 @@ class AsyncMethodTest {
 
         InstantActivity activity = new InstantActivity(context);
         Future<String> future = activity.perform(testBean::futureMethod);
+
+        Thread.sleep(300);
 
         String asyncThread = future.get();
         assertNotNull(asyncThread);

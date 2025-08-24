@@ -23,7 +23,6 @@ import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.bean.event.DefaultEventPublisher;
-import com.aspectran.core.component.bean.event.EventListenerRegistry;
 import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.DefaultTemplateRenderer;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2024 The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@ package com.aspectran.core.component.bean.async;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
-import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -31,50 +28,50 @@ import java.util.concurrent.Future;
 @Bean("asyncTestBean")
 public class AsyncTestBean extends InstantActivitySupport {
 
-    public String getCallingThreadName() {
+    private String getCallingThreadName() {
         return Thread.currentThread().getName();
     }
 
     @Async
-    public CompletableFuture<String> noActivitySameThread() {
-        System.out.println("Executing voidMethod on thread: " + Thread.currentThread().getName());
+    public Future<String> noActivitySameThread() {
+        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
         return CompletableFuture.supplyAsync(
-                () -> Thread.currentThread().getName()
+                this::getCallingThreadName
         );
     }
 
     @Async
-    public CompletableFuture<String> noActivityDifferentThread() {
-        System.out.println("Executing voidMethod on thread: " + Thread.currentThread().getName());
+    public Future<String> noActivityDifferentThread() {
+        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
         return CompletableFuture.supplyAsync(
-                () -> Thread.currentThread().getName()
+                this::getCallingThreadName
         );
     }
 
     @Async
     public void voidMethod() {
-        System.out.println("Executing voidMethod on thread: " + Thread.currentThread().getName());
-        getCurrentActivity().getActivityData().put("threadName", Thread.currentThread().getName());
+        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
+        getCurrentActivity().getActivityData().put("threadName", getCallingThreadName());
     }
 
     @Async
-    public CompletableFuture<String> futureMethod() {
-        System.out.println("Executing futureMethod on thread: " + Thread.currentThread().getName());
+    public Future<String> futureMethod() {
+        System.out.println("Executing futureMethod on thread: " + getCallingThreadName());
         return CompletableFuture.supplyAsync(
-                () -> Thread.currentThread().getName()
+                this::getCallingThreadName
         );
     }
 
     @Async("customTaskExecutor")
-    public CompletableFuture<String> customExecutorMethod() {
-        System.out.println("Executing customExecutorMethod on thread: " + Thread.currentThread().getName());
+    public Future<String> customExecutorMethod() {
+        System.out.println("Executing customExecutorMethod on thread: " + getCallingThreadName());
         return CompletableFuture.supplyAsync(
-            () -> Thread.currentThread().getName()
+                this::getCallingThreadName
         );
     }
 
     @Async
-    public CompletableFuture<Activity> activityPropagationMethod() {
+    public Future<Activity> activityPropagationMethod() {
         final Activity currentActivity = getCurrentActivity();
         return CompletableFuture.supplyAsync(
                 () -> currentActivity

@@ -16,7 +16,6 @@
 package com.aspectran.core.component.bean.event;
 
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 
 @Component

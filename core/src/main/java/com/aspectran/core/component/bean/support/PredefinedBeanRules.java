@@ -21,6 +21,7 @@ import com.aspectran.core.context.config.AsyncConfig;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -35,37 +36,41 @@ public abstract class PredefinedBeanRules {
         beanRule.setId(AsyncTaskExecutor.DEFAULT_TASK_EXECUTOR_BEAN_ID);
         beanRule.setBeanClass(DefaultAsyncTaskExecutor.class);
         beanRule.setScopeType(ScopeType.SINGLETON);
-//        beanRule.setSingleton(true);
 
         ItemRuleMap propertyItems = new ItemRuleMap();
         if (asyncConfig.getCorePoolSize() > 0) {
             ItemRule itemRule = new ItemRule();
             itemRule.setName("corePoolSize");
             itemRule.setValue(String.valueOf(asyncConfig.getCorePoolSize()));
+            itemRule.setValueType(ItemValueType.INT);
             propertyItems.putItemRule(itemRule);
         }
         if (asyncConfig.getMaxPoolSize() > 0) {
             ItemRule itemRule = new ItemRule();
             itemRule.setName("maxPoolSize");
             itemRule.setValue(String.valueOf(asyncConfig.getMaxPoolSize()));
+            itemRule.setValueType(ItemValueType.INT);
             propertyItems.putItemRule(itemRule);
         }
         if (asyncConfig.getKeepAliveSeconds() > 0) {
             ItemRule itemRule = new ItemRule();
             itemRule.setName("keepAliveSeconds");
             itemRule.setValue(String.valueOf(asyncConfig.getKeepAliveSeconds()));
+            itemRule.setValueType(ItemValueType.INT);
             propertyItems.putItemRule(itemRule);
         }
         if (asyncConfig.getQueueCapacity() > 0) {
             ItemRule itemRule = new ItemRule();
             itemRule.setName("queueCapacity");
             itemRule.setValue(String.valueOf(asyncConfig.getQueueCapacity()));
+            itemRule.setValueType(ItemValueType.INT);
             propertyItems.putItemRule(itemRule);
         }
         if (asyncConfig.isWaitForTasksToCompleteOnShutdown()) {
             ItemRule itemRule = new ItemRule();
             itemRule.setName("waitForTasksToCompleteOnShutdown");
             itemRule.setValue(String.valueOf(asyncConfig.isWaitForTasksToCompleteOnShutdown()));
+            itemRule.setValueType(ItemValueType.BOOLEAN);
             propertyItems.putItemRule(itemRule);
         }
         if (!propertyItems.isEmpty()) {

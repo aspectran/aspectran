@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
@@ -102,32 +101,52 @@ public abstract class AbstractBeanProxy {
         if (method.getReturnType() != Void.TYPE && !Future.class.isAssignableFrom(method.getReturnType())) {
             throw new AsyncExecutionException("Cannot use @Async on a method that does not return void or Future: " + method);
         }
+        Future<Object> future;
         if (activity != null) {
-            Activity oldActivity = null;
-            try {
-                if (context.hasCurrentActivity()) {
-                    oldActivity = context.getCurrentActivity();
+            future = executor.submit(() -> {
+                Activity oldActivity = null;
+                try {
+                    if (context.hasCurrentActivity()) {
+                        oldActivity = context.getCurrentActivity();
+                    }
+                    context.setCurrentActivity(activity);
+                    Object result = invokeSync(beanRule, method, superInvoker, activity);
+                    if (result instanceof Future<?> nestedFuture) {
+                        return nestedFuture.get();
+                    } else {
+                        return result;
+                    }
+                } catch (Throwable e) {
+                    logger.error("Async execution failed", e);
+                    throw new CompletionException(e);
+                } finally {
+                    if (oldActivity != null) {
+                        context.setCurrentActivity(oldActivity);
+                    } else {
+                        context.removeCurrentActivity();
+                    }
                 }
-                context.setCurrentActivity(activity);
-                return invokeSync(beanRule, method, superInvoker, activity);
-            } catch (Throwable e) {
-                logger.error("Async execution failed", e);
-                throw new CompletionException(e);
-            } finally {
-                if (oldActivity != null) {
-                    context.setCurrentActivity(oldActivity);
-                } else {
-                    context.removeCurrentActivity();
-                }
-            }
+            });
         } else {
-            try {
-                Activity instanctActivity = new InstantProxyActivity(context);
-                return instanctActivity.perform(() -> invokeSync(beanRule, method, superInvoker, instanctActivity));
-            } catch (Exception e) {
-                logger.error("Async execution failed", e);
-                throw new CompletionException(e);
-            }
+            future = executor.submit(() -> {
+                try {
+                    Activity instanctActivity = new InstantProxyActivity(context);
+                    Object result = instanctActivity.perform(() -> invokeSync(beanRule, method, superInvoker, instanctActivity));
+                    if (result instanceof Future<?> nestedFuture) {
+                        return nestedFuture.get();
+                    } else {
+                        return result;
+                    }
+                } catch (Exception e) {
+                    logger.error("Async execution failed", e);
+                    throw new CompletionException(e);
+                }
+            });
+        }
+        if (method.getReturnType() == Void.TYPE) {
+            return null;
+        } else {
+            return future;
         }
     }
 
