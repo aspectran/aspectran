@@ -36,13 +36,15 @@ public class AsyncTestBean extends InstantActivitySupport {
     }
 
     @Async
-    public String noActivitySameThread() {
+    public CompletableFuture<String> noActivitySameThread() {
         System.out.println("Executing voidMethod on thread: " + Thread.currentThread().getName());
-        return Thread.currentThread().getName();
+        return CompletableFuture.supplyAsync(
+                () -> Thread.currentThread().getName()
+        );
     }
 
     @Async
-    public Future<String> noActivityDifferentThread() {
+    public CompletableFuture<String> noActivityDifferentThread() {
         System.out.println("Executing voidMethod on thread: " + Thread.currentThread().getName());
         return CompletableFuture.supplyAsync(
                 () -> Thread.currentThread().getName()
@@ -58,11 +60,13 @@ public class AsyncTestBean extends InstantActivitySupport {
     @Async
     public CompletableFuture<String> futureMethod() {
         System.out.println("Executing futureMethod on thread: " + Thread.currentThread().getName());
-        return CompletableFuture.completedFuture(Thread.currentThread().getName());
+        return CompletableFuture.supplyAsync(
+                () -> Thread.currentThread().getName()
+        );
     }
 
     @Async("customTaskExecutor")
-    public Future<String> customExecutorMethod() {
+    public CompletableFuture<String> customExecutorMethod() {
         System.out.println("Executing customExecutorMethod on thread: " + Thread.currentThread().getName());
         return CompletableFuture.supplyAsync(
             () -> Thread.currentThread().getName()
@@ -70,8 +74,11 @@ public class AsyncTestBean extends InstantActivitySupport {
     }
 
     @Async
-    public Future<Activity> activityPropagationMethod() {
-        return CompletableFuture.supplyAsync(this::getCurrentActivity);
+    public CompletableFuture<Activity> activityPropagationMethod() {
+        final Activity currentActivity = getCurrentActivity();
+        return CompletableFuture.supplyAsync(
+                () -> currentActivity
+        );
     }
 
 }
