@@ -18,12 +18,22 @@ package com.aspectran.core.component.translet.scan;
 import java.io.File;
 
 /**
- * The Interface TransletScanFilter.
- * 
+ * A callback interface for filtering files found during a translet scan.
+ * Implementations of this interface can be used to apply custom logic to determine
+ * whether a discovered file should be processed as a translet.
+ *
  * @since 2.0.0
  */
+@FunctionalInterface
 public interface TransletScanFilter {
 
-    boolean filter(String transletName, File templateFile);
+    /**
+     * Determines whether a scanned file should be included for translet creation.
+     *
+     * @param transletName the potential name of the translet that would be generated from the file
+     * @param scannedFile the actual file that was discovered by the scanner
+     * @return {@code true} to include the file, {@code false} to exclude it
+     */
+    boolean filter(String transletName, File scannedFile);
 
 }

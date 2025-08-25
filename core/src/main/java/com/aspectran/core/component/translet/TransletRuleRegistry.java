@@ -51,36 +51,40 @@ import java.util.TreeSet;
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
 
 /**
- * The Class TransletRuleRegistry.
+ * A central registry for all {@link TransletRule} definitions.
+ * This class is the heart of Aspectran's request routing mechanism. It stores all parsed
+ * Translet rules and provides a highly optimized lookup method to find the best-matching
+ * rule for a given request name and request method.
+ *
+ * <p>To achieve high performance, it categorizes rules based on their request method
+ * (e.g., GET, POST) and name pattern (exact match, wildcard, or path variables).
+ * It also handles the dynamic creation of Translet rules through classpath scanning.</p>
+ *
+ * @since 2011. 12. 24.
  */
 public class TransletRuleRegistry extends AbstractComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(TransletRuleRegistry.class);
 
+    /** A map of all registered translet rules, keyed by their unique assembled name. */
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 
+    // Optimized maps for exact-match lookups by request method
     private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>();
-
     private final Map<String, TransletRule> postTransletRuleMap = new HashMap<>();
-
     private final Map<String, TransletRule> putTransletRuleMap = new HashMap<>();
-
     private final Map<String, TransletRule> patchTransletRuleMap = new HashMap<>();
-
     private final Map<String, TransletRule> deleteTransletRuleMap = new HashMap<>();
 
+    /** A comparator to sort wildcard-based rules by their pattern specificity. */
     private final Comparator<TransletRule> comparator = new WeightComparator();
 
+    // Optimized sets for wildcard/path-variable lookups by request method
     private final Set<TransletRule> wildGetTransletRuleSet = new TreeSet<>(comparator);
-
     private final Set<TransletRule> wildPostTransletRuleSet = new TreeSet<>(comparator);
-
     private final Set<TransletRule> wildPutTransletRuleSet = new TreeSet<>(comparator);
-
     private final Set<TransletRule> wildPatchTransletRuleSet = new TreeSet<>(comparator);
-
     private final Set<TransletRule> wildDeleteTransletRuleSet = new TreeSet<>(comparator);
-
     private final Set<TransletRule> etcTransletRuleSet = new TreeSet<>(comparator);
 
     private final String basePath;
@@ -89,23 +93,50 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private AssistantLocal assistantLocal;
 
+    /**
+     * Constructs a new TransletRuleRegistry.
+     * @param basePath the base path for resolving relative scan paths
+     * @param classLoader the ClassLoader to use for loading scanner filter classes
+     */
     public TransletRuleRegistry(String basePath, ClassLoader classLoader) {
         this.basePath = basePath;
         this.classLoader = classLoader;
     }
 
+    /**
+     * Sets the AssistantLocal that provides access to context-wide helpers and default settings.
+     * @param assistantLocal the AssistantLocal instance
+     */
     public void setAssistantLocal(AssistantLocal assistantLocal) {
         this.assistantLocal = assistantLocal;
     }
 
+    /**
+     * Returns a collection of all registered {@link TransletRule}s.
+     * @return a collection of all translet rules
+     */
     public Collection<TransletRule> getTransletRules() {
         return transletRuleMap.values();
     }
 
+    /**
+     * Retrieves the best-matching TransletRule for a given request name, assuming the GET request method.
+     * @param requestName the name of the request to match (e.g., "/users/123")
+     * @return the matched {@code TransletRule}, or {@code null} if not found
+     */
     public TransletRule getTransletRule(String requestName) {
         return getTransletRule(requestName, MethodType.GET);
     }
 
+    /**
+     * Retrieves the best-matching TransletRule for a given request name and request method.
+     * This is the primary method for request routing.
+     * The lookup strategy is: (1) exact match on the specific method, (2) wildcard match on the specific method,
+     * (3) fallback to an exact or wildcard match on the GET method for non-GET requests.
+     * @param requestName the name of the request to match
+     * @param requestMethod the request method (e.g., GET, POST)
+     * @return the matched {@code TransletRule}, or {@code null} if not found
+     */
     public TransletRule getTransletRule(String requestName, MethodType requestMethod) {
         if (requestName == null) {
             throw new IllegalArgumentException("requestName must not be null");
@@ -158,6 +189,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return transletRule;
     }
 
+    /**
+     * Searches a given set of rules for a translet that matches the request name via a wildcard pattern.
+     * @param transletRuleSet the set of wildcard-based rules to search
+     * @param requestName the request name to match
+     * @return a matched {@code TransletRule}, or {@code null}
+     */
     @Nullable
     private TransletRule retrieveWildTransletRule(@NonNull Set<TransletRule> transletRuleSet, String requestName) {
         if (!transletRuleSet.isEmpty()) {
@@ -177,6 +214,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
+    /**
+     * Searches the 'etc' rule set for a translet that matches both the request name and an allowed request method.
+     * @param requestName the request name to match
+     * @param requestMethod the request method to check
+     * @return a matched {@code TransletRule}, or {@code null}
+     */
     @Nullable
     private TransletRule retrieveEtcTransletRule(String requestName, MethodType requestMethod) {
         if (!etcTransletRuleSet.isEmpty()) {
@@ -198,14 +241,32 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
+    /**
+     * Checks if a TransletRule exists for the given request name, assuming the GET request method.
+     * @param requestName the request name to check
+     * @return true if a matching rule exists, false otherwise
+     */
     public boolean contains(String requestName) {
         return contains(requestName, MethodType.GET);
     }
 
+    /**
+     * Checks if a TransletRule exists for the given request name and request method.
+     * @param requestName the request name to check
+     * @param requestMethod the request method to check
+     * @return true if a matching rule exists, false otherwise
+     */
     public boolean contains(String requestName, MethodType requestMethod) {
         return (getTransletRule(requestName, requestMethod) != null);
     }
 
+    /**
+     * Adds a {@link TransletRule} to the registry. If the rule contains a 'scanPath',
+     * it will dynamically create multiple translets by scanning the path. Otherwise,
+     * it processes and stores the single rule.
+     * @param transletRule the translet rule to add
+     * @throws IllegalRuleException if the rule is invalid or scanning fails
+     */
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
         if (transletRule == null) {
             throw new IllegalArgumentException("transletRule must not be null");
@@ -228,6 +289,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Creates and configures a {@link TransletScanner} based on the properties of a given translet rule.
+     * @param transletRule the translet rule containing scan configuration
+     * @return a configured {@code TransletScanner}
+     * @throws IllegalRuleException if the specified scan filter cannot be instantiated
+     */
     @NonNull
     private TransletScanner createTransletScanner(@NonNull TransletRule transletRule) throws IllegalRuleException {
         TransletScanner scanner = new TransletScanner(basePath);
@@ -259,6 +326,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return scanner;
     }
 
+    /**
+     * Dissects a {@link TransletRule}, especially one with multiple {@link ResponseRule}s.
+     * If multiple responses exist, it replicates the translet rule for each named response,
+     * effectively creating addressable sub-translets.
+     * @param transletRule the translet rule to process
+     */
     private void dissectTransletRule(@NonNull TransletRule transletRule) {
         if (transletRule.getRequestRule() == null) {
             RequestRule requestRule = new RequestRule(false);
@@ -295,6 +368,11 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Saves a finalized {@link TransletRule} into the appropriate, optimized data structures (Maps and Sets)
+     * based on its request methods and name pattern (exact, wildcard, or path variables).
+     * @param transletRule the processed translet rule to save
+     */
     private void saveTransletRule(@NonNull TransletRule transletRule) {
         transletRule.determineResponseRule();
 
@@ -373,6 +451,10 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Parses a translet name for path variables (e.g., ${...}) and prepares it for wildcard matching.
+     * @param transletRule the rule whose name needs to be parsed
+     */
     private void savePathVariables(@NonNull TransletRule transletRule) {
         final String transletName = transletRule.getName();
         List<Token> tokenList = Tokenizer.tokenize(transletName, false);
@@ -396,10 +478,21 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Checks if the given translet name contains path variable placeholders.
+     * @param transletName the translet name to check
+     * @return true if path variables are present, false otherwise
+     */
     private boolean hasPathVariables(@NonNull String transletName) {
         return ((transletName.contains("${") || transletName.contains("@{")) && transletName.contains("}"));
     }
 
+    /**
+     * Assembles a unique internal key for a translet rule that supports multiple request methods.
+     * @param transletName the base name of the translet
+     * @param allowedMethods the array of supported request methods
+     * @return a unique string key for the translet rule map
+     */
     private String assembleTransletName(String transletName, MethodType[] allowedMethods) {
         if (allowedMethods != null) {
             if (allowedMethods.length > 1) {
@@ -417,6 +510,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         return assembleRestfulTransletName(transletName, MethodType.GET);
     }
 
+    /**
+     * Assembles a unique internal key for a translet rule with a single request method.
+     * @param transletName the base name of the translet
+     * @param requestMethod the supported request method
+     * @return a unique string key for the translet rule map
+     */
     @NonNull
     private String assembleRestfulTransletName(String transletName, MethodType requestMethod) {
         return (requestMethod + " " + transletName);
@@ -424,7 +523,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     @Override
     protected void doInitialize() {
-        // Nothing to do
+        // This component requires no specific initialization logic.
     }
 
     @Override
@@ -443,6 +542,11 @@ public class TransletRuleRegistry extends AbstractComponent {
         etcTransletRuleSet.clear();
     }
 
+    /**
+     * A comparator that sorts {@link TransletRule}s based on the specificity of their name patterns.
+     * Rules with more specific patterns (i.e., fewer wildcards) are given higher precedence.
+     * This ensures that a request for "/a/b/c" matches a "/a/b/c" rule before a "/a/*" rule.
+     */
     static class WeightComparator implements Comparator<TransletRule> {
 
         @Override

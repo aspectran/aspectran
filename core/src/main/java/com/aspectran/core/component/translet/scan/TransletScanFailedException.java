@@ -20,7 +20,8 @@ import com.aspectran.core.component.translet.TransletException;
 import java.io.Serial;
 
 /**
- * The Class TransletScanFailedException.
+ * Exception thrown when a translet scanning operation fails.
+ * This can occur if the specified scan path is invalid or an I/O error occurs during scanning.
  *
  * @since 2.0.0
  */
@@ -30,32 +31,32 @@ public class TransletScanFailedException extends TransletException {
     private static final long serialVersionUID = -7694783910759443211L;
 
     /**
-     * Simple constructor.
+     * Creates a new TransletScanFailedException without a detail message.
      */
     public TransletScanFailedException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
+     * Constructs a new TransletScanFailedException with the specified detail message.
+     * @param msg the detail message
      */
     public TransletScanFailedException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new TransletScanFailedException with the specified cause.
+     * @param cause the underlying cause of the exception
      */
     public TransletScanFailedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Constructs a new TransletScanFailedException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the underlying cause of the exception
      */
     public TransletScanFailedException(String msg, Throwable cause) {
         super(msg, cause);

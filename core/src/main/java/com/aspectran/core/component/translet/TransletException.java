@@ -18,9 +18,10 @@ package com.aspectran.core.component.translet;
 import java.io.Serial;
 
 /**
- * The Class TransletException.
+ * General exception thrown when a Translet-related error occurs.
+ * This serves as the base class for more specific translet exceptions.
  *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * @since 2008. 01. 07
  */
 public class TransletException extends RuntimeException {
 
@@ -28,32 +29,32 @@ public class TransletException extends RuntimeException {
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**
-     * Creates a new TransletException without detail message.
+     * Creates a new TransletException without a detail message.
      */
     public TransletException() {
         super();
     }
 
     /**
-     * Constructs a TransletException with the specified detail message.
-     * @param msg a message to associate with the exception
+     * Constructs a new TransletException with the specified detail message.
+     * @param msg the detail message
      */
     public TransletException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new TransletException with the specified cause.
+     * @param cause the underlying cause of the exception
      */
     public TransletException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Constructs a new TransletException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the underlying cause of the exception
      */
     public TransletException(String msg, Throwable cause) {
         super(msg, cause);
