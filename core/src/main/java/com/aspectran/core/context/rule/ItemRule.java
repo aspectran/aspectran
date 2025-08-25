@@ -636,8 +636,9 @@ public class ItemRule {
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull
-    public static ItemRule newInstance(String type, String name, String valueType, Boolean tokenize,
-                                       Boolean mandatory, Boolean secret) throws IllegalRuleException {
+    public static ItemRule newInstance(
+            String type, String name, String valueType, Boolean tokenize,
+            Boolean mandatory, Boolean secret) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
 
         ItemType itemType = ItemType.resolve(type);

@@ -25,7 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultAsyncTaskExecutor implements AsyncTaskExecutor, InitializableBean, DisposableBean {
+public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor, InitializableBean, DisposableBean {
 
     private String threadNamePrefix;
 

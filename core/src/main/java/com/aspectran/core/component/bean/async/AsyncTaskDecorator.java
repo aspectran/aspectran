@@ -16,8 +16,6 @@ package com.aspectran.core.component.bean.async;
  * the exposed {@code Runnable} will be a wrapper which does not propagate
  * any exceptions from its {@code run} method.
  *
- * @author Juergen Hoeller
- * @since 4.3
  * @see SimpleAsyncTaskExecutor#setTaskDecorator
  */
 @FunctionalInterface

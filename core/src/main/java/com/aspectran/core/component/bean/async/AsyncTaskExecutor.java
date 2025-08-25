@@ -29,8 +29,6 @@ import java.util.concurrent.Executor;
  */
 public interface AsyncTaskExecutor extends Executor {
 
-    String DEFAULT_TASK_EXECUTOR_BEAN_ID = "defaultAsyncTaskExecutor";
-
     default CompletableFuture<Void> submit(Runnable task) {
         return CompletableFuture.runAsync(task, this);
     }

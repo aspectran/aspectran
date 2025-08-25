@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.thread.CustomizableThreadFactory;
-import com.aspectran.utils.thread.Scheduler;
+import com.aspectran.utils.scheduling.Scheduler;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

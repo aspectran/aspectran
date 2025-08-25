@@ -24,7 +24,7 @@ import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.thread.Scheduler;
+import com.aspectran.utils.scheduling.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

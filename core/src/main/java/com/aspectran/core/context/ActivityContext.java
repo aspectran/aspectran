@@ -130,8 +130,17 @@ public interface ActivityContext {
      */
     MessageSource getMessageSource();
 
+    /**
+     * Returns the event publisher.
+     * @return the event publisher
+     */
     EventPublisher getEventPublisher();
 
+    /**
+     * Returns the asynchronous task executor.
+     * @return the asynchronous task executor
+     * @throws AsyncTaskExecutorNotAvailableException if the async feature is not enabled
+     */
     AsyncTaskExecutor getAsyncTaskExecutor();
 
     /**

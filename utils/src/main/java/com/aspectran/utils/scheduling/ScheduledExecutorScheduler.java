@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils.concurrent;
+package com.aspectran.utils.scheduling;
 
 import com.aspectran.utils.thread.CustomizableThreadFactory;
-import com.aspectran.utils.thread.Scheduler;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

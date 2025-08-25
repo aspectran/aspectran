@@ -119,7 +119,6 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      * In case of {@code #submit} calls, the exposed {@code Runnable} will be a
      * {@code FutureTask} which does not propagate any exceptions; you might
      * have to cast it and call {@code Future#get} to evaluate exceptions.
-     * @since 4.3
      */
     public void setTaskDecorator(@Nullable AsyncTaskDecorator taskDecorator) {
         this.taskDecorator = taskDecorator;
@@ -137,7 +136,6 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      * a coordinated lifecycle stop but rather just awaits task termination
      * on {@link #close()}.
      * @param timeout the timeout in milliseconds
-     * @since 6.1
      * @see #close()
      * @see #setCancelRemainingTasksOnClose
      */

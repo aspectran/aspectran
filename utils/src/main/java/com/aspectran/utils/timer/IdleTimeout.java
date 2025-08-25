@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.timer;
 
-import com.aspectran.utils.thread.Scheduler;
+import com.aspectran.utils.scheduling.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

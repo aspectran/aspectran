@@ -242,10 +242,9 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     @Override
     public AsyncTaskExecutor getAsyncTaskExecutor() {
-        if (isAvailable()) {
-
-        } else {
-            checkAvailable();
+        checkAvailable();
+        if (asyncTaskExecutor == null) {
+            throw new AsyncTaskExecutorNotAvailableException();
         }
         return asyncTaskExecutor;
     }

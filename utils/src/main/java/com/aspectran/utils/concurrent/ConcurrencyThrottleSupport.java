@@ -1,10 +1,12 @@
 package com.aspectran.utils.concurrent;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -22,14 +24,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * ("unbounded concurrency"). Subclasses may override this default;
  * check the javadoc of the concrete class that you're using.
  *
- * @author Juergen Hoeller
- * @since 1.2.5
  * @see #setConcurrencyLimit
  * @see #beforeAccess()
  * @see #afterAccess()
  * @see java.io.Serializable
  */
-@SuppressWarnings("serial")
 public abstract class ConcurrencyThrottleSupport implements Serializable {
 
     /** Transient to optimize serialization. */
@@ -101,7 +100,7 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
                     onLimitReached();
                 }
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Entering throttle at concurrency count " + this.concurrencyCount);
+                    logger.debug("Entering throttle at concurrency count {}", this.concurrencyCount);
                 }
                 this.concurrencyCount++;
             }
@@ -124,8 +123,8 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
                         "but concurrency limit still does not allow for entering");
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Concurrency count " + this.concurrencyCount +
-                        " has reached limit " + this.concurrencyLimit + " - blocking");
+                logger.debug("Concurrency count {} has reached limit {} - blocking",
+                        this.concurrencyCount, this.concurrencyLimit);
             }
             try {
                 this.concurrencyCondition.await();
@@ -149,7 +148,7 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
             try {
                 this.concurrencyCount--;
                 if (debug) {
-                    logger.debug("Returning from throttle at concurrency count " + this.concurrencyCount);
+                    logger.debug("Returning from throttle at concurrency count {}", this.concurrencyCount);
                 }
                 this.concurrencyCondition.signal();
             }
@@ -164,7 +163,8 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
     // Serialization support
     //---------------------------------------------------------------------
 
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    @Serial
+    private void readObject(@NonNull ObjectInputStream ois) throws IOException, ClassNotFoundException {
         // Rely on default serialization, just initialize state after deserialization.
         ois.defaultReadObject();
 
