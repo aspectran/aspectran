@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An abstract base class for activities that are responsible for executing AOP (Aspect-Oriented Programming) advice.
+ * An abstract base class for activities that execute AOP (Aspect-Oriented Programming) advice.
  * <p>This class extends {@link AbstractActivity} and provides the core logic for managing and executing
  * various types of advice (e.g., Before, After, Finally, Thrown) as defined by {@link AspectRule}s.
  * It handles the registration of relevant aspect rules, the execution of advice actions, and the processing
@@ -87,7 +87,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Retrieves a setting value, first from the superclass, then from any applicable {@link SettingsAdviceRule}s.
-     * Settings from advice rules are evaluated if they are expressions.
+     * This allows for dynamic configuration overrides through aspects.
      * @param name the name of the setting
      * @param <V> the type of the setting value
      * @return the setting value, or {@code null} if not found
@@ -117,7 +117,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Prepares the {@link AdviceRuleRegistry} for the current translet execution.
      * This method identifies and registers aspect rules that are relevant to the given translet
-     * based on pointcut matching and whether new aspect rules have been added dynamically.
+     * based on pointcut matching.
      * @param transletRule the translet rule being executed
      * @param requestName the name of the current request
      */
@@ -147,7 +147,8 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Sets the current type of advice being processed. This is used for validation during advice registration.
+     * Sets the current type of advice being processed (e.g., BEFORE, AFTER, FINALLY).
+     * This is used for validation during advice registration.
      * @param adviceType the current advice type
      */
     protected void setCurrentAdviceType(AdviceType adviceType) {
@@ -155,12 +156,12 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Registers an {@link AspectRule} with this activity. This method performs validation
-     * to ensure that advice is registered at an appropriate phase of the activity lifecycle.
-     * For example, BEFORE or AFTER advice cannot be registered during the FINALLY phase.
+     * Registers an {@link AspectRule} with this activity, making its advice applicable.
+     * This method performs validation to ensure that advice is registered at an appropriate phase
+     * of the activity lifecycle (e.g., BEFORE advice cannot be registered during the FINALLY phase).
      * @param aspectRule the aspect rule to register
-     * @throws AdviceConstraintViolationException if the advice registration violates constraints
-     * @throws AdviceException if an error occurs during advice execution triggered by registration
+     * @throws AdviceConstraintViolationException if the advice registration violates lifecycle constraints
+     * @throws AdviceException if an error occurs during the execution of a newly registered advice
      */
     @Override
     public void registerAdviceRule(AspectRule aspectRule)
@@ -243,7 +244,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Registers a {@link SettingsAdviceRule} with this activity.
-     * Settings advice rules are used to apply configuration settings dynamically.
      * @param settingsAdviceRule the settings advice rule to register
      */
     @Override
@@ -256,8 +256,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Executes a list of {@link AdviceRule}s sequentially.
-     * This method ensures that each advice rule is executed only once.
+     * Executes a list of {@link AdviceRule}s sequentially, ensuring each is executed only once.
      * @param adviceRuleList the list of advice rules to execute
      * @throws AdviceException if an error occurs during advice execution
      */
@@ -287,10 +286,10 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Executes a single {@link AdviceRule}.
-     * This method handles the actual invocation of the advice action, manages advice results,
-     * and propagates exceptions. It also respects the 'isolated' property of aspect rules.
+     * This method handles the invocation of the advice action, manages advice results,
+     * and propagates exceptions, respecting the 'isolated' property of the aspect rule.
      * @param adviceRule the advice rule to execute
-     * @throws AdviceException if an error occurs during advice execution and the aspect is not isolated
+     * @throws AdviceException if a non-isolated advice action fails
      */
     @Override
     public void executeAdvice(@NonNull AdviceRule adviceRule) throws AdviceException {
@@ -363,10 +362,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Determines if an {@link AspectRule} is applicable to the current request.
-     * This checks the aspect's configured request methods and headers against the current request.
+     * Determines if an {@link AspectRule} is applicable to the current request by checking
+     * its configured request methods and headers against the current request.
      * @param aspectRule the aspect rule to check
-     * @return true if the aspect rule is acceptable for the current request, false otherwise
+     * @return true if the aspect rule is acceptable, false otherwise
      */
     private boolean isAcceptable(@NonNull AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
@@ -534,7 +533,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Resolves and retrieves the advice bean for a given {@link AdviceRule}.
-     * If the bean is not already in the cache, it attempts to retrieve it from the bean registry.
+     * If the bean is not already cached, it is retrieved from the bean registry.
      * @param adviceRule the advice rule whose bean needs to be resolved
      */
     private void resolveAdviceBean(@NonNull AdviceRule adviceRule) {
