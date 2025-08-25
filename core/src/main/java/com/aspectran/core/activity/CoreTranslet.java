@@ -47,10 +47,16 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class CoreTranslet.
+ * The default, concrete implementation of the {@link Translet} interface.
+ * <p>This class is the primary context for a single request-response cycle. It is tightly
+ * coupled with a {@link CoreActivity} and delegates most of its data access and state
+ * management responsibilities to it. It serves as the main API for actions and other
+ * components to interact with the current request and control the execution flow.</p>
  *
- * <p>This class is generally not thread-safe.
- * It is primarily designed for use in a single thread only.</p>
+ * <p>This class is not thread-safe and is intended for use within a single thread
+ * for the duration of a single request.</p>
+ *
+ * @since 2008. 03. 22.
  */
 public class CoreTranslet extends AbstractTranslet {
 
@@ -64,8 +70,8 @@ public class CoreTranslet extends AbstractTranslet {
 
     /**
      * Instantiates a new CoreTranslet.
-     * @param transletRule the translet rule
-     * @param activity the current Activity
+     * @param transletRule the rule that defines this translet
+     * @param activity the parent activity that owns this translet instance
      */
     public CoreTranslet(@NonNull TransletRule transletRule, @NonNull CoreActivity activity) {
         super(transletRule);
@@ -287,6 +293,10 @@ public class CoreTranslet extends AbstractTranslet {
         return inputFlashMap;
     }
 
+    /**
+     * Sets the flash map from a previous request.
+     * @param inputFlashMap the flash map from a previous request
+     */
     protected void setInputFlashMap(Map<String, ?> inputFlashMap) {
         this.inputFlashMap = inputFlashMap;
     }

@@ -20,10 +20,11 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.io.Serial;
 
 /**
- * Checked exception thrown when an attempt is made to access a translet
- * that does not exist.
+ * Exception thrown when a request is made for a translet that does not exist.
+ * This typically occurs when no matching {@link com.aspectran.core.context.rule.TransletRule}
+ * can be found in the {@link com.aspectran.core.component.translet.TransletRuleRegistry}.
  *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * @since 2008. 01. 07
  */
 public class TransletNotFoundException extends ActivityException {
 
@@ -35,17 +36,17 @@ public class TransletNotFoundException extends ActivityException {
     private final MethodType requestMethod;
 
     /**
-     * Constructor to create an exception with a message.
-     * @param requestName the request name
+     * Constructs a new TransletNotFoundException for a given request name, assuming a GET request method.
+     * @param requestName the name of the requested translet
      */
     public TransletNotFoundException(String requestName) {
         this(requestName, null);
     }
 
     /**
-     * Constructor to create an exception with a message.
-     * @param requestName the request name
-     * @param requestMethod the request method
+     * Constructs a new TransletNotFoundException for a given request name and request method.
+     * @param requestName the name of the requested translet
+     * @param requestMethod the request method used
      */
     public TransletNotFoundException(String requestName, MethodType requestMethod) {
         super("No such translet mapped to " + makeRequestName(requestName, requestMethod));
@@ -53,6 +54,10 @@ public class TransletNotFoundException extends ActivityException {
         this.requestMethod = requestMethod;
     }
 
+    /**
+     * Returns the name of the translet that was not found, prefixed with the request method if it is not GET.
+     * @return the fully assembled name of the translet
+     */
     public String getTransletName() {
         if (requestMethod == null || requestMethod == MethodType.GET) {
             return transletName;
@@ -61,14 +66,29 @@ public class TransletNotFoundException extends ActivityException {
         }
     }
 
+    /**
+     * Returns the request method that was used when the translet was requested.
+     * @return the request method
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Returns the request method, or a default value if no method was specified.
+     * @param defaultRequestMethod the default method to return if none is set
+     * @return the actual or default request method
+     */
     public MethodType getRequestMethod(MethodType defaultRequestMethod) {
         return (requestMethod != null ? requestMethod : defaultRequestMethod);
     }
 
+    /**
+     * Helper method to create the exception message string.
+     * @param requestName the request name
+     * @param requestMethod the request method
+     * @return the formatted string for the exception message
+     */
     private static String makeRequestName(String requestName, MethodType requestMethod) {
         if (requestMethod != null) {
             return requestMethod + " " + requestName;

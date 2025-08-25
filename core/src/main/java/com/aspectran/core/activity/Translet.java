@@ -37,709 +37,603 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Represents the central context for a single transaction, encapsulating all data and
- * control logic related to a request lifecycle. The Translet serves as the primary API
- * for actions and user code to interact with the current request's state.
+ * Represents the central context for a single request-response cycle (a transaction).
+ * The Translet serves as the primary API for actions and other components to interact
+ * with the current request's state and to control the execution flow.
  *
- * <p>This interface provides a stateful, request-scoped view of the transaction,
- * acting as both a data container and a control interface:
- * <ul>
- *   <li><b>Data Container:</b> It aggregates all request-related information, including
- *       request parameters, attributes, file parameters, and the results of executed
- *       actions (via {@link com.aspectran.core.activity.process.result.ProcessResult}).</li>
- *   <li><b>Control Interface:</b> It offers methods to direct the response flow, such as
- *       {@link #redirect(String)}, {@link #forward(String)}, and {@link #dispatch(String)},
- *       allowing actions to command the framework to alter the execution path.</li>
- * </ul>
- * The {@link Activity} engine creates and manages the Translet instance, which is then
- * passed to and manipulated by each {@link com.aspectran.core.activity.process.action.Executable}
- * action in the processing chain.</p>
+ * <p>This interface is a stateful, request-scoped container that aggregates all
+ * data related to a request, such as parameters, attributes, and action results.
+ * It also provides methods to command the framework to perform flow-control actions
+ * like redirect, forward, or dispatch.</p>
  *
- * <p>Created: 2008. 7. 5. AM 12:35:44</p>
+ * @since 2008. 07. 05.
  */
 public interface Translet {
 
     /**
-     * Returns the current activity mode.
+     * Returns the mode of the current activity (e.g., "web", "shell").
+     * @return the current activity mode
      */
     Activity.Mode getMode();
 
     /**
-     * Returns the context path. This is similar to the
-     * servlet context path.
-     * @return the context path of the activity, or ""
-     *      for the root context
+     * Returns the context path of the application.
+     * @return the context path, or an empty string for the root context
      */
     String getContextPath();
 
     /**
-     * Returns the request name for this {@code Translet}.
-     * This is the name of the request as it is identified in the system.
-     * @return the request name
-     * @see #getActualRequestName for the actual request name with context path
+     * Returns the name of the request, relative to the application's context path.
+     * @return the request name (e.g., "/users/123")
      */
     String getRequestName();
 
     /**
-     * Returns the actual request name.
-     * This must be the actual request path as perceived by the client,
-     * including the context path if present.
-     * @return the actual request name
+     * Returns the full, actual request name as perceived by the client,
+     * including the context path if applicable.
+     * @return the actual request name (e.g., "/myapp/users/123")
      */
     String getActualRequestName();
 
     /**
-     * Returns the request method.
-     * This corresponds to the HTTP request method (e.g., GET, POST).
-     * This value is used to determine how the request should be handled by the translet.
+     * Returns the request method for the current request.
+     * This is an abstract representation that maps to HTTP methods in a web environment.
      * @return the request method
-     * @see MethodType for possible values
      */
     MethodType getRequestMethod();
 
     /**
-     * Returns the translet name.
-     * This identifies the specific Translet instance being executed
-     * and maps it to the request path.
-     * @return the translet name
+     * Returns the name of the translet rule that is currently being executed.
+     * @return the name of the current translet rule
      */
     String getTransletName();
 
     /**
-     * Returns a description of this {@code Translet}.
-     * @return a description of this {@code Translet}
+     * Returns a description of this translet, if provided in the rule definition.
+     * @return a description, or {@code null} if not specified
      */
     String getDescription();
 
     /**
-     * Returns the environment of the current activity context.
-     * @return the environment
+     * Returns the environment for the current activity context.
+     * @return the current environment
      */
     Environment getEnvironment();
 
     /**
-     * Gets the application adapter.
-     * This adapter provides access to application-level resources and services.
+     * Returns the application adapter, which provides access to application-level resources.
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
-     * Returns whether a session adapter is available for this translet.
-     * @return {@code true} if a session adapter is present; {@code false} otherwise
+     * Checks if a session adapter is available for this translet.
+     * @return {@code true} if a session is available, {@code false} otherwise
      */
     boolean hasSessionAdapter();
 
     /**
-     * Gets the session adapter.
+     * Returns the session adapter for interacting with the user session.
      * @return the session adapter
      */
     SessionAdapter getSessionAdapter();
 
     /**
-     * Gets the request adapter.
+     * Returns the request adapter for accessing request-specific data.
      * @return the request adapter
      */
     RequestAdapter getRequestAdapter();
 
     /**
-     * Gets the response adapter.
+     * Returns the response adapter for manipulating the response.
      * @return the response adapter
      */
     ResponseAdapter getResponseAdapter();
 
     /**
-     * Returns the adaptee object to provide session information.
+     * Returns the underlying, native session object from the environment (e.g., HttpSession).
      * @param <V> the type of the session adaptee
-     * @return the session adaptee object
+     * @return the native session object
      */
     <V> V getSessionAdaptee();
 
     /**
-     * Returns the adaptee object to provide request information.
+     * Returns the underlying, native request object from the environment (e.g., HttpServletRequest).
      * @param <V> the type of the request adaptee
-     * @return the request adaptee object
+     * @return the native request object
      */
     <V> V getRequestAdaptee();
 
     /**
-     * Returns the adaptee object to provide response information.
+     * Returns the underlying, native response object from the environment (e.g., HttpServletResponse).
      * @param <V> the type of the response adaptee
-     * @return the response adaptee object
+     * @return the native response object
      */
     <V> V getResponseAdaptee();
 
     /**
-     * Returns the definitive request encoding.
-     * @return the definitive request encoding
+     * Returns the character encoding used for the request.
+     * @return the request character encoding
      */
     String getDefinitiveRequestEncoding();
 
     /**
-     * Returns the definitive response encoding.
-     * @return the definitive response encoding
+     * Returns the character encoding used for the response.
+     * @return the response character encoding
      */
     String getDefinitiveResponseEncoding();
 
     /**
-     * Returns the process result.
-     * This contains the result of the translet processing.
-     * @return the process result
+     * Returns the container for all action results produced during processing.
+     * @return the process result container
      */
     ProcessResult getProcessResult();
 
     /**
-     * Returns an action result for the specified action id from the process result,
-     * or {@code null} if the action does not exist.
-     * @param actionId the specified action id
-     * @return the action result
+     * Returns the result of a specific action by its ID.
+     * @param actionId the ID of the action
+     * @return the result of the specified action, or {@code null} if not found
      */
     Object getProcessResult(String actionId);
 
     /**
-     * Sets the process result.
-     * This method allows updating the process result with new data.
-     * @param processResult the new process result
+     * Sets the process result container, replacing any existing results.
+     * @param processResult the new process result container
      */
     void setProcessResult(ProcessResult processResult);
 
     /**
-     * Returns an Activity Data containing the activity result data.
-     * This data holds the result of the current activity.
-     * @return the activity data
+     * Returns the container for all data related to the current activity.
+     * @return the activity data container
      */
     ActivityData getActivityData();
 
     /**
-     * Gets the setting value in the translet scope.
-     * This allows retrieval of configuration settings.
-     * Settings are stored in the translet scope and can be accessed by any method
-     * in the translet.
-     * @param <V> the type of the value
-     * @param settingName the setting name
-     * @return the setting value
+     * Gets a configuration setting value defined within the translet's scope.
+     * @param <V> the type of the setting value
+     * @param settingName the name of the setting
+     * @return the setting value, or {@code null} if not found
      */
     <V> V getSetting(String settingName);
 
     /**
-     * Returns the value of the property on environment.
-     * This allows retrieval of environment-specific properties.
-     * Environment properties are used to configure the runtime environment.
-     * @param <V> the type of the value
-     * @param name the given property name
-     * @return the value of the property on environment
+     * Returns the value of a property from the application's environment.
+     * @param <V> the type of the property value
+     * @param name the name of the property
+     * @return the property value, or {@code null} if not found
      */
     <V> V getProperty(String name);
 
     /**
-     * Returns the value of an activity's request parameter as a {@code String},
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code String} representing the single value of the parameter
-     * @see #getParameterValues for retrieving multiple values
+     * Returns the value of a request parameter as a {@code String}.
+     * @param name the name of the parameter
+     * @return the parameter value, or {@code null} if not found
      */
     String getParameter(String name);
 
     /**
-     * Returns an array of {@code String} objects containing all
-     * the values the given activity's request parameter has,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the parameter
-     * @return an array of {@code String} objects containing the parameter's values
-     * @see #getParameter for retrieving a single value
+     * Returns an array of {@code String} values for a request parameter.
+     * @param name the name of the parameter
+     * @return an array of values, or {@code null} if the parameter does not exist
      */
     String[] getParameterValues(String name);
 
     /**
-     * Returns a {@code Collection} of {@code String} objects containing
-     * the names of the parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Collection}.
-     * @return an {@code Collection} of {@code String} objects, each {@code String}
-     *         containing the name of a request parameter;
-     *         or an empty {@code Collection} if the request has no parameters
+     * Returns a collection of all parameter names for the current request.
+     * @return a collection of parameter names
      */
     Collection<String> getParameterNames();
 
     /**
-     * Sets the value to the parameter with the given name.
-     * @param name a {@code String} specifying the name of the parameter
-     * @param value a {@code String} representing the
-     *            single value of the parameter
-     * @see #setParameter(String, String[])
+     * Sets a request parameter value, replacing any existing value.
+     * @param name the name of the parameter
+     * @param value the new value for the parameter
      */
     void setParameter(String name, String value);
 
     /**
-     * Sets the value to the parameter with the given name.
-     * @param name a {@code String} specifying the name of the parameter
-     * @param values an array of {@code String} objects
-     *            containing the parameter's values
-     * @see #setParameter
+     * Sets a request parameter with multiple values.
+     * @param name the name of the parameter
+     * @param values the array of values for the parameter
      */
     void setParameter(String name, String[] values);
 
     /**
-     * Return a mutable Map of the request parameters,
-     * with parameter names as map keys and parameter values as map values.
-     * If the parameter value type is the {@code String} then map value will be of type {@code String}.
-     * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.
-     * @return the mutable parameter map
-     * @since 1.4.0
+     * Returns a mutable map of all request parameters.
+     * @return a map of all parameters
      */
     Map<String, Object> getAllParameters();
 
     /**
-     * Extracts all the parameters and fills in the specified map.
-     * @param targetParameters the target parameter map to be filled
-     * @since 2.0.0
+     * Extracts all request parameters into a provided target map.
+     * @param targetParameters the map to populate with parameters
      */
     void extractParameters(Map<String, Object> targetParameters);
 
     /**
-     * Returns a {@code FileParameter} object as a given activity's request parameter name,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @return a {@code FileParameter} representing the
-     *            single value of the parameter
-     * @see #getFileParameterValues
+     * Returns a {@link FileParameter} for a given file upload parameter name.
+     * @param name the name of the file parameter
+     * @return the {@code FileParameter} object, or {@code null} if not found
      */
     FileParameter getFileParameter(String name);
 
     /**
-     * Returns an array of {@code FileParameter} objects containing all
-     * the values the given activity's request file parameter has,
-     * or {@code null} if the parameter does not exist.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @return an array of {@code FileParameter} objects
-     *            containing the parameter's values
-     * @see #getFileParameter
+     * Returns an array of {@link FileParameter} objects for a file upload parameter.
+     * @param name the name of the file parameter
+     * @return an array of {@code FileParameter} objects, or {@code null} if not found
      */
     FileParameter[] getFileParameterValues(String name);
 
     /**
-     * Returns a {@code Collection} of {@code String} objects containing
-     * the names of the file parameters contained in this request.
-     * If the request has no parameters, the method returns an empty {@code Collection}.
-     * @return an {@code Collection} of {@code String} objects, each {@code String}
-     *             containing the name of a file parameter;
-     *             or an empty {@code Collection} if the request has no file parameters
+     * Returns a collection of all file parameter names for the current request.
+     * @return a collection of file parameter names
      */
     Collection<String> getFileParameterNames();
 
     /**
-     * Sets the {@code FileParameter} object to the file parameter with the given name.
-     * @param name a {@code String} specifying the name of the file parameter
-     * @param fileParameter a {@code FileParameter} representing the
-     *            single value of the parameter
-     * @see #setFileParameter(String, FileParameter[])
+     * Sets a file parameter value.
+     * @param name the name of the file parameter
+     * @param fileParameter the {@code FileParameter} object
      */
     void setFileParameter(String name, FileParameter fileParameter);
 
     /**
-     * Sets the value to the file parameter with the given name.
-     * @param name a {@code String} specifying the name of the file parameter
+     * Sets a file parameter with multiple values.
+     * @param name the name of the file parameter
      * @param fileParameters an array of {@code FileParameter} objects
-     *            containing the file parameter's values
-     * @see #setFileParameter
      */
     void setFileParameter(String name, FileParameter[] fileParameters);
 
     /**
-     * Removes the file parameter with the specified name.
-     * @param name a {@code String} specifying the name of the file parameter
+     * Removes a file parameter by its name.
+     * @param name the name of the file parameter to remove
      */
     void removeFileParameter(String name);
 
     /**
-     * Returns the value of the named attribute as a given type,
-     * or {@code null} if no attribute of the given name exists.
-     * @param <V> the type of attribute retrieved
-     * @param name a {@code String} specifying the name of the attribute
-     * @return an {@code Object} containing the value of the attribute,
-     *             or {@code null} if the attribute does not exist
+     * Returns the value of a request-scoped attribute.
+     * @param <V> the type of the attribute value
+     * @param name the name of the attribute
+     * @return the attribute value, or {@code null} if not found
      */
     <V> V getAttribute(String name);
 
     /**
-     * Stores an attribute in this request.
-     * @param name specifying the name of the attribute
-     * @param value the {@code Object} to be stored
+     * Stores a request-scoped attribute.
+     * @param name the name of the attribute
+     * @param value the value to store
      */
     void setAttribute(String name, Object value);
 
     /**
-     * Returns a {@code Collection} containing the
-     * names of the attributes available to this request.
-     * This method returns an empty {@code Collection}
-     * if the request has no attributes available to it.
-     * @return the attribute names
+     * Returns a collection of all attribute names in the current request scope.
+     * @return a collection of attribute names
      */
     Collection<String> getAttributeNames();
 
     /**
-     * Removes an attribute from this request.
-     * @param name a {@code String} specifying the name of the attribute to remove
+     * Removes a request-scoped attribute.
+     * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);
 
     /**
-     * Returns whether an input FlashMap is available for this request.
-     * @return {@code true} if an input FlashMap is present; {@code false} otherwise
+     * Checks if there is a flash map from a previous request (e.g., after a redirect).
+     * @return {@code true} if an input flash map exists, {@code false} otherwise
      */
     boolean hasInputFlashMap();
 
     /**
-     * Returns the input FlashMap containing attributes from a previous request
-     * (e.g., after a redirect), or {@code null} if none.
-     * @return the input FlashMap or {@code null}
+     * Returns the input flash map from a previous request.
+     * @return the input flash map, or {@code null} if none exists
      */
     Map<String, ?> getInputFlashMap();
 
     /**
-     * Returns whether an output FlashMap is available to store attributes for
-     * the next request cycle.
-     * @return {@code true} if an output FlashMap is present; {@code false} otherwise
+     * Checks if an output flash map is available to store attributes for a subsequent request.
+     * @return {@code true} if an output flash map is available, {@code false} otherwise
      */
     boolean hasOutputFlashMap();
 
     /**
-     * Returns the output {@link FlashMap} used to store attributes for a subsequent
-     * request (for example across a redirect).
-     * @return the output FlashMap
+     * Returns the output flash map for storing attributes for a subsequent request.
+     * @return the output flash map
      */
     FlashMap getOutputFlashMap();
 
     /**
-     * Transformation according to a given rule, and transmits this response.
-     * @param transformRule the transformation rule
+     * Immediately performs a transformation and ends the request processing.
+     * @param transformRule the rule defining the transformation
      */
     void transform(TransformRule transformRule);
 
     /**
-     * Applies a custom transformer to render the response.
-     * @param transformer the transformer to apply
+     * Immediately performs a transformation using a custom transformer and ends the request processing.
+     * @param transformer the custom transformer instance
      */
     void transform(CustomTransformer transformer);
 
     /**
-     * Dispatch to other resources as the given name.
-     * @param name the dispatch name
+     * Dispatches the request to a different view resource (e.g., a JSP or template file).
+     * @param name the name of the view resource to dispatch to
      */
     void dispatch(String name);
 
     /**
-     * Dispatch to other resources as the given name.
-     * @param name the dispatch name
-     * @param dispatcherName the id or class name of the view dispatcher bean
+     * Dispatches the request to a different view resource using a specific dispatcher bean.
+     * @param name the name of the view resource to dispatch to
+     * @param dispatcherName the name of the dispatcher bean
      */
     void dispatch(String name, String dispatcherName);
 
     /**
-     * Dispatch to other resources as the given rule.
-     * @param dispatchRule the dispatch rule
+     * Dispatches the request according to the provided dispatch rule.
+     * @param dispatchRule the rule defining the dispatch
      */
     void dispatch(DispatchRule dispatchRule);
 
     /**
-     * Forward to the specified translet immediately.
-     * @param transletName the translet name of the target to be forwarded
+     * Forwards the request internally to another translet.
+     * @param transletName the name of the target translet to forward to
      */
     void forward(String transletName);
 
     /**
-     * Forward according to a given rule.
-     * @param forwardRule the forward rule
+     * Forwards the request internally to another translet as defined by the rule.
+     * @param forwardRule the rule defining the forward
      */
     void forward(ForwardRule forwardRule);
 
     /**
-     * Redirect a client to a new target resource.
-     * If an intended redirect rule exists, that may be used.
-     * @param path the redirect path
+     * Initiates a client-side redirect to a new URL.
+     * @param path the target URL for the redirect
      */
     void redirect(String path);
 
     /**
-     * Redirect to the other target resource.
-     * @param path the redirect path
-     * @param parameters the parameters
+     * Initiates a client-side redirect to a new URL with additional parameters.
+     * @param path the target URL for the redirect
+     * @param parameters a map of parameters to append to the URL
      */
     void redirect(String path, Map<String, String> parameters);
 
     /**
-     * Redirect a client according to the given rule.
-     * @param redirectRule the redirect rule
+     * Initiates a client-side redirect as defined by the rule.
+     * @param redirectRule the rule defining the redirect
      */
     void redirect(RedirectRule redirectRule);
 
     /**
-     * Respond immediately, and the remaining jobs will be canceled.
-     * @param response the response
+     * Immediately sends the specified response and halts further processing.
+     * @param response the response to send
      */
     void response(Response response);
 
     /**
-     * Respond immediately, and the remaining jobs will be canceled.
+     * Immediately sends the current response and halts further processing.
      */
     void response();
 
     /**
-     * Returns the originally declared response.
-     * @return the declared response
-     * @since 5.2.0
+     * Returns the response that was originally declared in the translet rule.
+     * @return the declared response rule
      */
     Response getDeclaredResponse();
 
     /**
-     * Returns whether the response is reserved.
-     * @return true, if the response is reserved
+     * Checks if a response has been reserved (i.e., if a flow control method like
+     * redirect, forward, or transform has been called).
+     * @return true if a response is already reserved, false otherwise
      */
     boolean isResponseReserved();
 
     /**
-     * Returns whether the exception was thrown.
-     * @return true, if is exception raised
+     * Checks if an exception has been raised during the current activity.
+     * @return true if an exception was raised, false otherwise
      */
     boolean isExceptionRaised();
 
     /**
-     * Returns the raised exception instance.
-     * @return the raised exception instance
+     * Returns the exception that was raised during the activity.
+     * @return the raised {@code Throwable}, or {@code null} if no exception was raised
      */
     Throwable getRaisedException();
 
     /**
-     * Returns the innermost one of the chained (wrapped) exceptions.
-     * @return the innermost one of the chained (wrapped) exceptions
+     * Returns the root cause of the exception that was raised.
+     * @return the root cause exception, or {@code null}
      */
     Throwable getRootCauseOfRaisedException();
 
     /**
-     * Remove the raised exception.
+     * Clears the currently stored raised exception.
      */
     void removeRaisedException();
 
     /**
-     * Gets the advice bean.
-     * @param <V> the result type of the advice
-     * @param aspectId the aspect id
-     * @return the advice bean
+     * Retrieves an advice bean instance by its aspect ID.
+     * @param <V> the type of the advice bean
+     * @param aspectId the ID of the aspect containing the advice
+     * @return the advice bean instance
      */
     <V> V getAdviceBean(String aspectId);
 
     /**
-     * Gets the before advice result.
-     * @param <V> the result type of the before advice
-     * @param aspectId the aspect id
-     * @return the before advice result
+     * Retrieves the result of a 'before' advice execution for a given aspect.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the before advice, or {@code null}
      */
     <V> V getBeforeAdviceResult(String aspectId);
 
     /**
-     * Gets the after advice result.
-     * @param <V> the result type of the after advice
-     * @param aspectId the aspect id
-     * @return the after advice result
+     * Retrieves the result of an 'after' advice execution for a given aspect.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the after advice, or {@code null}
      */
     <V> V getAfterAdviceResult(String aspectId);
 
     /**
-     * Gets the around advice result.
-     * @param <V> the result type of the around advice
-     * @param aspectId the aspect id
-     * @return the around advice result
+     * Retrieves the result of an 'around' advice execution for a given aspect.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the around advice, or {@code null}
      */
     <V> V getAroundAdviceResult(String aspectId);
 
     /**
-     * Gets the final advice result.
-     * @param <V> the result type of the final advice
-     * @param aspectId the aspect id
-     * @return the result of final advice
+     * Retrieves the result of a 'finally' advice execution for a given aspect.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the finally advice, or {@code null}
      */
     <V> V getFinallyAdviceResult(String aspectId);
 
     /**
-     * Returns whether the translet name has tokens for extracting parameters or attributes.
-     * @return true if the translet name has tokens for extracting parameters or attributes
+     * Checks if the current translet name contains path variables to be extracted.
+     * @return true if path variables are present, false otherwise
      */
     boolean hasPathVariables();
 
     /**
-     * Returns the response content that has been written so far, if recorded by
-     * the underlying adapter/response implementation; may be {@code null}.
-     * @return the written response content or {@code null}
+     * Returns the response content that has been written so far, if supported by the adapter.
+     * @return the written response content, or {@code null} if not available
      */
     String getWrittenResponse();
 
     /**
-     * Evaluates a token expression.
-     * @param <V> the type of evaluation result value
-     * @param expression the token expression to evaluate
-     * @return if there are multiple tokens, the result of evaluating them is returned
-     *      as a string. If there is only one token, it is returned as is.
-     * @since 7.4.3
+     * Evaluates an expression containing tokens (e.g., "Hello, ${userName}!").
+     * @param <V> the type of the evaluation result
+     * @param expression the expression string to evaluate
+     * @return the evaluated result
      */
     <V> V evaluate(String expression);
 
     /**
-     * Evaluates a token expression.
-     * @param <V> the type of evaluation result value
+     * Evaluates an array of pre-parsed tokens.
+     * @param <V> the type of the evaluation result
      * @param tokens the tokens to evaluate
-     * @return if there are multiple tokens, the result of evaluating them is returned
-     *      as a string. If there is only one token, it is returned as is.
-     * @since 7.4.3
+     * @return the evaluated result
      */
     <V> V evaluate(Token[] tokens);
 
     /**
-     * Return an instance of the bean that matches the given id.
-     * @param <V> the type of bean object retrieved
-     * @param id the id of the bean to retrieve
-     * @return an instance of the bean
+     * Retrieves a bean instance by its ID from the bean registry.
+     * @param <V> the type of the bean
+     * @param id the ID of the bean
+     * @return the bean instance
      */
     <V> V getBean(String id);
 
     /**
-     * Return an instance of the bean that matches the given object type.
-     * @param <V> the type of bean object retrieved
-     * @param type the type the bean must match; can be an interface or superclass.
-     *      {@code null} is disallowed.
-     * @return an instance of the bean
-     * @since 1.3.1
+     * Retrieves a bean instance by its type from the bean registry.
+     * @param <V> the type of the bean
+     * @param type the class or interface type of the bean
+     * @return the bean instance
      */
     <V> V getBean(Class<V> type);
 
     /**
-     * Return an instance of the bean that matches the given object type.
-     * @param <V> the type of bean object retrieved
-     * @param type the type that the bean must match; can be an interface or
-     *      superclass, and {@code null} is also allowed.
-     * @param id the id of the bean to retrieve
-     * @return an instance of the bean
-     * @since 2.0.0
+     * Retrieves a bean instance by its type and ID from the bean registry.
+     * @param <V> the type of the bean
+     * @param type the class or interface type of the bean
+     * @param id the ID of the bean
+     * @return the bean instance
      */
     <V> V getBean(Class<V> type, String id);
 
     /**
-     * Return whether a bean with the specified id is present.
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified id is present
+     * Checks if a bean with the specified ID exists in the bean registry.
+     * @param id the ID of the bean
+     * @return true if the bean exists, false otherwise
      */
     boolean containsBean(String id);
 
     /**
-     * Return whether a bean with the specified object type is present.
-     * @param type the object type of the bean to query
-     * @return whether a bean with the specified type is present
+     * Checks if a bean of the specified type exists in the bean registry.
+     * @param type the class or interface type of the bean
+     * @return true if a bean of the given type exists, false otherwise
      */
     boolean containsBean(Class<?> type);
 
     /**
-     * Returns whether the bean corresponding to the specified object type and ID exists.
-     * @param type the object type of the bean to query
-     * @param id the id of the bean to query
-     * @return whether a bean with the specified type is present
+     * Checks if a bean with the specified type and ID exists in the bean registry.
+     * @param type the class or interface type of the bean
+     * @param id the ID of the bean
+     * @return true if the bean exists, false otherwise
      */
     boolean containsBean(Class<?> type, String id);
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
+     * Resolves a message from the configured message source.
+     * @param code the message code to look up
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message is not found
      */
     String getMessage(String code) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args Array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
+     * Resolves a message with arguments from the configured message source.
+     * @param code the message code to look up
+     * @param args the arguments to format the message with
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message is not found
      */
     String getMessage(String code, Object[] args) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return a default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param defaultMessage String to return if the lookup fails
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves a message, returning a default message if not found.
+     * @param code the message code to look up
+     * @param defaultMessage the message to return if the lookup fails
+     * @return the resolved or default message
      */
     String getMessage(String code, String defaultMessage);
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param args array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param defaultMessage String to return if the lookup fails
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves a message with arguments, returning a default message if not found.
+     * @param code the message code to look up
+     * @param args the arguments to format the message with
+     * @param defaultMessage the message to return if the lookup fails
+     * @return the resolved or default message
      */
     String getMessage(String code, Object[] args, String defaultMessage);
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param locale the Locale in which to do the lookup
+     * Resolves a message for a specific locale.
+     * @param code the message code to look up
+     * @param locale the locale to use for the lookup
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message is not found
      */
     String getMessage(String code, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args Array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param locale the Locale in which to do the lookup
+     * Resolves a message with arguments for a specific locale.
+     * @param code the message code to look up
+     * @param args the arguments to format the message with
+     * @param locale the locale to use for the lookup
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message is not found
      */
     String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return a default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param defaultMessage String to return if the lookup fails
-     * @param locale the Locale in which to do the lookup
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves a message for a specific locale, returning a default message if not found.
+     * @param code the message code to look up
+     * @param defaultMessage the message to return if the lookup fails
+     * @param locale the locale to use for the lookup
+     * @return the resolved or default message
      */
     String getMessage(String code, String defaultMessage, Locale locale);
 
     /**
-     * Try to resolve the message. Return a default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param args array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param defaultMessage String to return if the lookup fails
-     * @param locale the Locale in which to do the lookup
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves a message with arguments for a specific locale, returning a default message if not found.
+     * @param code the message code to look up
+     * @param args the arguments to format the message with
+     * @param defaultMessage the message to return if the lookup fails
+     * @param locale the locale to use for the lookup
+     * @return the resolved or default message
      */
     String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
 

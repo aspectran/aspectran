@@ -23,94 +23,83 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * Base implementation of the {@link Translet} interface that provides common
- * access to the underlying {@link TransletRule} and exposes basic request
- * metadata such as request name and method.
- * <p>
- * Subclasses such as {@code CoreTranslet} can focus on higher-level behavior
- * while delegating rule access and simple state management to this class.
- * </p>
+ * Abstract base implementation of the {@link Translet} interface.
+ * <p>This class provides the fundamental infrastructure for a translet by holding the
+ * defining {@link TransletRule} and managing basic request metadata like the request
+ * name and method. Subclasses can build upon this base to implement the detailed
+ * logic of request processing.</p>
  *
- * <p>Created: 2008. 07. 05.</p>
+ * @since 2008. 07. 05.
  */
 public abstract class AbstractTranslet implements Translet {
 
-    /** The rule that defines this translet. */
+    /** The rule that defines the behavior of this translet. */
     private final TransletRule transletRule;
 
-    /** The name of the current request. */
+    /** The name of the current request being processed. */
     private String requestName;
 
-    /** The method of the current request. */
+    /** The request method of the current request. */
     private MethodType requestMethod;
 
     /**
      * Creates a new AbstractTranslet backed by the given {@link TransletRule}.
-     * @param transletRule the rule describing this translet (must not be {@code null})
+     * @param transletRule the rule that defines this translet (must not be {@code null})
      */
     protected AbstractTranslet(@NonNull TransletRule transletRule) {
         this.transletRule = transletRule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRequestName() {
         return requestName;
     }
 
     /**
-     * Sets the request name for this translet.
+     * Sets the name of the current request.
      * @param requestName the request name
      */
     protected void setRequestName(String requestName) {
         this.requestName = requestName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
     /**
-     * Sets the request method for this translet.
+     * Sets the request method of the current request.
      * @param requestMethod the request method
      */
     protected void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTransletName() {
         return transletRule.getName();
     }
 
     /**
-     * Returns the underlying {@link TransletRule} that defines this translet.
-     * @return the translet rule
+     * Returns the underlying {@link TransletRule} that defines this translet's behavior.
+     * @return the defining translet rule
      */
     protected TransletRule getTransletRule() {
         return transletRule;
     }
 
     /**
-     * Returns the {@link RequestRule} associated with this translet.
-     * @return the request rule
+     * Returns the {@link RequestRule} associated with this translet, if any.
+     * @return the request rule, or {@code null} if not defined
      */
     protected RequestRule getRequestRule() {
         return transletRule.getRequestRule();
     }
 
     /**
-     * Returns the {@link ResponseRule} associated with this translet.
-     * @return the response rule
+     * Returns the {@link ResponseRule} associated with this translet, if any.
+     * @return the response rule, or {@code null} if not defined
      */
     protected ResponseRule getResponseRule() {
         return transletRule.getResponseRule();
