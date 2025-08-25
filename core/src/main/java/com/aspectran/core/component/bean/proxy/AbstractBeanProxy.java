@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.InstantProxyActivity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
@@ -38,22 +39,16 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-import static com.aspectran.core.component.bean.async.AsyncTaskExecutor.DEFAULT_TASK_EXECUTOR_BEAN_ID;
-
 /**
  * Base support class for bean proxies that apply Aspectran AOP advice.
  */
 public abstract class AbstractBeanProxy {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractBeanProxy.class);
 
     private final ActivityContext context;
 
@@ -68,7 +63,8 @@ public abstract class AbstractBeanProxy {
         this.aspectRuleRegistry = context.getAspectRuleRegistry();
     }
 
-    protected Object invoke(BeanRule beanRule, Method method, SuperInvoker superInvoker) throws Throwable {
+    protected Object invoke(BeanRule beanRule, Method method, Object[] args, SuperInvoker superInvoker)
+            throws Throwable {
         if (!isAdvisableMethod(method)) {
             return superInvoker.invoke();
         }
@@ -76,9 +72,9 @@ public abstract class AbstractBeanProxy {
         Async async = method.getAnnotation(Async.class);
         if (async != null) {
             if (context.hasCurrentActivity()) {
-                return invokeAsync(beanRule, method, superInvoker, async, context.getCurrentActivity());
+                return invokeAsync(beanRule, method, args, superInvoker, async, context.getCurrentActivity());
             } else {
-                return invokeAsync(beanRule, method, superInvoker, async, null);
+                return invokeAsync(beanRule, method, args, superInvoker, async, null);
             }
         } else {
             if (context.hasCurrentActivity()) {
@@ -95,8 +91,10 @@ public abstract class AbstractBeanProxy {
     }
 
     @Nullable
-    private Object invokeAsync(BeanRule beanRule, @NonNull Method method, SuperInvoker superInvoker,
-                               Async async, Activity activity) {
+    private Object invokeAsync(
+            BeanRule beanRule, @NonNull Method method, Object[] args,
+            SuperInvoker superInvoker, Async async, Activity activity)
+            throws AsyncExecutionException {
         AsyncTaskExecutor executor = findAsyncExecutor(async);
         if (method.getReturnType() != Void.TYPE && !Future.class.isAssignableFrom(method.getReturnType())) {
             throw new AsyncExecutionException("Cannot use @Async on a method that does not return void or Future: " + method);
@@ -117,8 +115,7 @@ public abstract class AbstractBeanProxy {
                         return result;
                     }
                 } catch (Throwable e) {
-                    logger.error("Async execution failed", e);
-                    throw new CompletionException(e);
+                    throw handleAsyncException(e, executor, method, args);
                 } finally {
                     if (oldActivity != null) {
                         context.setCurrentActivity(oldActivity);
@@ -138,8 +135,7 @@ public abstract class AbstractBeanProxy {
                         return result;
                     }
                 } catch (Exception e) {
-                    logger.error("Async execution failed", e);
-                    throw new CompletionException(e);
+                    throw handleAsyncException(e, executor, method, args);
                 }
             });
         }
@@ -181,36 +177,6 @@ public abstract class AbstractBeanProxy {
             }
             throw e;
         }
-    }
-
-    private AsyncTaskExecutor findAsyncExecutor(@NonNull Async async) {
-        String beanId = StringUtils.emptyToNull(async.value());
-        Class<? extends AsyncTaskExecutor> beanClass = async.executor();
-
-        AsyncTaskExecutor executor = null;
-        try {
-            if (beanId != null) {
-                executor = context.getBeanRegistry().getBean(AsyncTaskExecutor.class, beanId);
-            } else if (beanClass != AsyncTaskExecutor.class) {
-                executor = context.getBeanRegistry().getBean(beanClass);
-            }
-        } catch (Exception e) {
-            if (beanId != null) {
-                throw new AsyncExecutionException("No AsyncTaskExecutor found for beanId: " + beanId, e);
-            } else {
-                throw new AsyncExecutionException("No AsyncTaskExecutor found for beanClass: " + beanClass, e);
-            }
-        }
-        if (executor == null) {
-            try {
-                executor = context.getBeanRegistry().getBean(AsyncTaskExecutor.class, DEFAULT_TASK_EXECUTOR_BEAN_ID);
-            } catch (Exception e) {
-                throw new AsyncExecutionException("No AsyncTaskExecutor bean found for @Async execution. " +
-                        "Please define a bean that implements " + AsyncTaskExecutor.class.getName() +
-                        " and designate it as the default, or specify it in the @Async annotation.");
-            }
-        }
-        return executor;
     }
 
     private AdviceRuleRegistry getAdviceRuleRegistry(
@@ -288,6 +254,38 @@ public abstract class AbstractBeanProxy {
             return (beanRule.getBeanClass() == adviceRule.getAdviceBeanClass());
         }
         return false;
+    }
+
+    private AsyncTaskExecutor findAsyncExecutor(@NonNull Async async) throws AsyncExecutionException {
+        String beanId = StringUtils.emptyToNull(async.value());
+        Class<? extends AsyncTaskExecutor> beanClass = async.executor();
+        if (beanId == null && (beanClass == null || beanClass == AsyncTaskExecutor.class)) {
+            return context.getAsyncTaskExecutor();
+        }
+        AsyncTaskExecutor executor;
+        try {
+            executor = context.getBeanRegistry().getBean(beanClass, beanId);
+        } catch (Exception e) {
+            if (beanId != null) {
+                throw new AsyncExecutionException("No AsyncTaskExecutor found for beanId: " + beanId, e);
+            } else {
+                throw new AsyncExecutionException("No AsyncTaskExecutor found for beanClass: " + beanClass, e);
+            }
+        }
+        return executor;
+    }
+
+    @NonNull
+    private CompletionException handleAsyncException(
+            Throwable exception, AsyncTaskExecutor executor, Method method, Object[] args) {
+        Throwable actualCause = exception;
+        if (exception instanceof ActivityPerformException pe) {
+            actualCause = pe.getCause();
+        }
+        if (executor.getAsyncUncaughtExceptionHandler() != null) {
+            executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(actualCause, method, args);
+        }
+        return new CompletionException(actualCause);
     }
 
     @FunctionalInterface

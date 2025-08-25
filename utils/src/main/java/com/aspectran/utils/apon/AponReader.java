@@ -531,14 +531,14 @@ public class AponReader {
     }
 
     /**
-         * Converts an APON formatted string into a new container of the given type.
-         * @param <T> the container type to create
-         * @param apon the APON formatted string
-         * @param requiredType the concrete Parameters implementation to instantiate
-         * @return a populated container instance
-         * @throws AponParseException if parsing fails
-         */
-        public static <T extends Parameters> T read(String apon, Class<T> requiredType) throws AponParseException {
+     * Converts an APON formatted string into a new container of the given type.
+     * @param <T> the container type to create
+     * @param apon the APON formatted string
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @return a populated container instance
+     * @throws AponParseException if parsing fails
+     */
+    public static <T extends Parameters> T read(String apon, Class<T> requiredType) throws AponParseException {
         T parameters = ClassUtils.createInstance(requiredType);
         return read(apon, parameters);
     }

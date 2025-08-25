@@ -15,16 +15,15 @@
  */
 package com.aspectran.core.component.bean.async;
 
-import com.aspectran.core.component.bean.BeanException;
-
 import java.io.Serial;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Exception thrown when an error occurs during asynchronous execution.
  *
  * <p>Created: 2024. 8. 24.</p>
  */
-public class AsyncExecutionException extends BeanException {
+public class AsyncExecutionException extends ExecutionException {
 
     @Serial
     private static final long serialVersionUID = 1496387160074614441L;

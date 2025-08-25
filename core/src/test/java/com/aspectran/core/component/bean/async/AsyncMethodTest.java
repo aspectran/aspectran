@@ -81,7 +81,7 @@ class AsyncMethodTest {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
-        String mainThread = Thread.currentThread().getName();
+        String mainThread = testBean.getCallingThreadName();
 
         Future<String> future1 = testBean.noActivitySameThread();
         Future<String> future2 = testBean.noActivityDifferentThread();
@@ -99,7 +99,7 @@ class AsyncMethodTest {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
-        String mainThread = Thread.currentThread().getName();
+        String mainThread = testBean.getCallingThreadName();
 
         InstantActivity activity = new InstantActivity(context);
         ActivityData activityData = activity.perform(() -> {
@@ -112,7 +112,7 @@ class AsyncMethodTest {
         String asyncThread = activityData.get("threadName").toString();
         assertNotNull(asyncThread);
         assertNotEquals(mainThread, asyncThread);
-        assertTrue(asyncThread.startsWith("DefaultAsyncTaskExecutor-"));
+        assertTrue(asyncThread.startsWith("SimpleAsyncTaskExecutor-"));
     }
 
     @Test
@@ -120,7 +120,7 @@ class AsyncMethodTest {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
-        String mainThread = Thread.currentThread().getName();
+        String mainThread = testBean.getCallingThreadName();
 
         InstantActivity activity = new InstantActivity(context);
         Future<String> future = activity.perform(testBean::futureMethod);
@@ -130,22 +130,23 @@ class AsyncMethodTest {
         String asyncThread = future.get();
         assertNotNull(asyncThread);
         assertNotEquals(mainThread, asyncThread);
+        assertTrue(asyncThread.startsWith("SimpleAsyncTaskExecutor-"));
     }
 
     @Test
     void testCustomExecutor() throws ExecutionException, InterruptedException, ActivityPerformException {
-//        AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
-//        assertNotNull(testBean);
-//
-//        String mainThread = testBean.getCallingThreadName();
-//
-//        InstantActivity activity = new InstantActivity(context);
-//        Future<String> future = activity.perform(() -> testBean.customExecutorMethod());
-//
-//        String asyncThread = future.get();
-//        assertNotNull(asyncThread);
-//        assertNotEquals(mainThread, asyncThread);
-//        assertTrue(asyncThread.startsWith("MyCustomExecutor-"));
+        AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
+        assertNotNull(testBean);
+
+        String mainThread = testBean.getCallingThreadName();
+
+        InstantActivity activity = new InstantActivity(context);
+        Future<String> future = activity.perform(testBean::customExecutorMethod);
+
+        String asyncThread = future.get();
+        assertNotNull(asyncThread);
+        assertNotEquals(mainThread, asyncThread);
+        assertTrue(asyncThread.startsWith("MyCustomTaskExecutor-"));
     }
 
     @Test
@@ -159,6 +160,22 @@ class AsyncMethodTest {
         Activity asyncActivity = future.get();
         assertNotNull(asyncActivity);
         assertEquals(activity, asyncActivity);
+    }
+
+    @Test
+    void errorOccurredMethod() throws InterruptedException, ActivityPerformException {
+        AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
+        assertNotNull(testBean);
+
+        InstantActivity activity = new InstantActivity(context);
+        activity.perform(() -> {
+            testBean.errorOccurredMethod();
+            return null;
+        });
+
+        testBean.errorOccurredMethod();
+
+        Thread.sleep(500);
     }
 
 }

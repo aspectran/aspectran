@@ -13,51 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils.thread;
+package com.aspectran.core.component.session;
+
+import com.aspectran.utils.thread.CustomizableThreadFactory;
+import com.aspectran.utils.thread.Scheduler;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <p>This class is a clone of org.eclipse.jetty.util.thread.ScheduledExecutorScheduler</p>
- *
- * Implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
- * <p>
- * While use of {@link ScheduledThreadPoolExecutor} creates futures that will not be used,
- * it has the advantage of allowing to set a property to remove cancelled tasks from its
- * queue even if the task did not fire, which provides a huge benefit in the performance
- * of garbage collection in young generation.</p>
- */
-public class ScheduledExecutorScheduler implements Scheduler {
+public class SessionScheduler implements Scheduler {
 
     private final String name;
 
-    private final boolean daemon;
-
     private final ClassLoader classloader;
-
-    private final ThreadGroup threadGroup;
 
     private volatile ScheduledThreadPoolExecutor executor;
 
-    public ScheduledExecutorScheduler() {
-        this(null, false);
-    }
-
-    public ScheduledExecutorScheduler(String name, boolean daemon) {
-        this(name, daemon, null);
-    }
-
-    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader) {
-        this(name, daemon, classLoader, null);
-    }
-
-    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader, ThreadGroup threadGroup) {
-        this.name = (name == null ? "Scheduler-" + hashCode() : name);
-        this.daemon = daemon;
+    public SessionScheduler(String name, ClassLoader classLoader) {
+        this.name = name;
         this.classloader = classLoader;
-        this.threadGroup = threadGroup;
     }
 
     @Override
@@ -71,23 +46,20 @@ public class ScheduledExecutorScheduler implements Scheduler {
         if (executor == null) {
             return () -> false;
         }
-        ScheduledFuture<?> result = executor.schedule(task, delay, unit);
-        return new ScheduledFutureTask(result, mayInterruptIfRunning);
+        ScheduledFuture<?> scheduledFuture = executor.schedule(task, delay, unit);
+        return new ScheduledFutureTask(scheduledFuture, mayInterruptIfRunning);
     }
 
     @Override
     public synchronized void start() {
         if (executor != null) {
-            throw new IllegalStateException("Scheduler " + name + " is already running");
+            throw new IllegalStateException(name + " is already running");
         }
-        executor = new ScheduledThreadPoolExecutor(1, r -> {
-            Thread thread = new Thread(threadGroup, r, name);
-            thread.setDaemon(daemon);
-            if (classloader != null) {
-                thread.setContextClassLoader(classloader);
-            }
-            return thread;
-        });
+
+        CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(name);
+        threadFactory.setContextClassLoader(classloader);
+
+        executor = new ScheduledThreadPoolExecutor(1, threadFactory);
         executor.setRemoveOnCancelPolicy(true);
     }
 

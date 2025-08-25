@@ -17,11 +17,9 @@ package com.aspectran.core.component.bean.async;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.CustomizableThreadFactory;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -68,11 +66,16 @@ public class DefaultAsyncTaskExecutor implements AsyncTaskExecutor, Initializabl
     }
 
     @Override
+    public void execute(@NonNull Runnable task) {
+        executor.execute(task);
+    }
+
+    @Override
     public void initialize() {
         if (threadNamePrefix == null) {
             threadNamePrefix = getClass().getSimpleName() + "-";
         }
-        CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(this.threadNamePrefix);
+        CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(threadNamePrefix);
         executor = new ThreadPoolExecutor(
                 corePoolSize,
                 maxPoolSize,
@@ -82,28 +85,12 @@ public class DefaultAsyncTaskExecutor implements AsyncTaskExecutor, Initializabl
     }
 
     @Override
-    public void execute(Runnable task) {
-        executor.execute(task);
-    }
-
-    @Override
-    public <V> CompletableFuture<V> submit(Callable<V> task) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return task.call();
-            } catch (Exception e) {
-                throw new CompletionException(e);
-            }
-        }, this.executor);
-    }
-
-    @Override
     public void destroy() {
-        if (this.executor != null) {
-            if (this.waitForTasksToCompleteOnShutdown) {
-                this.executor.shutdown();
+        if (executor != null) {
+            if (waitForTasksToCompleteOnShutdown) {
+                executor.shutdown();
             } else {
-                this.executor.shutdownNow();
+                executor.shutdownNow();
             }
         }
     }

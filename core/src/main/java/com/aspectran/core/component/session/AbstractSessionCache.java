@@ -20,7 +20,7 @@ import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.thread.AutoLock;
+import com.aspectran.utils.concurrent.AutoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

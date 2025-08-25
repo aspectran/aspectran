@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRenderer;
@@ -130,6 +131,8 @@ public interface ActivityContext {
     MessageSource getMessageSource();
 
     EventPublisher getEventPublisher();
+
+    AsyncTaskExecutor getAsyncTaskExecutor();
 
     /**
      * Returns the default activity for this context.

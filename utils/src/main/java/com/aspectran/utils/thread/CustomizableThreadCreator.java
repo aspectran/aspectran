@@ -34,15 +34,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CustomizableThreadCreator {
 
+    private final AtomicInteger threadCount = new AtomicInteger();
+
     private String threadNamePrefix;
 
     private int threadPriority = Thread.NORM_PRIORITY;
 
     private boolean daemon = false;
 
-    private @Nullable ThreadGroup threadGroup;
+    @Nullable
+    private ThreadGroup threadGroup;
 
-    private final AtomicInteger threadCount = new AtomicInteger();
+    private ClassLoader contextClassLoader;
 
     /**
      * Create a new CustomizableThreadCreator with default thread name prefix.
@@ -132,8 +135,17 @@ public class CustomizableThreadCreator {
      * Return the thread group that threads should be created in
      * (or {@code null} for the default group).
      */
-    public @Nullable ThreadGroup getThreadGroup() {
+    @Nullable
+    public ThreadGroup getThreadGroup() {
         return this.threadGroup;
+    }
+
+    public ClassLoader getContextClassLoader() {
+        return this.contextClassLoader;
+    }
+
+    public void setContextClassLoader(ClassLoader contextClassLoader) {
+        this.contextClassLoader = contextClassLoader;
     }
 
     /**
@@ -147,6 +159,9 @@ public class CustomizableThreadCreator {
         Thread thread = new Thread(getThreadGroup(), runnable, nextThreadName());
         thread.setPriority(getThreadPriority());
         thread.setDaemon(isDaemon());
+        if (contextClassLoader != null) {
+            thread.setContextClassLoader(contextClassLoader);
+        }
         return thread;
     }
 
@@ -157,7 +172,7 @@ public class CustomizableThreadCreator {
      * @see #getThreadNamePrefix()
      */
     protected String nextThreadName() {
-        return getThreadNamePrefix() + this.threadCount.incrementAndGet();
+        return getThreadNamePrefix() + threadCount.incrementAndGet();
     }
 
     /**

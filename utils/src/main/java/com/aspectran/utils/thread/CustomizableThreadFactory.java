@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.thread;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -46,7 +48,7 @@ public class CustomizableThreadFactory extends CustomizableThreadCreator impleme
 
 
     @Override
-    public Thread newThread(Runnable runnable) {
+    public Thread newThread(@NonNull Runnable runnable) {
         return createThread(runnable);
     }
 

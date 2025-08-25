@@ -22,6 +22,7 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.DefaultBeanRegistry;
+import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.component.bean.event.DefaultEventPublisher;
 import com.aspectran.core.component.bean.event.EventPublisher;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
@@ -85,6 +86,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     private MessageSource messageSource;
 
     private EventPublisher eventPublisher;
+
+    private AsyncTaskExecutor asyncTaskExecutor;
 
     /**
      * Instantiates a new DefaultActivityContext.
@@ -235,6 +238,20 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     public EventPublisher getEventPublisher() {
         checkAvailable();
         return eventPublisher;
+    }
+
+    @Override
+    public AsyncTaskExecutor getAsyncTaskExecutor() {
+        if (isAvailable()) {
+
+        } else {
+            checkAvailable();
+        }
+        return asyncTaskExecutor;
+    }
+
+    public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
+        this.asyncTaskExecutor = asyncTaskExecutor;
     }
 
     @Override

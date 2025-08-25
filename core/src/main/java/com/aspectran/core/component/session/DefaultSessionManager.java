@@ -24,7 +24,6 @@ import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.thread.ScheduledExecutorScheduler;
 import com.aspectran.utils.thread.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,11 +145,11 @@ public class DefaultSessionManager
         if (getScheduler() == null) {
             String schedulerName;
             if (getWorkerName() != null) {
-                schedulerName = "SM worker-" + getWorkerName();
+                schedulerName = "SM Worker(" + getWorkerName() + ")";
             } else {
-                schedulerName = String.format("SM worker@%x", hashCode());
+                schedulerName = String.format("SM Worker(@%x)", hashCode());
             }
-            Scheduler scheduler = new ScheduledExecutorScheduler(schedulerName, false);
+            Scheduler scheduler = new SessionScheduler(schedulerName, classLoader);
             setScheduler(scheduler);
         }
 

@@ -15,29 +15,33 @@
  */
 package com.aspectran.core.component.bean.async;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.concurrent.FutureUtils;
+
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * A simple task executor interface that abstracts the execution of a {@link Runnable}.
  *
  * <p>Created: 2024. 8. 24.</p>
  */
-public interface AsyncTaskExecutor {
+public interface AsyncTaskExecutor extends Executor {
 
     String DEFAULT_TASK_EXECUTOR_BEAN_ID = "defaultAsyncTaskExecutor";
 
-    /**
-     * Execute the given {@code task}.
-     * @param task the {@code Runnable} to execute
-     */
-    void execute(Runnable task);
+    default CompletableFuture<Void> submit(Runnable task) {
+        return CompletableFuture.runAsync(task, this);
+    }
 
-    /**
-     * Submit a {@code Callable} task for execution.
-     * @param task the {@code Callable} to execute
-     * @return a {@code Future} representing that task
-     */
-    <V> Future<V> submit(Callable<V> task);
+    default <V> CompletableFuture<V> submit(Callable<V> task) {
+        return FutureUtils.callAsync(task, this);
+    }
+
+    @Nullable
+    default AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return null;
+    }
 
 }

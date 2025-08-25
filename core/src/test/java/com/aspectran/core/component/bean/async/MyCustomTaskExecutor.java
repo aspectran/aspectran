@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils.thread;
+package com.aspectran.core.component.bean.async;
+
+import com.aspectran.core.component.bean.annotation.Bean;
+import com.aspectran.core.component.bean.annotation.Component;
 
 /**
- * <p>Created: 2024. 12. 30.</p>
+ * <p>Created: 2025-08-24</p>
  */
-public interface ThrowingRunnable<T extends Throwable> {
-
-    void run() throws T;
-
+@Component
+@Bean("myCustomTaskExecutor")
+@SuppressWarnings("serial")
+public class MyCustomTaskExecutor extends SimpleAsyncTaskExecutor {
 }

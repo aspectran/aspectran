@@ -28,54 +28,56 @@ import java.util.concurrent.Future;
 @Bean("asyncTestBean")
 public class AsyncTestBean extends InstantActivitySupport {
 
-    private String getCallingThreadName() {
+    public String getCallingThreadName() {
         return Thread.currentThread().getName();
     }
 
     @Async
     public Future<String> noActivitySameThread() {
-        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
-        return CompletableFuture.supplyAsync(
-                this::getCallingThreadName
-        );
+        String threadName = getCallingThreadName();
+        System.out.println("Executing noActivitySameThread on thread: " + threadName);
+        return CompletableFuture.supplyAsync(() -> threadName);
     }
 
     @Async
     public Future<String> noActivityDifferentThread() {
-        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
-        return CompletableFuture.supplyAsync(
-                this::getCallingThreadName
-        );
+        String threadName = getCallingThreadName();
+        System.out.println("Executing noActivityDifferentThread on thread: " + threadName);
+        return CompletableFuture.supplyAsync(() -> threadName);
     }
 
     @Async
     public void voidMethod() {
-        System.out.println("Executing voidMethod on thread: " + getCallingThreadName());
-        getCurrentActivity().getActivityData().put("threadName", getCallingThreadName());
+        String threadName = getCallingThreadName();
+        System.out.println("Executing voidMethod on thread: " + threadName);
+        getCurrentActivity().getActivityData().put("threadName", threadName);
     }
 
     @Async
     public Future<String> futureMethod() {
-        System.out.println("Executing futureMethod on thread: " + getCallingThreadName());
-        return CompletableFuture.supplyAsync(
-                this::getCallingThreadName
-        );
+        String threadName = getCallingThreadName();
+        System.out.println("Executing futureMethod on thread: " + threadName);
+        return CompletableFuture.supplyAsync(() -> threadName);
     }
 
-    @Async("customTaskExecutor")
+    @Async("myCustomTaskExecutor")
     public Future<String> customExecutorMethod() {
-        System.out.println("Executing customExecutorMethod on thread: " + getCallingThreadName());
-        return CompletableFuture.supplyAsync(
-                this::getCallingThreadName
-        );
+        String threadName = getCallingThreadName();
+        System.out.println("Executing customExecutorMethod on thread: " + threadName);
+        return CompletableFuture.supplyAsync(() -> threadName);
     }
 
     @Async
     public Future<Activity> activityPropagationMethod() {
-        final Activity currentActivity = getCurrentActivity();
-        return CompletableFuture.supplyAsync(
-                () -> currentActivity
-        );
+        Activity currentActivity = getCurrentActivity();
+        return CompletableFuture.supplyAsync(() -> currentActivity);
+    }
+
+    @Async
+    public void errorOccurredMethod() {
+        final String threadName = getCallingThreadName();
+        System.out.println("Executing errorOccurredMethod on thread: " + threadName);
+        throw new RuntimeException("Exception in async method!");
     }
 
 }

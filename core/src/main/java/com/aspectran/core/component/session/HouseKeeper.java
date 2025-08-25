@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.concurrent.AutoLock;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
-import com.aspectran.utils.thread.AutoLock;
 import com.aspectran.utils.thread.Scheduler;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;

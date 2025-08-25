@@ -50,7 +50,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
                 throw e.getTargetException();
             }
         };
-        return invoke(beanRule, overridden, superInvoker);
+        return invoke(beanRule, overridden, args, superInvoker);
     }
 
     /**

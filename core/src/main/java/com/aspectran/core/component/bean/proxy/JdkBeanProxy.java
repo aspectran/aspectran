@@ -56,7 +56,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
                 throw e.getTargetException();
             }
         };
-        return invoke(beanRule, method, superInvoker);
+        return invoke(beanRule, method, args, superInvoker);
     }
 
     /**

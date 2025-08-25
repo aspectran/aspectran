@@ -16,7 +16,7 @@
 package com.aspectran.core.component;
 
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.thread.AutoLock;
+import com.aspectran.utils.concurrent.AutoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
