@@ -47,24 +47,34 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Abstract activity for executing advice injected between actions.
+ * An abstract base class for activities that are responsible for executing AOP (Aspect-Oriented Programming) advice.
+ * <p>This class extends {@link AbstractActivity} and provides the core logic for managing and executing
+ * various types of advice (e.g., Before, After, Finally, Thrown) as defined by {@link AspectRule}s.
+ * It handles the registration of relevant aspect rules, the execution of advice actions, and the processing
+ * of exceptions within the AOP context.</p>
  *
- * <p>Created: 2016. 9. 10.</p>
+ * @since 2016. 9. 10.
  */
 public abstract class AdviceActivity extends AbstractActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(AdviceActivity.class);
 
+    /** Registry for advice rules applicable to the current activity. */
     private AdviceRuleRegistry adviceRuleRegistry;
 
+    /** Set of aspect rules that are relevant to the current execution context. */
     private Set<AspectRule> relevantAspectRules;
 
+    /** Set of advice rules that have already been executed in the current phase. */
     private Set<AdviceRule> executedAdviceRules;
 
+    /** The type of advice currently being processed (e.g., BEFORE, AFTER). */
     private AdviceType currentAdviceType;
 
+    /** The specific advice rule currently being executed. */
     private AdviceRule currentAdviceRule;
 
+    /** Stores the results of advice executions. */
     private AdviceResult adviceResult;
 
     /**
@@ -75,6 +85,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
+    /**
+     * Retrieves a setting value, first from the superclass, then from any applicable {@link SettingsAdviceRule}s.
+     * Settings from advice rules are evaluated if they are expressions.
+     * @param name the name of the setting
+     * @param <V> the type of the setting value
+     * @return the setting value, or {@code null} if not found
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <V> V getSetting(String name) {
@@ -97,6 +114,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         return null;
     }
 
+    /**
+     * Prepares the {@link AdviceRuleRegistry} for the current translet execution.
+     * This method identifies and registers aspect rules that are relevant to the given translet
+     * based on pointcut matching and whether new aspect rules have been added dynamically.
+     * @param transletRule the translet rule being executed
+     * @param requestName the name of the current request
+     */
     protected void prepareAdviceRules(@NonNull TransletRule transletRule, String requestName) {
         AdviceRuleRegistry adviceRuleRegistryToUse;
         if (transletRule.hasPathVariables() || getActivityContext().getAspectRuleRegistry().hasNewAspectRules()) {
@@ -122,10 +146,22 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Sets the current type of advice being processed. This is used for validation during advice registration.
+     * @param adviceType the current advice type
+     */
     protected void setCurrentAdviceType(AdviceType adviceType) {
         this.currentAdviceType = adviceType;
     }
 
+    /**
+     * Registers an {@link AspectRule} with this activity. This method performs validation
+     * to ensure that advice is registered at an appropriate phase of the activity lifecycle.
+     * For example, BEFORE or AFTER advice cannot be registered during the FINALLY phase.
+     * @param aspectRule the aspect rule to register
+     * @throws AdviceConstraintViolationException if the advice registration violates constraints
+     * @throws AdviceException if an error occurs during advice execution triggered by registration
+     */
     @Override
     public void registerAdviceRule(AspectRule aspectRule)
             throws AdviceConstraintViolationException, AdviceException {
@@ -205,6 +241,11 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Registers a {@link SettingsAdviceRule} with this activity.
+     * Settings advice rules are used to apply configuration settings dynamically.
+     * @param settingsAdviceRule the settings advice rule to register
+     */
     @Override
     public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         if (relevantAspectRules != null && relevantAspectRules.contains(settingsAdviceRule.getAspectRule())) {
@@ -214,6 +255,12 @@ public abstract class AdviceActivity extends AbstractActivity {
         touchAdviceRuleRegistry().addAdviceRule(settingsAdviceRule);
     }
 
+    /**
+     * Executes a list of {@link AdviceRule}s sequentially.
+     * This method ensures that each advice rule is executed only once.
+     * @param adviceRuleList the list of advice rules to execute
+     * @throws AdviceException if an error occurs during advice execution
+     */
     @Override
     public void executeAdvice(List<AdviceRule> adviceRuleList) throws AdviceException {
         if (adviceRuleList != null && !adviceRuleList.isEmpty()) {
@@ -238,6 +285,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Executes a single {@link AdviceRule}.
+     * This method handles the actual invocation of the advice action, manages advice results,
+     * and propagates exceptions. It also respects the 'isolated' property of aspect rules.
+     * @param adviceRule the advice rule to execute
+     * @throws AdviceException if an error occurs during advice execution and the aspect is not isolated
+     */
     @Override
     public void executeAdvice(@NonNull AdviceRule adviceRule) throws AdviceException {
         if (adviceRule.getAspectRule().isDisabled() || !isAcceptable(adviceRule.getAspectRule())) {
@@ -308,6 +362,12 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Determines if an {@link AspectRule} is applicable to the current request.
+     * This checks the aspect's configured request methods and headers against the current request.
+     * @param aspectRule the aspect rule to check
+     * @return true if the aspect rule is acceptable for the current request, false otherwise
+     */
     private boolean isAcceptable(@NonNull AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
             if (!hasTranslet()) {
@@ -329,6 +389,11 @@ public abstract class AdviceActivity extends AbstractActivity {
         return true;
     }
 
+    /**
+     * Handles a list of {@link ExceptionRule}s, executing the appropriate exception handling advice.
+     * @param exceptionRuleList the list of exception rules to process
+     * @throws ActionExecutionException if an error occurs during the execution of an exception handling action
+     */
     @Override
     public void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException {
         if (exceptionRuleList != null) {
@@ -338,6 +403,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Handles a single {@link ExceptionRule}, executing the associated action if the current
+     * raised exception matches the rule's criteria.
+     * @param exceptionRule the exception rule to handle
+     * @return the {@link ExceptionThrownRule} that was matched and handled, or {@code null} if no match
+     * @throws ActionExecutionException if an error occurs during the execution of the exception handling action
+     */
     protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         if (exceptionRule != null) {
             ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
@@ -387,6 +459,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         return null;
     }
 
+    /**
+     * Returns the list of 'before' advice rules applicable to the current activity.
+     * @return a list of before advice rules, or {@code null} if none
+     */
     protected List<AdviceRule> getBeforeAdviceRuleList() {
         if (adviceRuleRegistry != null) {
             return adviceRuleRegistry.getBeforeAdviceRuleList();
@@ -395,6 +471,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Returns the list of 'after' advice rules applicable to the current activity.
+     * @return a list of after advice rules, or {@code null} if none
+     */
     protected List<AdviceRule> getAfterAdviceRuleList() {
         if (adviceRuleRegistry != null) {
             return adviceRuleRegistry.getAfterAdviceRuleList();
@@ -403,6 +483,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Returns the list of 'finally' advice rules applicable to the current activity.
+     * @return a list of finally advice rules, or {@code null} if none
+     */
     protected List<AdviceRule> getFinallyAdviceRuleList() {
         if (adviceRuleRegistry != null) {
             return adviceRuleRegistry.getFinallyAdviceRuleList();
@@ -411,6 +495,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
+    /**
+     * Returns the list of exception rules applicable to the current activity.
+     * @return a list of exception rules, or {@code null} if none
+     */
     protected List<ExceptionRule> getExceptionRuleList() {
         if (adviceRuleRegistry != null) {
             return adviceRuleRegistry.getExceptionRuleList();
@@ -420,10 +508,11 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the advice bean.
+     * Retrieves a bean instance associated with a specific aspect ID.
+     * This bean is typically the target object on which advice methods are invoked.
      * @param <V> the type of the advice bean
-     * @param aspectId the aspect id
-     * @return the advice bean
+     * @param aspectId the ID of the aspect
+     * @return the advice bean instance, or {@code null} if not found
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -432,9 +521,9 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Puts the advice bean.
-     * @param aspectId the aspect id
-     * @param adviceBean the advice bean
+     * Stores an advice bean instance associated with a specific aspect ID.
+     * @param aspectId the ID of the aspect
+     * @param adviceBean the advice bean instance to store
      */
     private void putAdviceBean(String aspectId, Object adviceBean) {
         if (adviceResult == null) {
@@ -443,6 +532,11 @@ public abstract class AdviceActivity extends AbstractActivity {
         adviceResult.putAdviceBean(aspectId, adviceBean);
     }
 
+    /**
+     * Resolves and retrieves the advice bean for a given {@link AdviceRule}.
+     * If the bean is not already in the cache, it attempts to retrieve it from the bean registry.
+     * @param adviceRule the advice rule whose bean needs to be resolved
+     */
     private void resolveAdviceBean(@NonNull AdviceRule adviceRule) {
         Object adviceBean = getAdviceBean(adviceRule.getAspectId());
         if (adviceBean == null) {
@@ -464,10 +558,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the before advice result.
-     * @param <V> the result type of the before advice
-     * @param aspectId the aspect id
-     * @return the before advice result
+     * Retrieves the result of a 'before' advice execution for a given aspect ID.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the 'before' advice, or {@code null} if not found
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -476,10 +570,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the after advice result.
-     * @param <V> the result type of the after advice
-     * @param aspectId the aspect id
-     * @return the after advice result
+     * Retrieves the result of an 'after' advice execution for a given aspect ID.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the 'after' advice, or {@code null} if not found
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -488,10 +582,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the around advice result.
-     * @param <V> the result type of the around advice
-     * @param aspectId the aspect id
-     * @return the around advice result
+     * Retrieves the result of an 'around' advice execution for a given aspect ID.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the 'around' advice, or {@code null} if not found
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -500,10 +594,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the final advice result.
-     * @param <V> the result type of the final advice
-     * @param aspectId the aspect id
-     * @return the result of the final advice
+     * Retrieves the result of a 'finally' advice execution for a given aspect ID.
+     * @param <V> the type of the result
+     * @param aspectId the ID of the aspect
+     * @return the result of the 'finally' advice, or {@code null} if not found
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -512,9 +606,9 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Puts the result of the advice.
-     * @param adviceRule the advice rule
-     * @param adviceActionResult the advice action result
+     * Stores the result of an advice action execution.
+     * @param adviceRule the advice rule that was executed
+     * @param adviceActionResult the result object from the advice action
      */
     protected void putAdviceResult(AdviceRule adviceRule, Object adviceActionResult) {
         if (adviceResult == null) {
@@ -523,6 +617,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         adviceResult.putAdviceResult(adviceRule, adviceActionResult);
     }
 
+    /**
+     * Lazily initializes and returns the {@link AdviceRuleRegistry}.
+     * @return the advice rule registry
+     */
     private AdviceRuleRegistry touchAdviceRuleRegistry() {
         if (adviceRuleRegistry == null) {
             adviceRuleRegistry = new AdviceRuleRegistry();
@@ -530,6 +628,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         return adviceRuleRegistry;
     }
 
+    /**
+     * Lazily initializes and returns the set of relevant aspect rules.
+     * @return the set of relevant aspect rules
+     */
     private Set<AspectRule> touchRelevantAspectRules() {
         if (relevantAspectRules == null) {
             relevantAspectRules = new HashSet<>();
@@ -537,6 +639,10 @@ public abstract class AdviceActivity extends AbstractActivity {
         return relevantAspectRules;
     }
 
+    /**
+     * Lazily initializes and returns the set of executed advice rules.
+     * @return the set of executed advice rules
+     */
     private Set<AdviceRule> touchExecutedAdviceRules() {
         if (executedAdviceRules == null) {
             executedAdviceRules = new HashSet<>();
