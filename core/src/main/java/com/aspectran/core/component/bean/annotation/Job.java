@@ -22,21 +22,52 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Declares a job to be executed by a {@link Schedule}.
- * A job may reference a translet to run and can be selectively disabled.
+ * Defines a single job to be executed as part of a {@link Schedule}.
+ * <p>This annotation is used within the {@code jobs} array of a {@code @Schedule} annotation
+ * to specify *what* to run (a translet) and whether it is currently active. The execution
+ * time is determined by the trigger defined in the parent {@code @Schedule}.</p>
+ *
+ * <p>Example:</p>
+ * <pre>
+ * {@code
+ * @Schedule(
+ *     // ...
+ *     jobs = {
+ *         @Job(translet = "/batch/task1"),
+ *         @Job(translet = "/batch/task2", disabled = true)
+ *     }
+ * )
+ * }
+ * </pre>
+ *
+ * @see Schedule
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Job {
 
-    /** Optional job id or name. */
+    /**
+     * Alias for {@link #translet()}.
+     * <p>Allows for a more concise annotation declaration, e.g., {@code @Job("/my/translet")}.</p>
+     * @return the name of the translet to execute
+     */
     String value() default "";
 
-    /** Translet name to execute for this job. */
+    /**
+     * The name of the translet to be executed when the schedule's trigger fires.
+     * This is the primary link between the scheduler and the action to be performed.
+     * @return the name of the translet
+     */
     String translet() default "";
 
-    /** Whether this job is disabled. */
+    /**
+     * Specifies whether this job is disabled.
+     * <p>If set to {@code true}, this job will be skipped even when the schedule's
+     * trigger fires. This is useful for temporarily deactivating a specific job
+     * without removing it from the configuration.</p>
+     * @return {@code true} if the job is disabled, {@code false} otherwise
+     */
     boolean disabled() default false;
 
 }

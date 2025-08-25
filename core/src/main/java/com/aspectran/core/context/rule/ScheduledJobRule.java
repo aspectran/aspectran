@@ -20,7 +20,10 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class ScheduledJobRule.
+ * Represents a single job to be executed as part of a schedule.
+ * This class corresponds to the {@code <job>} element within a {@code <schedule>} rule.
+ * <p>It specifies *what* to run (a translet) and whether the job is currently active.
+ * The execution time is determined by the trigger in the parent {@link ScheduleRule}.</p>
  */
 public class ScheduledJobRule {
 
@@ -30,33 +33,58 @@ public class ScheduledJobRule {
 
     private Boolean disabled;
 
-    public ScheduledJobRule(ScheduleRule scheduleRule) {
-        if (scheduleRule == null) {
-            throw new IllegalArgumentException("scheduleRule must not be null");
-        }
+    /**
+     * Instantiates a new ScheduledJobRule.
+     * @param scheduleRule the parent {@link ScheduleRule} that this job belongs to (must not be null)
+     */
+    public ScheduledJobRule(@NonNull ScheduleRule scheduleRule) {
         this.scheduleRule = scheduleRule;
     }
 
+    /**
+     * Returns the parent {@link ScheduleRule}.
+     * @return the parent schedule rule
+     */
     public ScheduleRule getScheduleRule() {
         return scheduleRule;
     }
 
+    /**
+     * Gets the name of the translet to be executed by this job.
+     * @return the name of the translet
+     */
     public String getTransletName() {
         return transletName;
     }
 
+    /**
+     * Sets the name of the translet to be executed.
+     * @param transletName the name of the translet
+     */
     public void setTransletName(String transletName) {
         this.transletName = transletName;
     }
 
+    /**
+     * Gets the raw boolean value indicating if this job is disabled.
+     * @return true if disabled, false if enabled, or null if not specified
+     */
     public Boolean getDisabled() {
         return disabled;
     }
 
+    /**
+     * Returns whether this job is disabled.
+     * @return true if this job should not be executed; false otherwise
+     */
     public boolean isDisabled() {
         return BooleanUtils.toBoolean(disabled);
     }
 
+    /**
+     * Sets whether this job is disabled.
+     * @param disabled true to disable the job, false to enable it
+     */
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
@@ -69,9 +97,18 @@ public class ScheduledJobRule {
         return tsb.toString();
     }
 
+    /**
+     * Factory method to create a new ScheduledJobRule instance.
+     * @param scheduleRule the parent schedule rule
+     * @param transletName the name of the translet to execute (required)
+     * @param disabled whether the job is disabled
+     * @return a new {@code ScheduledJobRule} instance
+     * @throws IllegalRuleException if the translet name is null
+     */
     @NonNull
-    public static ScheduledJobRule newInstance(ScheduleRule scheduleRule, String transletName,
-                                               Boolean disabled) throws IllegalRuleException {
+    public static ScheduledJobRule newInstance(
+            @NonNull ScheduleRule scheduleRule, String transletName,
+            Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("The 'job' element requires a 'translet' attribute");
         }

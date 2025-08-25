@@ -23,13 +23,37 @@ import java.lang.annotation.Target;
 
 /**
  * Configuration for a cron-based trigger using a cron expression.
+ * <p>This annotation is used within the {@code @Schedule} annotation to define
+ * a precise, calendar-like schedule for job execution. It relies on a standard
+ * Cron expression to specify the firing times.</p>
+ *
+ * <p>Example:</p>
+ * <pre>
+ * {@code
+ * @Schedule(
+ *     id = "dailyReportSchedule",
+ *     cronTrigger = @CronTrigger(expression = "0 0 2 * * ?"), // Every day at 2 AM
+ *     jobs = { @Job(translet = "/batch/generateReport") }
+ * )
+ * public class DailyReportScheduler { /* ... * / }
+ * }
+ * </pre>
+ *
+ * @see Schedule
+ * @see SimpleTrigger
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface CronTrigger {
 
-    /** Cron expression that defines the schedule. */
+    /**
+     * The Cron expression that defines the schedule.
+     * <p>This is a string consisting of 6 or 7 fields separated by white space,
+     * representing seconds, minutes, hours, day of month, month, day of week, and optionally year.</p>
+     * <p>For detailed syntax, refer to Quartz CronTrigger documentation.</p>
+     * @return the cron expression string
+     */
     String expression();
 
 }

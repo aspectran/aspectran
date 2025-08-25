@@ -32,21 +32,24 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The Class ScheduleRule.
+ * Represents a group of scheduled jobs that share a single trigger configuration.
+ * This class corresponds to the {@code <schedule>} element in the Aspectran configuration.
+ *
+ * <p>A {@code ScheduleRule} defines:
+ * <ul>
+ *   <li>Which scheduler bean to use.</li>
+ *   <li>A single trigger (simple or cron) that determines when the jobs will run.</li>
+ *   <li>A list of one or more jobs ({@link ScheduledJobRule}) to be executed when the trigger fires.</li>
+ * </ul>
  *
  * <pre>
- * &lt;schedule id="schedule-1"&gt;
- *   &lt;scheduler bean="schedulerFactory"&gt;
- *     &lt;trigger type="simple"&gt;
- *       startDelaySeconds: 10
- *       intervalInSeconds: 10
- *       repeatCount: 10
- *     &lt;/trigger&gt;
+ * &lt;schedule id="daily-tasks" schedulerBean="myScheduler"&gt;
+ *   &lt;scheduler&gt;
+ *     &lt;trigger type="cron" expression="0 0 2 * * ?"/&gt;
  *   &lt;/scheduler&gt;
- *   &lt;job translet="/a/b/c/action1"/&gt;
- *   &lt;job translet="/a/b/c/action2"/&gt;
- *   &lt;job translet="/a/b/c/action3"/&gt;
- * &lt;schedule&gt;
+ *   &lt;job translet="/batch/task1"/&gt;
+ *   &lt;job translet="/batch/task2"/&gt;
+ * &lt;/schedule&gt;
  * </pre>
  */
 public class ScheduleRule implements BeanReferenceable {
@@ -67,62 +70,122 @@ public class ScheduleRule implements BeanReferenceable {
 
     private DescriptionRule descriptionRule;
 
+    /**
+     * Gets the ID of this schedule rule.
+     * @return the schedule ID
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the ID of this schedule rule.
+     * @param id the schedule ID
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets the type of the trigger (e.g., SIMPLE or CRON).
+     * @return the trigger type
+     */
     public TriggerType getTriggerType() {
         return triggerType;
     }
 
+    /**
+     * Sets the type of the trigger.
+     * @param triggerType the trigger type
+     */
     public void setTriggerType(TriggerType triggerType) {
         this.triggerType = triggerType;
     }
 
+    /**
+     * Gets the parameters that define the trigger's behavior (e.g., cron expression or simple interval).
+     * @return the trigger expression parameters
+     */
     public TriggerExpressionParameters getTriggerExpressionParameters() {
         return triggerExpressionParameters;
     }
 
+    /**
+     * Sets the parameters for the trigger.
+     * @param triggerExpressionParameters the trigger expression parameters
+     */
     public void setTriggerExpressionParameters(TriggerExpressionParameters triggerExpressionParameters) {
         this.triggerExpressionParameters = triggerExpressionParameters;
     }
 
+    /**
+     * Gets the ID of the scheduler bean that will manage this schedule.
+     * @return the scheduler bean ID
+     */
     public String getSchedulerBeanId() {
         return schedulerBeanId;
     }
 
+    /**
+     * Sets the ID of the scheduler bean.
+     * @param schedulerBeanId the scheduler bean ID
+     */
     public void setSchedulerBeanId(String schedulerBeanId) {
         this.schedulerBeanId = schedulerBeanId;
     }
 
+    /**
+     * Gets the class of the scheduler bean.
+     * @return the scheduler bean class
+     */
     public Class<?> getSchedulerBeanClass() {
         return schedulerBeanClass;
     }
 
+    /**
+     * Sets the class of the scheduler bean.
+     * @param schedulerBeanClass the scheduler bean class
+     */
     public void setSchedulerBeanClass(Class<?> schedulerBeanClass) {
         this.schedulerBeanClass = schedulerBeanClass;
     }
 
+    /**
+     * Gets the list of jobs to be executed by this schedule.
+     * @return the list of scheduled job rules
+     */
     public List<ScheduledJobRule> getScheduledJobRuleList() {
         return scheduledJobRuleList;
     }
 
+    /**
+     * Sets the list of jobs for this schedule.
+     * @param scheduledJobRuleList the list of scheduled job rules
+     */
     public void setScheduledJobRuleList(List<ScheduledJobRule> scheduledJobRuleList) {
         this.scheduledJobRuleList = scheduledJobRuleList;
     }
 
+    /**
+     * Adds a job to this schedule.
+     * @param scheduledJobRule the job rule to add
+     */
     public void addScheduledJobRule(ScheduledJobRule scheduledJobRule) {
         scheduledJobRuleList.add(scheduledJobRule);
     }
 
+    /**
+     * Gets the description of this schedule.
+     * @return the description rule
+     */
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    /**
+     * Sets the description of this schedule.
+     * @param descriptionRule the description rule
+     */
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
@@ -142,6 +205,12 @@ public class ScheduleRule implements BeanReferenceable {
         return tsb.toString();
     }
 
+    /**
+     * Factory method to create a new ScheduleRule instance.
+     * @param id the ID of the schedule, which is mandatory
+     * @return a new {@code ScheduleRule} instance
+     * @throws IllegalRuleException if the ID is null
+     */
     @NonNull
     public static ScheduleRule newInstance(String id) throws IllegalRuleException {
         if (id == null) {
@@ -153,6 +222,12 @@ public class ScheduleRule implements BeanReferenceable {
         return scheduleRule;
     }
 
+    /**
+     * Helper method to update the trigger from a parameter map. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param triggerParameters the parameters containing trigger info
+     * @throws IllegalRuleException if the parameters are invalid
+     */
     public static void updateTrigger(ScheduleRule scheduleRule, @NonNull TriggerParameters triggerParameters)
             throws IllegalRuleException {
         updateTriggerType(scheduleRule, triggerParameters.getString(TriggerParameters.type));
@@ -164,12 +239,24 @@ public class ScheduleRule implements BeanReferenceable {
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
+    /**
+     * Helper method to update the trigger from type and expression strings. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param type the trigger type string ("simple" or "cron")
+     * @param expression the trigger expression string
+     * @throws IllegalRuleException if the expression is invalid
+     */
     public static void updateTrigger(@NonNull ScheduleRule scheduleRule, String type, String expression)
             throws IllegalRuleException {
         updateTriggerType(scheduleRule, type);
         updateTriggerExpression(scheduleRule, expression);
     }
 
+    /**
+     * Helper method to update the trigger type. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param type the trigger type string
+     */
     public static void updateTriggerType(@NonNull ScheduleRule scheduleRule, String type) {
         TriggerType triggerType;
         if (type != null) {
@@ -184,6 +271,12 @@ public class ScheduleRule implements BeanReferenceable {
         scheduleRule.setTriggerType(triggerType);
     }
 
+    /**
+     * Helper method to update the trigger expression from a string. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param expression the trigger expression string
+     * @throws IllegalRuleException if the expression cannot be parsed
+     */
     public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, String expression)
             throws IllegalRuleException {
         if (StringUtils.hasText(expression)) {
@@ -197,6 +290,11 @@ public class ScheduleRule implements BeanReferenceable {
         }
     }
 
+    /**
+     * Helper method to update the trigger expression from a parameter object. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param expressionParameters the trigger expression parameters
+     */
     public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, TriggerExpressionParameters expressionParameters) {
         if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
             Long intervalInMilliseconds = expressionParameters.getLong(TriggerExpressionParameters.intervalInMilliseconds);
@@ -220,6 +318,11 @@ public class ScheduleRule implements BeanReferenceable {
         scheduleRule.setTriggerExpressionParameters(expressionParameters);
     }
 
+    /**
+     * Helper method to update the trigger from a {@link SimpleTrigger} annotation. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param simpleTriggerAnno the source annotation
+     */
     public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, @NonNull SimpleTrigger simpleTriggerAnno) {
         TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
         scheduleRule.setTriggerType(TriggerType.SIMPLE);
@@ -247,6 +350,11 @@ public class ScheduleRule implements BeanReferenceable {
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
+    /**
+     * Helper method to update the trigger from a {@link CronTrigger} annotation. Used by the rule parser.
+     * @param scheduleRule the rule to update
+     * @param cronTriggerAnno the source annotation
+     */
     public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, @NonNull CronTrigger cronTriggerAnno) {
         TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
         scheduleRule.setTriggerType(TriggerType.CRON);
