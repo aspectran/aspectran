@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  *
  * @since 8.6.0
  */
-class ListenerMethod {
+public class ListenerMethod {
 
     private final Object bean;
 

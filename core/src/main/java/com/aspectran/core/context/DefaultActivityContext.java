@@ -339,6 +339,14 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     @Override
     protected void doDestroy() {
         ThreadContextHelper.run(getClassLoader(), () -> {
+            if (asyncTaskExecutor != null && asyncTaskExecutor instanceof AutoCloseable autoCloseable) {
+                try {
+                    autoCloseable.close();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                asyncTaskExecutor = null;
+            }
             beanRegistry.getEventListenerRegistry().clear();
             if (beanRegistry != null) {
                 beanRegistry.destroy();
