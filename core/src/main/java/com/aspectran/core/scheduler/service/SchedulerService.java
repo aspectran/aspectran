@@ -20,46 +20,55 @@ import com.aspectran.core.service.ServiceLifeCycle;
 
 /**
  * The main interface for the Aspectran scheduling service.
- * <p>This service is responsible for managing the lifecycle of scheduled jobs,
- * which are defined in the Aspectran configuration. It acts as a bridge to the
- * underlying Quartz scheduler, allowing Aspectran translets to be executed
- * at specified times or intervals.
+ * <p>This service defines the contract for managing the lifecycle of scheduled jobs.
+ * Concrete implementations of this service act as a bridge to an underlying scheduling
+ * engine (e.g., Quartz), allowing Aspectran translets to be executed at specified
+ * times or intervals.</p>
  *
  * <p>The SchedulerService is a sub-service of the {@link com.aspectran.core.service.CoreService}
- * and its lifecycle is managed by it.
+ * and its lifecycle is managed by it.</p>
+ *
+ * @since 3.0.0
  */
 public interface SchedulerService extends ServiceLifeCycle {
 
+    /**
+     * The key for storing a reference to this service in the job data map.
+     */
     String SERVICE_DATA_KEY = "SERVICE";
 
+    /**
+     * The key for storing the {@link com.aspectran.core.context.rule.ScheduledJobRule}
+     * in the job data map, allowing the job to know which translet to execute.
+     */
     String JOB_RULE_DATA_KEY = "JOB_RULE";
 
     /**
-     * Returns the activity context.
+     * Returns the main ActivityContext, providing access to the application's core components.
      * @return the activity context
      */
     ActivityContext getActivityContext();
 
     /**
-     * Returns the number of seconds to delay before starting the scheduler.
+     * Returns the number of seconds to wait before starting the scheduler after the service is initialized.
      * @return the start delay in seconds
      */
     int getStartDelaySeconds();
 
     /**
-     * Returns whether to wait for jobs to complete on shutdown.
+     * Returns whether the scheduler should wait for running jobs to complete on shutdown.
      * @return true to wait, false otherwise
      */
     boolean isWaitOnShutdown();
 
     /**
-     * Returns the logging group name.
+     * Returns the name of the logging group for this service.
      * @return the logging group name
      */
     String getLoggingGroup();
 
     /**
-     * Pauses all jobs in the scheduler.
+     * Pauses all job executions in the scheduler.
      */
     void pauseAll();
 
@@ -69,14 +78,14 @@ public interface SchedulerService extends ServiceLifeCycle {
     void resumeAll();
 
     /**
-     * Pauses the schedule with the given ID.
+     * Pauses all jobs associated with the specified schedule rule.
      * @param scheduleId the ID of the schedule to pause
      * @throws SchedulerServiceException if the schedule cannot be paused
      */
     void pause(String scheduleId) throws SchedulerServiceException;
 
     /**
-     * Resumes the schedule with the given ID.
+     * Resumes all jobs associated with the specified schedule rule.
      * @param scheduleId the ID of the schedule to resume
      * @throws SchedulerServiceException if the schedule cannot be resumed
      */

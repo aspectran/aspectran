@@ -31,10 +31,23 @@ import static com.aspectran.core.scheduler.service.SchedulerService.JOB_RULE_DAT
 import static com.aspectran.core.scheduler.service.SchedulerService.SERVICE_DATA_KEY;
 
 /**
- * The Class ActivityLauncherJob.
+ * A Quartz {@link Job} implementation that launches an Aspectran {@link Activity}
+ * to execute a configured translet.
+ * <p>This class acts as the bridge between the Quartz scheduler and the Aspectran framework,
+ * allowing scheduled tasks to leverage the full power of Aspectran's activity processing.</p>
+ *
+ * @since 3.0.0
  */
 public class ActivityLauncherJob implements Job {
 
+    /**
+     * Called by the Quartz scheduler when the job is to be executed.
+     * It retrieves the necessary {@link ScheduledJobRule} and {@link SchedulerService}
+     * from the {@link JobExecutionContext} and then initiates an Aspectran {@link Activity}
+     * to process the associated translet.
+     * @param jobExecutionContext the context for the job execution
+     * @throws JobExecutionException if an error occurs during translet execution
+     */
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
@@ -53,6 +66,14 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
+    /**
+     * Performs the actual execution of the Aspectran translet within a new {@link JobActivity}.
+     * @param context the current ActivityContext
+     * @param jobExecutionContext the Quartz job execution context
+     * @param transletName the name of the translet to execute
+     * @return the executed Activity instance
+     * @throws ActivityException if an error occurs during activity preparation or execution
+     */
     @NonNull
     private Activity perform(
             ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)

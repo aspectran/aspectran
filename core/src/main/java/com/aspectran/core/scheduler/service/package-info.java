@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 /**
- * Provides classes for integrating the Quartz scheduler with the Aspectran framework.
- * <p>This package allows for the definition and management of scheduled jobs as part
- * of the core Aspectran configuration. The central component is the
- * {@link com.aspectran.core.scheduler.service.SchedulerService}, which is a sub-service
- * managed by the main {@link com.aspectran.core.service.CoreService}. It uses the
- * Quartz library to execute Aspectran translets at specified times or intervals.
+ * Provides the core interfaces and classes for the Aspectran Scheduler service.
+ * <p>This package defines the abstract framework for scheduling jobs within Aspectran.
+ * The central component is the {@link com.aspectran.core.scheduler.service.SchedulerService},
+ * which defines the contract for managing the lifecycle of a scheduler. Concrete implementations
+ * (e.g., a module using the Quartz library) can be plugged into this framework to execute
+ * Aspectran translets at specified times or intervals.</p>
  */
 package com.aspectran.core.scheduler.service;

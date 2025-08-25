@@ -22,7 +22,7 @@ import java.io.Serial;
 /**
  * Exception thrown when a problem occurs within the scheduler service.
  * <p>This exception extends {@link CoreServiceException} and is used to indicate
- * errors specific to the lifecycle and operation of the {@link SchedulerService}.
+ * errors specific to the lifecycle and operation of the {@link SchedulerService}.</p>
  *
  * @since 2.0.0
  */
@@ -32,32 +32,32 @@ public class SchedulerServiceException extends CoreServiceException {
     private static final long serialVersionUID = -6814416137683710109L;
 
     /**
-     * Simple constructor.
+     * Constructs a new SchedulerServiceException.
      */
     public SchedulerServiceException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
-     * @param msg a message to associate with the exception
+     * Constructs a new SchedulerServiceException with the specified detail message.
+     * @param msg the detail message
      */
     public SchedulerServiceException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new SchedulerServiceException with the specified cause.
+     * @param cause the underlying cause of the exception
      */
     public SchedulerServiceException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Constructs a new SchedulerServiceException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the underlying cause of the exception
      */
     public SchedulerServiceException(String msg, Throwable cause) {
         super(msg, cause);

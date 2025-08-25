@@ -49,14 +49,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Abstract base class for {@link SchedulerService} implementations.
- * <p>This class provides the core functionality for integrating with the Quartz
- * scheduler. It manages the lifecycle of Quartz {@link Scheduler} instances,
- * builds jobs and triggers from Aspectran's {@link ScheduleRule} configuration,
- * and handles the startup and shutdown of the schedulers.
- *
- * <p>It is designed to be a sub-service of a {@link CoreService}, inheriting its
- * lifecycle and accessing the main {@link ActivityContext}.
+ * Abstract base class for {@link SchedulerService} implementations that use the Quartz Scheduler.
+ * <p>This class provides the core functionality for integrating with Quartz.
+ * It manages the lifecycle of Quartz {@link Scheduler} instances, builds Quartz
+ * {@link JobDetail}s and {@link Trigger}s from Aspectran's {@link ScheduleRule} configuration,
+ * and handles the startup and shutdown of the schedulers.</p>
  */
 public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle implements SchedulerService {
 
@@ -70,6 +67,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
 
     private String loggingGroup;
 
+    /**
+     * Instantiates a new AbstractSchedulerService.
+     * @param parentService the parent core service
+     */
     AbstractSchedulerService(CoreService parentService) {
         super(parentService);
         Assert.notNull(parentService, "parentService must not be null");
@@ -87,6 +88,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         return startDelaySeconds;
     }
 
+    /**
+     * Set the number of seconds to wait before starting the scheduler.
+     * @param startDelaySeconds the start delay in seconds
+     */
     public void setStartDelaySeconds(int startDelaySeconds) {
         this.startDelaySeconds = startDelaySeconds;
     }
@@ -96,6 +101,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         return waitOnShutdown;
     }
 
+    /**
+     * Set whether to wait for running jobs to complete on shutdown.
+     * @param waitOnShutdown true to wait, false otherwise
+     */
     public void setWaitOnShutdown(boolean waitOnShutdown) {
         this.waitOnShutdown = waitOnShutdown;
     }
@@ -105,6 +114,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         return loggingGroup;
     }
 
+    /**
+     * Sets the logging group name for this service.
+     * @param loggingGroup the logging group name
+     */
     public void setLoggingGroup(String loggingGroup) {
         this.loggingGroup = loggingGroup;
     }
@@ -114,24 +127,45 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         return true;
     }
 
+    /**
+     * Returns all registered Quartz {@link Scheduler} instances.
+     * @return a collection of schedulers
+     */
     protected Collection<Scheduler> getSchedulers() {
         return schedulerMap.values();
     }
 
+    /**
+     * Returns the Quartz {@link Scheduler} instance for the given schedule ID.
+     * @param scheduleId the ID of the schedule
+     * @return the scheduler instance, or {@code null} if not found
+     */
     protected Scheduler getScheduler(String scheduleId) {
         return schedulerMap.get(scheduleId);
     }
 
+    /**
+     * Adds a Quartz {@link Scheduler} instance to the internal map.
+     * @param scheduleId the ID of the schedule
+     * @param scheduler the scheduler instance
+     */
     private void addScheduler(String scheduleId, Scheduler scheduler) {
         Assert.notNull(scheduleId, "scheduleId must not be null");
         Assert.notNull(scheduler, "scheduler must not be null");
         schedulerMap.put(scheduleId, scheduler);
     }
 
+    /**
+     * Clears all registered Quartz {@link Scheduler} instances.
+     */
     private void clearSchedulers() {
         schedulerMap.clear();
     }
 
+    /**
+     * Builds and starts all configured Quartz schedulers.
+     * @throws Exception if an error occurs during scheduler startup
+     */
     @Override
     protected void doStart() throws Exception {
         try {
@@ -154,6 +188,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         }
     }
 
+    /**
+     * Shuts down all registered Quartz schedulers.
+     * @throws Exception if an error occurs during scheduler shutdown
+     */
     @Override
     protected void doStop() throws Exception {
         try {
@@ -170,6 +208,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         }
     }
 
+    /**
+     * Builds all scheduler instances based on the {@link ScheduleRule}s defined in the context.
+     * @throws SchedulerServiceException if an error occurs during building
+     */
     private void buildSchedulers() throws SchedulerServiceException {
         ScheduleRuleRegistry scheduleRuleRegistry = getActivityContext().getScheduleRuleRegistry();
         if (scheduleRuleRegistry == null) {
@@ -191,6 +233,13 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         }
     }
 
+    /**
+     * Creates a Quartz {@link Scheduler} instance and populates it with jobs and triggers
+     * based on the provided {@link ScheduleRule}.
+     * @param scheduleRule the schedule rule to process
+     * @return a fully configured Quartz {@code Scheduler} instance
+     * @throws SchedulerException if an error occurs during scheduler creation or job scheduling
+     */
     @NonNull
     private Scheduler createScheduler(@NonNull ScheduleRule scheduleRule) throws SchedulerException {
         Scheduler scheduler = null;
@@ -217,6 +266,12 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         return scheduler;
     }
 
+    /**
+     * Creates a Quartz {@link JobDetail} from a {@link ScheduledJobRule}.
+     * The job is configured to run {@link ActivityLauncherJob}, which executes an Aspectran translet.
+     * @param jobRule the scheduled job rule
+     * @return a configured {@code JobDetail}
+     */
     private JobDetail createJobDetail(@NonNull ScheduledJobRule jobRule) {
         String jobName = jobRule.getTransletName();
         String jobGroup = jobRule.getScheduleRule().getId();
@@ -231,6 +286,14 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
                 .build();
     }
 
+    /**
+     * Creates a Quartz {@link Trigger} from a {@link ScheduleRule}.
+     * @param name the name of the trigger
+     * @param group the group of the trigger
+     * @param scheduleRule the schedule rule containing trigger details
+     * @param startDelaySeconds seconds to delay the start of the trigger
+     * @return a configured {@code Trigger}
+     */
     private Trigger createTrigger(
             String name, String group, @NonNull ScheduleRule scheduleRule, final int startDelaySeconds) {
         TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
@@ -291,6 +354,10 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
         }
     }
 
+    /**
+     * Configures this service from a {@link SchedulerConfig} object.
+     * @param schedulerConfig the configuration object
+     */
     protected void configure(@NonNull SchedulerConfig schedulerConfig) {
         if (schedulerConfig.hasWaitOnShutdown()) {
             int startDelaySeconds = schedulerConfig.getStartDelaySeconds();

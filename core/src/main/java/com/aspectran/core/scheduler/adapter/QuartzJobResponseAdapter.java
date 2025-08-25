@@ -21,12 +21,21 @@ import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.utils.OutputStringWriter;
 
 /**
- * Adapt Quartz Job Response to Core {@link ResponseAdapter}.
+ * A {@link ResponseAdapter} implementation for a scheduled job environment.
+ * <p>Since a scheduled job does not have a traditional client to send a response to,
+ * this adapter captures any output from the translet execution into an in-memory
+ * {@link OutputStringWriter}. This captured output can then be used for logging or
+ * other processing, as seen in {@link com.aspectran.core.scheduler.activity.ActivityJobReporter}.</p>
  *
  * @since 2013. 11. 20.
  */
 public class QuartzJobResponseAdapter extends DefaultResponseAdapter {
 
+    /**
+     * Instantiates a new QuartzJobResponseAdapter.
+     * <p>It initializes with a {@code null} adaptee and sets up an
+     * in-memory {@link OutputStringWriter} to capture the response.</p>
+     */
     public QuartzJobResponseAdapter() {
         super(null);
 

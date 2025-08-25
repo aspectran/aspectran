@@ -26,7 +26,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.Properties;
 
 /**
- * {@link FactoryBean} implementation that builds a QuartzScheduler.
+ * A {@link FactoryBean} that creates and configures a Quartz {@link Scheduler}.
+ * <p>This factory bean is the recommended way to create a Quartz Scheduler instance
+ * within an Aspectran application, as it provides a bean-style usage of the scheduler
+ * and handles its configuration and lifecycle. It allows for the scheduler to be
+ * managed by the Aspectran container and injected into other beans, such as the
+ * {@link com.aspectran.core.scheduler.service.SchedulerService}.</p>
  *
  * @since 3.0.0
  */
@@ -41,10 +46,8 @@ public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Sche
     private Scheduler scheduler;
 
     /**
-     * Set the name of the Scheduler to create via the SchedulerFactory.
-     * <p>If not specified, the bean name will be used as default scheduler name.</p>
-     * @param schedulerName the scheduler name
-     * @see org.quartz.SchedulerFactory#getScheduler()
+     * Sets the name of the Scheduler to create.
+     * @param schedulerName the name of the scheduler
      * @see org.quartz.SchedulerFactory#getScheduler(String)
      */
     public void setSchedulerName(String schedulerName) {
@@ -52,33 +55,29 @@ public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Sche
     }
 
     /**
-     * Set quartz properties.
-     * @param quartzProperties the quartz properties
+     * Sets the native Quartz properties for the scheduler, such as thread pool settings.
+     * @param quartzProperties the Quartz properties
      */
     public void setQuartzProperties(Properties quartzProperties) {
         this.quartzProperties = quartzProperties;
     }
 
     /**
-     * Set whether to expose the Aspectran-managed {@link Scheduler} instance in the
-     * Quartz {@link SchedulerRepository}. Default is "false", since the Aspectran-managed
-     * Scheduler is usually exclusively intended for access within the Aspectran context.
-     * <p>Switch this flag to "true" in order to expose the Scheduler globally.
-     * This is not recommended unless you have an existing Aspectran application that
-     * relies on this behavior.</p>
-     * @param exposeSchedulerInRepository whether to expose scheduler in the quartz scheduler repository
+     * Sets whether to expose the Aspectran-managed {@link Scheduler} instance in the
+     * global Quartz {@link SchedulerRepository}.
+     * <p>Default is "false", to prevent global state and ensure the scheduler is exclusively
+     * managed by the Aspectran context. Switch this to "true" only if you need to access
+     * the scheduler from outside the Aspectran container.</p>
+     * @param exposeSchedulerInRepository {@code true} to expose the scheduler globally; {@code false} otherwise
      */
     public void setExposeSchedulerInRepository(boolean exposeSchedulerInRepository) {
         this.exposeSchedulerInRepository = exposeSchedulerInRepository;
     }
 
     /**
-     * Create the Scheduler instance.
-     * <p>The default implementation invokes SchedulerFactory's {@code getScheduler}
-     * method. Can be overridden for custom Scheduler creation.</p>
-     * @return the Scheduler instance
-     * @throws SchedulerException if thrown by Quartz methods
-     * @see org.quartz.SchedulerFactory#getScheduler
+     * Creates and configures the Quartz {@link Scheduler} instance.
+     * @return the newly created scheduler instance
+     * @throws SchedulerException if the scheduler cannot be created
      */
     protected Scheduler createScheduler() throws SchedulerException {
         Properties props;
@@ -110,6 +109,11 @@ public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Sche
         return newScheduler;
     }
 
+    /**
+     * Initializes the bean by creating the scheduler instance.
+     * This method is called by the Aspectran bean lifecycle.
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void initialize() throws Exception {
         if (schedulerName == null) {
@@ -117,6 +121,10 @@ public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Sche
         }
     }
 
+    /**
+     * Returns the created Quartz {@link Scheduler} instance.
+     * @return the scheduler object, or {@code null} if not initialized
+     */
     @Override
     public Scheduler getObject() {
         return scheduler;

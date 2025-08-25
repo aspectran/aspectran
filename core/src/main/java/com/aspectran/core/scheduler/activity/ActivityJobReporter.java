@@ -39,9 +39,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * The Class ActivityJobReporter.
- *
- * <p>Created: 2016. 9. 3.</p>
+ * A utility class for logging the details of scheduled job executions.
+ * <p>This class provides static methods to report the status of a job before and after
+ * its execution, which are typically called by a {@link org.quartz.JobListener} like
+ * {@link ActivityJobListener}.</p>
  *
  * @since 3.0.0
  */
@@ -49,6 +50,11 @@ public class ActivityJobReporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ActivityJobReporter.class);
 
+    /**
+     * Logs the details of a job that is about to be executed or has been vetoed.
+     * @param context the context of the job execution
+     * @param vetoed {@code true} if the job execution was vetoed by a trigger listener
+     */
     public static void jobToBeExecuted(@NonNull JobExecutionContext context, boolean vetoed) {
         JobDetail jobDetail = context.getJobDetail();
         JobKey key = jobDetail.getKey();
@@ -87,6 +93,11 @@ public class ActivityJobReporter {
         }
     }
 
+    /**
+     * Logs the final status of a job after it has completed its execution.
+     * @param context the context of the job execution
+     * @param jobException the exception thrown by the job, or {@code null} if execution was successful
+     */
     public static void jobWasExecuted(@NonNull JobExecutionContext context, JobExecutionException jobException) {
         try {
             JobDetail jobDetail = context.getJobDetail();
@@ -123,6 +134,11 @@ public class ActivityJobReporter {
         }
     }
 
+    /**
+     * Resolves the {@link Activity} instance from the job execution context.
+     * @param context the job execution context
+     * @return the {@code Activity} instance, or {@code null} if not found
+     */
     private static Activity resolveActivity(@NonNull JobExecutionContext context) {
         Activity activity = (Activity)context.getResult();
         StringifyContext stringifyContext;
@@ -137,6 +153,11 @@ public class ActivityJobReporter {
         return activity;
     }
 
+    /**
+     * Converts a {@link Date} to a {@link LocalDateTime}.
+     * @param date the date to convert
+     * @return the converted {@code LocalDateTime}, or {@code null} if the input is null
+     */
     private static LocalDateTime toLocalDateTime(Date date) {
         if (date != null) {
             return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());

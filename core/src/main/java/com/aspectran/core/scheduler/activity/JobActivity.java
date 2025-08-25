@@ -25,18 +25,21 @@ import com.aspectran.core.scheduler.adapter.QuartzJobResponseAdapter;
 import org.quartz.JobExecutionContext;
 
 /**
- * The Class JobActivity.
+ * A specialized {@link CoreActivity} for executing scheduled jobs.
+ * <p>This class adapts a Quartz {@link JobExecutionContext} to Aspectran's internal
+ * request and response adapters, allowing a scheduled job to be processed like any
+ * other request within the Aspectran framework.</p>
  *
- * <p>Created: 2013. 11. 18 PM 3:40:48</p>
+ * @since 2013. 11. 18.
  */
 public class JobActivity extends CoreActivity {
 
     private final JobExecutionContext jobExecutionContext;
 
     /**
-     * Instantiates a new job activity.
+     * Instantiates a new JobActivity.
      * @param context the current ActivityContext
-     * @param jobExecutionContext the job execution context
+     * @param jobExecutionContext the Quartz job execution context provided by the scheduler
      */
     public JobActivity(ActivityContext context, JobExecutionContext jobExecutionContext) {
         super(context);
@@ -48,6 +51,10 @@ public class JobActivity extends CoreActivity {
         return Mode.SCHEDULER;
     }
 
+    /**
+     * Adapts the Quartz {@link JobExecutionContext} to Aspectran's request and response adapters.
+     * @throws AdapterException if the adaptation fails
+     */
     @Override
     protected void adapt() throws AdapterException {
         RequestAdapter requestAdapter = new QuartzJobRequestAdapter(getTranslet().getRequestMethod(), jobExecutionContext);

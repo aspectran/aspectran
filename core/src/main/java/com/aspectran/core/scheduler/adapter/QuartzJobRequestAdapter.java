@@ -21,16 +21,20 @@ import com.aspectran.core.context.rule.type.MethodType;
 import org.quartz.JobExecutionContext;
 
 /**
- * Adapt Quartz Job Request to Core {@link RequestAdapter}.
- * 
+ * A {@link RequestAdapter} implementation that wraps a Quartz {@link JobExecutionContext}.
+ * <p>This adapter makes the data from a scheduled job's context (specifically the merged
+ * JobDataMap) available to the translet as request parameters and attributes. It extends
+ * {@link DefaultRequestAdapter}, inheriting the basic functionality for managing
+ * parameters and attributes.</p>
+ *
  * @since 2013. 11. 20.
  */
 public class QuartzJobRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new QuartzJobRequestAdapter.
-     * @param requestMethod the request method
-     * @param jobExecutionContext the job execution context
+     * @param requestMethod the request method to be associated with this job execution
+     * @param jobExecutionContext the native Quartz job execution context to adapt
      */
     public QuartzJobRequestAdapter(MethodType requestMethod, JobExecutionContext jobExecutionContext) {
         super(requestMethod, jobExecutionContext);
