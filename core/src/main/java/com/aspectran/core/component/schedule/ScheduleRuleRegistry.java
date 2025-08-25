@@ -31,6 +31,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A central registry for all {@link ScheduleRule} definitions.
+ * This class holds all the parsed schedule rules and provides a way to access them.
+ * It also applies default settings, such as a default scheduler bean, to the rules upon registration.
+ *
+ * @since 2013. 04. 12
+ */
 public class ScheduleRuleRegistry extends AbstractComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleRuleRegistry.class);
@@ -39,25 +46,53 @@ public class ScheduleRuleRegistry extends AbstractComponent {
 
     private AssistantLocal assistantLocal;
 
+    /**
+     * Constructs a new ScheduleRuleRegistry.
+     */
     public ScheduleRuleRegistry() {
     }
 
+    /**
+     * Sets the AssistantLocal that provides access to context-wide helpers and default settings.
+     * @param assistantLocal the AssistantLocal instance
+     */
     public void setAssistantLocal(AssistantLocal assistantLocal) {
         this.assistantLocal = assistantLocal;
     }
 
+    /**
+     * Returns a collection of all registered {@link ScheduleRule}s.
+     * @return a collection of schedule rules
+     */
     public Collection<ScheduleRule> getScheduleRules() {
         return scheduleRuleMap.values();
     }
 
+    /**
+     * Retrieves a specific {@link ScheduleRule} by its ID.
+     * @param scheduleId the ID of the schedule
+     * @return the corresponding {@code ScheduleRule}, or {@code null} if not found
+     */
     public ScheduleRule getScheduleRule(String scheduleId) {
         return scheduleRuleMap.get(scheduleId);
     }
 
+    /**
+     * Checks if a {@link ScheduleRule} with the specified ID is registered.
+     * @param scheduleId the ID of the schedule to check
+     * @return {@code true} if the schedule rule exists, {@code false} otherwise
+     */
     public boolean contains(String scheduleId) {
         return scheduleRuleMap.containsKey(scheduleId);
     }
 
+    /**
+     * Adds a new {@link ScheduleRule} to the registry.
+     * If the rule does not specify a scheduler bean, a default scheduler from
+     * {@link DefaultSettings} will be applied.
+     * @param scheduleRule the schedule rule to add
+     * @throws IllegalRuleException if the rule is misconfigured
+     */
     public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
         if (scheduleRule == null) {
             throw new IllegalArgumentException("scheduleRule must not be null");
@@ -84,6 +119,11 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Finds and returns all {@link ScheduledJobRule}s that are associated with the given translet names.
+     * @param transletNames an array of translet names to search for
+     * @return a set of matching {@code ScheduledJobRule}s
+     */
     public Set<ScheduledJobRule> getScheduledJobRules(String[] transletNames) {
         Set<ScheduledJobRule> scheduledJobRules = new LinkedHashSet<>();
         if (transletNames != null) {
@@ -102,7 +142,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
 
     @Override
     protected void doInitialize() {
-        // Nothing to do
+        // This component requires no specific initialization logic.
     }
 
     @Override
