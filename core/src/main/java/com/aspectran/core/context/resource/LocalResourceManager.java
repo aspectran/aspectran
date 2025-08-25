@@ -40,9 +40,12 @@ import java.util.stream.Stream;
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
- * The Class LocalResourceManager.
+ * A concrete implementation of {@link ResourceManager} that discovers and manages resources
+ * from a local file system location (a directory or a JAR file).
+ * It scans the specified path, caches all found resources, and handles nested JAR files
+ * by creating new {@link SiblingClassLoader} instances for them.
  *
- * <p>Created: 2014. 12. 18 PM 5:51:13</p>
+ * @since 2014. 12. 18
  */
 public class LocalResourceManager extends ResourceManager {
 
@@ -56,10 +59,21 @@ public class LocalResourceManager extends ResourceManager {
 
     private final SiblingClassLoader owner;
 
+    /**
+     * Constructs a resource manager without a specific location.
+     * @param owner the SiblingClassLoader that owns this resource manager
+     * @throws InvalidResourceException if an error occurs during initialization
+     */
     LocalResourceManager(SiblingClassLoader owner) throws InvalidResourceException {
         this(owner, null);
     }
 
+    /**
+     * Constructs a resource manager for a given location.
+     * @param owner the SiblingClassLoader that owns this resource manager
+     * @param resourceLocation the path to a directory or a JAR file
+     * @throws InvalidResourceException if the location is invalid or an error occurs during scanning
+     */
     LocalResourceManager(SiblingClassLoader owner, String resourceLocation) throws InvalidResourceException {
         super();
 
@@ -104,6 +118,11 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
+    /**
+     * Resets the resource manager by clearing the cache and re-scanning the resource location.
+     * This is essential for hot-reloading capabilities.
+     * @throws InvalidResourceException if an error occurs during re-scanning
+     */
     @Override
     public void reset() throws InvalidResourceException {
         super.reset();
@@ -113,6 +132,11 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
+    /**
+     * Initiates the resource discovery process from a given file or directory.
+     * @param file the starting directory or JAR file
+     * @throws InvalidResourceException if an error occurs during scanning
+     */
     private void findResource(@NonNull File file) throws InvalidResourceException {
         try {
             if (file.isDirectory()) {
@@ -131,6 +155,13 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
+    /**
+     * Recursively scans a directory for resources.
+     * Files are added to the resource cache. Directories are scanned recursively.
+     * Nested JAR files are collected to be loaded by new sibling class loaders.
+     * @param dir the directory to scan
+     * @param jarFileList a list to collect found JAR files
+     */
     private void findResourceInDir(@NonNull File dir, List<File> jarFileList) {
         dir.listFiles(file -> {
             String filePath = file.getAbsolutePath();
@@ -151,6 +182,14 @@ public class LocalResourceManager extends ResourceManager {
         });
     }
 
+    /**
+     * Scans a JAR file for resources.
+     * To avoid file locking and to manage the lifecycle, the JAR is copied to a temporary
+     * working directory. All entries from the JAR are then added to the resource cache.
+     * @param target the JAR file to scan
+     * @throws InvalidResourceException if the JAR file is invalid
+     * @throws IOException if an I/O error occurs
+     */
     private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
         File workResourceDir = null;
@@ -184,6 +223,10 @@ public class LocalResourceManager extends ResourceManager {
         return tsb.toString();
     }
 
+    /**
+     * Cleans up old temporary resource directories from the application's work path.
+     * This prevents disk space leaks from previous runs that may not have shut down cleanly.
+     */
     private void sweepWorkResourceFiles() {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
         if (workPath != null) {

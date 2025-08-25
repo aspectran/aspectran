@@ -18,9 +18,10 @@ package com.aspectran.core.context.resource;
 import java.io.Serial;
 
 /**
- * This exception is thrown when a resource load fails.
+ * Checked exception thrown when a resource cannot be found, parsed, or accessed.
+ * This serves as a general-purpose exception for various resource-related failures.
  *
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * @since 2008. 01. 07
  */
 public class InvalidResourceException extends Exception {
 
@@ -28,7 +29,7 @@ public class InvalidResourceException extends Exception {
     private static final long serialVersionUID = -8749285705396087498L;
 
     /**
-     * Constructor to create exception with a message
+     * Constructs a new InvalidResourceException with the specified detail message.
      * @param msg a message to associate with the exception
      */
     public InvalidResourceException(String msg) {
@@ -36,18 +37,17 @@ public class InvalidResourceException extends Exception {
     }
 
     /**
-     * Constructor to create exception to wrap another exception
-     * @param cause the real cause of the exception
+     * Constructs a new InvalidResourceException with the specified cause.
+     * @param cause the underlying cause of the exception
      */
     public InvalidResourceException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a
-     * message
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Constructs a new InvalidResourceException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the underlying cause of the exception
      */
     public InvalidResourceException(String msg, Throwable cause) {
         super(msg, cause);

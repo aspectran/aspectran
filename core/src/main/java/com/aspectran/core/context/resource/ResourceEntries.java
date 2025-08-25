@@ -32,19 +32,30 @@ import static com.aspectran.utils.ResourceUtils.JAR_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
 
 /**
- * The Class ResourceEntries.
+ * A specialized map that holds resource names and their corresponding URLs.
+ * It extends {@link LinkedHashMap} to maintain the insertion order of resources.
+ * Resource names are normalized to use forward slashes and no trailing slashes for consistency.
  *
- * <p>Created: 2014. 12. 24 PM 4:54:13</p>
+ * @since 2014. 12. 24
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {
 
     @Serial
     private static final long serialVersionUID = -6936820061673430782L;
 
+    /**
+     * Constructs a new, empty, insertion-ordered {@code ResourceEntries} instance.
+     */
     ResourceEntries() {
         super();
     }
 
+    /**
+     * Adds a resource entry from a {@link File} object.
+     * @param name the name of the resource
+     * @param file the resource file
+     * @throws InvalidResourceException if the file's URL is malformed
+     */
     public void putResource(String name, @NonNull File file) throws InvalidResourceException {
         URL url;
         try {
@@ -55,11 +66,17 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         put(name, url);
     }
 
+    /**
+     * Adds a resource entry from a {@link JarEntry} within a JAR file.
+     * @param file the JAR file
+     * @param entry the entry within the JAR file
+     * @throws InvalidResourceException if the resource URL is malformed
+     */
     public void putResource(@NonNull File file, @NonNull JarEntry entry) throws InvalidResourceException {
         String resourceName = entry.getName();
         URL url;
         try {
-            // "jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
+            // e.g., "jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
             url = new URI(JAR_URL_PREFIX + file.toURI() + JAR_URL_SEPARATOR + resourceName).toURL();
         } catch (URISyntaxException | MalformedURLException e) {
             throw new InvalidResourceException("Invalid resource: " + file, e);
@@ -67,6 +84,13 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         put(resourceName, url);
     }
 
+    /**
+     * Overrides the default {@code put} method to normalize the resource name before storing it.
+     * Normalization includes replacing backslashes with forward slashes and removing any trailing slash.
+     * @param name the resource name to be normalized
+     * @param url the resource URL
+     * @return the previous value associated with {@code name}, or {@code null} if there was no mapping for {@code name}
+     */
     @Override
     public URL put(String name, URL url) {
         name = name.replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);

@@ -38,45 +38,90 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
 
 /**
- * The Class ResourceManager.
+ * Manages and provides access to application resources.
+ * This class serves as a base for resource management, holding discovered resources in a
+ * {@link ResourceEntries} map. It also provides static utility methods for finding resources
+ * across a group of {@link SiblingClassLoader}s and for converting between class names and
+ * resource path names.
  *
- * <p>Created: 2014. 12. 18 PM 5:51:13</p>
+ * @since 2014. 12. 18
  */
 public class ResourceManager {
 
     private final ResourceEntries resourceEntries = new ResourceEntries();
 
+    /**
+     * Default constructor for use by subclasses.
+     */
     ResourceManager() {
     }
 
+    /**
+     * Retrieves a single resource URL by its name from the internal cache.
+     * @param name the name of the resource
+     * @return the resource URL, or {@code null} if not found
+     */
     public URL getResource(String name) {
         return resourceEntries.get(name);
     }
 
+    /**
+     * Returns an iterator over all cached resource URLs.
+     * @return an iterator for the resource URLs
+     */
     protected Iterator<URL> getResources() {
         return resourceEntries.values().iterator();
     }
 
+    /**
+     * Returns the total count of cached resources.
+     * @return the number of resources
+     */
     public int getNumberOfResources() {
         return resourceEntries.size();
     }
 
+    /**
+     * Adds a file-based resource to the cache.
+     * @param resourceName the name of the resource
+     * @param file the resource file
+     * @throws InvalidResourceException if the resource is invalid
+     */
     protected void putResource(String resourceName, File file) throws InvalidResourceException {
         resourceEntries.putResource(resourceName, file);
     }
 
+    /**
+     * Adds a JAR-based resource to the cache.
+     * @param file the JAR file
+     * @param entry the entry within the JAR file
+     * @throws InvalidResourceException if the resource is invalid
+     */
     protected void putResource(File file, JarEntry entry) throws InvalidResourceException {
         resourceEntries.putResource(file, entry);
     }
 
+    /**
+     * Resets the resource manager. The base implementation simply calls {@link #release()}.
+     * Subclasses should override this to implement actual reloading logic.
+     * @throws InvalidResourceException if an error occurs during reset
+     */
     public void reset() throws InvalidResourceException {
         release();
     }
 
+    /**
+     * Clears all cached resources.
+     */
     public void release() {
         resourceEntries.clear();
     }
 
+    /**
+     * Finds all resources from a given group of {@link SiblingClassLoader}s.
+     * @param siblings an iterator over the sibling class loaders to search
+     * @return an enumeration of {@link URL} objects for the resources
+     */
     @NonNull
     public static Enumeration<URL> findResources(final Iterator<SiblingClassLoader> siblings) {
         return new Enumeration<>() {
@@ -118,11 +163,24 @@ public class ResourceManager {
         };
     }
 
+    /**
+     * Finds a specific resource by name across a group of {@link SiblingClassLoader}s.
+     * @param name the name of the resource to find
+     * @param siblings an iterator over the sibling class loaders to search
+     * @return an enumeration of {@link URL} objects for the resource
+     */
     @NonNull
     public static Enumeration<URL> findResources(String name, final Iterator<SiblingClassLoader> siblings) {
         return findResources(name, siblings, null);
     }
 
+    /**
+     * Finds a specific resource by name across a group of {@link SiblingClassLoader}s, also including parent resources.
+     * @param name the name of the resource to find
+     * @param siblings an iterator over the sibling class loaders to search
+     * @param parentResources an enumeration of resources from a parent class loader
+     * @return a combined enumeration of {@link URL} objects for the resource
+     */
     @NonNull
     public static Enumeration<URL> findResources(
             String name, final Iterator<SiblingClassLoader> siblings, final Enumeration<URL> parentResources) {
@@ -182,6 +240,11 @@ public class ResourceManager {
         };
     }
 
+    /**
+     * Converts a resource path name (e.g., "com/example/MyClass.class") to a fully qualified class name.
+     * @param resourceName the resource name to convert
+     * @return the corresponding class name (e.g., "com.example.MyClass")
+     */
     @NonNull
     public static String resourceNameToClassName(@NonNull String resourceName) {
         String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
@@ -189,12 +252,22 @@ public class ResourceManager {
         return className;
     }
 
+    /**
+     * Converts a fully qualified class name (e.g., "com.example.MyClass") to a resource path name.
+     * @param className the class name to convert
+     * @return the corresponding resource name (e.g., "com/example/MyClass.class")
+     */
     @NonNull
     public static String classNameToResourceName(@NonNull String className) {
         return className.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR)
                 + CLASS_FILE_SUFFIX;
     }
 
+    /**
+     * Converts a package name (e.g., "com.example") to a resource path name.
+     * @param packageName the package name to convert
+     * @return the corresponding resource path (e.g., "com/example")
+     */
     public static String packageNameToResourceName(@NonNull String packageName) {
         String resourceName = packageName.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
         if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
@@ -203,6 +276,15 @@ public class ResourceManager {
         return resourceName;
     }
 
+    /**
+     * Resolves and sanitizes an array of resource location strings.
+     * This method cleans paths, resolves special prefixes like "classpath:" and "file:",
+     * resolves relative paths against a base path, and removes duplicates.
+     * @param resourceLocations the raw resource locations to check
+     * @param basePath the base path to resolve relative paths against
+     * @return a sanitized array of unique, absolute resource locations
+     * @throws InvalidResourceException if a location is invalid or cannot be resolved
+     */
     public static String[] checkResourceLocations(String[] resourceLocations, String basePath)
             throws InvalidResourceException {
         if (resourceLocations == null || resourceLocations.length == 0) {
