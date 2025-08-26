@@ -16,8 +16,12 @@
 package com.aspectran.core.component.session;
 
 /**
- * Implement the NoPersistent interface for non-persistent
- * objects in session data.
+ * A marker interface for session attributes that should not be persisted to the
+ * {@link SessionStore}.
+ *
+ * <p>Any object whose class implements this interface will be excluded from
+ * serialization when the session data is saved. This is useful for transient
+ * objects, sensitive data, or objects that cannot be reliably serialized.</p>
  *
  * @since 6.6.0
  */

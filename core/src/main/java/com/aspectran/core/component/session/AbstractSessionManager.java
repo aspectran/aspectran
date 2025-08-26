@@ -66,12 +66,13 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
 
     private HouseKeeper houseKeeper;
 
-    /** Default 30 minutes */
+    /** The default maximum inactive interval in seconds (30 minutes). */
     private volatile int defaultMaxIdleSecs = 30 * 60;
 
     private int maxIdleSecsForNew;
 
-    private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
+    /** The last time in milliseconds that orphaned sessions were deleted. */
+    private long lastOrphanSweepTime = 0L;
 
     AbstractSessionManager() {
     }
@@ -296,22 +297,16 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Each session has a timer configured to go off
-     * when either the session has not been accessed for a
-     * configurable amount of time, or the session itself
-     * has passed its expiry.
+     * Handles the expiration of a session's inactivity timer.
      * <p>
-     * If it has passed its expiry, then we will mark it for
-     * scavenging by the next run of the HouseKeeper; if it has
-     * been idle longer than the configured eviction period,
-     * we evict from the cache.
-     * <p>
-     * If none of the above are true, then the System timer
-     * is inconsistent and the caller of this method will
-     * need to reset the timer.
-     * @param session the default session
-     * @param now the time at which to check for expiry
-     * @return true if the session has already expired
+     * This method is called when a session has been idle for its configured
+     * inactivity period or has reached its absolute expiration time. It will
+     * either mark the session for scavenging by the {@link HouseKeeper} or
+     * evict it from the cache if it has been idle for too long.
+     * </p>
+     * @param session the session whose timer has expired
+     * @param now the current time in milliseconds
+     * @return true if the session has expired and was marked for scavenging, false otherwise
      */
     public boolean sessionInactivityTimerExpired(ManagedSession session, long now) {
         if (session == null) {
@@ -345,10 +340,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Accumulate a list of session IDs that should expire. It will only do this
-     * if the HouseKeeper doing the cleaning is actually configured to do so.
-     * @param id Session ID to accumulate
-     * @return true if accumulation is successful otherwise false
+     * Adds a session ID to the set of candidates for expiration.
+     * This is only effective if a {@link HouseKeeper} is running.
+     * @param id the session ID to add
+     * @return true if the ID was successfully added, false otherwise
      */
     private boolean addCandidateSessionIdForExpiry(String id) {
         if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
@@ -363,9 +358,9 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Called periodically by the HouseKeeper to handle the list of
-     * sessions that have expired since the last call to scavenge.
-     * @param scavengingInterval the period between scavenge cycles
+     * Called periodically by the {@link HouseKeeper} to process sessions that
+     * have been marked as candidates for expiration.
+     * @param scavengingInterval the interval in milliseconds between scavenge cycles
      */
     public void scavenge(long scavengingInterval) {
         // don't attempt to scavenge if we are shutting down
@@ -449,7 +444,7 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Calls session attribute listeners when an attribute is added, updated, or removed.
+     * Notifies registered listeners of a session attribute change.
      * @param session the session on which the attribute changed
      * @param name the name of the attribute
      * @param oldValue the previous value of the attribute, or null if added
@@ -470,8 +465,9 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Calls session listeners in the reverse order they were added when a session is destroyed.
-     * @param session the session on which to call the session listeners
+     * Notifies registered listeners that a session has been destroyed.
+     * Listeners are called in the reverse order they were added.
+     * @param session the session that was destroyed
      */
     protected void onSessionDestroyed(Session session) {
         if (session != null && !sessionListeners.isEmpty()) {
@@ -484,8 +480,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Call the session listeners when a new session is created.
-     * @param session the session on which to call the session listeners
+     * Notifies registered listeners that a new session has been created.
+     * @param session the session that was created
      */
     protected void onSessionCreated(Session session) {
         for (SessionListener listener : sessionListeners) {
@@ -494,8 +490,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Call the session listeners when a session is evicted from the cache.
-     * @param session the session on which to call the session listeners
+     * Notifies registered listeners that a session has been evicted from the cache.
+     * @param session the session that was evicted
      */
     protected void onSessionEvicted(Session session) {
         for (SessionListener listener : sessionListeners) {
@@ -504,8 +500,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Receives notification that a stored session is about to be resided in the cache.
-     * @param session the session on which to call the session listeners
+     * Notifies registered listeners that a session has been loaded from the store into the cache.
+     * @param session the session that was resided
      */
     protected void onSessionResided(Session session) {
         for (SessionListener listener : sessionListeners) {

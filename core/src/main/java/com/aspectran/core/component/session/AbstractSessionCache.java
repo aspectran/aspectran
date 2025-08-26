@@ -44,13 +44,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionCache.class);
 
-    /** The SessionManager related to this SessionCache */
+    /** The SessionManager that this cache belongs to. */
     private final AbstractSessionManager sessionManager;
 
-    /** The authoritative source of session data */
+    /** The authoritative source of session data for persistence. */
     private final SessionStore sessionStore;
 
-    /** Whether to support session clustering */
+    /** Whether session clustering is enabled. */
     private final boolean clusterEnabled;
 
     private final String thisName;
@@ -58,28 +58,25 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     private final String storeName;
 
     /**
-     * When, if ever, to evict sessions: never; only when the last request for
-     * them finishes; after inactivity time (expressed as secs)
+     * The eviction policy for idle sessions.
+     * Determines when to evict sessions: never, after the last request, or after a specific inactivity time.
      */
     private int evictionIdleSecs = NEVER_EVICT;
 
     private int evictionIdleSecsForNew = evictionIdleSecs;
 
     /**
-     * If true, as soon as a new session is created, it will be persisted to
-     * the SessionStore
+     * If true, a new session is immediately persisted to the SessionStore upon creation.
      */
     private boolean saveOnCreate;
 
     /**
-     * If true, a session that will be evicted from the cache because it has been
-     * inactive too long will be saved before being evicted.
+     * If true, a session that is evicted from the cache due to inactivity will be saved before eviction.
      */
     private boolean saveOnInactiveEviction;
 
     /**
-     * If true, a Session whose data cannot be read will be
-     * deleted from the SessionStore.
+     * If true, a Session whose data cannot be read will be deleted from the SessionStore.
      */
     private boolean removeUnloadableSessions;
 
@@ -243,10 +240,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Load the info for the session from the session store.
+     * Loads session data from the session store.
      * @param id the session id
-     * @return a Session object filled with data or null if the session doesn't exist
-     * @throws Exception if the session can not be loaded
+     * @return a Session object filled with data, or null if the session doesn't exist
+     * @throws Exception if the session cannot be loaded
      */
     @Nullable
     private ManagedSession loadSession(String id) throws Exception {
@@ -419,35 +416,33 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Get the session matching the key.
+     * Retrieves the session with the specified ID from the in-memory cache.
      * @param id the session id
-     * @return the Session object matching the id
+     * @return the Session object, or null if not found
      */
     protected abstract ManagedSession doGet(String id);
 
     /**
-     * Put the session into the map if it wasn't already there.
+     * Adds a session to the cache if it is not already present.
      * @param id the identity of the session
      * @param session the session object
-     * @return null if the session wasn't already in the map, or the existing entry otherwise
+     * @return null if the session was added, or the existing session if it was already in the cache
      */
     protected abstract ManagedSession doPutIfAbsent(String id, ManagedSession session);
 
     /**
-     * Compute the mappingFunction to create a Session object if the session
-     * with the given id isn't already in the map, otherwise return the existing Session.
-     * This method is expected to have precisely the same behaviour as
-     * {@link java.util.concurrent.ConcurrentHashMap#computeIfAbsent}
+     * Computes a session if the specified key is not already associated with a value.
+     * This method behaves identically to {@link java.util.concurrent.ConcurrentHashMap#computeIfAbsent}.
      * @param id the session id
-     * @param mappingFunction the function to load the data for the session
-     * @return an existing Session from the cache
+     * @param mappingFunction the function to compute a value
+     * @return the current (existing or computed) value associated with the specified key
      */
     protected abstract ManagedSession doComputeIfAbsent(String id, Function<String, ManagedSession> mappingFunction);
 
     /**
-     * Remove the session with this identity from the store.
+     * Removes the session with the specified ID from the cache.
      * @param id the session id
-     * @return the Session object if removed; null otherwise
+     * @return the removed Session object, or null if not found
      */
     protected abstract ManagedSession doDelete(String id);
 
@@ -467,9 +462,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Swap the id on a session.
-     * @param session the session for which to do the swap
-     * @param newId the new id
+     * Changes the ID of a session.
+     * @param session the session to modify
+     * @param newId the new session ID
      * @throws Exception if there was a failure saving the change
      */
     protected void renewSessionId(@NonNull ManagedSession session, @NonNull String newId) throws Exception {
@@ -528,10 +523,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Check a session for being inactive and thus being able to be evicted,
-     * if eviction is enabled.
+     * Checks if a session has been inactive long enough to be evicted.
      * @param session the session to check
-     * @return true if evicted session, false otherwise
+     * @return true if the session was evicted, false otherwise
      */
     @Override
     public boolean checkInactiveSession(ManagedSession session) {

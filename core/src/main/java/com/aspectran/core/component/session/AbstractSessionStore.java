@@ -26,28 +26,49 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * An abstract base implementation of the {@link SessionStore} interface.
+ * This class provides common functionality for session stores, such as handling
+ * grace periods for session expiration and periodic saving of session data.
+ * Subclasses must implement the persistence-specific methods.
+ *
  * <p>Created: 2017. 9. 10.</p>
  */
 public abstract class AbstractSessionStore extends AbstractComponent implements SessionStore {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    public static final int DEFAULT_GRACE_PERIOD_SECS = 60; // default of 1min
+    /** Default grace period in seconds (1 minute). */
+    public static final int DEFAULT_GRACE_PERIOD_SECS = 60;
 
+    /** Default save period in seconds (0, meaning save on every change). */
     public static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
+    /** The grace period in seconds to avoid premature session scavenging. */
     private int gracePeriodSecs = DEFAULT_GRACE_PERIOD_SECS;
 
-    private int savePeriodSecs = DEFAULT_SAVE_PERIOD_SECS; // time in seconds between saves
+    /** The minimum time in seconds between save operations. */
+    private int savePeriodSecs = DEFAULT_SAVE_PERIOD_SECS;
 
+    /** The set of attribute names that should not be persisted. */
     private Set<String> nonPersistentAttributes;
 
-    private long lastExpiryCheckTime = 0L; // last time in ms that getExpired was called
+    /** The last time in milliseconds that expired sessions were checked. */
+    private long lastExpiryCheckTime = 0L;
 
+    /**
+     * Returns the grace period in seconds.
+     * This is an interval to prevent overly aggressive session scavenging.
+     * @return the grace period in seconds
+     */
     public int getGracePeriodSecs() {
         return gracePeriodSecs;
     }
 
+    /**
+     * Calculates the grace period in milliseconds, multiplied by a weight.
+     * @param weight the multiplier for the grace period
+     * @return the grace period in milliseconds
+     */
     public long getGracePeriodMillis(float weight) {
         if (gracePeriodSecs > 0) {
             return TimeUnit.SECONDS.toMillis((long)(gracePeriodSecs * weight));
@@ -65,12 +86,17 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
+     * Returns the minimum time in seconds between save operations.
      * @return the time in seconds between saves
      */
     public int getSavePeriodSecs() {
         return savePeriodSecs;
     }
 
+    /**
+     * Returns the minimum time in milliseconds between save operations.
+     * @return the save period in milliseconds
+     */
     public long getSavePeriodMillis() {
         if (savePeriodSecs > 0) {
             return TimeUnit.SECONDS.toMillis(savePeriodSecs);
@@ -117,6 +143,11 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         }
     }
 
+    /**
+     * Checks if an attribute should be excluded from persistence.
+     * @param attrName the name of the attribute
+     * @return true if the attribute is non-persistent, false otherwise
+     */
     public boolean isNonPersistentAttribute(String attrName) {
         if (nonPersistentAttributes != null) {
             return nonPersistentAttributes.contains(attrName);

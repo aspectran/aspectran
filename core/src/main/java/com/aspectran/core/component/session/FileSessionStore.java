@@ -132,10 +132,10 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     /**
-     * Delete the file associated with a session
+     * Deletes the file associated with a session.
      * @param filename name of the file containing the session's information
-     * @return true if file was deleted, false otherwise
-     * @throws IOException if the file associated with the session fails to be deleted
+     * @return true if the file was deleted, false otherwise
+     * @throws IOException if the file fails to be deleted
      */
     private boolean deleteFile(String filename) throws IOException {
         if (filename == null) {
@@ -220,9 +220,9 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     /**
-     * Get the session id with its expiry time.
+     * Constructs a filename by combining the session's expiry time and its ID.
      * @param data the session data
-     * @return the session id plus expiry
+     * @return the filename string
      */
     private String getIdWithExpiry(@NonNull SessionData data) {
         if (data.getExpiry() > 0L) {
@@ -232,6 +232,11 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
+    /**
+     * Extracts the expiry time from a session filename.
+     * @param filename the filename to parse
+     * @return the expiry timestamp in milliseconds, 0 if it never expires, or -1 if invalid
+     */
     private long getExpiryFromFilename(@NonNull String filename) {
         int index = filename.indexOf('_');
         if (index == -1) {
@@ -248,8 +253,8 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     /**
-     * Extract the session id from the filename.
-     * @param filename the name of the file to use
+     * Extracts the session ID from a session filename.
+     * @param filename the filename to parse
      * @return the session id
      */
     @NonNull
@@ -263,17 +268,17 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     /**
-     * Check if the filename matches our session pattern.
-     * @param filename the name of the file to checks
-     * @return true if pattern matches
+     * Checks if a filename conforms to the expected session file pattern.
+     * @param filename the filename to check
+     * @return true if it is a valid session filename, false otherwise
      */
     private boolean isSessionFilename(String filename) {
         return (StringUtils.hasText(filename) && !filename.startsWith("."));
     }
 
     /**
-     * Check all session files and remove any that expired at or before the time limit.
-     * @param time the time in msec
+     * Scans the store directory and removes session files that expired at or before the given time.
+     * @param time the expiry time limit in milliseconds
      * @param withManaged whether to also sweep managed sessions
      */
     private void sweepDisk(long time, boolean withManaged) {
@@ -293,8 +298,8 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     /**
-     * Delete file that expired at or before the given time.
-     * @param time the time now in msec
+     * Deletes a file if it expired at or before the given time.
+     * @param time the expiry time limit in milliseconds
      * @param p the file to check
      */
     private void sweepFile(long time, Path p) {

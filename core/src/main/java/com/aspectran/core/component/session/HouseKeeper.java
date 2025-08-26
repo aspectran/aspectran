@@ -141,7 +141,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     /**
-     * Executes a single scavenge cycle.
+     * Executes a single scavenge cycle by calling the session manager's scavenge method.
      */
     private void scavenge() {
         // don't attempt to scavenge if we are shutting down

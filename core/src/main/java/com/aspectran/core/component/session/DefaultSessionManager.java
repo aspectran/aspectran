@@ -128,7 +128,7 @@ public class DefaultSessionManager
     }
 
     /**
-     * Initializes the session manager and all its components.
+     * Initializes the session manager and all its components based on the provided configuration.
      * This method performs the following steps:
      * <ol>
      *   <li>Reads settings from {@link SessionManagerConfig}.</li>

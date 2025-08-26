@@ -56,7 +56,7 @@ public class ManagedSession implements Session {
     private State state = State.VALID;
 
     /**
-     * state of the session: valid, invalid or being invalidated
+     * Represents the lifecycle state of the session.
      */
     private enum State {
         VALID,
@@ -82,14 +82,26 @@ public class ManagedSession implements Session {
         }
     }
 
+    /**
+     * Returns the session manager that owns this session.
+     * @return the session manager
+     */
     public SessionManager getSessionManager() {
         return sessionManager;
     }
 
+    /**
+     * Returns the underlying session data object.
+     * @return the session data
+     */
     protected SessionData getSessionData() {
         return sessionData;
     }
 
+    /**
+     * Sets the underlying session data object.
+     * @param sessionData the new session data
+     */
     protected void setSessionData(SessionData sessionData) {
         this.sessionData = sessionData;
     }
@@ -183,6 +195,9 @@ public class ManagedSession implements Session {
         }
     }
 
+    /**
+     * Reduces the inactive interval for this session, typically for new sessions.
+     */
     private void reduceInactiveInterval() {
         int maxIdleSecs = sessionManager.getMaxIdleSecsForNew();
         if (maxIdleSecs > 0) {
@@ -191,6 +206,10 @@ public class ManagedSession implements Session {
         }
     }
 
+    /**
+     * Returns the eviction idle seconds for this session, considering if it's a new session.
+     * @return the eviction idle seconds
+     */
     protected int getEvictionIdleSecs() {
         if (sessionData.getExtraInactiveInterval() > 0) {
             return sessionManager.getSessionCache().getEvictionIdleSecsForNew();
@@ -207,10 +226,19 @@ public class ManagedSession implements Session {
         }
     }
 
+    /**
+     * Checks if the session is currently resident in the in-memory cache.
+     * @return true if resident, false otherwise
+     */
     protected boolean isResident() {
         return resident;
     }
 
+    /**
+     * Sets whether the session is resident in the in-memory cache.
+     * If set to false, the inactivity timer is destroyed.
+     * @param resident true if resident, false otherwise
+     */
     protected void setResident(boolean resident) {
         this.resident = resident;
         if (!resident) {
@@ -311,12 +339,11 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Calculate what the session timer setting should be based on:
-     * the time remaining before the session expires
-     * and any idle eviction time configured.
-     * The timer value will be the lesser of the above.
-     * @param now the time at which to calculate remaining expiry
-     * @return the time remaining before expiry or inactivity timeout
+     * Calculates the timeout for the inactivity timer.
+     * The timeout is the lesser of the time remaining until the session expires
+     * and any configured idle eviction time.
+     * @param now the current time in milliseconds
+     * @return the calculated inactivity timeout in milliseconds
      */
     protected long calculateInactivityTimeout(long now) {
         long result;
@@ -373,10 +400,9 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Called by users to invalidate a session, or called by the
-     * access method as a request enters the session if the session
-     * has expired, or called by manager as a result of scavenger
-     * expiring session.
+     * Invalidates the session. This can be called by the application,
+     * by the access method if the session has expired, or by the
+     * session manager during scavenging.
      */
     @Override
     public void invalidate() {
@@ -467,9 +493,9 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Check to see if session has expired as at the time given.
-     * @param time the time since the epoch in ms
-     * @return true if expired
+     * Checks if the session has expired at the given time.
+     * @param time the time in milliseconds since the epoch
+     * @return true if expired, false otherwise
      */
     protected boolean isExpiredAt(long time) {
         try (AutoLock ignored = autoLock.lock()) {
@@ -479,9 +505,9 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Check if the Session has been idle longer than a number of seconds.
-     * @param sec the number of seconds
-     * @return true if the session has been idle longer than the interval
+     * Checks if the session has been idle for longer than the specified duration.
+     * @param sec the duration in seconds
+     * @return true if the session has been idle longer than the interval, false otherwise
      */
     protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
@@ -491,11 +517,10 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Call binding and attribute listeners based on the new and old values of
-     * the attribute.
-     * @param name name of the attribute
-     * @param newValue new value of the attribute
-     * @param oldValue previous value of the attribute
+     * Calls binding and attribute listeners when a session attribute is added, updated, or removed.
+     * @param name the name of the attribute
+     * @param oldValue the previous value of the attribute
+     * @param newValue the new value of the attribute
      */
     protected void onSessionAttributeUpdate(String name, Object oldValue, Object newValue) {
         if (newValue == null || !newValue.equals(oldValue)) {
@@ -510,10 +535,10 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Unbind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
-     * @param name the name with which the object is bound or unbound
-     * @param value the bound value
+     * Calls {@link SessionBindingListener#valueUnbound} if the attribute value
+     * implements {@link SessionBindingListener}.
+     * @param name the name of the attribute
+     * @param value the attribute value being unbound
      */
     protected void unbindValue(String name, Object value) {
         if (value instanceof SessionBindingListener listener) {
@@ -522,10 +547,10 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Bind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
-     * @param name the name with which the object is bound or unbound
-     * @param value the bound value
+     * Calls {@link SessionBindingListener#valueBound} if the attribute value
+     * implements {@link SessionBindingListener}.
+     * @param name the name of the attribute
+     * @param value the attribute value being bound
      */
     protected void bindValue(String name, Object value) {
         if (value instanceof SessionBindingListener listener) {
@@ -534,8 +559,8 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Check that the session can be modified.
-     * @throws IllegalStateException if the session is invalid
+     * Checks if the session is in a valid state for modification.
+     * @throws IllegalStateException if the session is invalid or not resident in the cache
      */
     protected void checkValidForWrite() {
         if (state == State.INVALID) {
@@ -550,8 +575,8 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Check that the session data can be read.
-     * @throws IllegalStateException if the session is invalid
+     * Checks if the session is in a valid state for reading.
+     * @throws IllegalStateException if the session is invalid or not resident in the cache
      */
     protected void checkValidForRead() {
         if (state == State.INVALID) {
@@ -566,7 +591,7 @@ public class ManagedSession implements Session {
     }
 
     /**
-     * Grab the lock on the session.
+     * Acquires the lock on the session.
      * @return the lock
      */
     protected AutoLock lock() {
