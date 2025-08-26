@@ -30,16 +30,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A Jetty {@link Handler} that sets a logging group for the current thread based on the request path.
+ * <p>This allows for segregating logs into different files based on URL patterns,
+ * which is useful for monitoring and debugging specific parts of an application (e.g., APIs vs. admin pages).</p>
+ *
  * <p>Created: 2025-03-27</p>
  */
 public class PathBasedLoggingGroupHandler extends Handler.Wrapper {
 
     private Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
+    /**
+     * Constructs a new PathBasedLoggingGroupHandler.
+     * @param handler the next handler in the chain to wrap
+     */
     public PathBasedLoggingGroupHandler(Handler handler) {
         super(handler);
     }
 
+    /**
+     * Sets the mapping between logging group names and their corresponding path patterns.
+     * @param pathPatternsByGroupName a map where the key is the logging group name and the value
+     *                                is a string in APON format defining include/exclude patterns
+     */
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {
             Map<String, IncludeExcludeWildcardPatterns> map = new HashMap<>();
@@ -62,6 +75,15 @@ public class PathBasedLoggingGroupHandler extends Handler.Wrapper {
         }
     }
 
+    /**
+     * Handles an incoming request by resolving the logging group, setting it for the current thread,
+     * and then passing the request to the next handler in the chain.
+     * @param request the request object
+     * @param response the response object
+     * @param callback the callback for handling completion
+     * @return true if the request was handled, false otherwise
+     * @throws Exception if an error occurs during handling
+     */
     @Override
     public boolean handle(Request request, Response response, Callback callback) throws Exception {
         Handler next = getHandler();
@@ -79,6 +101,12 @@ public class PathBasedLoggingGroupHandler extends Handler.Wrapper {
         return next.handle(request, response, callback);
     }
 
+    /**
+     * Resolves the appropriate logging group name for the given request by matching its path
+     * against the configured patterns.
+     * @param request the current request
+     * @return the matched logging group name, or {@code null} if no pattern matches
+     */
     protected String resolveGroupName(@NonNull Request request) {
         String groupName = null;
         if (pathPatternsByGroupName != null) {

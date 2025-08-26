@@ -38,7 +38,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * The Jetty Server managed by Aspectran.
+ * Represents an embedded Jetty server instance that is managed by the Aspectran framework.
+ * <p>This class extends the standard Jetty {@link Server} and integrates with Aspectran's
+ * bean lifecycle by implementing {@link InitializableBean} and {@link DisposableBean}.
+ * This allows the server to be started and stopped automatically along with the
+ * Aspectran application context.</p>
  *
  * <p>Created: 2016. 12. 22.</p>
  */
@@ -52,44 +56,86 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private boolean autoStart = true;
 
+    /**
+     * Constructs a new JettyServer.
+     */
     public JettyServer() {
         super();
     }
 
+    /**
+     * Constructs a new JettyServer to listen on the specified port.
+     * @param port the port to listen on
+     */
     public JettyServer(int port) {
         super(port);
     }
 
+    /**
+     * Constructs a new JettyServer with a specific thread pool.
+     * @param pool the thread pool for the server to use
+     */
     public JettyServer(ThreadPool pool) {
         super(pool);
     }
 
+    /**
+     * Returns whether the server should start automatically when the Aspectran context is initialized.
+     * @return true if auto-start is enabled, false otherwise
+     */
     public boolean isAutoStart() {
         return autoStart;
     }
 
+    /**
+     * Sets whether the server should start automatically.
+     * @param autoStart true to enable auto-start; false otherwise
+     */
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
     }
 
+    /**
+     * Sets whether the server should attempt a graceful shutdown.
+     * @param shutdownGracefully true to enable graceful shutdown; false otherwise
+     */
     public void setShutdownGracefully(boolean shutdownGracefully) {
         this.shutdownGracefully = shutdownGracefully;
     }
 
+    /**
+     * Sets the maximum number of concurrent network connections.
+     * @param maxConnections the maximum number of connections
+     */
     public void setMaxConnections(int maxConnections) {
         if (maxConnections > -1) {
             addBean(new NetworkConnectionLimit(maxConnections, this));
         }
     }
 
+    /**
+     * A utility method to set a Java system property.
+     * @param key the property key
+     * @param value the property value
+     */
     public void setSystemProperty(String key, String value) {
         System.setProperty(key, value);
     }
 
+    /**
+     * Finds and returns the {@link StatisticsHandler} if it has been configured.
+     * This is required for graceful shutdown to work correctly.
+     * @return the statistics handler, or {@code null} if not found
+     */
     public StatisticsHandler getStatisticsHandler() {
         return findStatisticsHandler(getHandler());
     }
 
+    /**
+     * Recursively searches for a {@link StatisticsHandler} within the handler hierarchy.
+     * @param handler the handler to search within
+     * @return the found handler, or {@code null}
+     */
     private StatisticsHandler findStatisticsHandler(Handler handler) {
         if (handler instanceof StatisticsHandler statisticsHandler) {
             return statisticsHandler;
@@ -100,10 +146,21 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         return null;
     }
 
+    /**
+     * Finds and returns the {@link ContextHandler} for a specific context path.
+     * @param contextPath the context path to search for
+     * @return the context handler, or {@code null} if not found
+     */
     public ContextHandler getContextHandler(String contextPath) {
         return findContextHandler(contextPath, getHandler());
     }
 
+    /**
+     * Recursively searches for a {@link ContextHandler} with a matching context path.
+     * @param contextPath the context path to match
+     * @param handler the handler to search within
+     * @return the found handler, or {@code null}
+     */
     private ContextHandler findContextHandler(String contextPath, Handler handler) {
         if (handler instanceof ContextHandler contextHandler) {
             if (Objects.equals(contextPath, contextHandler.getContextPath())) {
@@ -121,15 +178,24 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         return null;
     }
 
+    /**
+     * Finds and returns the {@link SessionHandler} for a specific context path.
+     * @param contextPath the context path of the web application
+     * @return the session handler, or {@code null} if not found
+     */
     public SessionHandler getSessionHandler(String contextPath) {
         ContextHandler contextHandler = getContextHandler(contextPath);
         if (contextHandler instanceof WebAppContext webAppContext) {
             return webAppContext.getSessionHandler();
-        } else {
-            return null;
         }
+        return null;
     }
 
+    /**
+     * Initializes the server as part of the Aspectran bean lifecycle.
+     * If {@code autoStart} is enabled, this method will start the Jetty server.
+     * @throws Exception if the server fails to start
+     */
     @Override
     public void initialize() throws Exception {
         setStopAtShutdown(false);
@@ -138,6 +204,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Destroys the server as part of the Aspectran bean lifecycle.
+     * This method ensures that the Jetty server is stopped.
+     */
     @Override
     public void destroy() {
         if (!isStopped() && !isStopping()) {
@@ -149,6 +219,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Overrides the default start behavior to add logging and graceful shutdown setup.
+     * @throws Exception if an error occurs during startup
+     */
     @Override
     public void doStart() throws Exception {
         logger.info("Starting Jetty server");
@@ -166,6 +240,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
                 getActualPortsDescription(), getContextPath());
     }
 
+    /**
+     * Overrides the default stop behavior to initiate a graceful or immediate shutdown.
+     */
     @Override
     public void doStop() {
         logger.info("Stopping Jetty server");
@@ -176,6 +253,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Performs the actual server shutdown, stopping handlers and destroying the server instance.
+     */
     private void shutdown() {
         try {
             getHandler().stop();
@@ -192,6 +272,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Recursively finds and initializes handlers that support deferred initialization.
+     * @param handler the handler to process
+     */
     private void handleDeferredInitialize(Handler handler) {
         if (handler instanceof JettyWebAppContext jettyWebAppContext) {
             jettyWebAppContext.deferredInitialize(this);
@@ -208,6 +292,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Recursively finds and disposes of handlers that support deferred disposal.
+     * @param handler the handler to process
+     */
     private void handleDeferredDispose(Handler handler) {
         if (handler instanceof JettyWebAppContext jettyWebAppContext) {
             jettyWebAppContext.deferredDispose();
@@ -224,6 +312,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         }
     }
 
+    /**
+     * Gathers the context paths of all configured context handlers.
+     * @return a string containing the context paths
+     */
     private String getContextPath() {
         Container handlerContainer = (Container)getHandler();
         return handlerContainer.getHandlers().stream()
@@ -231,6 +323,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
                 .map(ContextHandler::getContextPath).collect(Collectors.joining("', '"));
     }
 
+    /**
+     * Gathers the port and protocol information from all configured connectors.
+     * @return a descriptive string of active ports and protocols
+     */
     @NonNull
     private String getActualPortsDescription() {
         StringBuilder ports = new StringBuilder();

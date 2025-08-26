@@ -16,25 +16,28 @@
 package com.aspectran.jetty.server;
 
 /**
- * The result of a graceful shutdown request.
+ * Enumeration of the possible outcomes of a graceful shutdown attempt.
+ * This result is passed to the {@link GracefulShutdownCallback} to indicate the final state.
  *
  * <p>Created: 1/21/24</p>
  */
 public enum GracefulShutdownResult {
 
     /**
-     * Requests remained active at the end of the grace period.
+     * The server was shut down, but some requests were still active when the grace period ended.
+     * This may imply a forceful termination of in-flight requests.
      */
     REQUESTS_ACTIVE,
 
     /**
-     * The server was idle with no active requests at the end of the grace period.
+     * The server had no active requests and was able to shut down cleanly.
+     * This is the ideal outcome for a graceful shutdown.
      */
     IDLE,
 
     /**
-     * The server was shutdown immediately, ignoring any active requests.
+     * The server was shut down immediately, without waiting for active requests to complete.
      */
-    IMMEDIATE;
+    IMMEDIATE
 
 }

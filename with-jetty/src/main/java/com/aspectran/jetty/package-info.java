@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Jetty as the embedded servlet container.
+ * Provides the core classes for embedding a Jetty server to run Aspectran applications.
+ * <p>This package contains the primary classes for creating, configuring, and managing
+ * the lifecycle of an embedded Jetty server instance.</p>
  */
 package com.aspectran.jetty;

@@ -28,7 +28,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
- * Handles Jetty graceful shutdown.
+ * A helper class that handles the graceful shutdown of a Jetty server.
+ * <p>This class works by first stopping all connectors from accepting new connections,
+ * then waiting for a period for all active requests to complete. Once all requests
+ * are idle, it triggers a final shutdown callback.</p>
  *
  * <p>Created: 1/21/24</p>
  */
@@ -40,10 +43,20 @@ final class GracefulShutdown {
 
     private volatile boolean shuttingDown = false;
 
+    /**
+     * Constructs a new GracefulShutdown handler for the given server.
+     * @param server the Jetty server instance to manage
+     */
     GracefulShutdown(JettyServer server) {
         this.server = server;
     }
 
+    /**
+     * Initiates the graceful shutdown process.
+     * <p>This method stops all connectors and starts a background thread to monitor
+     * active requests. When all requests are complete, the provided callback is invoked.</p>
+     * @param callback the callback to be invoked upon completion of the shutdown
+     */
     void shutDownGracefully(@NonNull GracefulShutdownCallback callback) {
         logger.info("Commencing graceful shutdown. Waiting for active requests to complete");
         for (Connector connector : server.getConnectors()) {
@@ -53,6 +66,10 @@ final class GracefulShutdown {
         new Thread(() -> awaitShutdown(callback), "shutdown").start();
     }
 
+    /**
+     * Shuts down a single connector, preventing it from accepting new connections.
+     * @param connector the connector to shut down
+     */
     @SuppressWarnings("unchecked")
     private void shutdown(@NonNull Connector connector) {
         Future<Void> result;
@@ -74,6 +91,11 @@ final class GracefulShutdown {
         }
     }
 
+    /**
+     * Runs in a background thread, periodically checking for active requests.
+     * Once all requests are complete, it invokes the shutdown callback.
+     * @param callback the callback to invoke when shutdown is complete
+     */
     private void awaitShutdown(GracefulShutdownCallback callback) {
         sleep(300);
         int activeRequests = 0;
@@ -91,11 +113,19 @@ final class GracefulShutdown {
         }
     }
 
+    /**
+     * Gets the number of currently active requests from the server's {@link StatisticsHandler}.
+     * @return the number of active requests
+     */
     private int getActiveRequests() {
         StatisticsHandler statisticsHandler = server.getStatisticsHandler();
         return (statisticsHandler != null ? statisticsHandler.getRequestsActive() : 0);
     }
 
+    /**
+     * Pauses the current thread for a specified duration.
+     * @param millis the number of milliseconds to sleep
+     */
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -104,6 +134,9 @@ final class GracefulShutdown {
         }
     }
 
+    /**
+     * Aborts the graceful shutdown process if it is in progress.
+     */
     void abort() {
         this.shuttingDown = false;
     }

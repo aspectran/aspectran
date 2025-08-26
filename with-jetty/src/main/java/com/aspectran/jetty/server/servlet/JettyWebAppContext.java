@@ -50,7 +50,11 @@ import java.util.Map;
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
- * The Class JettyWebAppContext.
+ * A custom {@link WebAppContext} that integrates Aspectran's {@link com.aspectran.web.service.WebService}
+ * lifecycle with the Jetty server's startup and shutdown process.
+ * <p>This class supports "deferred initialization", meaning that the Aspectran {@code WebService}
+ * is initialized only after the Jetty server has fully started. This ensures that all server
+ * resources are available when the Aspectran application context is being built.</p>
  *
  * <p>Created: 2017. 1. 27.</p>
  */
@@ -93,6 +97,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the temporary directory for this web application.
+     * @param tempDirectory the path to the temporary directory
+     */
     public void setTempDirectory(String tempDirectory) {
         try {
             Path path = getActivityContext().getApplicationAdapter().getRealPath(tempDirectory);
@@ -139,6 +147,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets context initialization parameters.
+     * @param initParams a map of initialization parameters
+     */
     public void setInitParams(Map<String, String> initParams) {
         if (initParams != null) {
             for (Map.Entry<String, String> entry : initParams.entrySet()) {
@@ -147,6 +159,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the servlet listeners.
+     * @param jettyListeners an array of Jetty listeners
+     */
     public void setListeners(JettyListener[] jettyListeners) {
         if (jettyListeners != null) {
             for (JettyListener jettyListener : jettyListeners) {
@@ -156,11 +172,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     }
 
     /**
-     * Any event listeners added as WebListener must implement one or more of the
-     * {@link jakarta.servlet.ServletContextListener}, {@link jakarta.servlet.ServletContextAttributeListener},
-     * {@link jakarta.servlet.ServletRequestListener}, {@link jakarta.servlet.ServletRequestAttributeListener},
-     * {@link jakarta.servlet.http.HttpSessionListener}, or {@link jakarta.servlet.http.HttpSessionAttributeListener}, or
-     * {@link jakarta.servlet.http.HttpSessionIdListener} interfaces.
+     * Sets standard servlet event listeners.
+     * @param eventListeners an array of event listeners
      */
     public void setWebListeners(EventListener[] eventListeners) {
         if (eventListeners != null) {
@@ -170,6 +183,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the servlets for this context.
+     * @param servlets an array of Jetty servlets
+     */
     public void setServlets(JettyServlet[] servlets) {
         if (servlets != null) {
             for (JettyServlet servlet : servlets) {
@@ -182,6 +199,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the filters for this context.
+     * @param jettyFilters an array of Jetty filters
+     */
     public void setFilters(JettyFilter[] jettyFilters) {
         if (jettyFilters != null) {
             for (JettyFilter jettyFilter : jettyFilters) {
@@ -200,6 +221,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the error page mappings for this context.
+     * @param errorPages an array of error page configurations
+     */
     public void setErrorPages(JettyErrorPage[] errorPages) {
         if (errorPages != null && errorPages.length > 0) {
             this.errorPages = Arrays.asList(errorPages);
@@ -208,6 +233,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the servlet container initializers.
+     * @param servletContainerInitializers an array of initializers
+     */
     public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
         Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
@@ -215,10 +244,20 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Sets the WebSocket server container initializer.
+     * @param webSocketServerContainerInitializer the WebSocket initializer
+     */
     public void setWebSocketServerContainerInitializer(JettyWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
         this.webSocketServerContainerInitializer = webSocketServerContainerInitializer;
     }
 
+    /**
+     * Performs deferred initialization of the Aspectran WebService.
+     * This method is called after the Jetty server has started, ensuring that the
+     * servlet context is fully available.
+     * @param server the parent Jetty server instance
+     */
     public void deferredInitialize(Server server) {
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(getActivityContext().getClassLoader(), this);
         setClassLoader(webAppClassLoader);
@@ -265,6 +304,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
+    /**
+     * Performs deferred disposal of the Aspectran WebService.
+     * This method is called when the server is shutting down.
+     */
     public void deferredDispose() {
         if (rootWebService != null) {
             if (rootWebService.isActive()) {

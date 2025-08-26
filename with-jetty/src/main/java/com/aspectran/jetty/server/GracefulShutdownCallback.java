@@ -16,7 +16,9 @@
 package com.aspectran.jetty.server;
 
 /**
- * A callback for the result of a graceful shutdown request.
+ * A functional interface for receiving a callback upon the completion of a graceful shutdown.
+ * <p>Implementations of this interface can be used to perform actions after the
+ * server has attempted a graceful shutdown, such as triggering the final server stop sequence.</p>
  *
  * <p>Created: 1/21/24</p>
  */
@@ -24,8 +26,8 @@ package com.aspectran.jetty.server;
 public interface GracefulShutdownCallback {
 
     /**
-     * Graceful shutdown has completed with the given {@code result}.
-     * @param result the result of the shutdown
+     * Invoked when the graceful shutdown process has completed.
+     * @param result an enum indicating the outcome of the shutdown attempt (e.g., whether all requests became idle)
      */
     void shutdownComplete(GracefulShutdownResult result);
 

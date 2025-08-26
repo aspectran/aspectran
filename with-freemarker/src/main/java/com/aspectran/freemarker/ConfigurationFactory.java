@@ -48,7 +48,7 @@ import java.util.Properties;
  * shared variables, and custom directives. It is typically used by {@link ConfigurationFactoryBean}
  * to produce a fully configured {@code Configuration} instance for the application.</p>
  *
- * @since 2016. 1. 9.
+ * <p>Created: 2016. 1. 9.</p>
  */
 public class ConfigurationFactory implements ActivityContextAware {
 
