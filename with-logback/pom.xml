@@ -28,7 +28,7 @@
     <packaging>pom</packaging>
 
     <name>Aspectran with Logback</name>
-    <description>Packaging of dependencies for using Logback as a logging library (mainly used for testing)</description>
+    <description>A POM module that bundles Logback dependencies, primarily for building and testing other modules.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with Freemarker</name>
-    <description>Add-on package for using Freemarker as the templating engine</description>
+    <description>Provides integration with the FreeMarker template engine, allowing developers to use FreeMarker templates for rendering views in Aspectran applications.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

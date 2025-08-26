@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with MyBatis</name>
-    <description>Add-on package for using MyBatis as an ORM framework</description>
+    <description>Provides integration with the MyBatis persistence framework, enabling seamless database access and transaction management in Aspectran applications.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

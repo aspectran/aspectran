@@ -29,26 +29,27 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 - **Production‑grade Applications**  
   Runs on multiple OSes; can be deployed as a standalone JVM app, servlet in Tomcat/WildFly, or embedded in another Java application.
 
-## Core Packages
+## Modules
 
-- **`com.aspectran.core`** - Core framework functionality.
-- **`com.aspectran.daemon`** - Run Aspectran as a background process (Unix/Windows service).
-- **`com.aspectran.embed`** - Embed Aspectran into non‑Aspectran-based Java apps.
-- **`com.aspectran.logging`** - Logback integration.
-- **`com.aspectran.shell`** - Build simple interactive shell (CLI) apps.
-- **`com.aspectran.shell-jline`** - Feature‑rich shell using JLine 3.
-- **`com.aspectran.utils`** - Misc utilities shared across modules.
-- **`com.aspectran.web`** - Jakarta EE compatible web support.
-- **`com.aspectran.rss-lettuce`** - Redis session store via Lettuce client.
-- **`com.aspectran.jetty`** - Embedded Jetty servlet container.
-- **`com.aspectran.undertow`** - Embedded Undertow servlet container.
-- **`com.aspectran.jpa`** - Jakarta Persistence API (JPA 3.2) integration.
-- **`com.aspectran.mybatis`** - MyBatis ORM support.
-- **`com.aspectran.freemarker`** - Freemarker templating engine.
-- **`com.aspectran.pebble`** - Pebble templating engine.
-- **`com.aspectran.thymeleaf`** - Thymeleaf templating engine.
-
-_**`with-logback` POM module** – Packages all Logback dependencies and is primarily used for building and testing other modules._
+- **`aspectran-all`**: A single JAR containing all Aspectran modules and their dependencies, providing a convenient all-in-one package for easy deployment.
+- **`aspectran-bom`**: Aspectran Bill of Materials (BOM) for managing dependency versions.
+- **`aspectran-core`**: The core module of the Aspectran an framework, providing essential APIs and their implementations for building component-based applications.
+- **`aspectran-daemon`**: Provides functionality to run Aspectran-based applications as background daemons on Unix-like systems or as services on Windows.
+- **`aspectran-embed`**: Provides the ability to embed Aspectran within other Java applications, allowing them to leverage Aspectran's features without a full container setup.
+- **`aspectran-logging`**: Provides a flexible logging module for Aspectran, with Logback as the default implementation. It includes bridges for various logging APIs like JCL, JUL, and Log4j, routing them to SLF4J.
+- **`aspectran-shell`**: A module for building interactive command-line (shell) applications using the Aspectran framework.
+- **`aspectran-shell-jline`**: Enhances Aspectran-based interactive shell applications with the feature-rich JLine 3 library.
+- **`aspectran-utils`**: A collection of miscellaneous utility classes used across the Aspectran framework.
+- **`aspectran-web`**: Provides support for building web applications, compatible with Jakarta EE.
+- **`aspectran-rss-lettuce`**: Provides a Redis-based session store implementation for Aspectran, using the high-performance Lettuce client.
+- **`aspectran-with-jetty`**: Provides an embedded Jetty web server, allowing Aspectran to run as a self-contained, flexible, and mature web application.
+- **`aspectran-with-undertow`**: Provides an embedded Undertow web server, allowing Aspectran to run as a self-contained, high-performance web application.
+- **`aspectran-with-freemarker`**: Provides support for the FreeMarker template engine.
+- **`aspectran-with-pebble`**: Provides support for the Pebble template engine.
+- **`aspectran-with-thymeleaf`**: Provides support for the Thymeleaf template engine.
+- **`aspectran-with-jpa`**: Provides integration with Jakarta Persistence API (JPA).
+- **`aspectran-with-mybatis`**: Provides integration with the MyBatis persistence framework.
+- **`aspectran-with-logback`**: A POM module that bundles Logback dependencies, primarily for building and testing other modules.
 
 ## Supported Execution Environments
 

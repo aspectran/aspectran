@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Web</name>
-    <description>Package for building Jakarta EE compatible web applications</description>
+    <description>Provides support for building web applications, compatible with Jakarta EE, including features for handling HTTP requests, multipart file uploads, and WebSocket integration.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

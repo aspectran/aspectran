@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Demo</name>
-    <description>Demo application based on Aspectran</description>
+    <description>A comprehensive demonstration application showcasing the features and capabilities of the Aspectran framework in a real-world context.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
