@@ -21,6 +21,10 @@ import com.aspectran.utils.statistic.SampleStatistic;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * Collects and provides usage statistics for a {@link SessionManager}.
+ * This class tracks metrics such as the number of created, expired, and active sessions,
+ * as well as session lifetime.
+ *
  * <p>Created: 11/18/23</p>
  */
 public class SessionStatistics {
@@ -38,7 +42,7 @@ public class SessionStatistics {
     private final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
 
     /**
-     * This is called when a session is created.
+     * Called when a session is created.
      */
     protected void sessionCreated() {
         creationCount.incrementAndGet();
@@ -54,28 +58,28 @@ public class SessionStatistics {
     }
 
     /**
-     * This is called when a session is expired.
+     * Called when a session is expired.
      */
     protected void sessionExpired() {
         expirationCount.incrementAndGet();
     }
 
     /**
-     * This is called when a session is loaded into the cache.
+     * Called when a session is loaded into the cache.
      */
     protected void sessionActivated() {
         activationCount.increment();
     }
 
     /**
-     * This is called when a session is evicted from the cache.
+     * Called when a session is evicted from the cache.
      */
     protected void sessionInactivated() {
         activationCount.decrement();
     }
 
     /**
-     * This is called when an attempt is made to create a session exceeding
+     * Called when an attempt is made to create a session exceeding
      * the maximum number of active sessions.
      */
     protected void sessionRejected() {
@@ -83,9 +87,10 @@ public class SessionStatistics {
     }
 
     /**
-     * Record length of time session has been active. Called when the
-     * session is about to be invalidated.
-     * @param sample the value to record.
+     * Records the length of time a session has been active.
+     * Called when the session is about to be invalidated.
+     *
+     * @param sample the value to record
      */
     protected void recordTime(long sample) {
         timeRecord.record(sample);
@@ -104,13 +109,15 @@ public class SessionStatistics {
     }
 
     /**
-     * @return total number of sessions created
+     * Returns the total number of sessions created.
+     * @return the total number of sessions created
      */
     public long getNumberOfCreated() {
         return creationCount.get();
     }
 
     /**
+     * Returns the number of expired sessions.
      * @return the number of expired sessions
      */
     public long getNumberOfExpired() {
@@ -118,6 +125,7 @@ public class SessionStatistics {
     }
 
     /**
+     * Returns the number of valid sessions in the cache.
      * @return the number of valid sessions in the cache
      */
     public long getNumberOfActives() {
@@ -125,6 +133,7 @@ public class SessionStatistics {
     }
 
     /**
+     * Returns the highest number of concurrently active sessions.
      * @return the highest number of concurrently active sessions
      */
     public long getHighestNumberOfActives() {
@@ -132,6 +141,7 @@ public class SessionStatistics {
     }
 
     /**
+     * Returns the number of rejected sessions.
      * @return the number of rejected sessions
      */
     public long getNumberOfRejected() {
@@ -152,13 +162,15 @@ public class SessionStatistics {
     }
 
     /**
-     * @return the maximum amount of time session remained valid
+     * Returns the maximum amount of time a session remained valid.
+     * @return the maximum amount of time a session remained valid
      */
     public long getMaxSessionAliveTime() {
         return timeRecord.getMax();
     }
 
     /**
+     * Returns the total amount of time all sessions remained valid.
      * @return the total amount of time all sessions remained valid
      */
     public long getTotalSessionsAliveTime() {
@@ -166,21 +178,24 @@ public class SessionStatistics {
     }
 
     /**
-     * @return the mean amount of time session remained valid
+     * Returns the mean amount of time a session remained valid.
+     * @return the mean amount of time a session remained valid
      */
     public long getAverageSessionAliveTime() {
         return Math.round(timeRecord.getMean());
     }
 
     /**
-     * @return the standard deviation of amount of time session remained valid
+     * Returns the standard deviation of the amount of time a session remained valid.
+     * @return the standard deviation of the amount of time a session remained valid
      */
     public double getStdDevSessionAliveTime() {
         return timeRecord.getStdDev();
     }
 
     /**
-     * @return the timestamp at which session statistics were reset and new counting started
+     * Returns the timestamp at which session statistics were reset and new counting started.
+     * @return the timestamp at which session statistics were reset
      */
     public long getStartTime() {
         return startTime.get();

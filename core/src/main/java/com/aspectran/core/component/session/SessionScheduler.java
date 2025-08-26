@@ -24,10 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A specialized {@link Scheduler} implementation for managing background tasks
- * related to session management, such as session scavenging by the {@link HouseKeeper}.
+ * related to session management, such as session scavenging.
  *
  * <p>This scheduler ensures that session-related background operations are executed
  * efficiently and reliably within the Aspectran framework.</p>
+ *
+ * @see HouseKeeper
  */
 public class SessionScheduler implements Scheduler {
 
@@ -37,6 +39,11 @@ public class SessionScheduler implements Scheduler {
 
     private volatile ScheduledThreadPoolExecutor executor;
 
+    /**
+     * Instantiates a new SessionScheduler.
+     * @param name the name of the scheduler
+     * @param classLoader the class loader to use for the scheduler thread
+     */
     public SessionScheduler(String name, ClassLoader classLoader) {
         this.name = name;
         this.classloader = classLoader;

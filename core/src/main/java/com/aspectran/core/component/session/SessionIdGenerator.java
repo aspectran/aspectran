@@ -24,7 +24,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * The Session ID Generator.
+ * Generates unique session identifiers.
+ * This implementation uses a {@link java.security.SecureRandom} to generate
+ * unpredictable session IDs, making them difficult to guess.
  *
  * <p>Created: 2017. 6. 12.</p>
  */
@@ -40,10 +42,18 @@ public class SessionIdGenerator {
 
     private boolean weakRandom;
 
+    /**
+     * Instantiates a new SessionIdGenerator.
+     */
     public SessionIdGenerator() {
         this(null);
     }
 
+    /**
+     * Instantiates a new SessionIdGenerator.
+     *
+     * @param workerName the worker name
+     */
     public SessionIdGenerator(String workerName) {
         if (workerName != null && workerName.contains(".")) {
             throw new IllegalArgumentException("Worker name cannot contain '.'");
@@ -53,9 +63,9 @@ public class SessionIdGenerator {
     }
 
     /**
-     * Returns a new unique session id.
-     * @param seedTerm the seed for RNG
-     * @return a new unique session id
+     * Creates and returns a new unique session ID.
+     * @param seedTerm a seed value to increase randomness
+     * @return a new unique session ID
      */
     public String createSessionId(long seedTerm) {
         synchronized (random) {

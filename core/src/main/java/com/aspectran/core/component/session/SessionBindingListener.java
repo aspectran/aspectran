@@ -18,30 +18,30 @@ package com.aspectran.core.component.session;
 import java.util.EventListener;
 
 /**
- * Causes an object to be notified when it is bound to or unbound from a session.
+ * Notifies an object when it is bound to or unbound from a session.
+ * This is similar to the {@code jakarta.servlet.http.HttpSessionBindingListener}.
  *
  * <p>Created: 2017. 6. 25.</p>
+ *
+ * @see Session#setAttribute(String, Object)
+ * @see Session#removeAttribute(String)
  */
 public interface SessionBindingListener extends EventListener {
 
     /**
-     * Notifies the object that it is being bound to
-     * a session and identifies the session.
-     * @param session the session to which the object is bound or unbound
-     * @param name the name with which the object is bound or unbound
-     * @param value the value of the attribute that has been added, removed or replaced.
-     * @see #valueUnbound
+     * Notifies the attribute that it is being bound to a session.
+     * @param session the session to which the attribute is being bound
+     * @param name the name with which the attribute is being bound
+     * @param value the value of the attribute being bound
      */
     default void valueBound(Session session, String name, Object value) {
     }
 
     /**
-     * Notifies the object that it is being unbound
-     * from a session and identifies the session.
-     * @param session the session to which the object is bound or unbound
-     * @param name the name with which the object is bound or unbound
-     * @param value the value of the attribute that has been added, removed or replaced.
-     * @see #valueBound
+     * Notifies the attribute that it is being unbound from a session.
+     * @param session the session from which the attribute is being unbound
+     * @param name the name with which the attribute is being unbound
+     * @param value the value of the attribute being unbound
      */
     default void valueUnbound(Session session, String name, Object value) {
     }

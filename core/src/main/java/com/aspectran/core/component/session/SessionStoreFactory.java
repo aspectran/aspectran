@@ -18,14 +18,29 @@ package com.aspectran.core.component.session;
 import java.io.IOException;
 
 /**
+ * A factory for creating {@link SessionStore} instances.
+ *
  * <p>Created: 2019/12/06</p>
  */
 public interface SessionStoreFactory {
 
+    /**
+     * Returns the names of attributes that should not be persisted.
+     * @return an array of non-persistent attribute names
+     */
     String[] getNonPersistentAttributes();
 
+    /**
+     * Sets the names of attributes that should not be persisted.
+     * @param nonPersistentAttributes an array of non-persistent attribute names
+     */
     void setNonPersistentAttributes(String[] nonPersistentAttributes);
 
+    /**
+     * Creates a new {@link SessionStore} instance.
+     * @return a new {@link SessionStore}
+     * @throws IOException if an I/O error occurs during creation
+     */
     SessionStore createSessionStore() throws IOException;
 
 }

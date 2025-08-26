@@ -33,12 +33,16 @@ public class NonPersistentValue implements NonPersistent {
 
     /**
      * Creates a new NonPersistentValue instance wrapping the given value.
-     * @param value the object to wrap, which should implement {@link NonPersistent}
+     * @param value the object to wrap
      */
     public NonPersistentValue(Object value) {
         this.value = value;
     }
 
+    /**
+     * Returns the wrapped object.
+     * @return the wrapped object
+     */
     public Object getValue() {
         return value;
     }
@@ -59,6 +63,11 @@ public class NonPersistentValue implements NonPersistent {
         }
     }
 
+    /**
+     * A static factory method to wrap a value in a {@link NonPersistentValue}.
+     * @param value the object to wrap
+     * @return a new {@link NonPersistentValue} instance
+     */
     @NonNull
     public static NonPersistentValue wrap(Object value) {
         Assert.notNull(value, "value must not be null");

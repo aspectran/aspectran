@@ -104,38 +104,74 @@ public class SessionData implements Serializable {
         this.inactiveInterval = inactiveInterval;
     }
 
+    /**
+     * Returns the session's unique identifier.
+     * @return the session ID
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the session's unique identifier.
+     * @param id the session ID
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Returns the time the session was created.
+     * @return the creation timestamp
+     */
     public long getCreated() {
         return created;
     }
 
+    /**
+     * Returns the last time the session was accessed.
+     * @return the last accessed timestamp
+     */
     public long getAccessed() {
         return accessed;
     }
 
+    /**
+     * Sets the last time the session was accessed.
+     * @param accessed the last accessed timestamp
+     */
     public void setAccessed(long accessed) {
         this.accessed = accessed;
     }
 
+    /**
+     * Returns the time before the last access.
+     * @return the previous access timestamp
+     */
     public long getLastAccessed() {
         return lastAccessed;
     }
 
+    /**
+     * Sets the time before the last access.
+     * @param lastAccessed the previous access timestamp
+     */
     public void setLastAccessed(long lastAccessed) {
         this.lastAccessed = lastAccessed;
     }
 
+    /**
+     * Returns the maximum time the session can be inactive.
+     * @return the max inactive interval in milliseconds
+     */
     public long getInactiveInterval() {
         return inactiveInterval;
     }
 
+    /**
+     * Sets the maximum time the session can be inactive.
+     * @param inactiveInterval the max inactive interval in milliseconds
+     */
     public void setInactiveInterval(long inactiveInterval) {
         this.inactiveInterval = inactiveInterval;
     }
@@ -175,6 +211,10 @@ public class SessionData implements Serializable {
         }
     }
 
+    /**
+     * Returns the time the session will expire.
+     * @return the expiry timestamp
+     */
     public long getExpiry() {
         return expiry;
     }
@@ -221,14 +261,26 @@ public class SessionData implements Serializable {
         return dirty;
     }
 
+    /**
+     * Sets whether the session data has been modified.
+     * @param dirty true if the session has been modified
+     */
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
 
+    /**
+     * Returns the time the session was last saved.
+     * @return the last saved timestamp
+     */
     public long getLastSaved() {
         return lastSaved;
     }
 
+    /**
+     * Sets the time the session was last saved.
+     * @param lastSaved the last saved timestamp
+     */
     public void setLastSaved(long lastSaved) {
         this.lastSaved = lastSaved;
     }

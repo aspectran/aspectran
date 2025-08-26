@@ -18,7 +18,8 @@ package com.aspectran.core.component.session;
 import java.io.Serial;
 
 /**
- * Exception raised when session data can not be read.
+ * Exception raised when session data cannot be read from the {@link SessionStore}.
+ * This might occur if the persisted session data is corrupted or in an incompatible format.
  *
  * <p>Created: 2017. 9. 7.</p>
  */
@@ -29,11 +30,20 @@ public class UnreadableSessionDataException extends Exception {
 
     private final String id;
 
+    /**
+     * Instantiates a new UnreadableSessionDataException.
+     * @param id the ID of the session that could not be read
+     * @param t the cause of the exception
+     */
     public UnreadableSessionDataException(String id, Throwable t) {
         super("Unreadable session " + id, t);
         this.id = id;
     }
 
+    /**
+     * Returns the ID of the session that could not be read.
+     * @return the session ID
+     */
     public String getId() {
         return id;
     }

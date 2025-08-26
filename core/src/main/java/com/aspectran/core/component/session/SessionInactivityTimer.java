@@ -25,12 +25,14 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The Class SessionInactivityTimer.
- * <p>Each Session has a timer associated with it that fires whenever it has
- * been idle (ie not accessed by a request) for a configurable amount of
- * time, or the Session expires.</p>
- * <p>The timer is only scheduled when all Requests have exited the Session.
- * If a request enters a Session whose timer is active, it is cancelled.</p>
+ * Manages a timer for an individual session that fires when the session has been
+ * idle for a configurable amount of time.
+ *
+ * <p>The timer is scheduled when a request is no longer accessing the session.
+ * If a new request accesses the session while the timer is active, the timer is
+ * cancelled to prevent premature expiration.</p>
+ *
+ * <p>Created: 2017. 6. 12.</p>
  */
 public class SessionInactivityTimer {
 
@@ -40,6 +42,11 @@ public class SessionInactivityTimer {
 
     private final CyclicTimeout timer;
 
+    /**
+     * Instantiates a new SessionInactivityTimer.
+     * @param sessionManager the session manager
+     * @param session the session to monitor
+     */
     public SessionInactivityTimer(@NonNull AbstractSessionManager sessionManager, @NonNull ManagedSession session) {
         this.session = session;
         this.timer = new CyclicTimeout(sessionManager.getScheduler()) {
@@ -81,7 +88,8 @@ public class SessionInactivityTimer {
     }
 
     /**
-     * @param time the timeout to set; -1 means that the timer will not be scheduled
+     * Schedules the inactivity timer.
+     * @param time the timeout in milliseconds; a value of -1 will prevent the timer from being scheduled
      */
     public void schedule(long time) {
         if (time >= 0) {
@@ -96,6 +104,9 @@ public class SessionInactivityTimer {
         }
     }
 
+    /**
+     * Cancels the currently scheduled timer.
+     */
     public void cancel() {
         timer.cancel();
         if (logger.isTraceEnabled()) {
@@ -103,6 +114,9 @@ public class SessionInactivityTimer {
         }
     }
 
+    /**
+     * Destroys the timer, preventing any further scheduling.
+     */
     public void destroy() {
         timer.destroy();
         if (logger.isTraceEnabled()) {

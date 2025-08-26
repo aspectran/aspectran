@@ -18,7 +18,8 @@ package com.aspectran.core.component.session;
 import java.io.Serial;
 
 /**
- * Exception raised when session data can not be written.
+ * Exception raised when session data cannot be written to the {@link SessionStore}.
+ * This might occur due to I/O errors or problems with the underlying storage system.
  *
  * <p>Created: 2017. 9. 27.</p>
  */
@@ -29,11 +30,20 @@ public class UnwritableSessionDataException extends Exception {
 
     private final String id;
 
+    /**
+     * Instantiates a new UnwritableSessionDataException.
+     * @param id the ID of the session that could not be written
+     * @param t the cause of the exception
+     */
     public UnwritableSessionDataException(String id, Throwable t) {
         super("Unwritable session " + id, t);
         this.id = id;
     }
 
+    /**
+     * Returns the ID of the session that could not be written.
+     * @return the session ID
+     */
     public String getId() {
         return id;
     }

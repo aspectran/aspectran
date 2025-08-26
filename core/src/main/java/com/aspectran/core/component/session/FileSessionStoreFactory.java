@@ -20,28 +20,59 @@ import com.aspectran.utils.SystemUtils;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A factory that creates and configures a {@link FileSessionStore}.
+ *
+ * <p>Created: 2019/12/06</p>
+ */
 public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     private String storeDir;
 
     private boolean deleteUnrestorableFiles = true;
 
+    /**
+     * Returns the directory where session data files are stored.
+     *
+     * @return the session data store directory
+     */
     public String getStoreDir() {
         return storeDir;
     }
 
+    /**
+     * Sets the directory where session data files are stored.
+     *
+     * @param storeDir the session data store directory
+     */
     public void setStoreDir(String storeDir) {
         this.storeDir = storeDir;
     }
 
+    /**
+     * Returns whether to delete session files that cannot be restored.
+     *
+     * @return true to delete, false otherwise
+     */
     public boolean isDeleteUnrestorableFiles() {
         return deleteUnrestorableFiles;
     }
 
+    /**
+     * Sets whether to delete session files that cannot be restored.
+     *
+     * @param deleteUnrestorableFiles true to delete, false otherwise
+     */
     public void setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
         this.deleteUnrestorableFiles = deleteUnrestorableFiles;
     }
 
+    /**
+     * Creates a new {@link FileSessionStore} instance.
+     *
+     * @return a new {@link FileSessionStore}
+     * @throws IOException if the session store cannot be created
+     */
     @Override
     public FileSessionStore createSessionStore() throws IOException {
         File storeDir;

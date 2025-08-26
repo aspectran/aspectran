@@ -25,28 +25,28 @@ package com.aspectran.core.component.session;
 public interface SessionListenerRegistration {
 
     /**
-     * Register a session listener to the session manager.
+     * Registers a session listener.
      * @param listener the session listener to register
      */
     void register(SessionListener listener);
 
     /**
-     * Register a session listener to the session manager.
+     * Registers a session listener for a specific deployment.
      * @param listener the session listener to register
-     * @param deploymentName the deployment name
+     * @param deploymentName the name of the deployment
      */
     void register(SessionListener listener, String deploymentName);
 
     /**
-     * Remove a session listener from the session manager.
+     * Removes a session listener.
      * @param listener the session listener to remove
      */
     void remove(SessionListener listener);
 
     /**
-     * Remove a session listener from the session manager.
+     * Removes a session listener for a specific deployment.
      * @param listener the session listener to remove
-     * @param deploymentName the deployment name
+     * @param deploymentName the name of the deployment
      */
     void remove(SessionListener listener, String deploymentName);
 
