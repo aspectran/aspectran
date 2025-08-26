@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>5.0.0-B09</version>
+            <version>5.0.0-B10</version>
             <optional>true</optional>
         </dependency>
         <!-- Querydsl dependency -->
