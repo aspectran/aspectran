@@ -27,12 +27,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * Abstract base class for {@link RequestHandlerFactory} implementations.
+ * <p>This class provides the common infrastructure for building a handler chain by applying
+ * a list of {@link HandlerWrapper} instances to a root handler. This allows for a modular
+ * approach to request processing, where concerns like logging, encoding, and session
+ * management can be added as decorators.</p>
+ */
 public abstract class AbstractRequestHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
     private List<HandlerWrapper> handlerChainWrappers;
 
+    /**
+     * Returns the current {@link ActivityContext}.
+     * @return the activity context
+     */
     @NonNull
     protected ActivityContext getActivityContext() {
         Assert.state(context != null, "No ActivityContext injected");
@@ -44,6 +55,11 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
         this.context = context;
     }
 
+    /**
+     * Sets the chain of {@link HandlerWrapper}s to be applied to the root handler.
+     * These wrappers are used to add cross-cutting concerns like logging, encoding, etc.
+     * @param handlerWrappers the array of handler wrappers
+     */
     public void setHandlerChainWrappers(HandlerWrapper[] handlerWrappers) {
         if (handlerWrappers == null || handlerWrappers.length == 0) {
             throw new IllegalArgumentException("handlerWrappers must not be null or empty");
@@ -51,6 +67,10 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
         this.handlerChainWrappers = Arrays.asList(handlerWrappers);
     }
 
+    /**
+     * Checks if a {@link LoggingGroupHandlerWrapper} is present in the handler chain.
+     * @return true if the logging group handler wrapper exists, false otherwise
+     */
     protected boolean hasLoggingGroupHandlerWrapper() {
         for (HandlerWrapper handlerWrapper : handlerChainWrappers) {
             if (handlerWrapper instanceof LoggingGroupHandlerWrapper) {
@@ -60,6 +80,13 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
         return false;
     }
 
+    /**
+     * Wraps the given {@link HttpHandler} with the configured chain of wrappers.
+     * The wrappers are applied in reverse order, so the first wrapper in the configured
+     * list will be the first to handle an incoming request.
+     * @param handler the root handler to be wrapped
+     * @return the wrapped handler that represents the start of the chain
+     */
     protected HttpHandler wrapHandler(HttpHandler handler) {
         if (handlerChainWrappers != null) {
             HttpHandler current = handler;

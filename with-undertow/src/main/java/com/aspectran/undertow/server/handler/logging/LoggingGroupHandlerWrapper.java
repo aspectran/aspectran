@@ -17,5 +17,10 @@ package com.aspectran.undertow.server.handler.logging;
 
 import io.undertow.server.HandlerWrapper;
 
+/**
+ * A marker interface for {@link HandlerWrapper}s that are related to logging group functionality.
+ * <p>This interface allows the framework to identify handlers that participate in setting
+ * or clearing the logging group for a request, without needing to know the concrete implementation.</p>
+ */
 public interface LoggingGroupHandlerWrapper extends HandlerWrapper {
 }

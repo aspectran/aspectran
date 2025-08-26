@@ -43,14 +43,10 @@ import java.util.stream.Collectors;
 import static com.aspectran.web.adapter.HttpServletResponseAdapter.PROXY_PROTOCOL_AWARE_SETTING_NAME;
 
 /**
- * An adapter that wraps an {@link HttpServerExchange}, exposing it as a
+ * An adapter that wraps an Undertow {@link HttpServerExchange}, exposing it as a
  * {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
- * <p>This class acts as a bridge between the Undertow API and the Aspectran core,
- * allowing the framework to write to the Undertow response in a consistent manner.
- * </p>
- *
- * @author Juho Jeong
- * @since 2019-07-27
+ * <p>This class acts as a bridge between the Aspectran core and the Undertow API,
+ * allowing the framework to write to the Undertow response in a consistent, abstracted manner.</p>
  */
 public class TowResponseAdapter extends AbstractResponseAdapter {
 
@@ -209,7 +205,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     /**
      * {@inheritDoc}
      * <p>If a redirect location has been reserved, this method sets the Location header.
-     * It also flushes the underlying writer or output stream.
+     * It also flushes the underlying writer or output stream.</p>
      */
     @Override
     public void commit() throws IOException {
@@ -226,7 +222,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation clears all response headers and resets the status to 200 OK.
+     * <p>This implementation clears all response headers and resets the status to 200 OK.</p>
      */
     @Override
     public void reset() {
@@ -240,7 +236,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation reserves the redirect location. The actual redirect is
-     * sent when {@link #commit()} is called.
+     * sent when {@link #commit()} is called.</p>
      */
     @Override
     public void redirect(String location) throws IOException {
@@ -270,7 +266,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation builds a redirect URL and reserves it.
+     * <p>This implementation builds a redirect URL and reserves it.</p>
      */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
@@ -292,7 +288,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation returns the path unchanged.
+     * <p>This implementation returns the path unchanged.</p>
      */
     @Override
     public String transformPath(String path) {

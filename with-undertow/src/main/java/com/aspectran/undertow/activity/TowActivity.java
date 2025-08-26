@@ -44,13 +44,11 @@ import java.io.UnsupportedEncodingException;
 import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUEST_SIZE_SETTING_NAME;
 
 /**
- * Activity implementation used by the Undertow service to process web requests.
- * <p>This class extends {@link CoreActivity} and adapts the core Aspectran processing
- * pipeline to the Undertow environment. It wraps the native {@link HttpServerExchange}
- * and provides Undertow-specific request and response adapters, enabling Aspectran
- * to handle web requests without relying on the Servlet API.
- *
- * @since 2019-07-27
+ * An {@link CoreActivity} implementation for the embedded Undertow server.
+ * <p>This class adapts the core Aspectran processing pipeline to the Undertow environment.
+ * It wraps the native {@link HttpServerExchange} and provides Undertow-specific request
+ * and response adapters, enabling Aspectran to handle web requests without relying on
+ * the Servlet API.</p>
  */
 public class TowActivity extends CoreActivity {
 
@@ -64,7 +62,7 @@ public class TowActivity extends CoreActivity {
 
     /**
      * Instantiates a new TowActivity.
-     * @param towService the {@link TowService} instance
+     * @param towService the main Aspectran Undertow service
      * @param exchange the Undertow {@link HttpServerExchange} for the current request
      */
     public TowActivity(@NonNull TowService towService, HttpServerExchange exchange) {

@@ -23,6 +23,12 @@ import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
 
+/**
+ * An extension of Undertow's {@link PathResourceManager} that is aware of the
+ * Aspectran {@link ApplicationAdapter}.
+ * <p>This allows the base path for resources to be resolved relative to the
+ * application's base directory, providing more flexible configuration.</p>
+ */
 public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
@@ -62,10 +68,19 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         this.applicationAdapter = applicationAdapter;
     }
 
+    /**
+     * Returns the base path for the resources.
+     * @return the base path as a string
+     */
     public String getBase() {
         return super.getBasePath().toString();
     }
 
+    /**
+     * Sets the base path for resources. The path can be relative to the application's base directory.
+     * @param base the resource base path
+     * @return this {@code TowResourceManager} instance
+     */
     public TowResourceManager setBase(String base) {
         if (!StringUtils.hasText(base)) {
             throw new IllegalArgumentException("Base path must not be null or empty");

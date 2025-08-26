@@ -20,16 +20,32 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 /**
+ * An auxiliary {@link HttpHandler} that assists in propagating the logging group.
+ * <p>In a servlet environment, this handler is typically placed inside the servlet
+ * handler chain to ensure that the logging group, which was set by an outer handler
+ * (like {@link PathBasedLoggingGroupHandler}), is correctly applied to the thread
+ * handling the servlet request.</p>
+ *
  * <p>Created: 2024. 12. 11.</p>
  */
 public class LoggingGroupAssistHandler implements HttpHandler  {
 
     private final HttpHandler handler;
 
+    /**
+     * Constructs a new LoggingGroupAssistHandler.
+     * @param handler the next handler in the chain
+     */
     public LoggingGroupAssistHandler(HttpHandler handler) {
         this.handler = handler;
     }
 
+    /**
+     * Handles the request by setting the logging group from the exchange and then
+     * delegating to the next handler.
+     * @param exchange the HTTP server exchange
+     * @throws Exception if an error occurs during request processing
+     */
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         ExchangeLoggingGroupHelper.setFrom(exchange);

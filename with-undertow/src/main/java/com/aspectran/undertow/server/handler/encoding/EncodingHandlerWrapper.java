@@ -29,8 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Configure HTTP compression in Undertow {@link HttpHandler} and
- * create an {@link EncodingHandler}.
+ * A {@link HandlerWrapper} that creates and configures an Undertow {@link EncodingHandler}
+ * for HTTP content compression.
+ * <p>This wrapper allows for easy, bean-style configuration of compression providers
+ * (e.g., gzip, deflate) and predicates that control when compression should be applied.</p>
  *
  * <p>Created: 2019-08-18</p>
  */
@@ -44,14 +46,31 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
 
     private ContentEncodingPredicates[] encodingPredicates;
 
+    /**
+     * Sets the names of the content encoding providers to enable (e.g., "gzip", "deflate").
+     * The order in this array determines the priority.
+     * @param encodingProviderNames an array of provider names
+     */
     public void setEncodingProviders(String... encodingProviderNames) {
         this.encodingProviderNames = encodingProviderNames;
     }
 
+    /**
+     * Sets the predicates that determine whether a response should be compressed.
+     * If multiple predicates are provided, they are combined with a logical OR.
+     * @param encodingPredicates an array of predicate configurations
+     */
     public void setEncodingPredicates(ContentEncodingPredicates... encodingPredicates) {
         this.encodingPredicates = encodingPredicates;
     }
 
+    /**
+     * Wraps the given handler with a new {@link EncodingHandler}.
+     * <p>This method configures the encoding repository based on the provided providers
+     * and predicates, and then constructs the handler.</p>
+     * @param handler the next handler in the chain
+     * @return the new {@code EncodingHandler}
+     */
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         ContentEncodingRepository contentEncodingRepository = new ContentEncodingRepository();
@@ -74,6 +93,11 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
         return new EncodingHandler(handler, contentEncodingRepository);
     }
 
+    /**
+     * Private helper method to combine multiple {@link ContentEncodingPredicates} into a
+     * single Undertow {@link Predicate} using a logical OR.
+     * @return the combined predicate, or {@code null} if none are configured
+     */
     @Nullable
     private Predicate createPredicate() {
         Predicate predicate = null;

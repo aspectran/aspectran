@@ -45,9 +45,7 @@ import static com.aspectran.core.component.session.MaxSessionsExceededException.
  * <p>This class provides the core functionality for building web applications
  * on Undertow. It handles incoming {@link HttpServerExchange} requests,
  * dispatches them to Aspectran's processing pipeline, and manages web-specific
- * concerns like URI decoding and request filtering.
- *
- * @since 2019-07-27
+ * concerns like URI decoding and request filtering.</p>
  */
 public class DefaultTowService extends AbstractTowService {
 
@@ -55,10 +53,24 @@ public class DefaultTowService extends AbstractTowService {
 
     protected volatile long pauseTimeout = -2L;
 
+    /**
+     * Instantiates a new DefaultTowService.
+     * @param parentService the parent core service
+     * @param derived whether this service is derived from a parent
+     */
     DefaultTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
     }
 
+    /**
+     * Handles an incoming {@link HttpServerExchange}.
+     * <p>This is the main entry point for all web requests. It creates and executes a
+     * {@link TowActivity} to process the request, handling various outcomes such as
+     * translet not found, exceptions, and successful completion.</p>
+     * @param exchange the HTTP request/response exchange
+     * @return true if the request was handled by an Aspectran translet; false otherwise
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public boolean service(@NonNull HttpServerExchange exchange) throws IOException {
         if (checkPaused(exchange)) {
@@ -98,6 +110,10 @@ public class DefaultTowService extends AbstractTowService {
         return true;
     }
 
+    /**
+     * Executes the main processing logic of the activity and handles any exceptions.
+     * @param activity the prepared {@link TowActivity} to perform
+     */
     private void perform(TowActivity activity) {
         try {
             activity.perform();
@@ -110,6 +126,12 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
+    /**
+     * Handles the case where no translet is found for the request.
+     * <p>This method implements special logic for "trailing slash" redirects.
+     * If not handled, it sends a 404 Not Found error.</p>
+     * @param activity the current activity
+     */
     private void transletNotFound(TowActivity activity) {
         // Provides for "trailing slash" redirects and serving directory index files
         if (isTrailingSlashRedirect() &&
@@ -130,6 +152,11 @@ public class DefaultTowService extends AbstractTowService {
         sendError(activity.getExchange(), HttpStatus.NOT_FOUND, null);
     }
 
+    /**
+     * Sends an appropriate HTTP error response based on the type of exception thrown.
+     * @param activity the current activity
+     * @param e the exception that was thrown
+     */
     private void sendError(@NonNull TowActivity activity, Exception e) {
         Throwable t;
         if (activity.isExceptionRaised()) {
@@ -152,6 +179,12 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
+    /**
+     * Sends a specific HTTP error status and message to the client.
+     * @param exchange the current HTTP exchange
+     * @param status the HTTP status to send
+     * @param msg the reason phrase to send
+     */
     private void sendError(@NonNull HttpServerExchange exchange, @NonNull HttpStatus status, String msg) {
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Response");
@@ -165,6 +198,13 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
+    /**
+     * Generates a concise, one-line log message for an incoming request.
+     * @param exchange the current HTTP exchange
+     * @param requestName the processed request name
+     * @param requestMethod the processed request method
+     * @return a formatted string for logging
+     */
     @NonNull
     private String getRequestInfo(@NonNull HttpServerExchange exchange, String requestName, MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
@@ -180,6 +220,11 @@ public class DefaultTowService extends AbstractTowService {
         return sb.toString();
     }
 
+    /**
+     * Checks if the service is currently paused and, if so, sends a 503 Service Unavailable response.
+     * @param exchange the current HTTP exchange
+     * @return true if the service is paused, false otherwise
+     */
     private boolean checkPaused(@NonNull HttpServerExchange exchange) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {

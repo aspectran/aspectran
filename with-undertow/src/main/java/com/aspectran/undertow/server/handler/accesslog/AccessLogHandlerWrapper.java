@@ -26,6 +26,11 @@ import io.undertow.server.handlers.accesslog.AccessLogHandler;
 import io.undertow.server.handlers.accesslog.AccessLogReceiver;
 
 /**
+ * A {@link HandlerWrapper} that creates and configures an {@link AccessLogHandler}.
+ * <p>This wrapper allows for easy, bean-style configuration of Undertow's access logging
+ * within the Aspectran configuration files. It sets up a {@link TowAccessLogReceiver}
+ * to route log messages to SLF4J.</p>
+ *
  * <p>Created: 2019-08-18</p>
  */
 public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWrapper {
@@ -41,6 +46,10 @@ public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWra
         this.classLoader = context.getClassLoader();
     }
 
+    /**
+     * Returns the class loader to be used by the access log handler.
+     * @return the class loader
+     */
     public ClassLoader getClassLoader() {
         if (classLoader == null) {
             return ClassUtils.getDefaultClassLoader();
@@ -49,14 +58,28 @@ public class AccessLogHandlerWrapper implements ActivityContextAware, HandlerWra
         }
     }
 
+    /**
+     * Sets the access log format string (e.g., "common", "combined", or a custom pattern).
+     * @param formatString the log format string
+     */
     public void setFormatString(String formatString) {
         this.formatString = formatString;
     }
 
+    /**
+     * Sets the SLF4J logger category to which access log messages will be sent.
+     * @param category the logger category name
+     */
     public void setCategory(String category) {
         this.category = category;
     }
 
+    /**
+     * Wraps the given handler with a new {@link AccessLogHandler}
+     * configured with the specified format and logger category.
+     * @param handler the next handler in the chain
+     * @return the new {@code AccessLogHandler}
+     */
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         if (handler == null) {

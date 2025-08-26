@@ -29,11 +29,9 @@ import java.util.List;
 /**
  * Abstract base class for {@link TowService} implementations.
  * <p>This class extends {@link DefaultCoreService} and provides common infrastructure
- * for running Aspectran on Undertow. It handles web-specific configurations from
- * {@link WebConfig} (reused from the generic web module) and provides properties
- * for URI decoding, trailing slash redirects, and session adaptability.
- *
- * @since 2019-07-27
+ * for running Aspectran on an embedded Undertow server. It handles web-specific configurations
+ * from {@link WebConfig} and provides properties for URI decoding, trailing slash redirects,
+ * and session adaptability.</p>
  */
 public abstract class AbstractTowService extends DefaultCoreService implements TowService {
 
@@ -43,6 +41,11 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
 
     private boolean sessionAdaptable = true;
 
+    /**
+     * Instantiates a new AbstractTowService.
+     * @param parentService the parent core service
+     * @param derived whether this service is derived from a parent
+     */
     AbstractTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
     }
@@ -52,26 +55,50 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
         return sessionAdaptable;
     }
 
+    /**
+     * Sets whether Undertow's session management should be adapted and made available to translets.
+     * @param sessionAdaptable true to enable session adaptation; false otherwise
+     */
     public void setSessionAdaptable(boolean sessionAdaptable) {
         this.sessionAdaptable = sessionAdaptable;
     }
 
+    /**
+     * Returns the character encoding for decoding the URI.
+     * @return the URI character encoding
+     */
     public String getUriDecoding() {
         return uriDecoding;
     }
 
+    /**
+     * Sets the character encoding for decoding the URI.
+     * @param uriDecoding the URI character encoding
+     */
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
     }
 
+    /**
+     * Returns whether to redirect requests with a trailing slash.
+     * @return true if trailing slash redirect is enabled, false otherwise
+     */
     public boolean isTrailingSlashRedirect() {
         return trailingSlashRedirect;
     }
 
+    /**
+     * Sets whether to redirect requests with a trailing slash.
+     * @param trailingSlashRedirect true to enable trailing slash redirect; false otherwise
+     */
     protected void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
+    /**
+     * Overrides the default configuration process to apply web-specific settings.
+     * @param aspectranConfig the main Aspectran configuration
+     */
     @Override
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
         super.configure(aspectranConfig);
@@ -89,6 +116,10 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
         }
     }
 
+    /**
+     * Applies settings from a {@link WebConfig} object to this service.
+     * @param webConfig the web configuration to apply
+     */
     protected void configure(@NonNull WebConfig webConfig) {
         setUriDecoding(webConfig.getUriDecoding());
 

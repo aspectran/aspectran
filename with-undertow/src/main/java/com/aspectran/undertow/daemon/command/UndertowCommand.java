@@ -33,7 +33,9 @@ import com.aspectran.utils.lifecycle.LifeCycle;
 import java.net.BindException;
 
 /**
- * Use the command 'undertow' to control the Undertow Server.
+ * A command for the Aspectran Daemon to control an embedded Undertow server.
+ * <p>This command allows for starting, stopping, restarting, and checking the status
+ * of a {@link TowServer} bean defined in the application context.</p>
  */
 public class UndertowCommand extends AbstractCommand {
 
@@ -47,6 +49,12 @@ public class UndertowCommand extends AbstractCommand {
         super(registry);
     }
 
+    /**
+     * Executes the undertow command based on the provided parameters.
+     * The required 'mode' parameter can be 'start', 'stop', 'restart', or 'status'.
+     * @param parameters the command parameters
+     * @return the result of the command execution
+     */
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
@@ -87,6 +95,12 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
+    /**
+     * Starts the specified Undertow server.
+     * @param serverName the name of the TowServer bean
+     * @return the command result
+     * @throws Exception if an error occurs during server startup
+     */
     private CommandResult startTowServer(String serverName) throws Exception {
         TowServer towServer = null;
         try {
@@ -118,6 +132,11 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
+    /**
+     * Stops the specified Undertow server.
+     * @param serverName the name of the TowServer bean
+     * @return the command result
+     */
     private CommandResult stopTowServer(String serverName) {
         try {
             if (hasTowServer(serverName)) {
@@ -133,6 +152,11 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
+    /**
+     * Prints the current status of the specified Undertow server.
+     * @param serverName the name of the TowServer bean
+     * @return the command result containing the server status
+     */
     private CommandResult printServerStatus(String serverName) {
         try {
             if (hasTowServer(serverName)) {

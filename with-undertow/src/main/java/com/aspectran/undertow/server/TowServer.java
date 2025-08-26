@@ -22,22 +22,57 @@ import io.undertow.Version;
 import io.undertow.servlet.api.DeploymentManager;
 
 /**
+ * Defines the contract for an embedded Undertow server managed by Aspectran.
+ * <p>"Tow" is an abbreviation for Undertow. This interface extends Aspectran's
+ * {@link LifeCycle} to manage the server's start and stop operations. It provides
+ * access to the underlying native {@link Undertow} server instance and its
+ * deployment managers.</p>
+ *
  * <p>Created: 11/25/23</p>
  */
 public interface TowServer extends LifeCycle {
 
+    /**
+     * Returns the version of the underlying Undertow server library.
+     * @return the Undertow version string
+     */
     static String getVersion() {
         return Version.getVersionString();
     }
 
+    /**
+     * Returns the underlying native {@link Undertow} server instance.
+     * This can be used for advanced, low-level configuration.
+     * @return the Undertow server instance
+     */
     Undertow getUndertow();
 
+    /**
+     * Retrieves the Undertow {@link DeploymentManager} for a web application by its deployment name.
+     * @param deploymentName the name of the deployment
+     * @return the deployment manager, or {@code null} if not found
+     */
     DeploymentManager getDeploymentManager(String deploymentName);
 
+    /**
+     * Retrieves the Undertow {@link DeploymentManager} for a web application by its context path.
+     * @param path the context path of the web application
+     * @return the deployment manager, or {@code null} if not found
+     */
     DeploymentManager getDeploymentManagerByPath(String path);
 
+    /**
+     * Retrieves the Aspectran {@link SessionManager} for a specific deployment.
+     * @param deploymentName the name of the deployment
+     * @return the session manager, or {@code null} if not found
+     */
     SessionManager getSessionManager(String deploymentName);
 
+    /**
+     * Retrieves the Aspectran {@link SessionManager} for a web application by its context path.
+     * @param path the context path of the web application
+     * @return the session manager, or {@code null} if not found
+     */
     SessionManager getSessionManagerByPath(String path);
 
 }

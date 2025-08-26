@@ -21,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Access log receiver that logs messages at INFO level.
+ * An {@link AccessLogReceiver} implementation that logs access messages via SLF4J.
+ * <p>This class acts as a bridge, directing Undertow's access log output to a
+ * configurable SLF4J logger, typically for routing to a dedicated access log file.</p>
  *
  * <p>Created: 2019-08-18</p>
  */
@@ -31,10 +33,17 @@ public class TowAccessLogReceiver implements AccessLogReceiver {
 
     private final Logger logger;
 
+    /**
+     * Constructs a new TowAccessLogReceiver with the default logger category.
+     */
     public TowAccessLogReceiver() {
         this(null);
     }
 
+    /**
+     * Constructs a new TowAccessLogReceiver with a specified logger category.
+     * @param category the SLF4J logger category to use
+     */
     public TowAccessLogReceiver(String category) {
         if (StringUtils.hasText(category)) {
             this.logger = LoggerFactory.getLogger(category);
@@ -43,6 +52,10 @@ public class TowAccessLogReceiver implements AccessLogReceiver {
         }
     }
 
+    /**
+     * Logs the formatted access log message at the INFO level.
+     * @param message the access log message string
+     */
     @Override
     public void logMessage(String message) {
         logger.info(message);

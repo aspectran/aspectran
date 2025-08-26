@@ -29,16 +29,15 @@ import org.slf4j.LoggerFactory;
  * <p>This class provides static factory methods to construct an Undertow service,
  * applying configuration from an {@link AspectranConfig} object and linking it
  * to a parent {@link CoreService}. It also sets up a {@link ServiceStateListener}
- * to manage the service's lifecycle, including pause/resume state.
- *
- * @since 2024-04-01
+ * to manage the service's lifecycle, including its pause/resume state.</p>
  */
 public class DefaultTowServiceBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowServiceBuilder.class);
 
     /**
-     * Builds a new {@link DefaultTowService} instance for the given parent service.
+     * Builds a new, derived {@link DefaultTowService} instance for the given parent service.
+     * A derived service inherits its configuration from its parent.
      * @param parentService the parent service
      * @return a new, configured {@code DefaultTowService} instance
      */
@@ -58,9 +57,9 @@ public class DefaultTowServiceBuilder {
     }
 
     /**
-     * Builds a new {@link DefaultTowService} instance for the given parent service and Aspectran configuration.
+     * Builds a new, non-derived {@link DefaultTowService} instance from a specific {@link AspectranConfig}.
      * @param parentService the parent service
-     * @param aspectranConfig the Aspectran configuration
+     * @param aspectranConfig the Aspectran configuration to apply
      * @return a new, configured {@code DefaultTowService} instance
      */
     @NonNull
@@ -72,6 +71,10 @@ public class DefaultTowServiceBuilder {
         return towService;
     }
 
+    /**
+     * Attaches a {@link ServiceStateListener} to the service to manage its pause/resume state.
+     * @param towService the service to attach the listener to
+     */
     private static void setServiceStateListener(@NonNull final DefaultTowService towService) {
         towService.setServiceStateListener(new ServiceStateListener() {
             @Override

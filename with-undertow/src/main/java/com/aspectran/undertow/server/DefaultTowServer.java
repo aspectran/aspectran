@@ -22,7 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Undertow Server managed by Aspectran.
+ * The default, concrete implementation of {@link AbstractTowServer}.
+ * <p>This class manages the lifecycle of the actual {@link Undertow} server instance.
+ * It integrates with the Aspectran bean lifecycle through {@link InitializableBean}
+ * and {@link DisposableBean}, allowing the server to be started and stopped
+ * automatically with the application context.</p>
  *
  * @see <a href="http://undertow.io">Undertow</a>
  * @since 6.3.0
@@ -38,6 +42,10 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         return undertow;
     }
 
+    /**
+     * Builds and starts the embedded Undertow server.
+     * @throws Exception if the server fails to start
+     */
     @Override
     public void doStart() throws Exception {
         try {
@@ -57,6 +65,11 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         }
     }
 
+    /**
+     * Stops the embedded Undertow server.
+     * <p>This method initiates the shutdown sequence, which may be graceful
+     * if configured, and then stops the native Undertow instance.</p>
+     */
     @Override
     public void doStop() {
         shutdown();
@@ -71,6 +84,11 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         }
     }
 
+    /**
+     * Initializes the server as part of the Aspectran bean lifecycle.
+     * If {@code autoStart} is enabled, this method will start the Undertow server.
+     * @throws Exception if the server fails to start
+     */
     @Override
     public void initialize() throws Exception {
         if (isAutoStart() && !isRunning()) {
@@ -78,6 +96,10 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         }
     }
 
+    /**
+     * Destroys the server as part of the Aspectran bean lifecycle.
+     * This method ensures that the Undertow server is stopped.
+     */
     @Override
     public void destroy() {
         if (isStoppable()) {

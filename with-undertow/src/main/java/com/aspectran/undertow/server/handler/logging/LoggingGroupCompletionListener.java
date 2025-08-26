@@ -20,10 +20,21 @@ import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpServerExchange;
 
 /**
+ * An {@link ExchangeCompletionListener} that clears the logging group from the current thread.
+ * <p>This ensures that the thread-local logging group set by a handler like
+ * {@link PathBasedLoggingGroupHandler} does not leak to subsequent requests that might
+ * be processed by the same thread.</p>
+ *
  * <p>Created: 2024. 12. 11.</p>
  */
 public class LoggingGroupCompletionListener implements ExchangeCompletionListener {
 
+    /**
+     * Called when the request-response exchange is complete. This implementation
+     * clears the current logging group.
+     * @param exchange the HTTP server exchange
+     * @param nextListener the next listener in the chain
+     */
     @Override
     public void exchangeEvent(@NonNull HttpServerExchange exchange, @NonNull NextListener nextListener) {
         try {

@@ -30,6 +30,16 @@ import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.ServletContainer;
 
 /**
+ * A factory for creating the root {@link HttpHandler} for a lightweight, non-servlet environment.
+ * <p>This factory is responsible for:
+ * <ul>
+ *   <li>Creating and managing the lifecycle of the underlying {@link DefaultTowService}.</li>
+ *   <li>Initializing the session manager.</li>
+ *   <li>Creating a {@link LightRequestHandler} to process dynamic requests.</li>
+ *   <li>Optionally creating a {@link TowResourceHandler} to serve static resources.</li>
+ *   <li>Chaining all handlers together using the configured {@code HandlerWrapper}s.</li>
+ * </ul></p>
+ *
  * <p>Created: 06/10/2019</p>
  */
 public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory implements RequestHandlerFactory {
@@ -44,22 +54,45 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
 
     private DefaultTowService towService;
 
+    /**
+     * Sets the resource manager for serving static files.
+     * @param resourceManager the static resource manager
+     */
     public void setResourceManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
 
+    /**
+     * Sets the session manager for handling user sessions.
+     * @param sessionManager the session manager
+     */
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Sets the session configuration (e.g., for cookie handling).
+     * @param sessionConfig the session configuration
+     */
     public void setSessionConfig(SessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
     }
 
+    /**
+     * Sets the Aspectran configuration to build an embedded service.
+     * @param aspectranConfig the Aspectran configuration
+     */
     public void setAspectranConfig(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
     }
 
+    /**
+     * Creates the root {@link HttpHandler} for the server.
+     * <p>This method assembles the full handler chain, including static resources,
+     * session management, and the core Aspectran request handler.</p>
+     * @return the root HTTP handler
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public HttpHandler createHandler() throws Exception {
         createTowService();
@@ -91,11 +124,19 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         return wrapHandler(rootHandler);
     }
 
+    /**
+     * Throws {@link UnsupportedOperationException} as this factory does not support servlet containers.
+     * @return never returns
+     */
     @Override
     public ServletContainer getServletContainer() {
         throw new UnsupportedOperationException("Not support servlet container");
     }
 
+    /**
+     * Disposes of the created {@link DefaultTowService} and stops the session manager.
+     * @throws Exception if an error occurs during disposal
+     */
     @Override
     public void dispose() throws Exception {
         destroyTowService();
@@ -104,6 +145,10 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         }
     }
 
+    /**
+     * Creates and starts the embedded {@link DefaultTowService}.
+     * @throws Exception if the service fails to start
+     */
     private void createTowService() throws Exception {
         Assert.state(towService == null, "TowService is already configured");
         CoreService masterService = getActivityContext().getMasterService();
@@ -124,6 +169,9 @@ public class LightRequestHandlerFactory extends AbstractRequestHandlerFactory im
         }
     }
 
+    /**
+     * Stops and withdraws the embedded {@link DefaultTowService}.
+     */
     private void destroyTowService() {
         if (towService != null) {
             if (towService.isActive()) {

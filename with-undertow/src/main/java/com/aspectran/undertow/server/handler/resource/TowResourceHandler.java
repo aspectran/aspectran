@@ -37,6 +37,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * An extension of Undertow's {@link ResourceHandler} that conditionally serves static resources.
+ * <p>This handler uses include/exclude wildcard patterns to determine if a request path
+ * corresponds to a static resource. If the path matches, it serves the resource. If it does
+ * not match, it delegates the request to the next handler in the chain, allowing dynamic
+ * requests (i.e., translets) to be processed.</p>
+ */
 public class TowResourceHandler extends ResourceHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(TowResourceHandler.class);
@@ -63,6 +70,10 @@ public class TowResourceHandler extends ResourceHandler {
         this.next = next;
     }
 
+    /**
+     * Sets the include/exclude path patterns for static resources.
+     * @param pathPatterns the resource path patterns
+     */
     public void setPathPatterns(ResourcePathPatterns pathPatterns) {
         if (pathPatterns == null) {
             throw new IllegalArgumentException("pathPatterns must not be null");
@@ -70,6 +81,12 @@ public class TowResourceHandler extends ResourceHandler {
         this.pathPatterns = IncludeExcludeWildcardPatterns.of(pathPatterns, '/');
     }
 
+    /**
+     * Automatically detects and registers common static resource directories and files
+     * from the resource manager's base path.
+     * @param pathPrefix an optional prefix to apply to the detected resource paths
+     * @throws IOException if an I/O error occurs while scanning for resources
+     */
     public void autoDetect(String pathPrefix) throws IOException {
         if (getResourceManager() instanceof PathResourceManager pathResourceManager) {
             Set<String> staticResources = findStaticResources(pathResourceManager.getBasePath());
@@ -113,6 +130,12 @@ public class TowResourceHandler extends ResourceHandler {
         }
     }
 
+    /**
+     * Finds top-level directories and files that are likely to be static resources.
+     * @param base the base path to scan
+     * @return a set of resource paths
+     * @throws IOException if an I/O error occurs
+     */
     @NonNull
     private Set<String> findStaticResources(Path base) throws IOException {
         Set<String> resources = new HashSet<>();
@@ -154,10 +177,20 @@ public class TowResourceHandler extends ResourceHandler {
         }
     }
 
+    /**
+     * Returns whether any path patterns have been configured.
+     * @return true if patterns are configured, false otherwise
+     */
     public boolean hasPatterns() {
         return (pathPatterns != null);
     }
 
+    /**
+     * Handles the request by checking if the path matches the configured static resource patterns.
+     * If it matches, the resource is served. Otherwise, the request is passed to the next handler.
+     * @param exchange the HTTP server exchange
+     * @throws Exception if an error occurs
+     */
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         String requestPath = exchange.getRequestPath();

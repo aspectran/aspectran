@@ -18,6 +18,10 @@ package com.aspectran.undertow.server;
 import io.undertow.Undertow;
 
 /**
+ * A bean-style configuration class for an Undertow HTTP listener.
+ * <p>This class holds the host and port for a standard HTTP connector, which can be
+ * easily configured in Aspectran's bean definition files.</p>
+ *
  * <p>Created: 2019-08-21</p>
  */
 public class HttpListenerConfig {
@@ -26,22 +30,42 @@ public class HttpListenerConfig {
 
     private String host;
 
+    /**
+     * Returns the port number for the listener.
+     * @return the port number
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Sets the port number for the listener.
+     * @param port the port number
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Returns the host name or IP address for the listener.
+     * @return the host name
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Sets the host name or IP address for the listener.
+     * @param host the host name
+     */
     public void setHost(String host) {
         this.host = host;
     }
 
+    /**
+     * Creates and returns an Undertow {@link Undertow.ListenerBuilder} based on this configuration.
+     * @return a configured listener builder
+     */
     Undertow.ListenerBuilder getListenerBuilder() {
         Undertow.ListenerBuilder listenerBuilder = new Undertow.ListenerBuilder();
         listenerBuilder.setType(Undertow.ListenerType.HTTP);

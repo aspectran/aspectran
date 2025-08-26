@@ -18,12 +18,26 @@ package com.aspectran.undertow.server.handler.resource;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 
+/**
+ * A specialized {@link IncludeExcludeParameters} class for defining path patterns
+ * for static resource handling.
+ * <p>This class can be configured as a bean to specify which URL paths should be
+ * included or excluded from being served as static resources by the {@link TowResourceHandler}.</p>
+ */
 public class ResourcePathPatterns extends IncludeExcludeParameters {
 
+    /**
+     * Constructs a new, empty ResourcePathPatterns instance.
+     */
     public ResourcePathPatterns() {
         super();
     }
 
+    /**
+     * Constructs a new ResourcePathPatterns instance from an APON string.
+     * @param apon the APON string containing include/exclude patterns
+     * @throws AponParseException if the APON string is invalid
+     */
     public ResourcePathPatterns(String apon) throws AponParseException {
         super();
         readFrom(apon);

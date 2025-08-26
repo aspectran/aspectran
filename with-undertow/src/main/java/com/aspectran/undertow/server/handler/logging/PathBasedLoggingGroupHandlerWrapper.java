@@ -25,6 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A {@link com.aspectran.undertow.server.handler.LightRequestHandlerFactory.HandlerWrapper}
+ * that creates and configures a {@link PathBasedLoggingGroupHandler}.
+ * <p>This wrapper allows for easy, bean-style configuration of path-based logging groups
+ * in the Aspectran configuration files.</p>
+ *
  * <p>Created: 2024. 12. 10.</p>
  */
 public class PathBasedLoggingGroupHandlerWrapper implements LoggingGroupHandlerWrapper {
@@ -34,6 +39,13 @@ public class PathBasedLoggingGroupHandlerWrapper implements LoggingGroupHandlerW
     public PathBasedLoggingGroupHandlerWrapper() {
     }
 
+    /**
+     * Sets the mapping between logging group names and their corresponding path patterns.
+     * The path patterns are provided as a string in APON format, which are then parsed
+     * into {@link IncludeExcludeWildcardPatterns}.
+     * @param pathPatternsByGroupName a map where the key is the logging group name and the value
+     *                                is a string in APON format defining include/exclude patterns
+     */
     public void setPathPatternsByGroupName(Map<String, String> pathPatternsByGroupName) {
         if (pathPatternsByGroupName != null) {
             Map<String, IncludeExcludeWildcardPatterns> map = new HashMap<>();
@@ -56,6 +68,12 @@ public class PathBasedLoggingGroupHandlerWrapper implements LoggingGroupHandlerW
         }
     }
 
+    /**
+     * Wraps the given handler with a new {@link PathBasedLoggingGroupHandler}
+     * configured with the specified path patterns.
+     * @param handler the next handler in the chain
+     * @return the new {@code PathBasedLoggingGroupHandler}
+     */
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         if (handler == null) {

@@ -24,6 +24,11 @@ import io.undertow.server.HttpServerExchange;
 import java.util.Map;
 
 /**
+ * An Undertow {@link HttpHandler} that sets a logging group for the current request
+ * based on matching the request path against a configured set of patterns.
+ * <p>This handler ensures that the logging group is cleared at the end of the exchange
+ * by using a {@link LoggingGroupCompletionListener}.</p>
+ *
  * <p>Created: 2024. 12. 10.</p>
  */
 public class PathBasedLoggingGroupHandler implements HttpHandler {
@@ -34,11 +39,21 @@ public class PathBasedLoggingGroupHandler implements HttpHandler {
 
     private final Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName;
 
+    /**
+     * Constructs a new PathBasedLoggingGroupHandler.
+     * @param handler the next handler in the chain
+     * @param pathPatternsByGroupName a map where keys are logging group names and values are the path patterns
+     */
     public PathBasedLoggingGroupHandler(HttpHandler handler, Map<String, IncludeExcludeWildcardPatterns> pathPatternsByGroupName) {
         this.handler = handler;
         this.pathPatternsByGroupName = pathPatternsByGroupName;
     }
 
+    /**
+     * Handles the request by resolving and setting the logging group, then delegating to the next handler.
+     * @param exchange the HTTP server exchange
+     * @throws Exception if an error occurs during request processing
+     */
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         String groupName = resolveGroupName(exchange);
@@ -48,6 +63,12 @@ public class PathBasedLoggingGroupHandler implements HttpHandler {
         handler.handleRequest(exchange);
     }
 
+    /**
+     * Resolves the appropriate logging group name for the given request by matching its path
+     * against the configured patterns.
+     * @param exchange the current HTTP server exchange
+     * @return the matched logging group name, or {@code null} if no pattern matches
+     */
     protected String resolveGroupName(@NonNull HttpServerExchange exchange) {
         String groupName = null;
         if (pathPatternsByGroupName != null && !pathPatternsByGroupName.isEmpty()) {

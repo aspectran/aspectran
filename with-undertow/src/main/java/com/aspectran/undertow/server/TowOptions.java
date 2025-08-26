@@ -21,15 +21,29 @@ import org.xnio.OptionMap;
 import org.xnio.Options;
 
 /**
+ * A bean-style wrapper for configuring Undertow and XNIO options.
+ * <p>This class provides convenient setter methods for common Undertow and XNIO options.
+ * Internally, it builds an {@link OptionMap} which can then be applied to the server,
+ * socket, or worker configurations. This allows for easy, declarative configuration
+ * in Aspectran's bean definition files.</p>
+ *
  * <p>Created: 2019-08-18</p>
  */
 public class TowOptions {
 
     private final OptionMap.Builder options = OptionMap.builder();
 
+    /**
+     * Returns the underlying {@link OptionMap} containing all configured options.
+     * @return the option map
+     */
     public OptionMap getOptionMap() {
         return options.getMap();
     }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    // Undertow Server Options
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
     public void setMaxHeaderSize(int maxHeaderSize) {
         options.set(UndertowOptions.MAX_HEADER_SIZE, maxHeaderSize);
@@ -182,6 +196,10 @@ public class TowOptions {
     public void setEndpointIdentificationAlgorithm(String endpointIdentificationAlgorithm) {
         options.set(UndertowOptions.ENDPOINT_IDENTIFICATION_ALGORITHM, endpointIdentificationAlgorithm);
     }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    // XNIO Socket Options
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
     public void setAllowBlocking(boolean allowBlocking) {
         options.set(Options.ALLOW_BLOCKING, allowBlocking);
@@ -366,6 +384,10 @@ public class TowOptions {
     public void setFileCreate(boolean fileCreate) {
         options.set(Options.FILE_CREATE, fileCreate);
     }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+    // XNIO Worker Options
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
     public void setStackSize(long stackSize) {
         options.set(Options.STACK_SIZE, stackSize);

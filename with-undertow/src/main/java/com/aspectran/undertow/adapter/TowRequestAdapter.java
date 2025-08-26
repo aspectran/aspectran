@@ -35,14 +35,10 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * An adapter that wraps an {@link HttpServerExchange}, exposing it as a
+ * An adapter that wraps an Undertow {@link HttpServerExchange}, exposing it as a
  * {@link WebRequestAdapter} for the Aspectran framework.
  * <p>This class acts as a bridge between the Undertow API and the Aspectran core,
- * allowing the framework to handle Undertow requests in a consistent, abstracted manner.
- * </p>
- *
- * @author Juho Jeong
- * @since 2019-07-27
+ * allowing the framework to handle Undertow requests in a consistent, abstracted manner.</p>
  */
 public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
@@ -60,7 +56,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation lazily populates the header map from the underlying
-     * {@link HttpServerExchange} on first access.
+     * {@link HttpServerExchange} on first access.</p>
      */
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
@@ -82,7 +78,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation starts blocking I/O on the exchange if not already started.
+     * <p>This implementation starts blocking I/O on the exchange if not already started.</p>
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -103,7 +99,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation initializes the adapter by extracting query parameters,
-     * content type, and locale from the native {@link HttpServerExchange}.
+     * content type, and locale from the native {@link HttpServerExchange}.</p>
      */
     @Override
     public void preparse() {

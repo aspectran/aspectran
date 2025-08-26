@@ -21,16 +21,22 @@ import com.aspectran.utils.logging.LoggingGroupHelper;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.AttachmentKey;
 
-/*
- * Since logs are output asynchronously, the key to identify
- * the logging group from MDC should not be removed immediately.
- * In this case, the key may remain in the existing thread and
- * must be initialized or removed in the next request.
+/**
+ * A helper class for managing the logging group within the scope of an {@link HttpServerExchange}.
+ * <p>Since Undertow can process requests asynchronously across different threads, this class
+ * uses an {@link AttachmentKey} to store the logging group name on the exchange itself.
+ * This ensures that the correct logging context can be restored when a task is resumed
+ * on a different thread and is properly cleared at the end of the exchange.</p>
  */
 public abstract class ExchangeLoggingGroupHelper {
 
     private static final AttachmentKey<String> KEY = AttachmentKey.create(String.class);
 
+    /**
+     * Sets the logging group on the current thread and attaches the group name to the exchange.
+     * @param exchange the HTTP server exchange
+     * @param groupName the logging group name to set, or {@code null} to clear it
+     */
     static void setTo(@NonNull HttpServerExchange exchange, @Nullable String groupName) {
         if (groupName != null) {
             LoggingGroupHelper.set(groupName);
@@ -40,6 +46,10 @@ public abstract class ExchangeLoggingGroupHelper {
         }
     }
 
+    /**
+     * Retrieves the logging group name from the exchange attachment and sets it on the current thread.
+     * @param exchange the HTTP server exchange
+     */
     static void setFrom(@NonNull HttpServerExchange exchange) {
         String groupName = exchange.getAttachment(KEY);
         if (groupName != null) {

@@ -31,6 +31,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * A factory bean that creates a composite {@link Predicate} for determining
+ * whether a response is eligible for content encoding (compression).
+ * <p>This class allows for declarative configuration of multiple conditions, such as
+ * minimum content size, compressible MIME types, and excluded user agents.</p>
+ *
  * <p>Created: 4/6/24</p>
  */
 public class ContentEncodingPredicates {
@@ -45,18 +50,34 @@ public class ContentEncodingPredicates {
 
     private String[] excludedUserAgents;
 
+    /**
+     * Sets the minimum content size in bytes for a response to be considered for compression.
+     * @param contentSizeLargerThan the minimum content size
+     */
     public void setContentSizeLargerThan(long contentSizeLargerThan) {
         this.contentSizeLargerThan = contentSizeLargerThan;
     }
 
+    /**
+     * Sets the list of MIME types that are eligible for compression (e.g., "text/html", "application/json").
+     * @param mediaTypes an array of compressible MIME types
+     */
     public void setMediaTypes(String[] mediaTypes) {
         this.mediaTypes = mediaTypes;
     }
 
+    /**
+     * Sets a list of regular expressions for User-Agent headers that should be excluded from compression.
+     * @param excludedUserAgents an array of User-Agent patterns to exclude
+     */
     public void setExcludedUserAgents(String[] excludedUserAgents) {
         this.excludedUserAgents = excludedUserAgents;
     }
 
+    /**
+     * Creates a composite {@link Predicate} by combining all configured conditions with a logical AND.
+     * @return the final predicate to be used by the {@link EncodingHandlerWrapper}
+     */
     @NonNull
     public Predicate createPredicate() {
         List<Predicate> predicates = new ArrayList<>();
@@ -79,6 +100,9 @@ public class ContentEncodingPredicates {
         return Predicates.and(predicates.toArray(new Predicate[0]));
     }
 
+    /**
+     * A custom predicate to check if the response content type is among the compressible MIME types.
+     */
     private static class CompressibleMimeTypePredicate implements Predicate {
 
         private final List<MediaType> mediaTypes;

@@ -22,12 +22,10 @@ import java.io.IOException;
 
 /**
  * The main interface for the Aspectran Undertow service.
- * <p>This service specializes the core Aspectran service for the Undertow web server.
- * It allows Aspectran to handle web requests directly using Undertow's native
- * {@link io.undertow.server.HttpServerExchange} objects, providing a high-performance
- * and Servlet-less web environment.
- *
- * @since 2019-07-27
+ * <p>This service extends the {@link CoreService} to provide web functionality using an
+ * embedded Undertow server. It defines the contract for handling web requests directly
+ * using Undertow's native {@link io.undertow.server.HttpServerExchange} objects,
+ * enabling a high-performance, servlet-less web environment.</p>
  */
 public interface TowService extends CoreService {
 
@@ -41,7 +39,7 @@ public interface TowService extends CoreService {
      * Processes an incoming HTTP request using the Undertow {@link HttpServerExchange}.
      * This is the main entry point for handling web requests in this service.
      * @param exchange the HTTP request/response exchange
-     * @return {@code true} if the activity was handled by Aspectran; {@code false} otherwise
+     * @return {@code true} if the request was handled by an Aspectran activity; {@code false} otherwise
      * @throws IOException if an input or output error occurs during activity execution
      */
     boolean service(HttpServerExchange exchange) throws IOException;

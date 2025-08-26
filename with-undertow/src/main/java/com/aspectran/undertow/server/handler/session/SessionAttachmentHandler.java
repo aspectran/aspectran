@@ -23,8 +23,11 @@ import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 
 /**
- * Handler that attaches the session to the request.
- * This handler is also the place where session cookie configuration properties are configured.
+ * An {@link HttpHandler} that attaches the {@link SessionManager} and {@link SessionConfig}
+ * to the {@link HttpServerExchange}.
+ * <p>This handler is a crucial piece of middleware that makes session functionality
+ * available to all subsequent handlers in the chain without requiring them to have
+ * direct knowledge of the session management setup.</p>
  */
 public class SessionAttachmentHandler implements HttpHandler {
 
@@ -34,16 +37,33 @@ public class SessionAttachmentHandler implements HttpHandler {
 
     private final SessionConfig sessionConfig;
 
+    /**
+     * Constructs a new SessionAttachmentHandler.
+     * @param sessionManager the session manager to attach
+     * @param sessionConfig the session configuration to attach
+     */
     public SessionAttachmentHandler(SessionManager sessionManager, SessionConfig sessionConfig) {
         this(ResponseCodeHandler.HANDLE_404, sessionManager, sessionConfig);
     }
 
+    /**
+     * Constructs a new SessionAttachmentHandler with a next handler.
+     * @param next the next handler in the chain
+     * @param sessionManager the session manager to attach
+     * @param sessionConfig the session configuration to attach
+     */
     public SessionAttachmentHandler(HttpHandler next, SessionManager sessionManager, SessionConfig sessionConfig) {
         this.sessionManager = sessionManager;
         this.sessionConfig = sessionConfig;
         this.next = next;
     }
 
+    /**
+     * Handles the request by attaching the session manager and config to the exchange,
+     * then delegating to the next handler.
+     * @param exchange the HTTP server exchange
+     * @throws Exception if an error occurs in the next handler
+     */
     @Override
     public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);

@@ -19,10 +19,19 @@ import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
 /**
+ * A {@link HandlerWrapper} that creates a {@link LoggingGroupAssistHandler}.
+ * <p>This wrapper is typically used within a servlet context to ensure that the logging
+ * group is correctly propagated to the thread handling the servlet request.</p>
+ *
  * <p>Created: 2024. 12. 11.</p>
  */
 public class LoggingGroupAssistHandlerWrapper implements HandlerWrapper {
 
+    /**
+     * Wraps the given handler with a new {@link LoggingGroupAssistHandler}.
+     * @param handler the next handler in the chain
+     * @return the new {@code LoggingGroupAssistHandler}
+     */
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         if (handler == null) {

@@ -41,6 +41,12 @@ import io.undertow.servlet.core.ServletContainerImpl;
 import jakarta.servlet.ServletContext;
 
 /**
+ * A factory for creating a root {@link HttpHandler} that manages a full servlet environment.
+ * <p>This factory creates an Undertow {@link ServletContainer} and deploys one or more
+ * web applications (defined by {@link TowServletContext} beans) into it. It uses a
+ * {@link PathHandler} to route incoming requests to the appropriate web application
+ * based on its context path.</p>
+ *
  * <p>Created: 2019-08-04</p>
  */
 public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory implements RequestHandlerFactory {
@@ -49,11 +55,22 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
     private ServletContainer servletContainer;
 
+    /**
+     * Sets the servlet contexts (web applications) to be deployed.
+     * @param servletContexts an array of {@link TowServletContext} configurations
+     */
     public void setServletContexts(TowServletContext... servletContexts) {
         Assert.notNull(servletContexts, "servletContexts must not be null");
         this.towServletContexts = servletContexts;
     }
 
+    /**
+     * Creates the root {@link HttpHandler} which is a {@link PathHandler} that routes
+     * requests to the appropriate deployed web application.
+     * @return the root HTTP handler
+     * @throws Exception if an error occurs during deployment
+     */
+    @Override
     public HttpHandler createHandler() throws Exception {
         createServletContainer();
 
@@ -96,12 +113,20 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         return servletContainer;
     }
 
+    /**
+     * Disposes of the servlet container, undeploying all web applications.
+     * @throws Exception if an error occurs during disposal
+     */
     @Override
     public void dispose() throws Exception {
         disposeServletContainer();
     }
 
-    @NonNull
+    /**
+     * Creates and configures the {@link ServletContainer}, deploying all specified
+     * {@link TowServletContext}s.
+     * @throws Exception if an error occurs during deployment
+     */
     private void createServletContainer() throws Exception {
         Assert.state(servletContainer == null, "ServletContainer is already configured");
         servletContainer = new ServletContainerImpl();
@@ -131,6 +156,10 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         }
     }
 
+    /**
+     * Stops and undeploys all applications from the servlet container.
+     * @throws Exception if an error occurs during undeployment
+     */
     private void disposeServletContainer() throws Exception {
         for (String deploymentName : getServletContainer().listDeployments()) {
             DeploymentManager manager = getServletContainer().getDeployment(deploymentName);
@@ -159,6 +188,12 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         servletContainer = null;
     }
 
+    /**
+     * Creates and starts the root {@link WebService} for a given servlet context.
+     * @param servletContext the servlet context
+     * @return the created and started web service
+     * @throws Exception if the service fails to start
+     */
     @NonNull
     private DefaultWebService createRootWebService(ServletContext servletContext) throws Exception {
         CoreService masterService = getActivityContext().getMasterService();
@@ -169,6 +204,10 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
         return rootWebService;
     }
 
+    /**
+     * Stops and withdraws a {@link WebService}.
+     * @param webService the web service to dispose of
+     */
     private void disposeRootWebService(@NonNull DefaultWebService webService) {
         if (webService.isActive()) {
             webService.stop();
