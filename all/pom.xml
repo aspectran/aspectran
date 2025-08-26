@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
-    <description>Aspectran (All-in-One)</description>
+    <description>A single JAR containing all Aspectran modules and their dependencies, providing a convenient all-in-one package for easy deployment.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

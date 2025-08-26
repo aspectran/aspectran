@@ -28,7 +28,7 @@
     <packaging>pom</packaging>
 
     <name>Aspectran BOM</name>
-    <description>Aspectran (Bill of Materials)</description>
+    <description>Aspectran Bill of Materials (BOM) for managing dependency versions.</description>
     <url>https://aspectran.com/</url>
 
     <properties>

@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Core</name>
-    <description>Aspectran Core APIs and Implementation</description>
+    <description>The core module of the Aspectran framework, providing essential APIs and their implementations for building component-based applications.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

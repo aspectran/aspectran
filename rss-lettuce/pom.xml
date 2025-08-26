@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Redis Session Store with Lettuce</name>
-    <description>Package containing a Redis session store implementation leveraging Lettuce as a client</description>
+    <description>Provides a Redis-based session store implementation for Aspectran, using the high-performance Lettuce client for scalable and persistent session management.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

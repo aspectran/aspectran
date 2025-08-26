@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Logging</name>
-    <description>Package for using Logback as the underlying logging library</description>
+    <description>Provides a flexible logging module for Aspectran, with Logback as the default implementation. It includes bridges for various logging APIs like JCL, JUL, and Log4j, routing them to SLF4J.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

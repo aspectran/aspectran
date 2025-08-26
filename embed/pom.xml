@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Embed</name>
-    <description>Package for embedding Aspectran in non-Aspectran-based Java applications</description>
+    <description>Provides the ability to embed Aspectran within other Java applications, allowing them to leverage Aspectran's features without a full container setup.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

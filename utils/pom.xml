@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Utilities</name>
-    <description>Miscellaneous utility classes used across multiple packages</description>
+    <description>A collection of miscellaneous utility classes used across the Aspectran framework, providing common functionalities for tasks like string manipulation, resource loading, and cryptography.</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
