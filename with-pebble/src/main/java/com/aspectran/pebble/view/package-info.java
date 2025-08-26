@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides classes for integrating the Pebble template engine with Aspectran.
- * <p>This package includes the TemplateEngine implementation and a factory for
- * configuring the PebbleEngine.</p>
+ * Provides a ViewDispatcher for Pebble templates.
  */
-package com.aspectran.pebble;
+package com.aspectran.pebble.view;
