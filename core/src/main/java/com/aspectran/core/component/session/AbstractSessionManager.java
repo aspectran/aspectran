@@ -37,7 +37,12 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Math.round;
 
 /**
- * Abstract Implementation of SessionManager.
+ * Provides a base implementation for the {@link SessionManager} interface.
+ *
+ * <p>This abstract class handles the common logic for session lifecycle management,
+ * including session creation, retrieval, invalidation, and event notification.
+ * It coordinates with {@link SessionCache}, {@link SessionStore}, and {@link HouseKeeper}
+ * to provide a robust and extensible session management system.
  *
  * <p>Created: 2017. 6. 12.</p>
  */
@@ -444,12 +449,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     /**
-     * Call binding and attribute listeners based on the new and old values of
-     * the attribute.
-     * @param name name of the attribute
-     * @param newValue new value of the attribute
-     * @param oldValue previous value of the attribute
-     * @throws IllegalStateException if no session manager can be found
+     * Calls session attribute listeners when an attribute is added, updated, or removed.
+     * @param session the session on which the attribute changed
+     * @param name the name of the attribute
+     * @param oldValue the previous value of the attribute, or null if added
+     * @param newValue the new value of the attribute, or null if removed
      */
     protected void onSessionAttributeUpdate(Session session, String name, Object oldValue, Object newValue) {
         if (session != null) {

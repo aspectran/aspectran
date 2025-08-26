@@ -20,57 +20,61 @@ import com.aspectran.core.component.Component;
 import java.util.Set;
 
 /**
- * A SessionStore is a mechanism for (persistently) storing data associated with sessions.
+ * Represents a persistent store for session data.
+ *
+ * <p>This interface defines the contract for storing, loading, and deleting
+ * session data from a persistent medium, such as a file system or a database.
+ * It is a key component for enabling session persistence across server restarts
+ * and for session clustering.
  *
  * <p>Created: 2017. 6. 15.</p>
  */
 public interface SessionStore extends Component {
 
     /**
-     * Read in session data.
-     * @param id identity of session to load
-     * @return the SessionData matching the id
-     * @throws Exception if unable to load session data
+     * Loads session data from the persistent store.
+     * @param id the unique identifier of the session to load
+     * @return the loaded session data, or {@code null} if the session does not exist
+     * @throws Exception if there is an error loading the session data
      */
     SessionData load(String id) throws Exception;
 
     /**
-     * Save the session data.
-     * @param id identity of session to store
-     * @param data info of session to store
-     * @throws Exception if unable to write session data
+     * Saves session data to the persistent store.
+     * If a session with the same ID already exists, it will be overwritten.
+     * @param id the unique identifier of the session to save
+     * @param data the session data to be saved
+     * @throws Exception if there is an error saving the session data
      */
     void save(String id, SessionData data) throws Exception;
 
     /**
-     * Delete session data.
-     * @param id identity of session to delete
-     * @return true if the session was deleted
-     * @throws Exception if unable to delete session data
+     * Deletes session data from the persistent store.
+     * @param id the unique identifier of the session to delete
+     * @return {@code true} if the session was successfully deleted; {@code false} otherwise
+     * @throws Exception if there is an error deleting the session data
      */
     boolean delete(String id) throws Exception;
 
     /**
-     * Test if data exists for a given session id.
-     * @param id Identity of session whose existence should be checked
-     * @return true if valid, non-expired session exists
-     * @throws Exception if there is a problem checking the existence with persistence layer
+     * Checks if a session with the specified ID exists in the persistent store.
+     * @param id the unique identifier of the session to check
+     * @return {@code true} if the session exists; {@code false} otherwise
+     * @throws Exception if there is an error checking for the session's existence
      */
     boolean exists(String id) throws Exception;
 
     /**
-     * Called periodically, this method should search the data store
-     * for sessions that have been expired for a 'reasonable' amount
-     * of time.
-     * @param candidates if provided, these are keys of sessions that
-     *      the SessionStore thinks has expired and should be verified by the
-     *      SessionStore
-     * @return set of session ids
+     * Finds and returns the set of session IDs that have expired.
+     * This method is called periodically by the {@link HouseKeeper} to identify
+     * sessions that need to be cleaned up.
+     * @param candidates a set of session IDs that are suspected to be expired
+     * @return a set of session IDs that have been confirmed as expired
      */
-    Set<String> getExpired (Set<String> candidates);
+    Set<String> getExpired(Set<String> candidates);
 
     /**
-     * Remove all unmanaged sessions that expired at or before the given time.
+     * Removes all unmanaged (orphan) sessions that expired at or before the given time.
      * @param time the time before which the sessions must have expired
      */
     void cleanOrphans(long time);
@@ -81,6 +85,10 @@ public interface SessionStore extends Component {
      */
     Set<String> getNonPersistentAttributes();
 
+    /**
+     * Retrieves the set of all session IDs present in the store.
+     * @return a set containing all session IDs
+     */
     Set<String> getAllSessions();
 
 }

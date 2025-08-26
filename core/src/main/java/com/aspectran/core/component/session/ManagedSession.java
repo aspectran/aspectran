@@ -25,9 +25,13 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A default {@link Session} implementation.
+ * A concrete implementation of the {@link Session} interface.
  *
- * <p>Created: 2017. 6. 13.</p>
+ * <p>This class manages the actual state and lifecycle logic for an individual
+ * session. It holds {@link SessionData}, tracks request counts, handles
+ * inactivity timers, and coordinates with the {@link SessionManager} for
+ * persistence and event notification. It is designed to be thread-safe
+ * through internal locking mechanisms.</p>
  */
 public class ManagedSession implements Session {
 

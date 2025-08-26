@@ -36,7 +36,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The data associated with a session.
+ * Represents the complete state of a session, including its metadata and attributes.
+ * This class is designed to be serializable so that it can be persisted by a
+ * {@link SessionStore}.
  *
  * <p>Created: 2017. 6. 6.</p>
  */
@@ -45,35 +47,55 @@ public class SessionData implements Serializable {
     @Serial
     private static final long serialVersionUID = -6253355753257200708L;
 
+    /** The session's attributes */
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
+    /** The unique identifier of the session */
     private String id;
 
+    /** The timestamp when the session was created */
     private final long created;
 
-    /** the time of the last access */
+    /** The timestamp of the last access */
     private long accessed;
 
-    /** the time of the last access excluding this one */
+    /** The timestamp of the access before the current one */
     private long lastAccessed;
 
+    /** The maximum time in milliseconds the session can be inactive */
     private long inactiveInterval;
 
+    /** The amount of inactive interval that was temporarily reduced */
     private long extraInactiveInterval;
 
-    /** precalculated time of expiry in ms since epoch */
+    /** The pre-calculated timestamp when the session will expire */
     private long expiry;
 
+    /** A flag indicating if the session's attributes have changed */
     private boolean dirty;
 
-    /** time in ms since last save */
+    /** The timestamp when the session was last saved to the store */
     private long lastSaved;
 
+    /**
+     * Instantiates a new SessionData.
+     * @param id the session ID
+     * @param created the creation timestamp
+     * @param inactiveInterval the maximum inactive interval in milliseconds
+     */
     protected SessionData(String id, long created, long inactiveInterval) {
         this(id, created, created, created, inactiveInterval);
         calcAndSetExpiry(created);
     }
 
+    /**
+     * Instantiates a new SessionData.
+     * @param id the session ID
+     * @param created the creation timestamp
+     * @param accessed the last accessed timestamp
+     * @param lastAccessed the previously accessed timestamp
+     * @param inactiveInterval the maximum inactive interval in milliseconds
+     */
     protected SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
         this.id = id;
         this.created = created;
@@ -126,6 +148,10 @@ public class SessionData implements Serializable {
         this.extraInactiveInterval = extraInactiveInterval;
     }
 
+    /**
+     * Reduces the inactive interval and stores the reduced amount.
+     * @param inactiveInterval the new, shorter inactive interval
+     */
     public void reduceInactiveInterval(long inactiveInterval) {
         if (this.inactiveInterval > inactiveInterval) {
             this.extraInactiveInterval = this.inactiveInterval - inactiveInterval;
@@ -135,6 +161,10 @@ public class SessionData implements Serializable {
         }
     }
 
+    /**
+     * Restores the inactive interval to its original value.
+     * @return true if the interval was restored, false otherwise
+     */
     public boolean restoreInactiveInterval() {
         if (this.extraInactiveInterval > 0) {
             this.inactiveInterval += this.extraInactiveInterval;
@@ -153,14 +183,28 @@ public class SessionData implements Serializable {
         this.expiry = expiry;
     }
 
+    /**
+     * Calculates the expiry time based on a given time.
+     * @param time the base time for calculation
+     * @return the calculated expiry timestamp
+     */
     protected long calcExpiry(long time) {
         return (inactiveInterval <= 0L ? 0L : (time + inactiveInterval));
     }
 
+    /**
+     * Calculates and sets the expiry time based on a given time.
+     * @param time the base time for calculation
+     */
     public void calcAndSetExpiry(long time) {
         setExpiry(calcExpiry(time));
     }
 
+    /**
+     * Checks if the session has expired at a given time.
+     * @param time the time to check against
+     * @return true if the session has expired, false otherwise
+     */
     public boolean isExpiredAt(long time) {
         if (inactiveInterval <= 0L) {
             return false; // never expires
@@ -170,7 +214,8 @@ public class SessionData implements Serializable {
     }
 
     /**
-     * @return true if a session needs to be written out
+     * Checks if the session data has been modified.
+     * @return true if the session needs to be saved to the store
      */
     public boolean isDirty() {
         return dirty;
@@ -188,11 +233,24 @@ public class SessionData implements Serializable {
         this.lastSaved = lastSaved;
     }
 
+    /**
+     * Retrieves an attribute by name.
+     * @param <T> the type of the attribute
+     * @param name the name of the attribute
+     * @return the attribute value, or null if not found
+     */
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         return (T)attributes.get(name);
     }
 
+    /**
+     * Sets an attribute, replacing any existing value.
+     * @param <T> the type of the old attribute value
+     * @param name the name of the attribute
+     * @param value the new value for the attribute
+     * @return the previous value of the attribute, or null
+     */
     @SuppressWarnings("unchecked")
     public <T> T setAttribute(String name, Object value) {
         T old;
@@ -208,35 +266,42 @@ public class SessionData implements Serializable {
         return old;
     }
 
+    /**
+     * Removes an attribute from the session.
+     * @param <T> the type of the removed attribute
+     * @param name the name of the attribute to remove
+     * @return the removed value, or null if not found
+     */
     public <T> T removeAttribute(String name) {
         return setAttribute(name, null);
     }
 
     /**
-     * @return a Set of attribute names
+     * Returns the set of all attribute names.
+     * @return a set of attribute names
      */
     public Set<String> getKeys() {
         return attributes.keySet();
     }
 
     /**
-     * Returns an unmodifiable map of the attributes.
-     * @return an unmodifiable map of the attributes
+     * Returns an unmodifiable map of all attributes.
+     * @return an unmodifiable map of attributes
      */
     public Map<String, Object> getAllAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
     /**
-     * Copies all of the mappings from the specified attributes.
-     * @param attributes the specified attributes
+     * Copies all mappings from the specified map to this session's attributes.
+     * @param attributes the attributes to add
      */
     public void putAllAttributes(Map<String, Object> attributes) {
         this.attributes.putAll(attributes);
     }
 
     /**
-     * Removes all attributes.
+     * Removes all attributes from the session.
      */
     public void clearAllAttributes() {
         attributes.clear();
@@ -258,10 +323,11 @@ public class SessionData implements Serializable {
     }
 
     /**
-     * Save the session data.
-     * @param outputStream the output stream to save to
-     * @param nonPersistentAttributes the attribute names to be excluded from serialization
-     * @throws IOException if an I/O error has occurred
+     * Serializes the session data to an output stream.
+     * @param data the session data to serialize
+     * @param outputStream the stream to write to
+     * @param nonPersistentAttributes a set of attribute names to exclude from serialization
+     * @throws IOException if an I/O error occurs
      */
     public static void serialize(
             @NonNull SessionData data, OutputStream outputStream, Set<String> nonPersistentAttributes)
@@ -303,10 +369,10 @@ public class SessionData implements Serializable {
     }
 
     /**
-     * Load session data from an input stream that contains session data.
-     * @param inputStream the input stream containing session data
-     * @return the session data
-     * @throws Exception if the session data could not be read from the file
+     * Deserializes session data from an input stream.
+     * @param inputStream the stream to read from
+     * @return a new SessionData instance
+     * @throws Exception if an error occurs during deserialization
      */
     @NonNull
     public static SessionData deserialize(InputStream inputStream) throws Exception {

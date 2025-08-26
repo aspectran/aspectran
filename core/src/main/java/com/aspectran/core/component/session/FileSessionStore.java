@@ -36,7 +36,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
- * A file-based store of session data.
+ * A file system-based implementation of {@link SessionStore}.
+ *
+ * <p>This store saves each session's data to a separate file within a
+ * configured storage directory. The filename contains the session's expiry
+ * time, allowing for efficient expiration checks based on filenames alone.
+ * It is suitable for single-node environments or for persistence across
+ * server restarts.
  */
 public class FileSessionStore extends AbstractSessionStore {
 
@@ -48,23 +54,44 @@ public class FileSessionStore extends AbstractSessionStore {
 
     private boolean deleteUnrestorableFiles = true;
 
+    /**
+     * Instantiates a new FileSessionStore.
+     * @param storeDir the directory where session files are stored
+     */
     public FileSessionStore(File storeDir) {
         this.storeDir = storeDir;
     }
 
+    /**
+     * Returns the directory where session files are stored.
+     * @return the store directory
+     */
     public File getStoreDir() {
         return storeDir;
     }
 
+    /**
+     * Checks if files that cannot be restored should be deleted.
+     * @return true if unrestorable files are to be deleted, false otherwise
+     */
     public boolean isDeleteUnrestorableFiles() {
         return deleteUnrestorableFiles;
     }
 
+    /**
+     * Sets whether to delete session files that cannot be deserialized.
+     * @param deleteUnrestorableFiles true to delete unrestorable files, false otherwise
+     */
     public void setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
         checkInitializable();
         this.deleteUnrestorableFiles = deleteUnrestorableFiles;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation reads a session file from the store directory and
+     * deserializes its content into a {@link SessionData} object.</p>
+     */
     @Override
     public SessionData load(String id) throws Exception {
         // load session info from its file
@@ -89,6 +116,10 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation deletes the file corresponding to the session ID.</p>
+     */
     @Override
     public boolean delete(String id) throws IOException {
         // remove from our map
@@ -114,6 +145,12 @@ public class FileSessionStore extends AbstractSessionStore {
         return Files.deleteIfExists(file.toPath());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation checks for the existence of the session file and
+     * verifies that it has not yet expired based on the expiry time encoded
+     * in the filename.</p>
+     */
     @Override
     public boolean exists(String id) {
         String filename = sessionFileMap.get(id);
@@ -131,6 +168,11 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation serializes the {@link SessionData} to a file.
+     * The filename includes the session's expiry time for efficient lookup.</p>
+     */
     @Override
     public void doSave(String id, SessionData data) throws Exception {
         try {
@@ -150,12 +192,6 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
-    /**
-     * Check to see which sessions have expired.
-     * @param time the upper limit of expiry times to check
-     * @return the complete set of sessions that have expired, including those
-     *      that are not currently loaded into the SessionCache
-     */
     @Override
     public Set<String> doGetExpired(long time) {
         Set<String> expired = new HashSet<>();

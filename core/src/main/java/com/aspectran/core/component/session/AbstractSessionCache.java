@@ -31,8 +31,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
- * A base implementation of the {@link SessionCache} interface for managing a set of
- * Session objects pertaining to a context in memory.
+ * Provides a base implementation of the {@link SessionCache} interface.
+ *
+ * <p>This abstract class implements the common logic for managing sessions in memory,
+ * coordinating with a {@link SessionStore} for persistence, and handling various
+ * caching policies. Subclasses are primarily responsible for providing the concrete
+ * in-memory storage mechanism (e.g., a {@link java.util.concurrent.ConcurrentHashMap}).
  *
  * <p>Created: 2017. 6. 24.</p>
  */
@@ -79,6 +83,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private boolean removeUnloadableSessions;
 
+    /**
+     * Instantiates a new AbstractSessionCache.
+     * @param sessionManager the session manager that this cache belongs to
+     * @param sessionStore the session store to use for persistence
+     * @param clusterEnabled true if running in a clustered environment, false otherwise
+     */
     public AbstractSessionCache(AbstractSessionManager sessionManager, SessionStore sessionStore, boolean clusterEnabled) {
         this.sessionManager = sessionManager;
         this.sessionStore = sessionStore;
@@ -114,18 +124,14 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Sessions in this cache can be:
-     * <dl>
-     * <dt>-1: never evicted</dt>
-     * <dd>means we never evict inactive sessions.</dd>
-     * <dt>0: evicted once the last request exits</dt>
-     * <dd>means we evict a session after the last request for it exits.</dd>
-     * <dt>&gt; 0: evicted after a configurable period of inactivity</dt>
-     * <dd>the number of seconds after which we evict inactive sessions from the cache.</dd>
+     * Sets the eviction policy for idle sessions.
+     * <p>The policy can be:
+     * <ul>
+     *   <li>-1: Never evict inactive sessions.</li>
+     *   <li>0: Evict a session after the last request for it exits.</li>
+     *   <li>&gt; 0: The number of seconds a session can be idle before it is evicted.</li>
      * </ul>
-     * @param evictionIdleSecs -1 is never evict; 0 is evict-on-exit; and any other positive
-     *      value is the time in seconds that a session can be idle before it can
-     *      be evicted
+     * @param evictionIdleSecs the eviction policy in seconds
      */
     public void setEvictionIdleSecs(int evictionIdleSecs) {
         checkInitializable();
@@ -138,6 +144,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         return evictionIdleSecsForNew;
     }
 
+    /**
+     * Sets the eviction policy for newly created, empty sessions.
+     * @param evictionIdleSecsForNew the eviction policy in seconds for new sessions
+     */
     public void setEvictionIdleSecsForNew(int evictionIdleSecsForNew) {
         checkInitializable();
         if (evictionIdleSecs > NEVER_EVICT && evictionIdleSecsForNew < EVICT_ON_INACTIVITY) {
@@ -153,21 +163,16 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Whether a session that is newly created should be
-     * immediately saved. If false, a session that is created and
-     * invalidated within a single request is never persisted.
-     * @param saveOnCreate if true, immediately save the newly created session
+     * Sets the policy for whether a newly created session should be saved to the
+     * store immediately. If false, a session that is created and invalidated
+     * within a single request is never persisted.
+     * @param saveOnCreate true to save new sessions immediately, false otherwise
      */
     public void setSaveOnCreate(boolean saveOnCreate) {
         checkInitializable();
         this.saveOnCreate = saveOnCreate;
     }
 
-    /**
-     * Whether we should save a session that has been inactive before
-     * we boot it from the cache.
-     * @return true if an inactive session will be saved before being evicted
-     */
     @Override
     public boolean isSaveOnInactiveEviction() {
         return saveOnInactiveEviction;
@@ -179,19 +184,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         this.saveOnInactiveEviction = saveOnEvict;
     }
 
-    /**
-     * @return true if sessions that can't be loaded are deleted from the store
-     */
     @Override
     public boolean isRemoveUnloadableSessions() {
         return removeUnloadableSessions;
     }
 
-    /**
-     * If a session's data cannot be loaded from the store without error, remove
-     * it from the persistent store.
-     * @param removeUnloadableSessions whether to delete sessions that can not be loaded
-     */
     @Override
     public void setRemoveUnloadableSessions(boolean removeUnloadableSessions) {
         checkInitializable();

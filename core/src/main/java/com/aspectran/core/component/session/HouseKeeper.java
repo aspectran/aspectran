@@ -27,14 +27,19 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The housekeeper for session scavenging.
- * There is 1 session HouseKeeper per SessionManager instance.
+ * Manages the background task of scavenging for expired sessions.
+ *
+ * <p>Each {@link SessionManager} has its own {@code HouseKeeper} instance.
+ * It uses a {@link Scheduler} to periodically run a scavenging task that
+ * identifies and invalidates sessions that have been inactive for longer
+ * than their configured maximum idle time.
  */
 public class HouseKeeper extends AbstractLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
 
-    public static final int DEFAULT_SCAVENGING_INTERVAL = 60 * 10; // default of 10 minutes
+    /** The default interval in seconds (10 minutes) for session scavenging. */
+    public static final int DEFAULT_SCAVENGING_INTERVAL = 60 * 10;
 
     private final AutoLock lock = new AutoLock();
 
@@ -44,20 +49,22 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private long scavengingInterval;
 
-    private Scheduler.Task task; // scavenge task
+    private Scheduler.Task task; // The scheduled scavenging task
 
     private Runner runner;
 
     /**
-     * @param sessionManager SessionManager associated with this scavenger
+     * Instantiates a new HouseKeeper.
+     * @param sessionManager the session manager this housekeeper belongs to
      */
     public HouseKeeper(@NonNull AbstractSessionManager sessionManager) {
         this(sessionManager, DEFAULT_SCAVENGING_INTERVAL);
     }
 
     /**
-     * @param sessionManager SessionManager associated with this scavenger
-     * @param scavengingIntervalInSecs the period between scavenge cycles
+     * Instantiates a new HouseKeeper.
+     * @param sessionManager the session manager this housekeeper belongs to
+     * @param scavengingIntervalInSecs the interval in seconds between scavenges
      */
     public HouseKeeper(@NonNull AbstractSessionManager sessionManager, int scavengingIntervalInSecs) {
         this.sessionManager = sessionManager;
@@ -66,16 +73,16 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     /**
-     * Get the period between scavenge cycles.
-     * @return the interval (in seconds)
+     * Returns the interval in seconds between scavenge cycles.
+     * @return the scavenging interval in seconds
      */
     public int getScavengingInterval() {
         return (int)TimeUnit.MILLISECONDS.toSeconds(scavengingInterval);
     }
 
     /**
-     * Set the period between scavenge cycles.
-     * @param intervalInSecs the interval (in seconds)
+     * Sets the interval in seconds between scavenge cycles.
+     * @param intervalInSecs the scavenging interval in seconds
      */
     public void setScavengingInterval(int intervalInSecs) {
         try (AutoLock ignored = lock.lock()) {
@@ -98,7 +105,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     /**
-     * If scavenging is not scheduled, schedule it.
+     * Starts the scavenging task if it is not already scheduled.
      */
     protected void startScavenging() {
         try (AutoLock ignored = lock.lock()) {
@@ -118,7 +125,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     /**
-     * If scavenging is scheduled, stop it.
+     * Stops the scavenging task if it is currently scheduled.
      */
     protected void stopScavenging() {
         try (AutoLock ignored = lock.lock()) {
@@ -134,7 +141,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     }
 
     /**
-     * Periodically do session housekeeping.
+     * Executes a single scavenge cycle.
      */
     private void scavenge() {
         // don't attempt to scavenge if we are shutting down
@@ -182,6 +189,9 @@ public class HouseKeeper extends AbstractLifeCycle {
         }
     }
 
+    /**
+     * The runnable task that executes the scavenge operation.
+     */
     private class Runner implements Runnable {
 
         private volatile boolean running = true;

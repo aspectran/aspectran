@@ -32,7 +32,13 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Implementation of SessionManager.
+ * The default, concrete implementation of the {@link SessionManager} interface.
+ *
+ * <p>This class is responsible for reading a {@link SessionManagerConfig},
+ * initializing and wiring together all the necessary session components such as
+ * {@link SessionCache}, {@link SessionStore}, {@link HouseKeeper}, and
+ * {@link SessionIdGenerator}. It manages the complete lifecycle of the session
+ * management system.
  *
  * <p>Created: 2017. 6. 12.</p>
  */
@@ -87,11 +93,20 @@ public class DefaultSessionManager
         return sessionManagerConfig;
     }
 
+    /**
+     * Sets the session manager configuration.
+     * This is typically injected by the Aspectran container.
+     * @param sessionManagerConfig the session manager configuration
+     */
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
         checkInitializable();
         this.sessionManagerConfig = sessionManagerConfig;
     }
 
+    /**
+     * Sets the session manager configuration from an APON-formatted string.
+     * @param apon the APON string containing the configuration
+     */
     public void setSessionManagerConfigWithApon(String apon) {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         try {
@@ -102,11 +117,31 @@ public class DefaultSessionManager
         setSessionManagerConfig(sessionManagerConfig);
     }
 
+    /**
+     * Sets the session store to be used for persistence.
+     * This is typically injected by the Aspectran container, often using a factory bean.
+     * @param sessionStore the session store implementation
+     */
     public void setSessionStore(SessionStore sessionStore) {
         checkInitializable();
         this.sessionStore = sessionStore;
     }
 
+    /**
+     * Initializes the session manager and all its components.
+     * This method performs the following steps:
+     * <ol>
+     *   <li>Reads settings from {@link SessionManagerConfig}.</li>
+     *   <li>Sets the worker name and session timeout policies.</li>
+     *   <li>Initializes the {@link Scheduler} for background tasks.</li>
+     *   <li>Creates and starts the {@link HouseKeeper} for session scavenging.</li>
+     *   <li>Initializes the {@link SessionIdGenerator}.</li>
+     *   <li>Conditionally creates a {@link FileSessionStore} from configuration if no other store is provided.</li>
+     *   <li>Creates and configures the {@link DefaultSessionCache} with eviction and persistence policies.</li>
+     *   <li>Completes the lifecycle initialization.</li>
+     * </ol>
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     protected void doInitialize() throws Exception {
         boolean clusterEnabled = false;
