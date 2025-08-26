@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 /**
- * Session Management Implementations
+ * Provides the core components for session management.
+ * This package includes interfaces and classes for creating, managing, and expiring sessions.
+ * It defines the session lifecycle and provides mechanisms for session persistence.
+ *
+ * <p>The main components are:
+ * <ul>
+ *   <li>{@link com.aspectran.core.component.session.SessionManager} for managing sessions</li>
+ *   <li>{@link com.aspectran.core.component.session.Session} for representing a user session</li>
+ *   <li>{@link com.aspectran.core.component.session.SessionCache} for caching sessions</li>
+ *   <li>{@link com.aspectran.core.component.session.SessionStore} for persisting sessions</li>
+ * </ul>
  */
 package com.aspectran.core.component.session;
