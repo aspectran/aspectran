@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
  * inactivity timers, and coordinates with the {@link SessionManager} for
  * persistence and event notification. It is designed to be thread-safe
  * through internal locking mechanisms.</p>
+ *
+ * <p>Created: 2017. 6. 12.</p>
  */
 public class ManagedSession implements Session {
 
@@ -66,6 +68,12 @@ public class ManagedSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
+    /**
+     * Instantiates a new Managed session.
+     * @param sessionManager the session manager
+     * @param sessionData the session data
+     * @param newSession true if the session is new
+     */
     protected ManagedSession(AbstractSessionManager sessionManager,
                              @NonNull SessionData sessionData, boolean newSession) {
         this.sessionManager = sessionManager;
@@ -399,11 +407,6 @@ public class ManagedSession implements Session {
         return result;
     }
 
-    /**
-     * Invalidates the session. This can be called by the application,
-     * by the access method if the session has expired, or by the
-     * session manager during scavenging.
-     */
     @Override
     public void invalidate() {
         boolean result = beginInvalidate();
@@ -432,6 +435,10 @@ public class ManagedSession implements Session {
         }
     }
 
+    /**
+     * Begins the invalidation process for the session.
+     * @return true if the session moved to the INVALIDATING state, false otherwise
+     */
     protected boolean beginInvalidate() {
         boolean result = false;
         try (AutoLock ignored = autoLock.lock()) {
@@ -456,6 +463,9 @@ public class ManagedSession implements Session {
         return result;
     }
 
+    /**
+     * Finishes the invalidation process by removing all attributes and marking the session as invalid.
+     */
     protected void finishInvalidate() {
         try (AutoLock ignored = autoLock.lock()) {
             try {
@@ -488,6 +498,10 @@ public class ManagedSession implements Session {
         return destroyedReason;
     }
 
+    /**
+     * Sets the reason why the session was destroyed.
+     * @param destroyedReason the reason for destruction
+     */
     protected void setDestroyedReason(DestroyedReason destroyedReason) {
         this.destroyedReason = destroyedReason;
     }
