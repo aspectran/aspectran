@@ -1,7 +1,9 @@
 /**
  * Provides the core service for handling requests in an embedded Undertow environment.
- * <p>This package contains the primary service interface, {@link com.aspectran.undertow.service.TowService},
- * and its implementations, which act as the main entry point for processing requests
- * received by the Undertow server in a non-servlet, lightweight mode.</p>
+ * This package contains the primary service interface, {@code com.aspectran.undertow.service.TowService},
+ * and its implementations. These components form the heart of the request processing pipeline when
+ * running Aspectran on an embedded Undertow server without the overhead of the full Servlet API.
+ * This lightweight, non-servlet approach offers a high-performance alternative for handling
+ * HTTP requests directly.
  */
 package com.aspectran.undertow.service;

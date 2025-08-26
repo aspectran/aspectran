@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Manages Undertow sessions by delegating to an Aspectran {@link SessionManager}.
+ *
  * <p>Created: 2019-08-07</p>
  */
 public class TowSessionManager implements ActivityContextAware, DisposableBean, io.undertow.server.session.SessionManager {
@@ -287,10 +289,20 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         };
     }
 
+    /**
+     * Wraps the given Aspectran session in an Undertow session.
+     * @param session the Aspectran session
+     * @return the Undertow session
+     */
     TowSession wrapSession(@NonNull com.aspectran.core.component.session.Session session) {
         return new TowSession(this, session);
     }
 
+    /**
+     * Clears the session from the exchange and the session config.
+     * @param exchange the HTTP server exchange
+     * @param sessionId the session ID
+     */
     void clearSession(HttpServerExchange exchange, String sessionId) {
         if (exchange != null) {
             SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
@@ -301,6 +313,11 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         }
     }
 
+    /**
+     * Checks if this is the first access for the current request.
+     * @param exchange the HTTP server exchange
+     * @return true if it is the first access, false otherwise
+     */
     boolean checkFirstAccess(@NonNull HttpServerExchange exchange) {
         if (exchange.getAttachment(FIRST_ACCESS) == null) {
             exchange.putAttachment(FIRST_ACCESS, true);
@@ -310,6 +327,11 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         }
     }
 
+    /**
+     * Checks if the session has been accessed during the current request.
+     * @param exchange the HTTP server exchange
+     * @return true if the session has been accessed, false otherwise
+     */
     boolean hasBeenAccessed(@NonNull HttpServerExchange exchange) {
         return (exchange.getAttachment(FIRST_ACCESS) != null || exchange.getAttachment(NEW_SESSION) != null);
     }

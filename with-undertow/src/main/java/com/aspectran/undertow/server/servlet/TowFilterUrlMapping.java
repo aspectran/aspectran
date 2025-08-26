@@ -23,18 +23,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a filter mapping for a URL pattern.
+ *
  * <p>Created: 2019-08-05</p>
  */
 public class TowFilterUrlMapping extends FilterMappingInfo {
 
+    /**
+     * Creates a new URL filter mapping with the specified filter name and URL pattern.
+     * @param filterName the filter name
+     * @param mapping the URL pattern
+     */
     TowFilterUrlMapping(String filterName, String mapping) {
         this(filterName, mapping, DispatcherType.REQUEST);
     }
 
+    /**
+     * Creates a new URL filter mapping with the specified filter name, URL pattern, and dispatcher type.
+     * @param filterName the filter name
+     * @param mapping the URL pattern
+     * @param dispatcher the dispatcher type
+     */
     TowFilterUrlMapping(String filterName, String mapping, DispatcherType dispatcher) {
         super(filterName, MappingType.URL, mapping, dispatcher);
     }
 
+    /**
+     * Creates a list of {@code TowFilterUrlMapping}s from the given filter name and {@code TowFilterMapping}.
+     * @param filterName the filter name
+     * @param towFilterMapping the {@code TowFilterMapping}
+     * @return a list of {@code TowFilterUrlMapping}s
+     */
     @NonNull
     static List<TowFilterUrlMapping> of(String filterName, @NonNull TowFilterMapping towFilterMapping) {
         DispatcherType[] dispatchers = towFilterMapping.getDispatchers();

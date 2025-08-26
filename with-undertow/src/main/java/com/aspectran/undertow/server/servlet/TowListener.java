@@ -21,14 +21,25 @@ import io.undertow.servlet.api.ListenerInfo;
 import java.util.EventListener;
 
 /**
+ * Represents a listener that can be added to a deployment.
+ *
  * <p>Created: 2021-02-12</p>
  */
 public class TowListener extends ListenerInfo {
 
+    /**
+     * Creates a new listener with the specified listener class name.
+     * @param listenerClass the listener class name
+     * @throws ClassNotFoundException if the class is not found
+     */
     public TowListener(String listenerClass) throws ClassNotFoundException {
         this(ClassUtils.loadClass(listenerClass));
     }
 
+    /**
+     * Creates a new listener with the specified listener class.
+     * @param listenerClass the listener class
+     */
     public TowListener(Class<? extends EventListener> listenerClass) {
         super(listenerClass);
     }

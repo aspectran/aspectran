@@ -19,6 +19,8 @@ import com.aspectran.utils.Assert;
 import jakarta.servlet.DispatcherType;
 
 /**
+ * A simple container for filter mapping.
+ *
  * <p>Created: 4/22/24</p>
  */
 public class TowFilterMapping {
@@ -27,10 +29,20 @@ public class TowFilterMapping {
 
     private final DispatcherType[] dispatchers;
 
+    /**
+     * Creates a new filter mapping with the specified target and
+     * the default dispatcher type ({@code REQUEST}).
+     * @param target the target of this mapping (a URL pattern or servlet name)
+     */
     public TowFilterMapping(String target) {
         this(target, DispatcherType.REQUEST);
     }
 
+    /**
+     * Creates a new filter mapping with the specified target and dispatchers.
+     * @param target the target of this mapping (a URL pattern or servlet name)
+     * @param dispatchers the dispatcher types of this mapping
+     */
     public TowFilterMapping(String target, DispatcherType... dispatchers) {
         Assert.notNull(target, "target must not be null");
         Assert.notNull(dispatchers, "dispatchers must not be null");
@@ -38,10 +50,18 @@ public class TowFilterMapping {
         this.dispatchers = dispatchers;
     }
 
+    /**
+     * Returns the target of this mapping (a URL pattern or servlet name).
+     * @return the target of this mapping
+     */
     public String getTarget() {
         return target;
     }
 
+    /**
+     * Returns the dispatcher types of this mapping.
+     * @return the dispatcher types
+     */
     public DispatcherType[] getDispatchers() {
         return dispatchers;
     }

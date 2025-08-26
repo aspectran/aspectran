@@ -19,14 +19,14 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A {@link com.aspectran.undertow.server.handler.LightRequestHandlerFactory.HandlerWrapper}
- * that creates and configures a {@link PathBasedLoggingGroupHandler}.
+ * A {@link HandlerWrapper} that creates and configures a {@link PathBasedLoggingGroupHandler}.
  * <p>This wrapper allows for easy, bean-style configuration of path-based logging groups
  * in the Aspectran configuration files.</p>
  *

@@ -33,6 +33,11 @@ public final class TowSessionListener implements SessionListener {
 
     private final io.undertow.server.session.SessionListener listener;
 
+    /**
+     * Creates a new Undertow session listener that wraps the given Aspectran session listener.
+     * @param towSessionManager the session manager
+     * @param listener the Undertow session listener
+     */
     TowSessionListener(TowSessionManager towSessionManager, io.undertow.server.session.SessionListener listener) {
         this.towSessionManager = towSessionManager;
         this.listener = listener;
@@ -76,6 +81,10 @@ public final class TowSessionListener implements SessionListener {
         listener.sessionIdChanged(towSessionManager.wrapSession(session), oldSessionId);
     }
 
+    /**
+     * Returns the current HTTP server exchange.
+     * @return the current HTTP server exchange, or {@code null} if not available
+     */
     @Nullable
     static HttpServerExchange getCurrentExchange() {
         ServletRequestContext current = ServletRequestContext.current();

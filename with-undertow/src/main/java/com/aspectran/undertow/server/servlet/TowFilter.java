@@ -25,7 +25,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ex)
+ * Represents a filter that can be added to a deployment.
+ *
+ * <p>The following example shows how to configure a {@code WebActivityFilter} using {@code TowFilter}.
+ * The {@code initParams} property is used to set the initialization parameters for the filter.
+ * In this case, the {@code bypasses} parameter is configured to specify a list of URL patterns
+ * that should be excluded from filtering. When a request URI matches one of these patterns,
+ * the {@code WebActivityFilter} will bypass its main logic and pass the request directly to
+ * the default servlet, which is useful for serving static resources like images, CSS, and
+ * JavaScript files efficiently.
+ * </p>
  * <pre>{@code
  *   <bean class="com.aspectran.undertow.server.servlet.TowFilter">
  *     <arguments>
@@ -60,18 +69,37 @@ public class TowFilter extends FilterInfo {
 
     private TowFilterServletMapping[] servletMappings;
 
+    /**
+     * Creates a new filter with the specified name and filter class name.
+     * @param name the filter name
+     * @param filterClass the filter class name
+     * @throws ClassNotFoundException if the class is not found
+     */
     public TowFilter(String name, String filterClass) throws ClassNotFoundException {
         this(name, ClassUtils.loadClass(filterClass));
     }
 
+    /**
+     * Creates a new filter with the specified name and filter class.
+     * @param name the filter name
+     * @param filterClass the filter class
+     */
     public TowFilter(String name, Class<? extends Filter> filterClass) {
         super(name, filterClass);
     }
 
+    /**
+     * Returns the URL pattern mappings for this filter.
+     * @return the URL mappings
+     */
     public TowFilterUrlMapping[] getUrlMappings() {
         return urlMappings;
     }
 
+    /**
+     * Sets the URL patterns to which this filter applies.
+     * @param mappingUrls the mapping urls
+     */
     public void setMappingUrls(String[] mappingUrls) {
         if (mappingUrls != null) {
             List<TowFilterMapping> mappingList = new ArrayList<>(mappingUrls.length);
@@ -82,6 +110,10 @@ public class TowFilter extends FilterInfo {
         }
     }
 
+    /**
+     * Sets the URL pattern mappings for this filter.
+     * @param towFilterMappings the filter mappings
+     */
     public void setUrlMappings(TowFilterMapping[] towFilterMappings) {
         if (towFilterMappings != null) {
             List<TowFilterUrlMapping> urlMappingList;
@@ -98,10 +130,18 @@ public class TowFilter extends FilterInfo {
         }
     }
 
+    /**
+     * Returns the servlet name mappings for this filter.
+     * @return the servlet mappings
+     */
     public TowFilterServletMapping[] getServletMappings() {
         return servletMappings;
     }
 
+    /**
+     * Sets the servlet names to which this filter applies.
+     * @param mappingServlets the mapping servlets
+     */
     public void setMappingServlets(String[] mappingServlets) {
         if (mappingServlets != null) {
             List<TowFilterMapping> mappingList = new ArrayList<>(mappingServlets.length);
@@ -112,6 +152,10 @@ public class TowFilter extends FilterInfo {
         }
     }
 
+    /**
+     * Sets the servlet name mappings for this filter.
+     * @param towFilterMappings the filter mappings
+     */
     public void setServletMappings(TowFilterMapping[] towFilterMappings) {
         if (towFilterMappings != null) {
             List<TowFilterServletMapping> servletMappingList;
@@ -128,6 +172,10 @@ public class TowFilter extends FilterInfo {
         }
     }
 
+    /**
+     * Sets the initialization parameters for this filter.
+     * @param initParams the init params
+     */
     public void setInitParams(Map<String, String> initParams) {
         if (initParams != null) {
             for (Map.Entry<String, String> entry : initParams.entrySet()) {

@@ -37,6 +37,11 @@ public final class TowSession implements io.undertow.server.session.Session {
 
     private final Session session;
 
+    /**
+     * Creates a new Undertow session that wraps the given Aspectran session.
+     * @param sessionManager the session manager
+     * @param session the Aspectran session
+     */
     TowSession(TowSessionManager sessionManager, Session session) {
         this.sessionManager = sessionManager;
         this.session = session;
@@ -47,6 +52,10 @@ public final class TowSession implements io.undertow.server.session.Session {
         return session.getId();
     }
 
+    /**
+     * This method is called when a request is started.
+     * @param exchange the HTTP server exchange
+     */
     void requestStarted(@NonNull HttpServerExchange exchange) {
         if (sessionManager.checkFirstAccess(exchange)) {
             session.access();

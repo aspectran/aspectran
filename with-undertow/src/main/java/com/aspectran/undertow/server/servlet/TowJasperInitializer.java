@@ -45,6 +45,9 @@ public class TowJasperInitializer extends JasperInitializer implements ActivityC
 
     private URL[] tldResources;
 
+    /**
+     * Instantiates a new TowJasperInitializer.
+     */
     public TowJasperInitializer() {
     }
 
@@ -53,6 +56,11 @@ public class TowJasperInitializer extends JasperInitializer implements ActivityC
         this.context = context;
     }
 
+    /**
+     * Sets the resources to be scanned for TLDs.
+     * @param resourcesToTldScan the resources to be scanned for TLDs
+     * @throws IOException if an I/O error occurs
+     */
     public void setTldResources(String[] resourcesToTldScan) throws IOException {
         if (logger.isDebugEnabled()) {
             logger.debug("Specified TLD resources: {}", Arrays.toString(resourcesToTldScan));

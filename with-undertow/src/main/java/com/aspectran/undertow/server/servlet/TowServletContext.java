@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Represents a servlet context that can be added to a deployment.
+ *
  * <p>Created: 2019-08-05</p>
  */
 public class TowServletContext extends DeploymentInfo implements ActivityContextAware {
@@ -48,9 +50,16 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
 
     private TowSessionManager sessionManager;
 
+    /**
+     * Instantiates a new Tow servlet context.
+     */
     public TowServletContext() {
     }
 
+    /**
+     * Returns the activity context.
+     * @return the activity context
+     */
     @NonNull
     public ActivityContext getActivityContext() {
         return context;
@@ -63,11 +72,20 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         setClassLoader(webServiceClassLoader);
     }
 
+    /**
+     * Returns the application adapter.
+     * @return the application adapter
+     */
     @NonNull
     public ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
     }
 
+    /**
+     * Sets the scratch directory for this servlet context.
+     * @param scratchDir the scratch directory
+     * @throws IOException if an I/O error occurs
+     */
     public void setScratchDir(String scratchDir) throws IOException {
         Path dir = getApplicationAdapter().getRealPath(scratchDir);
         Files.createDirectories(dir);
@@ -77,10 +95,18 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         setTempDir(dir);
     }
 
+    /**
+     * Returns the session manager.
+     * @return the session manager
+     */
     public TowSessionManager getTowSessionManager() {
         return sessionManager;
     }
 
+    /**
+     * Sets the session manager for this servlet context.
+     * @param towSessionManager the session manager
+     */
     public void setSessionManager(TowSessionManager towSessionManager) {
         this.sessionManager = towSessionManager;
         setSessionManagerFactory(deployment -> {
@@ -96,6 +122,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         });
     }
 
+    /**
+     * Sets the init parameters for this servlet context.
+     * @param initParams the init parameters
+     */
     public void setInitParams(Map<String, String> initParams) {
         if (initParams != null) {
             for (Map.Entry<String, String> entry : initParams.entrySet()) {
@@ -104,6 +134,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the listeners for this servlet context.
+     * @param towListeners the listeners
+     */
     public void setListeners(TowListener[] towListeners) {
         if (towListeners != null) {
             for (TowListener towListener : towListeners) {
@@ -112,6 +146,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the servlets for this servlet context.
+     * @param towServlets the servlets
+     */
     public void setServlets(TowServlet[] towServlets) {
         if (towServlets != null) {
             for (TowServlet towServlet : towServlets) {
@@ -127,6 +165,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the filters for this servlet context.
+     * @param towFilters the filters
+     */
     public void setFilters(TowFilter[] towFilters) {
         if (towFilters != null) {
             for (TowFilter towFilter : towFilters) {
@@ -147,6 +189,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the servlet container initializers for this servlet context.
+     * @param servletContainerInitializers the servlet container initializers
+     */
     public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
         Assert.notNull(servletContainerInitializers, "servletContainerInitializers must not be null");
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
@@ -158,24 +204,40 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the web socket server container initializer for this servlet context.
+     * @param webSocketServerContainerInitializer the web socket server container initializer
+     */
     public void setWebSocketServerContainerInitializer(TowWebSocketServerContainerInitializer webSocketServerContainerInitializer) {
         if (webSocketServerContainerInitializer != null) {
             webSocketServerContainerInitializer.initialize(this);
         }
     }
 
+    /**
+     * Sets the welcome pages for this servlet context.
+     * @param welcomePages the welcome pages
+     */
     public void setWelcomePages(String[] welcomePages) {
         if (welcomePages != null) {
             addWelcomePages(welcomePages);
         }
     }
 
+    /**
+     * Sets the error pages for this servlet context.
+     * @param errorPages the error pages
+     */
     public void setErrorPages(TowErrorPage[] errorPages) {
         if (errorPages != null) {
             addErrorPages(errorPages);
         }
     }
 
+    /**
+     * Sets the initial handler chain wrappers for this servlet context.
+     * @param wrappers the wrappers
+     */
     public void setInitialHandlerChainWrappers(HandlerWrapper[] wrappers) {
         if (wrappers != null) {
             for (HandlerWrapper wrapper : wrappers) {
@@ -184,6 +246,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the inner handler chain wrappers for this servlet context.
+     * @param wrappers the wrappers
+     */
     public void setInnerHandlerChainWrappers(HandlerWrapper[] wrappers) {
         if (wrappers != null) {
             for (HandlerWrapper wrapper : wrappers) {
@@ -192,6 +258,10 @@ public class TowServletContext extends DeploymentInfo implements ActivityContext
         }
     }
 
+    /**
+     * Sets the outer handler chain wrappers for this servlet context.
+     * @param wrappers the wrappers
+     */
     public void setOuterHandlerChainWrappers(HandlerWrapper[] wrappers) {
         if (wrappers != null) {
             for (HandlerWrapper wrapper : wrappers) {

@@ -46,22 +46,42 @@ public class TowWebSocketServerContainerInitializer {
 
     private int threadLocalCacheSize = 12;
 
+    /**
+     * Sets whether to use direct buffers.
+     * @param directBuffers whether to use direct buffers
+     */
     public void setDirectBuffers(boolean directBuffers) {
         this.directBuffers = directBuffers;
     }
 
+    /**
+     * Sets the buffer size.
+     * @param bufferSize the buffer size
+     */
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
     }
 
+    /**
+     * Sets the maximum pool size.
+     * @param maximumPoolSize the maximum pool size
+     */
     public void setMaximumPoolSize(int maximumPoolSize) {
         this.maximumPoolSize = maximumPoolSize;
     }
 
+    /**
+     * Sets the thread local cache size.
+     * @param threadLocalCacheSize the thread local cache size
+     */
     public void setThreadLocalCacheSize(int threadLocalCacheSize) {
         this.threadLocalCacheSize = threadLocalCacheSize;
     }
 
+    /**
+     * Initializes the web socket server container.
+     * @param towServletContext the servlet context
+     */
     public void initialize(@NonNull TowServletContext towServletContext) {
         if (!towServletContext.getServletContextAttributes().containsKey(WebSocketDeploymentInfo.ATTRIBUTE_NAME)) {
             ByteBufferPool byteBufferPool = new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize);
@@ -71,6 +91,10 @@ public class TowWebSocketServerContainerInitializer {
         }
     }
 
+    /**
+     * Destroys the web socket server container.
+     * @param deployment the deployment
+     */
     @SuppressWarnings("unchecked")
     public static void destroy(@NonNull Deployment deployment) {
         SessionManager sessionManager = deployment.getSessionManager();
@@ -102,6 +126,9 @@ public class TowWebSocketServerContainerInitializer {
         }
     }
 
+    /**
+     * A {@link SessionListener} that closes WebSocket connections when a session is destroyed.
+     */
     public static class WebSocketGracefulCloseListener implements SessionListener {
 
         @Override

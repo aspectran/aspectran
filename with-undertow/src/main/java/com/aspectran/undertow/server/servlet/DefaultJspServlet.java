@@ -18,10 +18,15 @@ package com.aspectran.undertow.server.servlet;
 import org.apache.jasper.servlet.JspServlet;
 
 /**
+ * The default JSP servlet.
+ *
  * <p>Created: 2025-01-23</p>
  */
 public class DefaultJspServlet extends TowServlet {
 
+    /**
+     * Instantiates a new default jsp servlet.
+     */
     public DefaultJspServlet() {
         super("Default JSP Servlet", JspServlet.class);
         setMappings(new String[] {
