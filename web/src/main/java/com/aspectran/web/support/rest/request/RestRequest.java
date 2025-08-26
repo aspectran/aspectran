@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * Client to perform HTTP requests underlying Apache HttpComponents.
  *
- * @since 8.5.4
+ * @since 8.6.0
  */
 public class RestRequest {
 
