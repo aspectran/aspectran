@@ -27,7 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class PebbleViewDispatcher.
+ * A {@link com.aspectran.core.activity.response.dispatch.ViewDispatcher} for Pebble templates.
+ *
+ * <p>This class dispatches requests to Pebble templates and renders them using the
+ * configured {@link PebbleEngine}. It resolves the view name based on the dispatch rule
+ * and then uses a static helper method from {@link PebbleTemplateEngine} to perform
+ * the actual rendering.</p>
  *
  * <p>Created: 2016. 1. 27.</p>
  *
@@ -39,11 +44,19 @@ public class PebbleViewDispatcher extends AbstractViewDispatcher {
 
     private final PebbleEngine pebbleEngine;
 
+    /**
+     * Instantiates a new PebbleViewDispatcher.
+     * @param pebbleTemplateEngine the PebbleTemplateEngine to use for rendering
+     */
     public PebbleViewDispatcher(PebbleTemplateEngine pebbleTemplateEngine) {
         Assert.notNull(pebbleTemplateEngine, "pebbleTemplateEngine must not be null");
         this.pebbleEngine = pebbleTemplateEngine.getPebbleEngine();
     }
 
+    /**
+     * Instantiates a new PebbleViewDispatcher.
+     * @param pebbleEngine the PebbleEngine to use for rendering
+     */
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         this.pebbleEngine = pebbleEngine;

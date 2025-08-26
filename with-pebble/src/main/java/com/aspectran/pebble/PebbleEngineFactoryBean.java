@@ -19,7 +19,12 @@ import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import io.pebbletemplates.pebble.PebbleEngine;
 
 /**
- * JavaBean to configure Pebble Engine.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
+ * a singleton {@link PebbleEngine} instance.
+ *
+ * <p>This class extends {@link PebbleEngineFactory} to provide a convenient way
+ * to configure and instantiate a {@code PebbleEngine} as a singleton bean within
+ * the Aspectran framework.</p>
  *
  * <p>Created: 2016. 1. 25.</p>
  */
@@ -28,6 +33,9 @@ public class PebbleEngineFactoryBean extends PebbleEngineFactory
 
     private PebbleEngine pebbleEngine;
 
+    /**
+     * Initializes the factory by creating the singleton {@link PebbleEngine} instance.
+     */
     @Override
     public void initialize() {
         if (pebbleEngine == null) {
@@ -35,6 +43,10 @@ public class PebbleEngineFactoryBean extends PebbleEngineFactory
         }
     }
 
+    /**
+     * Returns the singleton {@link PebbleEngine} instance.
+     * @return the {@code PebbleEngine} instance
+     */
     @Override
     public PebbleEngine getObject() {
         return pebbleEngine;

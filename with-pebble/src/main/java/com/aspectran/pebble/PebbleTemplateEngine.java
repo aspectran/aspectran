@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class PebbleTemplateEngine.
+ * An Aspectran {@link TemplateEngine} implementation that uses the Pebble templating engine.
  *
  * <p>Created: 2016. 1. 9.</p>
  */
@@ -36,11 +36,19 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
     private final PebbleEngine pebbleEngine;
 
+    /**
+     * Instantiates a new PebbleTemplateEngine.
+     * @param pebbleEngine the PebbleEngine instance to use
+     */
     public PebbleTemplateEngine(PebbleEngine pebbleEngine) {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         this.pebbleEngine = pebbleEngine;
     }
 
+    /**
+     * Returns the underlying {@link PebbleEngine} instance.
+     * @return the PebbleEngine instance
+     */
     public PebbleEngine getPebbleEngine() {
         return pebbleEngine;
     }
@@ -68,6 +76,13 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
     }
 
+    /**
+     * A static helper method to process a Pebble template.
+     * @param pebbleEngine the PebbleEngine instance
+     * @param templateName the name of the template to process
+     * @param activity the current activity
+     * @throws IOException if an I/O error occurs
+     */
     public static void process(PebbleEngine pebbleEngine, String templateName, Activity activity) throws IOException {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");
         Assert.notNull(templateName, "templateName must not be null");
@@ -81,6 +96,13 @@ public class PebbleTemplateEngine implements TemplateEngine {
         compiledTemplate.evaluate(writer, variables, locale);
     }
 
+    /**
+     * A static helper method to process a literal Pebble template source.
+     * @param pebbleEngine the PebbleEngine instance
+     * @param templateSource the literal template source to process
+     * @param activity the current activity
+     * @throws IOException if an I/O error occurs
+     */
     private static void processLiteral(PebbleEngine pebbleEngine, String templateSource, Activity activity)
             throws IOException {
         Assert.notNull(pebbleEngine, "pebbleEngine must not be null");

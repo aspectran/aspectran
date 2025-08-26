@@ -38,7 +38,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Factory that configures a Pebble Engine Configuration.
+ * A factory for creating and configuring a {@link PebbleEngine} instance.
  *
  * <p>Created: 2016. 1. 9.</p>
  */
@@ -65,66 +65,130 @@ public class PebbleEngineFactory implements ActivityContextAware {
         this.context = context;
     }
 
+    /**
+     * Set a single template loader path.
+     * @param templateLoaderPath the template loader path
+     */
     public void setTemplateLoaderPath(String templateLoaderPath) {
         this.templateLoaderPaths = new String[] { templateLoaderPath };
     }
 
+    /**
+     * Set multiple template loader paths.
+     * @param templateLoaderPaths an array of template loader paths
+     */
     public void setTemplateLoaderPath(String[] templateLoaderPaths) {
         this.templateLoaderPaths = templateLoaderPaths;
     }
 
+    /**
+     * Set multiple template loader paths.
+     * @param templateLoaderPathList a list of template loader paths
+     */
     public void setTemplateLoaderPath(@NonNull List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
+    /**
+     * Set a single template loader.
+     * @param templateLoaders the template loader
+     */
     public void setTemplateLoader(Loader<?> templateLoaders) {
         this.templateLoaders = new Loader<?>[] { templateLoaders };
     }
 
+    /**
+     * Set multiple template loaders.
+     * @param templateLoaders an array of template loaders
+     */
     public void setTemplateLoader(Loader<?>[] templateLoaders) {
         this.templateLoaders = templateLoaders;
     }
 
+    /**
+     * Set multiple template loaders.
+     * @param templateLoaderList a list of template loaders
+     */
     public void setTemplateLoader(@NonNull List<Loader<?>> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new Loader<?>[0]);
     }
 
+    /**
+     * Sets the default locale to use for templates.
+     * @param defaultLocale the default locale
+     */
     public void setDefaultLocale(String defaultLocale) {
         this.defaultLocale = LocaleUtils.parseLocaleString(defaultLocale);
     }
 
+    /**
+     * Sets whether to enable strict variable checking.
+     * @param strictVariables true to enable strict variable checking
+     */
     public void setStrictVariables(boolean strictVariables) {
         this.strictVariables = strictVariables;
     }
 
+    /**
+     * Sets whether to trim newlines from the end of a template.
+     * @param newLineTrimming true to trim newlines
+     */
     public void setNewLineTrimming(boolean newLineTrimming) {
         this.newLineTrimming = newLineTrimming;
     }
 
+    /**
+     * Sets the keys of filters to disallow.
+     * @param disallowedFilterKeys the keys of filters to disallow
+     */
     public void setDisallowedFilterKeys(Set<String> disallowedFilterKeys) {
         touchDisallowExtensionCustomizerBuilder().disallowedFilterKeys(disallowedFilterKeys);
     }
 
+    /**
+     * Sets the tags of token parsers to disallow.
+     * @param disallowedTokenParserTags the tags of token parsers to disallow
+     */
     public void setDisallowedTokenParserTags(Set<String> disallowedTokenParserTags) {
         touchDisallowExtensionCustomizerBuilder().disallowedTokenParserTags(disallowedTokenParserTags);
     }
 
+    /**
+     * Sets the keys of functions to disallow.
+     * @param disallowedFunctionKeys the keys of functions to disallow
+     */
     public void setDisallowedFunctionKeys(Set<String> disallowedFunctionKeys) {
         touchDisallowExtensionCustomizerBuilder().disallowedFunctionKeys(disallowedFunctionKeys);
     }
 
+    /**
+     * Sets the symbols of binary operators to disallow.
+     * @param disallowedBinaryOperatorSymbols the symbols of binary operators to disallow
+     */
     public void setDisallowedBinaryOperatorSymbols(Set<String> disallowedBinaryOperatorSymbols) {
         touchDisallowExtensionCustomizerBuilder().disallowedBinaryOperatorSymbols(disallowedBinaryOperatorSymbols);
     }
 
+    /**
+     * Sets the symbols of unary operators to disallow.
+     * @param disallowedUnaryOperatorSymbols the symbols of unary operators to disallow
+     */
     public void setDisallowedUnaryOperatorSymbols(Set<String> disallowedUnaryOperatorSymbols) {
         touchDisallowExtensionCustomizerBuilder().disallowedUnaryOperatorSymbols(disallowedUnaryOperatorSymbols);
     }
 
+    /**
+     * Sets the keys of tests to disallow.
+     * @param disallowedTestKeys the keys of tests to disallow
+     */
     public void setDisallowedTestKeys(Set<String> disallowedTestKeys) {
         touchDisallowExtensionCustomizerBuilder().disallowedTestKeys(disallowedTestKeys);
     }
 
+    /**
+     * Sets the disallow extension customizer builder.
+     * @param disallowExtensionCustomizerBuilder the disallow extension customizer builder
+     */
     public void setDisallowExtensionCustomizerBuilder(
             DisallowExtensionCustomizerBuilder disallowExtensionCustomizerBuilder) {
         this.disallowExtensionCustomizerBuilder = disallowExtensionCustomizerBuilder;
@@ -138,8 +202,8 @@ public class PebbleEngineFactory implements ActivityContextAware {
     }
 
     /**
-     * Creates a PebbleEngine instance.
-     * @return a PebbleEngine object that can be used to create PebbleTemplate objects
+     * Creates a new {@link PebbleEngine} instance based on the configured properties.
+     * @return a new {@link PebbleEngine} instance
      */
     public PebbleEngine createPebbleEngine() {
         PebbleEngine.Builder builder = new PebbleEngine.Builder();
@@ -167,10 +231,9 @@ public class PebbleEngineFactory implements ActivityContextAware {
     }
 
     /**
-     * Return a Template Loader based on the given Template Loader list.
-     * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
-     * @param templateLoaders the final List of TemplateLoader instances
-     * @return the aggregate TemplateLoader
+     * Creates an aggregate {@link Loader} that delegates to a list of other loaders.
+     * @param templateLoaders an array of template loaders
+     * @return the aggregate template loader
      */
     protected Loader<?> getAggregateTemplateLoader(Loader<?>[] templateLoaders) {
         int loaderCount = (templateLoaders == null ? 0 : templateLoaders.length);
@@ -201,9 +264,9 @@ public class PebbleEngineFactory implements ActivityContextAware {
     }
 
     /**
-     * Determine a Pebble Engine Template Loader for the given path.
+     * Creates a {@link Loader} for the given path.
      * @param templateLoaderPath the path to load templates from
-     * @return an appropriate Template Loader
+     * @return an appropriate template loader
      */
     protected Loader<?> getTemplateLoaderForPath(@NonNull String templateLoaderPath) {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
