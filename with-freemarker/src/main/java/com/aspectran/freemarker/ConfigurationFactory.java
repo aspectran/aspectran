@@ -43,9 +43,12 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Factory that configures a FreeMarker Configuration.
+ * A factory that creates and configures a FreeMarker {@link Configuration} object.
+ * <p>This class encapsulates the logic for setting FreeMarker properties, template loaders,
+ * shared variables, and custom directives. It is typically used by {@link ConfigurationFactoryBean}
+ * to produce a fully configured {@code Configuration} instance for the application.</p>
  *
- * <p>Created: 2016. 1. 9.</p>
+ * @since 2016. 1. 9.
  */
 public class ConfigurationFactory implements ActivityContextAware {
 
@@ -75,71 +78,64 @@ public class ConfigurationFactory implements ActivityContextAware {
     }
 
     /**
-     * Set the location of the Freemarker settings file.
-     * Alternatively, you can specify all properties locally.
+     * Sets the location of the FreeMarker settings file (e.g., "classpath:freemarker.properties").
+     * @param configLocation the location of the configuration file
      */
     public void setConfigLocation(String configLocation) {
         this.configLocation = configLocation;
     }
 
     /**
-     * Set properties that contain well-known FreeMarker keys which will be
-     * passed to FreeMarker's {@code Configuration.setSettings} method.
-     * @param settings the settings
-     * @see freemarker.template.Configuration#setSettings freemarker.template.Configuration#setSettings
+     * Sets FreeMarker properties directly.
+     * These properties will be passed to FreeMarker's {@code Configuration.setSettings} method.
+     * @param settings the FreeMarker settings properties
      */
     public void setFreemarkerSettings(Properties settings) {
         this.freemarkerSettings = settings;
     }
 
     /**
-     * Set a Map that contains well-known FreeMarker objects which will be passed
-     * to FreeMarker's {@code Configuration.setAllSharedVariables()} method.
-     * @param variables the variables
-     * @see freemarker.template.Configuration#setAllSharedVariables freemarker.template.Configuration#setAllSharedVariables
+     * Sets shared variables that will be available to all templates.
+     * @param variables a map of shared variables
      */
     public void setFreemarkerVariables(Map<String, Object> variables) {
         this.freemarkerVariables = variables;
     }
 
     /**
-     * Set the default encoding for the FreeMarker configuration.
-     * If not specified, FreeMarker will use the platform file encoding.
-     * <p>Used for template rendering unless there is an explicit encoding specified
-     * for the rendering process (for example, on Spring's FreeMarkerView).
+     * Sets the default encoding for templates.
      * @param defaultEncoding the default encoding
-     * @see freemarker.template.Configuration#setDefaultEncoding freemarker.template.Configuration#setDefaultEncoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
     }
 
     /**
-     * Set the Freemarker template loader path.
-     * @param templateLoaderPath the Freemarker template loader path
+     * Sets a single path for the FreeMarker template loader.
+     * @param templateLoaderPath the template loader path (e.g., "/WEB-INF/templates/")
      */
     public void setTemplateLoaderPath(String templateLoaderPath) {
         this.templateLoaderPaths = new String[] { templateLoaderPath };
     }
 
     /**
-     * Set multiple Freemarker template loader paths.
-     * @param templateLoaderPaths the multiple Freemarker template loader paths
+     * Sets multiple paths for the FreeMarker template loader.
+     * @param templateLoaderPaths an array of template loader paths
      */
     public void setTemplateLoaderPath(String... templateLoaderPaths) {
         this.templateLoaderPaths = templateLoaderPaths;
     }
 
     /**
-     * Set a List of Freemarker template loader paths.
-     * @param templateLoaderPathList a List of Freemarker template loader paths
+     * Sets a list of paths for the FreeMarker template loader.
+     * @param templateLoaderPathList a list of template loader paths
      */
     public void setTemplateLoaderPath(@NonNull List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
     /**
-     * Set a TemplateLoader that will be used to search for templates.
+     * Sets a single, pre-configured {@link TemplateLoader}.
      * @param templateLoader the template loader
      */
     public void setTemplateLoader(TemplateLoader templateLoader) {
@@ -147,25 +143,33 @@ public class ConfigurationFactory implements ActivityContextAware {
     }
 
     /**
-     * Set multiple TemplateLoaders that will be used to search for templates.
-     * @param templateLoaders the multiple TemplateLoaders
+     * Sets multiple, pre-configured {@link TemplateLoader}s.
+     * @param templateLoaders an array of template loaders
      */
     public void setTemplateLoader(TemplateLoader... templateLoaders) {
         this.templateLoaders = templateLoaders;
     }
 
     /**
-     * Set a List of TemplateLoaders that will be used to search for templates.
-     * @param templateLoaderList a List of TemplateLoaders
+     * Sets a list of pre-configured {@link TemplateLoader}s.
+     * @param templateLoaderList a list of template loaders
      */
     public void setTemplateLoader(@NonNull List<TemplateLoader> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[0]);
     }
 
+    /**
+     * Sets the custom trim directives.
+     * @param trimDirectives an array of trim directives
+     */
     public void setTrimDirectives(TrimDirective... trimDirectives) {
         this.trimDirectives = trimDirectives;
     }
 
+    /**
+     * Sets the custom trim directives from a parameter map.
+     * @param parameters the parameters containing trim directive configurations
+     */
     public void setTrimDirectives(@NonNull Parameters parameters) {
         String[] directiveGroupNames = parameters.getParameterNames();
         List<TrimDirective> list = new ArrayList<>();
@@ -213,10 +217,10 @@ public class ConfigurationFactory implements ActivityContextAware {
     }
 
     /**
-     * Prepare the FreeMarker Configuration and return it.
-     * @return the FreeMarker Configuration object
-     * @throws IOException if the config file wasn't found
-     * @throws TemplateException on FreeMarker initialization failure
+     * Creates and returns a fully configured FreeMarker {@link Configuration} object.
+     * @return the configured FreeMarker Configuration
+     * @throws IOException if a configuration file cannot be loaded
+     * @throws TemplateException if FreeMarker initialization fails
      */
     public Configuration createConfiguration() throws IOException, TemplateException {
         Configuration config = newConfiguration();
@@ -275,22 +279,19 @@ public class ConfigurationFactory implements ActivityContextAware {
     }
 
     /**
-     * Return a new Configuration object. Subclasses can override this for custom
-     * initialization (e.g. specifying a FreeMarker compatibility level which is a
-     * new feature in FreeMarker 2.3.21), or for using a mock object for testing.
-     * <p>Called by {@code createConfiguration()}.</p>
-     * @return the Configuration object
+     * Returns a new {@link Configuration} object. Subclasses can override this for custom
+     * initialization, such as setting a specific FreeMarker compatibility level.
+     * @return the new Configuration object
      */
     protected Configuration newConfiguration() {
         return new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
     }
 
     /**
-     * Return a TemplateLoader based on the given TemplateLoader list.
-     * If more than one TemplateLoader has been registered, a FreeMarker
-     * MultiTemplateLoader needs to be created.
-     * @param templateLoaders the final List of TemplateLoader instances
-     * @return the aggregate TemplateLoader
+     * Aggregates multiple {@link TemplateLoader} instances into a single loader.
+     * If more than one loader is provided, a {@link MultiTemplateLoader} is used.
+     * @param templateLoaders the array of TemplateLoader instances
+     * @return the aggregate TemplateLoader, or {@code null} if none are provided
      */
     protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
         int loaderCount = (templateLoaders != null ? templateLoaders.length : 0);
@@ -315,11 +316,10 @@ public class ConfigurationFactory implements ActivityContextAware {
     }
 
     /**
-     * Determine a FreeMarker TemplateLoader for the given path.
-     * @param templateLoaderPath the path to load templates from
-     * @return an appropriate TemplateLoader
-     * @throws IOException if an I/O error has occurred
-     * @see freemarker.cache.FileTemplateLoader
+     * Creates a {@link TemplateLoader} for a given path, which can be a classpath or file system path.
+     * @param templateLoaderPath the path to load templates from (e.g., "classpath:/templates", "/WEB-INF/freemarker")
+     * @return an appropriate {@code TemplateLoader}
+     * @throws IOException if an I/O error occurs
      */
     protected TemplateLoader getTemplateLoaderForPath(@NonNull String templateLoaderPath) throws IOException {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {

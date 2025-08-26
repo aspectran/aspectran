@@ -19,11 +19,16 @@ import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import freemarker.template.Configuration;
 
 /**
- * JavaBean to configure FreeMarker.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
+ * and configures a FreeMarker {@link Configuration} object.
+ * <p>This is the recommended way to manage a shared, singleton FreeMarker Configuration
+ * instance within an Aspectran application. It allows for easy setup and injection of the
+ * configuration into other components, such as the {@link FreeMarkerTemplateEngine}.</p>
  *
  * <p>Note: Aspectran's FreeMarker support requires FreeMarker 2.3 or higher.</p>
  *
- * <p>Created: 2016. 1. 9.</p>
+ * @since 2016. 1. 9.
+ * @see ConfigurationFactory
  */
 public class ConfigurationFactoryBean extends ConfigurationFactory
         implements InitializableFactoryBean<Configuration> {
@@ -31,9 +36,10 @@ public class ConfigurationFactoryBean extends ConfigurationFactory
     private Configuration configuration;
 
     /**
-     * Initialize FreeMarkerConfigurationFactory's Configuration
-     * if not overridden by a preconfigured FreeMarker Configuration.
-     * @throws Exception Exceptions occurring when you configure FreeMarker
+     * This method is called by the Aspectran bean container after all configuration
+     * properties have been set. It invokes the {@link #createConfiguration()} method
+     * to build the singleton {@code Configuration} instance.
+     * @throws Exception if an error occurs during FreeMarker configuration
      */
     @Override
     public void initialize() throws Exception {
@@ -42,6 +48,11 @@ public class ConfigurationFactoryBean extends ConfigurationFactory
         }
     }
 
+    /**
+     * Returns the singleton, configured FreeMarker {@link Configuration} object.
+     * This is the object that will be returned when this FactoryBean is referenced as a bean.
+     * @return the configured Configuration instance, or {@code null} if not yet initialized
+     */
     @Override
     public Configuration getObject() {
         return configuration;

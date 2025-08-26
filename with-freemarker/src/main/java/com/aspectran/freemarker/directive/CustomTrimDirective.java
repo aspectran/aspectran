@@ -21,9 +21,17 @@ import freemarker.template.TemplateModelException;
 import java.util.Map;
 
 /**
- * The Class CustomTrimDirective.
+ * A concrete implementation of {@link TrimDirective} that can be used in FreeMarker templates.
+ * <p>This directive can be configured in two ways:
+ * <ol>
+ *   <li>With a pre-defined {@link Trimmer} instance, applying a fixed set of rules.</li>
+ *   <li>Without a pre-defined trimmer, in which case it will parse parameters
+ *       (e.g., {@code prefix}, {@code suffix}) directly from the template directive call.</li>
+ * </ol>
+ * This dual behavior allows for both reusable, pre-configured directives and flexible,
+ * template-specific ones.</p>
  *
- * <p>Created: 2016. 1. 29.</p>
+ * @since 2016. 1. 29.
  */
 public class CustomTrimDirective extends AbstractTrimDirectiveModel implements TrimDirective {
 
@@ -34,19 +42,19 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
     private final Trimmer trimmer;
 
     /**
-     * Instantiates a new Custom trim directive.
-     * @param groupName the group name
-     * @param directiveName the directive name
+     * Instantiates a new CustomTrimDirective that will parse parameters from the template.
+     * @param groupName the name of the directive group
+     * @param directiveName the name of the directive
      */
     public CustomTrimDirective(String groupName, String directiveName) {
         this(groupName, directiveName, null);
     }
 
     /**
-     * Instantiates a new Custom trim directive.
-     * @param groupName the group name
-     * @param directiveName the directive name
-     * @param trimmer the trimmer
+     * Instantiates a new CustomTrimDirective with a pre-configured trimmer.
+     * @param groupName the name of the directive group
+     * @param directiveName the name of the directive
+     * @param trimmer the pre-configured {@link Trimmer} to use
      */
     public CustomTrimDirective(String groupName, String directiveName, Trimmer trimmer) {
         this.groupName = groupName;
@@ -55,14 +63,14 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
     }
 
     /**
-     * Instantiates a new Custom trim directive.
-     * @param groupName the group name
-     * @param directiveName the directive name
-     * @param prefix the prefix
-     * @param suffix the suffix
-     * @param deprefixes the prefixes to be removed from the leading of body string
-     * @param desuffixes the suffixes to be removed from the tailing of body string
-     * @param caseSensitive true to case sensitive; false to ignore case sensitive
+     * Instantiates a new CustomTrimDirective with explicit trimming rules.
+     * @param groupName the name of the directive group
+     * @param directiveName the name of the directive
+     * @param prefix the prefix to add
+     * @param suffix the suffix to add
+     * @param deprefixes the prefixes to remove
+     * @param desuffixes the suffixes to remove
+     * @param caseSensitive whether matching is case-sensitive
      */
     public CustomTrimDirective(String groupName, String directiveName, String prefix, String suffix,
                                String[] deprefixes, String[] desuffixes, boolean caseSensitive) {
@@ -78,22 +86,25 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
         this.trimmer = trimmer;
     }
 
-    /**
-     * Gets group name.
-     * @return the group name
-     */
+    @Override
     public String getGroupName() {
         return groupName;
     }
 
-    /**
-     * Gets directive name.
-     * @return the directive name
-     */
+    @Override
     public String getDirectiveName() {
         return directiveName;
     }
 
+    /**
+     * Returns a {@link Trimmer} instance to be used for processing.
+     * <p>If this directive was created with a pre-configured trimmer, that instance is returned.
+     * Otherwise, it creates a new {@code Trimmer} on-the-fly using the parameters
+     * passed to the directive in the template.</p>
+     * @param params the parameters passed from the template directive call
+     * @return a configured {@code Trimmer}
+     * @throws TemplateModelException if a parameter is invalid
+     */
     @SuppressWarnings("rawtypes")
     @Override
     protected Trimmer getTrimmer(Map params) throws TemplateModelException {

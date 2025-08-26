@@ -22,21 +22,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Class TrimDirectiveGroup.
+ * A specialized map that groups {@link TrimDirective} instances by their group name.
+ * <p>This class organizes directives into a nested map structure like {@code Map<GroupName, Map<DirectiveName, Directive>>}.
+ * This structure is then used to register the groups as shared variables in the FreeMarker
+ * {@link freemarker.template.Configuration}, allowing them to be used in templates with a
+ * namespace, such as {@code <@sql.where>...</@sql.where>}.</p>
  *
- * <p>Created: 2016. 1. 31.</p>
+ * @since 2016. 1. 31.
  */
 public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirective>> {
 
     @Serial
     private static final long serialVersionUID = 6709732757055800503L;
 
+    /**
+     * Constructs a new TrimDirectiveGroup and populates it with the given directives.
+     * @param trimDirectives an array of {@link TrimDirective} instances to group
+     */
     public TrimDirectiveGroup(@NonNull TrimDirective[] trimDirectives) {
         for (TrimDirective directive : trimDirectives) {
             putTrimDirective(directive);
         }
     }
 
+    /**
+     * Adds a single {@link TrimDirective} to the appropriate group.
+     * If the group does not exist, it will be created.
+     * @param trimDirective the directive to add
+     * @return a map of directives belonging to the same group as the added directive
+     */
     public Map<String, TrimDirective> putTrimDirective(@NonNull TrimDirective trimDirective) {
         String groupName = trimDirective.getGroupName();
         Map<String, TrimDirective> directives = get(groupName);

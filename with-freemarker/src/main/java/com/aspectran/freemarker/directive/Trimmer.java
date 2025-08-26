@@ -16,9 +16,12 @@
 package com.aspectran.freemarker.directive;
 
 /**
- * The Class Trimmer.
+ * A utility class that provides advanced string trimming capabilities.
+ * <p>Unlike a standard trim, this class can be configured to remove and/or add
+ * specific prefixes and suffixes from a string. If no custom rules are applied,
+ * it defaults to standard whitespace trimming.</p>
  *
- * <p>Created: 2016. 1. 29.</p>
+ * @since 2016. 1. 29.
  */
 public class Trimmer {
 
@@ -32,46 +35,93 @@ public class Trimmer {
 
     private boolean caseSensitive;
 
+    /**
+     * Gets the prefix to be added to the string.
+     * @return the prefix string
+     */
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Sets the prefix to be added to the string.
+     * @param prefix the prefix string
+     */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
+    /**
+     * Gets the suffix to be added to the string.
+     * @return the suffix string
+     */
     public String getSuffix() {
         return suffix;
     }
 
+    /**
+     * Sets the suffix to be added to the string.
+     * @param suffix the suffix string
+     */
     public void setSuffix(String suffix) {
         this.suffix = suffix;
     }
 
+    /**
+     * Gets the array of prefixes to be removed from the string.
+     * @return the array of prefixes to remove
+     */
     public String[] getDeprefixes() {
         return deprefixes;
     }
 
+    /**
+     * Sets the array of prefixes to be removed from the string.
+     * @param deprefixes the array of prefixes to remove
+     */
     public void setDeprefixes(String[] deprefixes) {
         this.deprefixes = deprefixes;
     }
 
+    /**
+     * Gets the array of suffixes to be removed from the string.
+     * @return the array of suffixes to remove
+     */
     public String[] getDesuffixes() {
         return desuffixes;
     }
 
+    /**
+     * Sets the array of suffixes to be removed from the string.
+     * @param desuffixes the array of suffixes to remove
+     */
     public void setDesuffixes(String[] desuffixes) {
         this.desuffixes = desuffixes;
     }
 
+    /**
+     * Returns whether the prefix/suffix removal is case-sensitive.
+     * @return true if case-sensitive, false otherwise
+     */
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
 
+    /**
+     * Sets whether the prefix/suffix removal should be case-sensitive.
+     * @param caseSensitive true for case-sensitive matching, false otherwise
+     */
     public void setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * Applies the configured trimming rules to the given string.
+     * The order of operations is: (1) remove deprefixes, (2) remove desuffixes,
+     * (3) add prefix, (4) add suffix. If no rules are applied, performs a standard trim.
+     * @param str the string to trim
+     * @return the trimmed string
+     */
     public String trim(String str) {
         if (str == null) {
             return null;
@@ -92,6 +142,11 @@ public class Trimmer {
         }
     }
 
+    /**
+     * Removes any configured deprefixes from the start of the string builder.
+     * @param builder the string builder to modify
+     * @return true if any deprefix was removed, false otherwise
+     */
     private boolean deprefixing(StringBuilder builder) {
         boolean applied = false;
         if (deprefixes != null && deprefixes.length > 0) {
@@ -110,6 +165,11 @@ public class Trimmer {
         return applied;
     }
 
+    /**
+     * Removes any configured desuffixes from the end of the string builder.
+     * @param builder the string builder to modify
+     * @return true if any desuffix was removed, false otherwise
+     */
     private boolean desuffixing(StringBuilder builder) {
         boolean applied = false;
         if (desuffixes != null && desuffixes.length > 0) {
@@ -129,6 +189,11 @@ public class Trimmer {
         return applied;
     }
 
+    /**
+     * Adds the configured prefix to the start of the string builder.
+     * @param builder the string builder to modify
+     * @return true if a prefix was added, false otherwise
+     */
     private boolean prefixing(StringBuilder builder) {
         if (prefix == null) {
             return false;
@@ -143,6 +208,11 @@ public class Trimmer {
         return true;
     }
 
+    /**
+     * Adds the configured suffix to the end of the string builder.
+     * @param builder the string builder to modify
+     * @return true if a suffix was added, false otherwise
+     */
     private boolean suffixing(StringBuilder builder) {
         if (suffix == null) {
             return false;
@@ -151,6 +221,13 @@ public class Trimmer {
         return true;
     }
 
+    /**
+     * Deletes a substring from the builder if it matches at the specified start position.
+     * @param str the substring to match and delete
+     * @param builder the string builder to modify
+     * @param start the starting index for the comparison
+     * @return true if the substring was found and deleted, false otherwise
+     */
     private boolean delete(String str, StringBuilder builder, int start) {
         if (str == null || str.length() > builder.length()) {
             return false;

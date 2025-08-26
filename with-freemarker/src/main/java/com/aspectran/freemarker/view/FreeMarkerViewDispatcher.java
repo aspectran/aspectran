@@ -27,9 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class FreeMarkerViewDispatcher.
- *
- * <p>Created: 2016. 1. 27.</p>
+ * A {@link com.aspectran.core.activity.response.dispatch.ViewDispatcher} implementation
+ * that renders FreeMarker templates.
+ * <p>This dispatcher is responsible for taking the results of a translet's execution
+ * and merging them with a specified FreeMarker template to produce the final response.</p>
  *
  * @since 2.0.0
  */
@@ -39,16 +40,32 @@ public class FreeMarkerViewDispatcher extends AbstractViewDispatcher {
 
     private final Configuration configuration;
 
+    /**
+     * Constructs a new FreeMarkerViewDispatcher with a given template engine.
+     * @param templateEngine the FreeMarker template engine containing the configuration
+     */
     public FreeMarkerViewDispatcher(FreeMarkerTemplateEngine templateEngine) {
         Assert.notNull(templateEngine, "templateEngine must not be null");
         this.configuration = templateEngine.getConfiguration();
     }
 
+    /**
+     * Constructs a new FreeMarkerViewDispatcher with a given FreeMarker configuration.
+     * @param configuration the pre-configured FreeMarker {@link Configuration} instance
+     */
     public FreeMarkerViewDispatcher(Configuration configuration) {
         Assert.notNull(configuration, "configuration must not be null");
         this.configuration = configuration;
     }
 
+    /**
+     * Dispatches the request to a FreeMarker template for rendering.
+     * <p>This method resolves the template name, sets the content type and encoding on the
+     * response, and then invokes the FreeMarker engine to process the template.</p>
+     * @param activity the current activity, containing the data model and response objects
+     * @param dispatchRule the rule that defines which template to render and how
+     * @throws ViewDispatcherException if an error occurs during template processing
+     */
     @Override
     public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
         String viewName = null;

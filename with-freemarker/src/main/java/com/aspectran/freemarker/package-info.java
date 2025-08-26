@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Freemarker as the templating engine.
+ * Provides the core classes for integrating the FreeMarker template engine with Aspectran.
+ * <p>This package contains the main {@link com.aspectran.freemarker.FreeMarkerTemplateEngine}
+ * class, which acts as the bridge between Aspectran's template rendering mechanism and the
+ * FreeMarker library. It also includes helper classes for managing FreeMarker configuration
+ * and creating a data model for templates.</p>
  */
 package com.aspectran.freemarker;

@@ -16,42 +16,51 @@
 package com.aspectran.freemarker.directive;
 
 /**
- * The Class TrimDirective.
+ * The base interface for custom trim directives in FreeMarker.
+ * <p>Implementations of this interface define a custom directive that can be used in
+ * FreeMarker templates to trim the body content and optionally add or remove
+ * prefixes and suffixes. This is particularly useful for dynamically generating
+ * structured text like SQL queries, where you might need to remove leading "AND"s
+ * or wrap a non-empty block with parentheses.</p>
  *
- * <dl>
- * <dt>Basically, this trims the body string(removing leading and tailing spaces).
- * <dt>If the result of trimming is empty, it will return just empty string.
- * <dt>prefix="string" <dd>If the result of trimming is not empty, prefix "string" to the result.
- * <dt>suffix="string" <dd>If the result of trim is not empty, suffix "string" to the result.
- * <dt>deprefixes=["string1", "string2", ...] <dd>If the result of trimming is not empty,
- * the first appearing string in the leading of the result will be removed.
- * <dt>desuffixes=["string1", "string2", ...] <dd>If the result of trimming is not empty,
- * the first appearing string in the tail of the result will be removed.
- * <dt>caseSensitive="true" or "false" <dd>true to case sensitive; false to ignore case sensitive.
- * </dl>
+ * <p>A typical trim directive would support the following parameters:</p>
+ * <ul>
+ *   <li><b>prefix</b>: A string to prepend to the output if the trimmed body is not empty.</li>
+ *   <li><b>suffix</b>: A string to append to the output if the trimmed body is not empty.</li>
+ *   <li><b>deprefixes</b>: An array of strings to remove from the beginning of the body.</li>
+ *   <li><b>desuffixes</b>: An array of strings to remove from the end of the body.</li>
+ *   <li><b>caseSensitive</b>: A boolean indicating if prefix/suffix removal is case-sensitive.</li>
+ * </ul>
  *
- * <p>Created: 2016. 1. 29.</p>
+ * @since 2016. 1. 29.
  */
 public interface TrimDirective {
 
+    /** The parameter name for specifying a prefix to add. */
     String PREFIX_PARAM_NAME = "prefix";
 
+    /** The parameter name for specifying a suffix to add. */
     String SUFFIX_PARAM_NAME = "suffix";
 
+    /** The parameter name for specifying prefixes to remove. */
     String DEPREFIXES_PARAM_NAME = "deprefixes";
 
+    /** The parameter name for specifying suffixes to remove. */
     String DESUFFIXES_PARAM_NAME = "desuffixes";
 
+    /** The parameter name for specifying case sensitivity. */
     String CASE_SENSITIVE_PARAM_NAME = "caseSensitive";
 
     /**
-     * Gets group name.
+     * Returns the name of the group this directive belongs to.
+     * <p>For example, in {@code @sql.where}, "sql" is the group name.</p>
      * @return the group name
      */
     String getGroupName();
 
     /**
-     * Gets directive name.
+     * Returns the name of the directive within its group.
+     * <p>For example, in {@code @sql.where}, "where" is the directive name.</p>
      * @return the directive name
      */
     String getDirectiveName();
