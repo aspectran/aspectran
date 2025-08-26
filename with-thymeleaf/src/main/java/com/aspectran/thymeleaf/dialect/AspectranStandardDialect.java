@@ -19,6 +19,16 @@ import com.aspectran.thymeleaf.expression.ASELVariableExpressionEvaluator;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.standard.expression.IStandardVariableExpressionEvaluator;
 
+/**
+ * A custom Thymeleaf {@link org.thymeleaf.dialect.IDialect} that integrates
+ * Aspectran's expression language (ASEL) with Thymeleaf's Standard Expression engine.
+ *
+ * <p>This dialect replaces the standard variable expression evaluator with
+ * {@link ASELVariableExpressionEvaluator}, allowing templates to access
+ * Aspectran-specific beans and properties using ASEL syntax.</p>
+ *
+ * <p>Created: 2024. 11. 25.</p>
+ */
 public class AspectranStandardDialect extends StandardDialect {
 
     public static final String NAME = "AspectranStandard";
@@ -27,8 +37,12 @@ public class AspectranStandardDialect extends StandardDialect {
 
     public static final int PROCESSOR_PRECEDENCE = 1000;
 
+    /** The custom variable expression evaluator that integrates ASEL. */
     public static final ASELVariableExpressionEvaluator EVALUATOR = new ASELVariableExpressionEvaluator(true);
 
+    /**
+     * Instantiates a new AspectranStandardDialect.
+     */
     public AspectranStandardDialect() {
         super(NAME, PREFIX, PROCESSOR_PRECEDENCE);
     }
@@ -38,6 +52,12 @@ public class AspectranStandardDialect extends StandardDialect {
         return EVALUATOR;
     }
 
+    /**
+     * This operation is not supported in {@code AspectranStandardDialect}.
+     * The custom ASEL evaluator cannot be replaced.
+     * @param variableExpressionEvaluator the variable expression evaluator to set
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setVariableExpressionEvaluator(IStandardVariableExpressionEvaluator variableExpressionEvaluator) {
         throw new UnsupportedOperationException(

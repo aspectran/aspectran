@@ -20,12 +20,21 @@ import ognl.OgnlContext;
 import org.thymeleaf.expression.IExpressionObjects;
 
 /**
+ * A custom {@link OgnlContext} that integrates with Thymeleaf's {@link IExpressionObjects}.
+ *
+ * <p>This class allows OGNL expressions to access Thymeleaf's expression utility objects
+ * (like {@code #strings}, {@code #numbers}, etc.) directly.</p>
+ *
  * <p>Created: 2024. 11. 27.</p>
  */
 public final class UtilizedOgnlContext extends OgnlContext {
 
     private final IExpressionObjects expressionObjects;
 
+    /**
+     * Instantiates a new UtilizedOgnlContext.
+     * @param expressionObjects the Thymeleaf expression objects
+     */
     public UtilizedOgnlContext(IExpressionObjects expressionObjects) {
         super(OgnlSupport.CLASS_RESOLVER, OgnlSupport.TYPE_CONVERTER, OgnlSupport.MEMBER_ACCESS);
         this.expressionObjects = expressionObjects;

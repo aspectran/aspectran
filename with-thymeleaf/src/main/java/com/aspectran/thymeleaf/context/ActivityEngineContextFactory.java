@@ -34,6 +34,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * A Thymeleaf {@link IEngineContextFactory} that creates {@link ActivityEngineContext}
+ * or {@link WebActivityEngineContext} instances.
+ *
+ * <p>This factory is responsible for extracting the Aspectran {@link Activity} from
+ * the initial context and making it available to the engine context, along with
+ * all the necessary variables for template processing.</p>
+ *
  * <p>Created: 2024-11-27</p>
  */
 public class ActivityEngineContextFactory implements IEngineContextFactory {
@@ -76,6 +83,12 @@ public class ActivityEngineContextFactory implements IEngineContextFactory {
         }
     }
 
+    /**
+     * Converts the results from an Aspectran {@link ProcessResult} into a map
+     * of variables for the template context.
+     * @param processResult the process result to convert
+     * @return a map of variables
+     */
     private static Map<String, Object> toVariables(ProcessResult processResult) {
         if (processResult != null) {
             Map<String, Object> variables = new LinkedHashMap<>();

@@ -29,14 +29,20 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Implementation of {@link ITemplateResolver} that extends {@link AbstractConfigurableTemplateResolver}
- * and creates {@link UrlTemplateResource} instances for template resources.
- * Note a class with this name existed since 1.0, but it was completely rewritten in Thymeleaf 3.0.
+ * A Thymeleaf {@link ITemplateResolver} that resolves templates from a URL.
+ *
+ * <p>This resolver creates {@link UrlTemplateResource} instances for template
+ * resources, enabling templates to be loaded from remote locations.</p>
+ *
+ * <p>Created: 2016. 1. 27.</p>
  */
 public class UrlTemplateResolver extends AbstractConfigurableTemplateResolver {
 
     private static final Pattern JSESSIONID_PATTERN = Pattern.compile("(.*?);jsessionid(.*?)");
 
+    /**
+     * Instantiates a new UrlTemplateResolver.
+     */
     public UrlTemplateResolver() {
         super();
     }

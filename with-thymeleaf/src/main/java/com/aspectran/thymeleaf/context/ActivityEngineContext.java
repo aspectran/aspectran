@@ -17,17 +17,18 @@ package com.aspectran.thymeleaf.context;
 
 import com.aspectran.core.activity.Activity;
 import org.thymeleaf.IEngineConfiguration;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.context.EngineContext;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.context.IEngineContext;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.engine.TemplateData;
 
 import java.util.Locale;
 import java.util.Map;
 
 /**
+ * A Thymeleaf {@link IEngineContext} implementation that makes the current
+ * Aspectran {@link Activity} available during template processing.
+ *
  * <p>Created: 2024-11-27</p>
  */
 public class ActivityEngineContext extends EngineContext implements CurrentActivityHolder {
@@ -35,14 +36,17 @@ public class ActivityEngineContext extends EngineContext implements CurrentActiv
     private final Activity activity;
 
     /**
-     * Creates a new instance of this {@link IEngineContext} implementation.
      * <p>
-     * Note that implementations of {@link IEngineContext} are not meant to be used in order to call
-     * the template engine (use implementations of {@link IContext} such as {@link Context} or {@link WebContext}
-     * instead). This is therefore mostly an <b>internal</b> implementation, and users should have no reason
-     * to ever call this constructor except in very specific integration/extension scenarios.
+     *   Creates a new instance of this {@link IEngineContext} implementation.
      * </p>
-     * @param activity the aspectran activity
+     * <p>
+     *   Note that implementations of {@link IEngineContext} are not meant to be used in order to call
+     *   the template engine (use implementations of {@link IContext} instead).
+     *   This is therefore mostly an <b>internal</b> implementation, and users should have no reason
+     *   to ever call this constructor except in very specific integration/extension scenarios.
+     * </p>
+     *
+     * @param activity the Aspectran activity
      * @param configuration the configuration instance being used
      * @param templateData the template data for the template to be processed
      * @param templateResolutionAttributes the template resolution attributes

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for using Thymeleaf as the templating engine.
+ * Provides classes for integrating the Thymeleaf template engine with Aspectran.
  */
 package com.aspectran.thymeleaf;

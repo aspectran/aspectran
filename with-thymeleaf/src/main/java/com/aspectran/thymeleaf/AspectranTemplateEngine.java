@@ -23,20 +23,38 @@ import org.thymeleaf.context.IEngineContextFactory;
 import org.thymeleaf.dialect.IDialect;
 
 /**
+ * A custom Thymeleaf {@link TemplateEngine} subclass that is pre-configured for
+ * integration with Aspectran.
+ *
+ * <p>This engine automatically registers the {@link AspectranStandardDialect} and
+ * the {@link ActivityEngineContextFactory} to enable seamless interaction between
+ * Thymeleaf templates and the Aspectran framework.</p>
+ *
  * <p>Created: 2024. 11. 25.</p>
  */
 public class AspectranTemplateEngine extends TemplateEngine {
 
+    /** The custom dialect for Aspectran integration. */
     public static final IDialect DIALECT = new AspectranStandardDialect();
 
+    /** The custom engine context factory for Aspectran integration. */
     public static final IEngineContextFactory ENGINE_CONTEXT_FACTORY = new ActivityEngineContextFactory();
 
+    /**
+     * Instantiates a new AspectranTemplateEngine, pre-configured with
+     * Aspectran-specific dialect and context factory.
+     */
     public AspectranTemplateEngine() {
         super();
         setDialect(DIALECT);
         setEngineContextFactory(ENGINE_CONTEXT_FACTORY);
     }
 
+    /**
+     * Sets the Aspectran {@link MessageSource} to be used for resolving
+     * internationalized messages in templates.
+     * @param messageSource the message source to use
+     */
     public void setMessageSource(MessageSource messageSource) {
         setMessageResolver(new AspectranMessageResolver(messageSource));
     }

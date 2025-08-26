@@ -25,10 +25,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
+/**
+ * A Thymeleaf {@link IServletWebApplication} implementation that
+ * wraps an Aspectran {@link ServletContext}.
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public class WebActivityApplication implements IServletWebApplication {
 
     private final ServletContext servletContext;
 
+    /**
+     * Instantiates a new WebActivityApplication.
+     * @param servletContext the servlet context
+     */
     WebActivityApplication(@NonNull ServletContext servletContext) {
         this.servletContext = servletContext;
     }

@@ -30,6 +30,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A Thymeleaf {@link IWebExchange} implementation that is backed by an
+ * Aspectran {@link Activity}.
+ *
+ * <p>This class provides access to the request, session, and application
+ * objects, adapted for Thymeleaf's web context.</p>
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public class WebActivityExchange implements IWebExchange {
 
     private final Activity activity;
@@ -40,6 +49,13 @@ public class WebActivityExchange implements IWebExchange {
 
     private final WebActivityApplication application;
 
+    /**
+     * Instantiates a new WebActivityExchange.
+     * @param activity the activity
+     * @param request the request
+     * @param session the session
+     * @param application the application
+     */
     public WebActivityExchange(Activity activity,
                                WebActivityRequest request,
                                WebActivitySession session,
@@ -125,6 +141,12 @@ public class WebActivityExchange implements IWebExchange {
         return activity.getResponseAdapter().transformPath(url);
     }
 
+    /**
+     * Builds a new {@link WebActivityExchange} for the given activity.
+     * @param activity the current {@link Activity}
+     * @return a new {@code WebActivityExchange} instance
+     * @throws IllegalArgumentException if the activity is not a {@link WebActivity}
+     */
     @NonNull
     public static WebActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");

@@ -33,12 +33,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A Thymeleaf {@link IWebRequest} implementation that wraps an Aspectran
+ * {@link RequestAdapter}.
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public class WebActivityRequest implements IWebRequest {
 
     private final RequestAdapter requestAdapter;
 
     private final String contextPath;
 
+    /**
+     * Instantiates a new WebActivityRequest.
+     * @param requestAdapter the request adapter
+     */
     WebActivityRequest(@NonNull RequestAdapter requestAdapter) {
         this.requestAdapter = requestAdapter;
         this.contextPath = WebUtils.getReverseContextPath(getHttpServletRequest(), getHttpServletRequest().getContextPath());

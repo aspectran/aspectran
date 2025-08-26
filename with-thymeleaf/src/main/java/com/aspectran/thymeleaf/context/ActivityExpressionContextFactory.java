@@ -25,8 +25,25 @@ import org.thymeleaf.web.IWebExchange;
 
 import java.util.Locale;
 
+/**
+ * A factory for creating {@link ActivityExpressionContext} instances.
+ *
+ * <p>This factory checks if the current activity is a web-based activity
+ * and creates the appropriate context instance (e.g., {@link WebActivityExpressionContext}).</p>
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public abstract class ActivityExpressionContextFactory {
 
+    /**
+     * Creates a new {@link ActivityExpressionContext} for the given activity.
+     * <p>If the activity is a web activity, a {@link WebActivityExpressionContext}
+     * is created.</p>
+     * @param activity the current Aspectran activity
+     * @param configuration the Thymeleaf engine configuration
+     * @param locale the locale
+     * @return a new context instance
+     */
     @NonNull
     public static ActivityExpressionContext create(
             Activity activity, IEngineConfiguration configuration, Locale locale) {

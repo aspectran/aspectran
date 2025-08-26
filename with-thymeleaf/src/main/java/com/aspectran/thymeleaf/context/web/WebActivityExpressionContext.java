@@ -25,20 +25,50 @@ import org.thymeleaf.web.IWebExchange;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * A Thymeleaf {@link IWebContext} implementation that is backed by an
+ * Aspectran {@link Activity}.
+ *
+ * <p>This class extends {@link ActivityExpressionContext}
+ * to provide web-specific capabilities.</p>
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public class WebActivityExpressionContext extends ActivityExpressionContext implements IWebContext {
 
     private final IWebExchange webExchange;
 
+    /**
+     * Instantiates a new WebActivityExpressionContext.
+     * @param activity the Aspectran activity
+     * @param configuration the engine configuration
+     * @param webExchange the web exchange
+     */
     public WebActivityExpressionContext(
         Activity activity, IEngineConfiguration configuration, IWebExchange webExchange) {
         this(activity, configuration, webExchange, null, null);
     }
 
+    /**
+     * Instantiates a new WebActivityExpressionContext.
+     * @param activity the Aspectran activity
+     * @param configuration the engine configuration
+     * @param webExchange the web exchange
+     * @param locale the locale
+     */
     public WebActivityExpressionContext(
             Activity activity, IEngineConfiguration configuration, IWebExchange webExchange, Locale locale) {
         this(activity, configuration, webExchange, locale, null);
     }
 
+    /**
+     * Instantiates a new WebActivityExpressionContext.
+     * @param activity the Aspectran activity
+     * @param configuration the engine configuration
+     * @param webExchange the web exchange
+     * @param locale the locale
+     * @param variables the context variables
+     */
     public WebActivityExpressionContext(
             Activity activity, IEngineConfiguration configuration, IWebExchange webExchange, Locale locale,
             Map<String, Object> variables) {

@@ -28,11 +28,14 @@ import org.thymeleaf.templateresource.StringTemplateResource;
 import java.util.Map;
 
 /**
- * Implementation of {@link ITemplateResolver} that extends {@link AbstractTemplateResolver}
- * and acts as a default template resolver, always returning the same specified text in the form of
- * a {@link StringTemplateResource} instance.
- * This template resolver will consider its resolved templates always <strong>cacheable</strong>.
- * Also, the {@link TemplateMode#HTML} template mode will be used by default.
+ * A Thymeleaf {@link ITemplateResolver} that acts as a default, always returning
+ * a predefined template content.
+ *
+ * <p>This resolver is useful as a fallback or for testing purposes. It always
+ * considers its resolved templates as cacheable and uses {@link TemplateMode#HTML}
+ * by default.</p>
+ *
+ * <p>Created: 2016. 1. 27.</p>
  */
 public class DefaultTemplateResolver extends AbstractTemplateResolver {
 

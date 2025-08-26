@@ -28,6 +28,12 @@ import org.thymeleaf.standard.expression.FragmentSignature;
 import org.thymeleaf.standard.expression.IStandardExpression;
 
 /**
+ * A utility class for caching parsed Thymeleaf expressions.
+ *
+ * <p>This class centralizes access to Thymeleaf's expression cache, providing
+ * convenient methods for getting, putting, and removing various types of
+ * parsed expression objects.</p>
+ *
  * <p>Created: 2024. 11. 25.</p>
  */
 public class ExpressionCache {
@@ -45,6 +51,14 @@ public class ExpressionCache {
     private ExpressionCache() {
     }
 
+    /**
+     * Retrieves an object from the expression cache.
+     * @param <V> the type of the cached object
+     * @param configuration the engine configuration
+     * @param input the input expression string, used as part of the cache key
+     * @param type the type of the expression, used as part of the cache key
+     * @return the cached object, or null if not found
+     */
     @Nullable
     @SuppressWarnings("unchecked")
     static <V> V getFromCache(@NonNull IEngineConfiguration configuration, String input, String type) {
@@ -58,6 +72,14 @@ public class ExpressionCache {
         return null;
     }
 
+    /**
+     * Puts an object into the expression cache.
+     * @param <V> the type of the object to cache
+     * @param configuration the engine configuration
+     * @param input the input expression string, used as part of the cache key
+     * @param value the object to cache
+     * @param type the type of the expression, used as part of the cache key
+     */
     static <V> void putIntoCache(@NonNull IEngineConfiguration configuration, String input, V value, String type) {
         ICacheManager cacheManager = configuration.getCacheManager();
         if (cacheManager != null) {
@@ -68,6 +90,12 @@ public class ExpressionCache {
         }
     }
 
+    /**
+     * Removes an object from the expression cache.
+     * @param configuration the engine configuration
+     * @param input the input expression string, used as part of the cache key
+     * @param type the type of the expression, used as part of the cache key
+     */
     static void removeFromCache(@NonNull IEngineConfiguration configuration, String input, String type) {
         ICacheManager cacheManager = configuration.getCacheManager();
         if (cacheManager != null) {

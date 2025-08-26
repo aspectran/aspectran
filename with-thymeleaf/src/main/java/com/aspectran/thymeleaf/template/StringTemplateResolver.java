@@ -31,15 +31,14 @@ import org.thymeleaf.templateresource.StringTemplateResource;
 import java.util.Map;
 
 /**
- * Implementation of {@link ITemplateResolver} that extends {@link AbstractTemplateResolver}
- * and creates {@link StringTemplateResource} instances for template resources.
- * This template resolvers will consider the {@code template} being resolved as the template itself,
- * this is, its contents. No external file or resource will be therefore accessed.
- * This template resolver will consider its resolved templates <strong>non-cacheable</strong> by default,
- * given its nature of being used for resolving arbitrary {@code String} objects.
- * Also, the {@link TemplateMode#HTML} template mode will be used by default.
- * Note <strong>this is the default template resolver</strong> that {@link org.thymeleaf.TemplateEngine}
- * instances will use if no other resolvers are configured.
+ * A Thymeleaf {@link ITemplateResolver} that resolves templates directly from a
+ * {@link String}.
+ *
+ * <p>This resolver treats the template name passed to the engine as the template
+ * content itself. No external file or resource is accessed. By default, templates
+ * are considered non-cacheable.</p>
+ *
+ * <p>Created: 2016. 1. 27.</p>
  */
 public class StringTemplateResolver extends AbstractTemplateResolver {
 
@@ -123,6 +122,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
     /**
      * Returns the TTL (Time To Live) in cache of templates resolved by this
      * resolver.
+     * <p>
      * If a template is resolved as <i>cacheable</i> but cache TTL is null,
      * this means the template will live in cache until evicted by LRU
      * (Least Recently Used) algorithm for being the oldest entry in cache.
@@ -134,6 +134,7 @@ public class StringTemplateResolver extends AbstractTemplateResolver {
 
     /**
      * Sets a new value for the cache TTL for resolved templates.
+     * <p>
      * If a template is resolved as <i>cacheable</i> but cache TTL is null,
      * this means the template will live in cache until evicted by LRU
      * (Least Recently Used) algorithm for being the oldest entry in cache.

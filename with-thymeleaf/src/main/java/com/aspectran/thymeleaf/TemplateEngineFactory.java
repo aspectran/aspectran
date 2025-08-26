@@ -23,7 +23,11 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import java.util.Set;
 
 /**
- * Factory that configures a Thymeleaf Template Engine.
+ * A factory for creating and configuring an {@link AspectranTemplateEngine} instance.
+ *
+ * <p>This factory allows for the programmatic setup of a Thymeleaf template engine,
+ * including the configuration of template resolvers and integration with Aspectran's
+ * internationalization features.</p>
  *
  * <p>Created: 2024. 11. 18.</p>
  */
@@ -38,10 +42,19 @@ public class TemplateEngineFactory implements ActivityContextAware {
         this.context = context;
     }
 
+    /**
+     * Sets the template resolvers to be used by the template engine.
+     * @param templateResolvers a set of template resolvers
+     */
     public void setTemplateResolvers(Set<ITemplateResolver> templateResolvers) {
         this.templateResolvers = templateResolvers;
     }
 
+    /**
+     * Creates a new {@link AspectranTemplateEngine} instance, configured with
+     * the specified template resolvers and Aspectran's message source.
+     * @return a new {@code AspectranTemplateEngine} instance
+     */
     public AspectranTemplateEngine createTemplateEngine() {
         AspectranTemplateEngine templateEngine = new AspectranTemplateEngine();
         templateEngine.setMessageSource(context.getMessageSource());

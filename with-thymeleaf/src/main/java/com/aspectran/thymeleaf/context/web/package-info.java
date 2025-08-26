@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.thymeleaf.context;
-
-import com.aspectran.core.activity.Activity;
-
 /**
- * An interface to be implemented by context objects that hold the current
- * Aspectran {@link Activity}.
- *
- * <p>Created: 2024-11-27</p>
+ * Provides web-specific classes for adapting Aspectran's WebActivity to Thymeleaf's web context.
  */
-public interface CurrentActivityHolder {
-
-    /**
-     * Returns the current Aspectran Activity.
-     * @return the current activity
-     */
-    Activity getActivity();
-
-}
+package com.aspectran.thymeleaf.context.web;

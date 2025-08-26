@@ -30,6 +30,16 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
+ * A web-specific Thymeleaf {@link org.thymeleaf.context.IEngineContext} that
+ * makes the current Aspectran {@link Activity} available during template processing.
+ *
+ * <p>This class extends {@link org.thymeleaf.context.WebEngineContext} and implements
+ * {@link com.aspectran.thymeleaf.context.CurrentActivityHolder}, acting as a bridge
+ * between Aspectran's web environment and Thymeleaf's processing engine. It holds
+ * not only the standard web context variables but also a reference to the underlying
+ * {@code Activity}, which can be accessed by other custom components in the
+ * Thymeleaf integration.</p>
+ *
  * <p>Created: 2024-11-27</p>
  */
 public class WebActivityEngineContext extends WebEngineContext implements CurrentActivityHolder {

@@ -24,17 +24,29 @@ import org.thymeleaf.templateresource.ITemplateResource;
 import java.util.Map;
 
 /**
- * Implementation of {@link ITemplateResolver} that extends {@link AbstractConfigurableTemplateResolver}
- * and creates {@link ClassLoaderTemplateResource} instances for template resources.
+ * A Thymeleaf {@link ITemplateResolver} that resolves templates from the classpath.
+ *
+ * <p>This resolver creates {@link ClassLoaderTemplateResource} instances for
+ * template resources, making it suitable for loading templates embedded within
+ * the application's JAR files.</p>
+ *
+ * <p>Created: 2016. 1. 27.</p>
  */
 public class ClassLoaderTemplateResolver extends AbstractConfigurableTemplateResolver {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Instantiates a new ClassLoaderTemplateResolver using the default class loader.
+     */
     public ClassLoaderTemplateResolver() {
         this(null);
     }
 
+    /**
+     * Instantiates a new ClassLoaderTemplateResolver.
+     * @param classLoader the class loader to use for loading resources
+     */
     public ClassLoaderTemplateResolver(ClassLoader classLoader) {
         super();
         // Class Loader might be null if we want to apply the default one

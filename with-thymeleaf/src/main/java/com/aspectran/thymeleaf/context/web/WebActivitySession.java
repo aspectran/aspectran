@@ -25,10 +25,20 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A Thymeleaf {@link IWebSession} implementation that wraps an Aspectran
+ * {@link SessionAdapter}.
+ *
+ * <p>Created: 2024-11-27</p>
+ */
 public class WebActivitySession implements IWebSession {
 
     private final SessionAdapter sessionAdapter;
 
+    /**
+     * Instantiates a new WebActivitySession.
+     * @param sessionAdapter the session adapter
+     */
     WebActivitySession(SessionAdapter sessionAdapter) {
         this.sessionAdapter = sessionAdapter;
     }

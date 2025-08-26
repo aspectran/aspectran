@@ -46,8 +46,13 @@ import org.thymeleaf.standard.util.StandardExpressionUtils;
 import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.RESTRICT_REQUEST_PARAMETERS;
 
 /**
- * Evaluator for variable expressions ({@code ${...}}) in Thymeleaf Standard Expressions, using the
- * Aspectran expression language.
+ * An {@link IStandardVariableExpressionEvaluator} that integrates Aspectran's
+ * Expression Language (ASEL) with Thymeleaf's Standard Expression engine.
+ *
+ * <p>This evaluator is responsible for parsing and executing variable expressions
+ * like {@code ${...}}. It uses ASEL (which is based on OGNL) to resolve
+ * expressions against the current {@link IExpressionContext}. It also leverages
+ * caching and a shortcut mechanism ({@link OgnlShortcutExpression}) for performance.</p>
  *
  * <p>Created: 2024. 11. 23.</p>
  */
@@ -59,6 +64,10 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
 
     private final boolean applyOgnlShortcuts;
 
+    /**
+     * Instantiates a new ASELVariableExpressionEvaluator.
+     * @param applyOgnlShortcuts whether to apply OGNL shortcuts for simple expressions
+     */
     public ASELVariableExpressionEvaluator(boolean applyOgnlShortcuts) {
         this.applyOgnlShortcuts = applyOgnlShortcuts;
 
@@ -273,11 +282,15 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
         }
     }
 
+    /**
+     * A container for a parsed OGNL expression, including a flag to indicate
+     * whether it might need access to Thymeleaf's expression utility objects.
+     */
     private static class ComputedOgnlExpression {
 
-        Object expression;
+        final Object expression;
 
-        boolean mightNeedExpressionObjects;
+        final boolean mightNeedExpressionObjects;
 
         ComputedOgnlExpression(Object expression, boolean mightNeedExpressionObjects) {
             this.expression = expression;

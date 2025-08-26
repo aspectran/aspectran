@@ -36,7 +36,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class ThymeleafTemplateEngine.
+ * An Aspectran {@link TemplateEngine} implementation that uses the Thymeleaf templating engine.
+ *
+ * <p>This class acts as an adapter between Aspectran's template processing mechanism
+ * and the Thymeleaf engine. It uses a configured {@link ITemplateEngine} instance
+ * to process templates.</p>
  *
  * <p>Created: 2024. 11. 18.</p>
  *
@@ -46,11 +50,19 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
 
     private final ITemplateEngine templateEngine;
 
+    /**
+     * Instantiates a new ThymeleafTemplateEngine.
+     * @param templateEngine the Thymeleaf template engine instance to use
+     */
     public ThymeleafTemplateEngine(AspectranTemplateEngine templateEngine) {
         Assert.notNull(templateEngine, "templateEngine must not be null");
         this.templateEngine = templateEngine;
     }
 
+    /**
+     * Returns the underlying Thymeleaf {@link ITemplateEngine} instance.
+     * @return the Thymeleaf template engine instance
+     */
     public ITemplateEngine getTemplateEngine() {
         return templateEngine;
     }
@@ -86,6 +98,14 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
         }
     }
 
+    /**
+     * A static helper method to process a Thymeleaf template.
+     * <p>This method supports Thymeleaf's fragment expressions (e.g., "templateName::fragmentName").</p>
+     * @param templateEngine the Thymeleaf engine instance
+     * @param templateName the name of the template to process, optionally including a fragment identifier
+     * @param activity the current activity, used to create the context
+     * @throws IOException if an I/O error occurs
+     */
     public static void process(ITemplateEngine templateEngine, String templateName, Activity activity)
             throws IOException {
         Assert.notNull(templateEngine, "templateEngine must not be null");

@@ -18,7 +18,12 @@ package com.aspectran.thymeleaf;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
- * The Class TemplateEngineFactoryBean.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates
+ * a singleton {@link AspectranTemplateEngine} instance.
+ *
+ * <p>This class extends {@link TemplateEngineFactory} to provide a convenient way
+ * to configure and instantiate an {@code AspectranTemplateEngine} as a singleton
+ * bean within the Aspectran framework.</p>
  *
  * <p>Created: 2024. 11. 18.</p>
  */
@@ -27,6 +32,9 @@ public class TemplateEngineFactoryBean extends TemplateEngineFactory
 
     private AspectranTemplateEngine templateEngine;
 
+    /**
+     * Initializes the factory by creating the singleton {@link AspectranTemplateEngine} instance.
+     */
     @Override
     public void initialize() {
         if (templateEngine == null) {
@@ -34,6 +42,10 @@ public class TemplateEngineFactoryBean extends TemplateEngineFactory
         }
     }
 
+    /**
+     * Returns the singleton {@link AspectranTemplateEngine} instance.
+     * @return the {@code AspectranTemplateEngine} instance
+     */
     @Override
     public AspectranTemplateEngine getObject() {
         return templateEngine;

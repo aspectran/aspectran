@@ -23,6 +23,13 @@ import ognl.enhance.UnsupportedCompilationException;
 import org.thymeleaf.context.IContext;
 
 /**
+ * A custom OGNL {@link PropertyAccessor} for accessing variables from a
+ * Thymeleaf {@link IContext}.
+ *
+ * <p>This accessor allows OGNL expressions to resolve variables from the
+ * Thymeleaf context, and also enforces restrictions on accessing request
+ * parameters when required.</p>
+ *
  * <p>Created: 2024. 11. 25.</p>
  */
 final class OgnlContextPropertyAccessor implements PropertyAccessor {

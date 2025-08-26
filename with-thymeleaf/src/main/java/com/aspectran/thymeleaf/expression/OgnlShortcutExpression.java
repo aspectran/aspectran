@@ -51,6 +51,22 @@ import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.REQ
 import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.RESTRICT_REQUEST_PARAMETERS;
 
 /**
+ * A specialized class for evaluating simple, chained OGNL expressions
+ * (e.g., {@code "user.name.firstName"}) as a performance optimization.
+ *
+ * <p>This class avoids the overhead of the full OGNL parser for common, simple
+ * property access chains. It works by splitting the expression by dots and then
+ * directly invoking the corresponding getter method for each level, mimicking the
+ * behavior of OGNL's standard property accessors for basic Java objects, Maps,
+ * Lists, etc.</p>
+ *
+ * <p>If an expression contains complex elements like method calls with arguments,
+ * array/list indexing, or uses custom property accessors, this shortcut mechanism
+ * is not applicable. In such cases, the {@link ASELVariableExpressionEvaluator}
+ * will catch an {@code OGNLShortcutExpressionNotApplicableException} and fall back
+ * to using the standard, more powerful OGNL parser, ensuring correctness while
+ * optimizing the common path.</p>
+ *
  * <p>Created: 2024. 11. 25.</p>
  */
 public class OgnlShortcutExpression {

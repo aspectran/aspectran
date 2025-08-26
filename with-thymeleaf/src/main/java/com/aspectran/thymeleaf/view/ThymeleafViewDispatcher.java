@@ -27,7 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.ITemplateEngine;
 
 /**
- * The Class ThymeleafViewDispatcher.
+ * A {@link com.aspectran.core.activity.response.dispatch.ViewDispatcher} for Thymeleaf templates.
+ *
+ * <p>This class renders Thymeleaf templates and is responsible for preparing the model
+ * and forwarding the request to the Thymeleaf engine.</p>
  *
  * <p>Created: 2024. 11. 18.</p>
  *
@@ -39,11 +42,19 @@ public class ThymeleafViewDispatcher extends AbstractViewDispatcher {
 
     private final ITemplateEngine templateEngine;
 
+    /**
+     * Instantiates a new ThymeleafViewDispatcher.
+     * @param thymeleafTemplateEngine the Thymeleaf template engine
+     */
     public ThymeleafViewDispatcher(ThymeleafTemplateEngine thymeleafTemplateEngine) {
         Assert.notNull(thymeleafTemplateEngine, "thymeleafTemplateEngine must not be null");
         this.templateEngine = thymeleafTemplateEngine.getTemplateEngine();
     }
 
+    /**
+     * Instantiates a new ThymeleafViewDispatcher.
+     * @param templateEngine the Thymeleaf template engine
+     */
     public ThymeleafViewDispatcher(ITemplateEngine templateEngine) {
         Assert.notNull(templateEngine, "templateEngine must not be null");
         this.templateEngine = templateEngine;

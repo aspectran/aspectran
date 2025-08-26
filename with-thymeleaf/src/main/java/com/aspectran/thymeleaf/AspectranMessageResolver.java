@@ -22,12 +22,26 @@ import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.AbstractMessageResolver;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
 
+/**
+ * A Thymeleaf {@link org.thymeleaf.messageresolver.IMessageResolver} that integrates
+ * with Aspectran's {@link MessageSource}.
+ *
+ * <p>This resolver first attempts to resolve messages using the configured Aspectran
+ * {@code MessageSource}. If the message is not found, it delegates to Thymeleaf's
+ * {@link StandardMessageResolver} for origin-based resolution.</p>
+ *
+ * <p>Created: 2024. 11. 25.</p>
+ */
 public class AspectranMessageResolver extends AbstractMessageResolver {
 
     private final MessageSource messageSource;
 
     private final StandardMessageResolver standardMessageResolver;
 
+    /**
+     * Instantiates a new AspectranMessageResolver.
+     * @param messageSource the Aspectran MessageSource to use
+     */
     public AspectranMessageResolver(MessageSource messageSource) {
         super();
         Assert.notNull(messageSource, "messageSource must not be null");

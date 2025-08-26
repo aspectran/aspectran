@@ -24,11 +24,19 @@ import org.thymeleaf.templateresource.ITemplateResource;
 import java.util.Map;
 
 /**
- * Implementation of {@link ITemplateResolver} that extends {@link AbstractConfigurableTemplateResolver}
- * and creates {@link FileTemplateResource} instances for template resources.
+ * A Thymeleaf {@link ITemplateResolver} that resolves templates from the file system.
+ *
+ * <p>This resolver creates {@link FileTemplateResource} instances for template
+ * resources, allowing templates to be loaded from arbitrary locations on the
+ * server's file system.</p>
+ *
+ * <p>Created: 2016. 1. 27.</p>
  */
 public class FileTemplateResolver extends AbstractConfigurableTemplateResolver {
 
+    /**
+     * Instantiates a new FileTemplateResolver.
+     */
     public FileTemplateResolver() {
         super();
     }
