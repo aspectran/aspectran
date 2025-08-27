@@ -3,11 +3,15 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * <p>Created: 2025-08-27</p>
  */
 public final class ProxyActivity extends AdviceActivity {
+
+    private final Activity activity;
 
     private ActivityData activityData;
 
@@ -17,6 +21,11 @@ public final class ProxyActivity extends AdviceActivity {
      */
     public ProxyActivity(ActivityContext context) {
         super(context);
+        this.activity = null;
+    }
+    public ProxyActivity(@NonNull Activity activity) {
+        super(activity.getActivityContext());
+        this.activity = activity;
     }
 
     @Override
@@ -55,8 +64,9 @@ public final class ProxyActivity extends AdviceActivity {
     }
 
     @Override
+    @Nullable
     public ProcessResult getProcessResult() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override
@@ -66,12 +76,16 @@ public final class ProxyActivity extends AdviceActivity {
 
     @Override
     public ActivityData getActivityData() {
-        if (activityData == null) {
-            activityData = new ActivityData(this);
+        if (activity != null) {
+            return activity.getActivityData();
         } else {
-            activityData.refresh();
+            if (activityData == null) {
+                activityData = new ActivityData(this);
+            } else {
+                activityData.refresh();
+            }
+            return activityData;
         }
-        return activityData;
     }
 
     @Override

@@ -67,15 +67,16 @@ public abstract class AbstractBeanProxy {
 
     protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
             throws Exception {
-        if (!isAdvisableMethod(method)) {
-            return superInvoker.invoke();
-        }
-        if (context.hasCurrentActivity()) {
-            Activity currentActivity = context.getCurrentActivity();
-            return invoke(method, args, superInvoker, currentActivity);
+        if (isAdvisableMethod(method)) {
+            Activity activity;
+            if (context.hasCurrentActivity()) {
+                activity = context.getCurrentActivity();
+            } else {
+                activity = null;
+            }
+            return invoke(method, args, superInvoker, activity);
         } else {
-            Activity newActivity = new ProxyActivity(context);
-            return newActivity.perform(() -> invoke(method, args, superInvoker, newActivity));
+            return superInvoker.invoke();
         }
     }
 
@@ -124,9 +125,17 @@ public abstract class AbstractBeanProxy {
             Activity activity, AsyncTaskExecutor executor) throws Exception {
         return ThreadContextHelper.call(context.getClassLoader(), () -> {
             try {
-                Object result = invokeSync(method, superInvoker, activity);
-                if (result instanceof Future<?> nestedFuture) {
-                    return nestedFuture.get();
+                final Activity proxyActivity;
+                Object result;
+                if (activity == null) {
+                    proxyActivity = new ProxyActivity(context);
+                    result = proxyActivity.perform(() -> invokeSync(method, superInvoker, proxyActivity));
+                } else {
+                    proxyActivity = new ProxyActivity(activity);
+                    result = proxyActivity.perform(() -> invokeSync(method, superInvoker, activity));
+                }
+                if (result instanceof Future<?> future) {
+                    return future.get();
                 } else {
                     return result;
                 }

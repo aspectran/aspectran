@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean.async;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.InstantActivitySupport;
+import com.aspectran.core.component.bean.annotation.Advisable;
 import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -51,9 +52,48 @@ public class AsyncTestBean extends InstantActivitySupport {
     public void voidMethod() {
         String threadName = getCallingThreadName();
         System.out.println("Executing voidMethod on thread: " + threadName);
-//        Activity currentActivity = getCurrentActivity();
+        Activity currentActivity = getCurrentActivity();
+        System.out.println("Current activity: " + currentActivity);
 //        ActivityData activityData = currentActivity.getActivityData();
 //        activityData.put("threadName", threadName);
+    }
+
+    /**
+     * Asynchronously executes a nested invocation and returns a Future.
+     * The inner methods {@code advisableMethod} and {@code unadvisableMethod}
+     * are executed in the same thread as this method.
+     * @return a {@code Future} holding the concatenated result string
+     */
+    @Async
+    public Future<String> nestedInvocation() {
+        String threadName = getCallingThreadName();
+        System.out.println("Executing nestedInvocation on thread: " + threadName);
+        getCurrentActivity().getActivityData().put("first", "nestedInvocation");
+        String result = advisableMethod() + " and " + unadvisableMethod();
+        return CompletableFuture.completedFuture(result);
+    }
+
+    @Advisable
+    public String advisableMethod() {
+        String threadName = getCallingThreadName();
+        System.out.println("Executing advisableMethod on thread: " + threadName);
+        getCurrentActivity().getActivityData().put("second", "advisableMethod");
+        return "advisableMethod";
+    }
+
+    @Advisable
+    public String unadvisableMethod() {
+        String threadName = getCallingThreadName();
+        System.out.println("Executing unadvisableMethod on thread: " + threadName);
+        getCurrentActivity().getActivityData().put("third", "unadvisableMethod");
+        return "unadvisableMethod and " + noAdvisableMethod();
+    }
+
+    public String noAdvisableMethod() {
+        String threadName = getCallingThreadName();
+        System.out.println("Executing noAdvisableMethod on thread: " + threadName);
+        getCurrentActivity().getActivityData().put("fourth", "noAdvisableMethod");
+        return "noAdvisableMethod";
     }
 
     @Async

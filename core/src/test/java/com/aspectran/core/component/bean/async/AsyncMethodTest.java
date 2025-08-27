@@ -95,7 +95,7 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testVoidMethod() throws ActivityPerformException, InterruptedException {
+    void testVoidMethod() throws ActivityPerformException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -111,6 +111,31 @@ class AsyncMethodTest {
 //        assertNotNull(asyncThread);
 //        assertNotEquals(mainThread, asyncThread);
 //        assertTrue(asyncThread.startsWith("SimpleAsyncTaskExecutor-"));
+    }
+
+    @Test
+    void testNestedInvocation1() throws InterruptedException, ExecutionException {
+        AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
+        assertNotNull(testBean);
+
+        Future<String> future = testBean.nestedInvocation();
+        String result = future.get();
+        assertEquals("advisableMethod and unadvisableMethod and noAdvisableMethod", result);
+    }
+
+    @Test
+    void testNestedInvocation2() throws ActivityPerformException, ExecutionException, InterruptedException {
+        AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
+        assertNotNull(testBean);
+
+        InstantActivity activity = new InstantActivity(context);
+        Future<String> future = activity.perform(testBean::nestedInvocation);
+        future.get();
+
+        ActivityData data = activity.getActivityData();
+
+        String result = data.get("first") + " and " + data.get("second") + " and " + data.get("third") + " and " + data.get("fourth");
+        assertEquals("nestedInvocation and advisableMethod and unadvisableMethod and noAdvisableMethod", result);
     }
 
     @Test
