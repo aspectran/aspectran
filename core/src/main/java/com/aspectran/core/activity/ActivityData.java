@@ -26,11 +26,11 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provides a unified, map-like facade for accessing all data related to an {@link Activity}.
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * <p>This class is primarily designed for use in a single thread only and is not thread-safe.</p>
  */
-public class ActivityData extends HashMap<String, Object> {
+public class ActivityData extends ConcurrentHashMap<String, Object> {
 
     @Serial
     private static final long serialVersionUID = -4557424414862800204L;

@@ -9,6 +9,8 @@ import com.aspectran.core.context.ActivityContext;
  */
 public final class ProxyActivity extends AdviceActivity {
 
+    private ActivityData activityData;
+
     /**
      * Instantiates a new AdviceActivity.
      * @param context the activity context
@@ -29,7 +31,17 @@ public final class ProxyActivity extends AdviceActivity {
 
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
-        throw new UnsupportedOperationException();
+        try {
+            saveCurrentActivity();
+            return instantAction.execute();
+        } catch (ActivityTerminatedException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ActivityPerformException("Failed to perform activity for instant action " +
+                    instantAction, e);
+        } finally {
+            removeCurrentActivity();
+        }
     }
 
     @Override
@@ -54,7 +66,12 @@ public final class ProxyActivity extends AdviceActivity {
 
     @Override
     public ActivityData getActivityData() {
-        throw new UnsupportedOperationException();
+        if (activityData == null) {
+            activityData = new ActivityData(this);
+        } else {
+            activityData.refresh();
+        }
+        return activityData;
     }
 
     @Override

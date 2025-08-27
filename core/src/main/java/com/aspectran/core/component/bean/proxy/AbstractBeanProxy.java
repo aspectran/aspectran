@@ -63,52 +63,45 @@ public abstract class AbstractBeanProxy {
         this.aspectRuleRegistry = context.getAspectRuleRegistry();
     }
 
-    protected Object invoke(BeanRule beanRule, Method method, Object[] args, SuperInvoker superInvoker)
+    protected abstract BeanRule getBeanRule();
+
+    protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
             throws Exception {
         if (!isAdvisableMethod(method)) {
             return superInvoker.invoke();
         }
-        Activity activity = null;
+        Activity existingActivity = null;
         if (context.hasCurrentActivity()) {
             try {
-                activity = context.getCurrentActivity();
+                existingActivity = context.getCurrentActivity();
             } catch (NoActivityStateException e) {
                 // ignore
             }
         }
-        boolean newActivity = false;
-        if (activity == null) {
-            activity = new ProxyActivity(context);
-            newActivity = true;
-        }
-        if (newActivity) {
-            try {
-                context.setCurrentActivity(activity);
-                return invoke(beanRule, method, args, superInvoker, activity);
-            } finally {
-                context.removeCurrentActivity();
-            }
+        if (existingActivity != null) {
+            return invoke(method, args, superInvoker, existingActivity);
         } else {
-            return invoke(beanRule, method, args, superInvoker, activity);
+            Activity newActivity = new ProxyActivity(context);
+            return newActivity.perform(() -> invoke(method, args, superInvoker, newActivity));
         }
     }
 
     @Nullable
     private Object invoke(
-            BeanRule beanRule, @NonNull Method method, Object[] args,
-            SuperInvoker superInvoker, Activity activity) throws Exception {
+            @NonNull Method method, Object[] args, SuperInvoker superInvoker,
+            Activity activity) throws Exception {
         Async async = method.getAnnotation(Async.class);
         if (async != null) {
-            return invokeAsync(beanRule, method, args, superInvoker, async, activity);
+            return invokeAsync(method, args, superInvoker, async, activity);
         } else {
-            return invokeSync(beanRule, method, superInvoker, activity);
+            return invokeSync(method, superInvoker, activity);
         }
     }
 
     @Nullable
     private Object invokeAsync(
-            BeanRule beanRule, @NonNull Method method, Object[] args,
-            SuperInvoker superInvoker, Async async, Activity activity) throws Exception {
+            @NonNull Method method, Object[] args, SuperInvoker superInvoker,
+            Async async, Activity activity) throws Exception {
         AsyncTaskExecutor executor = findAsyncExecutor(async);
         if (method.getReturnType() != Void.TYPE && !Future.class.isAssignableFrom(method.getReturnType())) {
             throw new AsyncExecutionException("Cannot use @Async on a method that does not return void or Future: " + method);
@@ -116,7 +109,7 @@ public abstract class AbstractBeanProxy {
         if (method.getReturnType() == Void.TYPE) {
             executor.execute(() -> {
                 try {
-                    invokeAsync(beanRule, method, args, superInvoker, activity, executor);
+                    invokeAsync(method, args, superInvoker, activity, executor);
                 } catch (Exception e) {
                     // ignore
                 }
@@ -125,20 +118,20 @@ public abstract class AbstractBeanProxy {
         } else {
             return executor.submit(() -> {
                 try {
-                    return invokeAsync(beanRule, method, args, superInvoker, activity, executor);
+                    return invokeAsync(method, args, superInvoker, activity, executor);
                 } catch (Exception e) {
-                    return new CompletionException(e);
+                    throw new CompletionException(e);
                 }
             });
         }
     }
 
     private Object invokeAsync(
-            BeanRule beanRule, @NonNull Method method, Object[] args,
-            SuperInvoker superInvoker, Activity activity, AsyncTaskExecutor executor) throws Exception {
+            @NonNull Method method, Object[] args, SuperInvoker superInvoker,
+            Activity activity, AsyncTaskExecutor executor) throws Exception {
         return ThreadContextHelper.call(context.getClassLoader(), () -> {
             try {
-                Object result = invokeSync(beanRule, method, superInvoker, activity);
+                Object result = invokeSync(method, superInvoker, activity);
                 if (result instanceof Future<?> nestedFuture) {
                     return nestedFuture.get();
                 } else {
@@ -154,11 +147,9 @@ public abstract class AbstractBeanProxy {
     }
 
     @Nullable
-    private Object invokeSync(
-            @NonNull BeanRule beanRule, @NonNull Method method,
-            SuperInvoker superInvoker, Activity activity) throws Exception {
-        String beanId = beanRule.getId();
-        String className = beanRule.getClassName();
+    private Object invokeSync(@NonNull Method method, SuperInvoker superInvoker, Activity activity) throws Exception {
+        String beanId = getBeanRule().getId();
+        String className = getBeanRule().getClassName();
         String methodName = method.getName();
 
         AdviceRuleRegistry adviceRuleRegistry = retrieveAdviceRuleRegistry(activity, beanId, className, methodName);
@@ -168,15 +159,15 @@ public abstract class AbstractBeanProxy {
 
         try {
             try {
-                executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getBeforeAdviceRuleList(), activity);
                 Object result = superInvoker.invoke();
-                executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getAfterAdviceRuleList(), activity);
                 return result;
             } catch (Exception e) {
                 activity.setRaisedException(e);
                 throw e;
             } finally {
-                executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), beanRule, activity);
+                executeAdvice(adviceRuleRegistry.getFinallyAdviceRuleList(), activity);
             }
         } catch (Exception e) {
             activity.setRaisedException(e);
@@ -223,11 +214,11 @@ public abstract class AbstractBeanProxy {
         return adviceRuleRegistry;
     }
 
-    private void executeAdvice(List<AdviceRule> adviceRuleList, BeanRule beanRule, Activity activity)
+    private void executeAdvice(List<AdviceRule> adviceRuleList, Activity activity)
             throws AdviceException {
         if (adviceRuleList != null) {
             for (AdviceRule adviceRule : adviceRuleList) {
-                if (!isSameBean(beanRule, adviceRule)) {
+                if (!isSameBean(getBeanRule(), adviceRule)) {
                     activity.executeAdvice(adviceRule);
                 }
             }

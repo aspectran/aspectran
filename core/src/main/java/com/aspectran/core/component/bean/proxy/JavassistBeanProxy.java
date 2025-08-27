@@ -42,6 +42,11 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     }
 
     @Override
+    protected BeanRule getBeanRule() {
+        return beanRule;
+    }
+
+    @Override
     public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Exception {
         SuperInvoker superInvoker = () -> {
             try {
@@ -54,7 +59,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
                 }
             }
         };
-        return invoke(beanRule, overridden, args, superInvoker);
+        return invoke(overridden, args, superInvoker);
     }
 
     /**
@@ -76,5 +81,4 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
             throw new BeanProxyException(beanRule, e);
         }
     }
-
 }

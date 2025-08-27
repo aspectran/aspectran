@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.async;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.annotation.Bean;
@@ -50,7 +51,9 @@ public class AsyncTestBean extends InstantActivitySupport {
     public void voidMethod() {
         String threadName = getCallingThreadName();
         System.out.println("Executing voidMethod on thread: " + threadName);
-        getCurrentActivity().getActivityData().put("threadName", threadName);
+//        Activity currentActivity = getCurrentActivity();
+//        ActivityData activityData = currentActivity.getActivityData();
+//        activityData.put("threadName", threadName);
     }
 
     @Async

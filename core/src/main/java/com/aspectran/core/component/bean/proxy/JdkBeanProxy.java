@@ -48,6 +48,11 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
     }
 
     @Override
+    protected BeanRule getBeanRule() {
+        return beanRule;
+    }
+
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
         SuperInvoker superInvoker = () -> {
             try {
@@ -60,7 +65,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
                 }
             }
         };
-        return invoke(beanRule, method, args, superInvoker);
+        return invoke(method, args, superInvoker);
     }
 
     /**
