@@ -70,16 +70,9 @@ public abstract class AbstractBeanProxy {
         if (!isAdvisableMethod(method)) {
             return superInvoker.invoke();
         }
-        Activity existingActivity = null;
         if (context.hasCurrentActivity()) {
-            try {
-                existingActivity = context.getCurrentActivity();
-            } catch (NoActivityStateException e) {
-                // ignore
-            }
-        }
-        if (existingActivity != null) {
-            return invoke(method, args, superInvoker, existingActivity);
+            Activity currentActivity = context.getCurrentActivity();
+            return invoke(method, args, superInvoker, currentActivity);
         } else {
             Activity newActivity = new ProxyActivity(context);
             return newActivity.perform(() -> invoke(method, args, superInvoker, newActivity));
