@@ -396,7 +396,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
         if (contextConfig != null && contextConfig.getAsyncConfig() != null && contextConfig.getAsyncConfig().isEnabled()) {
-            context.setAsyncTaskExecutor(createDefaultAsyncTaskExecutor());
+            context.setAsyncTaskExecutor(createDefaultAsyncTaskExecutor(assistant.getClassLoader()));
         }
 
         BeanRuleRegistry beanRuleRegistry = initBeanRuleRegistry(assistant);
@@ -423,8 +423,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @NonNull
-    private AsyncTaskExecutor createDefaultAsyncTaskExecutor() {
-        return new SimpleAsyncTaskExecutor();
+    private AsyncTaskExecutor createDefaultAsyncTaskExecutor(ClassLoader classLoader) {
+        SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
+        asyncTaskExecutor.setContextClassLoader(classLoader);
+        return asyncTaskExecutor;
     }
 
     @NonNull

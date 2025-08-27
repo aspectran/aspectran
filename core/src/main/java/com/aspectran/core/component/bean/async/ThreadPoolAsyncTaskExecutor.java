@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.async;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.CustomizableThreadFactory;
 
@@ -76,6 +77,7 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor, Initializ
             threadNamePrefix = getClass().getSimpleName() + "-";
         }
         CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(threadNamePrefix);
+        threadFactory.setContextClassLoader(ClassUtils.getDefaultClassLoader());
         executor = new ThreadPoolExecutor(
                 corePoolSize,
                 maxPoolSize,

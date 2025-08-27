@@ -78,7 +78,8 @@ public abstract class ThreadContextHelper {
      * @param <T> the type of the throwable
      * @throws T if the runnable throws an exception
      */
-    public static <T extends Throwable> void runThrowable(ClassLoader classLoader, @NonNull ThrowingRunnable<T> runnable)
+    public static <T extends Throwable> void runThrowable(
+            ClassLoader classLoader, @NonNull ThrowingRunnable<T> runnable)
             throws T {
         ClassLoader old = overrideClassLoader(classLoader);
         try {
@@ -96,7 +97,8 @@ public abstract class ThreadContextHelper {
      * @return the result of the {@code Callable}
      * @throws Exception if the callable throws an exception
      */
-    public static <V> V call(ClassLoader classLoader, @NonNull Callable<V> callable) throws Exception {
+    public static <V> V call(ClassLoader classLoader, @NonNull Callable<V> callable)
+            throws Exception {
         ClassLoader old = overrideClassLoader(classLoader);
         try {
             return callable.call();

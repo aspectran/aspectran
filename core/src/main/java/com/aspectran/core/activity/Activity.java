@@ -99,6 +99,19 @@ public interface Activity {
     ActivityContext getActivityContext();
 
     /**
+     * Returns the context path of the current activity.
+     * @return the context path, or {@code null} for the root context
+     */
+    String getContextPath();
+
+    /**
+     * Returns the reverse context path used as a prefix to the actual request name.
+     * This is typically used in web environments for URL rewriting.
+     * @return the reverse context path
+     */
+    String getReverseContextPath();
+
+    /**
      * Returns the {@link ClassLoader} associated with this activity's context.
      * @return the active ClassLoader
      */
@@ -139,19 +152,6 @@ public interface Activity {
      * @return the response adapter
      */
     ResponseAdapter getResponseAdapter();
-
-    /**
-     * Returns the context path of the current activity.
-     * @return the context path, or {@code null} for the root context
-     */
-    String getContextPath();
-
-    /**
-     * Returns the reverse context path used as a prefix to the actual request name.
-     * This is typically used in web environments for URL rewriting.
-     * @return the reverse context path
-     */
-    String getReverseContextPath();
 
     /**
      * Performs the prepared activity, executing the translet's lifecycle.

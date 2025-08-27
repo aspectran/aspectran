@@ -48,12 +48,16 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
         SuperInvoker superInvoker = () -> {
             try {
                 return method.invoke(bean, args);
             } catch (InvocationTargetException e) {
-                throw e.getTargetException();
+                if (e.getCause() instanceof Exception) {
+                    throw (Exception)e.getCause();
+                } else {
+                    throw e;
+                }
             }
         };
         return invoke(beanRule, method, args, superInvoker);

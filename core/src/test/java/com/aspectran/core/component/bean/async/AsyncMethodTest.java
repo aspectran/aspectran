@@ -116,14 +116,12 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testFutureMethod() throws ExecutionException, InterruptedException, ActivityPerformException {
+    void testFutureMethod() throws ExecutionException, InterruptedException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
         String mainThread = testBean.getCallingThreadName();
-
-        InstantActivity activity = new InstantActivity(context);
-        Future<String> future = activity.perform(testBean::futureMethod);
+        Future<String> future = testBean.futureMethod();
 
         Thread.sleep(300);
 
@@ -134,14 +132,12 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testCustomExecutor() throws ExecutionException, InterruptedException, ActivityPerformException {
+    void testCustomExecutor() throws ExecutionException, InterruptedException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
         String mainThread = testBean.getCallingThreadName();
-
-        InstantActivity activity = new InstantActivity(context);
-        Future<String> future = activity.perform(testBean::customExecutorMethod);
+        Future<String> future = testBean.customExecutorMethod();
 
         String asyncThread = future.get();
         assertNotNull(asyncThread);
@@ -163,15 +159,9 @@ class AsyncMethodTest {
     }
 
     @Test
-    void errorOccurredMethod() throws InterruptedException, ActivityPerformException {
+    void errorOccurredMethod() throws InterruptedException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
-
-        InstantActivity activity = new InstantActivity(context);
-        activity.perform(() -> {
-            testBean.errorOccurredMethod();
-            return null;
-        });
 
         testBean.errorOccurredMethod();
 

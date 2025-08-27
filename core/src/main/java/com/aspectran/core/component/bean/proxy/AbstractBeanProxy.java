@@ -16,9 +16,7 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityPerformException;
-import com.aspectran.core.activity.InstantActivityException;
-import com.aspectran.core.activity.InstantProxyActivity;
+import com.aspectran.core.activity.ProxyActivity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
@@ -31,6 +29,7 @@ import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.async.AsyncExecutionException;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.NoActivityStateException;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -39,6 +38,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.thread.ThreadContextHelper;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -64,96 +64,104 @@ public abstract class AbstractBeanProxy {
     }
 
     protected Object invoke(BeanRule beanRule, Method method, Object[] args, SuperInvoker superInvoker)
-            throws Throwable {
+            throws Exception {
         if (!isAdvisableMethod(method)) {
             return superInvoker.invoke();
         }
-
-        Async async = method.getAnnotation(Async.class);
-        if (async != null) {
-            if (context.hasCurrentActivity()) {
-                return invokeAsync(beanRule, method, args, superInvoker, async, context.getCurrentActivity());
-            } else {
-                return invokeAsync(beanRule, method, args, superInvoker, async, null);
+        Activity activity = null;
+        if (context.hasCurrentActivity()) {
+            try {
+                activity = context.getCurrentActivity();
+            } catch (NoActivityStateException e) {
+                // ignore
+            }
+        }
+        boolean newActivity = false;
+        if (activity == null) {
+            activity = new ProxyActivity(context);
+            newActivity = true;
+        }
+        if (newActivity) {
+            try {
+                context.setCurrentActivity(activity);
+                return invoke(beanRule, method, args, superInvoker, activity);
+            } finally {
+                context.removeCurrentActivity();
             }
         } else {
-            if (context.hasCurrentActivity()) {
-                return invokeSync(beanRule, method, superInvoker, context.getCurrentActivity());
-            } else {
-                try {
-                    Activity activity = new InstantProxyActivity(context);
-                    return activity.perform(() -> invokeSync(beanRule, method, superInvoker, activity));
-                } catch (Exception e) {
-                    throw new InstantActivityException(e);
-                }
-            }
+            return invoke(beanRule, method, args, superInvoker, activity);
+        }
+    }
+
+    @Nullable
+    private Object invoke(
+            BeanRule beanRule, @NonNull Method method, Object[] args,
+            SuperInvoker superInvoker, Activity activity) throws Exception {
+        Async async = method.getAnnotation(Async.class);
+        if (async != null) {
+            return invokeAsync(beanRule, method, args, superInvoker, async, activity);
+        } else {
+            return invokeSync(beanRule, method, superInvoker, activity);
         }
     }
 
     @Nullable
     private Object invokeAsync(
             BeanRule beanRule, @NonNull Method method, Object[] args,
-            SuperInvoker superInvoker, Async async, Activity activity)
-            throws AsyncExecutionException {
+            SuperInvoker superInvoker, Async async, Activity activity) throws Exception {
         AsyncTaskExecutor executor = findAsyncExecutor(async);
         if (method.getReturnType() != Void.TYPE && !Future.class.isAssignableFrom(method.getReturnType())) {
             throw new AsyncExecutionException("Cannot use @Async on a method that does not return void or Future: " + method);
         }
-        Future<Object> future;
-        if (activity != null) {
-            future = executor.submit(() -> {
-                Activity oldActivity = null;
-                try {
-                    if (context.hasCurrentActivity()) {
-                        oldActivity = context.getCurrentActivity();
-                    }
-                    context.setCurrentActivity(activity);
-                    Object result = invokeSync(beanRule, method, superInvoker, activity);
-                    if (result instanceof Future<?> nestedFuture) {
-                        return nestedFuture.get();
-                    } else {
-                        return result;
-                    }
-                } catch (Throwable e) {
-                    throw handleAsyncException(e, executor, method, args);
-                } finally {
-                    if (oldActivity != null) {
-                        context.setCurrentActivity(oldActivity);
-                    } else {
-                        context.removeCurrentActivity();
-                    }
-                }
-            });
-        } else {
-            future = executor.submit(() -> {
-                try {
-                    Activity instanctActivity = new InstantProxyActivity(context);
-                    Object result = instanctActivity.perform(() -> invokeSync(beanRule, method, superInvoker, instanctActivity));
-                    if (result instanceof Future<?> nestedFuture) {
-                        return nestedFuture.get();
-                    } else {
-                        return result;
-                    }
-                } catch (Exception e) {
-                    throw handleAsyncException(e, executor, method, args);
-                }
-            });
-        }
         if (method.getReturnType() == Void.TYPE) {
+            executor.execute(() -> {
+                try {
+                    invokeAsync(beanRule, method, args, superInvoker, activity, executor);
+                } catch (Exception e) {
+                    // ignore
+                }
+            });
             return null;
         } else {
-            return future;
+            return executor.submit(() -> {
+                try {
+                    return invokeAsync(beanRule, method, args, superInvoker, activity, executor);
+                } catch (Exception e) {
+                    return new CompletionException(e);
+                }
+            });
         }
     }
 
+    private Object invokeAsync(
+            BeanRule beanRule, @NonNull Method method, Object[] args,
+            SuperInvoker superInvoker, Activity activity, AsyncTaskExecutor executor) throws Exception {
+        return ThreadContextHelper.call(context.getClassLoader(), () -> {
+            try {
+                Object result = invokeSync(beanRule, method, superInvoker, activity);
+                if (result instanceof Future<?> nestedFuture) {
+                    return nestedFuture.get();
+                } else {
+                    return result;
+                }
+            } catch (Exception e) {
+                if (executor.getAsyncUncaughtExceptionHandler() != null) {
+                    executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(e, method, args);
+                }
+                throw e;
+            }
+        });
+    }
+
     @Nullable
-    private Object invokeSync(@NonNull BeanRule beanRule, @NonNull Method method, SuperInvoker superInvoker,
-                              Activity activity) throws Throwable {
+    private Object invokeSync(
+            @NonNull BeanRule beanRule, @NonNull Method method,
+            SuperInvoker superInvoker, Activity activity) throws Exception {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();
 
-        AdviceRuleRegistry adviceRuleRegistry = getAdviceRuleRegistry(activity, beanId, className, methodName);
+        AdviceRuleRegistry adviceRuleRegistry = retrieveAdviceRuleRegistry(activity, beanId, className, methodName);
         if (adviceRuleRegistry == null) {
             return superInvoker.invoke();
         }
@@ -179,7 +187,7 @@ public abstract class AbstractBeanProxy {
         }
     }
 
-    private AdviceRuleRegistry getAdviceRuleRegistry(
+    private AdviceRuleRegistry retrieveAdviceRuleRegistry(
             @NonNull Activity activity, String beanId, String className, String methodName)
             throws AdviceConstraintViolationException, AdviceException {
         String requestName;
@@ -275,23 +283,10 @@ public abstract class AbstractBeanProxy {
         return executor;
     }
 
-    @NonNull
-    private CompletionException handleAsyncException(
-            Throwable exception, AsyncTaskExecutor executor, Method method, Object[] args) {
-        Throwable actualCause = exception;
-        if (exception instanceof ActivityPerformException pe) {
-            actualCause = pe.getCause();
-        }
-        if (executor.getAsyncUncaughtExceptionHandler() != null) {
-            executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(actualCause, method, args);
-        }
-        return new CompletionException(actualCause);
-    }
-
     @FunctionalInterface
     protected interface SuperInvoker {
 
-        Object invoke() throws Throwable;
+        Object invoke() throws Exception;
 
     }
 

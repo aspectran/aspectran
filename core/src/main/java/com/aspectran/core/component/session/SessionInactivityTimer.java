@@ -71,7 +71,7 @@ public class SessionInactivityTimer {
                     try {
                         // To help distinguish logging groups
                         expired = ThreadContextHelper.call(sessionManager.getClassLoader(), () ->
-                            sessionManager.sessionInactivityTimerExpired(session, now));
+                                sessionManager.sessionInactivityTimerExpired(session, now));
                     } catch (Exception e) {
                         logger.warn(e.getMessage(), e);
                     }

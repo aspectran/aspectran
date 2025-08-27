@@ -57,7 +57,11 @@ public class AsyncTestBean extends InstantActivitySupport {
     public Future<String> futureMethod() {
         String threadName = getCallingThreadName();
         System.out.println("Executing futureMethod on thread: " + threadName);
-        return CompletableFuture.supplyAsync(() -> threadName);
+        //System.out.println(ClassUtils.getDefaultClassLoader());
+        return CompletableFuture.supplyAsync(() -> {
+            //System.out.println(ClassUtils.getDefaultClassLoader());
+            return threadName;
+        });
     }
 
     @Async("myCustomTaskExecutor")

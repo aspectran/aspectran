@@ -38,6 +38,7 @@ import java.util.List;
  * cut across multiple classes, such as transaction management. Aspects can be
  * a bean configured through Aspectran configuration.
  *
+ * <p>ex)
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
  *   &lt;joinpoint&gt;
@@ -79,7 +80,7 @@ import java.util.List;
  *   &lt;exception&gt;
  *   &lt;/exception&gt;
  * &lt;aspect&gt;
- * </pre>
+ * </pre></p>
  */
 public class AspectRule implements BeanReferenceable {
 

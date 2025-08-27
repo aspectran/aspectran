@@ -131,6 +131,16 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public String getContextPath() {
+        return null;
+    }
+
+    @Override
+    public String getReverseContextPath() {
+        return null;
+    }
+
+    @Override
     public ClassLoader getClassLoader() {
         ClassLoader cl = null;
         try {

@@ -33,7 +33,7 @@ import java.util.List;
  * attempt to register the advice dynamically, you will get an
  * exception of the advice constraint violation.</p>
  */
-public class DefaultActivity extends AbstractActivity {
+public final class DefaultActivity extends AbstractActivity {
 
     /**
      * Instantiates a new DefaultActivity.
@@ -41,16 +41,6 @@ public class DefaultActivity extends AbstractActivity {
      */
     public DefaultActivity(ActivityContext context) {
         super(context);
-    }
-
-    @Override
-    public String getContextPath() {
-        return null;
-    }
-
-    @Override
-    public String getReverseContextPath() {
-        return null;
     }
 
     @Override

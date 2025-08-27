@@ -42,12 +42,16 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     }
 
     @Override
-    public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Throwable {
+    public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Exception {
         SuperInvoker superInvoker = () -> {
             try {
                 return proceed.invoke(self, args);
             } catch (InvocationTargetException e) {
-                throw e.getTargetException();
+                if (e.getCause() instanceof Exception) {
+                    throw (Exception)e.getCause();
+                } else {
+                    throw e;
+                }
             }
         };
         return invoke(beanRule, overridden, args, superInvoker);
