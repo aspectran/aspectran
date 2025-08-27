@@ -21,15 +21,17 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.concurrent.Callable;
 
 /**
+ * A helper class for managing the thread context ClassLoader.
+ *
  * <p>Created: 2024-12-30</p>
  */
 public abstract class ThreadContextHelper {
 
     /**
-     * Override the thread context ClassLoader with the environment's bean ClassLoader
-     * if necessary, i.e. if the bean ClassLoader is not equivalent to the thread
-     * context ClassLoader already.
-     * @param classLoader the actual ClassLoader to use for the thread context
+     * Override the thread context ClassLoader with the given ClassLoader if necessary,
+     * i.e. if the given ClassLoader is not equivalent to the thread context
+     * ClassLoader already.
+     * @param classLoader the ClassLoader to use for the thread context
      * @return the original thread context ClassLoader, or {@code null} if not overridden
      */
     @Nullable
@@ -45,12 +47,21 @@ public abstract class ThreadContextHelper {
         return null;
     }
 
+    /**
+     * Restores the original thread context ClassLoader.
+     * @param classLoader the original thread context ClassLoader
+     */
     public static void restoreClassLoader(@Nullable ClassLoader classLoader) {
         if (classLoader != null) {
             Thread.currentThread().setContextClassLoader(classLoader);
         }
     }
 
+    /**
+     * Executes a {@link Runnable} in the given ClassLoader context.
+     * @param classLoader the ClassLoader to use
+     * @param runnable the {@code Runnable} to execute
+     */
     public static void run(ClassLoader classLoader, @NonNull Runnable runnable) {
         ClassLoader old = overrideClassLoader(classLoader);
         try {
@@ -60,6 +71,13 @@ public abstract class ThreadContextHelper {
         }
     }
 
+    /**
+     * Executes a {@link ThrowingRunnable} in the given ClassLoader context.
+     * @param classLoader the ClassLoader to use
+     * @param runnable the {@code ThrowingRunnable} to execute
+     * @param <T> the type of the throwable
+     * @throws T if the runnable throws an exception
+     */
     public static <T extends Throwable> void runThrowable(ClassLoader classLoader, @NonNull ThrowingRunnable<T> runnable)
             throws T {
         ClassLoader old = overrideClassLoader(classLoader);
@@ -70,6 +88,14 @@ public abstract class ThreadContextHelper {
         }
     }
 
+    /**
+     * Executes a {@link Callable} in the given ClassLoader context.
+     * @param classLoader the ClassLoader to use
+     * @param callable the {@code Callable} to execute
+     * @param <V> the type of the return value
+     * @return the result of the {@code Callable}
+     * @throws Exception if the callable throws an exception
+     */
     public static <V> V call(ClassLoader classLoader, @NonNull Callable<V> callable) throws Exception {
         ClassLoader old = overrideClassLoader(classLoader);
         try {
@@ -79,8 +105,16 @@ public abstract class ThreadContextHelper {
         }
     }
 
+    /**
+     * A runnable that can throw a checked exception.
+     * @param <T> the type of the throwable
+     */
     public interface ThrowingRunnable<T extends Throwable> {
 
+        /**
+         * Executes the runnable.
+         * @throws T if an error occurs
+         */
         void run() throws T;
 
     }
