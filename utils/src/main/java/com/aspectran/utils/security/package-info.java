@@ -3,6 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -13,25 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils.security;
-
-import java.io.Serial;
-
 /**
- * A subclass of {@link InvalidPBTokenException} that is thrown when a
- * time-limited token has expired.
+ * Provides security-related utility classes.
+ * <p>This package includes utilities for password-based encryption (PBE) and
+ * for issuing and validating secure tokens, which can be time-limited.</p>
  */
-public class ExpiredPBTokenException extends InvalidPBTokenException {
-
-    @Serial
-    private static final long serialVersionUID = -3377771930951220888L;
-
-    /**
-     * Constructs a new exception for an expired token.
-     * @param token the expired token
-     */
-    public ExpiredPBTokenException(String token) {
-        super("Expired password based token", token);
-    }
-
-}
+package com.aspectran.utils.security;
