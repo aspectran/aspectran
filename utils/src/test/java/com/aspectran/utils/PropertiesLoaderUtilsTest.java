@@ -30,9 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PropertiesLoaderUtilsTest {
 
+    private static final String PASSWORD = "encryption-password-for-test";
+
     @BeforeAll
     void passwordSetting() {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        //System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, "PBEWithMD5AndTripleDES");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, PASSWORD);
+        String encryptedPassword = PBEncryptionUtils.encrypt("1234", PASSWORD);
+        System.out.println(encryptedPassword);
     }
 
     @Test
