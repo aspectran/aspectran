@@ -27,7 +27,68 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utilities to handle ANSI escape sequences with JLine.
+ * Utilities for parsing text with custom style markup and converting it into
+ * JLine's {@link AttributedCharSequence} for styled console output.
+ * <p>
+ * This class allows embedding style information directly within a string using a
+ * simple syntax, <code>{{style1,style2,...}}</code>. The {@link #parse(String)}
+ * method processes such strings, applying the specified styles to the subsequent text.
+ *
+ * <h3>Style Markup</h3>
+ * Styles are applied by enclosing a comma-separated list of style keywords in
+ * double curly braces. For example, to make text bold and red, you would write:
+ * <pre>
+ *   "This is {{bold,red}}important{{reset}} text."
+ * </pre>
+ * The <code>{{reset}}</code> tag reverts the styling to the default.
+ *
+ * <h3>Available Styles</h3>
+ * The following style keywords are supported:
+ *
+ * <h4>Text Attributes</h4>
+ * <table>
+ *   <caption>Text attribute styles</caption>
+ *   <tr><th>Style</th><th>Description</th></tr>
+ *   <tr><td><code>bold</code></td><td>Makes text bold.</td></tr>
+ *   <tr><td><code>faint</code></td><td>Makes text faint (less intense).</td></tr>
+ *   <tr><td><code>italic</code></td><td>Makes text italic.</td></tr>
+ *   <tr><td><code>underline</code></td><td>Underlines text.</td></tr>
+ *   <tr><td><code>blink</code></td><td>Makes text blink.</td></tr>
+ *   <tr><td><code>inverse</code></td><td>Swaps foreground and background colors.</td></tr>
+ *   <tr><td><code>conceal</code></td><td>Hides text.</td></tr>
+ *   <tr><td><code>crossedOut</code></td><td>Puts a line through the text.</td></tr>
+ *   <tr><td><code>bold:off</code>, <code>italic:off</code>, etc.</td><td>Disables the corresponding attribute.</td></tr>
+ * </table>
+ *
+ * <h4>Colors (Foreground and Background)</h4>
+ * Colors can be specified by name, from the 256-color palette, or as an RGB value.
+ * The prefix <code>fg:</code> is optional for foreground colors but <code>bg:</code> is required for background colors.
+ *
+ * <h5>Named Colors</h5>
+ * Standard colors: <code>black</code>, <code>red</code>, <code>green</code>, <code>yellow</code>, <code>blue</code>, <code>magenta</code>, <code>cyan</code>, <code>white</code>, <code>gray</code> (bright black).
+ * <br>
+ * Bright colors: Use the uppercase version (e.g., <code>RED</code>, <code>GREEN</code>). Note that <code>GRAY</code> is mapped to standard white.
+ *
+ * <h5>256-Color Palette</h5>
+ * Use a number from 0 to 255.
+ * <ul>
+ *   <li>Foreground: <code>&lt;number&gt;</code> or <code>fg:&lt;number&gt;</code> (e.g., <code>{{208}}</code> or <code>{{fg:208}}</code>)</li>
+ *   <li>Background: <code>bg:&lt;number&gt;</code> (e.g., <code>{{bg:208}}</code>)</li>
+ * </ul>
+ *
+ * <h5>RGB Colors</h5>
+ * Specified as a six-digit hexadecimal string (without a leading '#').
+ * <ul>
+ *   <li>Foreground: <code>&lt;rrggbb&gt;</code> or <code>fg:&lt;rrggbb&gt;</code> (e.g., <code>{{ff8800}}</code>)</li>
+ *   <li>Background: <code>bg:&lt;rrggbb&gt;</code> (e.g., <code>{{bg:ff8800}}</code>)</li>
+ * </ul>
+ *
+ * <h4>Resetting Styles</h4>
+ * <ul>
+ *   <li><code>reset</code>: Resets all attributes and colors to the terminal's default.</li>
+ *   <li><code>fg:off</code>: Resets only the foreground color.</li>
+ *   <li><code>bg:off</code>: Resets only the background color.</li>
+ * </ul>
  *
  * <p>Created: 2017. 5. 21.</p>
  *
@@ -37,10 +98,22 @@ public class JLineTextStyler {
 
     private static final Logger logger = LoggerFactory.getLogger(JLineTextStyler.class);
 
+    /**
+     * Parses a string containing style markup into an {@link AttributedCharSequence}.
+     * @param input the string to parse, may be {@code null}
+     * @return an {@code AttributedCharSequence} with styles applied, or an empty sequence if input is null
+     */
     public static AttributedCharSequence parse(String input) {
         return parse(input, null);
     }
 
+    /**
+     * Parses a string containing style markup into an {@link AttributedCharSequence},
+     * applying a default style to the entire string.
+     * @param input the string to parse, may be {@code null}
+     * @param defaultStyle the default style to apply to the entire string
+     * @return an {@code AttributedCharSequence} with styles applied, or an empty sequence if input is null
+     */
     public static AttributedCharSequence parse(final String input, final AttributedStyle defaultStyle) {
         if (input == null) {
             return AttributedString.EMPTY;
@@ -65,18 +138,44 @@ public class JLineTextStyler {
         return asb;
     }
 
+    /**
+     * Parses a string with style markup and converts it to an ANSI-escaped string
+     * suitable for a given terminal.
+     * @param input the string to parse
+     * @param terminal the terminal for which to generate ANSI codes
+     * @return the ANSI-escaped string
+     */
     public static String parseAsString(String input, Terminal terminal) {
         return parseAsString(null, input, terminal);
     }
 
+    /**
+     * Parses a string with style markup and converts it to an ANSI-escaped string
+     * suitable for a given terminal, applying a default style.
+     * @param defaultStyle the default style to apply
+     * @param input the string to parse
+     * @param terminal the terminal for which to generate ANSI codes
+     * @return the ANSI-escaped string
+     */
     public static String parseAsString(AttributedStyle defaultStyle, String input, Terminal terminal) {
         return parse(input, defaultStyle).toAnsi(terminal);
     }
 
+    /**
+     * Creates an {@link AttributedStyle} from a list of style keywords, starting from the default style.
+     * @param styles the style keywords to apply
+     * @return the resulting {@code AttributedStyle}
+     */
     public static AttributedStyle style(String... styles) {
         return style(AttributedStyle.DEFAULT, styles);
     }
 
+    /**
+     * Creates an {@link AttributedStyle} from a list of style keywords, starting from a given base style.
+     * @param baseStyle the style to start from
+     * @param styles the style keywords to apply
+     * @return the resulting {@code AttributedStyle}
+     */
     public static AttributedStyle style(AttributedStyle baseStyle, String... styles) {
         return style(baseStyle, baseStyle, styles);
     }
