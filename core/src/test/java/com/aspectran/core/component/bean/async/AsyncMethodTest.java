@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -95,7 +96,7 @@ class AsyncMethodTest {
     }
 
     @Test
-    void testVoidMethod() throws ActivityPerformException {
+    void testVoidMethod() throws ActivityPerformException, InterruptedException {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
@@ -104,13 +105,18 @@ class AsyncMethodTest {
         InstantActivity activity = new InstantActivity(context);
         activity.perform(() -> {
             testBean.voidMethod();
-            return activity.getActivityData();
+            return null;
         });
 
-//        String asyncThread = activity.getActivityData().get("threadName").toString();
-//        assertNotNull(asyncThread);
-//        assertNotEquals(mainThread, asyncThread);
-//        assertTrue(asyncThread.startsWith("SimpleAsyncTaskExecutor-"));
+        Thread.sleep(500);
+
+        ActivityData activityData = activity.getActivityData();
+        assertNotNull(activityData);
+
+        String asyncThread = activityData.get("threadName").toString();
+        assertNotNull(asyncThread);
+        assertNotEquals(mainThread, asyncThread);
+        assertTrue(asyncThread.startsWith("SimpleAsyncTaskExecutor-"));
     }
 
     @Test
@@ -146,8 +152,6 @@ class AsyncMethodTest {
         String mainThread = testBean.getCallingThreadName();
         Future<String> future = testBean.futureMethod();
 
-        Thread.sleep(300);
-
         String asyncThread = future.get();
         assertNotNull(asyncThread);
         assertNotEquals(mainThread, asyncThread);
@@ -173,14 +177,14 @@ class AsyncMethodTest {
         AsyncTestBean testBean = beanRegistry.getBean("asyncTestBean");
         assertNotNull(testBean);
 
-//        InstantActivity activity = new InstantActivity(context);
-//        Future<Activity> future = activity.perform(testBean::activityPropagationMethod);
+        InstantActivity activity = new InstantActivity(context);
+        Future<Activity> future = activity.perform(testBean::activityPropagationMethod);
 
-        Future<Activity> future = testBean.activityPropagationMethod();
+        Activity asyncActivity = future.get();
+        ActivityData data = asyncActivity.getActivityData();
 
-//        Activity asyncActivity = future.get();
-//        assertNotNull(asyncActivity);
-//        assertEquals(activity, asyncActivity);
+        assertEquals("it's me", data.get("who"));
+        assertInstanceOf(InstantActivity.class, asyncActivity);
     }
 
     @Test

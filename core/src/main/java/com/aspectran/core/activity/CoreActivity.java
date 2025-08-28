@@ -595,15 +595,6 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public Object getProcessResult(String actionId) {
-        if (getProcessResult() != null) {
-            return getProcessResult().getResultValue(actionId);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public ActivityData getActivityData() {
         if (activityData == null) {
             activityData = new ActivityData(this);

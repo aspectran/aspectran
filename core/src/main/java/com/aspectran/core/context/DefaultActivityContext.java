@@ -17,6 +17,7 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
+import com.aspectran.core.activity.ProxyActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
@@ -269,6 +270,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         Activity activity = currentActivityHolder.get();
         if (activity == null) {
             throw new NoActivityStateException();
+        }
+        if (activity.getMode() == Activity.Mode.PROXY) {
+            if (activity instanceof ProxyActivity proxyActivity && proxyActivity.hasActualActivity()) {
+                return proxyActivity.getActualActivity();
+            }
         }
         return activity;
     }

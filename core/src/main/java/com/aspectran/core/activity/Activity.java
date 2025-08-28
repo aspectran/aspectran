@@ -203,13 +203,6 @@ public interface Activity {
     ProcessResult getProcessResult();
 
     /**
-     * Returns the result of a specific action identified by its ID from the {@link ProcessResult}.
-     * @param actionId the ID of the action whose result is to be retrieved
-     * @return the action result, or {@code null} if the action does not exist or has no result
-     */
-    Object getProcessResult(String actionId);
-
-    /**
      * Returns the mutable data map associated with this activity's execution.
      * This map can be used to store and retrieve data within the activity's scope.
      * @return the current {@link ActivityData}

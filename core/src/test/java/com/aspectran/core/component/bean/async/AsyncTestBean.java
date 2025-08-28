@@ -54,8 +54,8 @@ public class AsyncTestBean extends InstantActivitySupport {
         System.out.println("Executing voidMethod on thread: " + threadName);
         Activity currentActivity = getCurrentActivity();
         System.out.println("Current activity: " + currentActivity);
-//        ActivityData activityData = currentActivity.getActivityData();
-//        activityData.put("threadName", threadName);
+        ActivityData activityData = currentActivity.getActivityData();
+        activityData.put("threadName", threadName);
     }
 
     /**
@@ -100,24 +100,21 @@ public class AsyncTestBean extends InstantActivitySupport {
     public Future<String> futureMethod() {
         String threadName = getCallingThreadName();
         System.out.println("Executing futureMethod on thread: " + threadName);
-        //System.out.println(ClassUtils.getDefaultClassLoader());
-        return CompletableFuture.supplyAsync(() -> {
-            //System.out.println(ClassUtils.getDefaultClassLoader());
-            return threadName;
-        });
+        return CompletableFuture.completedFuture(threadName);
     }
 
     @Async("myCustomTaskExecutor")
     public Future<String> customExecutorMethod() {
         String threadName = getCallingThreadName();
         System.out.println("Executing customExecutorMethod on thread: " + threadName);
-        return CompletableFuture.supplyAsync(() -> threadName);
+        return CompletableFuture.completedFuture(threadName);
     }
 
     @Async
     public Future<Activity> activityPropagationMethod() {
         Activity currentActivity = getCurrentActivity();
-        return CompletableFuture.supplyAsync(() -> currentActivity);
+        currentActivity.getActivityData().put("who", "it's me");
+        return CompletableFuture.completedFuture(currentActivity);
     }
 
     @Async

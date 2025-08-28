@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ProxyActivity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AdviceException;
@@ -29,7 +30,6 @@ import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.async.AsyncExecutionException;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.NoActivityStateException;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -140,8 +140,12 @@ public abstract class AbstractBeanProxy {
                     return result;
                 }
             } catch (Exception e) {
+                Exception cause = e;
+                if (e instanceof ActivityPerformException && e.getCause() instanceof Exception ex) {
+                    cause = ex;
+                }
                 if (executor.getAsyncUncaughtExceptionHandler() != null) {
-                    executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(e, method, args);
+                    executor.getAsyncUncaughtExceptionHandler().handleUncaughtException(cause, method, args);
                 }
                 throw e;
             }

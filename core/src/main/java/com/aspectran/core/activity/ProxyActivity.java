@@ -33,6 +33,14 @@ public final class ProxyActivity extends AdviceActivity {
         return Mode.PROXY;
     }
 
+    public boolean hasActualActivity() {
+        return (activity != null);
+    }
+
+    public Activity getActualActivity() {
+        return activity;
+    }
+
     @Override
     public void perform() throws ActivityPerformException {
         throw new UnsupportedOperationException();
@@ -43,10 +51,10 @@ public final class ProxyActivity extends AdviceActivity {
         try {
             saveCurrentActivity();
             return instantAction.execute();
-        } catch (ActivityTerminatedException e) {
+        } catch (ActivityPerformException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ActivityPerformException("Failed to perform activity for instant action " +
+            throw new ActivityPerformException("Failed to perform proxy activity for instant action " +
                     instantAction, e);
         } finally {
             removeCurrentActivity();
@@ -70,22 +78,19 @@ public final class ProxyActivity extends AdviceActivity {
     }
 
     @Override
-    public Object getProcessResult(String actionId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public ActivityData getActivityData() {
         if (activity != null) {
-            return activity.getActivityData();
+            if (activityData == null) {
+                activityData = activity.getActivityData();
+            }
         } else {
             if (activityData == null) {
                 activityData = new ActivityData(this);
             } else {
                 activityData.refresh();
             }
-            return activityData;
         }
+        return activityData;
     }
 
     @Override

@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.List;
 
@@ -55,7 +57,7 @@ public final class DefaultActivity extends AbstractActivity {
 
     @Override
     public Translet getTranslet() {
-        throw new UnsupportedOperationException("No Translet");
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -64,21 +66,19 @@ public final class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    @Nullable
     public ProcessResult getProcessResult() {
         return null;
     }
 
     @Override
-    public Object getProcessResult(String actionId) {
-        return null;
-    }
-
-    @Override
+    @NonNull
     public ActivityData getActivityData() {
         return new ActivityData(this);
     }
 
     @Override
+    @Nullable
     public Response getDeclaredResponse() {
         return null;
     }
@@ -119,26 +119,31 @@ public final class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    @Nullable
     public <V> V getAdviceBean(String aspectId) {
         return null;
     }
 
     @Override
+    @Nullable
     public <V> V getBeforeAdviceResult(String aspectId) {
         return null;
     }
 
     @Override
+    @Nullable
     public <V> V getAfterAdviceResult(String aspectId) {
         return null;
     }
 
     @Override
+    @Nullable
     public <V> V getAroundAdviceResult(String aspectId) {
         return null;
     }
 
     @Override
+    @Nullable
     public <V> V getFinallyAdviceResult(String aspectId) {
         return null;
     }
