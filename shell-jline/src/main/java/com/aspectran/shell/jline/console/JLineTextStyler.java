@@ -81,7 +81,7 @@ public class JLineTextStyler {
         return style(baseStyle, baseStyle, styles);
     }
 
-    private static AttributedStyle style(@NonNull AttributedStyle baseStyle,
+    private static AttributedStyle style(@NonNull AttributedStyle currentStyle,
                                          @Nullable AttributedStyle defaultStyle,
                                          @Nullable String... styles) {
         if (defaultStyle == null) {
@@ -91,176 +91,176 @@ public class JLineTextStyler {
             for (String style : styles) {
                 switch (style) {
                     case "reset":
-                        baseStyle = defaultStyle;
+                        currentStyle = defaultStyle;
                         break;
                     case "bold":
-                        baseStyle = baseStyle.bold();
+                        currentStyle = currentStyle.bold();
                         break;
                     case "faint":
-                        baseStyle = baseStyle.faint();
+                        currentStyle = currentStyle.faint();
                         break;
                     case "bold:off":
-                        baseStyle = baseStyle.boldOff().faintOff();
+                        currentStyle = currentStyle.boldOff().faintOff();
                         break;
                     case "italic":
-                        baseStyle = baseStyle.italic();
+                        currentStyle = currentStyle.italic();
                         break;
                     case "italic:off":
-                        baseStyle = baseStyle.italicOff();
+                        currentStyle = currentStyle.italicOff();
                         break;
                     case "underline":
-                        baseStyle = baseStyle.underline();
+                        currentStyle = currentStyle.underline();
                         break;
                     case "underline:off":
-                        baseStyle = baseStyle.underlineOff();
+                        currentStyle = currentStyle.underlineOff();
                         break;
                     case "blink":
-                        baseStyle = baseStyle.blink();
+                        currentStyle = currentStyle.blink();
                         break;
                     case "blink:off":
-                        baseStyle = baseStyle.blinkOff();
+                        currentStyle = currentStyle.blinkOff();
                         break;
                     case "inverse":
-                        baseStyle = baseStyle.inverse();
+                        currentStyle = currentStyle.inverse();
                         break;
                     case "inverse:off":
-                        baseStyle = baseStyle.inverseOff();
+                        currentStyle = currentStyle.inverseOff();
                         break;
                     case "conceal":
-                        baseStyle = baseStyle.conceal();
+                        currentStyle = currentStyle.conceal();
                         break;
                     case "conceal:off":
-                        baseStyle = baseStyle.concealOff();
+                        currentStyle = currentStyle.concealOff();
                         break;
                     case "crossedOut":
-                        baseStyle = baseStyle.crossedOut();
+                        currentStyle = currentStyle.crossedOut();
                         break;
                     case "crossedOut:off":
-                        baseStyle = baseStyle.crossedOutOff();
+                        currentStyle = currentStyle.crossedOutOff();
                         break;
                     case "black":
                     case "BLACK":
                     case "fg:black":
                     case "fg:BLACK":
-                        baseStyle = baseStyle.foreground(AttributedStyle.BLACK);
+                        currentStyle = currentStyle.foreground(AttributedStyle.BLACK);
                         break;
                     case "red":
                     case "fg:red":
-                        baseStyle = baseStyle.foreground(AttributedStyle.RED);
+                        currentStyle = currentStyle.foreground(AttributedStyle.RED);
                         break;
                     case "green":
                     case "fg:green":
-                        baseStyle = baseStyle.foreground(AttributedStyle.GREEN);
+                        currentStyle = currentStyle.foreground(AttributedStyle.GREEN);
                         break;
                     case "yellow":
                     case "fg:yellow":
-                        baseStyle = baseStyle.foreground(AttributedStyle.YELLOW);
+                        currentStyle = currentStyle.foreground(AttributedStyle.YELLOW);
                         break;
                     case "blue":
                     case "fg:blue":
-                        baseStyle = baseStyle.foreground(AttributedStyle.BLUE);
+                        currentStyle = currentStyle.foreground(AttributedStyle.BLUE);
                         break;
                     case "magenta":
                     case "fg:magenta":
-                        baseStyle = baseStyle.foreground(AttributedStyle.MAGENTA);
+                        currentStyle = currentStyle.foreground(AttributedStyle.MAGENTA);
                         break;
                     case "cyan":
                     case "fg:cyan":
-                        baseStyle = baseStyle.foreground(AttributedStyle.CYAN);
+                        currentStyle = currentStyle.foreground(AttributedStyle.CYAN);
                         break;
                     case "GRAY":
                     case "fg:GRAY":
-                        baseStyle = baseStyle.foreground(AttributedStyle.WHITE);
+                        currentStyle = currentStyle.foreground(AttributedStyle.WHITE);
                         break;
                     case "gray":
                     case "fg:gray":
-                        baseStyle = baseStyle.foreground(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
                         break;
                     case "RED":
                     case "fg:RED":
-                        baseStyle = baseStyle.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT);
                         break;
                     case "GREEN":
                     case "fg:GREEN":
-                        baseStyle = baseStyle.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
                         break;
                     case "YELLOW":
                     case "fg:YELLOW":
-                        baseStyle = baseStyle.foreground(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
                         break;
                     case "BLUE":
                     case "fg:BLUE":
-                        baseStyle = baseStyle.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
                         break;
                     case "MAGENTA":
                     case "fg:MAGENTA":
-                        baseStyle = baseStyle.foreground(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
                         break;
                     case "CYAN":
                     case "fg:CYAN":
-                        baseStyle = baseStyle.foreground(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
                         break;
                     case "WHITE":
                     case "white":
                     case "fg:WHITE":
                     case "fg:white":
-                        baseStyle = baseStyle.foreground(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.foreground(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
                         break;
                     case "fg:off":
-                        baseStyle = baseStyle.foregroundOff();
+                        currentStyle = currentStyle.foregroundOff();
                         break;
                     case "bg:black":
                     case "bg:BLACK":
-                        baseStyle = baseStyle.background(AttributedStyle.BLACK);
+                        currentStyle = currentStyle.background(AttributedStyle.BLACK);
                         break;
                     case "bg:red":
-                        baseStyle = baseStyle.background(AttributedStyle.RED);
+                        currentStyle = currentStyle.background(AttributedStyle.RED);
                         break;
                     case "bg:green":
-                        baseStyle = baseStyle.background(AttributedStyle.GREEN);
+                        currentStyle = currentStyle.background(AttributedStyle.GREEN);
                         break;
                     case "bg:yellow":
-                        baseStyle = baseStyle.background(AttributedStyle.YELLOW);
+                        currentStyle = currentStyle.background(AttributedStyle.YELLOW);
                         break;
                     case "bg:blue":
-                        baseStyle = baseStyle.background(AttributedStyle.BLUE);
+                        currentStyle = currentStyle.background(AttributedStyle.BLUE);
                         break;
                     case "bg:magenta":
-                        baseStyle = baseStyle.background(AttributedStyle.MAGENTA);
+                        currentStyle = currentStyle.background(AttributedStyle.MAGENTA);
                         break;
                     case "bg:cyan":
-                        baseStyle = baseStyle.background(AttributedStyle.CYAN);
+                        currentStyle = currentStyle.background(AttributedStyle.CYAN);
                         break;
                     case "bg:GRAY":
-                        baseStyle = baseStyle.background(AttributedStyle.WHITE);
+                        currentStyle = currentStyle.background(AttributedStyle.WHITE);
                         break;
                     case "bg:gray":
-                        baseStyle = baseStyle.background(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
                         break;
                     case "bg:RED":
-                        baseStyle = baseStyle.background(AttributedStyle.RED | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.RED | AttributedStyle.BRIGHT);
                         break;
                     case "bg:GREEN":
-                        baseStyle = baseStyle.background(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
                         break;
                     case "bg:YELLOW":
-                        baseStyle = baseStyle.background(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
                         break;
                     case "bg:BLUE":
-                        baseStyle = baseStyle.background(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
                         break;
                     case "bg:MAGENTA":
-                        baseStyle = baseStyle.background(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
                         break;
                     case "bg:CYAN":
-                        baseStyle = baseStyle.background(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
                         break;
                     case "bg:WHITE":
                     case "bg:white":
-                        baseStyle = baseStyle.background(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
+                        currentStyle = currentStyle.background(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
                         break;
                     case "bg:off":
-                        baseStyle = baseStyle.backgroundOff();
+                        currentStyle = currentStyle.backgroundOff();
                         break;
                     default:
                         int color = -1;
@@ -270,11 +270,11 @@ public class JLineTextStyler {
                             } catch (NumberFormatException ignored) {
                                 try {
                                     color = Colors.rgbColor(style.toLowerCase());
-                                } catch (Throwable e) {
+                                } catch (IllegalArgumentException e) {
                                     logger.warn("Unable to parse color from string \"{}\"", style, e);
                                 }
                             }
-                            baseStyle = baseStyle.background(color);
+                            currentStyle = currentStyle.background(color);
                         } else {
                             try {
                                 if (style.startsWith("fb:")) {
@@ -285,11 +285,11 @@ public class JLineTextStyler {
                             } catch (NumberFormatException ignored) {
                                 try {
                                     color = Colors.rgbColor(style.toLowerCase());
-                                } catch (Throwable e) {
+                                } catch (IllegalArgumentException e) {
                                     logger.warn("Unable to parse color from string \"{}\"", style, e);
                                 }
                             }
-                            baseStyle = baseStyle.foreground(color);
+                            currentStyle = currentStyle.foreground(color);
                         }
                         if (color == -1) {
                             logger.warn("Unknown color code \"{}\"", style);
@@ -298,7 +298,7 @@ public class JLineTextStyler {
                 }
             }
         }
-        return baseStyle;
+        return currentStyle;
     }
 
 }

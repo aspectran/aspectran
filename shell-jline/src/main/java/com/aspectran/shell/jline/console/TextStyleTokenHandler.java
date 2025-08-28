@@ -18,70 +18,96 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.utils.StringUtils;
 
 /**
+ * A token handler for parsing text with inline style tags like <code>{{style1,style2}}</code>.
+ * This class processes a character sequence, distinguishing between literal text
+ * and style specifications.
+ *
  * <p>Created: 2017. 11. 19.</p>
  */
 public abstract class TextStyleTokenHandler {
 
+    /**
+     * Handles a literal character.
+     * @param c the character to handle
+     */
     public abstract void character(char c);
 
+    /**
+     * Handles a style specification.
+     * @param styles an array of style names
+     */
     public abstract void style(String... styles);
 
+    /**
+     * Parses the input character sequence to process text and style tokens.
+     * <p>
+     * Style tokens are enclosed in double curly braces, for example, <code>{{bold,red}}</code>.
+     * A single open brace <code>{</code> is treated as a literal character.
+     * An unclosed style token at the end of the input is treated as literal text.
+     * </p>
+     * @param input the character sequence to parse
+     */
     public void handle(CharSequence input) {
         if (input == null) {
             return;
         }
 
-        int inputLen = input.length();
-        char c;
-        int p1 = 0;
-        int p2 = 0;
-        int p3 = 0;
+        final int STATE_DEFAULT = 0;
+        final int STATE_SEEN_ONE_OPEN_BRACE = 1;
+        final int STATE_IN_STYLE_TAG = 2;
 
-        for (int i = 0; i < inputLen; i++) {
-            c = input.charAt(i);
-            switch (c) {
-                case '{':
-                    if (p1 < 2) {
-                        p1++;
-                    } else if (p1 == 2) {
+        int state = STATE_DEFAULT;
+        int styleContentStart = -1;
+
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            switch (state) {
+                case STATE_DEFAULT:
+                    if (c == '{') {
+                        state = STATE_SEEN_ONE_OPEN_BRACE;
+                    } else {
                         character(c);
                     }
                     break;
-                case '}':
-                    if (p1 >= 2) {
-                        if (p2 == 0) {
-                            p2++;
-                        } else if (p2 == 1) {
-                            p2 = i - 1;
-                        }
-                    } else if (p1 == 1) {
+                case STATE_SEEN_ONE_OPEN_BRACE:
+                    if (c == '{') {
+                        state = STATE_IN_STYLE_TAG;
+                        styleContentStart = i + 1;
+                    } else {
+                        // Not a tag, was a literal '{' followed by another char
                         character('{');
-                        p1 = 0;
+                        character(c);
+                        state = STATE_DEFAULT;
                     }
                     break;
-                default:
-                    if (p1 == 1) {
-                        p1 = 0;
-                        character('{');
-                    } else if (p1 == 2 && p3 == 0) {
-                        p1 = p3 = i;
+                case STATE_IN_STYLE_TAG:
+                    if (c == '}') {
+                        // Check for "}}"
+                        if (i + 1 < input.length() && input.charAt(i + 1) == '}') {
+                            // End of tag found
+                            String styleSpec = input.subSequence(styleContentStart, i).toString();
+                            String[] styles = StringUtils.splitWithComma(styleSpec);
+                            style(styles);
+                            i++; // consume the second '}'
+                            state = STATE_DEFAULT;
+                            styleContentStart = -1;
+                        }
+                        // A single '}' inside a tag is treated as part of the style spec,
+                        // so we do nothing here and let it be part of the substring.
                     }
-            }
-            if (p1 == 0) {
-                character(c);
-            } else if (p1 >= 2 && p1 < p2) {
-                String[] arr = StringUtils.splitWithComma(input.subSequence(p1, p2).toString());
-                style(arr);
-                p1 = p2 = p3 = 0;
+                    break;
             }
         }
 
-        if (p1 > 0) {
-            for (int i = 0; i < p1; i++) {
-                character('{');
+        // Handle unclosed tags or pending characters at the end of the input
+        if (state == STATE_SEEN_ONE_OPEN_BRACE) {
+            character('{');
+        } else if (state == STATE_IN_STYLE_TAG) {
+            character('{');
+            character('{');
+            for (int i = styleContentStart; i < input.length(); i++) {
+                character(input.charAt(i));
             }
-            String str = input.subSequence(p1, inputLen).toString();
-            style(str);
         }
     }
 

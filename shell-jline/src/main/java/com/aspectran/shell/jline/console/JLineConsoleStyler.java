@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.console.DefaultConsoleStyler;
 import org.jline.utils.AttributedStyle;
 
@@ -25,10 +26,29 @@ public class JLineConsoleStyler extends DefaultConsoleStyler {
 
     private final JLineTerminal jlineTerminal;
 
+    /** Cache for Style objects to avoid repeated creation. */
     private Style baseStyle;
+    private Style secondaryStyle;
+    private Style successStyle;
+    private Style dangerStyle;
+    private Style warningStyle;
+    private Style infoStyle;
 
     public JLineConsoleStyler(JLineTerminal jlineTerminal) {
         this.jlineTerminal = jlineTerminal;
+    }
+
+    @Override
+    public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
+        // Invalidate all cached styles. The superclass method will call resetStyle(),
+        // which will then re-initialize the baseStyle from the new configuration.
+        this.baseStyle = null;
+        this.secondaryStyle = null;
+        this.successStyle = null;
+        this.dangerStyle = null;
+        this.warningStyle = null;
+        this.infoStyle = null;
+        super.setShellStyleConfig(shellStyleConfig);
     }
 
     protected Style getBaseStyle() {
@@ -70,35 +90,50 @@ public class JLineConsoleStyler extends DefaultConsoleStyler {
     @Override
     public void secondaryStyle() {
         if (getSecondaryStyle() != null) {
-            setStyle(new Style(getSecondaryStyle()));
+            if (this.secondaryStyle == null) {
+                this.secondaryStyle = new Style(getSecondaryStyle());
+            }
+            setStyle(this.secondaryStyle);
         }
     }
 
     @Override
     public void successStyle() {
         if (getSuccessStyle() != null) {
-            setStyle(new Style(getSuccessStyle()));
+            if (this.successStyle == null) {
+                this.successStyle = new Style(getSuccessStyle());
+            }
+            setStyle(this.successStyle);
         }
     }
 
     @Override
     public void dangerStyle() {
         if (getDangerStyle() != null) {
-            setStyle(new Style(getDangerStyle()));
+            if (this.dangerStyle == null) {
+                this.dangerStyle = new Style(getDangerStyle());
+            }
+            setStyle(this.dangerStyle);
         }
     }
 
     @Override
     public void warningStyle() {
         if (getWarningStyle() != null) {
-            setStyle(new Style(getWarningStyle()));
+            if (this.warningStyle == null) {
+                this.warningStyle = new Style(getWarningStyle());
+            }
+            setStyle(this.warningStyle);
         }
     }
 
     @Override
     public void infoStyle() {
         if (getInfoStyle() != null) {
-            setStyle(new Style(getInfoStyle()));
+            if (this.infoStyle == null) {
+                this.infoStyle = new Style(getInfoStyle());
+            }
+            setStyle(this.infoStyle);
         }
     }
 
