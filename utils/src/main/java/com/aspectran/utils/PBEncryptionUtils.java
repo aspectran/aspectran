@@ -21,14 +21,17 @@ import org.jasypt.encryption.ByteEncryptor;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 
+import org.jasypt.iv.RandomIvGenerator;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
  * This class provides basic encryption/decryption capabilities to implement PBE.
+ * The encryption algorithm and password can be configured via JVM system properties.
+ * These properties are read only once when the class is loaded.
  *
- * <p>Note: Note: Use {@link org.jasypt.util.password.StrongPasswordEncryptor} for
+ * <p>Note: Use {@link org.jasypt.util.password.StrongPasswordEncryptor} for
  * high-strength password digesting and checking.</p>
  *
  * <p>Created: 20/10/2018</p>
@@ -37,10 +40,30 @@ import java.util.Base64;
  */
 public abstract class PBEncryptionUtils {
 
+    /**
+     * The default encryption algorithm is "PBEWithMD5AndTripleDES". This algorithm is chosen for
+     * its balance of security and the length of the encrypted string, making it suitable for
+     * use cases like encrypting configuration values or short-lived tokens where extreme
+     * security is not the primary concern.
+     * <p>
+     * <strong>WARNING:</strong> This is a legacy algorithm and may not be sufficient for
+     * systems with high-security requirements. For applications that handle sensitive data
+     * or operate in a security-critical environment, it is <strong>strongly
+     * recommended</strong> to use a more modern and robust algorithm such as
+     * "PBEWITHHMACSHA256ANDAES_128". You can override the default algorithm by setting
+     * the JVM system property "{@value #ENCRYPTION_ALGORITHM_KEY}".
+     * @see <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#pbecipher-algorithms">Java Security Standard Algorithm Names</a>
+     */
     public static final String DEFAULT_ALGORITHM = "PBEWithMD5AndTripleDES";
 
+    /**
+     * The name of the system property that specifies the encryption algorithm.
+     */
     public static final String ENCRYPTION_ALGORITHM_KEY = "aspectran.encryption.algorithm";
 
+    /**
+     * The name of the system property that specifies the encryption password.
+     */
     public static final String ENCRYPTION_PASSWORD_KEY = "aspectran.encryption.password";
 
     private static final Charset MESSAGE_CHARSET = StandardCharsets.UTF_8;
@@ -59,56 +82,80 @@ public abstract class PBEncryptionUtils {
         encryptor = (StringUtils.hasText(password) ? getStringEncryptor(password) : null);
     }
 
+    /**
+     * Returns the encryption algorithm currently in use.
+     * This value is determined from the "{@value #ENCRYPTION_ALGORITHM_KEY}" system property
+     * at class loading time.
+     * @return the name of the encryption algorithm
+     */
     public static String getAlgorithm() {
         return algorithm;
     }
 
+    /**
+     * Returns the encryption password currently in use.
+     * This value is determined from the "{@value #ENCRYPTION_PASSWORD_KEY}" system property
+     * at class loading time.
+     * @return the encryption password, or {@code null} if not set
+     */
     public static String getPassword() {
         return password;
     }
 
     /**
-     * Encrypts the inputString using the encryption password.
+     * Encrypts the input string using the default password-based encryptor.
+     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
      * @param inputString the string to encrypt
-     * @return the result of encryption
+     * @return the result of encryption, as a URL-safe Base64-encoded string
+     * @throws InsufficientEnvironmentException if the default encryption password is not set
      */
     public static String encrypt(String inputString) {
-        return encryptor.encrypt(inputString);
+        return getDefaultEncryptor().encrypt(inputString);
     }
 
     /**
-     * Decrypts the inputString using the encryption password.
-     * @param encryptedString the string to decrypt
+     * Decrypts the input string using the default password-based encryptor.
+     * The default password is configured via the "{@value #ENCRYPTION_PASSWORD_KEY}" system property.
+     * @param encryptedString the URL-safe Base64-encoded string to decrypt
      * @return the result of decryption
+     * @throws InsufficientEnvironmentException if the default encryption password is not set
      */
     public static String decrypt(String encryptedString) {
-        return encryptor.decrypt(encryptedString);
+        return getDefaultEncryptor().decrypt(encryptedString);
     }
 
     /**
-     * Encrypts the inputString using the encryption password.
+     * Encrypts the input string using the specified password.
+     * This method creates a temporary encryptor for the operation.
      * @param inputString the string to encrypt
      * @param encryptionPassword the password to be used for encryption
-     * @return the result of encryption
+     * @return the result of encryption, as a URL-safe Base64-encoded string
+     * @throws InsufficientEnvironmentException if the provided password is null or empty
      */
     public static String encrypt(String inputString, String encryptionPassword) {
-        ByteEncryptor byteEncryptor = getByteEncryptor(encryptionPassword);
-        StringEncryptor stringEncryptor = new CustomStringEncryptor(byteEncryptor);
-        return stringEncryptor.encrypt(inputString);
+        return getStringEncryptor(encryptionPassword).encrypt(inputString);
     }
 
     /**
-     * Decrypts the inputString using the encryption password.
-     * @param encryptedString the string to decrypt
+     * Decrypts the input string using the specified password.
+     * This method creates a temporary encryptor for the operation.
+     * @param encryptedString the URL-safe Base64-encoded string to decrypt
      * @param encryptionPassword the password used for encryption
      * @return the result of decryption
+     * @throws InsufficientEnvironmentException if the provided password is null or empty
      */
     public static String decrypt(String encryptedString, String encryptionPassword) {
-        ByteEncryptor byteEncryptor = getByteEncryptor(encryptionPassword);
-        StringEncryptor stringEncryptor = new CustomStringEncryptor(byteEncryptor);
-        return stringEncryptor.decrypt(encryptedString);
+        return getStringEncryptor(encryptionPassword).decrypt(encryptedString);
     }
 
+    /**
+     * Returns the default {@link StringEncryptor} instance.
+     * <p>This encryptor is initialized at class loading time using the algorithm and password
+     * specified by the "{@value #ENCRYPTION_ALGORITHM_KEY}" and "{@value #ENCRYPTION_PASSWORD_KEY}"
+     * system properties.</p>
+     * @return the default string encryptor
+     * @throws InsufficientEnvironmentException if the encryption password is not set
+     */
     public static StringEncryptor getDefaultEncryptor() {
         if (encryptor == null) {
             checkPassword(null);
@@ -116,17 +163,37 @@ public abstract class PBEncryptionUtils {
         return encryptor;
     }
 
+    /**
+     * Creates and returns a new {@link StringEncryptor} instance for the given password.
+     * The algorithm used is the one configured via the system property.
+     * @param encryptionPassword the password to be used for encryption/decryption
+     * @return a new string encryptor instance
+     * @throws InsufficientEnvironmentException if the provided password is null or empty
+     */
     @NonNull
     public static StringEncryptor getStringEncryptor(String encryptionPassword) {
         return new CustomStringEncryptor(getByteEncryptor(encryptionPassword));
     }
 
+    /**
+     * Creates and returns a new {@link ByteEncryptor} instance for the given password.
+     * <p>This method configures the underlying {@link StandardPBEByteEncryptor} with the
+     * currently active algorithm. If the algorithm is AES-based, it automatically sets up
+     * an {@link org.jasypt.iv.IvGenerator}.</p>
+     * @param encryptionPassword the password to be used for encryption/decryption
+     * @return a new byte encryptor instance
+     * @throws InsufficientEnvironmentException if the provided password is null or empty
+     */
     @NonNull
     public static ByteEncryptor getByteEncryptor(String encryptionPassword) {
         checkPassword(encryptionPassword);
         StandardPBEByteEncryptor byteEncryptor = new StandardPBEByteEncryptor();
         byteEncryptor.setAlgorithm(algorithm);
         byteEncryptor.setPassword(encryptionPassword);
+        // AES algorithms require an IV (Initialization Vector)
+        if (algorithm.contains("AES")) {
+            byteEncryptor.setIvGenerator(new RandomIvGenerator());
+        }
         return byteEncryptor;
     }
 

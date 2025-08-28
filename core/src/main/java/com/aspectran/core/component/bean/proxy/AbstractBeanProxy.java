@@ -29,7 +29,6 @@ import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.async.AsyncExecutionException;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.NoActivityStateException;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
