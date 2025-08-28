@@ -41,20 +41,26 @@ import java.util.Base64;
 public abstract class PBEncryptionUtils {
 
     /**
-     * The default encryption algorithm is "PBEWithMD5AndTripleDES". This algorithm is chosen for
-     * its balance of security and the length of the encrypted string, making it suitable for
-     * use cases like encrypting configuration values or short-lived tokens where extreme
-     * security is not the primary concern.
-     * <p>
-     * <strong>WARNING:</strong> This is a legacy algorithm and may not be sufficient for
-     * systems with high-security requirements. For applications that handle sensitive data
-     * or operate in a security-critical environment, it is <strong>strongly
-     * recommended</strong> to use a more modern and robust algorithm such as
-     * "PBEWITHHMACSHA256ANDAES_128". You can override the default algorithm by setting
-     * the JVM system property "{@value #ENCRYPTION_ALGORITHM_KEY}".
+     * The default encryption algorithm is "PBEWITHHMACSHA256ANDAES_128".
+     * This is a modern and secure password-based encryption algorithm recommended by security experts.
+     * <p><strong>NOTE ON ENCRYPTED LENGTH:</strong> Modern algorithms like this one produce
+     * longer encrypted strings compared to older ones (e.g., "PBEWithMD5AndTripleDES").
+     * This is an intentional and necessary design for security. The increased length comes from
+     * including a random salt and a random Initialization Vector (IV) with each encrypted message.
+     * <ul>
+     *   <li><b>Salt:</b> Prevents pre-computation attacks (like rainbow tables).</li>
+     *   <li><b>IV:</b> Ensures that encrypting the same data multiple times produces different results.</li>
+     * </ul>
+     * Attempting to shorten the output by removing or fixing the salt/IV would severely
+     * compromise security and is strongly discouraged. The longer string length is a
+     * trade-off for significantly enhanced security. If high security is not a requirement
+     * and reducing the length of the encrypted string is a higher priority, you can switch
+     * to a legacy algorithm like {@code "PBEWithMD5AndTripleDES"} by setting the
+     * "{@value #ENCRYPTION_ALGORITHM_KEY}" system property. However, be aware that this
+     * will significantly reduce the security level.
      * @see <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#pbecipher-algorithms">Java Security Standard Algorithm Names</a>
      */
-    public static final String DEFAULT_ALGORITHM = "PBEWithMD5AndTripleDES";
+    public static final String DEFAULT_ALGORITHM = "PBEWITHHMACSHA256ANDAES_128";
 
     /**
      * The name of the system property that specifies the encryption algorithm.
