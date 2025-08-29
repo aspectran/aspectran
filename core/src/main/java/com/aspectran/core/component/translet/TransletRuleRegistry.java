@@ -274,7 +274,12 @@ public class TransletRuleRegistry extends AbstractComponent {
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
             TransletScanner scanner = createTransletScanner(transletRule);
-            PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(transletRule.getName());
+            PrefixSuffixPattern prefixSuffixPattern;
+            try {
+                prefixSuffixPattern = PrefixSuffixPattern.of(transletRule.getName());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalRuleException("Invalid translet name pattern \"" + transletRule.getName() + "\"", e);
+            }
             scanner.scan(scanPath, (filePath, scannedFile) -> {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
                 if (prefixSuffixPattern != null) {

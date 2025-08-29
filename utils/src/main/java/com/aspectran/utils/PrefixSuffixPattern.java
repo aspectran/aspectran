@@ -18,65 +18,108 @@ package com.aspectran.utils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+/**
+ * Represents an immutable pattern with a prefix and a suffix, separated by a single wildcard character.
+ * <p>This class is designed to parse and use simple wildcard patterns like "prefix*suffix".
+ * It is immutable and thread-safe.</p>
+ *
+ * <p>Created: 2016. 1. 31.</p>
+ */
 public class PrefixSuffixPattern {
 
+    /**
+     * The wildcard character that separates the prefix and suffix.
+     */
     public static final char PREFIX_SUFFIX_SEPARATOR = '*';
 
-    private String prefix;
+    private final String prefix;
 
-    private String suffix;
+    private final String suffix;
 
-    public PrefixSuffixPattern() {
+    /**
+     * Private constructor to create an immutable instance.
+     * @param prefix the prefix part of the pattern; never null, can be empty
+     * @param suffix the suffix part of the pattern; never null, can be empty
+     */
+    private PrefixSuffixPattern(@NonNull String prefix, @NonNull String suffix) {
+        this.prefix = prefix;
+        this.suffix = suffix;
     }
 
+    /**
+     * Returns the prefix part of the pattern.
+     * @return the prefix, never null (can be an empty string)
+     */
+    @NonNull
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Returns the suffix part of the pattern.
+     * @return the suffix, never null (can be an empty string)
+     */
+    @NonNull
     public String getSuffix() {
         return suffix;
     }
 
-    public boolean separate(String expression) {
-        int start = (expression != null ? expression.indexOf(PREFIX_SUFFIX_SEPARATOR) : -1);
-        if (start == -1) {
-            prefix = null;
-            suffix = null;
-            return false;
-        } else {
-            prefix = (start > 0 ? expression.substring(0, start) : null);
-            suffix = (start < expression.length() - 1 ? expression.substring(start + 1) : null);
-            return (prefix != null || suffix != null || expression.charAt(0) == PREFIX_SUFFIX_SEPARATOR);
-        }
-    }
-
+    /**
+     * Encloses the given infix string with the pattern's prefix and suffix.
+     * @param infix the string to enclose
+     * @return the fully enclosed string
+     */
     public String enclose(String infix) {
-        return join(prefix, infix, suffix);
+        return join(this.prefix, infix, this.suffix);
     }
 
+    /**
+     * A static helper method to join a prefix, infix, and suffix.
+     * Handles empty prefixes and suffixes correctly.
+     * @param prefix the prefix string
+     * @param infix the mandatory infix string
+     * @param suffix the suffix string
+     * @return the combined string
+     */
     @NonNull
-    public static String join(String prefix, String infix, String suffix) {
+    public static String join(@NonNull String prefix, @NonNull String infix, @NonNull String suffix) {
         Assert.notNull(infix, "infix must not be null");
-        if (prefix != null && suffix != null) {
-            return prefix + infix + suffix;
-        } else if (prefix != null) {
-            return prefix + infix;
-        } else if (suffix != null) {
-            return infix + suffix;
-        } else {
-            return infix;
-        }
+        return prefix + infix + suffix;
     }
 
+    /**
+     * Creates a {@code PrefixSuffixPattern} instance by parsing the given expression.
+     * <p>Examples:
+     *  - "pre*suf" results in prefix="pre", suffix="suf"
+     *  - "*suf" results in prefix="", suffix="suf"
+     *  - "pre*" results in prefix="pre", suffix=""
+     *  - "*" results in prefix="", suffix=""
+     * </p>
+     * @param expression the pattern expression to parse
+     * @return a new {@link PrefixSuffixPattern} instance, or {@code null} if the expression
+     *      is null, empty, or does not contain the wildcard character
+     * @throws IllegalArgumentException if the expression contains more than one wildcard character
+     */
     @Nullable
     public static PrefixSuffixPattern of(String expression) {
-        if (StringUtils.hasLength(expression)) {
-            PrefixSuffixPattern pattern = new PrefixSuffixPattern();
-            if (pattern.separate(expression)) {
-                return pattern;
-            }
+        if (!StringUtils.hasLength(expression)) {
+            return null;
         }
-        return null;
+
+        int firstIndex = expression.indexOf(PREFIX_SUFFIX_SEPARATOR);
+        if (firstIndex == -1) {
+            return null;
+        }
+
+        int lastIndex = expression.lastIndexOf(PREFIX_SUFFIX_SEPARATOR);
+        if (firstIndex != lastIndex) {
+            throw new IllegalArgumentException("Pattern expression must contain exactly one '" +
+                    PREFIX_SUFFIX_SEPARATOR + "' wildcard, but found more than one in \"" + expression + "\"");
+        }
+
+        String prefix = expression.substring(0, firstIndex);
+        String suffix = expression.substring(firstIndex + 1);
+        return new PrefixSuffixPattern(prefix, suffix);
     }
 
 }

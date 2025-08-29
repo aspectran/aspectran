@@ -51,15 +51,18 @@ class TransletScannerTest {
 
         String scanPath = transletRule.getScanPath();
         TransletScanner scanner = createTransletScanner(basePath, transletRule);
-        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(transletRule.getName());
+        PrefixSuffixPattern prefixSuffixPattern;
+        try {
+            prefixSuffixPattern = PrefixSuffixPattern.of(transletRule.getName());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalRuleException("Invalid translet name pattern \"" + transletRule.getName() + "\"", e);
+        }
         scanner.scan(scanPath, (filePath, scannedFile) -> {
             TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
             if (prefixSuffixPattern != null) {
                 newTransletRule.setName(prefixSuffixPattern.enclose(filePath));
-            } else {
-                if (transletRule.getName() != null) {
-                    newTransletRule.setName(transletRule.getName() + filePath);
-                }
+            } else if (transletRule.getName() != null) {
+                newTransletRule.setName(transletRule.getName() + filePath);
             }
             assertEquals("/test/" + filePath + "/bbb", newTransletRule.getName());
         });

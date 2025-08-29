@@ -318,7 +318,12 @@ public class BeanRuleRegistry {
         }
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
-            PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(beanRule.getId());
+            PrefixSuffixPattern prefixSuffixPattern;
+            try {
+                prefixSuffixPattern = PrefixSuffixPattern.of(beanRule.getId());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalRuleException("Invalid bean ID pattern \"" + beanRule.getId() + "\"", e);
+            }
             final Map<Class<?>, String> beanClasses = new HashMap<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
