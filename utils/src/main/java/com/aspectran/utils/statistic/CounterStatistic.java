@@ -39,7 +39,8 @@ public class CounterStatistic {
     private final LongAdder total = new LongAdder();
 
     /**
-     * Resets the total and maximum values to zero, and sets the current value to zero.
+     * Resets all statistics (current, total, max) to their initial zero values.
+     * The current value is set to 0, and total and max are reset accordingly.
      */
     public void reset() {
         total.reset();

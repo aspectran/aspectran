@@ -24,10 +24,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * An implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
  * <p>This class is a clone of {@code org.eclipse.jetty.util.thread.ScheduledExecutorScheduler}.</p>
- * <p>While the use of {@link ScheduledThreadPoolExecutor} creates futures that may not be directly used,
- * it has the advantage of allowing to set a property to remove cancelled tasks from its
- * queue even if the task did not fire, which provides a huge benefit in the performance
- * of garbage collection in young generation.</p>
+ * <p>It provides a robust way to schedule tasks for future execution, leveraging the capabilities
+ * of {@code ScheduledThreadPoolExecutor}. It is particularly optimized for scenarios where tasks
+ * might be cancelled, as it enables the {@code removeOnCancelPolicy} for efficient garbage collection.</p>
  */
 public class ScheduledExecutorScheduler implements Scheduler {
 
