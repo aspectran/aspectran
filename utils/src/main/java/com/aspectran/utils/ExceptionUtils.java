@@ -36,6 +36,10 @@ public class ExceptionUtils {
         return (t.getCause() != null ? t.getCause() : t);
     }
 
+    public static Exception getCause(@NonNull Exception e) {
+        return (e.getCause() != null ? (Exception)e.getCause() : e);
+    }
+
     /**
      * Method that can be used to find the "root cause", innermost
      * of chained (wrapped) exceptions.

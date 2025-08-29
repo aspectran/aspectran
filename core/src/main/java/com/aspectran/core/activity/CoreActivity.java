@@ -314,8 +314,8 @@ public class CoreActivity extends AdviceActivity {
                     executeAdvice(getAfterAdviceRuleList());
                 }
             } catch (Exception e) {
-                if (e instanceof ActionExecutionException && e.getCause() != null) {
-                    setRaisedException(e.getCause());
+                if (e instanceof ActionExecutionException ex && ex.getCause() != null) {
+                    setRaisedException(ex.getCause());
                 } else {
                     setRaisedException(e);
                 }
@@ -329,35 +329,14 @@ public class CoreActivity extends AdviceActivity {
             if (!forwarding) {
                 if (isExceptionRaised()) {
                     setCurrentAdviceType(AdviceType.THROWN);
-                    try {
-                        exception();
-                        if (translet != null) {
-                            response();
-                        }
-                    } catch (Exception e) {
-                        logger.error("A new exception occurred while handling the original exception. " +
-                                "The original exception will be re-thrown.", e);
-                    }
-                    if (isExceptionRaised()) {
-                        throw getRaisedException();
-                    }
+                    handleRaisedException();
                 }
-
                 setCurrentAdviceType(null);
             }
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
-            if (translet != null) {
-                throw new ActivityPerformException("Failed to perform activity for Translet " +
-                        translet.getTransletRule(), e);
-            }
-            if (instantAction != null) {
-                throw new ActivityPerformException("Failed to perform activity for instant action " +
-                        instantAction, e);
-            } else {
-                throw new ActivityPerformException("Failed to perform activity", e);
-            }
+            throw createPerformException(e, instantAction);
         } finally {
             try {
                 if (!forwarding) {
@@ -435,18 +414,6 @@ public class CoreActivity extends AdviceActivity {
         perform();
     }
 
-    private void exception() throws ActionExecutionException {
-        reserveResponse(null);
-        responded = false;
-
-        if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
-            handleException(getTransletRule().getExceptionRule());
-        }
-        if (getExceptionRuleList() != null) {
-            handleException(getExceptionRuleList());
-        }
-    }
-
     private void finish() {
         try {
             if (getRequestAdapter() != null) {
@@ -464,9 +431,69 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    //-------------------------------------------------------------------------------------
+    // Exception Handling Methods
+    //-------------------------------------------------------------------------------------
+
+    private void handleRaisedException() throws Exception {
+        try {
+            processExceptionRules();
+            if (translet != null) {
+                response();
+            }
+        } catch (Exception e) {
+            logger.error("A new exception occurred while handling the original exception. The original exception will be re-thrown.", e);
+        }
+        if (isExceptionRaised()) {
+            throw getRaisedException();
+        }
+    }
+
+    private void processExceptionRules() throws ActionExecutionException {
+        reserveResponse(null);
+        responded = false;
+
+        if (hasTranslet() && getTransletRule().getExceptionRule() != null) {
+            handleException(getTransletRule().getExceptionRule());
+        }
+        if (getExceptionRuleList() != null) {
+            handleException(getExceptionRuleList());
+        }
+    }
+
+    @Override
+    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
+        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
+        if (hasTranslet() && exceptionThrownRule != null && !isResponseReserved()) {
+            Response response = getDesiredResponse();
+            String contentType = (response != null ? response.getContentType() : null);
+            Response targetResponse = exceptionThrownRule.getResponse(contentType);
+            if (targetResponse != null) {
+                reserveResponse(targetResponse);
+            }
+        }
+        return exceptionThrownRule;
+    }
+
+    @NonNull
+    private ActivityPerformException createPerformException(Throwable cause, InstantAction<?> instantAction) {
+        String contextDesc = null;
+        if (translet != null) {
+            contextDesc = " for Translet " + translet.getTransletRule();
+        } else if (instantAction != null) {
+            contextDesc = " for instant action " + instantAction;
+        }
+        String message = "Failed to perform activity" + (contextDesc != null ? "" : contextDesc);
+        return new ActivityPerformException(message, cause);
+    }
+
     private void execute(ActionList actionList) throws ActionExecutionException {
         execute(actionList, null);
     }
+
+    //-------------------------------------------------------------------------------------
+    // Action Executing Methods
+    //-------------------------------------------------------------------------------------
 
     private void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
@@ -492,11 +519,6 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    /**
-     * Execute an action.
-     * @param action the executable action
-     * @param contentResult the content result
-     */
     private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
         try {
             if (logger.isDebugEnabled()) {
@@ -529,19 +551,9 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    @Override
-    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
-        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
-        if (hasTranslet() && exceptionThrownRule != null && !isResponseReserved()) {
-            Response response = getDesiredResponse();
-            String contentType = (response != null ? response.getContentType() : null);
-            Response targetResponse = exceptionThrownRule.getResponse(contentType);
-            if (targetResponse != null) {
-                reserveResponse(targetResponse);
-            }
-        }
-        return exceptionThrownRule;
-    }
+    //-------------------------------------------------------------------------------------
+    // Response-related Methods
+    //-------------------------------------------------------------------------------------
 
     private Response getResponse() {
         Response response = reservedResponse;
@@ -582,6 +594,10 @@ public class CoreActivity extends AdviceActivity {
     public boolean isResponded() {
         return responded;
     }
+
+    //-------------------------------------------------------------------------------------
+    // Other Methods
+    //-------------------------------------------------------------------------------------
 
     @Override
     public CoreTranslet getTranslet() {

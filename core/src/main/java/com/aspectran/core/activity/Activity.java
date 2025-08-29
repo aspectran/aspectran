@@ -249,7 +249,7 @@ public interface Activity {
      * Sets the exception that was raised during the activity's execution.
      * @param raisedException the exception to set
      */
-    void setRaisedException(Throwable raisedException);
+    void setRaisedException(Exception raisedException);
 
     /**
      * Clears any exception that was previously set for this activity.

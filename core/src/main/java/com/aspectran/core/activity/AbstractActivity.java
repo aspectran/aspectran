@@ -76,7 +76,7 @@ public abstract class AbstractActivity implements Activity {
     /**
      * The exception that was raised during processing, if any.
      */
-    private Throwable raisedException;
+    private Exception raisedException;
 
     /**
      * Arbitrary settings stored at the activity scope.
@@ -265,7 +265,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public Throwable getRaisedException() {
+    public Exception getRaisedException() {
         return raisedException;
     }
 
@@ -279,7 +279,7 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public void setRaisedException(Throwable raisedException) {
+    public void setRaisedException(Exception raisedException) {
         if (this.raisedException == null) {
             if (raisedException instanceof ActionExecutionException ||
                     raisedException instanceof AdviceException ||
