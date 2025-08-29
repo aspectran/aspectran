@@ -91,26 +91,29 @@ public class NodeTracker implements Cloneable {
     }
 
     /**
-     * Returns a cloned NodeTracker instance that represents the current state of this tracker.
-     * @return a cloned NodeTracker
+     * Creates and returns a new {@code NodeTracker} instance that represents a snapshot
+     * of the current state of this tracker.
+     * @return a new {@code NodeTracker} instance with the current state
      */
     @Nullable
-    public NodeTracker getClonedNodeTracker() {
+    public NodeTracker createSnapshot() {
         try {
             return (NodeTracker) clone();
         } catch (CloneNotSupportedException e) {
-            return null; // Should not happen as NodeTracker implements Cloneable
+            // This should not happen as NodeTracker implements Cloneable
+            throw new RuntimeException("Failed to clone NodeTracker", e);
         }
     }
 
     /**
-     * Sets the cloned NodeTracker instance.
-     * @param clonedNodeTracker the cloned NodeTracker
+     * Restores the state of this {@code NodeTracker} instance by copying the state
+     * from a previously created snapshot.
+     * @param snapshot the {@code NodeTracker} instance to restore state from
      */
-    public void setClonedNodeTracker(NodeTracker clonedNodeTracker) {
-        this.name = clonedNodeTracker.name;
-        this.lineNumber = clonedNodeTracker.lineNumber;
-        this.columnNumber = clonedNodeTracker.columnNumber;
+    public void restoreStateFrom(NodeTracker snapshot) {
+        this.name = snapshot.name;
+        this.lineNumber = snapshot.lineNumber;
+        this.columnNumber = snapshot.columnNumber;
     }
 
     /**

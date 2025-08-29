@@ -285,7 +285,7 @@ public class BeanReferenceInspector {
             if (ruleAppender != null) {
                 NodeTracker nodeTracker = ruleAppender.getNodeTracker();
                 if (nodeTracker != null) {
-                    this.nodeTracker = nodeTracker.getClonedNodeTracker();
+                    this.nodeTracker = nodeTracker.createSnapshot();
                 } else {
                     this.nodeTracker = null;
                 }

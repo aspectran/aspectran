@@ -40,11 +40,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The NodeletParser is a callback based parser similar to SAX.  The big
- * difference is that rather than having a single callback for all nodes,
- * the NodeletParser has a number of callbacks mapped to various nodes.
- * The callback is called a Nodelet, and it is registered
- * with the NodeletParser against a specific XPath.
+ * A callback-based parser similar to SAX, but with callbacks mapped to specific XPath expressions.
+ * <p>The {@code NodeletParser} registers {@link Nodelet}s (callbacks) with specific XPath patterns.
+ * When the parser encounters a node matching a registered XPath, the corresponding Nodelet's
+ * {@link Nodelet#process(Map)} method is invoked.</p>
  */
 public class NodeletParser {
 
@@ -68,132 +67,190 @@ public class NodeletParser {
 
     private String xpath;
 
+    /**
+     * Creates a new NodeletParser.
+     * @param nodeParser the object that owns this parser (e.g., the main parser context)
+     */
     public NodeletParser(Object nodeParser) {
         this.nodeParser = nodeParser;
     }
 
+    /**
+     * Returns the owner object of this parser.
+     * @param <N> the type of the owner object
+     * @return the owner object
+     */
     @SuppressWarnings("unchecked")
     public <N> N getNodeParser() {
         return (N)nodeParser;
     }
 
+    /**
+     * Sets whether the parser should perform XML schema validation.
+     * @param validating {@code true} to enable validation, {@code false} otherwise
+     */
     public void setValidating(boolean validating) {
         this.validating = validating;
     }
 
+    /**
+     * Sets the {@link EntityResolver} to be used by the underlying SAX parser.
+     * @param entityResolver the entity resolver
+     */
     public void setEntityResolver(EntityResolver entityResolver) {
         this.entityResolver = entityResolver;
     }
 
+    /**
+     * Enables location tracking during parsing.
+     * <p>A new {@link NodeTracker} instance is created and used to track the current node's
+     * name and source location (line/column number).</p>
+     * @return the created {@link NodeTracker} instance
+     */
     public NodeTracker trackingLocation() {
         this.nodeTracker = new NodeTracker();
         return nodeTracker;
     }
 
+    /**
+     * Returns the {@link NodeTracker} instance used by this parser.
+     * @return the node tracker
+     */
     public NodeTracker getNodeTracker() {
         return nodeTracker;
     }
 
+    /**
+     * Returns the current XPath being processed by the parser.
+     * @return the current XPath
+     */
     public String getXpath() {
         return xpath;
     }
 
+    /**
+     * Sets the current XPath for subsequent nodelet registrations.
+     * @param xpath the XPath to set
+     */
     public void setXpath(String xpath) {
         this.xpath = xpath;
     }
 
     /**
-     * Registers a nodelet to process attributes for the specified XPath.
-     * It supports the following XPaths:
-     * <ul>
-     * <li> Element Path - /rootElement/childElement/theElement </li>
-     * </ul>
-     * @param nodelet the nodelet for processing start elements and attributes
+     * Registers a {@link Nodelet} to process start elements and their attributes for the current XPath.
+     * @param nodelet the nodelet to register
      */
     public void addNodelet(Nodelet nodelet) {
         nodeletMap.put(xpath, nodelet);
     }
 
     /**
-     * Registers the nodelet to process the end elements of the specified XPath
-     * and the text and CDATA data collected.
-     * @param nodelet the nodelet for processing end elements, text and CDATA data collected
+     * Registers an {@link EndNodelet} to process end elements, text, and CDATA for the current XPath.
+     * @param nodelet the end nodelet to register
      */
     public void addEndNodelet(EndNodelet nodelet) {
         endNodeletMap.put(xpath, nodelet);
     }
 
     /**
-     * Adds the nodelet.
-     * @param subnodeParser the subnode parser
+     * Adds nodelets defined within a {@link SubnodeParser} for the current XPath.
+     * @param subnodeParser the subnode parser containing nodelet definitions
      */
     public void addNodelet(SubnodeParser subnodeParser) {
         addNodelet(xpath, subnodeParser);
     }
 
     /**
-     * Add nodelets through the subnode parser.
-     * @param xpath the xpath
-     * @param subnodeParser the subnode parser
+     * Adds nodelets defined within a {@link SubnodeParser} for a specified XPath.
+     * @param xpath the XPath for which to add nodelets
+     * @param subnodeParser the subnode parser containing nodelet definitions
      */
     public void addNodelet(String xpath, @NonNull SubnodeParser subnodeParser) {
         subnodeParser.parse(xpath, this);
         setXpath(xpath);
     }
 
+    /**
+     * Pushes an object onto the internal object stack.
+     * This stack is used to manage context objects during parsing.
+     * @param object the object to push
+     */
     public void pushObject(Object object) {
         objectStack.push(object);
     }
 
+    /**
+     * Pops an object from the top of the internal object stack.
+     * @param <T> the expected type of the object
+     * @return the object popped from the stack
+     */
     @SuppressWarnings("unchecked")
     public <T> T popObject() {
         return (T)objectStack.pop();
     }
 
+    /**
+     * Peeks at the object on the top of the internal object stack without removing it.
+     * @param <T> the expected type of the object
+     * @return the object at the top of the stack
+     */
     @SuppressWarnings("unchecked")
     public <T> T peekObject() {
         return (T)objectStack.peek();
     }
 
+    /**
+     * Peeks at an object at a specific depth from the top of the internal object stack.
+     * @param <T> the expected type of the object
+     * @param n the depth from the top (0 for top, 1 for next, etc.)
+     * @return the object at the specified depth
+     */
     @SuppressWarnings("unchecked")
     public <T> T peekObject(int n) {
         return (T)objectStack.peek(n);
     }
 
+    /**
+     * Peeks at an object of a specific type from the internal object stack.
+     * It searches the stack from top to bottom for the first object assignable to the target type.
+     * @param <T> the expected type of the object
+     * @param target the target class type
+     * @return the object of the specified type, or {@code null} if not found
+     */
     @SuppressWarnings("unchecked")
     public <T> T peekObject(Class<?> target) {
         return (T)objectStack.peek(target);
     }
 
     /**
-     * Clear object stack.
+     * Clears all objects from the internal object stack.
      */
     public void clearObjectStack() {
         objectStack.clear();
     }
 
     /**
-     * Begins parsing from the provided Reader.
-     * @param reader the reader
-     * @throws NodeletException the nodelet exception
+     * Begins parsing an XML document from the provided {@link Reader}.
+     * @param reader the reader for the XML document
+     * @throws NodeletException if an error occurs during parsing
      */
     public void parse(Reader reader) throws NodeletException {
         parse(new InputSource(reader));
     }
 
     /**
-     * Begins parsing from the provided InputStream.
-     * @param inputStream the input stream
-     * @throws NodeletException the nodelet exception
+     * Begins parsing an XML document from the provided {@link InputStream}.
+     * @param inputStream the input stream for the XML document
+     * @throws NodeletException if an error occurs during parsing
      */
     public void parse(InputStream inputStream) throws NodeletException {
         parse(new InputSource(inputStream));
     }
 
     /**
-     * Begins parsing from the provided InputSource.
-     * @param inputSource the input source
-     * @throws NodeletException the nodelet exception
+     * Begins parsing an XML document from the provided {@link InputSource}.
+     * @param inputSource the input source for the XML document
+     * @throws NodeletException if an error occurs during parsing
      */
     public void parse(InputSource inputSource) throws NodeletException {
         try {
@@ -270,7 +327,7 @@ public class NodeletParser {
                 @Override
                 public void endElement(String uri, String localName, String qName) throws SAXException {
                     if (nodeTracker != null) {
-                        nodeTracker.setClonedNodeTracker(path.getNodeTracker());
+                        nodeTracker.restoreStateFrom(path.getNodeTracker());
                         nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
                     }
 
@@ -360,7 +417,7 @@ public class NodeletParser {
             nodeList.add(node);
             path = null;
             if (nodeTracker != null) {
-                trackerList.add(nodeTracker.clone());
+                trackerList.add(nodeTracker.createSnapshot());
             }
         }
 
