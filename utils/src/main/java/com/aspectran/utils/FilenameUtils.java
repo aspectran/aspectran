@@ -26,17 +26,16 @@ import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
 import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR;
 
 /**
- * Utility methods for General filename and filepath manipulation.
- * <p>
- * This class defines six components within a filename
- * (example C:\dev\project\file.txt):</p>
+ * General utility methods for manipulating filenames and file paths.
+ * <p>This class provides a set of platform-independent methods for working with file paths.
+ * It defines six components within a filename (e.g., {@code C:\dev\project\file.txt}):</p>
  * <ul>
- * <li>the prefix - C:\</li>
- * <li>the path - dev\project\</li>
- * <li>the full path - C:\dev\project\</li>
- * <li>the name - file.txt</li>
- * <li>the base name - file</li>
- * <li>the extension - txt</li>
+ *   <li>Prefix: {@code C:\}</li>
+ *   <li>Path: {@code dev\project\}</li>
+ *   <li>Full Path: {@code C:\dev\project\}</li>
+ *   <li>Name: {@code file.txt}</li>
+ *   <li>Base Name: {@code file}</li>
+ *   <li>Extension: {@code txt}</li>
  * </ul>
  */
 public abstract class FilenameUtils {
@@ -48,9 +47,8 @@ public abstract class FilenameUtils {
     private static final String EXTENSIONS_SEPARATORS = " ,;\t\n\r\f";
 
     /**
-     * Gets the name minus the path from a full filename.
-     * <p>
-     * This method will handle a file in either Unix or Windows format.
+     * Gets the name of the file from a full path, excluding the path.
+     * <p>This method handles both Unix and Windows formatted paths.
      * The text after the last forward or backslash is returned.</p>
      * <pre>
      * a/b/c.txt --&gt; c.txt
@@ -58,9 +56,7 @@ public abstract class FilenameUtils {
      * a/b/c     --&gt; c
      * a/b/c/    --&gt; ""
      * </pre>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename  the filename to query, null returns null
+     * @param filename the filename to query, must not be null
      * @return the name of the file without the path, or an empty string if none exists
      */
     @NonNull
@@ -71,40 +67,34 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Gets the base name, minus the full path and extension, from a full filename.
-     * <p>
-     * This method will handle a file in either Unix or Windows format.
-     * The text after the last forward or backslash and before the last dot is returned.</p>
+     * Gets the base name of the file, excluding the path and extension.
+     * <p>This method handles both Unix and Windows formatted paths.
+     * The text after the last separator and before the last dot is returned.</p>
      * <pre>
      * a/b/c.txt --&gt; c
      * a.txt     --&gt; a
      * a/b/c     --&gt; c
      * a/b/c/    --&gt; ""
      * </pre>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename  the filename to query, null returns null
-     * @return the name of the file without the path, or an empty string if none exists
+     * @param filename the filename to query, must not be null
+     * @return the base name of the file
      */
     public static String getBaseName(String filename) {
         return removeExtension(getName(filename));
     }
 
     /**
-     * Extract the file extension from the given filename.
-     * <p>
-     * This method returns the textual part of the filename after the last dot.
-     * There must be no directory separator after the dot.</p>
+     * Extracts the file extension from the given filename.
+     * <p>This method returns the textual part of the filename after the last dot.
+     * There must be no directory separator after the dot for an extension to be found.</p>
      * <pre>
      * foo.txt      --&gt; "txt"
      * a/b/c.jpg    --&gt; "jpg"
      * a/b.txt/c    --&gt; ""
      * a/b/c        --&gt; ""
      * </pre>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename the filename to retrieve the extension of
-     * @return the extension of the file or an empty string if none exists
+     * @param filename the filename to retrieve the extension of, must not be null
+     * @return the extension of the file, or an empty string if none exists
      */
     public static String getExtension(String filename) {
         Assert.notNull(filename, "'filename' must not be null");
@@ -118,8 +108,7 @@ public abstract class FilenameUtils {
 
     /**
      * Removes the extension from a filename.
-     * <p>
-     * This method returns the textual part of the filename before the last dot.
+     * <p>This method returns the textual part of the filename before the last dot.
      * There must be no directory separator after the dot.</p>
      * <pre>
      * foo.txt    --&gt; foo
@@ -127,9 +116,7 @@ public abstract class FilenameUtils {
      * a\b\c      --&gt; a\b\c
      * a.b\c      --&gt; a.b\c
      * </pre>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename  the filename to query, null returns null
+     * @param filename the filename to query, must not be null
      * @return the filename minus the extension
      */
     public static String removeExtension(String filename) {
@@ -143,15 +130,10 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Returns the index of the last directory separator character.
-     * <p>
-     * This method will handle a file in either Unix or Windows format.
-     * The position of the last forward or backslash is returned.</p>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename  the filename to find the last path separator in, null returns -1
-     * @return the index of the last separator character, or -1 if there
-     * is no such character
+     * Returns the index of the last directory separator character ('/' or '\').
+     * <p>This method handles both Unix and Windows formatted paths.</p>
+     * @param filename the filename to find the last path separator in (may be {@code null})
+     * @return the index of the last separator character, or -1 if there is no such character
      */
     public static int indexOfLastSeparator(String filename) {
         if (filename == null) {
@@ -163,16 +145,11 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Returns the index of the last extension separator character, which is a dot.
-     * <p>
-     * This method also checks that there is no directory separator after the last dot.
-     * To do this it uses {@link #indexOfLastSeparator(String)} which will
-     * handle a file in either Unix or Windows format.</p>
-     * <p>
-     * The output will be the same irrespective of the machine that the code is running on.</p>
-     * @param filename  the filename to find the last path separator in, null returns -1
-     * @return the index of the last separator character, or -1 if there
-     * is no such character
+     * Returns the index of the last extension separator character ('.').
+     * <p>This method also checks that there is no directory separator after the last dot.
+     * To do this it uses {@link #indexOfLastSeparator(String)}.</p>
+     * @param filename the filename to find the last extension separator in (may be {@code null})
+     * @return the index of the last extension separator, or -1 if there is no such character
      */
     public static int indexOfExtension(String filename) {
         if (filename == null) {
@@ -184,9 +161,9 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Gets the path from a full filename.
-     * @param filename a full filename
-     * @return the path
+     * Gets the path from a full filename, excluding the file name.
+     * @param filename a full filename (may be {@code null})
+     * @return the path, or an empty string if none exists
      */
     public static String getFullPath(String filename) {
         if (filename == null) {
@@ -200,9 +177,9 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Gets the path with end separator from a full filename.
-     * @param filename a full filename
-     * @return the path
+     * Gets the path from a full filename, including the trailing separator.
+     * @param filename a full filename (may be {@code null})
+     * @return the path with a trailing separator, or an empty string if none exists
      */
     public static String getFullPathWithEndSeparator(String filename) {
         if (filename == null) {
@@ -216,12 +193,12 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Checks whether the extension of the filename is valid.
-     * The extension check is case-sensitive on all platforms.
-     * @param filename the filename to query, null returns false
-     * @param allowedFileExtensions the allowed file extensions
-     * @param deniedFileExtensions the denied file extensions
-     * @return true if is valid file extension; false otherwise
+     * Checks whether the extension of the filename is valid based on allowed and denied lists.
+     * The extension check is case-insensitive.
+     * @param filename the filename to check (may be {@code null})
+     * @param allowedFileExtensions a comma-separated list of allowed extensions
+     * @param deniedFileExtensions a comma-separated list of denied extensions
+     * @return {@code true} if the file extension is valid, {@code false} otherwise
      */
     public static boolean isValidFileExtension(String filename, String allowedFileExtensions, String deniedFileExtensions) {
         if (filename == null) {
@@ -258,23 +235,21 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Returns a file name that does not overlap in the specified directory.
-     * If a duplicate file name exists, it is returned by appending a number after the file name.
-     * @param srcFile the file to seek
-     * @return a unique file
-     * @throws IOException if failed to obtain a unique file
+     * Generates a unique file handle by appending a counter to the filename if it already exists.
+     * @param srcFile the file to make unique
+     * @return a unique {@link File} handle (which may not yet exist on the filesystem)
+     * @throws IOException if an I/O error occurs
      */
     public static File generateUniqueFile(File srcFile) throws IOException {
         return generateUniqueFile(srcFile, EXTENSION_SEPARATOR);
     }
 
     /**
-     * Returns a file name that does not overlap in the specified directory.
-     * If a duplicate file name exists, it is returned by appending a number after the file name.
-     * @param srcFile the file to seek
+     * Generates a unique file handle by appending a counter to the filename if it already exists.
+     * @param srcFile the file to make unique
      * @param extSeparator the file extension separator
-     * @return a unique file
-     * @throws IOException if failed to obtain a unique file
+     * @return a unique {@link File} handle (which may not yet exist on the filesystem)
+     * @throws IOException if an I/O error occurs
      */
     public static File generateUniqueFile(File srcFile, String extSeparator) throws IOException {
         Assert.notNull(srcFile, "'srcFile' must not be null");
@@ -305,32 +280,25 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Creates and returns a system-safe file name without duplicates in the specified directory.
-     * If there is a duplicate file name, a number is added after the file name and returned.
-     * File extensions are separated by '.' character.
+     * Creates a system-safe, unique filename based on the current time and a random number.
+     * This is useful for creating temporary or uploaded file names that are unlikely to collide.
      * <pre>
-     * ex) 1111111111_1.txt
+     * e.g., 1616493813337_1234.txt
      * </pre>
-     * @param file the file to seek
-     * @return a unique file
-     * @throws IOException if failed to obtain a unique file
+     * @param file the original file to derive the path and extension from
+     * @return a unique {@link File} handle
+     * @throws IOException if an I/O error occurs
      */
     public static File generateSafetyUniqueFile(File file) throws IOException {
         return generateSafetyUniqueFile(file, EXTENSION_SEPARATOR);
     }
 
     /**
-     * Creates and returns a system-safe file name without duplicates in the specified directory.
-     * If there is a duplicate file name, a number is added after the file name and returned.
-     * If the file extension separator is specified as '_', the file name can be obtained
-     * in the following format.
-     * <pre>
-     * ex) 1111111111_txt
-     * </pre>
-     * @param file the file to seek
-     * @return a unique file
+     * Creates a system-safe, unique filename based on the current time and a random number.
+     * @param file the original file to derive the path and extension from
      * @param extSeparator the file extension separator
-     * @throws IOException if failed to obtain a unique file
+     * @return a unique {@link File} handle
+     * @throws IOException if an I/O error occurs
      */
     public static File generateSafetyUniqueFile(@NonNull File file, String extSeparator) throws IOException {
         String path = file.getCanonicalPath();
@@ -352,9 +320,10 @@ public abstract class FilenameUtils {
     }
 
     /**
-     * Recovers the extension from a unique file name.
-     * @param uniqueFilename a unique file name
-     * @return file name with recovered extension
+     * Recovers a filename with a standard extension separator ('.') from a name
+     * that used a different separator.
+     * @param uniqueFilename a unique filename, potentially with a custom separator
+     * @return file name with the standard extension separator
      */
     @NonNull
     public static String recoverExtension(String uniqueFilename) {

@@ -27,18 +27,20 @@ import static com.aspectran.utils.MethodUtils.EMPTY_OBJECT_ARRAY;
 
 /**
  * Simple utility class for working with the reflection API.
+ * <p>Provides convenience methods for invoking methods, accessing fields,
+ * and determining type compatibility for method resolution.</p>
  *
  * @since 2.0.0
  */
 public abstract class ReflectionUtils {
 
     /**
-     * Algorithm that judges the match between the declared parameter types of
-     * a candidate method and a specific list of arguments that this method is
-     * supposed to be invoked with.
-     * @param paramTypes the parameter types to match
-     * @param destArgs the arguments to match
-     * @return the accumulated weight for all arguments
+     * Calculates a weight that represents the cost of converting a given set of argument
+     * types to a candidate method's parameter types. Lower weights indicate a better match.
+     * <p>This is used for method overloading resolution to find the most specific method.</p>
+     * @param paramTypes the parameter types of the candidate method
+     * @param destArgs the arguments to be passed to the method
+     * @return the accumulated weight for all arguments; {@link Float#MAX_VALUE} if not assignable
      */
     public static float getTypeDifferenceWeight(@NonNull Class<?>[] paramTypes, @NonNull Object[] destArgs) {
         if (paramTypes.length != destArgs.length) {
@@ -58,12 +60,10 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Algorithm that judges the match between the declared parameter types of
-     * a candidate method and a specific list of arguments that this method is
-     * supposed to be invoked with.
-     * @param paramType the parameter type to match
-     * @param destArg the argument to match
-     * @return the type difference weight
+     * Calculates a weight for a single argument-to-parameter conversion.
+     * @param paramType the parameter type of the candidate method
+     * @param destArg the argument to be passed
+     * @return the type difference weight; {@link Float#MAX_VALUE} if not assignable
      */
     public static float getTypeDifferenceWeight(Class<?> paramType, Object destArg) {
         if (!TypeUtils.isAssignableValue(paramType, destArg)) {
@@ -73,11 +73,10 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Returns the sum of the object transformation cost for each class in the source
-     * argument list.
-     * @param srcArgs the source arguments
-     * @param destArgs the destination arguments
-     * @return the accumulated weight for all arguments
+     * Calculates the total weight for converting an array of source classes to an array of destination classes.
+     * @param srcArgs the source class types
+     * @param destArgs the destination class types
+     * @return the accumulated weight for all type conversions
      */
     public static float getTypeDifferenceWeight(@NonNull Class<?>[] srcArgs, @NonNull Class<?>[] destArgs) {
         float weight = 0.0f;
@@ -93,9 +92,15 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Gets the number of steps required needed to turn the source class into the
-     * destination class. This represents the number of steps in the object hierarchy
-     * graph.
+     * Gets the number of steps required to turn the source class into the destination class.
+     * This represents the number of steps in the object hierarchy graph. A smaller number
+     * indicates a more specific match.
+     * <ul>
+     *     <li>Primitive-to-wrapper conversion has a small penalty (0.1f).</li>
+     *     <li>Interface matches have a small penalty (0.25f) to prefer direct class matches.</li>
+     *     <li>Superclass matches increment the weight by 1 for each level.</li>
+     *     <li>Object match has a large penalty (1.5f).</li>
+     * </ul>
      * @param srcClass the source class
      * @param destClass the destination class
      * @return the cost of transforming an object
@@ -145,9 +150,10 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Converts an array of objects to an array of their primitive types.
-     * @param val an array of objects to be converted, may be {@code null}
-     * @return an array of their primitive types
+     * Converts an array of wrapper objects to an array of their corresponding primitive types.
+     * For example, an {@code Integer[]} will be converted to an {@code int[]}.
+     * @param val an array of wrapper objects to be converted (may be {@code null})
+     * @return an array of primitive types, or {@code null} if the input is not a known wrapper array
      */
     public static Object toPrimitiveArray(Object val) {
         if (val instanceof Boolean[]) {
@@ -212,10 +218,10 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Converts an array of objects to an array of the specified component type.
-     * @param val an array of objects to be converted
+     * Converts an array of objects to a new array of the specified component type.
+     * @param val an array of objects to be converted (may be {@code null})
      * @param componentType the {@code Class} object representing the component type of the new array
-     * @return an array of the objects with the specified component type
+     * @return a new array with the specified component type, or {@code null} if the input is {@code null}
      */
     public static Object toComponentTypeArray(Object val, Class<?> componentType) {
         if (val != null) {
@@ -233,13 +239,12 @@ public abstract class ReflectionUtils {
     // Field handling
 
     /**
-     * Get the field represented by the supplied {@link Field field object} on the
-     * specified {@link Object target object}. In accordance with {@link Field#get(Object)}
-     * semantics, the returned value is automatically wrapped if the underlying field
-     * has a primitive type.
-     * @param field the field to get
-     * @param target the target object from which to get the field
+     * Gets the value of a field on a target object. This method handles
+     * {@link IllegalAccessException} by throwing an {@link IllegalStateException}.
+     * @param field the field to get, must not be null
+     * @param target the target object from which to get the field; can be {@code null} for static fields
      * @return the field's current value
+     * @throws IllegalStateException if the field is not accessible
      */
     public static Object getField(@NonNull Field field, Object target) {
         try {
@@ -250,13 +255,12 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Set the field represented by the supplied {@link Field field object} on the
-     * specified {@link Object target object} to the specified {@code value}.
-     * In accordance with {@link Field#set(Object, Object)} semantics, the new value
-     * is automatically unwrapped if the underlying field has a primitive type.
-     * @param field the field to set
-     * @param target the target object on which to set the field
+     * Sets the value of a field on a target object. This method handles
+     * {@link IllegalAccessException} by throwing an {@link IllegalStateException}.
+     * @param field the field to set, must not be null
+     * @param target the target object on which to set the field; can be {@code null} for static fields
      * @param value the value to set (may be {@code null})
+     * @throws IllegalStateException if the field is not accessible
      */
     public static void setField(@NonNull Field field, Object target, Object value) {
         try {
@@ -269,11 +273,14 @@ public abstract class ReflectionUtils {
     // Method handling
 
     /**
-     * Invoke the specified {@link Method} against the supplied target object with no arguments.
+     * Invokes the specified {@link Method} against the supplied target object with no arguments.
      * The target object can be {@code null} when invoking a static {@link Method}.
+     * <p>This method wraps {@link InvocationTargetException} and {@link IllegalAccessException}
+     * in an {@link IllegalStateException}.</p>
      * @param method the method to invoke
      * @param target the target object to invoke the method on
-     * @return the invocation result, if any
+     * @return the invocation result, or {@code null} if the method has a void return type
+     * @throws IllegalStateException if the method is not accessible or if the underlying method throws an exception
      * @see #invokeMethod(java.lang.reflect.Method, Object, Object[])
      */
     @Nullable
@@ -282,13 +289,16 @@ public abstract class ReflectionUtils {
     }
 
     /**
-     * Invoke the specified {@link Method} against the supplied target object with the
+     * Invokes the specified {@link Method} against the supplied target object with the
      * supplied arguments. The target object can be {@code null} when invoking a
      * static {@link Method}.
+     * <p>This method wraps {@link InvocationTargetException} and {@link IllegalAccessException}
+     * in an {@link IllegalStateException}.</p>
      * @param method the method to invoke
      * @param target the target object to invoke the method on
      * @param args the invocation arguments (may be {@code null})
-     * @return the invocation result, if any
+     * @return the invocation result, or {@code null} if the method has a void return type
+     * @throws IllegalStateException if the method is not accessible or if the underlying method throws an exception
      */
     @Nullable
     public static Object invokeMethod(@NonNull Method method, @Nullable Object target, Object... args) {

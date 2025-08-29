@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
+ * Static utility methods for {@link String} or {@link CharSequence} instances.
+ * <p>This class provides convenience methods for common string manipulations
+ * such as checking for emptiness, trimming, splitting, and joining.</p>
  */
 public abstract class StringUtils {
 
@@ -63,7 +65,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Check that the given {@code CharSequence} is neither {@code null} nor of length 0.
+     * Checks that the given {@code CharSequence} is not {@code null} and has a length greater than 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
      * that purely consists of whitespace.</p>
      * <pre>
@@ -74,7 +76,6 @@ public abstract class StringUtils {
      * </pre>
      * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
-     * @see #hasLength(String)
      * @see #hasText(CharSequence)
      */
     public static boolean hasLength(CharSequence chars) {
@@ -82,12 +83,11 @@ public abstract class StringUtils {
     }
 
     /**
-     * Check that the given {@code String} is neither {@code null} nor of length 0.
+     * Checks that the given {@code String} is not {@code null} and has a length greater than 0.
      * <p>Note: this method returns {@code true} for a {@code String} that
      * purely consists of whitespace.</p>
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null} and has length
-     * @see #hasLength(CharSequence)
      * @see #hasText(String)
      */
     public static boolean hasLength(String str) {
@@ -95,7 +95,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Check whether the given {@code CharSequence} contains actual <em>text</em>.
+     * Checks whether the given {@code CharSequence} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code CharSequence} is not {@code null}, its length is greater than
      * 0, and it contains at least one non-whitespace character.</p>
@@ -109,16 +109,14 @@ public abstract class StringUtils {
      * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null},
      *      its length is greater than 0, and it does not contain whitespace only
-     * @see #hasLength(String)
-     * @see #hasText(CharSequence)
-     * @see Character#isWhitespace
+     * @see #hasLength(CharSequence)
      */
     public static boolean hasText(CharSequence chars) {
         return (chars != null && !chars.isEmpty() && containsText(chars));
     }
 
     /**
-     * Check whether the given {@code String} contains actual <em>text</em>.
+     * Checks whether the given {@code String} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code String} is not {@code null}, its length is greater than 0,
      * and it contains at least one non-whitespace character.</p>
@@ -126,8 +124,6 @@ public abstract class StringUtils {
      * @return {@code true} if the {@code String} is not {@code null}, its
      *      length is greater than 0, and it does not contain whitespace only
      * @see #hasText(CharSequence)
-     * @see #hasLength(String)
-     * @see Character#isWhitespace
      */
     public static boolean hasText(String str) {
         return (str != null && !str.isEmpty() && containsText(str));
@@ -144,11 +140,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Check whether the given {@code CharSequence} contains any whitespace characters.
-     * @param chars the {@code CharSequence} to check (maybe {@code null})
+     * Checks whether the given {@code CharSequence} contains any whitespace characters.
+     * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not empty and
-     *      contains at least 1 whitespace character
-     * @see Character#isWhitespace
+     *      contains at least one whitespace character
      */
     public static boolean containsWhitespace(CharSequence chars) {
         if (!hasLength(chars)) {
@@ -164,10 +159,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Check whether the given {@code String} contains any whitespace characters.
+     * Checks whether the given {@code String} contains any whitespace characters.
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not empty and
-     *      contains at least 1 whitespace character
+     *      contains at least one whitespace character
      * @see #containsWhitespace(CharSequence)
      */
     public static boolean containsWhitespace(String str) {
@@ -175,10 +170,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim leading and trailing whitespace from the given {@code String}.
+     * Trims leading and trailing whitespace from the given {@code String}.
      * @param str the {@code String} to check
-     * @return the trimmed {@code String}
-     * @see java.lang.Character#isWhitespace
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimWhitespace(String str) {
         if (!hasLength(str)) {
@@ -195,11 +189,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim <i>all</i> whitespace from the given {@code String}:
+     * Trims <i>all</i> whitespace from the given {@code String}:
      * leading, trailing, and in between characters.
      * @param str the {@code String} to check
-     * @return the trimmed {@code String}
-     * @see java.lang.Character#isWhitespace
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimAllWhitespace(String str) {
         if (!hasLength(str)) {
@@ -218,10 +211,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim leading whitespace from the given {@code String}.
+     * Trims leading whitespace from the given {@code String}.
      * @param str the {@code String} to check
-     * @return the trimmed {@code String}
-     * @see java.lang.Character#isWhitespace
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimLeadingWhitespace(String str) {
         if (!hasLength(str)) {
@@ -235,10 +227,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim trailing whitespace from the given {@code String}.
+     * Trims trailing whitespace from the given {@code String}.
      * @param str the {@code String} to check
-     * @return the trimmed {@code String}
-     * @see java.lang.Character#isWhitespace
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimTrailingWhitespace(String str) {
         if (!hasLength(str)) {
@@ -252,10 +243,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim all occurrences of the supplied leading character from the given {@code String}.
+     * Trims all occurrences of the supplied leading character from the given {@code String}.
      * @param str the {@code String} to check
      * @param leadingChar the leading character to be trimmed
-     * @return the trimmed {@code String}
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimLeadingCharacter(String str, char leadingChar) {
         if (!hasLength(str)) {
@@ -269,10 +260,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Trim all occurrences of the supplied trailing character from the given {@code String}.
+     * Trims all occurrences of the supplied trailing character from the given {@code String}.
      * @param str the {@code String} to check
      * @param trailingChar the trailing character to be trimmed
-     * @return the trimmed {@code String}
+     * @return the trimmed {@code String}, or the original {@code String} if it has no length
      */
     public static String trimTrailingCharacter(String str, char trailingChar) {
         if (!hasLength(str)) {
@@ -286,13 +277,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Test if the given {@code String} starts with the specified prefix,
-     * ignoring upper/lower case.
+     * Tests if the given {@code String} starts with the specified prefix, ignoring case.
      * @param str the {@code String} to check
      * @param prefix the prefix to look for
-     * @return {@code true} if the {@code String} starts with the prefix,
-     *      case-insensitive, or both {@code null}
-     * @see java.lang.String#startsWith
+     * @return {@code true} if the {@code String} starts with the prefix (case-insensitive)
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
         return (str != null && prefix != null && str.length() >= prefix.length() &&
@@ -300,13 +288,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Test if the given {@code String} ends with the specified suffix,
-     * ignoring upper/lower case.
+     * Tests if the given {@code String} ends with the specified suffix, ignoring case.
      * @param str the {@code String} to check
      * @param suffix the suffix to look for
-     * @return {@code true} if the {@code String} ends with the suffix,
-     *      case-insensitive, or both {@code null}
-     * @see java.lang.String#endsWith
+     * @return {@code true} if the {@code String} ends with the suffix (case-insensitive)
      */
     public static boolean endsWithIgnoreCase(String str, String suffix) {
         return (str != null && suffix != null && str.length() >= suffix.length() &&
@@ -315,33 +300,31 @@ public abstract class StringUtils {
     }
 
     /**
-     * Test if the given {@code String} starts with the specified prefix character.
+     * Tests if the given {@code String} starts with the specified prefix character.
      * @param str the {@code String} to check
      * @param prefix the prefix character to look for
      * @return true if the string starts with the specified prefix; otherwise false
-     * @see java.lang.String#startsWith
      */
     public static boolean startsWith(String str, char prefix) {
         return (str != null && !str.isEmpty() && (str.charAt(0) == prefix));
     }
 
     /**
-     * Test if the given {@code String} ends with the specified prefix character.
+     * Tests if the given {@code String} ends with the specified suffix character.
      * @param str the {@code String} to check
-     * @param suffix the prefix character to look for
+     * @param suffix the suffix character to look for
      * @return true if the string ends with the specified suffix; otherwise false
-     * @see java.lang.String#endsWith
      */
     public static boolean endsWith(String str, char suffix) {
         return (str != null && !str.isEmpty() && (str.charAt(str.length() - 1) == suffix));
     }
 
     /**
-     * Replace all occurrences of a substring within a string with another string.
-     * @param str {@code String} to examine
-     * @param search {@code String} to replace
-     * @param replacement {@code String} to insert
-     * @return a {@code String} with the replacements
+     * Replaces all occurrences of a substring within a string with another string.
+     * @param str {@code String} to examine (may be {@code null})
+     * @param search {@code String} to replace (may be {@code null})
+     * @param replacement {@code String} to insert (may be {@code null})
+     * @return the modified {@code String}, or the original if any input is {@code null}
      */
     public static String replace(String str, String search, String replacement) {
         if (str == null || search == null || replacement == null) {
@@ -364,11 +347,12 @@ public abstract class StringUtils {
     }
 
     /**
-     * Replace all occurrences of a substring within a string with another string.
-     * @param str {@code String} to examine
-     * @param searchList {@code String} array to replace
-     * @param replacementList {@code String} array to insert
-     * @return a {@code String} with the replacements
+     * Replaces multiple substrings in a string with corresponding replacements.
+     * This method is more efficient than calling {@link #replace(String, String, String)} multiple times.
+     * @param str {@code String} to examine (may be {@code null})
+     * @param searchList array of {@code String}s to replace
+     * @param replacementList array of {@code String}s to insert
+     * @return the modified {@code String}, or the original if any input is {@code null}
      */
     public static String replace(String str, String[] searchList, String[] replacementList) {
         if (str == null || searchList == null || replacementList == null) {
@@ -402,11 +386,11 @@ public abstract class StringUtils {
     }
 
     /**
-     * Replace last occurrence of a string.
+     * Replaces the last occurrence of a substring within a string with another string.
      * @param str {@code String} to examine
      * @param searchStr {@code String} to replace
      * @param replacement {@code String} to insert
-     * @return a {@code String} with the replacements
+     * @return a {@code String} with the replacement
      */
     @NonNull
     public static String replaceLast(@NonNull String str, @NonNull String searchStr, @NonNull String replacement) {
@@ -419,10 +403,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns padding using the specified delimiter repeated to a given length.
+     * Returns a {@code String} consisting of a specified character repeated a given number of times.
      * @param ch character to repeat
-     * @param repeat number of times to repeat char, negative treated as zero
-     * @return String with repeated character
+     * @param repeat number of times to repeat the character; a non-positive value returns an empty string
+     * @return a {@code String} with the repeated character
      */
     public static String repeat(char ch, final int repeat) {
         if (repeat <= 0) {
@@ -439,14 +423,12 @@ public abstract class StringUtils {
     }
 
     /**
-     * Divide a {@code String} into a two-element array at the first occurrence of the delimiter.
-     * Does not include the delimiter in the result.
-     * @param str the string to divide (potentially {@code null} or empty)
-     * @param delim to divide the string up with (potentially {@code null} or empty)
-     * @return a two element array with index 0 being before the delimiter, and
-     *      index 1 being after the delimiter (neither element includes the delimiter);
-     *      if the delimiter wasn't found in the given input {@code String}, both elements
-     *      of the array will be {@code null}.
+     * Divides a {@code String} into a two-element array at the first occurrence of the delimiter.
+     * The delimiter is not included in the result.
+     * @param str the string to divide (may be {@code null})
+     * @param delim the delimiter to split on (may be {@code null})
+     * @return a two-element array with the part before the delimiter at index 0 and the part
+     *      after at index 1. If the delimiter is not found, the original string is at index 0.
      */
     @NonNull
     public static String[] divide(String str, String delim) {
@@ -469,10 +451,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns an array of strings separated by the delimiter string.
-     * @param str the string to be separated
-     * @param delim the delimiter
-     * @return an array, containing the splitted strings
+     * Splits the provided text into an array, using the given delimiter.
+     * @param str the string to be separated (may be {@code null})
+     * @param delim the delimiter (may be {@code null})
+     * @return an array of the splitted strings, never {@code null}
      */
     public static String[] split(String str, String delim) {
         if (isEmpty(str)) {
@@ -489,7 +471,7 @@ public abstract class StringUtils {
         int idx2 = str.indexOf(delim);
         int delimLen = delim.length();
         while (idx2 >= 0) {
-            arr[idx++] = (idx1 > idx2 - 1) ? EMPTY : str.substring(idx1, idx2);
+            arr[idx++] = (idx1 > idx2 - 1 ? EMPTY : str.substring(idx1, idx2));
             idx1 = idx2 + delimLen;
             idx2 = str.indexOf(delim, idx1);
         }
@@ -503,11 +485,12 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns an array of strings separated by the delimiter string.
+     * Splits the provided text into an array of a specified size, using the given delimiter.
+     * If the split results in fewer elements than the size, the remaining elements are filled with empty strings.
      * @param str the string to be separated
      * @param delim the delimiter
-     * @param size the size of the array
-     * @return an array, containing the splitted strings
+     * @param size the desired size of the array
+     * @return an array of the splitted strings, with a fixed size
      */
     @NonNull
     public static String[] split(String str, String delim, int size) {
@@ -524,10 +507,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns an array of strings separated by the delimiter string.
+     * Splits the provided text into an array, using the given delimiter character.
      * @param str the string to be separated
-     * @param delim the delimiter
-     * @return an array, containing the splitted strings
+     * @param delim the delimiter character
+     * @return an array of the splitted strings, never {@code null}
      */
     public static String[] split(String str, char delim) {
         if (isEmpty(str)) {
@@ -557,11 +540,12 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns an array of strings separated by the delimiter string.
+     * Splits the provided text into an array of a specified size, using the given delimiter character.
+     * If the split results in fewer elements than the size, the remaining elements are filled with empty strings.
      * @param str the string to be separated
-     * @param delim the delimiter
-     * @param size the size of the array
-     * @return an array, containing the splitted strings
+     * @param delim the delimiter character
+     * @param size the desired size of the array
+     * @return an array of the splitted strings, with a fixed size
      */
     @NonNull
     public static String[] split(String str, char delim, int size) {
@@ -578,31 +562,31 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert a comma-delimited list (e.g., a row from a CSV file) into an
-     * array of strings.
+     * Converts a comma-delimited list (e.g., a row from a CSV file) into an
+     * array of strings. Tokens are trimmed.
      * @param str the input {@code String}
-     * @return an array of strings, or the empty array in case of empty input
+     * @return an array of strings, or an empty array if the input is empty
      */
     public static String[] splitWithComma(String str) {
         return tokenize(str, ",", true);
     }
 
     /**
-     * Tokenize the given {@code String} into a String array via a StringTokenizer.
+     * Tokenizes the given {@code String} into a {@code String} array via a {@link StringTokenizer}.
      * @param str the {@code String} to tokenize
      * @param delimiters the delimiter characters
-     * @return an array of the tokens
+     * @return an array of the tokens, never {@code null}
      */
     public static String[] tokenize(String str, String delimiters) {
         return tokenize(str, delimiters, false);
     }
 
     /**
-     * Tokenize the given {@code String} into a {@code String} array via a {@code StringTokenizer}.
+     * Tokenizes the given {@code String} into a {@code String} array via a {@link StringTokenizer}.
      * @param str the String to tokenize
      * @param delimiters the delimiter characters
-     * @param trim trim the tokens via String's trim
-     * @return an array of the tokens
+     * @param trim whether to trim the tokens
+     * @return an array of the tokens, never {@code null}
      */
     public static String[] tokenize(String str, String delimiters, boolean trim) {
         if (isEmpty(str) || isEmpty(delimiters)) {
@@ -618,10 +602,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.</p>
-     * @param arr the array to display
-     * @param delim the delimiter to use (typically a ",")
+     * Converts an array into a delimited {@code String} (e.g. CSV).
+     * @param arr the array to convert
+     * @param delim the delimiter to use (e.g., ",")
      * @return the delimited {@code String}
      */
     public static String join(Object[] arr, String delim) {
@@ -642,10 +625,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.</p>
-     * @param collection the collection
-     * @param delim the delimiter to use (typically a ",")
+     * Converts a {@code Collection} into a delimited {@code String} (e.g. CSV).
+     * @param collection the collection to convert
+     * @param delim the delimiter to use (e.g., ",")
      * @return the delimited {@code String}
      */
     public static String join(Collection<?> collection, String delim) {
@@ -665,51 +647,45 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert a {@code String} array into a delimited {@code String}
-     * by a system-dependent line separator.
-     * @param arr the array to display
-     * @return the delimited {@code String}
+     * Converts an array into a {@code String} separated by the system-dependent line separator.
+     * @param arr the array to join
+     * @return the joined {@code String}
      */
     public static String joinWithLines(Object[] arr) {
         return join(arr, System.lineSeparator());
     }
 
     /**
-     * Convert a {@code Collection} into a delimited {@code String}
-     * by a system-dependent line separator.
-     * @param collection the collection
-     * @return the delimited {@code String}
+     * Converts a {@code Collection} into a {@code String} separated by the system-dependent line separator.
+     * @param collection the collection to join
+     * @return the joined {@code String}
      */
     public static String joinWithLines(Collection<?> collection) {
         return join(collection, System.lineSeparator());
     }
 
     /**
-     * Convert a {@code String} array into a comma delimited {@code String}
-     * (i.e., CSV).
+     * Converts a {@code String} array into a comma-separated {@code String}.
      * @param arr the array to display
-     * @return the delimited {@code String}
+     * @return the comma-separated {@code String}
      */
     public static String joinWithCommas(String[] arr) {
         return join(arr, ", ");
     }
 
     /**
-     * Convert a {@code Collection} into a comma delimited {@code String}
-     * (i.e., CSV).
-     * @param collection the collection
-     * @return the delimited {@code String}
+     * Converts a {@code Collection} into a comma-separated {@code String}.
+     * @param collection the collection to convert
+     * @return the comma-separated {@code String}
      */
     public static String joinWithCommas(Collection<?> collection) {
         return join(collection, ", ");
     }
 
     /**
-     * Copy the given {@link Collection} into a {@code String} array.
-     * <p>The {@code Collection} must contain {@code String} elements only.
-     * @param collection the {@code Collection} to copy
-     * (potentially {@code null} or empty)
-     * @return the resulting {@code String} array
+     * Copies the given {@link Collection} of {@code String}s into a {@code String} array.
+     * @param collection the {@code Collection} to copy (may be {@code null})
+     * @return the resulting {@code String} array, or an empty array if the collection is {@code null} or empty
      */
     public static String[] toStringArray(Collection<String> collection) {
         return (collection != null && !collection.isEmpty() ?
@@ -717,22 +693,19 @@ public abstract class StringUtils {
     }
 
     /**
-     * Copy the given {@link Enumeration} into a {@code String} array.
-     * <p>The {@code Enumeration} must contain {@code String} elements only.
-     * @param enumeration the {@code Enumeration} to copy
-     * (potentially {@code null} or empty)
-     * @return the resulting {@code String} array
+     * Copies the given {@link Enumeration} of {@code String}s into a {@code String} array.
+     * @param enumeration the {@code Enumeration} to copy (may be {@code null})
+     * @return the resulting {@code String} array, or an empty array if the enumeration is {@code null} or empty
      */
     public static String[] toStringArray(Enumeration<String> enumeration) {
         return (enumeration != null ? toStringArray(Collections.list(enumeration)) : EMPTY_STRING_ARRAY);
     }
 
     /**
-     * Returns the number of times the specified string was found
-     * in the target string, or 0 if there is no specified string.
-     * @param str the target string
-     * @param searchStr the string to find
-     * @return the number of times the specified string was found
+     * Counts how many times the substring appears in the larger string.
+     * @param str the string to search in (may be {@code null})
+     * @param searchStr the substring to search for (may be {@code null})
+     * @return the number of times the substring appears, 0 if either string is empty
      */
     public static int search(String str, String searchStr) {
         if (isEmpty(str) || isEmpty(searchStr)) {
@@ -753,12 +726,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns the number of times the specified string was found
-     * in the target string, or 0 if there is no specified string.
-     * When searching for the specified string, it is not case-sensitive.
-     * @param str the target string
-     * @param searchStr the string to find
-     * @return the number of times the specified string was found
+     * Counts how many times the case-insensitive substring appears in the larger string.
+     * @param str the string to search in (may be {@code null})
+     * @param searchStr the substring to search for (may be {@code null})
+     * @return the number of times the substring appears, 0 if either string is empty
      */
     public static int searchIgnoreCase(String str, String searchStr) {
         if (isEmpty(str) || isEmpty(searchStr)) {
@@ -768,11 +739,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns the number of times the specified character was found
-     * in the target string, or 0 if there is no specified character.
-     * @param chars the target string
-     * @param searchChar the character to find
-     * @return the number of times the specified character was found
+     * Counts how many times the character appears in the larger string.
+     * @param chars the character sequence to search in (may be {@code null})
+     * @param searchChar the character to search for
+     * @return the number of times the character appears, 0 if the sequence is empty
      */
     public static int search(CharSequence chars, char searchChar) {
         if (chars == null || chars.isEmpty()) {
@@ -788,12 +758,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Returns the number of times the specified character was found
-     * in the target string, or 0 if there is no specified character.
-     * When searching for the specified character, it is not case-sensitive.
-     * @param chars the target string
-     * @param searchChar the character to find
-     * @return the number of times the specified character was found
+     * Counts how many times the case-insensitive character appears in the larger string.
+     * @param chars the character sequence to search in (may be {@code null})
+     * @param searchChar the character to search for
+     * @return the number of times the character appears, 0 if the sequence is empty
      */
     public static int searchIgnoreCase(CharSequence chars, char searchChar) {
         if (chars == null || chars.isEmpty()) {
@@ -810,9 +778,9 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert byte size into human friendly format.
+     * Converts a byte size into a human-friendly format (e.g., 1024 -> "1.0 KB").
      * @param bytes the number of bytes
-     * @return a human friendly byte size (includes units)
+     * @return a human-friendly byte size string (includes units like B, KB, MB, GB)
      */
     @NonNull
     public static String toHumanFriendlyByteSize(long bytes) {
@@ -831,10 +799,10 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convert byte size into machine friendly format.
-     * @param bytes the human friendly byte size (includes units)
-     * @return a number of bytes
-     * @throws NumberFormatException if failed parse given size
+     * Converts a human-friendly byte size string (e.g., "1KB", "10MB") into the number of bytes.
+     * @param bytes the human-friendly byte size string to parse
+     * @return the number of bytes
+     * @throws NumberFormatException if the string format is invalid
      */
     @SuppressWarnings("fallthrough")
     public static long toMachineFriendlyByteSize(@NonNull String bytes) {

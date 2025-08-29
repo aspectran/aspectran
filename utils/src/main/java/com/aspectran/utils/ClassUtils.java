@@ -23,30 +23,29 @@ import java.lang.reflect.Modifier;
 
 /**
  * Miscellaneous class utility methods.
+ * <p>Mainly for internal use within the framework.</p>
  */
 public abstract class ClassUtils {
 
-    /** The package separator character '.' */
+    /** The package separator character: {@code '.'}. */
     public static final char PACKAGE_SEPARATOR_CHAR = '.';
 
-    /** The ".class" file suffix */
+    /** The ".class" file suffix. */
     public static final String CLASS_FILE_SUFFIX = ".class";
 
     /** The nested class separator character: {@code '$'}. */
     private static final char NESTED_CLASS_SEPARATOR = '$';
 
-    /** CGLIB or Javassist class separator: {@code "$$"}. */
+    /** CGLIB or Javassist-generated class separator: {@code "$$"}. */
     public static final String PROXY_CLASS_SEPARATOR = "$$";
 
     /**
-     * Method that can be called to try to create an instance of specified type.
-     * Instantiation is done using default no-argument constructor.
-     * @param <T> the generic type
-     * @param clazz the class to check
-     * @return an instantiated object
-     * @throws IllegalArgumentException if instantiation fails for any reason;
-     *      except for cases where constructor throws an unchecked exception
-     *      (which will be passed as is)
+     * Creates an instance of the specified class using its default (no-argument) constructor.
+     * @param <T> the generic type of the class
+     * @param clazz the class to instantiate
+     * @return a new instance of the class
+     * @throws IllegalArgumentException if the class has no accessible default constructor,
+     *      or if instantiation fails for any other reason
      */
     @NonNull
     public static <T> T createInstance(Class<T> clazz) {
@@ -66,14 +65,13 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Method that can be called to try to create an instantiate of specified type.
-     * @param <T> the generic type
-     * @param clazz the class to check
-     * @param args the arguments
-     * @return an instantiated object
-     * @throws IllegalArgumentException if instantiation fails for any reason;
-     *      except for cases where constructor throws an unchecked exception
-     *      (which will be passed as is)
+     * Creates an instance of the specified class using a constructor that matches the given arguments.
+     * @param <T> the generic type of the class
+     * @param clazz the class to instantiate
+     * @param args the arguments to pass to the constructor
+     * @return a new instance of the class
+     * @throws IllegalArgumentException if no matching constructor is found,
+     *      or if instantiation fails for any other reason
      */
     @NonNull
     public static <T> T createInstance(Class<T> clazz, @NonNull Object... args) {
@@ -85,15 +83,14 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Method that can be called to try to create an instance of specified type.
-     * @param <T> the generic type
-     * @param clazz the class to check
-     * @param args the arguments
+     * Creates an instance of the specified class using a constructor that matches the given arguments and types.
+     * @param <T> the generic type of the class
+     * @param clazz the class to instantiate
+     * @param args the arguments to pass to the constructor
      * @param argTypes the argument types of the desired constructor
-     * @return an instantiated object
-     * @throws IllegalArgumentException if instantiation fails for any reason;
-     *      except for cases where constructor throws an unchecked exception
-     *      (which will be passed as is)
+     * @return a new instance of the class
+     * @throws IllegalArgumentException if no matching constructor is found,
+     *      or if instantiation fails for any other reason
      */
     @NonNull
     public static <T> T createInstance(Class<T> clazz, Object[] args, Class<?>[] argTypes) {
@@ -113,12 +110,14 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Get an accessible constructor for the given class and parameters.
-     * @param clazz the class to check
-     * @param argTypes the argument types of the desired constructor
-     * @param <T> the generic type
+     * Finds an accessible constructor for the given class and parameter types.
+     * The constructor must be public.
+     * @param <T> the generic type of the class
+     * @param clazz the class to find the constructor for
+     * @param argTypes the parameter types of the desired constructor
      * @return the constructor reference
-     * @throws NoSuchMethodException if no such constructor exists
+     * @throws NoSuchMethodException if no such public constructor exists
+     * @throws IllegalArgumentException if a matching constructor is found but is not public
      */
     @NonNull
     public static <T> Constructor<T> findConstructor(Class<T> clazz, Class<?>... argTypes)
@@ -142,11 +141,11 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Check whether the given class is visible in the given ClassLoader.
+     * Checks whether the given class is visible in the given {@link ClassLoader}.
      * @param clazz the class to check (typically an interface)
-     * @param classLoader the ClassLoader to check against
-     *      (maybe {@code null} in which case this method will always return {@code true})
-     * @return true if the given class is visible; otherwise false
+     * @param classLoader the {@code ClassLoader} to check against (may be {@code null},
+     *      in which case this method will always return {@code true})
+     * @return {@code true} if the given class is visible, {@code false} otherwise
      * @since 6.0.0
      */
     public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
@@ -166,10 +165,10 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Check whether the given class is loadable in the given ClassLoader.
-     * @param clazz the class to check (typically an interface)
-     * @param classLoader the ClassLoader to check against
-     * @return true if the given class is loadable; otherwise false
+     * Checks whether the given class is loadable in the given {@link ClassLoader}.
+     * @param clazz the class to check
+     * @param classLoader the {@code ClassLoader} to check against
+     * @return {@code true} if the given class is loadable
      * @since 6.0.0
      */
     private static boolean isLoadable(@NonNull Class<?> clazz, ClassLoader classLoader) {
@@ -184,39 +183,63 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Determine if the supplied {@link Class} is a JVM-generated implementation
+     * Determines if the supplied {@link Class} is a JVM-generated implementation
      * class for a lambda expression or method reference.
-     * <p>This method makes a best-effort attempt at determining this, based on
-     * checks that work on modern, mainstream JVMs.
      * @param clazz the class to check
-     * @return {@code true} if the class is a lambda implementation class
+     * @return {@code true} if the class is a lambda implementation class, {@code false} otherwise
      */
     public static boolean isLambdaClass(@NonNull Class<?> clazz) {
         return (clazz.isSynthetic() && (clazz.getSuperclass() == Object.class) &&
                 (clazz.getInterfaces().length > 0) && clazz.getName().contains("$$Lambda"));
     }
 
+    /**
+     * Loads a class by its fully qualified name, using the default class loader.
+     * @param <T> the generic type of the class
+     * @param name the fully qualified name of the class to load
+     * @return the loaded class
+     * @throws ClassNotFoundException if the class cannot be found
+     */
     @NonNull
     public static <T> Class<T> classForName(String name) throws ClassNotFoundException {
         return classForName(name, getDefaultClassLoader());
     }
 
+    /**
+     * Loads a class by its fully qualified name, using the specified class loader.
+     * @param <T> the generic type of the class
+     * @param name the fully qualified name of the class to load
+     * @param classLoader the class loader to use
+     * @return the loaded class
+     * @throws ClassNotFoundException if the class cannot be found
+     */
     @NonNull
     @SuppressWarnings("unchecked")
     public static <T> Class<T> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException {
         return (Class<T>)Class.forName(name, true, classLoader);
     }
 
+    /**
+     * Loads a class by its fully qualified name, using the default class loader.
+     * @param <T> the generic type of the class
+     * @param name the fully qualified name of the class to load
+     * @return the loaded class
+     * @throws ClassNotFoundException if the class cannot be found
+     */
     @SuppressWarnings("unchecked")
     public static <T> Class<T> loadClass(String name) throws ClassNotFoundException {
         return (Class<T>)getDefaultClassLoader().loadClass(name);
     }
 
     /**
-     * Returns the default class loader within the current context.
-     * If there is a context classloader it is returned, otherwise the classloader
-     * which loaded the ClassUtils Class is returned.
-     * @return the appropriate default classloader which is guaranteed to be non-null
+     * Returns the default class loader to use.
+     * <p>This method will try, in order:
+     * <ol>
+     *     <li>The thread context class loader.</li>
+     *     <li>The class loader that loaded this {@code ClassUtils} class.</li>
+     *     <li>The system class loader.</li>
+     * </ol>
+     * @return the default class loader (never {@code null})
      */
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader cl = null;
@@ -235,8 +258,9 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Return the user-defined class for the given class: usually simply the given
-     * class, but the original class in the case of a CGLIB or Javassist-generated subclass.
+     * Returns the user-defined class for a given class.
+     * <p>For regular classes, it returns the class itself. For CGLIB or Javassist-generated
+     * proxy classes, it returns the superclass, which is the original user-defined class.</p>
      * @param clazz the class to check
      * @return the user-defined class
      * @see #PROXY_CLASS_SEPARATOR
@@ -252,6 +276,12 @@ public abstract class ClassUtils {
         return clazz;
     }
 
+    /**
+     * Checks if an annotation is present on the given class or any of its superclasses.
+     * @param clazz the class to check
+     * @param annotationClass the annotation to look for
+     * @return {@code true} if the annotation is present, {@code false} otherwise
+     */
     public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         Class<?> currentClass = clazz;
         while (currentClass != null) {
@@ -264,9 +294,11 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Get the class name without the qualified package name.
-     * @param className the className to get the short name for
-     * @return the class name of the class without the package name
+     * Gets the short name of a class, excluding the package name.
+     * <p>For nested classes, the separator is converted from '$' to '.'.
+     * For proxy classes, the proxy-specific suffix is removed.</p>
+     * @param className the fully qualified class name
+     * @return the short class name
      * @throws IllegalArgumentException if the className is empty
      */
     @NonNull
@@ -283,9 +315,9 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Get the class name without the qualified package name.
+     * Gets the short name of a class, excluding the package name.
      * @param clazz the class to get the short name for
-     * @return the class name of the class without the package name
+     * @return the short class name
      */
     @NonNull
     public static String getShortName(Class<?> clazz) {
