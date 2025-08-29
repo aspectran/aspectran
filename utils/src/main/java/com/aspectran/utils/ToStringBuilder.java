@@ -16,6 +16,7 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -31,10 +32,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class enables a good and consistent toString() to be built for any object.
- *
- * @author Juho Jeong
- * @since 2016. 2. 11.
+ * Assists in implementing an object's {@link Object#toString()} method by providing a flexible
+ * way to build a string representation of an object's fields in a consistent format.
+ * <p>This builder supports appending various types of data, including primitive values,
+ * collections, maps, arrays, and even other objects. It can also integrate with
+ * {@link StringifyContext} for custom formatting options like date/time representation.</p>
  */
 public class ToStringBuilder {
 
@@ -46,27 +48,57 @@ public class ToStringBuilder {
 
     private int start = -1;
 
+    /**
+     * Creates a new ToStringBuilder with a default initial capacity.
+     */
     public ToStringBuilder() {
         this(null);
     }
 
+    /**
+     * Creates a new ToStringBuilder with a specified name and default capacity.
+     * The name will be prepended to the string representation.
+     * @param name the name to prepend
+     */
     public ToStringBuilder(String name) {
         this(name, 64);
     }
 
+    /**
+     * Creates a new ToStringBuilder with a specified initial capacity.
+     * @param capacity the initial capacity of the internal StringBuilder
+     */
     public ToStringBuilder(int capacity) {
         this(null, capacity);
     }
 
+    /**
+     * Creates a new ToStringBuilder with a specified name and initial capacity.
+     * @param name the name to prepend
+     * @param capacity the initial capacity of the internal StringBuilder
+     */
     public ToStringBuilder(String name, int capacity) {
         this.buffer = new StringBuilder(capacity);
         labeling(name, true);
     }
 
+    /**
+     * Private constructor used by static {@code toString} methods to initialize the builder
+     * with an object and an optional {@code StringifyContext}.
+     * @param value the object to append
+     * @param stringifyContext the context for stringification options
+     */
     private ToStringBuilder(Object value, StringifyContext stringifyContext) {
         this(null, value, stringifyContext);
     }
 
+    /**
+     * Private constructor used by static {@code toString} methods to initialize the builder
+     * with a name, an object, and an optional {@code StringifyContext}.
+     * @param name the name to prepend
+     * @param value the object to append
+     * @param stringifyContext the context for stringification options
+     */
     private ToStringBuilder(String name, Object value, StringifyContext stringifyContext) {
         this.buffer = new StringBuilder(128);
         setStringifyContext(stringifyContext);
@@ -89,19 +121,39 @@ public class ToStringBuilder {
         this.start = buffer.length();
     }
 
+    /**
+     * Checks if a {@link StringifyContext} has been set for this builder.
+     * @return {@code true} if a StringifyContext is present, {@code false} otherwise
+     */
     public boolean hasStringifyContext() {
         return (stringifyContext != null);
     }
 
+    /**
+     * Sets the {@link StringifyContext} for this builder.
+     * @param stringifyContext the context for stringification options
+     */
     public void setStringifyContext(StringifyContext stringifyContext) {
         this.stringifyContext = stringifyContext;
     }
 
+    /**
+     * Applies a {@link StringifyContext} to this builder in a fluent style.
+     * @param stringifyContext the context for stringification options
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return this;
     }
 
+    /**
+     * Appends a named field and its value to the string representation.
+     * The field is only appended if its value is not {@code null}.
+     * @param name the name of the field
+     * @param value the value of the field
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder append(String name, Object value) {
         if (value != null) {
             appendName(name);
@@ -110,6 +162,13 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends a named field and its value, or a default value if the primary value is {@code null}.
+     * @param name the name of the field
+     * @param value the primary value of the field
+     * @param defaultValue the default value to use if the primary value is {@code null}
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder append(String name, Object value, Object defaultValue) {
         if (value != null) {
             return append(name, value);
@@ -118,12 +177,25 @@ public class ToStringBuilder {
         }
     }
 
+    /**
+     * Appends a named field and its value to the string representation, regardless of whether the value is {@code null}.
+     * @param name the name of the field
+     * @param value the value of the field
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder appendForce(String name, Object value) {
         appendName(name);
         appendValue(value);
         return this;
     }
 
+    /**
+     * Appends a named field and its {@link Class} to the string representation.
+     * The field is only appended if the class is not {@code null}.
+     * @param name the name of the field
+     * @param clazz the class to append
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder append(String name, Class<?> clazz) {
         if (clazz != null) {
             appendName(name);
@@ -132,6 +204,13 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends a named field and its {@link Method} signature to the string representation.
+     * The field is only appended if the method is not {@code null}.
+     * @param name the name of the field
+     * @param method the method to append
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder append(String name, Method method) {
         if (method != null) {
             appendName(name);
@@ -140,6 +219,13 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends a named boolean field and its value to the string representation.
+     * The field is only appended if its value is {@code true}.
+     * @param name the name of the field
+     * @param value the boolean value of the field
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder append(String name, boolean value) {
         if (value) {
             appendName(name);
@@ -148,12 +234,25 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends a named boolean field and its value to the string representation, regardless of its value.
+     * @param name the name of the field
+     * @param value the boolean value of the field
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder appendForce(String name, boolean value) {
         appendName(name);
         buffer.append(value);
         return this;
     }
 
+    /**
+     * Appends a named field and its value if the value is equal to the compare object.
+     * @param name the name of the field
+     * @param value the value of the field
+     * @param compare the object to compare against
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder appendEqual(String name, Object value, Object compare) {
         if (value != null && value.equals(compare)) {
             appendName(name);
@@ -162,6 +261,13 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends a named field and its value if the value is not equal to the compare object.
+     * @param name the name of the field
+     * @param value the value of the field
+     * @param compare the object to compare against
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder appendNotEqual(String name, Object value, Object compare) {
         if (value != null && !value.equals(compare)) {
             appendName(name);
@@ -170,6 +276,12 @@ public class ToStringBuilder {
         return this;
     }
 
+    /**
+     * Appends the size of a collection, map, array, iterator, or enumeration to the string representation.
+     * @param name the name of the field
+     * @param object the object whose size is to be appended
+     * @return this builder instance for chaining
+     */
     public ToStringBuilder appendSize(String name, Object object) {
         if (object != null) {
             appendName(name);
@@ -377,6 +489,10 @@ public class ToStringBuilder {
         buffer.append(')');
     }
 
+    /**
+     * Returns the final string representation built by this builder.
+     * @return the string representation
+     */
     @Override
     public String toString() {
         if (braced) {
@@ -393,18 +509,42 @@ public class ToStringBuilder {
         }
     }
 
+    /**
+     * Creates a string representation of an object using a default builder.
+     * @param object the object to stringify
+     * @return the string representation
+     */
     public static String toString(Object object) {
         return toString(object, null);
     }
 
+    /**
+     * Creates a string representation of an object using a default builder and a specified name.
+     * @param name the name to prepend
+     * @param object the object to stringify
+     * @return the string representation
+     */
     public static String toString(String name, Object object) {
         return toString(name, object, null);
     }
 
+    /**
+     * Creates a string representation of an object using a specified {@link StringifyContext}.
+     * @param object the object to stringify
+     * @param stringifyContext the context for stringification options
+     * @return the string representation
+     */
     public static String toString(Object object, StringifyContext stringifyContext) {
         return new ToStringBuilder(object, stringifyContext).toString();
     }
 
+    /**
+     * Creates a string representation of an object using a specified name and {@link StringifyContext}.
+     * @param name the name to prepend
+     * @param object the object to stringify
+     * @param stringifyContext the context for stringification options
+     * @return the string representation
+     */
     public static String toString(String name, Object object, StringifyContext stringifyContext) {
         return new ToStringBuilder(name, object, stringifyContext).toString();
     }
