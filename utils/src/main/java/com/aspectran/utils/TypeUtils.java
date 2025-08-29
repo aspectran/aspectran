@@ -22,19 +22,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility methods focusing on type inspection, particularly with regard to generics.
+ * A utility class for type inspection, particularly with regard to primitives and wrappers.
  */
 public abstract class TypeUtils {
 
     /**
-     * Map with primitive wrapper type as key and corresponding primitive
-     * type as value, for example: Integer.class -> int.class.
+     * A map with primitive wrapper types as keys and corresponding primitive types as values.
+     * For example: {@code Integer.class -> int.class}.
      */
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<>(32);
 
     /**
-     * Map with primitive type as key and corresponding wrapper type as value,
-     * for example: int.class -> Integer.class.
+     * A map with primitive types as keys and corresponding wrapper types as values.
+     * For example: {@code int.class -> Integer.class}.
      */
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<>(32);
 
@@ -63,42 +63,42 @@ public abstract class TypeUtils {
     }
 
     /**
-     * Check if the given class represents a primitive wrapper,
-     * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
+     * Checks if the given class is a primitive wrapper type.
+     * (i.e., {@link Boolean}, {@link Byte}, {@link Character}, {@link Short},
+     * {@link Integer}, {@link Long}, {@link Float}, or {@link Double}).
      * @param clazz the class to check
-     * @return whether the given class is a primitive wrapper class
+     * @return {@code true} if the given class is a primitive wrapper class, {@code false} otherwise
      */
     public static boolean isPrimitiveWrapper(Class<?> clazz) {
         return primitiveWrapperTypeMap.containsKey(clazz);
     }
 
     /**
-     * Check if the given class represents an array of primitives,
-     * i.e. boolean, byte, char, short, int, long, float, or double.
+     * Checks if the given class represents an array of primitives.
+     * (i.e., {@code boolean[]}, {@code byte[]}, {@code char[]}, etc.)
      * @param clazz the class to check
-     * @return whether the given class is a primitive array class
+     * @return {@code true} if the given class is a primitive array class, {@code false} otherwise
      */
     public static boolean isPrimitiveArray(@NonNull Class<?> clazz) {
         return (clazz.isArray() && clazz.getComponentType().isPrimitive());
     }
 
     /**
-     * Check if the given class represents an array of primitive wrappers,
-     * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
+     * Checks if the given class represents an array of primitive wrappers.
+     * (i.e., {@code Boolean[]}, {@code Byte[]}, {@code Character[]}, etc.)
      * @param clazz the class to check
-     * @return whether the given class is a primitive wrapper array class
+     * @return {@code true} if the given class is a primitive wrapper array class, {@code false} otherwise
      */
     public static boolean isPrimitiveWrapperArray(@NonNull Class<?> clazz) {
         return (clazz.isArray() && isPrimitiveWrapper(clazz.getComponentType()));
     }
 
     /**
-     * Check if the right-hand side type may be assigned to the left-hand side
-     * type, assuming setting by reflection. Considers primitive wrapper
-     * classes as assignable to the corresponding primitive types.
-     * @param lhsType the target type
-     * @param rhsType the value type that should be assigned to the target type
-     * @return if the target type is assignable from the value type
+     * Checks if the right-hand side type can be assigned to the left-hand side type,
+     * considering autoboxing. This method is useful for reflection-based assignments.
+     * @param lhsType the target type (Left-Hand Side)
+     * @param rhsType the value type (Right-Hand Side) that should be assigned to the target type
+     * @return {@code true} if {@code rhsType} is assignable to {@code lhsType}, {@code false} otherwise
      */
     public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
         if (rhsType == null) {
@@ -123,12 +123,10 @@ public abstract class TypeUtils {
     }
 
     /**
-     * Determine if the given type is assignable from the given value,
-     * assuming setting by reflection. Considers primitive wrapper classes
-     * as assignable to the corresponding primitive types.
+     * Checks if a given value can be assigned to a given type, considering autoboxing.
      * @param type the target type
      * @param value the value that should be assigned to the type
-     * @return if the type is assignable from the value
+     * @return {@code true} if the value is assignable to the type, {@code false} otherwise
      */
     public static boolean isAssignableValue(Class<?> type, Object value) {
         if (value == null) {
@@ -160,40 +158,32 @@ public abstract class TypeUtils {
     }
 
     /**
-     * Gets the wrapper object class for the given primitive type class.
-     * For example, passing <code>boolean.class</code> returns <code>Boolean.class</code>
-     * @param primitiveType the primitive type class for which a match is to be found
-     * @return the wrapper type associated with the given primitive or null if no match is found
+     * Gets the wrapper class for a given primitive type class.
+     * For example, passing {@code boolean.class} returns {@code Boolean.class}.
+     * @param primitiveType the primitive type class
+     * @return the corresponding wrapper class, or {@code null} if the input is not a primitive type
      */
     public static Class<?> getPrimitiveWrapper(Class<?> primitiveType) {
         return primitiveTypeToWrapperMap.get(primitiveType);
     }
 
     /**
-     * <p>Converts the specified wrapper class to its corresponding primitive
-     * class.</p>
-     * <p>This method is the counter part of <code>primitiveToWrapper()</code>.
-     * If the passed in class is a wrapper class for a primitive type, this
-     * primitive type will be returned (e.g. <code>Integer.TYPE</code> for
-     * <code>Integer.class</code>). For other classes, or if the parameter is
-     * <b>null</b>, the return value is <b>null</b>.</p>
-     * @param cls the class to convert, may be <b>null</b>
-     * @return the corresponding primitive type if <code>cls</code> is a wrapper class, <b>null</b> otherwise
+     * Converts a wrapper class to its corresponding primitive class.
+     * <p>For example, passing {@code Integer.class} returns {@code int.class} (i.e., {@code Integer.TYPE}).</p>
+     * @param cls the wrapper class to convert (may be {@code null})
+     * @return the corresponding primitive type, or {@code null} if the input is not a wrapper class
      */
     public static Class<?> wrapperToPrimitive(Class<?> cls) {
         return primitiveWrapperTypeMap.get(cls);
     }
 
     /**
-     * <p>Converts the specified array of wrapper Class objects to an array of
-     * its corresponding primitive Class objects.</p>
-     * <p>This method invokes <code>wrapperToPrimitive()</code> for each element
-     * of the passed in array.</p>
-     * @param classes  the class array to convert, may be null or empty
-     * @return an array which contains for each given class, the primitive class or
-     * <b>null</b> if the original class is not a wrapper class. <code>null</code> if null input.
-     * Empty array if an empty array passed in.
-     * @see #wrapperToPrimitive(Class)
+     * Converts an array of wrapper {@code Class} objects to an array of their corresponding primitive types.
+     * <p>This method invokes {@link #wrapperToPrimitive(Class)} for each element of the input array.</p>
+     * @param classes the array of wrapper classes to convert (may be {@code null})
+     * @return an array containing the corresponding primitive types. If a class in the input array
+     *      is not a wrapper type, the corresponding element in the output array will be {@code null}.
+     *      Returns {@code null} for a {@code null} input, and an empty array for an empty input.
      */
     public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
         if (classes == null) {

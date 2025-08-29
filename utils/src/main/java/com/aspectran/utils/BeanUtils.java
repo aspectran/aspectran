@@ -25,8 +25,9 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
- * BeanUtils provides methods that allow simple, reflective access to
- * JavaBeans style properties. Methods are provided for object types.
+ * Provides static utility methods for accessing JavaBeans style properties via reflection.
+ * <p>This class supports simple, nested, and indexed property access.
+ * It can operate on standard JavaBeans, {@link Map}s, and {@link Properties} objects.</p>
  *
  * <p>Created: 2008. 04. 22 PM 3:47:15</p>
  */
@@ -36,13 +37,11 @@ public abstract class BeanUtils {
     static final Object[] NO_ARGUMENTS = new Object[0];
 
     /**
-     * Return the value of the specified property of the specified bean,
-     * no matter which property reference format is used, with no type
-     * conversions.
+     * Returns the value of a property from a bean, supporting nested and indexed properties.
      * @param bean the bean whose property is to be extracted
-     * @param name possibly indexed and/or nested name of the property to be extracted
-     * @return the property value (as an Object)
-     * @throws InvocationTargetException if the property accessor method throws an exception
+     * @param name the name of the property (e.g., "name", "address.city", "friends[0]")
+     * @return the property value
+     * @throws InvocationTargetException if a property accessor method throws an exception
      */
     public static Object getProperty(Object bean, @NonNull String name) throws InvocationTargetException {
         Object value;
@@ -68,13 +67,11 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Return the value of the specified property of the specified bean,
-     * no matter which property reference format is used, with no type
-     * conversions.
+     * Returns the value of a simple (non-nested) property from a bean.
      * @param bean the bean whose property is to be extracted
-     * @param name the name of the property to be extracted that does not allow nesting
-     * @return the property value (as an Object)
-     * @throws InvocationTargetException if the property accessor method throws an exception
+     * @param name the name of the property (e.g., "name", "friends[0]")
+     * @return the property value
+     * @throws InvocationTargetException if a property accessor method throws an exception
      */
     public static Object getSimpleProperty(Object bean, @NonNull String name) throws InvocationTargetException {
         try {
@@ -118,11 +115,12 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Sets the value of the specified property of the specified bean.
+     * Sets the value of a property on a bean, supporting nested and indexed properties.
+     * <p>If a nested property is null, this method will attempt to instantiate it.</p>
      * @param bean the bean whose property is to be modified
-     * @param name possibly indexed and/or nested name of the property to be modified
-     * @param value the value to which this property is to be set
-     * @throws InvocationTargetException if the property accessor method throws an exception
+     * @param name the name of the property (e.g., "name", "address.city", "friends[0]")
+     * @param value the value to set
+     * @throws InvocationTargetException if a property accessor method throws an exception
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
     public static void setProperty(Object bean, @NonNull String name, Object value)
@@ -160,11 +158,11 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Sets the value of the specified property of the specified bean.
+     * Sets the value of a simple (non-nested) property on a bean.
      * @param bean the bean whose property is to be modified
-     * @param name the name of the property to be modified that does not allow nesting
-     * @param value the value to which this property is to be set
-     * @throws InvocationTargetException if the property accessor method throws an exception
+     * @param name the name of the property (e.g., "name", "friends[0]")
+     * @param value the value to set
+     * @throws InvocationTargetException if a property accessor method throws an exception
      */
     public static void setSimpleProperty(Object bean, @NonNull String name, Object value) throws InvocationTargetException {
         if (bean instanceof Properties props) {
@@ -209,6 +207,14 @@ public abstract class BeanUtils {
         }
     }
 
+    /**
+     * Returns the value of an indexed property (e.g., "names[2]") from a bean.
+     * The property must be a {@link List} or an array.
+     * @param bean the bean to query
+     * @param indexedName the name of the indexed property
+     * @return the value at the specified index
+     * @throws InvocationTargetException if the property is not a list or array, or if the index is out of bounds
+     */
     public static Object getIndexedProperty(Object bean, @NonNull String indexedName) throws InvocationTargetException {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
@@ -247,6 +253,14 @@ public abstract class BeanUtils {
         }
     }
 
+    /**
+     * Sets the value of an indexed property (e.g., "names[2]") on a bean.
+     * The property must be a {@link List} or an array.
+     * @param bean the bean to modify
+     * @param indexedName the name of the indexed property
+     * @param value the value to set at the specified index
+     * @throws InvocationTargetException if the property is not a list or array, or if the index is out of bounds
+     */
     public static void setIndexedProperty(Object bean, @NonNull String indexedName, Object value)
             throws InvocationTargetException {
         try {
@@ -287,11 +301,11 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Checks to see if a bean has a readable property be a given name.
+     * Checks if a bean has a readable property with the given name.
      * @param bean the bean to check
      * @param name the property name to check for
-     * @return true if the property exists and is readable
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
+     * @return {@code true} if the property exists and is readable, {@code false} otherwise
+     * @throws NoSuchMethodException if an accessor method for a nested property cannot be found
      */
     public static boolean hasReadableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
         boolean exists = false;
@@ -314,11 +328,11 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Checks to see if a bean has a writable property be a given name.
+     * Checks if a bean has a writable property with the given name.
      * @param bean the bean to check
      * @param name the property name to check for
-     * @return true if the property exists and is writable
-     * @throws NoSuchMethodException if an accessor method for this property cannot be found
+     * @return {@code true} if the property exists and is writable, {@code false} otherwise
+     * @throws NoSuchMethodException if an accessor method for a nested property cannot be found
      */
     public static boolean hasWritableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
         boolean exists = false;
@@ -341,9 +355,9 @@ public abstract class BeanUtils {
     }
 
     /**
-     * Returns an array of the readable properties exposed by a bean.
-     * @param bean the bean
-     * @return the readable properties
+     * Returns an array of the readable property names exposed by a bean.
+     * @param bean the bean to inspect
+     * @return an array of readable property names
      */
     public static String[] getReadablePropertyNames(@NonNull Object bean) {
         return BeanDescriptor.getInstance(bean.getClass()).getReadablePropertyNames();
@@ -351,18 +365,18 @@ public abstract class BeanUtils {
 
     /**
      * Returns an array of readable properties exposed by the bean,
-     * except those specified by NonSerializable.
-     * @param bean the bean
-     * @return the readable properties without non-serializable
+     * excluding those marked as non-serializable.
+     * @param bean the bean to inspect
+     * @return an array of serializable, readable property names
      */
     public static String[] getReadablePropertyNamesWithoutNonSerializable(@NonNull Object bean) {
         return BeanDescriptor.getInstance(bean.getClass()).getReadablePropertyNamesWithoutNonSerializable();
     }
 
     /**
-     * Returns an array of the writable properties exposed by a bean.
-     * @param bean the bean
-     * @return the properties
+     * Returns an array of the writable property names exposed by a bean.
+     * @param bean the bean to inspect
+     * @return an array of writable property names
      */
     public static String[] getWritablePropertyNames(@NonNull Object bean) {
         return BeanDescriptor.getInstance(bean.getClass()).getWritablePropertyNames();
