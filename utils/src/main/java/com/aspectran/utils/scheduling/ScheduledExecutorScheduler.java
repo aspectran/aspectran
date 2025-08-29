@@ -22,11 +22,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>This class is a clone of org.eclipse.jetty.util.thread.ScheduledExecutorScheduler</p>
- *
- * Implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
- * <p>
- * While use of {@link ScheduledThreadPoolExecutor} creates futures that will not be used,
+ * An implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
+ * <p>This class is a clone of {@code org.eclipse.jetty.util.thread.ScheduledExecutorScheduler}.</p>
+ * <p>While the use of {@link ScheduledThreadPoolExecutor} creates futures that may not be directly used,
  * it has the advantage of allowing to set a property to remove cancelled tasks from its
  * queue even if the task did not fire, which provides a huge benefit in the performance
  * of garbage collection in young generation.</p>
@@ -43,18 +41,39 @@ public class ScheduledExecutorScheduler implements Scheduler {
 
     private volatile ScheduledThreadPoolExecutor executor;
 
+    /**
+     * Creates a new ScheduledExecutorScheduler with a default name and non-daemon threads.
+     */
     public ScheduledExecutorScheduler() {
         this(null, false);
     }
 
+    /**
+     * Creates a new ScheduledExecutorScheduler.
+     * @param name the name prefix for the threads created by this scheduler
+     * @param daemon {@code true} if the threads should be daemon threads
+     */
     public ScheduledExecutorScheduler(String name, boolean daemon) {
         this(name, daemon, null);
     }
 
+    /**
+     * Creates a new ScheduledExecutorScheduler.
+     * @param name the name prefix for the threads created by this scheduler
+     * @param daemon {@code true} if the threads should be daemon threads
+     * @param classLoader the ClassLoader to set as the context ClassLoader for new threads
+     */
     public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader) {
         this(name, daemon, classLoader, null);
     }
 
+    /**
+     * Creates a new ScheduledExecutorScheduler.
+     * @param name the name prefix for the threads created by this scheduler
+     * @param daemon {@code true} if the threads should be daemon threads
+     * @param classLoader the ClassLoader to set as the context ClassLoader for new threads
+     * @param threadGroup the ThreadGroup to which new threads will belong
+     */
     public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader, ThreadGroup threadGroup) {
         this.name = (name == null ? "Scheduler-" + hashCode() : name);
         this.daemon = daemon;
@@ -71,12 +90,17 @@ public class ScheduledExecutorScheduler implements Scheduler {
     public Task schedule(Runnable task, long delay, TimeUnit unit, boolean mayInterruptIfRunning) {
         ScheduledThreadPoolExecutor executor = this.executor;
         if (executor == null) {
+            // If the executor is null (e.g., scheduler not started or stopped), return a no-op task.
             return () -> false;
         }
         ScheduledFuture<?> scheduledFuture = executor.schedule(task, delay, unit);
         return new ScheduledFutureTask(scheduledFuture, mayInterruptIfRunning);
     }
 
+    /**
+     * Starts the scheduler by initializing the underlying {@link ScheduledThreadPoolExecutor}.
+     * @throws IllegalStateException if the scheduler is already running
+     */
     @Override
     public synchronized void start() {
         if (executor != null) {
@@ -89,9 +113,14 @@ public class ScheduledExecutorScheduler implements Scheduler {
         threadFactory.setThreadGroup(threadGroup);
 
         executor = new ScheduledThreadPoolExecutor(1, threadFactory);
+        // This policy helps in garbage collection by removing cancelled tasks from the queue.
         executor.setRemoveOnCancelPolicy(true);
     }
 
+    /**
+     * Stops the scheduler by shutting down the underlying {@link ScheduledThreadPoolExecutor}.
+     * Any currently executing tasks are interrupted, and no new tasks will be accepted.
+     */
     @Override
     public synchronized void stop() {
         if (executor != null) {
@@ -100,11 +129,18 @@ public class ScheduledExecutorScheduler implements Scheduler {
         }
     }
 
+    /**
+     * Checks if the scheduler is currently running.
+     * @return {@code true} if the scheduler is running, {@code false} otherwise
+     */
     @Override
     public boolean isRunning() {
         return (executor != null);
     }
 
+    /**
+     * An internal implementation of {@link Scheduler.Task} that wraps a {@link ScheduledFuture}.
+     */
     private static class ScheduledFutureTask implements Task {
 
         private final ScheduledFuture<?> scheduledFuture;

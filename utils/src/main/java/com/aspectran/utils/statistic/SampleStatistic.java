@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-20.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,16 +23,14 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * <p>This class is a clone of org.eclipse.jetty.util.statistic.SampleStatistic</p>
- *
- * <p>Statistics on a sampled value.</p>
- * <p>Provides max, total, mean, count, variance, and standard deviation of continuous sequence of samples.</p>
- * <p>Calculates estimates of mean, variance, and standard deviation characteristics of a sample using a non synchronized
- * approximation of the on-line algorithm presented in <cite>Donald Knuth's Art of Computer Programming, Volume 2,
- * Semi numerical Algorithms, 3rd edition, page 232, Boston: Addison-Wesley</cite>. That cites a 1962 paper by B.P. Welford:
- * <a href="http://www.jstor.org/pss/1266577">Note on a Method for Calculating Corrected Sums of Squares and Products</a></p>
- * <p>This algorithm is also described in Wikipedia in the section "Online algorithm":
+ * Provides statistics on a sampled value, including max, total, mean, count, variance, and standard deviation.
+ * <p>This class is a clone of {@code org.eclipse.jetty.util.statistic.SampleStatistic}.</p>
+ * <p>It calculates estimates of mean, variance, and standard deviation characteristics of a sample
+ * using a non-synchronized approximation of the on-line algorithm presented in
+ * <cite>Donald Knuth's Art of Computer Programming, Volume 2, Semi numerical Algorithms, 3rd edition, page 232, Boston: Addison-Wesley</cite>.
+ * This algorithm is also described in Wikipedia in the section "Online algorithm":
  * <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">Algorithms for calculating variance</a>.</p>
+ * <p>This class is thread-safe due to its use of atomic operations.</p>
  */
 public class SampleStatistic {
 
@@ -45,7 +43,7 @@ public class SampleStatistic {
     private final LongAdder totalVariance100 = new LongAdder();
 
     /**
-     * Resets the statistics.
+     * Resets all statistics (max, total, count, variance) to their initial zero values.
      */
     public void reset() {
         max.reset();
@@ -55,8 +53,9 @@ public class SampleStatistic {
     }
 
     /**
-     * Records a sample value.
-     * @param sample the value to record.
+     * Records a sample value and updates the statistics.
+     * <p>This method updates the total sum, increments the count, and contributes to the variance calculation.</p>
+     * @param sample the value to record
      */
     public void record(long sample) {
         long total = this.total.addAndGet(sample);
@@ -70,28 +69,32 @@ public class SampleStatistic {
     }
 
     /**
-     * @return the max value of the recorded samples
+     * Returns the maximum value recorded among all samples.
+     * @return the maximum sample value
      */
     public long getMax() {
         return max.get();
     }
 
     /**
-     * @return the sum of all the recorded samples
+     * Returns the sum of all recorded samples.
+     * @return the total sum of samples
      */
     public long getTotal() {
         return total.get();
     }
 
     /**
-     * @return the number of samples recorded
+     * Returns the number of samples recorded.
+     * @return the count of samples
      */
     public long getCount() {
         return count.get();
     }
 
     /**
-     * @return the average value of the samples recorded, or zero if there are no samples
+     * Returns the average (mean) value of the recorded samples.
+     * @return the mean value, or 0.0 if no samples have been recorded
      */
     public double getMean() {
         long count = getCount();
@@ -99,7 +102,8 @@ public class SampleStatistic {
     }
 
     /**
-     * @return the variance of the samples recorded, or zero if there are less than 2 samples
+     * Returns the variance of the recorded samples.
+     * @return the variance, or 0.0 if fewer than 2 samples have been recorded
      */
     public double getVariance() {
         long variance100 = totalVariance100.sum();
@@ -108,7 +112,8 @@ public class SampleStatistic {
     }
 
     /**
-     * @return the standard deviation of the samples recorded
+     * Returns the standard deviation of the recorded samples.
+     * @return the standard deviation
      */
     public double getStdDev() {
         return Math.sqrt(getVariance());

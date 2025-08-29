@@ -18,8 +18,18 @@ package com.aspectran.utils.json;
 import java.io.Closeable;
 import java.io.Reader;
 
+/**
+ * A {@link JsonReader} subclass that implements the {@link Closeable} interface.
+ * <p>This allows {@code JsonReaderCloseable} instances to be used in a
+ * try-with-resources statement, ensuring that the underlying {@link Reader} is
+ * automatically closed when the block is exited.</p>
+ */
 public class JsonReaderCloseable extends JsonReader implements Closeable {
 
+    /**
+     * Creates a new JsonReaderCloseable that reads from the given {@link Reader}.
+     * @param reader the {@code Reader} to read from
+     */
     public JsonReaderCloseable(Reader reader) {
         super(reader);
     }

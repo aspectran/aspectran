@@ -15,8 +15,20 @@
  */
 package com.aspectran.utils.nodelet;
 
+/**
+ * An interface for parsing sub-nodes within a larger document structure.
+ * <p>Implementations of this interface are responsible for registering specific
+ * {@link Nodelet}s and {@link EndNodelet}s with a {@link NodeletParser}
+ * for a given XPath, effectively defining how a portion of the document should be parsed.</p>
+ */
 public interface SubnodeParser {
 
+    /**
+     * Parses sub-nodes starting from the given XPath and registers corresponding
+     * nodelets with the provided {@link NodeletParser}.
+     * @param xpath the XPath to the sub-node to parse
+     * @param parser the {@link NodeletParser} to register nodelets with
+     */
     void parse(String xpath, NodeletParser parser);
 
 }

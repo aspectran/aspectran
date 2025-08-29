@@ -16,19 +16,20 @@
 package com.aspectran.utils.nodelet;
 
 /**
- * A nodelet is a sort of callback or event handler that can be registered
- * to handle an XPath event registered with the NodeParser.
- * In particular, nodelets for processing end elements, text, and CDATA data
- * are called EndNodelet.
+ * An {@link Nodelet} variant specifically designed to handle events related to
+ * the end of an XML element, or the processing of text and CDATA content.
+ * <p>This interface is used when the {@link NodeletParser} encounters an end tag,
+ * or when it has finished collecting text or CDATA within an element.</p>
  *
  * <p>Created: 2017. 11. 2.</p>
  */
 public interface EndNodelet {
 
     /**
-     * For a registered XPath, the NodeletParser will call the Nodelet's
-     * process method for processing.
-     * @param text the text and CDATA data collected
+     * Processes the collected text and CDATA data for a registered XPath.
+     * <p>The {@link NodeletParser} will call this method when it finishes processing
+     * the content of an element, providing the accumulated text.</p>
+     * @param text the text and CDATA data collected within the element
      * @throws Exception if an error occurs while processing the nodelet
      */
     void process(String text) throws Exception;

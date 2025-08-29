@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-present The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,219 +25,64 @@ import java.io.StringReader;
 import java.util.Arrays;
 
 /**
- * <p>This class is a clone of com.google.gson.stream.JsonReader</p>
- *
  * Reads a JSON (<a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a>)
- * encoded value as a stream of tokens. This stream includes both literal
+ * encoded value as a stream of tokens.
+ * <p>This class is a clone of {@code com.google.gson.stream.JsonReader}.</p>
+ * <p>It provides a pull-parser API for consuming JSON data, including literal
  * values (strings, numbers, booleans, and nulls) as well as the begin and
- * end delimiters of objects and arrays. The tokens are traversed in
- * depth-first order, the same order that they appear in the JSON document.
- * Within JSON objects, name/value pairs are represented by a single token.
+ * end delimiters of objects and arrays. Tokens are traversed in depth-first order.</p>
  *
  * <p><strong>- Parsing JSON -</strong></p>
- * To create a recursive descent parser for your own JSON streams, first create
- * an entry point method that creates a {@code JsonReader}.
+ * To parse a JSON stream, first create a {@code JsonReader} instance. Then, use
+ * methods like {@link #beginArray()}, {@link #beginObject()}, {@link #nextName()},
+ * {@link #nextString()}, {@link #nextInt()}, etc., to consume tokens.
+ * Always check {@link #hasNext()} before attempting to read the next element in an array or object.
+ * Use {@link #skipValue()} to skip unrecognized or unhandled values.
  *
- * <p>Next, create handler methods for each structure in your JSON text. You'll
- * need a method for each object type and for each array type.</p>
- * <ul>
- *   <li>Within <strong>array handling</strong> methods, first call {@link
- *       #beginArray} to consume the array's opening bracket. Then create a
- *       while loop that accumulates values, terminating when {@link #hasNext}
- *       is false. Finally, read the array's closing bracket by calling {@link
- *       #endArray}.
- *   <li>Within <strong>object handling</strong> methods, first call {@link
- *       #beginObject} to consume the object's opening brace. Then create a
- *       while loop that assigns values to local variables based on their name.
- *       This loop should terminate when {@link #hasNext} is false. Finally,
- *       read the object's closing brace by calling {@link #endObject}.
- * </ul>
- * <p>When a nested object or array is encountered, delegate to the
- * corresponding handler method.</p>
- *
- * <p>When an unknown name is encountered, strict parsers should fail with an
- * exception. Lenient parsers should call {@link #skipValue()} to recursively
- * skip the value's nested tokens, which may otherwise conflict.</p>
- *
- * <p>If a value may be null, you should first check using {@link #peek()}.
- * Null literals can be consumed using either {@link #nextNull()} or {@link
- * #skipValue()}.</p>
- *
- * <p><strong>- Example -</strong></p>
- * Suppose we'd like to parse a stream of messages such as the following: <pre> {@code
- * [
- *   {
- *     "id": 912345678901,
- *     "text": "How do I read a JSON stream in Java?",
- *     "geo": null,
- *     "user": {
- *       "name": "json_newb",
- *       "followers_count": 41
- *      }
- *   },
- *   {
- *     "id": 912345678902,
- *     "text": "@json_newb just use JsonReader!",
- *     "geo": [50.454722, -104.606667],
- *     "user": {
- *       "name": "jesse",
- *       "followers_count": 2
- *     }
- *   }
- * ]}
- * </pre>
- * This code implements the parser for the above structure: <pre>{@code
- *   public List<Message> readJsonStream(InputStream in) throws IOException {
- *     JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
- *     try {
- *       return readMessagesArray(reader);
- *     } finally {
- *       reader.close();
- *     }
- *   }
- *
- *   public List<Message> readMessagesArray(JsonReader reader) throws IOException {
- *     List<Message> messages = new ArrayList<Message>();
- *
- *     reader.beginArray();
- *     while (reader.hasNext()) {
- *       messages.add(readMessage(reader));
- *     }
- *     reader.endArray();
- *     return messages;
- *   }
- *
- *   public Message readMessage(JsonReader reader) throws IOException {
- *     long id = -1;
- *     String text = null;
- *     User user = null;
- *     List<Double> geo = null;
- *
- *     reader.beginObject();
- *     while (reader.hasNext()) {
- *       String name = reader.nextName();
- *       if (name.equals("id")) {
- *         id = reader.nextLong();
- *       } else if (name.equals("text")) {
- *         text = reader.nextString();
- *       } else if (name.equals("geo") && reader.peek() != JsonToken.NULL) {
- *         geo = readDoublesArray(reader);
- *       } else if (name.equals("user")) {
- *         user = readUser(reader);
- *       } else {
- *         reader.skipValue();
- *       }
- *     }
- *     reader.endObject();
- *     return new Message(id, text, user, geo);
- *   }
- *
- *   public List<Double> readDoublesArray(JsonReader reader) throws IOException {
- *     List<Double> doubles = new ArrayList<Double>();
- *
- *     reader.beginArray();
- *     while (reader.hasNext()) {
- *       doubles.add(reader.nextDouble());
- *     }
- *     reader.endArray();
- *     return doubles;
- *   }
- *
- *   public User readUser(JsonReader reader) throws IOException {
- *     String username = null;
- *     int followersCount = -1;
- *
- *     reader.beginObject();
- *     while (reader.hasNext()) {
- *       String name = reader.nextName();
- *       if (name.equals("name")) {
- *         username = reader.nextString();
- *       } else if (name.equals("followers_count")) {
- *         followersCount = reader.nextInt();
- *       } else {
- *         reader.skipValue();
- *       }
- *     }
- *     reader.endObject();
- *     return new User(username, followersCount);
- *   }}
- * </pre>
  * <p><strong>- Number Handling -</strong></p>
  * This reader permits numeric values to be read as strings and string values to
- * be read as numbers. For example, both elements of the JSON array {@code
- * [1, "1"]} may be read using either {@link #nextInt} or {@link #nextString}.
- * This behavior is intended to prevent lossy numeric conversions: double is
- * JavaScript's only numeric type and very large values like {@code
- * 9007199254740993} cannot be represented exactly on that platform. To minimize
- * precision loss, extremely large values should be written and read as strings
- * in JSON.
+ * be read as numbers. This behavior is intended to prevent lossy numeric conversions.
  *
  * <p><strong id="nonexecuteprefix">- Non-Execute Prefix -</strong></p>
  * Web servers that serve private data using JSON may be vulnerable to <a
  * href="http://en.wikipedia.org/wiki/JSON#Cross-site_request_forgery">Cross-site
- * request forgery</a> attacks. In such an attack, a malicious site gains access
- * to a private JSON file by executing it with an HTML {@code <script>} tag.
+ * request forgery</a> attacks. Prefixing JSON files with {@code "})]}\n"} makes them
+ * non-executable by {@code <script>} tags. This class permits the non-execute prefix
+ * when {@link #setLenient(boolean) lenient parsing} is enabled.
  *
- * <p>Prefixing JSON files with <code>")]}'\n"</code> makes them non-executable
- * by {@code <script>} tags, disarming the attack. Since the prefix is malformed
- * JSON, strict parsing fails when it is encountered. This class permits the
- * non-execute prefix when {@link #setLenient(boolean) lenient parsing} is
- * enabled.</p>
- *
- * <p>Each {@code JsonReader} may be used to read a single JSON stream. Instances
+ * <p>Each {@code JsonReader} instance may be used to read a single JSON stream. Instances
  * of this class are not thread safe.</p>
  *
  * @author Jesse Wilson
  */
 public class JsonReader {
 
-    /**
-     * An array with no elements requires no separators or newlines before
-     * it is closed.
-     */
+    /** State indicating an empty array. */
     private static final int EMPTY_ARRAY = 1;
 
-    /**
-     * An array with at least one value requires a comma and newline before
-     * the next element.
-     */
+    /** State indicating an array with at least one value. */
     private static final int NONEMPTY_ARRAY = 2;
 
-    /**
-     * An object with no name/value pairs requires no separators or newlines
-     * before it is closed.
-     */
+    /** State indicating an empty object. */
     private static final int EMPTY_OBJECT = 3;
 
-    /**
-     * An object whose most recent element is a key. The next element must
-     * be a value.
-     */
+    /** State indicating an object whose most recent element is a key. */
     private static final int DANGLING_NAME = 4;
 
-    /**
-     * An object with at least one name/value pair requires a comma and
-     * newline before the next element.
-     */
+    /** State indicating an object with at least one name/value pair. */
     private static final int NONEMPTY_OBJECT = 5;
 
-    /**
-     * No object or array has been started.
-     */
+    /** State indicating no object or array has been started. */
     private static final int EMPTY_DOCUMENT = 6;
 
-    /**
-     * A document with at an array or object.
-     */
+    /** State indicating a document with an array or object. */
     private static final int NONEMPTY_DOCUMENT = 7;
 
-    /**
-     * A document that's been closed and cannot be accessed.
-     */
+    /** State indicating the reader has been closed. */
     private static final int CLOSED = 8;
 
-    /** The only non-execute prefix this parser permits */
-    private static final char[] NON_EXECUTE_PREFIX = ")]}'\n".toCharArray();
+    /** The only non-execute prefix this parser permits. */
+    private static final char[] NON_EXECUTE_PREFIX = "})]}'\n".toCharArray();
     private static final long MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10;
 
     private static final int PEEKED_NONE = 0;
@@ -271,17 +116,14 @@ public class JsonReader {
     private static final int NUMBER_CHAR_EXP_SIGN = 6;
     private static final int NUMBER_CHAR_EXP_DIGIT = 7;
 
-    /** The input JSON. */
+    /** The input JSON stream. */
     private final Reader reader;
 
-    /** True to accept non-spec compliant JSON */
+    /** True to accept non-spec compliant JSON. */
     private boolean lenient = false;
 
     /**
-     * Use a manual buffer to easily read and unread upcoming characters, and
-     * also so we can create strings without an intermediate StringBuilder.
-     * We decode literals directly out of this buffer, so it must be at least as
-     * long as the longest token that can be reported as a number.
+     * Internal buffer for reading characters from the stream.
      */
     private final char[] buffer = new char[1024];
     private int pos = 0;
@@ -332,7 +174,8 @@ public class JsonReader {
     private int[] pathIndices = new int[32];
 
     /**
-     * Creates a new instance that reads a JSON-encoded stream from {@code in}.
+     * Creates a new instance that reads a JSON-encoded stream from the given string.
+     * @param json the JSON string to read
      */
     public JsonReader(String json) {
         Assert.notNull(json, "json must not be null");
@@ -340,7 +183,8 @@ public class JsonReader {
     }
 
     /**
-     * Creates a new instance that reads a JSON-encoded stream from {@code in}.
+     * Creates a new instance that reads a JSON-encoded stream from the given {@link Reader}.
+     * @param reader the {@code Reader} to read from
      */
     public JsonReader(Reader reader) {
         Assert.notNull(reader, "reader must not be null");
@@ -348,39 +192,32 @@ public class JsonReader {
     }
 
     /**
-     * Configure this parser to be liberal in what it accepts. By default,
+     * Configures this parser to be liberal in what it accepts. By default,
      * this parser is strict and only accepts JSON as specified by <a
      * href="http://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>. Setting the
-     * parser to lenient causes it to ignore the following syntax errors:
+     * parser to lenient causes it to ignore various syntax errors, such as:
      * <ul>
      *   <li>Streams that start with the <a href="#nonexecuteprefix">non-execute
-     *       prefix</a>, <code>")]}'\n"</code>.
-     *   <li>Streams that include multiple top-level values. With strict parsing,
-     *       each stream must contain exactly one top-level value.
-     *   <li>Top-level values of any type. With strict parsing, the top-level
-     *       value must be an object or an array.
-     *   <li>Numbers may be {@link Double#isNaN() NaNs} or {@link
-     *       Double#isInfinite() infinities}.
-     *   <li>End of line comments starting with {@code //} or {@code #} and
-     *       ending with a newline character.
-     *   <li>C-style comments starting with {@code /*} and ending with
-     *       {@code *}{@code /}. Such comments may not be nested.
-     *   <li>Names that are unquoted or {@code 'single quoted'}.
-     *   <li>Strings that are unquoted or {@code 'single quoted'}.
+     *       prefix</a>, {@code "})]}\n"}.
+     *   <li>Streams that include multiple top-level values.
+     *   <li>Top-level values of any type (not just objects or arrays).
+     *   <li>Numbers that are {@link Double#isNaN() NaNs} or {@link Double#isInfinite() infinities}.
+     *   <li>End-of-line comments ({@code //} or {@code #}) and C-style comments ({@code /* ... *}{\code /}).
+     *   <li>Unquoted or single-quoted names and strings.
      *   <li>Array elements separated by {@code ;} instead of {@code ,}.
-     *   <li>Unnecessary array separators. These are interpreted as if null
-     *       was the omitted value.
-     *   <li>Names and values separated by {@code =} or {@code =>} instead of
-     *       {@code :}.
+     *   <li>Unnecessary array separators (interpreted as {@code null} values).
+     *   <li>Name/value pairs separated by {@code =} or {@code =>} instead of {@code :}.
      *   <li>Name/value pairs separated by {@code ;} instead of {@code ,}.
      * </ul>
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
      */
     public final void setLenient(boolean lenient) {
         this.lenient = lenient;
     }
 
     /**
-     * Returns true if this parser is liberal in what it accepts.
+     * Returns {@code true} if this parser is liberal in what it accepts (lenient mode).
+     * @return {@code true} if lenient parsing is enabled, {@code false} otherwise
      */
     public final boolean isLenient() {
         return lenient;
@@ -388,7 +225,8 @@ public class JsonReader {
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * beginning of a new array.
+     * beginning of a new array ({@code [}).
+     * @throws IOException if the next token is not {@link JsonToken#BEGIN_ARRAY}
      */
     public void beginArray() throws IOException {
         int p = peeked;
@@ -406,7 +244,8 @@ public class JsonReader {
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * end of the current array.
+     * end of the current array ({@code ]}).
+     * @throws IOException if the next token is not {@link JsonToken#END_ARRAY}
      */
     public void endArray() throws IOException {
         int p = peeked;
@@ -424,7 +263,8 @@ public class JsonReader {
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * beginning of a new object.
+     * beginning of a new object ({@code {}}).
+     * @throws IOException if the next token is not {@link JsonToken#BEGIN_OBJECT}
      */
     public void beginObject() throws IOException {
         int p = peeked;
@@ -441,7 +281,8 @@ public class JsonReader {
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * end of the current object.
+     * end of the current object ({@code }}).
+     * @throws IOException if the next token is not {@link JsonToken#END_OBJECT}
      */
     public void endObject() throws IOException {
         int p = peeked;
@@ -459,7 +300,9 @@ public class JsonReader {
     }
 
     /**
-     * Returns true if the current array or object has another element.
+     * Returns {@code true} if the current array or object has another element.
+     * @return {@code true} if there is another element, {@code false} otherwise
+     * @throws IOException if an I/O error occurs
      */
     public boolean hasNext() throws IOException {
         int p = peeked;
@@ -471,6 +314,8 @@ public class JsonReader {
 
     /**
      * Returns the type of the next token without consuming it.
+     * @return the {@link JsonToken} of the next token
+     * @throws IOException if an I/O error occurs
      */
     public JsonToken peek() throws IOException {
         int p = peeked;
@@ -820,7 +665,8 @@ public class JsonReader {
 
     /**
      * Returns the next token, a {@link JsonToken#NAME property name}, and consumes it.
-     * @throws IOException if the next token in the stream is not a property name.
+     * @return the next property name
+     * @throws IOException if the next token in the stream is not a property name
      */
     public String nextName() throws IOException {
         int p = peeked;
@@ -845,6 +691,7 @@ public class JsonReader {
     /**
      * Returns the {@link JsonToken#STRING string} value of the next token,
      * consuming it. If the next token is a number, this method will return its string form.
+     * @return the next string value
      * @throws IllegalStateException if the next token is not a string or if
      *     this reader is closed.
      */
@@ -879,6 +726,7 @@ public class JsonReader {
     /**
      * Returns the {@link JsonToken#BOOLEAN boolean} value of the next token,
      * consuming it.
+     * @return the next boolean value
      * @throws IllegalStateException if the next token is not a boolean or if
      *     this reader is closed.
      */
@@ -922,6 +770,7 @@ public class JsonReader {
      * Returns the {@link JsonToken#NUMBER double} value of the next token,
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as a double using {@link Double#parseDouble(String)}.
+     * @return the next double value
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a double, or is non-finite.
@@ -966,6 +815,7 @@ public class JsonReader {
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as a long. If the next token's numeric value cannot be exactly
      * represented by a Java {@code long}, this method throws.
+     * @return the next long value
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a number, or exactly represented as a long.
@@ -1021,6 +871,8 @@ public class JsonReader {
      * should have already been read. This consumes the closing quote, but does
      * not include it in the returned string.
      * @param quote either ' or ".
+     * @return the unescaped string value
+     * @throws IOException if an I/O error occurs
      * @throws NumberFormatException if any unicode escape sequences are malformed.
      */
     @NonNull
@@ -1075,6 +927,8 @@ public class JsonReader {
 
     /**
      * Returns an unquoted value as a string.
+     * @return the unquoted string value
+     * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("fallthrough")
     @NonNull
@@ -1195,6 +1049,7 @@ public class JsonReader {
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as an int. If the next token's numeric value cannot be exactly
      * represented by a Java {@code int}, this method throws.
+     * @return the next int value
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a number, or exactly represented as an int.
@@ -1531,6 +1386,8 @@ public class JsonReader {
      * immediately follow a backslash. The backslash '\' should have already
      * been read. This supports both unicode escapes "u000A" and two-character
      * escapes "\n".
+     * @return the unescaped character
+     * @throws IOException if an I/O error occurs
      * @throws NumberFormatException if any unicode escape sequences are
      *     malformed.
      */
@@ -1588,8 +1445,11 @@ public class JsonReader {
     }
 
     /**
-     * Throws a new IO exception with the given message and a context snippet
-     * with this reader's content.
+     * Throws a new {@link IOException} with the given message and a context snippet
+     * with this reader's current location.
+     * @param message the detail message
+     * @return the created {@code IOException}
+     * @throws IOException always throws an exception
      */
     private IOException syntaxError(String message) throws IOException {
         throw new MalformedJsonException(message + locationString());
@@ -1597,6 +1457,9 @@ public class JsonReader {
 
     /**
      * Consumes the non-execute prefix if it exists.
+     * This prefix is {@code "})]}\n"} and is used to disarm cross-site request forgery attacks.
+     * This method is only called when lenient parsing is enabled.
+     * @throws IOException if an I/O error occurs
      */
     private void consumeNonExecutePrefix() throws IOException {
         // fast-forward through the leading whitespace

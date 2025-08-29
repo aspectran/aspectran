@@ -25,12 +25,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
 /**
- * A thread-safe LRU {@link Cache} with a fixed capacity. If the cache reaches
- * the capacity, it discards the least recently used entry first.
- * <p>
- * This implementation is backed by a {@code ConcurrentHashMap} for storing
- * the cached values and a {@code ConcurrentLinkedQueue} for ordering the keys
- * and choosing the least recently used key when the cache is at full capacity.</p>
+ * A thread-safe LRU (Least Recently Used) {@link Cache} with a fixed capacity.
+ * <p>If the cache reaches its capacity, it discards the least recently used entry first.
+ * This implementation is backed by a {@code ConcurrentHashMap} for storing the cached values
+ * and a {@code ConcurrentLinkedDeque} for ordering the keys and choosing the least recently
+ * used key when the cache is at full capacity.</p>
  *
  * @param <K> the type of the key used for caching
  * @param <V> the type of the cached values
@@ -50,6 +49,11 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
 
     private volatile int size = 0;
 
+    /**
+     * Creates a new ConcurrentLruCache with the specified capacity and value generator.
+     * @param capacity the maximum number of entries the cache can hold (must be positive)
+     * @param generator a function to generate a value if it's not found in the cache
+     */
     public ConcurrentLruCache(int capacity, Function<K, V> generator) {
         Assert.isTrue(capacity > 0, "capacity must be positive");
         Assert.notNull(generator, "Generator function must not be null");
@@ -58,6 +62,13 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         this.lock = new ReentrantReadWriteLock();
     }
 
+    /**
+     * Retrieves a value from the cache. If the value is not present, it is generated
+     * using the provided {@code generator} function, added to the cache, and returned.
+     * The retrieved or generated entry becomes the most recently used.
+     * @param key the key of the value to retrieve
+     * @return the cached or newly generated value
+     */
     @Override
     public V get(K key) {
         V cached = cache.get(key);
@@ -104,6 +115,10 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         }
     }
 
+    /**
+     * Removes the mapping for a key from this cache if it is present.
+     * @param key the key whose mapping is to be removed from the cache
+     */
     @Override
     public void remove(K key) {
         if (!isEmpty()) {
@@ -118,6 +133,10 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         }
     }
 
+    /**
+     * Removes all of the mappings from this cache.
+     * The cache will be empty after this call returns.
+     */
     @Override
     public void clear() {
         if (!isEmpty()) {
@@ -132,16 +151,28 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         }
     }
 
+    /**
+     * Returns a {@link Set} view of the keys contained in this cache.
+     * @return a set view of the keys contained in this cache
+     */
     @Override
     public Set<K> keySet() {
         return cache.keySet();
     }
 
+    /**
+     * Returns the number of key-value mappings in this cache.
+     * @return the number of elements in this cache
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Returns {@code true} if this cache contains no key-value mappings.
+     * @return {@code true} if this cache contains no key-value mappings, {@code false} otherwise
+     */
     @Override
     public boolean isEmpty() {
         return (size == 0);

@@ -22,26 +22,30 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
- * A builder for creating JSON string.
- * <p>ex)
+ * A builder for creating JSON strings using a fluent API.
+ * <p>This class simplifies the process of constructing JSON objects and arrays
+ * by providing a method-chaining interface. It internally uses a {@link JsonWriter}
+ * to write the JSON structure.</p>
+ * <p>Example usage:
  * <pre>
- *     String json = new JsonBuilder();
+ *     String json = new JsonBuilder()
  *         .object()
  *             .put("name", "value")
- *             .object("object")
- *                 .put("name", "value")
+ *             .object("nestedObject")
+ *                 .put("key", "nestedValue")
  *             .endObject()
- *             .array("array")
- *                 .put("value-1")
- *                 .put("value-2")
+ *             .array("myArray")
+ *                 .put("item1")
+ *                 .put("item2")
  *             .endArray()
  *         .endObject()
  *         .toString();
- * </pre></p>
- * <p>In the above example, the value of the json variable is:
- * <pre>    {"name": "value", "object": {"name": "value"}, "array": ["value-1", "value-2"]}</pre></p>
- * <p>Note: object() &amp; endObject() are a pair of methods, which means that they
- * should show up at the same time. So does array() &amp; endArray()</p>
+ * </pre>
+ * The resulting JSON string would be:
+ * <pre>    {"name":"value","nestedObject":{"key":"nestedValue"},"myArray":["item1","item2"]}</pre>
+ * </p>
+ * <p>Note: {@code object()} and {@code endObject()} must always be used in pairs.
+ * The same applies to {@code array()} and {@code endArray()}.</p>
  *
  * <p>Created: 2024. 12. 14.</p>
  */
@@ -49,33 +53,58 @@ public class JsonBuilder {
 
     private final JsonWriter jsonWriter = new JsonWriter(new StringWriter());
 
+    /**
+     * Sets the {@link StringifyContext} for the underlying {@link JsonWriter}.
+     * This allows configuring pretty-printing, indentation, and null-writability.
+     * @param stringifyContext the context for stringification options
+     */
     public void setStringifyContext(StringifyContext stringifyContext) {
         jsonWriter.setStringifyContext(stringifyContext);
     }
 
+    /**
+     * Applies a {@link StringifyContext} to this builder in a fluent style.
+     * @param stringifyContext the context for stringification options
+     * @return this builder instance for chaining
+     */
     public JsonBuilder apply(StringifyContext stringifyContext) {
         setStringifyContext(stringifyContext);
         return this;
     }
 
+    /**
+     * Enables or disables pretty-printing for the generated JSON.
+     * @param prettyPrint {@code true} to enable pretty-printing; {@code false} for compact output
+     * @return this builder instance for chaining
+     */
     public JsonBuilder prettyPrint(boolean prettyPrint) {
         jsonWriter.prettyPrint(prettyPrint);
         return this;
     }
 
+    /**
+     * Sets the indentation string for pretty-printing.
+     * @param indentString the string to use for indentation (e.g., "  " or "\t")
+     * @return this builder instance for chaining
+     */
     public JsonBuilder indentString(@Nullable String indentString) {
         jsonWriter.indentString(indentString);
         return this;
     }
 
+    /**
+     * Configures whether {@code null} values should be written to the JSON output.
+     * @param nullWritable {@code true} to write null values; {@code false} to skip them
+     * @return this builder instance for chaining
+     */
     public JsonBuilder nullWritable(boolean nullWritable) {
         jsonWriter.nullWritable(nullWritable);
         return this;
     }
 
     /**
-     * Begins encoding a new object.
-     * @return this builder
+     * Begins encoding a new JSON object.
+     * @return this builder instance for chaining
      */
     public JsonBuilder object() {
         try {
@@ -87,8 +116,10 @@ public class JsonBuilder {
     }
 
     /**
-     * Begins encoding a new object with the given name.
-     * @return this builder
+     * Begins encoding a new JSON object with the given name (key).
+     * This is used when creating a nested object within another object.
+     * @param name the name (key) of the object
+     * @return this builder instance for chaining
      */
     public JsonBuilder object(String name) {
         try {
@@ -100,8 +131,8 @@ public class JsonBuilder {
     }
 
     /**
-     * Ends encoding the current object.
-     * @return this builder
+     * Ends encoding the current JSON object.
+     * @return this builder instance for chaining
      */
     public JsonBuilder endObject() {
         try {
@@ -113,8 +144,8 @@ public class JsonBuilder {
     }
 
     /**
-     * Begins encoding a new array.
-     * @return this builder
+     * Begins encoding a new JSON array.
+     * @return this builder instance for chaining
      */
     public JsonBuilder array() {
         try {
@@ -126,8 +157,10 @@ public class JsonBuilder {
     }
 
     /**
-     * Begins encoding a new array with the given name.
-     * @return this builder
+     * Begins encoding a new JSON array with the given name (key).
+     * This is used when creating a nested array within an object.
+     * @param name the name (key) of the array
+     * @return this builder instance for chaining
      */
     public JsonBuilder array(String name) {
         try {
@@ -139,8 +172,8 @@ public class JsonBuilder {
     }
 
     /**
-     * Ends encoding the current array.
-     * @return this builder
+     * Ends encoding the current JSON array.
+     * @return this builder instance for chaining
      */
     public JsonBuilder endArray() {
         try {
@@ -152,10 +185,9 @@ public class JsonBuilder {
     }
 
     /**
-     * Put a new value into an array.
-     * If it's not in an array, just put it as a single value.
-     * @param value the new value
-     * @return this builder
+     * Puts a new value into the current JSON array or as a single value if not in an array context.
+     * @param value the value to put
+     * @return this builder instance for chaining
      */
     public JsonBuilder put(Object value) {
         try {
@@ -167,10 +199,10 @@ public class JsonBuilder {
     }
 
     /**
-     * Put a new name-value pair in an object.
-     * @param name the name of the entry to put in the object
-     * @param value the value of the entry to put in the object
-     * @return this builder
+     * Puts a new name-value pair into the current JSON object.
+     * @param name the name (key) of the entry
+     * @param value the value of the entry
+     * @return this builder instance for chaining
      */
     public JsonBuilder put(String name, Object value) {
         try {
@@ -181,11 +213,19 @@ public class JsonBuilder {
         return this;
     }
 
+    /**
+     * Returns the final JSON string built by this builder.
+     * @return the JSON string
+     */
     @Nullable
     public String toString() {
         return jsonWriter.toString();
     }
 
+    /**
+     * Returns the final JSON string built by this builder as a {@link JsonString} object.
+     * @return a {@link JsonString} object containing the JSON output
+     */
     public JsonString toJsonString() {
         return new JsonString(jsonWriter.toString());
     }

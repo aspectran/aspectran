@@ -16,41 +16,38 @@
 package com.aspectran.utils.json;
 
 /**
- * <p>This class is a clone of com.google.gson.stream.JsonToken</p>
- *
- * A structure, name or value type in a JSON-encoded string.
+ * A structure, name, or value type in a JSON-encoded string.
+ * <p>This enum is a clone of {@code com.google.gson.stream.JsonToken}.</p>
  *
  * @author Jesse Wilson
  */
 public enum JsonToken {
 
-    /** The opening of a JSON array. */
+    /** The opening of a JSON array ({@code [}). */
     BEGIN_ARRAY,
 
-    /** The closing of a JSON array. */
+    /** The closing of a JSON array ({@code ]}). */
     END_ARRAY,
 
-    /** The opening of a JSON object. */
+    /** The opening of a JSON object ({@code {}}). */
     BEGIN_OBJECT,
 
-    /** The closing of a JSON object. */
+    /** The closing of a JSON object ({@code }}). */
     END_OBJECT,
 
-    /** A JSON property name. Within objects, tokens alternate between names and
-     * their values. */
+    /** A JSON property name. Within objects, tokens alternate between names and their values. */
     NAME,
 
-    /** A JSON string. */
+    /** A JSON string value. */
     STRING,
 
-    /** A JSON number represented in this API by a Java {@code double}, {@code
-     * long}, or {@code int}. */
+    /** A JSON number value, represented in this API by a Java {@code double}, {@code long}, or {@code int}. */
     NUMBER,
 
-    /** A JSON {@code true} or {@code false}. */
+    /** A JSON boolean value ({@code true} or {@code false}). */
     BOOLEAN,
 
-    /** A JSON {@code null}. */
+    /** A JSON null value ({@code null}). */
     NULL,
 
     /** The end of the JSON stream. This sentinel value is returned by {@link

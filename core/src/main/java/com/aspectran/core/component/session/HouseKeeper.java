@@ -162,13 +162,11 @@ public class HouseKeeper extends AbstractLifeCycle {
     @Override
     protected void doStart() throws Exception {
         setScavengingInterval(getScavengingInterval());
-        super.doStart();
     }
 
     @Override
     protected void doStop() throws Exception {
         stopScavenging();
-        super.doStop();
     }
 
     @Override

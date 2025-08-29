@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-20.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,26 +27,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.lang.Long.MAX_VALUE;
 
 /**
- * <p>This class is a clone of org.eclipse.jetty.io.CyclicTimeout</p>
- *
- * <p>An abstract implementation of a timeout.</p>
- * <p>Subclasses should implement {@link #onTimeoutExpired()}.</p>
- * <p>This implementation is optimized assuming that the timeout
- * will mostly be canceled and then reused with a similar value.</p>
- * <p>This implementation has a {@link Timeout} holding the time
- * at which the scheduled task should fire, and a linked list of
- * {@link Wakeup}, each holding the actual scheduled task.</p>
- * <p>Calling {@link #schedule(long, TimeUnit)} the first time will
- * create a Timeout with an associated Wakeup and submit a task to
- * the scheduler.
- * Calling {@link #schedule(long, TimeUnit)} again with the same or
- * a larger delay will cancel the previous Timeout, but keep the
- * previous Wakeup without submitting a new task to the scheduler,
- * therefore reducing the pressure on the scheduler and avoid it
- * becomes a bottleneck.
- * When the Wakeup task fires, it will see that the Timeout is now
- * in the future and will attach a new Wakeup with the future time
- * to the Timeout, and submit a scheduler task for the new Wakeup.</p>
+ * An abstract implementation of a cyclic timeout mechanism.
+ * <p>This class is a clone of {@code org.eclipse.jetty.io.CyclicTimeout}.</p>
+ * <p>Subclasses must implement {@link #onTimeoutExpired()} to define the action to be performed when the timeout expires.</p>
+ * <p>This implementation is optimized for scenarios where timeouts are frequently canceled and then
+ * rescheduled with similar values, reducing pressure on the underlying {@link Scheduler}.</p>
+ * <p>It uses a {@link Timeout} object to hold the scheduled time and a linked list of {@link Wakeup} tasks.
+ * When {@link #schedule(long, TimeUnit)} is called, it either creates a new {@code Wakeup} and schedules it,
+ * or reuses an existing one if the new timeout is later than the current one, thus avoiding unnecessary
+ * scheduler submissions.</p>
  */
 public abstract class CyclicTimeout implements Destroyable {
 
@@ -56,30 +45,35 @@ public abstract class CyclicTimeout implements Destroyable {
 
     private static final Scheduler.Task DESTROYED = () -> false;
 
-    /* The underlying scheduler to use */
+    /** The underlying scheduler to use. */
     private final Scheduler scheduler;
 
-    /* Reference to the current Timeout and chain of Wakeup */
+    /** Reference to the current Timeout and chain of Wakeup. */
     private final AtomicReference<Timeout> timeout = new AtomicReference<>(NOT_SET);
 
     /**
-     * @param scheduler A scheduler used to schedule wakeups
+     * Creates a new CyclicTimeout instance.
+     * @param scheduler the {@link Scheduler} used to schedule wakeups
      */
     public CyclicTimeout(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
+    /**
+     * Returns the scheduler used by this CyclicTimeout.
+     * @return the scheduler
+     */
     public Scheduler getScheduler() {
         return scheduler;
     }
 
     /**
-     * Schedules a timeout, even if already set, canceled or expired.
-     * If a timeout is already set, it will be canceled and replaced
-     * by the new one.
-     * @param delay The period of time before the timeout expires
-     * @param units The unit of time of the period
-     * @return true if the timeout was already set
+     * Schedules a timeout. If a timeout is already set, it will be canceled and replaced
+     * by the new one. This method is optimized to reduce scheduler pressure by reusing
+     * existing wakeup tasks when possible.
+     * @param delay the period of time before the timeout expires
+     * @param units the time unit of the period
+     * @return {@code true} if the timeout was already set (and thus replaced), {@code false} otherwise
      */
     public boolean schedule(long delay, @NonNull TimeUnit units) {
         long now = System.nanoTime();
@@ -122,8 +116,8 @@ public abstract class CyclicTimeout implements Destroyable {
     /**
      * Cancels this CyclicTimeout so that it won't expire.
      * After being canceled, this CyclicTimeout can be scheduled again.
-     * @return true if this CyclicTimeout was scheduled to expire
-     * @see #destroy()
+     * @return {@code true} if this CyclicTimeout was scheduled to expire and was successfully canceled,
+     *         {@code false} otherwise
      */
     public boolean cancel() {
         boolean result;
@@ -141,12 +135,14 @@ public abstract class CyclicTimeout implements Destroyable {
 
     /**
      * Invoked when the timeout expires.
+     * Subclasses must implement this method to define the action to be performed.
      */
     public abstract void onTimeoutExpired();
 
     /**
      * Destroys this CyclicTimeout.
      * After being destroyed, this CyclicTimeout is not used anymore.
+     * It cancels any pending tasks and cleans up resources.
      */
     @Override
     public void destroy() {
@@ -159,7 +155,7 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * A timeout time with a link to a Wakeup chain.
+     * Represents a specific timeout time and links to a chain of {@link Wakeup} tasks.
      */
     private static class Timeout {
         private final long at;
@@ -182,7 +178,8 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * A Wakeup chain of real scheduler tasks.
+     * Represents a wakeup task in a chain, which is a {@link Runnable} that gets scheduled
+     * by the {@link Scheduler}.
      */
     private class Wakeup implements Runnable {
         private final AtomicReference<Scheduler.Task> task = new AtomicReference<>();

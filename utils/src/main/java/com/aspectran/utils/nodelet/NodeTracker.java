@@ -15,13 +15,12 @@
  */
 package com.aspectran.utils.nodelet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Inner helper class for tracking the line number and column number of
- * the element's start tag while reading an XML document.
- *
- * <p>Created: 2017. 11. 10.</p>
+ * Tracks the name and source code location (line and column number) of a node
+ * during document parsing. This is primarily used by {@link NodeletParser}
+ * to provide contextual information for errors or for debugging purposes.
  */
 public class NodeTracker implements Cloneable {
 
@@ -31,65 +30,106 @@ public class NodeTracker implements Cloneable {
 
     private int columnNumber;
 
-    private NodeTracker clonedNodeTracker;
-
+    /**
+     * Creates a new NodeTracker with no initial name or location.
+     */
     public NodeTracker() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    public int getColumnNumber() {
-        return columnNumber;
-    }
-
-    protected void setName(String name) {
+    /**
+     * Creates a new NodeTracker with the specified name and location.
+     * @param name the name of the node
+     * @param lineNumber the line number where the node is located
+     * @param columnNumber the column number where the node is located
+     */
+    public NodeTracker(String name, int lineNumber, int columnNumber) {
         this.name = name;
-    }
-
-    protected void setLocation(int lineNumber, int columnNumber) {
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
     }
 
-    protected void update(@NonNull NodeTracker tracker) {
-        setName(tracker.getName());
-        setLocation(tracker.getLineNumber(), tracker.getColumnNumber());
+    /**
+     * Returns the name of the tracked node.
+     * @return the node name
+     */
+    public String getName() {
+        return name;
     }
 
+    /**
+     * Sets the name of the tracked node.
+     * @param name the node name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the line number of the tracked node.
+     * @return the line number
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    /**
+     * Returns the column number of the tracked node.
+     * @return the column number
+     */
+    public int getColumnNumber() {
+        return columnNumber;
+    }
+
+    /**
+     * Sets the location (line and column number) of the tracked node.
+     * @param lineNumber the line number
+     * @param columnNumber the column number
+     */
+    public void setLocation(int lineNumber, int columnNumber) {
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
+    }
+
+    /**
+     * Returns a cloned NodeTracker instance that represents the current state of this tracker.
+     * @return a cloned NodeTracker
+     */
+    @Nullable
     public NodeTracker getClonedNodeTracker() {
-        return clonedNodeTracker;
+        try {
+            return (NodeTracker) clone();
+        } catch (CloneNotSupportedException e) {
+            return null; // Should not happen as NodeTracker implements Cloneable
+        }
     }
 
-    protected void setClonedNodeTracker(NodeTracker nodeTracker) {
-        this.clonedNodeTracker = nodeTracker;
+    /**
+     * Sets the cloned NodeTracker instance.
+     * @param clonedNodeTracker the cloned NodeTracker
+     */
+    public void setClonedNodeTracker(NodeTracker clonedNodeTracker) {
+        this.name = clonedNodeTracker.name;
+        this.lineNumber = clonedNodeTracker.lineNumber;
+        this.columnNumber = clonedNodeTracker.columnNumber;
     }
 
+    /**
+     * Creates and returns a shallow copy of this NodeTracker instance.
+     * @return a clone of this instance
+     * @throws CloneNotSupportedException if the object's class does not support the {@code Cloneable} interface.
+     */
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public NodeTracker clone() {
-        NodeTracker tracker = new NodeTracker();
-        tracker.setName(name);
-        tracker.setLocation(lineNumber, columnNumber);
-        setClonedNodeTracker(tracker);
-        return tracker;
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
+    /**
+     * Returns a string representation of the NodeTracker, including its name and location.
+     * @return a string representation of the NodeTracker
+     */
     @Override
     public String toString() {
-        return "<" +
-            name +
-            ">" +
-            " [lineNumber: " +
-            lineNumber +
-            ", columnNumber: " +
-            columnNumber +
-            "]";
+        return "node '" + name + "' at line " + lineNumber + ", column " + columnNumber;
     }
 
 }

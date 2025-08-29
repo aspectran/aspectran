@@ -18,15 +18,18 @@ package com.aspectran.utils.nodelet;
 import java.util.Map;
 
 /**
- * A nodelet is a sort of callback or event handler that can be registered
- * to handle an XPath event registered with the NodeParser.
+ * A Nodelet is a callback or event handler that can be registered
+ * to process a specific XPath event during document parsing.
+ * <p>It acts as a modular piece of logic that executes when a particular
+ * node (identified by its XPath) is encountered by a {@link NodeletParser}.</p>
  */
 public interface Nodelet {
 
     /**
-     * For a registered XPath, the NodeletParser will call the Nodelet's
-     * process method for processing.
-     * @param attrs the attributes of the start element
+     * Processes the node event for a registered XPath.
+     * <p>The {@link NodeletParser} will call this method when it encounters
+     * the corresponding node in the document.</p>
+     * @param attrs the attributes of the start element (if applicable), or an empty map if no attributes
      * @throws Exception if an error occurs while processing the nodelet
      */
     void process(Map<String, String> attrs) throws Exception;

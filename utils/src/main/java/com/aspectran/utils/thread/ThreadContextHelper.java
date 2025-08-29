@@ -21,18 +21,20 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.concurrent.Callable;
 
 /**
- * A helper class for managing the thread context ClassLoader.
+ * A helper class for managing the thread context {@link ClassLoader}.
+ * <p>This utility allows temporarily overriding the thread context ClassLoader
+ * for a specific block of code, ensuring that class loading operations within
+ * that block occur in the desired ClassLoader context.</p>
  *
  * <p>Created: 2024-12-30</p>
  */
 public abstract class ThreadContextHelper {
 
     /**
-     * Override the thread context ClassLoader with the given ClassLoader if necessary,
-     * i.e. if the given ClassLoader is not equivalent to the thread context
-     * ClassLoader already.
-     * @param classLoader the ClassLoader to use for the thread context
-     * @return the original thread context ClassLoader, or {@code null} if not overridden
+     * Overrides the current thread's context {@link ClassLoader} with the given ClassLoader if necessary.
+     * <p>This method is typically used in a try-finally block to ensure the original ClassLoader is restored.</p>
+     * @param classLoader the ClassLoader to set as the thread context ClassLoader (may be {@code null})
+     * @return the original thread context ClassLoader, or {@code null} if no override occurred
      */
     @Nullable
     public static ClassLoader overrideClassLoader(@Nullable ClassLoader classLoader) {
@@ -48,8 +50,9 @@ public abstract class ThreadContextHelper {
     }
 
     /**
-     * Restores the original thread context ClassLoader.
-     * @param classLoader the original thread context ClassLoader
+     * Restores the original thread context {@link ClassLoader}.
+     * <p>This method should be called in a {@code finally} block after {@link #overrideClassLoader(ClassLoader)}.</p>
+     * @param classLoader the original thread context ClassLoader returned by {@link #overrideClassLoader(ClassLoader)}
      */
     public static void restoreClassLoader(@Nullable ClassLoader classLoader) {
         if (classLoader != null) {
@@ -58,8 +61,9 @@ public abstract class ThreadContextHelper {
     }
 
     /**
-     * Executes a {@link Runnable} in the given ClassLoader context.
-     * @param classLoader the ClassLoader to use
+     * Executes a {@link Runnable} within the context of the given {@link ClassLoader}.
+     * The original thread context ClassLoader is restored after execution.
+     * @param classLoader the ClassLoader to use for the execution
      * @param runnable the {@code Runnable} to execute
      */
     public static void run(ClassLoader classLoader, @NonNull Runnable runnable) {
@@ -72,10 +76,11 @@ public abstract class ThreadContextHelper {
     }
 
     /**
-     * Executes a {@link ThrowingRunnable} in the given ClassLoader context.
-     * @param classLoader the ClassLoader to use
+     * Executes a {@link ThrowingRunnable} within the context of the given {@link ClassLoader}.
+     * The original thread context ClassLoader is restored after execution.
+     * @param classLoader the ClassLoader to use for the execution
      * @param runnable the {@code ThrowingRunnable} to execute
-     * @param <T> the type of the throwable
+     * @param <T> the type of the throwable that the runnable can throw
      * @throws T if the runnable throws an exception
      */
     public static <T extends Throwable> void runThrowable(
@@ -90,10 +95,11 @@ public abstract class ThreadContextHelper {
     }
 
     /**
-     * Executes a {@link Callable} in the given ClassLoader context.
-     * @param classLoader the ClassLoader to use
+     * Executes a {@link Callable} within the context of the given {@link ClassLoader}.
+     * The original thread context ClassLoader is restored after execution.
+     * @param classLoader the ClassLoader to use for the execution
      * @param callable the {@code Callable} to execute
-     * @param <V> the type of the return value
+     * @param <V> the type of the return value of the {@code Callable}
      * @return the result of the {@code Callable}
      * @throws Exception if the callable throws an exception
      */
@@ -108,14 +114,14 @@ public abstract class ThreadContextHelper {
     }
 
     /**
-     * A runnable that can throw a checked exception.
-     * @param <T> the type of the throwable
+     * A functional interface for a runnable that can throw a checked exception.
+     * @param <T> the type of the throwable that can be thrown
      */
     public interface ThrowingRunnable<T extends Throwable> {
 
         /**
          * Executes the runnable.
-         * @throws T if an error occurs
+         * @throws T if an error occurs during execution
          */
         void run() throws T;
 

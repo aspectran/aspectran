@@ -19,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A LifeCycle that when started will stop another LifeCycle.
+ * A {@link LifeCycle} implementation that, when started, will stop another specified {@link LifeCycle}.
+ * <p>This class acts as a listener to its own lifecycle. When this {@code StopLifeCycle} instance
+ * transitions to the {@link LifeCycle#STARTED} state, it triggers the {@link LifeCycle#stop()} method
+ * on the {@code LifeCycle} component it wraps.</p>
  */
 public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listener {
 
@@ -27,11 +30,20 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
 
     private final LifeCycle lifecycle;
 
+    /**
+     * Creates a new StopLifeCycle instance that will stop the given lifecycle component.
+     * @param lifecycle the {@link LifeCycle} component to stop when this instance starts
+     */
     public StopLifeCycle(LifeCycle lifecycle) {
         this.lifecycle = lifecycle;
         addLifeCycleListener(this);
     }
 
+    /**
+     * Callback method invoked when this {@code StopLifeCycle} instance has started.
+     * <p>Upon receiving this event, it attempts to stop the wrapped {@link LifeCycle} component.</p>
+     * @param lifecycle the {@link LifeCycle} instance that has started (which is this object itself)
+     */
     @Override
     public void lifeCycleStarted(LifeCycle lifecycle) {
         try {
@@ -39,6 +51,14 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected void doStart() throws Exception {
+    }
+
+    @Override
+    protected void doStop() throws Exception {
     }
 
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-20.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,13 +22,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * <p>This class is a clone of org.springframework.util.CustomizableThreadCreator</p>
- *
- * Simple customizable helper class for creating new {@link Thread} instances.
- * Provides various bean properties: thread name prefix, thread priority, etc.
- *
- * <p>Serves as base class for thread factories such as
- * {@link CustomizableThreadFactory}.</p>
+ * A simple customizable helper class for creating new {@link Thread} instances.
+ * <p>This class is a clone of {@code org.springframework.util.CustomizableThreadCreator}.</p>
+ * <p>It provides various configurable properties such as thread name prefix, thread priority,
+ * daemon status, and thread group. It serves as a base class for more specific thread factories
+ * like {@link CustomizableThreadFactory}.</p>
  *
  * @see CustomizableThreadFactory
  */
@@ -48,14 +46,14 @@ public class CustomizableThreadCreator {
     private ClassLoader contextClassLoader;
 
     /**
-     * Create a new CustomizableThreadCreator with default thread name prefix.
+     * Creates a new CustomizableThreadCreator with a default thread name prefix.
      */
     public CustomizableThreadCreator() {
         this.threadNamePrefix = getDefaultThreadNamePrefix();
     }
 
     /**
-     * Create a new CustomizableThreadCreator with the given thread name prefix.
+     * Creates a new CustomizableThreadCreator with the given thread name prefix.
      * @param threadNamePrefix the prefix to use for the names of newly created threads
      */
     public CustomizableThreadCreator(@Nullable String threadNamePrefix) {
@@ -63,87 +61,100 @@ public class CustomizableThreadCreator {
     }
 
     /**
-     * Specify the prefix to use for the names of newly created threads.
+     * Specifies the prefix to use for the names of newly created threads.
      * Default is "SimpleAsyncTaskExecutor-".
+     * @param threadNamePrefix the prefix to use
      */
     public void setThreadNamePrefix(@Nullable String threadNamePrefix) {
         this.threadNamePrefix = (threadNamePrefix != null ? threadNamePrefix : getDefaultThreadNamePrefix());
     }
 
     /**
-     * Return the thread name prefix to use for the names of newly
-     * created threads.
+     * Returns the thread name prefix used for the names of newly created threads.
+     * @return the thread name prefix
      */
     public String getThreadNamePrefix() {
         return this.threadNamePrefix;
     }
 
     /**
-     * Set the priority of the threads that this factory creates.
-     * Default is 5.
-     * @see java.lang.Thread#NORM_PRIORITY
+     * Sets the priority of the threads that this factory creates.
+     * Default is {@link Thread#NORM_PRIORITY} (5).
+     * @param threadPriority the priority to set
+     * @see Thread#setPriority
      */
     public void setThreadPriority(int threadPriority) {
         this.threadPriority = threadPriority;
     }
 
     /**
-     * Return the priority of the threads that this factory creates.
+     * Returns the priority of the threads that this factory creates.
+     * @return the thread priority
      */
     public int getThreadPriority() {
         return this.threadPriority;
     }
 
     /**
-     * Set whether this factory is supposed to create daemon threads,
-     * just executing as long as the application itself is running.
-     * <p>Default is "false": Concrete factories usually support explicit cancelling.
-     * Hence, if the application shuts down, Runnables will by default finish their
-     * execution.
-     * <p>Specify "true" for eager shutdown of threads which still actively execute
-     * a {@link Runnable} at the time that the application itself shuts down.
-     * @see java.lang.Thread#setDaemon
+     * Sets whether this factory is supposed to create daemon threads.
+     * <p>Daemon threads are typically used for background tasks that should not prevent the JVM from exiting.
+     * Default is {@code false}.</p>
+     * @param daemon {@code true} to create daemon threads, {@code false} otherwise
+     * @see Thread#setDaemon
      */
     public void setDaemon(boolean daemon) {
         this.daemon = daemon;
     }
 
     /**
-     * Return whether this factory should create daemon threads.
+     * Returns whether this factory should create daemon threads.
+     * @return {@code true} if daemon threads are created, {@code false} otherwise
      */
     public boolean isDaemon() {
         return this.daemon;
     }
 
     /**
-     * Specify the name of the thread group that threads should be created in.
-     * @see #setThreadGroup
+     * Specifies the name of the thread group that threads should be created in.
+     * A new {@link ThreadGroup} will be created with this name.
+     * @param name the name of the thread group
+     * @see #setThreadGroup(ThreadGroup)
      */
     public void setThreadGroupName(String name) {
         this.threadGroup = new ThreadGroup(name);
     }
 
     /**
-     * Specify the thread group that threads should be created in.
-     * @see #setThreadGroupName
+     * Specifies the thread group that threads should be created in.
+     * @param threadGroup the {@link ThreadGroup} to use (may be {@code null} for the default group)
+     * @see #setThreadGroupName(String)
      */
     public void setThreadGroup(@Nullable ThreadGroup threadGroup) {
         this.threadGroup = threadGroup;
     }
 
     /**
-     * Return the thread group that threads should be created in
+     * Returns the thread group that threads should be created in
      * (or {@code null} for the default group).
+     * @return the thread group
      */
     @Nullable
     public ThreadGroup getThreadGroup() {
         return this.threadGroup;
     }
 
+    /**
+     * Returns the context ClassLoader to be set for new threads.
+     * @return the context ClassLoader
+     */
     public ClassLoader getContextClassLoader() {
         return this.contextClassLoader;
     }
 
+    /**
+     * Sets the context ClassLoader to be set for new threads.
+     * @param contextClassLoader the context ClassLoader to set
+     */
     public void setContextClassLoader(ClassLoader contextClassLoader) {
         this.contextClassLoader = contextClassLoader;
     }
@@ -151,8 +162,10 @@ public class CustomizableThreadCreator {
     /**
      * Template method for the creation of a new {@link Thread}.
      * <p>The default implementation creates a new Thread for the given
-     * {@link Runnable}, applying an appropriate thread name.
-     * @param runnable the Runnable to execute
+     * {@link Runnable}, applying an appropriate thread name, priority, daemon status,
+     * and context ClassLoader.</p>
+     * @param runnable the {@code Runnable} to execute
+     * @return a newly created {@code Thread}
      * @see #nextThreadName()
      */
     public Thread createThread(Runnable runnable) {
@@ -166,9 +179,10 @@ public class CustomizableThreadCreator {
     }
 
     /**
-     * Return the thread name to use for a newly created {@link Thread}.
+     * Returns the thread name to use for a newly created {@link Thread}.
      * <p>The default implementation returns the specified thread name prefix
-     * with an increasing thread count appended: for example, "SimpleAsyncTaskExecutor-0".
+     * with an increasing thread count appended: for example, "SimpleAsyncTaskExecutor-0".</p>
+     * @return the generated thread name
      * @see #getThreadNamePrefix()
      */
     protected String nextThreadName() {
@@ -176,7 +190,7 @@ public class CustomizableThreadCreator {
     }
 
     /**
-     * Build the default thread name prefix for this factory.
+     * Builds the default thread name prefix for this factory.
      * @return the default thread name prefix (never {@code null})
      */
     protected String getDefaultThreadNamePrefix() {

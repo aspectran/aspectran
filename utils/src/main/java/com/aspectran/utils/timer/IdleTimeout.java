@@ -24,13 +24,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * <p>This class is a clone of org.eclipse.jetty.io.IdleTimeout</p>
- *
- * An Abstract implementation of an Idle Timeout.
- * <p>
- * This implementation is optimized that timeout operations are not canceled on
- * every operation. Rather timeout are allowed to expire and a check is then made
- * to see when the last operation took place.  If the idle timeout has not expired,
+ * An abstract implementation for managing idle timeouts.
+ * <p>This class is a clone of {@code org.eclipse.jetty.io.IdleTimeout}.</p>
+ * <p>It is optimized such that timeout operations are not canceled on every activity.
+ * Instead, timeouts are allowed to expire, and a check is then made to determine
+ * when the last activity occurred. If the idle timeout has not truly expired,
  * the timeout is rescheduled for the earliest possible time a timeout could occur.</p>
  */
 public abstract class IdleTimeout {
@@ -46,26 +44,32 @@ public abstract class IdleTimeout {
     private volatile long idleTimestamp = System.nanoTime();
 
     /**
-     * @param scheduler A scheduler used to schedule checks for the idle timeout
+     * Creates a new IdleTimeout instance.
+     * @param scheduler a {@link Scheduler} used to schedule checks for the idle timeout
      */
     public IdleTimeout(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
+    /**
+     * Returns the scheduler used by this IdleTimeout.
+     * @return the scheduler
+     */
     public Scheduler getScheduler() {
         return scheduler;
     }
 
     /**
-     * @return the period of time, in milliseconds, that this object was idle
+     * Returns the period of time, in milliseconds, that this object has been idle.
+     * @return the idle time in milliseconds
      */
     public long getIdleFor() {
         return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - idleTimestamp);
     }
 
     /**
+     * Returns the idle timeout in milliseconds.
      * @return the idle timeout in milliseconds
-     * @see #setIdleTimeout(long)
      */
     public long getIdleTimeout() {
         return idleTimeout;
@@ -73,9 +77,8 @@ public abstract class IdleTimeout {
 
     /**
      * Sets the idle timeout in milliseconds.
-     * A value that is less than or zero disables the idle timeout checks.
+     * <p>A value less than or equal to zero disables the idle timeout checks.</p>
      * @param idleTimeout the idle timeout in milliseconds
-     * @see #getIdleTimeout()
      */
     public void setIdleTimeout(long idleTimeout) {
         long old = this.idleTimeout;
@@ -100,6 +103,7 @@ public abstract class IdleTimeout {
 
     /**
      * This method should be called when non-idle activity has taken place.
+     * It resets the idle timestamp to the current time.
      */
     public void notIdle() {
         idleTimestamp = System.nanoTime();
@@ -123,6 +127,10 @@ public abstract class IdleTimeout {
         }
     }
 
+    /**
+     * Activates the idle timeout mechanism.
+     * This method should be called when the monitored entity becomes active.
+     */
     public void onOpen() {
         activate();
     }
@@ -133,6 +141,10 @@ public abstract class IdleTimeout {
         }
     }
 
+    /**
+     * Deactivates the idle timeout mechanism.
+     * This method should be called when the monitored entity is closed or no longer active.
+     */
     public void onClose() {
         deactivate();
     }
@@ -144,6 +156,12 @@ public abstract class IdleTimeout {
         }
     }
 
+    /**
+     * Performs an idle timeout check.
+     * <p>If the entity has been idle for longer than {@link #getIdleTimeout()},
+     * {@link #onIdleExpired(TimeoutException)} is called.</p>
+     * @return the remaining idle time in milliseconds, or -1 if idle timeout is disabled
+     */
     protected long checkIdleTimeout() {
         if (isOpen()) {
             long idleTimestamp = this.idleTimestamp;
@@ -174,14 +192,15 @@ public abstract class IdleTimeout {
 
     /**
      * This abstract method is called when the idle timeout has expired.
-     * @param timeout a TimeoutException
+     * Subclasses must implement this method to define the action to be performed upon idle expiration.
+     * @param timeout a {@link TimeoutException} indicating the timeout
      */
     protected abstract void onIdleExpired(TimeoutException timeout);
 
     /**
-     * This abstract method should be called to check if idle timeouts
-     * should still be checked.
-     * @return true if the entity monitored should still be checked for idle timeouts
+     * This abstract method should be implemented by subclasses to indicate if idle timeouts
+     * should still be checked for the monitored entity.
+     * @return {@code true} if the entity is open and should be checked for idle timeouts, {@code false} otherwise
      */
     public abstract boolean isOpen();
 

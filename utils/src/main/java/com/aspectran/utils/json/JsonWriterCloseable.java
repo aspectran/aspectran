@@ -19,13 +19,15 @@ import java.io.Closeable;
 import java.io.Writer;
 
 /**
- * Converts an object to a JSON formatted string.
- * <p>If pretty-printing is enabled, the JsonWriter will add newlines and
- * indentation to the written data. Pretty-printing is disabled by default.</p>
- * <p>Useful with Java 7 for example :
+ * A {@link JsonWriter} subclass that implements the {@link Closeable} interface.
+ * <p>This allows {@code JsonWriterCloseable} instances to be used in a
+ * try-with-resources statement, ensuring that the underlying {@link Writer} is
+ * automatically closed when the block is exited.</p>
+ * <p>Example usage:
  * <pre>{@code
- *   try(JsonWriterCloseable jsonWriter = JsonWriterCloseable(out)) {
- *     ....
+ *   try(JsonWriterCloseable jsonWriter = new JsonWriterCloseable(new StringWriter())) {
+ *     jsonWriter.beginObject().name("key").value("value").endObject();
+ *     String json = jsonWriter.toString();
  *   }
  * }</pre></p>
  *
@@ -36,9 +38,7 @@ import java.io.Writer;
 public class JsonWriterCloseable extends JsonWriter implements Closeable {
 
     /**
-     * Instantiates a new JsonWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
+     * Creates a new JsonWriterCloseable that writes to the given {@link Writer}.
      * @param writer the character-output stream
      */
     public JsonWriterCloseable(Writer writer) {

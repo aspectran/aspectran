@@ -20,33 +20,38 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * Implementation of the {@link java.util.concurrent.ThreadFactory} interface,
- * allowing for customizing the created threads (name, priority, etc).
+ * An implementation of the {@link ThreadFactory} interface that allows for
+ * customizing the created threads (name, priority, daemon status, etc.).
+ * <p>This class extends {@link CustomizableThreadCreator} to provide the
+ * configuration options and implements {@code ThreadFactory} to be used
+ * with {@link java.util.concurrent.ExecutorService}s.</p>
  *
- * <p>See the base class {@link CustomizableThreadCreator}
- * for details on the available configuration options.
- *
- * @see #setThreadNamePrefix
- * @see #setThreadPriority
+ * @see CustomizableThreadCreator
  */
 public class CustomizableThreadFactory extends CustomizableThreadCreator implements ThreadFactory {
 
     /**
-     * Create a new CustomizableThreadFactory with default thread name prefix.
+     * Creates a new CustomizableThreadFactory with a default thread name prefix.
      */
     public CustomizableThreadFactory() {
         super();
     }
 
     /**
-     * Create a new CustomizableThreadFactory with the given thread name prefix.
+     * Creates a new CustomizableThreadFactory with the given thread name prefix.
      * @param threadNamePrefix the prefix to use for the names of newly created threads
      */
     public CustomizableThreadFactory(String threadNamePrefix) {
         super(threadNamePrefix);
     }
 
-
+    /**
+     * Creates a new {@link Thread} for the given {@link Runnable}.
+     * <p>This method delegates to {@link CustomizableThreadCreator#createThread(Runnable)}
+     * to apply the configured thread properties.</p>
+     * @param runnable the {@code Runnable} to execute
+     * @return a newly created {@code Thread}
+     */
     @Override
     public Thread newThread(@NonNull Runnable runnable) {
         return createThread(runnable);

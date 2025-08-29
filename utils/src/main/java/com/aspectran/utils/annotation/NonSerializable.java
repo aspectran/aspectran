@@ -21,7 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The NonSerializable attribute marks a variable to not be serialized.
+ * Indicates that a field or method's return value should not be serialized.
+ * <p>This marker annotation is used to exclude specific properties from the
+ * serialization process, typically when converting an object to a format
+ * like JSON or APON.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

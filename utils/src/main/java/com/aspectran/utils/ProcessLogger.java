@@ -16,21 +16,43 @@
 package com.aspectran.utils;
 
 /**
- * The ProcessLogger class is for logging the execution
- * of external processes.
+ * An interface for logging the execution of external processes.
+ * <p>This abstraction allows different logging implementations to be used
+ * when running external commands or processes.</p>
  *
  * <p>Created: 2019/11/17</p>
  */
 public interface ProcessLogger {
 
+    /**
+     * Logs a debug message.
+     * @param message the message to log
+     */
     void debug(String message);
 
+    /**
+     * Logs an info message.
+     * @param message the message to log
+     */
     void info(String message);
 
+    /**
+     * Logs a warn message.
+     * @param message the message to log
+     */
     void warn(String message);
 
+    /**
+     * Logs an error message.
+     * @param message the message to log
+     */
     void error(String message);
 
+    /**
+     * Logs an error message with an associated throwable.
+     * @param message the message to log
+     * @param t the throwable to log
+     */
     void error(String message, Throwable t);
 
 }

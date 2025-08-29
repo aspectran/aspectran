@@ -16,7 +16,11 @@
 package com.aspectran.utils.json;
 
 /**
- * Wrapper class to prevent JSON strings from being escaped.
+ * A wrapper class to prevent a JSON string from being re-escaped when it is
+ * part of a larger JSON serialization process.
+ * <p>When an instance of {@code JsonString} is passed to a JSON writer,
+ * its {@link #toString()} method is called directly, and the content is
+ * written as-is, without further escaping.</p>
  *
  * @since 7.3.0
  */
@@ -24,10 +28,20 @@ public class JsonString {
 
     private final String json;
 
+    /**
+     * Creates a new JsonString instance with the given JSON content.
+     * @param json the JSON string content
+     */
     public JsonString(String json) {
         this.json = json;
     }
 
+    /**
+     * Returns the raw JSON string content.
+     * <p>This method is intended to be called by JSON writers to retrieve the
+     * unescaped JSON content.</p>
+     * @return the raw JSON string
+     */
     @Override
     public String toString() {
         return json;

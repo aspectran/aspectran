@@ -23,13 +23,12 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * <p>This class is a clone of org.eclipse.jetty.util.statistic.CounterStatistic</p>
- *
- * Statistics on a counter value.
- *
- * <p>Keep total, current and maximum values of a counter that
- * can be incremented and decremented. The total refers only
- * to increments.</p>
+ * Provides statistics on a counter value, tracking total, current, and maximum values.
+ * <p>This class is a clone of {@code org.eclipse.jetty.util.statistic.CounterStatistic}.</p>
+ * <p>It supports incrementing and decrementing the current value, while maintaining
+ * a running total (sum of all increments) and the highest value reached.</p>
+ * <p>This class is thread-safe due to its use of {@link AtomicLong}, {@link LongAccumulator},
+ * and {@link LongAdder}.</p>
  */
 public class CounterStatistic {
 
@@ -39,6 +38,9 @@ public class CounterStatistic {
 
     private final LongAdder total = new LongAdder();
 
+    /**
+     * Resets the total and maximum values to zero, and sets the current value to zero.
+     */
     public void reset() {
         total.reset();
         max.reset();
@@ -47,6 +49,12 @@ public class CounterStatistic {
         max.accumulate(current);
     }
 
+    /**
+     * Resets the counter to a specific value.
+     * The total and maximum values are reset, and the current value is set.
+     * If the value is positive, it's added to total and accumulated in max.
+     * @param value the value to reset the counter to
+     */
     public void reset(long value) {
         current.set(value);
         total.reset();
@@ -57,6 +65,12 @@ public class CounterStatistic {
         }
     }
 
+    /**
+     * Adds a delta to the current value.
+     * If the delta is positive, it's also added to the total and accumulated in the maximum.
+     * @param delta the value to add (can be positive or negative)
+     * @return the new current value
+     */
     public long add(long delta) {
         long value = current.addAndGet(delta);
         if (delta > 0) {
@@ -66,6 +80,11 @@ public class CounterStatistic {
         return value;
     }
 
+    /**
+     * Increments the current value by one.
+     * The total is incremented, and the new current value is accumulated in the maximum.
+     * @return the new current value
+     */
     public long increment() {
         long value = current.incrementAndGet();
         total.increment();
@@ -73,18 +92,34 @@ public class CounterStatistic {
         return value;
     }
 
+    /**
+     * Decrements the current value by one.
+     * @return the new current value
+     */
     public long decrement() {
         return current.decrementAndGet();
     }
 
+    /**
+     * Returns the current value of the counter.
+     * @return the current value
+     */
     public long getCurrent() {
         return current.get();
     }
 
+    /**
+     * Returns the maximum value recorded by the counter.
+     * @return the maximum value
+     */
     public long getMax() {
         return max.get();
     }
 
+    /**
+     * Returns the total sum of all increments to the counter.
+     * @return the total sum
+     */
     public long getTotal() {
         return total.sum();
     }

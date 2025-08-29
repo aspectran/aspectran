@@ -15,203 +15,220 @@
  */
 package com.aspectran.utils.lifecycle;
 
-import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.concurrent.AutoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Basic implementation of the life cycle interface for components.
+ * An abstract base class that provides a default implementation for the {@link LifeCycle} interface.
+ * <p>This class manages the internal state transitions (STOPPED, STARTING, STARTED, STOPPING, FAILED)
+ * and provides a mechanism for notifying registered {@link LifeCycle.Listener}s of state changes.
+ * Subclasses must implement the {@link #doStart()} and {@link #doStop()} methods to provide
+ * their specific startup and shutdown logic.</p>
  */
 public abstract class AbstractLifeCycle implements LifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractLifeCycle.class);
 
-    private final CopyOnWriteArrayList<LifeCycle.Listener> listeners = new CopyOnWriteArrayList<>();
+    private static final int _STOPPED = 0;
+    private static final int _STARTING = 1;
+    private static final int _STARTED = 2;
+    private static final int _STOPPING = 3;
+    private static final int _FAILED = 4;
 
-    private final AutoLock lock = new AutoLock();
+    private final Object _lock = new Object();
+    private volatile int state = _STOPPED;
+    private final List<Listener> listeners = new CopyOnWriteArrayList<>();
 
-    private static final int STATE_FAILED = -1;
-
-    private static final int STATE_STOPPED = 0;
-
-    private static final int STATE_STARTING = 1;
-
-    private static final int STATE_STARTED = 2;
-
-    private static final int STATE_STOPPING = 3;
-
-    private volatile int state = STATE_STOPPED;
-
-    protected void doStart() throws Exception {
-    }
-
-    protected void doStop() throws Exception {
-    }
-
+    /**
+     * Starts the component.
+     * <p>This method handles state transitions and listener notifications.
+     * Subclasses should implement their specific startup logic in {@link #doStart()}.</p>
+     * @throws Exception If the component fails to start
+     */
     @Override
     public final void start() throws Exception {
-        try (AutoLock ignored = lock.lock()) {
+        synchronized (_lock) {
             try {
-                if (state == STATE_STARTED || state == STATE_STARTING) {
+                if (state == _STARTED) {
                     return;
+                }
+                if (state == _STARTING) {
+                    throw new IllegalStateException("Starting");
                 }
                 setStarting();
                 doStart();
                 setStarted();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 setFailed(e);
                 throw e;
             }
         }
     }
 
+    /**
+     * Stops the component.
+     * <p>This method handles state transitions and listener notifications.
+     * Subclasses should implement their specific shutdown logic in {@link #doStop()}.</p>
+     * @throws Exception If the component fails to stop
+     */
     @Override
     public final void stop() throws Exception {
-        try (AutoLock ignored = lock.lock()) {
+        synchronized (_lock) {
             try {
-                if (state == STATE_STOPPING || state == STATE_STOPPED) {
+                if (state == _STOPPED) {
                     return;
+                }
+                if (state == _STOPPING) {
+                    throw new IllegalStateException("Stopping");
                 }
                 setStopping();
                 doStop();
                 setStopped();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 setFailed(e);
                 throw e;
             }
         }
     }
 
+    /**
+     * Implements the specific startup logic for the component.
+     * Subclasses must override this method.
+     * @throws Exception if the component fails to start
+     */
+    protected abstract void doStart() throws Exception;
+
+    /**
+     * Implements the specific shutdown logic for the component.
+     * Subclasses must override this method.
+     * @throws Exception if the component fails to stop
+     */
+    protected abstract void doStop() throws Exception;
+
     @Override
     public boolean isRunning() {
-        int state = this.state;
-        return (state == STATE_STARTED || state == STATE_STARTING);
+        return (state == _STARTED || state == _STARTING);
     }
 
     @Override
     public boolean isStarted() {
-        return (state == STATE_STARTED);
+        return (state == _STARTED);
     }
 
     @Override
     public boolean isStarting() {
-        return (state == STATE_STARTING);
+        return (state == _STARTING);
     }
 
     @Override
     public boolean isStopping() {
-        return (state == STATE_STOPPING);
+        return (state == _STOPPING);
     }
 
     @Override
     public boolean isStopped() {
-        return (state == STATE_STOPPED);
+        return (state == _STOPPED);
     }
 
     @Override
     public boolean isStoppable() {
-        int state = this.state;
-        return (state != STATE_STOPPED && state != STATE_STOPPING);
+        return (isStarted() || isFailed());
     }
 
     @Override
     public boolean isFailed() {
-        return (state == STATE_FAILED);
+        return (state == _FAILED);
     }
 
+    /**
+     * Adds a {@link LifeCycle.Listener} to this component.
+     * @param listener the listener to add
+     */
     @Override
     public void addLifeCycleListener(LifeCycle.Listener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Removes a {@link LifeCycle.Listener} from this component.
+     * @param listener the listener to remove
+     */
     @Override
     public void removeLifeCycleListener(LifeCycle.Listener listener) {
         listeners.remove(listener);
     }
 
+    /**
+     * Returns the current state of the component as a string.
+     * @return the current state string (e.g., "STARTED", "STOPPED")
+     */
     @Override
     public String getState() {
         return switch (state) {
-            case STATE_FAILED -> FAILED;
-            case STATE_STARTING -> STARTING;
-            case STATE_STARTED -> STARTED;
-            case STATE_STOPPING -> STOPPING;
-            case STATE_STOPPED -> STOPPED;
-            default -> null;
+            case _STARTING -> LifeCycle.STARTING;
+            case _STARTED -> LifeCycle.STARTED;
+            case _STOPPING -> LifeCycle.STOPPING;
+            case _STOPPED -> LifeCycle.STOPPED;
+            case _FAILED -> LifeCycle.FAILED;
+            default -> throw new IllegalStateException("State: " + state);
         };
     }
 
-    public static String getState(@NonNull LifeCycle lc) {
-        if (lc.isStarting()) {
-            return STARTING;
+    private void setStarting() {
+        state = _STARTING;
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} is STARTING", this);
         }
-        if (lc.isStarted()) {
-            return STARTED;
+        for (Listener listener : listeners) {
+            listener.lifeCycleStarting(this);
         }
-        if (lc.isStopping()) {
-            return STOPPING;
-        }
-        if (lc.isStopped()) {
-            return STOPPED;
-        }
-        return FAILED;
     }
 
     private void setStarted() {
-        state = STATE_STARTED;
+        state = _STARTED;
         if (logger.isDebugEnabled()) {
-            logger.debug("Started {}", this);
+            logger.debug("{} is STARTED", this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStarted(this);
         }
     }
 
-    private void setStarting() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting {}", this);
-        }
-        state = STATE_STARTING;
-        for (Listener listener : listeners) {
-            listener.lifeCycleStarting(this);
-        }
-    }
-
     private void setStopping() {
+        state = _STOPPING;
         if (logger.isDebugEnabled()) {
-            logger.debug("Stopping {}", this);
+            logger.debug("{} is STOPPING", this);
         }
-        state = STATE_STOPPING;
         for (Listener listener : listeners) {
             listener.lifeCycleStopping(this);
         }
     }
 
     private void setStopped() {
-        state = STATE_STOPPED;
+        state = _STOPPED;
         if (logger.isDebugEnabled()) {
-            logger.debug("Stopped {}", this);
+            logger.debug("{} is STOPPED", this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStopped(this);
         }
     }
 
-    private void setFailed(Throwable th) {
-        state = STATE_FAILED;
-        logger.warn("{} - {}", this, th, th);
-        for (Listener listener : listeners) {
-            listener.lifeCycleFailure(this, th);
+    /**
+     * Sets the component's state to FAILED and notifies listeners.
+     * @param cause the cause of the failure
+     */
+    private void setFailed(Throwable cause) {
+        state = _FAILED;
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} is FAILED", this, cause);
         }
-    }
-
-    @Override
-    public String toString() {
-        return (ObjectUtils.simpleIdentityToString(this) + "{" + getState() + "}");
+        for (Listener listener : listeners) {
+            listener.lifeCycleFailure(this, cause);
+        }
     }
 
 }
