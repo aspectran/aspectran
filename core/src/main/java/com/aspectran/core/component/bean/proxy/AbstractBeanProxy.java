@@ -47,6 +47,11 @@ import java.util.concurrent.Future;
 
 /**
  * Base support class for bean proxies that apply Aspectran AOP advice.
+ * This class handles the core logic of intercepting method invocations,
+ * applying relevant advice (before, after, finally), and managing
+ * synchronous and asynchronous executions.
+ *
+ * <p>Created: 2017. 1. 27.</p>
  */
 public abstract class AbstractBeanProxy {
 
@@ -63,23 +68,42 @@ public abstract class AbstractBeanProxy {
         this.aspectRuleRegistry = context.getAspectRuleRegistry();
     }
 
+    /**
+     * Returns the {@code BeanRule} for the bean being proxied.
+     * @return the bean rule
+     */
     protected abstract BeanRule getBeanRule();
 
+    /**
+     * Intercepts a method invocation. If the method is advisable (annotated with
+     * {@link Advisable} or {@link Async}), it applies AOP advice. Otherwise,
+     * it invokes the original method directly.
+     * @param method the method being invoked
+     * @param args the arguments to the method
+     * @param superInvoker a callback to invoke the original (super) method
+     * @return the result of the method invocation
+     * @throws Exception if the invocation fails
+     */
     protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
             throws Exception {
         if (isAdvisableMethod(method)) {
-            Activity activity;
-            if (context.hasCurrentActivity()) {
-                activity = context.getCurrentActivity();
-            } else {
-                activity = null;
-            }
+            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
             return invoke(method, args, superInvoker, activity);
         } else {
             return superInvoker.invoke();
         }
     }
 
+    /**
+     * Determines whether to execute the method synchronously or asynchronously
+     * based on the presence of the {@link Async} annotation.
+     * @param method the method being invoked
+     * @param args the arguments to the method
+     * @param superInvoker a callback to invoke the original method
+     * @param activity the current activity, or null if none exists
+     * @return the result of the method invocation, which may be a {@link Future} for async calls
+     * @throws Exception if the invocation fails
+     */
     @Nullable
     private Object invoke(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
@@ -92,6 +116,18 @@ public abstract class AbstractBeanProxy {
         }
     }
 
+    /**
+     * Handles the asynchronous invocation of a method.
+     * It submits the task to an {@link AsyncTaskExecutor} and returns a {@link Future}
+     * if the method has a return value, otherwise returns null.
+     * @param method the method to invoke asynchronously
+     * @param args the method arguments
+     * @param superInvoker a callback to invoke the original method
+     * @param async the {@link Async} annotation instance
+     * @param activity the current activity
+     * @return a {@link Future} representing the result of the async computation, or null for void methods
+     * @throws Exception if submitting the task fails
+     */
     @Nullable
     private Object invokeAsync(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
@@ -105,7 +141,7 @@ public abstract class AbstractBeanProxy {
                 try {
                     invokeAsync(method, args, superInvoker, activity, executor);
                 } catch (Exception e) {
-                    // ignore
+                    // The exception is handled by the uncaught exception handler, so no need to rethrow.
                 }
             });
             return null;
@@ -120,6 +156,18 @@ public abstract class AbstractBeanProxy {
         }
     }
 
+    /**
+     * The core logic for an asynchronous method invocation, executed within a worker thread.
+     * It sets up a {@link ProxyActivity} to ensure the activity context is available
+     * and then proceeds with a synchronous-style advice execution.
+     * @param method the method to invoke
+     * @param args the method arguments
+     * @param superInvoker a callback to invoke the original method
+     * @param activity the original activity from the calling thread
+     * @param executor the async task executor
+     * @return the result of the method invocation
+     * @throws Exception if the invocation fails
+     */
     private Object invokeAsync(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
             Activity activity, AsyncTaskExecutor executor) throws Exception {
@@ -128,9 +176,11 @@ public abstract class AbstractBeanProxy {
                 final Activity proxyActivity;
                 Object result;
                 if (activity == null) {
+                    // When there is no parent activity, the proxy activity itself becomes the execution subject.
                     proxyActivity = new ProxyActivity(context);
                     result = proxyActivity.perform(() -> invokeSync(method, superInvoker, proxyActivity));
                 } else {
+                    // The proxy activity serves only as a wrapper, and the actual execution subject is the parent activity.
                     proxyActivity = new ProxyActivity(activity);
                     result = proxyActivity.perform(() -> invokeSync(method, superInvoker, activity));
                 }
@@ -152,6 +202,16 @@ public abstract class AbstractBeanProxy {
         });
     }
 
+    /**
+     * Handles the synchronous invocation of a method, applying all relevant AOP advice.
+     * This is the core of the AOP proxy, executing before, after, and finally advice,
+     * as well as exception handling advice.
+     * @param method the method to invoke
+     * @param superInvoker a callback to invoke the original method
+     * @param activity the current activity
+     * @return the result of the method invocation
+     * @throws Exception if the invocation or advice execution fails
+     */
     @Nullable
     private Object invokeSync(@NonNull Method method, SuperInvoker superInvoker, Activity activity) throws Exception {
         String beanId = getBeanRule().getId();
@@ -184,6 +244,17 @@ public abstract class AbstractBeanProxy {
         }
     }
 
+    /**
+     * Retrieves the {@link AdviceRuleRegistry} for the current method invocation,
+     * considering the current request, bean, and method details.
+     * @param activity the current activity
+     * @param beanId the ID of the bean
+     * @param className the class name of the bean
+     * @param methodName the name of the method being invoked
+     * @return the relevant advice rule registry
+     * @throws AdviceConstraintViolationException if advice constraints are violated
+     * @throws AdviceException if there is an error in advice processing
+     */
     private AdviceRuleRegistry retrieveAdviceRuleRegistry(
             @NonNull Activity activity, String beanId, String className, String methodName)
             throws AdviceConstraintViolationException, AdviceException {
@@ -220,6 +291,12 @@ public abstract class AbstractBeanProxy {
         return adviceRuleRegistry;
     }
 
+    /**
+     * Executes a list of advice rules.
+     * @param adviceRuleList the list of advice rules to execute
+     * @param activity the current activity
+     * @throws AdviceException if an advice action fails
+     */
     private void executeAdvice(List<AdviceRule> adviceRuleList, Activity activity)
             throws AdviceException {
         if (adviceRuleList != null) {
@@ -231,6 +308,13 @@ public abstract class AbstractBeanProxy {
         }
     }
 
+    /**
+     * Handles exceptions according to the defined exception handling rules.
+     * @param exceptionRuleList the list of applicable exception rules
+     * @param activity the current activity, which holds the raised exception
+     * @return true if the exception was handled and a response is reserved, false otherwise
+     * @throws ActionExecutionException if the exception handling action fails
+     */
     private boolean handleException(List<ExceptionRule> exceptionRuleList, @NonNull Activity activity)
             throws ActionExecutionException {
         if (exceptionRuleList != null) {
@@ -240,6 +324,12 @@ public abstract class AbstractBeanProxy {
         return false;
     }
 
+    /**
+     * Checks if a method is marked as advisable (i.e., eligible for AOP interception).
+     * A method is advisable if it is annotated with {@link Advisable} or {@link Async}.
+     * @param method the method to check
+     * @return true if the method is advisable, false otherwise
+     */
     private boolean isAdvisableMethod(@NonNull Method method) {
         return (method.isAnnotationPresent(Advisable.class) || method.isAnnotationPresent(Async.class));
     }
@@ -261,6 +351,14 @@ public abstract class AbstractBeanProxy {
         return false;
     }
 
+    /**
+     * Finds the appropriate {@link AsyncTaskExecutor} for an async method.
+     * If a specific executor is specified in the {@link Async} annotation (by bean ID or class),
+     * it will be used. Otherwise, the default async task executor from the context is returned.
+     * @param async the {@link Async} annotation from the method
+     * @return the resolved {@link AsyncTaskExecutor}
+     * @throws AsyncExecutionException if the specified executor cannot be found
+     */
     private AsyncTaskExecutor findAsyncExecutor(@NonNull Async async) throws AsyncExecutionException {
         String beanId = StringUtils.emptyToNull(async.value());
         Class<? extends AsyncTaskExecutor> beanClass = async.executor();
@@ -280,9 +378,17 @@ public abstract class AbstractBeanProxy {
         return executor;
     }
 
+    /**
+     * A functional interface for invoking the original (super) method of a proxied bean.
+     */
     @FunctionalInterface
     protected interface SuperInvoker {
 
+        /**
+         * Invokes the original method.
+         * @return the result of the invocation
+         * @throws Exception if the invocation fails
+         */
         Object invoke() throws Exception;
 
     }
