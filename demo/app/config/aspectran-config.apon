@@ -1,6 +1,7 @@
 system: {
     properties: {
         aspectran.encryption.password: demo!
+        aspectran.encryption.algorithm: PBEWithMD5AndTripleDES
         com.aspectran.core.context.builder.debugMode: false
         com.aspectran.core.context.builder.useAponToLoadXml: false
     }
