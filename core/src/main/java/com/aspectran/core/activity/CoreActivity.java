@@ -314,7 +314,11 @@ public class CoreActivity extends AdviceActivity {
                     executeAdvice(getAfterAdviceRuleList());
                 }
             } catch (Exception e) {
-                setRaisedException(e);
+                if (e instanceof ActionExecutionException && e.getCause() != null) {
+                    setRaisedException(e.getCause());
+                } else {
+                    setRaisedException(e);
+                }
             } finally {
                 if (!forwarding) {
                     setCurrentAdviceType(AdviceType.FINALLY);
@@ -331,8 +335,8 @@ public class CoreActivity extends AdviceActivity {
                             response();
                         }
                     } catch (Exception e) {
-                        logger.error("Failed to handle exception", e);
-                        setRaisedException(e);
+                        logger.error("A new exception occurred while handling the original exception. " +
+                                "The original exception will be re-thrown.", e);
                     }
                     if (isExceptionRaised()) {
                         throw getRaisedException();
