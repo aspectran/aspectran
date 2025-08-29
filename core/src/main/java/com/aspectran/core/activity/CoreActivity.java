@@ -63,7 +63,12 @@ import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEP
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;
 
 /**
- * Core activity for handling official requests in Aspectran services.
+ * The core implementation of the {@link Activity} interface.
+ * <p>This class is the central engine for processing requests in Aspectran.
+ * It manages the entire lifecycle of a request, including preparation, request parsing,
+ * AOP advice execution, action processing, response generation, and exception handling.
+ * It operates as a state machine, ensuring that each phase of the activity is executed
+ * in the correct order.</p>
  *
  * <p>This class is generally not thread-safe. It is primarily designed
  * for use in a single thread only.</p>
@@ -103,6 +108,7 @@ public class CoreActivity extends AdviceActivity {
     /**
      * Instantiates a new CoreActivity.
      * @param context the activity context
+     * @param contextPath the context path
      */
     protected CoreActivity(ActivityContext context, String contextPath) {
         super(context);
@@ -262,6 +268,24 @@ public class CoreActivity extends AdviceActivity {
         perform(null);
     }
 
+    /**
+     * Executes the entire activity lifecycle. This is the main entry point for activity processing.
+     * The lifecycle includes:
+     * <ol>
+     *     <li>Initialization and context setup.</li>
+     *     <li>Execution of 'before' AOP advice.</li>
+     *     <li>Execution of the main content (either a translet's actions or an instant action).</li>
+     *     <li>Execution of 'after' AOP advice (on successful execution).</li>
+     *     <li>Execution of 'finally' AOP advice (always).</li>
+     *     <li>If an exception was raised, the 'thrown' AOP advice and exception handling rules are processed.</li>
+     *     <li>Resource cleanup and finalization.</li>
+     * </ol>
+     * @param instantAction an optional {@link InstantAction} to be executed as the main logic.
+     *                      If null, the configured translet will be executed.
+     * @param <V> the type of the result from the instant action
+     * @return the result of the instant action, or null if a translet was executed
+     * @throws ActivityPerformException if an unhandled exception occurs during the activity execution
+     */
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         if (translet == null && instantAction == null) {
@@ -336,7 +360,7 @@ public class CoreActivity extends AdviceActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
-            throw createPerformException(e, instantAction);
+            throw createActivityPerformException(e, instantAction);
         } finally {
             try {
                 if (!forwarding) {
@@ -376,6 +400,13 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Triggers the response generation process.
+     * It determines the appropriate response object and invokes its {@code respond} method.
+     * Once response processing begins, any raised exception is cleared, as it is considered handled.
+     * @return a {@link ForwardRule} if the response is a forward, otherwise null
+     * @throws ResponseException if an error occurs during response generation
+     */
     @Nullable
     private ForwardRule response() throws ResponseException {
         if (!responded) {
@@ -404,6 +435,14 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
+    /**
+     * Forwards the activity to another translet.
+     * This method recursively calls {@code perform()} for the new translet.
+     * @param forwardRule the rule defining the forward action
+     * @throws TransletNotFoundException if the target translet is not found
+     * @throws ActivityPrepareException if preparing the new activity fails
+     * @throws ActivityPerformException if an error occurs during the forwarded activity's execution
+     */
     private void forward(@NonNull ForwardRule forwardRule)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         reserveResponse(null);
@@ -414,6 +453,10 @@ public class CoreActivity extends AdviceActivity {
         perform();
     }
 
+    /**
+     * Performs final cleanup of the activity.
+     * This includes destroying request-scoped resources and committing the response.
+     */
     private void finish() {
         try {
             if (getRequestAdapter() != null) {
@@ -435,6 +478,12 @@ public class CoreActivity extends AdviceActivity {
     // Exception Handling Methods
     //-------------------------------------------------------------------------------------
 
+    /**
+     * Orchestrates the handling of a previously raised exception.
+     * It executes the defined exception handling rules and attempts to generate a response.
+     * If the exception is not handled by any rule, it will be re-thrown.
+     * @throws Exception the original raised exception if not handled
+     */
     private void handleRaisedException() throws Exception {
         try {
             processExceptionRules();
@@ -449,6 +498,10 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Executes the exception handling rules defined in the translet and AOP aspects.
+     * @throws ActionExecutionException if an action within an exception handler fails
+     */
     private void processExceptionRules() throws ActionExecutionException {
         reserveResponse(null);
         responded = false;
@@ -475,8 +528,13 @@ public class CoreActivity extends AdviceActivity {
         return exceptionThrownRule;
     }
 
-    @NonNull
-    private ActivityPerformException createPerformException(Throwable cause, InstantAction<?> instantAction) {
+    /**
+     * Creates a new {@link ActivityPerformException} with a detailed, context-aware message.
+     * @param cause the root cause of the failure
+     * @param instantAction the instant action being executed, if any
+     * @return a new, informative {@code ActivityPerformException}
+     */
+    private ActivityPerformException createActivityPerformException(Throwable cause, InstantAction<?> instantAction) {
         String contextDesc = null;
         if (translet != null) {
             contextDesc = " for Translet " + translet.getTransletRule();
@@ -487,13 +545,13 @@ public class CoreActivity extends AdviceActivity {
         return new ActivityPerformException(message, cause);
     }
 
-    private void execute(ActionList actionList) throws ActionExecutionException {
-        execute(actionList, null);
-    }
-
     //-------------------------------------------------------------------------------------
     // Action Executing Methods
     //-------------------------------------------------------------------------------------
+
+    private void execute(ActionList actionList) throws ActionExecutionException {
+        execute(actionList, null);
+    }
 
     private void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
