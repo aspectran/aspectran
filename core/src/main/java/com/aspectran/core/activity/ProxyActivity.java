@@ -52,8 +52,10 @@ public final class ProxyActivity extends AdviceActivity {
             saveCurrentActivity();
             return instantAction.execute();
         } catch (ActivityPerformException e) {
+            setRaisedException(e);
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
+            setRaisedException(e);
             throw new ActivityPerformException("Failed to perform proxy activity for instant action " +
                     instantAction, e);
         } finally {

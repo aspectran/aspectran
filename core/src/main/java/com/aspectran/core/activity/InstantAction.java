@@ -26,8 +26,8 @@ public interface InstantAction<V> {
      * Executes an instant action and throw an exception
      * if an error occurs during execution.
      * @return the result of the execution
-     * @throws Throwable if an error occurs
+     * @throws Exception if an error occurs
      */
-    V execute() throws Throwable;
+    V execute() throws Exception;
 
 }
