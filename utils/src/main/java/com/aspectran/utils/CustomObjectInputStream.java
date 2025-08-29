@@ -24,22 +24,44 @@ import java.io.ObjectStreamClass;
 import java.lang.reflect.Proxy;
 
 /**
- * For re-inflating serialized objects, this class uses the thread context classloader
- * rather than the JVM's default classloader selection.
+ * A custom {@link ObjectInputStream} that uses a specified {@link ClassLoader}
+ * (typically the thread context class loader) to resolve classes during deserialization.
+ * <p>This is essential in environments where the application classes are not loaded by
+ * the system class loader, such as in web containers or plugin-based architectures.</p>
  */
 public class CustomObjectInputStream extends ObjectInputStream {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Creates a new CustomObjectInputStream, using the current thread's context class loader.
+     * @param inputStream the {@code InputStream} to read from
+     * @throws IOException if an I/O error occurs while reading stream header
+     */
     public CustomObjectInputStream(InputStream inputStream) throws IOException {
         this(inputStream, ClassUtils.getDefaultClassLoader());
     }
 
+    /**
+     * Creates a new CustomObjectInputStream with a specified ClassLoader.
+     * @param inputStream the {@code InputStream} to read from
+     * @param classLoader the {@code ClassLoader} to use for class resolution
+     * @throws IOException if an I/O error occurs while reading stream header
+     */
     public CustomObjectInputStream(InputStream inputStream, ClassLoader classLoader) throws IOException {
         super(inputStream);
         this.classLoader = classLoader;
     }
 
+    /**
+     * Resolves the class described by the specified stream class descriptor.
+     * This implementation attempts to load the class using the custom class loader first,
+     * falling back to the default superclass behavior if not found.
+     * @param classDesc the {@code ObjectStreamClass} to resolve
+     * @return the resolved {@code Class}
+     * @throws IOException if an I/O error occurs
+     * @throws ClassNotFoundException if the class cannot be found
+     */
     @Override
     public Class<?> resolveClass(@NonNull ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
         try {
@@ -49,8 +71,16 @@ public class CustomObjectInputStream extends ObjectInputStream {
         }
     }
 
+    /**
+     * Resolves the proxy class for the specified array of interface names.
+     * This implementation uses the custom class loader to resolve the interface classes.
+     * @param interfaces an array of interface names
+     * @return the resolved proxy {@code Class}
+     * @throws IOException if an I/O error occurs
+     * @throws ClassNotFoundException if any of the interface classes cannot be found
+     */
     @Override
-    protected Class<?> resolveProxyClass(@NonNull String[] interfaces) throws ClassNotFoundException {
+    protected Class<?> resolveProxyClass(@NonNull String[] interfaces) throws IOException, ClassNotFoundException {
         Class<?>[] resolvedInterfaces = new Class<?>[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
             resolvedInterfaces[i] = Class.forName(interfaces[i], false, classLoader);

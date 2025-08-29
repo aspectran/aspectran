@@ -25,22 +25,39 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * <p>This class is a clone of io.undertow.util.CopyOnWriteMap</p>
+ * A thread-safe map implementation that uses a copy-on-write strategy.
+ * <p>This class is a clone of {@code io.undertow.util.CopyOnWriteMap}.
+ * It is suitable for scenarios where read operations vastly outnumber write operations.
+ * All mutative operations (put, remove, clear, etc.) are implemented by creating a new copy
+ * of the underlying map. This can be expensive if the map is large or frequently modified,
+ * but provides fast, lock-free read operations.</p>
  *
- * A basic copy on write map. It simply delegates to an underlying map, that is swapped out
- * every time the map is updated.
- * <em>Note: this is not a secure map. It should not be used in situations where the map is populated
- * from user input.</em>
+ * <p>Read operations (get, containsKey, etc.) are performed on a volatile delegate and do
+ * not require locking. Iterators returned by {@code keySet()}, {@code values()}, and
+ * {@code entrySet()} operate on an immutable snapshot of the map at the time the iterator
+ * was created, and thus will not throw {@code ConcurrentModificationException}.</p>
  *
+ * <p><em>Note: this is not a secure map. It should not be used in situations where the map is populated
+ * from user input.</em></p>
+ *
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
  * @author Stuart Douglas
  */
 public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
 
     private volatile Map<K, V> delegate = Collections.emptyMap();
 
+    /**
+     * Creates a new, empty map.
+     */
     public CopyOnWriteMap() {
     }
 
+    /**
+     * Creates a new map with the same mappings as the given map.
+     * @param existing the initial map
+     */
     public CopyOnWriteMap(Map<K, V> existing) {
         this.delegate = new HashMap<>(existing);
     }
@@ -162,7 +179,8 @@ public class CopyOnWriteMap<K,V> implements ConcurrentMap<K, V> {
         return existing;
     }
 
-    public V removeInternal(Object key) {
+    // must be called under lock
+    private V removeInternal(Object key) {
         Map<K, V> delegate = new HashMap<>(this.delegate);
         V existing = delegate.remove(key);
         this.delegate = delegate;

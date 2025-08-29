@@ -29,13 +29,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * A mutable set of options and helpers for converting dates/times and
- * other values to and from strings in a consistent, locale-aware way.
- * <p>
- * This context encapsulates formatting flags such as pretty printing,
- * indentation, null rendering, date/time formats, and {@link Locale}.
- * It also offers parse utilities in the opposite direction.
- * </p>
+ * A context that holds options and helpers for converting values to and from strings.
+ * <p>This class encapsulates formatting settings such as pretty-printing, indentation,
+ * null handling, date/time formats, and {@link Locale}. It provides a consistent
+ * way to manage serialization and deserialization options across different components.</p>
  *
  * <p>Created: 2024. 11. 30.</p>
  */
@@ -100,6 +97,10 @@ public class StringifyContext implements Cloneable {
         this.indentTab = indentTab;
     }
 
+    /**
+     * Returns the indentation string based on the current settings (tab or spaces).
+     * @return the indentation string, or {@code null} if no indentation is set
+     */
     @Nullable
     public String getIndentString() {
         if (indentTab != null && indentTab) {
@@ -346,6 +347,12 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Merges settings from another {@code StringifyContext} into this one.
+     * Settings from the other context will only be applied if they are not already
+     * set in this context.
+     * @param from the context to merge settings from
+     */
     public void merge(StringifyContext from) {
         if (prettyPrint == null && from.prettyPrint != null) {
             prettyPrint = from.prettyPrint;
@@ -390,6 +397,7 @@ public class StringifyContext implements Cloneable {
         try {
             return (StringifyContext)super.clone();
         } catch (CloneNotSupportedException e) {
+            // This should never happen, as we are Cloneable
             throw new RuntimeException(e);
         }
     }

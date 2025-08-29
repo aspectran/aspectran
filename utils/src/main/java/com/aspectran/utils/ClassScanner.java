@@ -39,7 +39,8 @@ import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR;
 import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
- * The Class ClassScanner.
+ * A utility class for scanning the classpath for classes that match certain criteria.
+ * <p>This scanner can find classes in both standard file-system directories and in JAR files.</p>
  *
  * @author Juho Jeong
  */
@@ -49,19 +50,27 @@ public class ClassScanner {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Creates a new ClassScanner with the given class loader.
+     * @param classLoader the ClassLoader to use for scanning
+     */
     public ClassScanner(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Returns the ClassLoader used by this scanner.
+     * @return the class loader
+     */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
     /**
-     * Find all classes that match the class name pattern.
-     * @param classNamePattern the class name pattern
-     * @return a Map for scanned classes
-     * @throws IOException if an I/O error has occurred
+     * Finds all classes that match the given class name pattern.
+     * @param classNamePattern the class name pattern to match (e.g., "com.example.**.service.*Service")
+     * @return a map of scanned classes, with resource names as keys and class objects as values
+     * @throws IOException if an I/O error occurs during scanning
      */
     public Map<String, Class<?>> scan(String classNamePattern) throws IOException {
         final Map<String, Class<?>> scannedClasses = new LinkedHashMap<>();
@@ -70,20 +79,20 @@ public class ClassScanner {
     }
 
     /**
-     * Find all classes that match the class name pattern.
-     * @param classNamePattern the class name pattern
-     * @param scannedClasses the Map for scanned classes
-     * @throws IOException if an I/O error has occurred
+     * Finds all classes that match the given class name pattern and stores them in the provided map.
+     * @param classNamePattern the class name pattern to match
+     * @param scannedClasses the map to store the scanned classes in
+     * @throws IOException if an I/O error occurs during scanning
      */
     public void scan(String classNamePattern, @NonNull final Map<String, Class<?>> scannedClasses) throws IOException {
         scan(classNamePattern, scannedClasses::put);
     }
 
     /**
-     * Find all classes that match the class name pattern.
-     * @param classNamePattern the class name pattern
-     * @param saveHandler the save handler
-     * @throws IOException if an I/O error has occurred
+     * Finds all classes that match the given class name pattern and processes them with the given handler.
+     * @param classNamePattern the class name pattern to match
+     * @param saveHandler the handler to process the found classes
+     * @throws IOException if an I/O error occurs during scanning
      */
     public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
         if (classNamePattern == null) {
@@ -128,12 +137,12 @@ public class ClassScanner {
     }
 
     /**
-     * Recursive method used to find all classes in a given directory and sub dirs.
-     * @param targetPath the target path
-     * @param basePackageName the base package name
-     * @param relativePackageName the relative package name
-     * @param matcher the matcher
-     * @param saveHandler the save handler
+     * Recursively scans a directory to find all class files, matching them against the given pattern.
+     * @param targetPath the path of the directory to scan
+     * @param basePackageName the base package name corresponding to the root of the scan
+     * @param relativePackageName the current package name relative to the base package
+     * @param matcher the wildcard matcher to test against class names
+     * @param saveHandler the handler to process found classes
      */
     private void scan(final String targetPath, final String basePackageName, final String relativePackageName,
                       final WildcardMatcher matcher, final SaveHandler saveHandler) {
@@ -174,6 +183,13 @@ public class ClassScanner {
         });
     }
 
+    /**
+     * Scans a JAR file resource for classes matching the given pattern.
+     * @param resource the JAR file URL to scan
+     * @param matcher the wildcard matcher to test against class names
+     * @param saveHandler the handler to process found classes
+     * @throws IOException if an I/O error occurs while reading the JAR file
+     */
     protected void scanFromJarResource(@NonNull URL resource, WildcardMatcher matcher, SaveHandler saveHandler)
             throws IOException {
         URLConnection conn = resource.openConnection();
@@ -259,6 +275,12 @@ public class ClassScanner {
         return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
     }
 
+    /**
+     * Determines the base package name from a class name pattern that may contain wildcards.
+     * The base package is the part of the pattern before the first wildcard character.
+     * @param classNamePattern the class name pattern
+     * @return the base package name, or {@code null} if the pattern is invalid
+     */
     @Nullable
     private String determineBasePackageName(String classNamePattern) {
         WildcardPattern pattern = new WildcardPattern(classNamePattern, REGULAR_FILE_SEPARATOR_CHAR);
@@ -289,8 +311,16 @@ public class ClassScanner {
         }
     }
 
+    /**
+     * A handler for processing classes found during a scan.
+     */
     public interface SaveHandler {
 
+        /**
+         * Called when a matching class is found.
+         * @param resourceName the name of the resource (e.g., file path or JAR entry path)
+         * @param targetClass the loaded class object
+         */
         void save(String resourceName, Class<?> targetClass);
 
     }

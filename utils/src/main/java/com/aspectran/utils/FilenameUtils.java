@@ -59,7 +59,6 @@ public abstract class FilenameUtils {
      * @param filename the filename to query, must not be null
      * @return the name of the file without the path, or an empty string if none exists
      */
-    @NonNull
     public static String getName(String filename) {
         Assert.notNull(filename, "'filename' must not be null");
         int index = indexOfLastSeparator(filename);
@@ -325,7 +324,6 @@ public abstract class FilenameUtils {
      * @param uniqueFilename a unique filename, potentially with a custom separator
      * @return file name with the standard extension separator
      */
-    @NonNull
     public static String recoverExtension(String uniqueFilename) {
         return StringUtils.replaceLast(uniqueFilename, NAME_SEPARATOR, EXTENSION_SEPARATOR);
     }

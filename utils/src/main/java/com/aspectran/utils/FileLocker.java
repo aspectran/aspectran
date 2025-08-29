@@ -25,8 +25,10 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
 /**
- * Used to obtain a lock that can be used to prevent other Aspectran services
- * that use the same persistent store.
+ * A utility to obtain a file-based lock, which can be used to prevent multiple
+ * processes or services from accessing a shared resource concurrently.
+ * <p>This is particularly useful in scenarios where multiple Aspectran instances might
+ * interact with the same persistent store or directory structure.</p>
  *
  * @since 5.1.0
  */
@@ -43,8 +45,8 @@ public class FileLocker {
     private FileLock fileLock;
 
     /**
-     * Instantiates a new FileLocker.
-     * @param lockFile the file to lock
+     * Creates a new FileLocker for the specified lock file.
+     * @param lockFile the file to use for locking
      */
     public FileLocker(File lockFile) {
         if (lockFile == null) {
@@ -53,18 +55,31 @@ public class FileLocker {
         this.lockFile = lockFile;
     }
 
+    /**
+     * Creates a new FileLocker with a default lock file name (".lock")
+     * inside the specified base path.
+     * @param basePath the directory path where the lock file will be created
+     */
     public FileLocker(String basePath) {
         this(basePath, DEFAULT_LOCK_FILENAME);
     }
 
+    /**
+     * Creates a new FileLocker with a specified file name inside the
+     * specified base path.
+     * @param basePath the directory path where the lock file will be created
+     * @param filename the name of the lock file
+     */
     public FileLocker(String basePath, String filename) {
         this(new File(basePath, filename));
     }
 
     /**
-     * Try to lock the file and return true if the locking succeeds.
-     * @return true if the locking succeeds; false if the lock is already held
-     * @throws Exception if the lock could not be obtained for any reason
+     * Attempts to acquire a lock on the file.
+     * <p>This method is non-blocking. If the lock is already held by another
+     * process, it will return immediately.</p>
+     * @return {@code true} if the lock was acquired successfully, {@code false} otherwise
+     * @throws Exception if the lock is already held by this instance or if an I/O error occurs
      */
     public boolean lock() throws Exception {
         synchronized (this) {
@@ -98,8 +113,10 @@ public class FileLocker {
     }
 
     /**
-     * Releases the lock.
-     * @throws Exception if the lock could not be released  for any reason
+     * Releases the file lock and cleans up associated resources.
+     * <p>This method releases the lock, closes the file channel, and attempts to
+     * delete the lock file.</p>
+     * @throws Exception if an error occurs while releasing the lock
      */
     public void release() throws Exception {
         synchronized (this) {

@@ -50,12 +50,13 @@ import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
 
 /**
- * Streaming writer that serializes {@link Parameters} into APON (Aspectran Parameters
+ * A streaming writer that serializes {@link Parameters} into APON (Aspectran Parameters
  * Object Notation) text.
  * <p>
- * Provides pretty-printing, custom indentation, null handling, and optional type hints.
- * Can write to in-memory {@link java.io.StringWriter}, files, or any {@link Writer}.
- * The default indentation is two spaces and pretty printing is enabled by default.
+ * This class provides options for pretty-printing, custom indentation, null handling,
+ * and value type hinting. It can write to in-memory {@link StringWriter}, files,
+ * or any {@link Writer} instance. By default, pretty-printing is enabled with an
+ * indent string of two spaces.
  * </p>
  */
 public class AponWriter implements Flushable {
@@ -75,19 +76,15 @@ public class AponWriter implements Flushable {
     private int indentDepth;
 
     /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
+     * Creates a new AponWriter that writes to an in-memory {@link StringWriter}.
      */
     public AponWriter() {
         this(new StringWriter());
     }
 
     /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     * @param file a File object to write to
+     * Creates a new AponWriter that writes to the specified file.
+     * @param file a {@link File} object to write to
      * @throws IOException if an I/O error occurs
      */
     public AponWriter(File file) throws IOException {
@@ -95,10 +92,8 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Instantiates a new AponWriter.
-     * Pretty printing is enabled by default, and the indent string is
-     * set to "  " (two spaces).
-     * @param writer the character-output stream
+     * Creates a new AponWriter that writes to the given {@link Writer}.
+     * @param writer the character-output stream to write to
      */
     public AponWriter(Writer writer) {
         Assert.notNull(writer, "writer must not be null");
@@ -106,9 +101,9 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Apply options from a {@link StringifyContext} to this writer:
-     * pretty print, indent string and null-writability.
-     * @param stringifyContext the configuration (ignored if null)
+     * Applies options from a {@link StringifyContext} to this writer.
+     * This includes pretty-printing, indent string, and null-writability settings.
+     * @param stringifyContext the configuration to apply (ignored if null)
      */
     public void setStringifyContext(StringifyContext stringifyContext) {
         if (stringifyContext != null) {
@@ -125,8 +120,8 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Fluent variant of {@link #setStringifyContext(StringifyContext)} returning {@code this}.
-     * @param stringifyContext the configuration
+     * A fluent-style variant of {@link #setStringifyContext(StringifyContext)}.
+     * @param stringifyContext the configuration to apply
      * @param <T> the concrete writer subtype
      * @return this writer for chaining
      */
@@ -137,10 +132,10 @@ public class AponWriter implements Flushable {
     }
 
     /**
-         * Enable or disable pretty-printing (indentation and newlines).
-         * @param prettyPrint true to pretty-print; false for compact output
-         */
-        public void setPrettyPrint(boolean prettyPrint) {
+     * Enables or disables pretty-printing (indentation and newlines).
+     * @param prettyPrint {@code true} to enable pretty-printing; {@code false} for compact output
+     */
+    public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
         if (prettyPrint) {
             if (indentString == null) {
@@ -152,8 +147,8 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Fluent variant of {@link #setPrettyPrint(boolean)} returning {@code this}.
-     * @param prettyPrint whether to pretty-print
+     * A fluent-style variant of {@link #setPrettyPrint(boolean)}.
+     * @param prettyPrint {@code true} to enable pretty-printing
      * @param <T> the concrete writer subtype
      * @return this writer for chaining
      */
@@ -164,16 +159,16 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Set the string to use for each indentation level when pretty-printing.
-     * Ignored when pretty-printing is disabled.
-     * @param indentString the indentation string (e.g., two spaces)
+     * Sets the string to use for each indentation level when pretty-printing.
+     * This is ignored when pretty-printing is disabled.
+     * @param indentString the indentation string (e.g., "  " or "\t")
      */
     public void setIndentString(String indentString) {
         this.indentString = indentString;
     }
 
     /**
-     * Fluent variant of {@link #setIndentString(String)} returning {@code this}.
+     * A fluent-style variant of {@link #setIndentString(String)}.
      * @param indentString the indentation string
      * @param <T> the concrete writer subtype
      * @return this writer for chaining
@@ -185,16 +180,17 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Control whether {@code null} values are written for unassigned parameters.
-     * @param nullWritable true to write null values; false to skip
+     * Configures whether {@code null} values should be written.
+     * If {@code false}, parameters with {@code null} values are skipped entirely.
+     * @param nullWritable {@code true} to write null values; {@code false} to skip them
      */
     public void setNullWritable(boolean nullWritable) {
         this.nullWritable = nullWritable;
     }
 
     /**
-     * Fluent variant of {@link #setNullWritable(boolean)} returning {@code this}.
-     * @param nullWritable true to write nulls; false to skip
+     * A fluent-style variant of {@link #setNullWritable(boolean)}.
+     * @param nullWritable {@code true} to write nulls
      * @param <T> the concrete writer subtype
      * @return this writer for chaining
      */
@@ -205,16 +201,18 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Enable or disable writing of explicit value-type hints (e.g., name(int): ...).
-     * @param valueTypeHintEnabled true to include hints; false to omit
+     * Enables or disables the writing of explicit value-type hints (e.g., {@code name(int): ...}).
+     * @param valueTypeHintEnabled {@code true} to include hints; {@code false} to omit them
      */
     public void setEnableValueTypeHints(boolean valueTypeHintEnabled) {
         this.valueTypeHintEnabled = valueTypeHintEnabled;
     }
 
     /**
-     * Sets whether write a type hint for values.
-     * @param valueTypeHintEnabled true, write a type hint for values
+     * A fluent-style variant of {@link #setEnableValueTypeHints(boolean)}.
+     * @param valueTypeHintEnabled {@code true} to enable hints
+     * @param <T> the concrete writer subtype
+     * @return this writer for chaining
      */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T enableValueTypeHints(boolean valueTypeHintEnabled) {
@@ -223,16 +221,16 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Enable or disable automatic flush after each newline written.
-     * @param autoFlush true to flush automatically; false to buffer
+     * Enables or disables automatic flushing of the writer after each newline.
+     * @param autoFlush {@code true} to flush automatically; {@code false} to buffer
      */
     public void setAutoFlush(boolean autoFlush) {
         this.autoFlush = autoFlush;
     }
 
     /**
-     * Fluent variant of {@link #setAutoFlush(boolean)} returning {@code this}.
-     * @param autoFlush whether to flush after each newline
+     * A fluent-style variant of {@link #setAutoFlush(boolean)}.
+     * @param autoFlush {@code true} to enable auto-flushing
      * @param <T> the concrete writer subtype
      * @return this writer for chaining
      */
@@ -243,8 +241,9 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Write a Parameters object to the character-output stream.
-     * @param parameters the Parameters object to be converted
+     * Writes a {@link Parameters} object to the character-output stream.
+     * @param parameters the {@code Parameters} object to serialize
+     * @return this writer for chaining
      * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
@@ -271,8 +270,9 @@ public class AponWriter implements Flushable {
     }
 
     /**
-     * Write a Parameter object to the character-output stream.
-     * @param parameter the Parameter object to be converted
+     * Writes a {@link Parameter} object to the character-output stream.
+     * @param parameter the {@code Parameter} object to serialize
+     * @return this writer for chaining
      * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
@@ -458,7 +458,10 @@ public class AponWriter implements Flushable {
 
     /**
      * Writes a comment to the character-output stream.
-     * @param message the comment to write to a character-output stream
+     * If pretty-printing is enabled, each line of the comment will be prefixed
+     * with the comment marker.
+     * @param message the comment to write
+     * @return this writer for chaining
      * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
@@ -680,6 +683,10 @@ public class AponWriter implements Flushable {
         writer.flush();
     }
 
+    /**
+     * Closes the underlying writer.
+     * @throws IOException if an I/O error occurs
+     */
     public void close() throws IOException {
         writer.close();
     }
@@ -689,6 +696,11 @@ public class AponWriter implements Flushable {
         return writer.toString();
     }
 
+    /**
+     * Escapes characters in a {@code String} to be APON-compliant.
+     * @param str the string to escape, may be null
+     * @return the escaped string, or null if the input was null
+     */
     public static String escape(String str) {
         if (str == null) {
             return null;

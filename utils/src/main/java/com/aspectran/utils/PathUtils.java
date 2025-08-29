@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-present The Aspectran Project
+ * Copyright (c) 2008-present The Aspectran Project *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,26 @@ package com.aspectran.utils;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * A utility class for handling resource paths.
+ * <p>Provides methods for normalizing paths and applying relative paths, primarily for
+ * internal use within the framework. It standardizes on forward slashes ('/') as separators.</p>
+ */
 public abstract class PathUtils {
 
+    /**
+     * The standard path separator: a forward slash "/".
+     */
     public static final String REGULAR_FILE_SEPARATOR = "/";
 
+    /**
+     * The standard path separator character: a forward slash '/'.
+     */
     public static final char REGULAR_FILE_SEPARATOR_CHAR = '/';
 
+    /**
+     * The Windows path separator: a backslash "\".
+     */
     public static final String WINDOWS_FILE_SEPARATOR = "\\";
 
     private static final String TOP_PATH = "..";
@@ -31,12 +45,10 @@ public abstract class PathUtils {
     private static final String CURRENT_PATH = ".";
 
     /**
-     * Apply the given relative path to the given Java resource path,
-     * assuming standard Java folder separation (i.e. "/" separators).
-     * @param path         the path to start from (usually a full file path)
-     * @param relativePath the relative path to apply
-     *                     (relative to the full file path above)
-     * @return the full file path that results from applying the relative path
+     * Applies a relative path to a given base path.
+     * @param path the base path (e.g., "/a/b/c.txt")
+     * @param relativePath the relative path to apply (e.g., "../d/e.txt")
+     * @return the combined path (e.g., "/a/d/e.txt")
      */
     public static String applyRelativePath(String path, String relativePath) {
         Assert.notNull(path, "path must not be null");
@@ -55,15 +67,14 @@ public abstract class PathUtils {
     }
 
     /**
-     * Normalize the path by suppressing sequences like "path/.." and
-     * inner simple dots.
-     * <p>The result is convenient for path comparison. For other uses,
-     * notice that Windows separators ("\") are replaced by simple slashes.
-     * <p><strong>NOTE</strong> that {@code cleanPath} should not be depended
-     * upon in a security context. Other mechanisms should be used to prevent
-     * path-traversal issues.
-     * @param path the original path
-     * @return the normalized path
+     * Normalizes a path by simplifying sequences like "/./" and "/../".
+     * <p>This method standardizes path separators to forward slashes ('/') and resolves
+     * relative path elements. For example, "/a/b/../c" will be normalized to "/a/c".</p>
+     * <p><strong>NOTE:</strong> This method is intended for path comparison and resource loading,
+     * not for security-sensitive contexts. It does not prevent path traversal attacks.
+     * Other mechanisms should be used for security validation.</p>
+     * @param path the original path to normalize
+     * @return the normalized path, or the original path if it is null or empty
      */
     public static String cleanPath(String path) {
         if (!StringUtils.hasLength(path)) {
@@ -139,10 +150,10 @@ public abstract class PathUtils {
     }
 
     /**
-     * Compare two paths after normalization of them.
-     * @param path1 first path for comparison
-     * @param path2 second path for comparison
-     * @return whether the two paths are equivalent after normalization
+     * Compares two paths after normalizing them with {@link #cleanPath(String)}.
+     * @param path1 the first path to compare
+     * @param path2 the second path to compare
+     * @return {@code true} if the two paths are equivalent after normalization, {@code false} otherwise
      */
     public static boolean pathEquals(String path1, String path2) {
         return cleanPath(path1).equals(cleanPath(path2));

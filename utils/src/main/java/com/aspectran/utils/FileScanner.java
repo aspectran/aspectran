@@ -26,8 +26,9 @@ import java.util.Map;
 import static com.aspectran.utils.PathUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
- * A utility class that finds files corresponding to a given pattern.
- * Note that the file separator always uses a slash (/), regardless of the OS.
+ * A utility class that finds files matching a given wildcard pattern.
+ * <p>The path separator is always a forward slash ('/') regardless of the operating system.
+ * This scanner can be initialized with a base path to resolve relative patterns.</p>
  *
  * @author Juho Jeong
  * @since 1.3.0
@@ -36,27 +37,46 @@ public class FileScanner {
 
     private final String basePath;
 
+    /**
+     * Creates a new FileScanner without a base path.
+     */
     public FileScanner() {
         this(null);
     }
 
+    /**
+     * Creates a new FileScanner with the specified base path.
+     * @param basePath the base path to scan from
+     */
     public FileScanner(String basePath) {
         this.basePath = basePath;
     }
 
+    /**
+     * Scans for files matching the given path pattern.
+     * @param filePathPattern the wildcard pattern for file paths to match
+     * @return a map of found files, with their relative paths as keys
+     */
     public Map<String, File> scan(String filePathPattern) {
         final Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(filePathPattern, scannedFiles);
         return scannedFiles;
     }
 
-    public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
-        if (scannedFiles == null) {
-            throw new IllegalArgumentException("scannedFiles must not be null");
-        }
+    /**
+     * Scans for files matching the given path pattern and stores them in the provided map.
+     * @param filePathPattern the wildcard pattern for file paths to match
+     * @param scannedFiles the map to store the found files in
+     */
+    public void scan(String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
         scan(filePathPattern, scannedFiles::put);
     }
 
+    /**
+     * Scans for files matching the given path pattern and processes them with the given handler.
+     * @param filePathPattern the wildcard pattern for file paths to match
+     * @param saveHandler the handler to process each found file
+     */
     public void scan(String filePathPattern, SaveHandler saveHandler) {
         if (filePathPattern == null) {
             throw new IllegalArgumentException("filePathPattern must not be null");
@@ -87,16 +107,36 @@ public class FileScanner {
         scan(basePath, matcher, saveHandler);
     }
 
+    /**
+     * Scans for files under a given base path that match the provided pattern.
+     * @param basePath the path of the directory to start scanning from
+     * @param filePathPattern the wildcard pattern to match against files
+     * @return a map of found files, with their relative paths as keys
+     */
     public Map<String, File> scan(String basePath, String filePathPattern) {
         final Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(basePath, filePathPattern, scannedFiles);
         return scannedFiles;
     }
 
+    /**
+     * Scans for files under a given base path that match the provided pattern
+     * and stores them in the provided map.
+     * @param basePath the path of the directory to start scanning from
+     * @param filePathPattern the wildcard pattern to match against files
+     * @param scannedFiles the map to store the found files in
+     */
     public void scan(String basePath, String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
         scan(basePath, filePathPattern, scannedFiles::put);
     }
 
+    /**
+     * Scans for files under a given base path that match the provided pattern
+     * and processes them with the given handler.
+     * @param basePath the path of the directory to start scanning from
+     * @param filePathPattern the wildcard pattern to match against files
+     * @param saveHandler the handler to process each found file
+     */
     public void scan(@NonNull String basePath, String filePathPattern, SaveHandler saveHandler) {
         WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
@@ -106,6 +146,12 @@ public class FileScanner {
         scan(basePath, matcher, saveHandler);
     }
 
+    /**
+     * Recursively scans a directory to find all files, matching them against the given matcher.
+     * @param targetPath the path of the directory to scan
+     * @param matcher the wildcard matcher to test against file paths
+     * @param saveHandler the handler to process found files
+     */
     protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
         final File target;
         if (StringUtils.hasText(basePath)) {
@@ -129,8 +175,16 @@ public class FileScanner {
         });
     }
 
+    /**
+     * A handler for processing files found during a scan.
+     */
     public interface SaveHandler {
 
+        /**
+         * Called when a matching file is found.
+         * @param filePath the relative path of the file from the scan root
+         * @param scannedFile the found {@link File} object
+         */
         void save(String filePath, File scannedFile);
 
     }

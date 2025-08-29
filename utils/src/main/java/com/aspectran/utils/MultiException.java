@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Wraps multiple exceptions.
- *
- * Allows multiple exceptions to be thrown as a single exception.
+ * Wraps multiple {@link Throwable} objects into a single {@link Exception}.
+ * <p>This class allows operations that may throw multiple exceptions (e.g., shutting down
+ * multiple components) to report all failures in a single, aggregated exception.</p>
  */
 public class MultiException extends Exception {
 
@@ -32,10 +32,19 @@ public class MultiException extends Exception {
 
     private List<Throwable> nested;
 
+    /**
+     * Constructs a new MultiException with a default message.
+     */
     public MultiException() {
         super("Multiple exceptions");
     }
 
+    /**
+     * Adds a throwable to the list of nested exceptions.
+     * <p>If the added throwable is another {@code MultiException}, its nested exceptions
+     * are flattened into this one.</p>
+     * @param e the throwable to add, must not be null
+     */
     public void add(Throwable e) {
         if (e == null) {
             throw new IllegalArgumentException();
@@ -53,25 +62,38 @@ public class MultiException extends Exception {
         }
     }
 
+    /**
+     * Returns the number of nested exceptions.
+     * @return the number of nested exceptions
+     */
     public int size() {
         return (nested == null ? 0 : nested.size());
     }
 
+    /**
+     * Returns the list of nested throwables.
+     * @return an unmodifiable list of nested throwables
+     */
     public List<Throwable> getThrowables() {
         return (nested == null ? Collections.emptyList() : nested);
     }
 
+    /**
+     * Returns the throwable at the specified index.
+     * @param i the index of the throwable to return
+     * @return the throwable at the specified index
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
     public Throwable getThrowable(int i) {
         return nested.get(i);
     }
 
     /**
-     * Throw a MultiException.
-     * If this multi exception is empty then no action is taken. If it
-     * contains a single exception that is thrown, otherwise this
-     * multi exception is thrown.
-     * @exception Exception the Error or Exception if nested is 1, or the
-     *      MultiException itself if nested is more than 1.
+     * Throws this {@code MultiException} if it contains one or more exceptions.
+     * <p>If it contains exactly one exception, that single exception is thrown directly.
+     * If it contains multiple exceptions, this {@code MultiException} itself is thrown.
+     * If it is empty, this method does nothing.</p>
+     * @throws Exception the single nested exception, or this {@code MultiException}
      */
     public void ifExceptionThrow() throws Exception {
         if (nested == null || nested.isEmpty()) {
@@ -90,13 +112,13 @@ public class MultiException extends Exception {
     }
 
     /**
-     * Throw a Runtime exception.
-     * If this multi exception is empty then no action is taken. If it
-     * contains a single error or runtime exception that is thrown, otherwise this
-     * multi exception is thrown, wrapped in a runtime exception.
-     * @exception Error if this exception contains exactly 1 {@link Error}
-     * @exception RuntimeException if this exception contains 1 {@link Throwable} but
-     *      it is not an error, or it contains more than 1 {@link Throwable} of any type
+     * Throws a {@link RuntimeException} if this {@code MultiException} contains one or more exceptions.
+     * <p>If it contains a single {@link Error} or {@link RuntimeException}, it is thrown directly.
+     * If it contains a single checked exception, it is wrapped in a {@code RuntimeException} and thrown.
+     * If it contains multiple exceptions, this {@code MultiException} is wrapped in a {@code RuntimeException}
+     * and thrown. If it is empty, this method does nothing.</p>
+     * @throws Error if this exception contains exactly one {@link Error}
+     * @throws RuntimeException if this exception contains one or more throwables
      */
     public void ifExceptionThrowRuntime() throws Error {
         if (nested == null || nested.isEmpty()) {
@@ -116,11 +138,10 @@ public class MultiException extends Exception {
     }
 
     /**
-     * Throw a MultiException.
-     * If this multi exception is empty then no action is taken. If it
-     * contains a any exceptions then this
-     * multi exception is thrown.
-     * @throws MultiException the MultiException if there are nested exception
+     * Throws this {@code MultiException} if it contains any nested exceptions.
+     * <p>Unlike {@link #ifExceptionThrow()}, this method always throws the
+     * {@code MultiException} itself, even if there is only one nested exception.</p>
+     * @throws MultiException if there are any nested exceptions
      */
     public void ifExceptionThrowMulti() throws MultiException {
         if (nested != null && !nested.isEmpty()) {
