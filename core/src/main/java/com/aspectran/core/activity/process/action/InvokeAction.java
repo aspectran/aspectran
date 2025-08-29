@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -135,8 +136,8 @@ public class InvokeAction implements Executable {
         } catch (ActionExecutionException e) {
             throw e;
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof Exception) {
-                throw new ActionExecutionException(this, e.getCause());
+            if (e.getCause() != null) {
+                throw new ActionExecutionException(this, ExceptionUtils.getCause(e));
             } else {
                 throw new ActionExecutionException(this, e);
             }

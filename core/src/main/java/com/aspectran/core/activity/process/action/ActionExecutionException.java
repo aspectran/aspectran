@@ -48,7 +48,7 @@ public class ActionExecutionException extends ProcessException {
      * @param msg the detail message
      * @param cause the nested exception
      */
-    public ActionExecutionException(String msg, Exception cause) {
+    public ActionExecutionException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
@@ -57,7 +57,7 @@ public class ActionExecutionException extends ProcessException {
      * @param action the action that failed
      * @param cause the nested exception
      */
-    public ActionExecutionException(Executable action, Exception cause) {
+    public ActionExecutionException(Executable action, Throwable cause) {
         super("Failed to execute action " + action + "; cause: " + cause, cause);
         this.action = action;
     }
@@ -68,11 +68,6 @@ public class ActionExecutionException extends ProcessException {
      */
     public Executable getAction() {
         return action;
-    }
-
-    @Override
-    public Exception getCause() {
-        return (Exception)super.getCause();
     }
 
 }

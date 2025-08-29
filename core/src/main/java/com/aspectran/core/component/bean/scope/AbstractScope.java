@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,11 +140,7 @@ public abstract class AbstractScope implements Scope {
                 try {
                     destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
                 } catch (InvocationTargetException e) {
-                    if (e.getCause() instanceof Exception) {
-                        throw (Exception)e.getCause();
-                    } else {
-                        throw e;
-                    }
+                    throw ExceptionUtils.getCause(e);
                 }
             }
             if (beanRule.isDisposableBean()) {

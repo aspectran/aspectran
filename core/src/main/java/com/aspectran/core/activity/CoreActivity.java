@@ -50,6 +50,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -338,8 +339,8 @@ public class CoreActivity extends AdviceActivity {
                     executeAdvice(getAfterAdviceRuleList());
                 }
             } catch (Exception e) {
-                if (e instanceof ActionExecutionException ex && ex.getCause() != null) {
-                    setRaisedException(ex.getCause());
+                if (e instanceof ActionExecutionException && e.getCause() != null) {
+                    setRaisedException(ExceptionUtils.getCause(e));
                 } else {
                     setRaisedException(e);
                 }

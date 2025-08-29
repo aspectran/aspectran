@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.component.bean.BeanFactoryUtils;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.InvocationHandler;
@@ -58,11 +59,7 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
             try {
                 return method.invoke(bean, args);
             } catch (InvocationTargetException e) {
-                if (e.getCause() instanceof Exception) {
-                    throw (Exception)e.getCause();
-                } else {
-                    throw e;
-                }
+                throw ExceptionUtils.getCause(e);
             }
         };
         return invoke(method, args, superInvoker);

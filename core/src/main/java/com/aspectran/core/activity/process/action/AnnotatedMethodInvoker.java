@@ -28,6 +28,7 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.BeanDescriptor;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
@@ -132,11 +133,7 @@ public abstract class AnnotatedMethodInvoker {
             parameterBindingRule = null;
             return method.invoke(bean, args);
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof Exception) {
-                throw (Exception)e.getCause();
-            } else {
-                throw e;
-            }
+            throw ExceptionUtils.getCause(e);
         } catch (Exception e) {
             if (parameterBindingRule != null) {
                 throw new ParameterBindingException(parameterBindingRule, e);

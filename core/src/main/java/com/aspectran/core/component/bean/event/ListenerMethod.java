@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.event;
 
 import com.aspectran.core.component.bean.annotation.EventListener;
+import com.aspectran.utils.ExceptionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,11 +52,7 @@ public class ListenerMethod {
         try {
             method.invoke(bean, event);
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof Exception) {
-                throw (Exception)e.getCause();
-            } else {
-                throw e;
-            }
+            throw ExceptionUtils.getCause(e);
         }
     }
 
