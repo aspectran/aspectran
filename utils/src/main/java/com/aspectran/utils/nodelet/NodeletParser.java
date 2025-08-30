@@ -51,13 +51,9 @@ public class NodeletParser {
 
     private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.emptyMap();
 
-    private final Map<String, Nodelet> nodeletMap = new HashMap<>();
-
-    private final Map<String, EndNodelet> endNodeletMap = new HashMap<>();
-
     private final ArrayStack<Object> objectStack = new ArrayStack<>();
 
-    private final Object nodeParser;
+    private final NodeletGroup nodeletGroup;
 
     private boolean validating;
 
@@ -65,24 +61,12 @@ public class NodeletParser {
 
     private NodeTracker nodeTracker;
 
-    private String xpath;
-
-    /**
-     * Creates a new NodeletParser.
-     * @param nodeParser the object that owns this parser (e.g., the main parser context)
-     */
-    public NodeletParser(Object nodeParser) {
-        this.nodeParser = nodeParser;
+    public NodeletParser(NodeletGroup nodeletGroup) {
+        this.nodeletGroup = nodeletGroup;
     }
 
-    /**
-     * Returns the owner object of this parser.
-     * @param <N> the type of the owner object
-     * @return the owner object
-     */
-    @SuppressWarnings("unchecked")
-    public <N> N getNodeParser() {
-        return (N)nodeParser;
+    public ArrayStack<Object> getObjectStack() {
+        return objectStack;
     }
 
     /**
@@ -121,115 +105,6 @@ public class NodeletParser {
     }
 
     /**
-     * Returns the current XPath being processed by the parser.
-     * @return the current XPath
-     */
-    public String getXpath() {
-        return xpath;
-    }
-
-    /**
-     * Sets the current XPath for subsequent nodelet registrations.
-     * @param xpath the XPath to set
-     */
-    public void setXpath(String xpath) {
-        this.xpath = xpath;
-    }
-
-    /**
-     * Registers a {@link Nodelet} to process start elements and their attributes for the current XPath.
-     * @param nodelet the nodelet to register
-     */
-    public void addNodelet(Nodelet nodelet) {
-        nodeletMap.put(xpath, nodelet);
-    }
-
-    /**
-     * Registers an {@link EndNodelet} to process end elements, text, and CDATA for the current XPath.
-     * @param nodelet the end nodelet to register
-     */
-    public void addEndNodelet(EndNodelet nodelet) {
-        endNodeletMap.put(xpath, nodelet);
-    }
-
-    /**
-     * Adds nodelets defined within a {@link SubnodeParser} for the current XPath.
-     * @param subnodeParser the subnode parser containing nodelet definitions
-     */
-    public void addNodelet(SubnodeParser subnodeParser) {
-        addNodelet(xpath, subnodeParser);
-    }
-
-    /**
-     * Adds nodelets defined within a {@link SubnodeParser} for a specified XPath.
-     * @param xpath the XPath for which to add nodelets
-     * @param subnodeParser the subnode parser containing nodelet definitions
-     */
-    public void addNodelet(String xpath, @NonNull SubnodeParser subnodeParser) {
-        subnodeParser.parse(xpath, this);
-        setXpath(xpath);
-    }
-
-    /**
-     * Pushes an object onto the internal object stack.
-     * This stack is used to manage context objects during parsing.
-     * @param object the object to push
-     */
-    public void pushObject(Object object) {
-        objectStack.push(object);
-    }
-
-    /**
-     * Pops an object from the top of the internal object stack.
-     * @param <T> the expected type of the object
-     * @return the object popped from the stack
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T popObject() {
-        return (T)objectStack.pop();
-    }
-
-    /**
-     * Peeks at the object on the top of the internal object stack without removing it.
-     * @param <T> the expected type of the object
-     * @return the object at the top of the stack
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject() {
-        return (T)objectStack.peek();
-    }
-
-    /**
-     * Peeks at an object at a specific depth from the top of the internal object stack.
-     * @param <T> the expected type of the object
-     * @param n the depth from the top (0 for top, 1 for next, etc.)
-     * @return the object at the specified depth
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject(int n) {
-        return (T)objectStack.peek(n);
-    }
-
-    /**
-     * Peeks at an object of a specific type from the internal object stack.
-     * It searches the stack from top to bottom for the first object assignable to the target type.
-     * @param <T> the expected type of the object
-     * @param target the target class type
-     * @return the object of the specified type, or {@code null} if not found
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject(Class<?> target) {
-        return (T)objectStack.peek(target);
-    }
-
-    /**
-     * Clears all objects from the internal object stack.
-     */
-    public void clearObjectStack() {
-        objectStack.clear();
-    }
-
-    /**
      * Begins parsing an XML document from the provided {@link Reader}.
      * @param reader the reader for the XML document
      * @throws NodeletException if an error occurs during parsing
@@ -259,135 +134,8 @@ public class NodeletParser {
             SAXParser parser = factory.newSAXParser();
             XMLReader reader = parser.getXMLReader();
             reader.setEntityResolver(entityResolver);
-            reader.setContentHandler(new DefaultHandler() {
-                private Locator locator;
-                private final Path path = new Path(getNodeTracker());
-                private final StringBuilder textBuffer = new StringBuilder();
-
-                @Override
-                public void setDocumentLocator(Locator locator) {
-                    // Save the locator, so that it can be used later for line tracking when traversing nodes.
-                    this.locator = locator;
-                }
-
-                @Override
-                public void startDocument() throws SAXException {
-                    Nodelet nodelet = nodeletMap.get("/");
-                    if (nodelet != null) {
-                        try {
-                            nodelet.process(EMPTY_ATTRIBUTES);
-                        } catch (Exception e) {
-                            throw new SAXException("Error processing nodelet at the beginning of document", e);
-                        }
-                    }
-                }
-
-                @Override
-                public void endDocument() throws SAXException {
-                    EndNodelet nodelet = endNodeletMap.get("/");
-                    if (nodelet != null) {
-                        try {
-                            nodelet.process(null);
-                        } catch (Exception e) {
-                            throw new SAXException("Error processing nodelet at the end of document", e);
-                        }
-                    }
-                }
-
-                @Override
-                public void startElement(String uri, String localName, String qName, Attributes attributes)
-                        throws SAXException {
-                    if (nodeTracker != null) {
-                        nodeTracker.setName(qName);
-                        nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
-                    }
-
-                    path.add(qName);
-                    String pathString = path.toString();
-
-                    Map<String, String> attrs = parseAttributes(attributes);
-                    Nodelet nodelet = nodeletMap.get(pathString);
-                    if (nodelet != null) {
-                        try {
-                            nodelet.process(attrs);
-                        } catch (Exception e) {
-                            if (nodeTracker != null) {
-                                throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
-                            } else {
-                                throw new SAXException("Error processing nodelet at start element <" + qName + ">", e);
-                            }
-                        }
-                    }
-
-                    if (!textBuffer.isEmpty()) {
-                        textBuffer.delete(0, textBuffer.length());
-                    }
-                }
-
-                @Override
-                public void endElement(String uri, String localName, String qName) throws SAXException {
-                    if (nodeTracker != null) {
-                        nodeTracker.restoreStateFrom(path.getNodeTracker());
-                        nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
-                    }
-
-                    String pathString = path.toString();
-                    path.remove();
-
-                    String text = null;
-                    if (!textBuffer.isEmpty()) {
-                        text = textBuffer.toString();
-                        textBuffer.delete(0, textBuffer.length());
-                    }
-
-                    EndNodelet nodelet = endNodeletMap.get(pathString);
-                    if (nodelet != null) {
-                        try {
-                            nodelet.process(text);
-                        } catch (Exception e) {
-                            if (nodeTracker != null) {
-                                throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);
-                            } else {
-                                throw new SAXException("Error processing nodelet at end element <" + qName + ">", e);
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void characters(char[] ch, int start, int length) throws SAXException {
-                    textBuffer.append(ch, start, length);
-                }
-
-                private Map<String, String> parseAttributes(Attributes attributes) {
-                    if (attributes == null) {
-                        return EMPTY_ATTRIBUTES;
-                    }
-                    Map<String, String> attr = new HashMap<>();
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        attr.put(attributes.getQName(i), attributes.getValue(i));
-                    }
-                    return attr;
-                }
-            });
-            reader.setErrorHandler(new ErrorHandler() {
-                @Override
-                public void error(SAXParseException e) throws SAXException {
-                    logger.error(e.toString());
-                    throw e;
-                }
-
-                @Override
-                public void fatalError(SAXParseException e) throws SAXException {
-                    logger.error(e.toString());
-                    throw e;
-                }
-
-                @Override
-                public void warning(SAXParseException e) throws SAXException {
-                    logger.warn(e.toString());
-                }
-            });
+            reader.setContentHandler(new DefaultContentHandler());
+            reader.setErrorHandler(new DefaultErrorHandler());
             reader.parse(inputSource);
         } catch (SAXParseException e) {
             throw new NodeletException("Error parsing XML; " + e);
@@ -400,13 +148,9 @@ public class NodeletParser {
      * Inner helper class that assists with building XPath paths.
      */
     private static class Path {
-
         private final List<String> nodeList = new ArrayList<>();
-
         private final List<NodeTracker> trackerList = new ArrayList<>();
-
         private final NodeTracker nodeTracker;
-
         private String path;
 
         private Path(NodeTracker NodeTracker) {
@@ -446,7 +190,138 @@ public class NodeletParser {
             path = sb.toString();
             return path;
         }
+    }
 
+    private class DefaultContentHandler extends DefaultHandler {
+        private Locator locator;
+        private final Path path = new Path(getNodeTracker());
+        private final StringBuilder textBuffer = new StringBuilder();
+
+        @Override
+        public void setDocumentLocator(Locator locator) {
+            // Save the locator, so that it can be used later for line tracking when traversing nodes.
+            this.locator = locator;
+        }
+
+        @Override
+        public void startDocument() throws SAXException {
+            Nodelet nodelet = nodeletGroup.getNodelet("/");
+            if (nodelet != null) {
+                try {
+                    nodelet.process(EMPTY_ATTRIBUTES);
+                } catch (Exception e) {
+                    throw new SAXException("Error processing nodelet at the beginning of document", e);
+                }
+            }
+        }
+
+        @Override
+        public void endDocument() throws SAXException {
+            EndNodelet nodelet = nodeletGroup.getEndNodelet("/");
+            if (nodelet != null) {
+                try {
+                    nodelet.process(null);
+                } catch (Exception e) {
+                    throw new SAXException("Error processing nodelet at the end of document", e);
+                }
+            }
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
+            path.add(qName);
+            String xpath = path.toString();
+
+            if (nodeTracker != null) {
+                nodeTracker.setName(qName);
+                nodeTracker.setPath(xpath);
+                nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
+            }
+
+            Map<String, String> attrs = parseAttributes(attributes);
+            Nodelet nodelet = nodeletGroup.getNodelet(xpath);
+            if (nodelet != null) {
+                try {
+                    nodelet.process(attrs);
+                } catch (Exception e) {
+                    if (nodeTracker != null) {
+                        throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
+                    } else {
+                        throw new SAXException("Error processing nodelet at start element <" + qName + ">", e);
+                    }
+                }
+            }
+
+            if (!textBuffer.isEmpty()) {
+                textBuffer.delete(0, textBuffer.length());
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if (nodeTracker != null) {
+                nodeTracker.restoreStateFrom(path.getNodeTracker());
+                nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
+            }
+
+            String xpath = path.toString();
+            path.remove();
+
+            String text = null;
+            if (!textBuffer.isEmpty()) {
+                text = textBuffer.toString();
+                textBuffer.delete(0, textBuffer.length());
+            }
+
+            EndNodelet nodelet = nodeletGroup.getEndNodelet(xpath);
+            if (nodelet != null) {
+                try {
+                    nodelet.process(text);
+                } catch (Exception e) {
+                    if (nodeTracker != null) {
+                        throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);
+                    } else {
+                        throw new SAXException("Error processing nodelet at end element <" + qName + ">", e);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            textBuffer.append(ch, start, length);
+        }
+
+        private Map<String, String> parseAttributes(Attributes attributes) {
+            if (attributes == null) {
+                return EMPTY_ATTRIBUTES;
+            }
+            Map<String, String> attr = new HashMap<>();
+            for (int i = 0; i < attributes.getLength(); i++) {
+                attr.put(attributes.getQName(i), attributes.getValue(i));
+            }
+            return attr;
+        }
+    }
+
+    private static class DefaultErrorHandler implements ErrorHandler {
+        @Override
+        public void error(@NonNull SAXParseException e) throws SAXException {
+            logger.error(e.toString());
+            throw e;
+        }
+
+        @Override
+        public void fatalError(@NonNull SAXParseException e) throws SAXException {
+            logger.error(e.toString());
+            throw e;
+        }
+
+        @Override
+        public void warning(@NonNull SAXParseException e) throws SAXException {
+            logger.warn(e.toString());
+        }
     }
 
 }

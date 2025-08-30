@@ -17,6 +17,8 @@ package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
+import com.aspectran.core.context.rule.util.TextStyler;
+import com.aspectran.utils.nodelet.NodeletGroup;
 import com.aspectran.utils.nodelet.NodeletParser;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
@@ -38,13 +40,15 @@ class ResourceRuleAppenderTest {
 
     static class NodeParserTest {
 
-        private final NodeletParser parser;
+        private final NodeletParser nodeletParser;
+
+        private final NodeletGroup nodeletGroup = new NodeletGroup("aspectran");
 
         NodeParserTest(boolean validating) {
-            this.parser = new NodeletParser(this);
-            this.parser.setValidating(validating);
-            this.parser.setEntityResolver(new AspectranDtdResolver(validating));
-            this.parser.trackingLocation();
+            this.nodeletParser = new NodeletParser(nodeletGroup);
+            this.nodeletParser.setValidating(validating);
+            this.nodeletParser.setEntityResolver(new AspectranDtdResolver(validating));
+            this.nodeletParser.trackingLocation();
 
             addNodelets();
         }
@@ -53,41 +57,47 @@ class ResourceRuleAppenderTest {
             try (InputStream inputStream = ruleAppender.getInputStream()) {
                 InputSource inputSource = new InputSource(inputStream);
                 inputSource.setSystemId(ruleAppender.getQualifiedName());
-                parser.parse(inputSource);
+                nodeletParser.parse(inputSource);
             } catch (Exception e) {
                 throw new Exception("Error parsing aspectran configuration", e);
             }
         }
 
         private void addNodelets() {
-            parser.setXpath("/aspectran/description");
-            parser.addNodelet(attrs -> {
-                String style = attrs.get("style");
-                parser.pushObject(style);
-            });
-            parser.addEndNodelet(text -> {
-                String style = parser.popObject();
-                System.out.println(parser.getXpath() + " style=" + style + ", text=" + text);
-            });
-            parser.setXpath("/aspectran/settings/setting");
-            parser.addNodelet(attrs -> {
-                String name = attrs.get("name");
-                String value = attrs.get("value");
+            nodeletGroup.child("description")
+                .nodelet(attrs -> {
+                    String style = attrs.get("style");
+                    nodeletParser.getObjectStack().push(style);
+                })
+                .endNodelet(text -> {
+                    String style = nodeletParser.getObjectStack().pop().toString();
 
-                System.out.println(parser.getXpath() + " setting " + name + "=" + value);
-            });
-            parser.setXpath("/aspectran/append");
-            parser.addNodelet(attrs -> {
-                String file = attrs.get("file");
-                String resource = attrs.get("resource");
-                String url = attrs.get("url");
-                String format = attrs.get("format");
-                String profile = attrs.get("profile");
+                    String xpath = nodeletParser.getNodeTracker().getPath();
+                    System.out.println(xpath + " style=" + style + ", text=" + TextStyler.styling(text, style));
+                })
+            .parent().child("settings/setting")
+                .nodelet(attrs -> {
+                    String name = attrs.get("name");
+                    String value = attrs.get("value");
 
-                AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
-                System.out.println(parser.getXpath() + " appendRule=" + appendRule);
-            });
+                    String xpath = nodeletParser.getNodeTracker().getPath();
+                    System.out.println(xpath + name + "=" + value);
+                })
+            .parent().child("append")
+                .nodelet(attrs -> {
+                    String file = attrs.get("file");
+                    String resource = attrs.get("resource");
+                    String url = attrs.get("url");
+                    String format = attrs.get("format");
+                    String profile = attrs.get("profile");
+
+                    AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
+
+                    String xpath = nodeletParser.getNodeTracker().getPath();
+                    System.out.println(xpath + " rule=" + appendRule);
+                });
         }
+
     }
 
 }

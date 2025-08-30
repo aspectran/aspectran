@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.nodelet;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
@@ -26,27 +27,11 @@ public class NodeTracker implements Cloneable {
 
     private String name;
 
+    private String path;
+
     private int lineNumber;
 
     private int columnNumber;
-
-    /**
-     * Creates a new NodeTracker with no initial name or location.
-     */
-    public NodeTracker() {
-    }
-
-    /**
-     * Creates a new NodeTracker with the specified name and location.
-     * @param name the name of the node
-     * @param lineNumber the line number where the node is located
-     * @param columnNumber the column number where the node is located
-     */
-    public NodeTracker(String name, int lineNumber, int columnNumber) {
-        this.name = name;
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
-    }
 
     /**
      * Returns the name of the tracked node.
@@ -62,6 +47,14 @@ public class NodeTracker implements Cloneable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     /**
@@ -98,7 +91,7 @@ public class NodeTracker implements Cloneable {
     @Nullable
     public NodeTracker createSnapshot() {
         try {
-            return (NodeTracker) clone();
+            return (NodeTracker)clone();
         } catch (CloneNotSupportedException e) {
             // This should not happen as NodeTracker implements Cloneable
             throw new RuntimeException("Failed to clone NodeTracker", e);
@@ -110,8 +103,9 @@ public class NodeTracker implements Cloneable {
      * from a previously created snapshot.
      * @param snapshot the {@code NodeTracker} instance to restore state from
      */
-    public void restoreStateFrom(NodeTracker snapshot) {
+    void restoreStateFrom(@NonNull NodeTracker snapshot) {
         this.name = snapshot.name;
+        this.path = snapshot.path;
         this.lineNumber = snapshot.lineNumber;
         this.columnNumber = snapshot.columnNumber;
     }
