@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.ability.HasAttributes;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -26,7 +27,7 @@ import java.nio.charset.Charset;
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class RequestRule {
+public class RequestRule implements HasAttributes {
 
     public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
@@ -135,38 +136,17 @@ public class RequestRule {
         parameterItemRuleMap.putItemRule(parameterItemRule);
     }
 
-    /**
-     * Gets the attribute item rule map.
-     * @return the attribute item rule map
-     */
+    @Override
     public ItemRuleMap getAttributeItemRuleMap() {
         return attributeItemRuleMap;
     }
 
-    /**
-     * Sets the attribute item rule map.
-     * @param attributeItemRuleMap the new attribute item rule map
-     */
+    @Override
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
         this.attributeItemRuleMap = attributeItemRuleMap;
     }
 
-    /**
-     * Adds a new attribute rule with the specified name and returns it.
-     * @param attributeName the parameter name
-     * @return the attribute item rule
-     */
-    public ItemRule newAttributeItemRule(String attributeName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(attributeName);
-        addAttributeItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the attribute item rule.
-     * @param attributeItemRule the attribute item rule
-     */
+    @Override
     public void addAttributeItemRule(ItemRule attributeItemRule) {
         if (attributeItemRuleMap == null) {
             attributeItemRuleMap = new ItemRuleMap();

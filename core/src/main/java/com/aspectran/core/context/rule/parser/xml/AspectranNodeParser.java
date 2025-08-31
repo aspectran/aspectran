@@ -80,14 +80,14 @@ public class AspectranNodeParser {
         try {
             currentAspectranNodeParser.set(this);
 
-            this.actionNodeletAdder = new ActionNodeletAdder();
+            this.actionNodeletAdder = new ActionInnerNodeletAdder();
             this.adviceInnerNodeAdder = new AdviceInnerNodeletAdder();
             this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
             this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
 
-            this.chooseNodeletGroup.with(new ChooseNodeletAdder());
-            this.itemNodeletGroup.with(new ItemNodeletAdder());
-            this.innerBeanNodeletGroup.with(new InnerBeanNodeletAdder());
+            this.chooseNodeletGroup.with(new ChooseNodeletGroup());
+            this.itemNodeletGroup.with(new ItemNodeletGroup());
+            this.innerBeanNodeletGroup.with(new InnerBeanNodeletGroup());
 
 //            this.nodeletGroup = new AspectranNodeletGroup();
 //            this.nodeletGroup = new NodeletGroup("aspectran");
@@ -115,39 +115,6 @@ public class AspectranNodeParser {
 
     public ActivityRuleAssistant getAssistant() {
         return assistant;
-    }
-
-//    AspectranNodeletGroup getNodeletGroup() {
-//        return nodeletGroup;
-//    }
-
-    public NodeletAdder getActionNodeletAdder() {
-//        return actionNodeletAdder;
-        return new ActionNodeletAdder();
-    }
-
-    public NodeletAdder getAdviceInnerNodeAdder() {
-        return adviceInnerNodeAdder;
-    }
-
-    public NodeletAdder getExceptionInnerNodeletAdder() {
-        return exceptionInnerNodeletAdder;
-    }
-
-    public NodeletAdder getResponseInnerNodeletAdder() {
-        return responseInnerNodeletAdder;
-    }
-
-    public NodeletGroup getChooseNodeletGroup() {
-        return chooseNodeletGroup;
-    }
-
-    public NodeletGroup getItemNodeletGroup() {
-        return itemNodeletGroup;
-    }
-
-    public NodeletGroup getInnerBeanNodeletGroup() {
-        return innerBeanNodeletGroup;
     }
 
     /**

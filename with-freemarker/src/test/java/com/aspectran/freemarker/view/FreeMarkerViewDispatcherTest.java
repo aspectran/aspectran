@@ -97,7 +97,7 @@ class FreeMarkerViewDispatcherTest {
         TemplateRule templateRule1 = new TemplateRule();
         templateRule1.setTemplateSource("${param1} ${param2}");
         transformRule1.setTemplateRule(templateRule1);
-        transletRule1.applyResponseRule(transformRule1);
+        transletRule1.putResponseRule(transformRule1);
         aspectran1.addRule(transletRule1);
 
         TransletRule transletRule2 = new TransletRule();
@@ -108,14 +108,14 @@ class FreeMarkerViewDispatcherTest {
         templateRule2.setEngineBeanId("token");
         templateRule2.setTemplateSource("${param1} ${param2}");
         transformRule2.setTemplateRule(templateRule2);
-        transletRule2.applyResponseRule(transformRule2);
+        transletRule2.putResponseRule(transformRule2);
         aspectran1.addRule(transletRule2);
 
         TransletRule transletRule3 = new TransletRule();
         transletRule3.setName("test/appended/freemarker/template1");
         DispatchRule dispatchRule1 = new DispatchRule();
         dispatchRule1.setName("freemarker-template1");
-        transletRule3.applyResponseRule(dispatchRule1);
+        transletRule3.putResponseRule(dispatchRule1);
         aspectran1.addRule(transletRule3);
 
         //System.out.println(new AponWriter().nullWritable(false).write(aspectranConfig));

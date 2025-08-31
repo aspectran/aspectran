@@ -22,12 +22,12 @@ public class NodeletGroup {
 
     private final NodeletGroup parent;
 
-    public NodeletGroup(String xpath) {
-        this("/" + xpath, null);
-    }
-
     public NodeletGroup() {
         this("/", null);
+    }
+
+    public NodeletGroup(String xpath) {
+        this("/" + xpath, null);
     }
 
     private NodeletGroup(String xpath, NodeletGroup parent) {
@@ -42,6 +42,10 @@ public class NodeletGroup {
             this.endNodeletMap = parent.endNodeletMap;
             this.mountedGroups = parent.mountedGroups;
         }
+    }
+
+    public String getXpath() {
+        return xpath;
     }
 
     public Map<String, Nodelet> getNodeletMap() {

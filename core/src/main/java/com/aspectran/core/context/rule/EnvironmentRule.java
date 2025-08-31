@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
+import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
-public class EnvironmentRule {
+public class EnvironmentRule implements Describable {
 
     private String profile;
 
@@ -65,10 +66,12 @@ public class EnvironmentRule {
         propertyItemRuleMapList.add(itemRuleMap);
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }

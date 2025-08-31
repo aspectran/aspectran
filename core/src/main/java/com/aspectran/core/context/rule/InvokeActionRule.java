@@ -16,6 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
+import com.aspectran.core.context.rule.ability.HasArguments;
+import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -28,7 +30,7 @@ import java.lang.reflect.Method;
  *
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class InvokeActionRule implements BeanReferenceable {
+public class InvokeActionRule implements BeanReferenceable, HasArguments, HasProperties {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_METHOD_ACTION_RULE;
 
@@ -146,38 +148,17 @@ public class InvokeActionRule implements BeanReferenceable {
         this.hidden = hidden;
     }
 
-    /**
-     * Gets the argument item rule map.
-     * @return the argument item rule map
-     */
+    @Override
     public ItemRuleMap getArgumentItemRuleMap() {
         return argumentItemRuleMap;
     }
 
-    /**
-     * Sets the argument item rule map.
-     * @param argumentItemRuleMap the new argument item rule map
-     */
+    @Override
     public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
         this.argumentItemRuleMap = argumentItemRuleMap;
     }
 
-    /**
-     * Adds a new argument rule with the specified name and returns it.
-     * @param argumentName the argument name
-     * @return the argument item rule
-     */
-    public ItemRule newArgumentItemRule(String argumentName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(argumentName);
-        addArgumentItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the argument item rule.
-     * @param argumentItemRule the new argument item rule
-     */
+    @Override
     public void addArgumentItemRule(ItemRule argumentItemRule) {
         if (argumentItemRuleMap == null) {
             argumentItemRuleMap = new ItemRuleMap();
@@ -185,38 +166,17 @@ public class InvokeActionRule implements BeanReferenceable {
         argumentItemRuleMap.putItemRule(argumentItemRule);
     }
 
-    /**
-     * Gets the property item rule map.
-     * @return the property item rule map
-     */
+    @Override
     public ItemRuleMap getPropertyItemRuleMap() {
         return propertyItemRuleMap;
     }
 
-    /**
-     * Sets the property item rule map.
-     * @param propertyItemRuleMap the new property item rule map
-     */
+    @Override
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
         this.propertyItemRuleMap = propertyItemRuleMap;
     }
 
-    /**
-     * Adds a new property rule with the specified name and returns it.
-     * @param propertyName the property name
-     * @return the property item rule
-     */
-    public ItemRule newPropertyItemRule(String propertyName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(propertyName);
-        addPropertyItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the property item rule.
-     * @param propertyItemRule the new property item rule
-     */
+    @Override
     public void addPropertyItemRule(ItemRule propertyItemRule) {
         if (propertyItemRuleMap == null) {
             propertyItemRuleMap = new ItemRuleMap();

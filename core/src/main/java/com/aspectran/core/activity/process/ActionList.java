@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -41,12 +41,12 @@ import java.util.ArrayList;
  * potentially nested {@link ContentList}.
  *
  * <p>Actions within this list are executed in the order they are added, forming a fundamental
- * part of the translet's processing flow. It implements {@link ActionRuleApplicable} to allow
+ * part of the translet's processing flow. It implements {@link HasActionRules} to allow
  * various types of actions to be dynamically added based on configuration rules.</p>
  *
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
-public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
+public class ActionList extends ArrayList<Executable> implements HasActionRules {
 
     @Serial
     private static final long serialVersionUID = 4636431127789162551L;
@@ -89,49 +89,49 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(HeaderActionRule headerActionRule) {
         Executable action = new HeaderAction(headerActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable applyActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(EchoActionRule echoActionRule) {
         Executable action = new EchoAction(echoActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(InvokeActionRule invokeActionRule) {
         Executable action = new InvokeAction(invokeActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
         Executable action = new AnnotatedAction(annotatedActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(IncludeActionRule includeActionRule) {
         Executable action = new IncludeAction(includeActionRule);
         add(action);
         return action;
     }
 
     @Override
-    public Executable applyActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(ChooseRule chooseRule) {
         Executable action = new ChooseAction(chooseRule);
         add(action);
         return action;
     }
 
     @Override
-    public void applyActionRule(Executable action) {
+    public void putActionRule(Executable action) {
         add(action);
     }
 

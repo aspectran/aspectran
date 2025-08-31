@@ -16,8 +16,6 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.DescriptionRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
@@ -31,6 +29,12 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class BeanNodeletAdder implements NodeletAdder {
+
+    private static final BeanNodeletAdder INSTANCE = new BeanNodeletAdder();
+
+    static BeanNodeletAdder instance() {
+        return INSTANCE;
+    }
 
     @Override
     public void addTo(@NonNull NodeletGroup group) {
@@ -61,29 +65,16 @@ class BeanNodeletAdder implements NodeletAdder {
 
                 AspectranNodeParser.current().pushObject(beanRule);
             })
+            .with(DiscriptionNodeletAdder.instance())
+            .with(ArgumentsNodeletAdder.instance())
+            .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 BeanRule beanRule = AspectranNodeParser.current().popObject();
                 AspectranNodeParser.current().getAssistant().resolveBeanClass(beanRule);
                 AspectranNodeParser.current().getAssistant().resolveFactoryBeanClass(beanRule);
                 AspectranNodeParser.current().getAssistant().addBeanRule(beanRule);
             })
-            .child("description")
-                .nodelet(attrs -> {
-                    String profile = attrs.get("profile");
-                    String style = attrs.get("style");
-
-                    DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
-                    AspectranNodeParser.current().pushObject(descriptionRule);
-                })
-                .endNodelet(text -> {
-                    DescriptionRule descriptionRule = AspectranNodeParser.current().popObject();
-                    BeanRule beanRule = AspectranNodeParser.current().peekObject();
-
-                    descriptionRule.setContent(text);
-                    descriptionRule = AspectranNodeParser.current().getAssistant().profiling(descriptionRule, beanRule.getDescriptionRule());
-                    beanRule.setDescriptionRule(descriptionRule);
-                })
-            .parent().child("filter")
+            .child("filter")
                 .nodelet(attrs -> {
                     String filterClassName = attrs.get("class");
                     FilterParameters filterParameters = new FilterParameters();
@@ -102,34 +93,6 @@ class BeanNodeletAdder implements NodeletAdder {
                         BeanRule beanRule = AspectranNodeParser.current().peekObject();
                         beanRule.setFilterParameters(filterParameters);
                     }
-                })
-            .parent().child("arguments")
-                .nodelet(attrs -> {
-                    ItemRuleMap irm = new ItemRuleMap();
-                    irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParser.current().pushObject(irm);
-                })
-//            .with(AspectranNodeParser.current().itemNodeletAdder)
-                .mount(AspectranNodeParser.current().getItemNodeletGroup())
-                .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                    BeanRule beanRule = AspectranNodeParser.current().peekObject();
-                    irm = AspectranNodeParser.current().getAssistant().profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
-                    beanRule.setConstructorArgumentItemRuleMap(irm);
-                })
-            .parent().child("properties")
-                .nodelet(attrs -> {
-                    ItemRuleMap irm = new ItemRuleMap();
-                    irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParser.current().pushObject(irm);
-                })
-//            .with(AspectranNodeParser.current().itemNodeletAdder)
-                .mount(AspectranNodeParser.current().getItemNodeletGroup())
-                .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                    BeanRule beanRule = AspectranNodeParser.current().peekObject();
-                    irm = AspectranNodeParser.current().getAssistant().profiling(irm, beanRule.getPropertyItemRuleMap());
-                    beanRule.setPropertyItemRuleMap(irm);
                 });
     }
 

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.utils.StringUtils;
@@ -30,43 +29,34 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ExceptionInnerNodeletAdder implements NodeletAdder {
 
+    private static final ExceptionInnerNodeletAdder INSTANCE = new ExceptionInnerNodeletAdder();
+
+    static ExceptionInnerNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
     public void addTo(@NonNull NodeletGroup group) {
-        group.child("description")
-            .nodelet(attrs -> {
-                String profile = attrs.get("profile");
-                String style = attrs.get("style");
+        group.with(DiscriptionNodeletAdder.instance())
+            .child("thrown")
+                .nodelet(attrs -> {
+                    String exceptionType = attrs.get("type");
 
-                DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
-                AspectranNodeParser.current().pushObject(descriptionRule);
-            })
-            .endNodelet(text -> {
-                DescriptionRule descriptionRule = AspectranNodeParser.current().popObject();
-                ExceptionRule exceptionRule = AspectranNodeParser.current().peekObject();
+                    ExceptionThrownRule etr = new ExceptionThrownRule();
+                    if (exceptionType != null) {
+                        String[] exceptionTypes = StringUtils.splitWithComma(exceptionType);
+                        etr.setExceptionTypes(exceptionTypes);
+                    }
 
-                descriptionRule.setContent(text);
-                descriptionRule = AspectranNodeParser.current().getAssistant().profiling(descriptionRule, exceptionRule.getDescriptionRule());
-                exceptionRule.setDescriptionRule(descriptionRule);
-            })
-        .parent().child("thrown")
-            .nodelet(attrs -> {
-                String exceptionType = attrs.get("type");
-
-                ExceptionThrownRule etr = new ExceptionThrownRule();
-                if (exceptionType != null) {
-                    String[] exceptionTypes = StringUtils.splitWithComma(exceptionType);
-                    etr.setExceptionTypes(exceptionTypes);
-                }
-
-                AspectranNodeParser.current().pushObject(etr);
-            })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
-            .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
-            .endNodelet(text -> {
-                ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
-                ExceptionRule exceptionRule = AspectranNodeParser.current().peekObject();
-                exceptionRule.putExceptionThrownRule(etr);
-            });
+                    AspectranNodeParser.current().pushObject(etr);
+                })
+                .with(ActionInnerNodeletAdder.instance())
+                .with(ResponseInnerNodeletAdder.instance())
+                .endNodelet(text -> {
+                    ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
+                    ExceptionRule exceptionRule = AspectranNodeParser.current().peekObject();
+                    exceptionRule.putExceptionThrownRule(etr);
+                });
     }
 
 }

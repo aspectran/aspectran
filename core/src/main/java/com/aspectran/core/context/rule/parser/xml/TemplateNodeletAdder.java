@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
@@ -28,8 +29,14 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class TemplateNodeletAdder implements NodeletAdder {
 
+    private static final TemplateNodeletAdder INSTANCE = new TemplateNodeletAdder();
+
+    static TemplateNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
-    public void addTo(NodeletGroup group) {
+    public void addTo(@NonNull NodeletGroup group) {
         group.child("template")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));

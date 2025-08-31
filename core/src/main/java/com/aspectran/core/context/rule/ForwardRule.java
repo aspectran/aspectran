@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.ability.HasAttributes;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -27,7 +28,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class ForwardRule implements Replicable<ForwardRule> {
+public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
@@ -81,43 +82,22 @@ public class ForwardRule implements Replicable<ForwardRule> {
         this.requestMethod = requestMethod;
     }
 
-    /**
-     * Gets the attribute item rule map.
-     * @return the attribute item rule map
-     */
+    @Override
     public ItemRuleMap getAttributeItemRuleMap() {
         return attributeItemRuleMap;
     }
 
-    /**
-     * Sets the attribute item rule map.
-     * @param attributeItemRuleMap the new attribute item rule map
-     */
+    @Override
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
         this.attributeItemRuleMap = attributeItemRuleMap;
     }
 
-    /**
-     * Adds a new attribute rule with the specified name and returns it.
-     * @param attributeName the attribute name
-     * @return the attribute item rule
-     */
-    public ItemRule newAttributeItemRule(String attributeName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(attributeName);
-        addAttributeItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the attribute item rule.
-     * @param itemRule the attribute item rule
-     */
-    public void addAttributeItemRule(ItemRule itemRule) {
+    @Override
+    public void addAttributeItemRule(ItemRule attributeItemRule) {
         if (attributeItemRuleMap == null) {
             attributeItemRuleMap = new ItemRuleMap();
         }
-        attributeItemRuleMap.putItemRule(itemRule);
+        attributeItemRuleMap.putItemRule(attributeItemRule);
     }
 
     /**

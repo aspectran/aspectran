@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.StringUtils;
@@ -28,6 +27,12 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class EnvironmentNodeletAdder implements NodeletAdder {
 
+    private static final EnvironmentNodeletAdder INSTANCE = new EnvironmentNodeletAdder();
+
+    static EnvironmentNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
     public void addTo(@NonNull NodeletGroup group) {
         group.child("environment")
@@ -37,38 +42,23 @@ class EnvironmentNodeletAdder implements NodeletAdder {
                 EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
                 AspectranNodeParser.current().pushObject(environmentRule);
             })
+            .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
-            EnvironmentRule environmentRule = AspectranNodeParser.current().popObject();
-            AspectranNodeParser.current().getAssistant().addEnvironmentRule(environmentRule);
-        }).child("description")
-            .nodelet(attrs -> {
-                String profile = attrs.get("profile");
-                String style = attrs.get("style");
-
-                DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
-                AspectranNodeParser.current().pushObject(descriptionRule);
+                EnvironmentRule environmentRule = AspectranNodeParser.current().popObject();
+                AspectranNodeParser.current().getAssistant().addEnvironmentRule(environmentRule);
             })
-            .endNodelet(text -> {
-                DescriptionRule descriptionRule = AspectranNodeParser.current().popObject();
-                EnvironmentRule environmentRule = AspectranNodeParser.current().peekObject();
-
-                descriptionRule.setContent(text);
-                descriptionRule = AspectranNodeParser.current().getAssistant().profiling(descriptionRule, environmentRule.getDescriptionRule());
-                environmentRule.setDescriptionRule(descriptionRule);
-            })
-        .parent().child("properties")
-            .nodelet(attrs -> {
-                ItemRuleMap irm = new ItemRuleMap();
-                irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                AspectranNodeParser.current().pushObject(irm);
-            })
-//            .with(AspectranNodeParser.current().itemNodeletAdder)
-                .mount(AspectranNodeParser.current().getItemNodeletGroup())
-            .endNodelet(text -> {
-                ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                EnvironmentRule environmentRule = AspectranNodeParser.current().peekObject();
-                environmentRule.addPropertyItemRuleMap(irm);
-            });
+            .child("properties")
+                .nodelet(attrs -> {
+                    ItemRuleMap irm = new ItemRuleMap();
+                    irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
+                    AspectranNodeParser.current().pushObject(irm);
+                })
+                .mount(ItemNodeletGroup.instance())
+                .endNodelet(text -> {
+                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
+                    EnvironmentRule environmentRule = AspectranNodeParser.current().peekObject();
+                    environmentRule.addPropertyItemRuleMap(irm);
+                });
     }
 
 }

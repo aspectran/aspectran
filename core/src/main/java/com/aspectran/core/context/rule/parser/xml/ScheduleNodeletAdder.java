@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.utils.BooleanUtils;
@@ -30,6 +29,12 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ScheduleNodeletAdder implements NodeletAdder {
 
+    private static final ScheduleNodeletAdder INSTANCE = new ScheduleNodeletAdder();
+
+    static ScheduleNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
     public void addTo(NodeletGroup group) {
         group.child("schedule")
@@ -40,27 +45,12 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
                 AspectranNodeParser.current().pushObject(scheduleRule);
             })
+            .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
                 ScheduleRule scheduleRule = AspectranNodeParser.current().popObject();
                 AspectranNodeParser.current().getAssistant().addScheduleRule(scheduleRule);
             })
-            .child("description")
-                .nodelet(attrs -> {
-                    String profile = attrs.get("profile");
-                    String style = attrs.get("style");
-
-                    DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
-                    AspectranNodeParser.current().pushObject(descriptionRule);
-                })
-                .endNodelet(text -> {
-                    DescriptionRule descriptionRule = AspectranNodeParser.current().popObject();
-                    ScheduleRule scheduleRule = AspectranNodeParser.current().peekObject();
-
-                    descriptionRule.setContent(text);
-                    descriptionRule = AspectranNodeParser.current().getAssistant().profiling(descriptionRule, scheduleRule.getDescriptionRule());
-                    scheduleRule.setDescriptionRule(descriptionRule);
-                })
-            .parent().child("scheduler")
+            .child("scheduler")
                 .nodelet(attrs -> {
                     String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
                     if (beanIdOrClass != null) {

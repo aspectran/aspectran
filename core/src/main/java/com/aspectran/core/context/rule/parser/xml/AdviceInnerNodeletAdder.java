@@ -30,6 +30,12 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class AdviceInnerNodeletAdder implements NodeletAdder {
 
+    private static final AdviceInnerNodeletAdder INSTANCE = new AdviceInnerNodeletAdder();
+
+    static AdviceInnerNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
     public void addTo(@NonNull NodeletGroup group) {
         group.child("before")
@@ -38,7 +44,7 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
                 AdviceRule adviceRule = aspectRule.newBeforeAdviceRule();
                 AspectranNodeParser.current().pushObject(adviceRule);
             })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
+            .with(ActionInnerNodeletAdder.instance())
             .endNodelet(text -> AspectranNodeParser.current().popObject())
         .parent().child("after")
             .nodelet(attrs -> {
@@ -46,7 +52,7 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
                 AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
                 AspectranNodeParser.current().pushObject(adviceRule);
             })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
+            .with(ActionInnerNodeletAdder.instance())
             .endNodelet(text -> AspectranNodeParser.current().popObject())
         .parent().child("around")
             .nodelet(attrs -> {
@@ -54,7 +60,7 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
                 AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
                 AspectranNodeParser.current().pushObject(adviceRule);
             })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
+            .with(ActionInnerNodeletAdder.instance())
             .endNodelet(text -> AspectranNodeParser.current().popObject())
         .parent().child("finally")
             .nodelet(attrs -> {
@@ -62,7 +68,7 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
                 AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
                 AspectranNodeParser.current().pushObject(adviceRule);
             })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
+            .with(ActionInnerNodeletAdder.instance())
             .endNodelet(text -> AspectranNodeParser.current().popObject())
         .parent().child("finally/thrown")
             .nodelet(attrs -> {
@@ -75,8 +81,8 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
                 }
                 AspectranNodeParser.current().pushObject(etr);
             })
-            .with(AspectranNodeParser.current().getActionNodeletAdder())
-            .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
+            .with(ActionInnerNodeletAdder.instance())
+            .with(ResponseInnerNodeletAdder.instance())
             .endNodelet(text -> {
                 ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
                 AdviceRule adviceRule = AspectranNodeParser.current().peekObject();

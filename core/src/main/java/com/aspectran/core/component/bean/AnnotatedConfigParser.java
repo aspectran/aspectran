@@ -432,17 +432,17 @@ public class AnnotatedConfigParser {
                     Transform transformAnno = method.getAnnotation(Transform.class);
                     if (transformAnno != null) {
                         TransformRule transformRule = parseTransformRule(transformAnno);
-                        exceptionThrownRule.applyResponseRule(transformRule);
+                        exceptionThrownRule.putResponseRule(transformRule);
                     } else {
                         Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
                         if (dispatchAnno != null) {
                             DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
-                            exceptionThrownRule.applyResponseRule(dispatchRule);
+                            exceptionThrownRule.putResponseRule(dispatchRule);
                         } else {
                             Redirect redirectAnno = method.getAnnotation(Redirect.class);
                             if (redirectAnno != null) {
                                 RedirectRule redirectRule = parseRedirectRule(redirectAnno);
-                                exceptionThrownRule.applyResponseRule(redirectRule);
+                                exceptionThrownRule.putResponseRule(redirectRule);
                             } else if (method.isAnnotationPresent(Forward.class)) {
                                 throw new IllegalRuleException("Cannot apply the forward response rule to the exception thrown rule");
                             }
@@ -714,7 +714,7 @@ public class AnnotatedConfigParser {
         Action actionAnno = method.getAnnotation(Action.class);
         String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.value()) : null);
         Executable annotatedAction = createAnnotatedAction(actionId, beanClass, method);
-        transletRule.applyActionRule(annotatedAction);
+        transletRule.putActionRule(annotatedAction);
 
         Class<?> returnType = method.getReturnType();
         if (CustomTransformer.class.isAssignableFrom(returnType)) {

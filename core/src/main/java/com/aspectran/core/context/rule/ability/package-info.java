@@ -22,8 +22,8 @@
  * different types of rules polymorphically based on the abilities they possess.
  * Key abilities include:
  * <ul>
- *   <li>Applying action rules ({@link com.aspectran.core.context.rule.ability.ActionRuleApplicable})</li>
- *   <li>Applying response rules ({@link com.aspectran.core.context.rule.ability.ResponseRuleApplicable})</li>
+ *   <li>Applying action rules ({@link com.aspectran.core.context.rule.ability.HasActionRules})</li>
+ *   <li>Applying response rules ({@link com.aspectran.core.context.rule.ability.HasResponseRules})</li>
  *   <li>Referencing beans ({@link com.aspectran.core.context.rule.ability.BeanReferenceable})</li>
  *   <li>Cloning or replicating themselves ({@link com.aspectran.core.context.rule.ability.Replicable})</li>
  * </ul>

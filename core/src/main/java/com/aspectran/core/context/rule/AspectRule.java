@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
+import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.params.JoinpointParameters;
 import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -82,7 +83,7 @@ import java.util.List;
  * &lt;aspect&gt;
  * </pre></p>
  */
-public class AspectRule implements BeanReferenceable {
+public class AspectRule implements BeanReferenceable, Describable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.ASPECT_RULE;
 

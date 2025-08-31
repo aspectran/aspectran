@@ -71,7 +71,7 @@ class PebbleViewDispatcherTest {
         templateRule3.setEngineBeanId("pebble");
         templateRule3.setTemplateSource("{{ param1 }} {{ param2 }}");
         transformRule4.setTemplateRule(templateRule3);
-        transletRule4.applyResponseRule(transformRule4);
+        transletRule4.putResponseRule(transformRule4);
         aspectran1.addRule(transletRule4);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);

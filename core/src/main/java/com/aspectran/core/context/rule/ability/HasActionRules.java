@@ -34,7 +34,7 @@ import com.aspectran.core.context.rule.InvokeActionRule;
  *
  * @since 2011. 2. 21.
  */
-public interface ActionRuleApplicable {
+public interface HasActionRules {
 
     /**
      * Applies a header action rule, creating and adding a
@@ -42,7 +42,7 @@ public interface ActionRuleApplicable {
      * @param headerActionRule the header action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(HeaderActionRule headerActionRule);
+    Executable putActionRule(HeaderActionRule headerActionRule);
 
     /**
      * Applies an echo action rule, creating and adding an
@@ -50,7 +50,7 @@ public interface ActionRuleApplicable {
      * @param echoActionRule the echo action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(EchoActionRule echoActionRule);
+    Executable putActionRule(EchoActionRule echoActionRule);
 
     /**
      * Applies an invoke action rule, creating and adding an
@@ -58,7 +58,7 @@ public interface ActionRuleApplicable {
      * @param invokeActionRule the invoke action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(InvokeActionRule invokeActionRule);
+    Executable putActionRule(InvokeActionRule invokeActionRule);
 
     /**
      * Applies an annotated action rule, creating and adding an
@@ -66,7 +66,7 @@ public interface ActionRuleApplicable {
      * @param annotatedActionRule the annotated action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(AnnotatedActionRule annotatedActionRule);
+    Executable putActionRule(AnnotatedActionRule annotatedActionRule);
 
     /**
      * Applies an include action rule, creating and adding an
@@ -74,7 +74,7 @@ public interface ActionRuleApplicable {
      * @param includeActionRule the include action rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(IncludeActionRule includeActionRule);
+    Executable putActionRule(IncludeActionRule includeActionRule);
 
     /**
      * Applies a choose rule, creating and adding a
@@ -82,12 +82,12 @@ public interface ActionRuleApplicable {
      * @param chooseRule the choose rule to apply
      * @return the created {@link Executable} action instance
      */
-    Executable applyActionRule(ChooseRule chooseRule);
+    Executable putActionRule(ChooseRule chooseRule);
 
     /**
      * Applies a pre-existing executable action instance.
      * @param action an executable action instance to apply
      */
-    void applyActionRule(Executable action);
+    void putActionRule(Executable action);
 
 }

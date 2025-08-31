@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.component.bean.annotation.CronTrigger;
 import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
+import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -52,7 +53,7 @@ import java.util.List;
  * &lt;/schedule&gt;
  * </pre>
  */
-public class ScheduleRule implements BeanReferenceable {
+public class ScheduleRule implements BeanReferenceable, Describable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.SCHEDULE_RULE;
 

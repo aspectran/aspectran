@@ -23,9 +23,9 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicable, Replicable<ResponseRule> {
+public class ResponseRule implements HasActionRules, HasResponseRules, Replicable<ResponseRule> {
 
     private final boolean explicit;
 
@@ -97,38 +97,38 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        return touchActionList().applyActionRule(headerActionRule);
+    public Executable putActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().putActionRule(headerActionRule);
     }
 
     @Override
-    public Executable applyActionRule(EchoActionRule echoActionRule) {
-        return touchActionList().applyActionRule(echoActionRule);
+    public Executable putActionRule(EchoActionRule echoActionRule) {
+        return touchActionList().putActionRule(echoActionRule);
     }
 
     @Override
-    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
-        return touchActionList().applyActionRule(invokeActionRule);
+    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+        return touchActionList().putActionRule(invokeActionRule);
     }
 
     @Override
-    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
-        return touchActionList().applyActionRule(annotatedActionRule);
+    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+        return touchActionList().putActionRule(annotatedActionRule);
     }
 
     @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        return touchActionList().applyActionRule(includeActionRule);
+    public Executable putActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().putActionRule(includeActionRule);
     }
 
     @Override
-    public Executable applyActionRule(ChooseRule chooseRule) {
-        return touchActionList().applyActionRule(chooseRule);
+    public Executable putActionRule(ChooseRule chooseRule) {
+        return touchActionList().putActionRule(chooseRule);
     }
 
     @Override
-    public void applyActionRule(Executable action) {
-        touchActionList().applyActionRule(action);
+    public void putActionRule(Executable action) {
+        touchActionList().putActionRule(action);
     }
 
     /**
@@ -156,28 +156,28 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Response applyResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(ForwardRule forwardRule) {
         Response response = new ForwardResponse(forwardRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;
@@ -216,28 +216,28 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
     @NonNull
     public static ResponseRule newInstance(TransformRule transformRule) {
         ResponseRule responseRule = new ResponseRule(false);
-        responseRule.applyResponseRule(transformRule);
+        responseRule.putResponseRule(transformRule);
         return responseRule;
     }
 
     @NonNull
     public static ResponseRule newInstance(DispatchRule dispatchRule) {
         ResponseRule responseRule = new ResponseRule(false);
-        responseRule.applyResponseRule(dispatchRule);
+        responseRule.putResponseRule(dispatchRule);
         return responseRule;
     }
 
     @NonNull
     public static ResponseRule newInstance(ForwardRule forwardRule) {
         ResponseRule responseRule = new ResponseRule(false);
-        responseRule.applyResponseRule(forwardRule);
+        responseRule.putResponseRule(forwardRule);
         return responseRule;
     }
 
     @NonNull
     public static ResponseRule newInstance(RedirectRule redirectRule) {
         ResponseRule responseRule = new ResponseRule(false);
-        responseRule.applyResponseRule(redirectRule);
+        responseRule.putResponseRule(redirectRule);
         return responseRule;
     }
 

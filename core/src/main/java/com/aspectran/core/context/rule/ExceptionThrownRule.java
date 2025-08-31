@@ -26,8 +26,8 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
+import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -36,7 +36,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleApplicable {
+public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
 
     private final AdviceRule adviceRule;
 
@@ -122,21 +122,21 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(HeaderActionRule headerActionRule) {
         Executable action = new HeaderAction(headerActionRule);
         this.action = action;
         return action;
     }
 
     @Override
-    public Executable applyActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(EchoActionRule echoActionRule) {
         Executable action = new EchoAction(echoActionRule);
         this.action = action;
         return action;
     }
 
     @Override
-    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(InvokeActionRule invokeActionRule) {
         InvokeAction action;
         if (adviceRule != null) {
             if (adviceRule.getAdviceBeanId() == null && adviceRule.getAdviceBeanClass() == null &&
@@ -155,27 +155,27 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
         throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AdviceRule");
     }
 
     @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException("No support applying IncludeActionRule to AdviceRule");
     }
 
     @Override
-    public Executable applyActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(ChooseRule chooseRule) {
         throw new UnsupportedOperationException("No support applying ChooseRule to AdviceRule");
     }
 
     @Override
-    public void applyActionRule(Executable action) {
+    public void putActionRule(Executable action) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Response applyResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         touchResponseMap().put(transformRule.getContentType(), response);
         if (transformRule.isDefaultResponse()) {
@@ -188,7 +188,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         touchResponseMap().put(dispatchRule.getContentType(), response);
         if (dispatchRule.isDefaultResponse()) {
@@ -201,13 +201,13 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Response applyResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(ForwardRule forwardRule) {
         throw new UnsupportedOperationException(
                 "Cannot apply the forward response rule to the exception thrown rule");
     }
 
     @Override
-    public Response applyResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         touchResponseMap().put(redirectRule.getContentType(), response);
         if (redirectRule.isDefaultResponse()) {

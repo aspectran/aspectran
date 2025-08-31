@@ -16,14 +16,15 @@
 package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.context.rule.DescriptionRule;
+import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
  * The Class AssistantLocal.
- * 
+ *
  * <p>Created: 2015. 10. 2.</p>
  */
-public class AssistantLocal implements Replicable<AssistantLocal> {
+public class AssistantLocal implements Replicable<AssistantLocal>, Describable {
 
     private final ActivityRuleAssistant assistant;
 

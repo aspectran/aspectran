@@ -30,7 +30,7 @@ import com.aspectran.core.context.rule.TransformRule;
  * handler objects. The primary implementor is typically
  * {@link com.aspectran.core.context.rule.ResponseRule}.</p>
  */
-public interface ResponseRuleApplicable {
+public interface HasResponseRules {
 
     /**
      * Applies a transform rule, creating a response that will transform the content
@@ -38,7 +38,7 @@ public interface ResponseRuleApplicable {
      * @param transformRule the transform rule to apply
      * @return the created {@link Response} instance
      */
-    Response applyResponseRule(TransformRule transformRule);
+    Response putResponseRule(TransformRule transformRule);
 
     /**
      * Applies a dispatch rule, creating a response that will dispatch the request
@@ -46,7 +46,7 @@ public interface ResponseRuleApplicable {
      * @param dispatchRule the dispatch rule to apply
      * @return the created {@link Response} instance
      */
-    Response applyResponseRule(DispatchRule dispatchRule);
+    Response putResponseRule(DispatchRule dispatchRule);
 
     /**
      * Applies a forward rule, creating a response that will perform a server-side
@@ -54,7 +54,7 @@ public interface ResponseRuleApplicable {
      * @param forwardRule the forward rule to apply
      * @return the created {@link Response} instance
      */
-    Response applyResponseRule(ForwardRule forwardRule);
+    Response putResponseRule(ForwardRule forwardRule);
 
     /**
      * Applies a redirect rule, creating a response that will send a client-side
@@ -62,6 +62,6 @@ public interface ResponseRuleApplicable {
      * @param redirectRule the redirect rule to apply
      * @return the created {@link Response} instance
      */
-    Response applyResponseRule(RedirectRule redirectRule);
+    Response putResponseRule(RedirectRule redirectRule);
 
 }

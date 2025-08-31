@@ -45,8 +45,8 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
+import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.ActionParameters;
@@ -740,7 +740,7 @@ public class ParametersToRules {
         return actionList;
     }
 
-    private void toActionRule(@NonNull ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable)
+    private void toActionRule(@NonNull ActionParameters actionParameters, HasActionRules actionRuleApplicable)
             throws IllegalRuleException {
         String actualName = actionParameters.getActualName();
         if (actualName == null) {
@@ -771,7 +771,7 @@ public class ParametersToRules {
                     }
                 }
                 assistant.resolveActionBeanClass(invokeActionRule);
-                actionRuleApplicable.applyActionRule(invokeActionRule);
+                actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
             case "invoke": {
@@ -795,7 +795,7 @@ public class ParametersToRules {
                     }
                 }
                 assistant.resolveActionBeanClass(invokeActionRule);
-                actionRuleApplicable.applyActionRule(invokeActionRule);
+                actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
             case "echo": {
@@ -805,7 +805,7 @@ public class ParametersToRules {
                 EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
                 ItemRuleMap attributeItemRuleMap = toItemRuleMap(null, itemParametersList);
                 echoActionRule.setEchoItemRuleMap(attributeItemRuleMap);
-                actionRuleApplicable.applyActionRule(echoActionRule);
+                actionRuleApplicable.putActionRule(echoActionRule);
                 break;
             }
             case "headers": {
@@ -815,7 +815,7 @@ public class ParametersToRules {
                 HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
                 ItemRuleMap headerItemRuleMap = toItemRuleMap(null, itemParametersList);
                 headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
-                actionRuleApplicable.applyActionRule(headerActionRule);
+                actionRuleApplicable.putActionRule(headerActionRule);
                 break;
             }
             case "include": {
@@ -841,7 +841,7 @@ public class ParametersToRules {
                         includeActionRule.setAttributeItemRuleMap(irm);
                     }
                 }
-                actionRuleApplicable.applyActionRule(includeActionRule);
+                actionRuleApplicable.putActionRule(includeActionRule);
                 break;
             }
             case "choose": {
@@ -853,7 +853,7 @@ public class ParametersToRules {
         }
     }
 
-    private void toChooseRule(@NonNull ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable)
+    private void toChooseRule(@NonNull ActionParameters actionParameters, HasActionRules actionRuleApplicable)
             throws IllegalRuleException {
         List<ChooseWhenParameters> chooseWhenParametersList = actionParameters.getParametersList(ActionParameters.when);
         ChooseWhenParameters chooseOtherwiseParameters = actionParameters.getParameters(ActionParameters.otherwise);
@@ -871,7 +871,7 @@ public class ParametersToRules {
                 ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
                 toChooseWhenRule(chooseOtherwiseParameters, chooseWhenRule);
             }
-            actionRuleApplicable.applyActionRule(chooseRule);
+            actionRuleApplicable.putActionRule(chooseRule);
         }
     }
 
@@ -942,7 +942,7 @@ public class ParametersToRules {
     }
 
     private void toTransformRule(@NonNull List<TransformParameters> transformParametersList,
-                                 ResponseRuleApplicable responseRuleApplicable)
+                                 HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (TransformParameters transformParameters : transformParametersList) {
             toTransformRule(transformParameters, responseRuleApplicable);
@@ -950,7 +950,7 @@ public class ParametersToRules {
     }
 
     private void toTransformRule(@NonNull TransformParameters transformParameters,
-                                 ResponseRuleApplicable responseRuleApplicable)
+                                 HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String format = transformParameters.getString(TransformParameters.format);
         String contentType = transformParameters.getString(TransformParameters.contentType);
@@ -979,11 +979,11 @@ public class ParametersToRules {
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
         }
 
-        responseRuleApplicable.applyResponseRule(transformRule);
+        responseRuleApplicable.putResponseRule(transformRule);
     }
 
     private void toDispatchRule(@NonNull List<DispatchParameters> dispatchParametersList,
-                                ResponseRuleApplicable responseRuleApplicable)
+                                HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (DispatchParameters dispatchParameters : dispatchParametersList) {
             toDispatchRule(dispatchParameters, responseRuleApplicable);
@@ -991,7 +991,7 @@ public class ParametersToRules {
     }
 
     private void toDispatchRule(@NonNull DispatchParameters dispatchParameters,
-                                @NonNull ResponseRuleApplicable responseRuleApplicable)
+                                @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
         String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
@@ -1000,11 +1000,11 @@ public class ParametersToRules {
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
         DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
-        responseRuleApplicable.applyResponseRule(dispatchRule);
+        responseRuleApplicable.putResponseRule(dispatchRule);
     }
 
     private void toForwardRule(@NonNull ForwardParameters forwardParameters,
-                               @NonNull ResponseRuleApplicable responseRuleApplicable)
+                               @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
@@ -1024,11 +1024,11 @@ public class ParametersToRules {
             }
         }
 
-        responseRuleApplicable.applyResponseRule(forwardRule);
+        responseRuleApplicable.putResponseRule(forwardRule);
     }
 
     private void toRedirectRule(@NonNull List<RedirectParameters> redirectParametersList,
-                                @NonNull ResponseRuleApplicable responseRuleApplicable)
+                                @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         for (RedirectParameters redirectParameters : redirectParametersList) {
             toRedirectRule(redirectParameters, responseRuleApplicable);
@@ -1036,7 +1036,7 @@ public class ParametersToRules {
     }
 
     private void toRedirectRule(@NonNull RedirectParameters redirectParameters,
-                                @NonNull ResponseRuleApplicable responseRuleApplicable)
+                                @NonNull HasResponseRules responseRuleApplicable)
             throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);
@@ -1056,7 +1056,7 @@ public class ParametersToRules {
             }
         }
 
-        responseRuleApplicable.applyResponseRule(redirectRule);
+        responseRuleApplicable.putResponseRule(redirectRule);
         assistant.resolveBeanClass(redirectRule.getPathTokens());
     }
 

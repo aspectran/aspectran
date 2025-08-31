@@ -19,6 +19,8 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
+import com.aspectran.core.context.rule.ability.Describable;
+import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -37,7 +39,7 @@ import java.util.List;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
+public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasProperties {
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
@@ -530,38 +532,17 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         constructorArgumentItemRuleMap.putItemRule(constructorArgumentItemRule);
     }
 
-    /**
-     * Gets the property item rule map.
-     * @return the property item rule map
-     */
+    @Override
     public ItemRuleMap getPropertyItemRuleMap() {
         return propertyItemRuleMap;
     }
 
-    /**
-     * Sets the property item rule map.
-     * @param propertyItemRuleMap the new property item rule map
-     */
+    @Override
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
         this.propertyItemRuleMap = propertyItemRuleMap;
     }
 
-    /**
-     * Adds a new property rule with the specified name and returns it.
-     * @param propertyName the property name
-     * @return the property item rule
-     */
-    public ItemRule newPropertyItemRule(String propertyName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(propertyName);
-        addPropertyItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
-     * Adds the property item rule.
-     * @param propertyItemRule the new property item rule
-     */
+    @Override
     public void addPropertyItemRule(ItemRule propertyItemRule) {
         if (propertyItemRuleMap == null) {
             propertyItemRuleMap = new ItemRuleMap();

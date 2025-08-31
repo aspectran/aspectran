@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.ToStringBuilder;
@@ -35,7 +35,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
  *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
-public class AdviceRule implements ActionRuleApplicable {
+public class AdviceRule implements HasActionRules {
 
     private final AspectRule aspectRule;
 
@@ -88,19 +88,19 @@ public class AdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+    public Executable putActionRule(HeaderActionRule headerActionRule) {
         adviceAction = new HeaderAction(headerActionRule);
         return adviceAction;
     }
 
     @Override
-    public Executable applyActionRule(EchoActionRule echoActionRule) {
+    public Executable putActionRule(EchoActionRule echoActionRule) {
         adviceAction = new EchoAction(echoActionRule);
         return adviceAction;
     }
 
     @Override
-    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+    public Executable putActionRule(InvokeActionRule invokeActionRule) {
         if (adviceBeanId == null && adviceBeanClass == null &&
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
             throw new IllegalStateException("Cannot resolve advice bean for " + invokeActionRule + " in " + this);
@@ -110,22 +110,22 @@ public class AdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
         throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AdviceRule");
     }
 
     @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+    public Executable putActionRule(IncludeActionRule includeActionRule) {
         throw new UnsupportedOperationException("No support applying IncludeActionRule to AdviceRule");
     }
 
     @Override
-    public Executable applyActionRule(ChooseRule chooseRule) {
+    public Executable putActionRule(ChooseRule chooseRule) {
         throw new UnsupportedOperationException("No support applying ChooseRule to AdviceRule");
     }
 
     @Override
-    public void applyActionRule(Executable action) {
+    public void putActionRule(Executable action) {
         throw new UnsupportedOperationException();
     }
 

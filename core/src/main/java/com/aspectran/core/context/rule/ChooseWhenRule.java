@@ -23,8 +23,8 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.asel.value.BooleanExpression;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasActionRules;
+import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.StringUtils;
 
 /**
@@ -32,7 +32,7 @@ import com.aspectran.utils.StringUtils;
  *
  * @since 6.0.0
  */
-public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
+public class ChooseWhenRule implements HasActionRules, HasResponseRules {
 
     private BooleanExpression booleanEvaluation;
 
@@ -78,38 +78,38 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        return touchActionList().applyActionRule(headerActionRule);
+    public Executable putActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().putActionRule(headerActionRule);
     }
 
     @Override
-    public Executable applyActionRule(EchoActionRule echoActionRule) {
-        return touchActionList().applyActionRule(echoActionRule);
+    public Executable putActionRule(EchoActionRule echoActionRule) {
+        return touchActionList().putActionRule(echoActionRule);
     }
 
     @Override
-    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
-        return touchActionList().applyActionRule(invokeActionRule);
+    public Executable putActionRule(InvokeActionRule invokeActionRule) {
+        return touchActionList().putActionRule(invokeActionRule);
     }
 
     @Override
-    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
-        return touchActionList().applyActionRule(annotatedActionRule);
+    public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
+        return touchActionList().putActionRule(annotatedActionRule);
     }
 
     @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        return touchActionList().applyActionRule(includeActionRule);
+    public Executable putActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().putActionRule(includeActionRule);
     }
 
     @Override
-    public Executable applyActionRule(ChooseRule chooseRule) {
-        return touchActionList().applyActionRule(chooseRule);
+    public Executable putActionRule(ChooseRule chooseRule) {
+        return touchActionList().putActionRule(chooseRule);
     }
 
     @Override
-    public void applyActionRule(Executable action) {
-        touchActionList().applyActionRule(action);
+    public void putActionRule(Executable action) {
+        touchActionList().putActionRule(action);
     }
 
     /**
@@ -125,28 +125,28 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Response applyResponseRule(TransformRule transformRule) {
+    public Response putResponseRule(TransformRule transformRule) {
         Response response = TransformResponseFactory.create(transformRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(DispatchRule dispatchRule) {
+    public Response putResponseRule(DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(ForwardRule forwardRule) {
+    public Response putResponseRule(ForwardRule forwardRule) {
         Response response = new ForwardResponse(forwardRule);
         this.response = response;
         return response;
     }
 
     @Override
-    public Response applyResponseRule(RedirectRule redirectRule) {
+    public Response putResponseRule(RedirectRule redirectRule) {
         Response response = new RedirectResponse(redirectRule);
         this.response = response;
         return response;

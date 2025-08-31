@@ -22,9 +22,10 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
@@ -35,8 +36,14 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ResponseInnerNodeletAdder implements NodeletAdder {
 
+    private static final ResponseInnerNodeletAdder INSTANCE = new ResponseInnerNodeletAdder();
+
+    static ResponseInnerNodeletAdder instance() {
+        return INSTANCE;
+    }
+
     @Override
-    public void addTo(NodeletGroup group) {
+    public void addTo(@NonNull NodeletGroup group) {
         group.child("transform")
             .nodelet(attrs -> {
                 String format = attrs.get("format");
@@ -50,8 +57,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             })
             .endNodelet(text -> {
                 TransformRule transformRule = AspectranNodeParser.current().popObject();
-                ResponseRuleApplicable applicable = AspectranNodeParser.current().peekObject();
-                applicable.applyResponseRule(transformRule);
+                HasResponseRules applicable = AspectranNodeParser.current().peekObject();
+                applicable.putResponseRule(transformRule);
             })
             .child("template")
                 .nodelet(attrs -> {
@@ -93,8 +100,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             })
             .endNodelet(text -> {
                 DispatchRule dispatchRule = AspectranNodeParser.current().popObject();
-                ResponseRuleApplicable applicable = AspectranNodeParser.current().peekObject();
-                applicable.applyResponseRule(dispatchRule);
+                HasResponseRules applicable = AspectranNodeParser.current().peekObject();
+                applicable.putResponseRule(dispatchRule);
             })
         .parent().child("forward")
             .nodelet(attrs -> {
@@ -110,8 +117,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             })
             .endNodelet(text -> {
                 ForwardRule forwardRule = AspectranNodeParser.current().popObject();
-                ResponseRuleApplicable applicable = AspectranNodeParser.current().peekObject();
-                applicable.applyResponseRule(forwardRule);
+                HasResponseRules applicable = AspectranNodeParser.current().peekObject();
+                applicable.putResponseRule(forwardRule);
             })
             .child("attributes")
                 .nodelet(attrs -> {
@@ -119,8 +126,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-//            .with(AspectranNodeParser.current().itemNodeletAdder)
-                .mount(AspectranNodeParser.current().getItemNodeletGroup())
+                .mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     ForwardRule forwardRule = AspectranNodeParser.current().peekObject();
@@ -148,8 +154,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     throw new IllegalRuleException("The <redirect> element requires a 'path' attribute");
                 }
 
-                ResponseRuleApplicable applicable = AspectranNodeParser.current().peekObject();
-                applicable.applyResponseRule(redirectRule);
+                HasResponseRules applicable = AspectranNodeParser.current().peekObject();
+                applicable.putResponseRule(redirectRule);
 
                 AspectranNodeParser.current().getAssistant().resolveBeanClass(redirectRule.getPathTokens());
             })
@@ -159,8 +165,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-//            .with(AspectranNodeParser.current().itemNodeletAdder)
-                .mount(AspectranNodeParser.current().getItemNodeletGroup())
+                .mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     RedirectRule redirectRule = AspectranNodeParser.current().peekObject();

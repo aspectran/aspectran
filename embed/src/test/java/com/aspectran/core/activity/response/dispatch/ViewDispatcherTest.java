@@ -56,7 +56,7 @@ class ViewDispatcherTest {
         templateRule2.setEngineBeanId("token");
         templateRule2.setTemplateSource("${param1} ${param2}");
         transformRule2.setTemplateRule(templateRule2);
-        transletRule2.applyResponseRule(transformRule2);
+        transletRule2.putResponseRule(transformRule2);
         parameters.addRule(transletRule2);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);

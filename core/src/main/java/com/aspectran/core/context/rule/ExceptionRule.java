@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.Map;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ExceptionRule {
+public class ExceptionRule implements Describable {
 
     private final List<ExceptionThrownRule> exceptionThrownRuleList = new ArrayList<>();
 
