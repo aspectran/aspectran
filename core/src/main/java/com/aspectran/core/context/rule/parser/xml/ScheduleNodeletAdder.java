@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
@@ -29,14 +30,21 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ScheduleNodeletAdder implements NodeletAdder {
 
-    private static final ScheduleNodeletAdder INSTANCE = new ScheduleNodeletAdder();
+    private static volatile ScheduleNodeletAdder INSTANCE;
 
     static ScheduleNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ScheduleNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ScheduleNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 
     @Override
-    public void addTo(NodeletGroup group) {
+    public void addTo(@NonNull NodeletGroup group) {
         group.child("schedule")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));

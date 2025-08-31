@@ -3,6 +3,7 @@ package com.aspectran.utils.nodelet;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -18,30 +19,37 @@ public class NodeletGroup {
 
     private final Map<String, NodeletGroup> mountedGroups;
 
+    private final String name;
+
     private final String xpath;
 
     private final NodeletGroup parent;
 
     public NodeletGroup() {
-        this("/", null);
+        this("");
     }
 
-    public NodeletGroup(String xpath) {
-        this("/" + xpath, null);
+    public NodeletGroup(String name) {
+        this(name, "/" + name, null);
     }
 
-    private NodeletGroup(String xpath, NodeletGroup parent) {
+    private NodeletGroup(String name, String xpath, NodeletGroup parent) {
         this.parent = parent;
+        this.name = name;
         this.xpath = xpath;
         if (parent == null) {
             this.nodeletMap = new HashMap<>();
             this.endNodeletMap = new HashMap<>();
             this.mountedGroups = new HashMap<>();
         } else {
-            this.nodeletMap = parent.nodeletMap;
-            this.endNodeletMap = parent.endNodeletMap;
-            this.mountedGroups = parent.mountedGroups;
+            this.nodeletMap = Collections.emptyMap();
+            this.endNodeletMap = Collections.emptyMap();
+            this.mountedGroups = Collections.emptyMap();
         }
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getXpath() {
@@ -49,27 +57,27 @@ public class NodeletGroup {
     }
 
     public Map<String, Nodelet> getNodeletMap() {
-//        if (parent != null) {
-//            return parent.getNodeletMap();
-//        } else {
+        if (parent != null) {
+            return parent.getNodeletMap();
+        } else {
             return nodeletMap;
-//        }
+        }
     }
 
     public Map<String, EndNodelet> getEndNodeletMap() {
-//        if (parent != null) {
-//            return parent.getEndNodeletMap();
-//        } else {
+        if (parent != null) {
+            return parent.getEndNodeletMap();
+        } else {
             return endNodeletMap;
-//        }
+        }
     }
 
     public Map<String, NodeletGroup> getMountedGroups() {
-//        if (parent != null) {
-//            return parent.getMountedGroups();
-//        } else {
+        if (parent != null) {
+            return parent.getMountedGroups();
+        } else {
             return mountedGroups;
-//        }
+        }
     }
 
     public NodeletGroup parent() {
@@ -77,9 +85,9 @@ public class NodeletGroup {
         return parent;
     }
 
-    public NodeletGroup child(String relativePath) {
-        Assert.hasLength(relativePath, "xpath cannot be null or empty");
-        return new NodeletGroup(makeXpath(relativePath), this);
+    public NodeletGroup child(String name) {
+        Assert.hasLength(name, "Child name cannot be null or empty");
+        return new NodeletGroup(name, makeXpath(name), this);
     }
 
     public NodeletGroup with(NodeletAdder nodeletAdder) {
@@ -106,12 +114,15 @@ public class NodeletGroup {
     }
 
     public NodeletGroup mount(NodeletGroup group) {
-        getMountedGroups().put(xpath, group);
+        //getMountedGroups().put(group.getXpath(), group);
+        mount(makeTriggerPath(getName(), group.getName()), group);
+//        getMountedGroups().put(makeTriggerPath(getName(), group.getName()), group);
+//        getMountedGroups().put(group.getName(), group);
         return this;
     }
 
     public NodeletGroup mount(String triggerPath, NodeletGroup group) {
-        getMountedGroups().put(makeXpath(triggerPath), group);
+        getMountedGroups().put(triggerPath, group);
         return this;
     }
 
@@ -143,6 +154,13 @@ public class NodeletGroup {
         } else {
             return xpath + "/" + relativePath;
         }
+    }
+
+    @NonNull
+    private String makeTriggerPath(String triggerName, String groupName) {
+        Assert.hasLength(triggerName, "triggerName cannot be null or empty");
+        Assert.hasLength(groupName, "groupName cannot be null or empty");
+        return triggerName + "/" + groupName;
     }
 
 }

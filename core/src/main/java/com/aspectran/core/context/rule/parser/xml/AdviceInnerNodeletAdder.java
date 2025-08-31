@@ -30,9 +30,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class AdviceInnerNodeletAdder implements NodeletAdder {
 
-    private static final AdviceInnerNodeletAdder INSTANCE = new AdviceInnerNodeletAdder();
+    private static volatile AdviceInnerNodeletAdder INSTANCE;
 
     static AdviceInnerNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (AdviceInnerNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AdviceInnerNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

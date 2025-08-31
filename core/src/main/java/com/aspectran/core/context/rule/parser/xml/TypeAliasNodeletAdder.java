@@ -9,9 +9,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class TypeAliasNodeletAdder implements NodeletAdder {
 
-    private static final TypeAliasNodeletAdder INSTANCE = new TypeAliasNodeletAdder();
+    private static volatile TypeAliasNodeletAdder INSTANCE;
 
     static TypeAliasNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (TypeAliasNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TypeAliasNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

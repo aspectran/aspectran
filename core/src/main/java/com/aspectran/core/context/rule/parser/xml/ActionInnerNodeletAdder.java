@@ -34,9 +34,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ActionInnerNodeletAdder implements NodeletAdder {
 
-    private static final ActionInnerNodeletAdder INSTANCE = new ActionInnerNodeletAdder();
+    private static volatile ActionInnerNodeletAdder INSTANCE;
 
     static ActionInnerNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ActionInnerNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ActionInnerNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -53,7 +60,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 ItemRuleMap irm = new ItemRuleMap();
                 AspectranNodeParsingContext.pushObject(irm);
             })
-            .mount(ItemNodeletGroup.instance())
+            .with(ItemNodeletAdder.instance())
+            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HeaderActionRule headersActionRule = AspectranNodeParsingContext.popObject();
@@ -74,7 +82,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 ItemRuleMap irm = new ItemRuleMap();
                 AspectranNodeParsingContext.pushObject(irm);
             })
-            .mount(ItemNodeletGroup.instance())
+            .with(ItemNodeletAdder.instance())
+            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 EchoActionRule echoActionRule = AspectranNodeParsingContext.popObject();

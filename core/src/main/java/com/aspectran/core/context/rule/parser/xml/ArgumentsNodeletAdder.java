@@ -12,9 +12,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ArgumentsNodeletAdder implements NodeletAdder {
 
-    private static final ArgumentsNodeletAdder INSTANCE = new ArgumentsNodeletAdder();
+    private static volatile ArgumentsNodeletAdder INSTANCE;
 
     static ArgumentsNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ArgumentsNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ArgumentsNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -26,7 +33,8 @@ class ArgumentsNodeletAdder implements NodeletAdder {
                 irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                 AspectranNodeParsingContext.pushObject(irm);
             })
-            .mount(ItemNodeletGroup.instance())
+            .with(ItemNodeletAdder.instance())
+            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HasArguments hasArguments = AspectranNodeParsingContext.peekObject();

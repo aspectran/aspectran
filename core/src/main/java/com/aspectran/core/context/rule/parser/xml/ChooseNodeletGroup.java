@@ -18,8 +18,11 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ability.HasActionRules;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletGroup;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Class ChooseNodeParser.
@@ -28,50 +31,38 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ChooseNodeletGroup extends NodeletGroup {
 
-    private static final ChooseNodeletGroup INSTANCE = new ChooseNodeletGroup();
+    private static volatile ChooseNodeletGroup INSTANCE;
 
-    static ChooseNodeletGroup instance() {
+    static ChooseNodeletGroup instance(int count) {
+        if (INSTANCE == null) {
+            synchronized (ChooseNodeletGroup.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ChooseNodeletGroup();
+                    INSTANCE.lazyInit();
+                }
+            }
+        }
+        System.out.println("ChooseNodeletGroup instance: " + count);
         return INSTANCE;
     }
 
+    private static final AtomicInteger count = new AtomicInteger(0);
+
     ChooseNodeletGroup() {
         super("choose");
-        nodelet(attrs -> {
-            ChooseRule chooseRule = ChooseRule.newInstance();
-            AspectranNodeParsingContext.pushObject(chooseRule);
-        })
-        .endNodelet(text -> {
-            ChooseRule chooseRule = AspectranNodeParsingContext.popObject();
-            HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-            applicable.putActionRule(chooseRule);
-        })
-        .child("when")
-            .nodelet(attrs -> {
-                String expression = StringUtils.emptyToNull(attrs.get("test"));
+    }
 
-                ChooseRule chooseRule = AspectranNodeParsingContext.peekObject();
-                ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
-                chooseWhenRule.setExpression(expression);
-                AspectranNodeParsingContext.pushObject(chooseWhenRule);
-            })
-            .with(ActionInnerNodeletAdder.instance())
-            .with(ResponseInnerNodeletAdder.instance())
-            .mount(ChooseNodeletGroup.instance())
-            .endNodelet(text -> {
-                AspectranNodeParsingContext.popObject();
-            })
-        .parent().child("otherwise")
-            .nodelet(attrs -> {
-                ChooseRule chooseRule = AspectranNodeParsingContext.peekObject();
-                ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
-                AspectranNodeParsingContext.pushObject(chooseWhenRule);
-            })
-            .with(ActionInnerNodeletAdder.instance())
-            .with(ResponseInnerNodeletAdder.instance())
-            .mount(ChooseNodeletGroup.instance())
-            .endNodelet(text -> {
-                AspectranNodeParsingContext.popObject();
-            });
+    @Override
+    public NodeletGroup child(String name) {
+        if (getName().equals(name)) {
+            return this;
+        } else  {
+            return super.child(name);
+        }
+    }
+
+    private void lazyInit() {
+        ChooseNodeletAdder.instance(0).addTo(this);
     }
 
 }

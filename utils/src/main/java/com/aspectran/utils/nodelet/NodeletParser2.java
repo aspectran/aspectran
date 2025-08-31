@@ -152,31 +152,60 @@ public class NodeletParser2 {
         private final List<NodeTracker> trackerList = new ArrayList<>();
         private final NodeTracker nodeTracker;
         private String path;
+//        private String mountPath;
+        private int mountIndex;
 
         private Path(NodeTracker NodeTracker) {
             this.nodeTracker = NodeTracker;
         }
 
-        public void add(String node) {
+        public String add(String node) {
+            String previous = (nodeList.isEmpty()) ? null : nodeList.get(nodeList.size() - 1);
             nodeList.add(node);
             path = null;
             if (nodeTracker != null) {
                 trackerList.add(nodeTracker.createSnapshot());
             }
+            return previous;
         }
 
-        public void remove() {
+        public String remove() {
             int index = nodeList.size() - 1;
             nodeList.remove(index);
             path = null;
+//            mountPath = null;
             if (nodeTracker != null) {
                 trackerList.remove(index);
             }
+            if (index > 0) {
+                return nodeList.get(index - 1);
+            } else {
+                return null;
+            }
+        }
+
+        public void mount(String mountPath) {
+//            this.mountPath = mountPath;
+            mountIndex = nodeList.size() - 1;
+            path = null;
+        }
+
+        public void unmount() {
+            mountIndex = 0;
+            path = null;
         }
 
         public NodeTracker getNodeTracker() {
             return trackerList.get(trackerList.size() - 1);
         }
+
+//        public String getMountPath() {
+//            if (nodeList.size() > 2) {
+//                return nodeList.get(nodeList.size() - 2) + "/" + nodeList.get(nodeList.size() - 1);
+//            } else {
+//                return null;
+//            }
+//        }
 
         @Override
         public String toString() {
@@ -184,8 +213,11 @@ public class NodeletParser2 {
                 return path;
             }
             StringBuilder sb = new StringBuilder(128);
-            for (String name : nodeList) {
-                sb.append("/").append(name);
+//            for (String name : nodeList) {
+//                sb.append("/").append(name);
+//            }
+            for (int i = mountIndex; i < nodeList.size(); i++) {
+                sb.append("/").append(nodeList.get(i));
             }
             path = sb.toString();
             return path;
@@ -232,7 +264,7 @@ public class NodeletParser2 {
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
                 throws SAXException {
-            path.add(qName);
+            String triggerName = path.add(qName);
             String xpath = path.toString();
 
             if (nodeTracker != null) {
@@ -244,11 +276,15 @@ public class NodeletParser2 {
             NodeletGroup currentGroup = groupStack.peek();
             Nodelet nodelet = currentGroup.getNodeletMap().get(xpath);
 
-            NodeletGroup mountedGroup = currentGroup.getMountedGroups().get(qName);
-            if (mountedGroup != null) {
-                currentGroup = mountedGroup;
-                nodelet = currentGroup.getNodeletMap().get("/");
-                groupStack.push(currentGroup);
+            if (nodelet == null && triggerName != null) {
+                String mountPath = triggerName + "/" + qName;
+                NodeletGroup mountedGroup = currentGroup.getMountedGroups().get(mountPath);
+                if (mountedGroup != null) {
+                    path.mount(mountedGroup.getXpath());
+                    currentGroup = mountedGroup;
+                    nodelet = currentGroup.getNodeletMap().get("/" + qName);
+                    groupStack.push(currentGroup);
+                }
             }
 
             if (nodelet != null) {
@@ -276,11 +312,17 @@ public class NodeletParser2 {
             }
 
             String xpath = path.toString();
+            String triggerName = path.remove();
+
             NodeletGroup currentGroup = groupStack.peek();
             EndNodelet nodelet = currentGroup.getEndNodeletMap().get(xpath);
 
-            if (currentGroup.getMountedGroups().containsKey(qName)) {
-                groupStack.pop();
+            if (triggerName != null) {
+                String  mountPath = triggerName + "/" + qName;
+                if (currentGroup.getMountedGroups().containsKey(mountPath)) {
+                    groupStack.pop();
+                    path.unmount();
+                }
             }
 
             if (nodelet != null) {
@@ -300,8 +342,6 @@ public class NodeletParser2 {
                     }
                 }
             }
-
-            //path.remove();
         }
 
         @Override

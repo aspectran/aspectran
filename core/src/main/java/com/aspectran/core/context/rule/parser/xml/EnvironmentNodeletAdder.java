@@ -27,9 +27,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class EnvironmentNodeletAdder implements NodeletAdder {
 
-    private static final EnvironmentNodeletAdder INSTANCE = new EnvironmentNodeletAdder();
+    private static volatile EnvironmentNodeletAdder INSTANCE;
 
     static EnvironmentNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (EnvironmentNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new EnvironmentNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -53,7 +60,8 @@ class EnvironmentNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParsingContext.pushObject(irm);
                 })
-                .mount(ItemNodeletGroup.instance())
+//                .mount(ItemNodeletGroup.instance())
+                .with(ItemNodeletAdder.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                     EnvironmentRule environmentRule = AspectranNodeParsingContext.peekObject();

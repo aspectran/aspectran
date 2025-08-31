@@ -36,9 +36,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ResponseInnerNodeletAdder implements NodeletAdder {
 
-    private static final ResponseInnerNodeletAdder INSTANCE = new ResponseInnerNodeletAdder();
+    private static volatile ResponseInnerNodeletAdder INSTANCE;
 
     static ResponseInnerNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ResponseInnerNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ResponseInnerNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -126,7 +133,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParsingContext.pushObject(irm);
                 })
-                .mount(ItemNodeletGroup.instance())
+                .with(ItemNodeletAdder.instance())
+                //.mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                     ForwardRule forwardRule = AspectranNodeParsingContext.peekObject();
@@ -165,7 +173,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParsingContext.pushObject(irm);
                 })
-                .mount(ItemNodeletGroup.instance())
+                .with(ItemNodeletAdder.instance())
+                //.mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                     RedirectRule redirectRule = AspectranNodeParsingContext.peekObject();

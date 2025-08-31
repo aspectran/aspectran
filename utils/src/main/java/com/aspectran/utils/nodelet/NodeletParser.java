@@ -244,7 +244,7 @@ public class NodeletParser {
             if (nodelet == null) {
                 for (Map.Entry<String, NodeletGroup> entry : nodeletGroup.getMountedGroups().entrySet()) {
                     String mountPath = entry.getKey();
-                    if (xpath.startsWith(mountPath)) {
+                    if (xpath.endsWith(mountPath)) {
                         NodeletGroup mountedGroup = entry.getValue();
                         String relativePath = xpath.substring(mountPath.length());
                         if (relativePath.isEmpty()) {

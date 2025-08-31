@@ -24,15 +24,20 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class BeanNodeParser.
- *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class BeanNodeletAdder implements NodeletAdder {
 
-    private static final BeanNodeletAdder INSTANCE = new BeanNodeletAdder();
+    private static volatile BeanNodeletAdder INSTANCE;
 
     static BeanNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (BeanNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new BeanNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

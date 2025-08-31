@@ -9,9 +9,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class SettingsNodeletAdder implements NodeletAdder {
 
-    private static final SettingsNodeletAdder INSTANCE = new SettingsNodeletAdder();
+    private static volatile SettingsNodeletAdder INSTANCE;
 
     static SettingsNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (SettingsNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new SettingsNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

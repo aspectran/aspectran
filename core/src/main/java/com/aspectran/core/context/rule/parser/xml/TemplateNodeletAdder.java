@@ -29,9 +29,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class TemplateNodeletAdder implements NodeletAdder {
 
-    private static final TemplateNodeletAdder INSTANCE = new TemplateNodeletAdder();
+    private static volatile TemplateNodeletAdder INSTANCE;
 
     static TemplateNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (TemplateNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TemplateNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

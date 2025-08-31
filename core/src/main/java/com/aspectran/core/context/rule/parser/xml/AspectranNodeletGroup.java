@@ -7,9 +7,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 public class AspectranNodeletGroup extends NodeletGroup {
 
-    private static final AspectranNodeletGroup INSTANCE = new AspectranNodeletGroup();
+    private static volatile AspectranNodeletGroup INSTANCE;
 
     static AspectranNodeletGroup instance() {
+        if (INSTANCE == null) {
+            synchronized (AspectranNodeletGroup.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AspectranNodeletGroup();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -25,6 +32,9 @@ public class AspectranNodeletGroup extends NodeletGroup {
         with(ScheduleNodeletAdder.instance());
         with(TemplateNodeletAdder.instance());
         with(TransletNodeletAdder.instance());
+//        mount(ItemNodeletGroup.instance());
+//        mount(InnerBeanNodeletGroup.instance(0));
+//        mount(ChooseNodeletGroup.instance(0));
     }
 
 }

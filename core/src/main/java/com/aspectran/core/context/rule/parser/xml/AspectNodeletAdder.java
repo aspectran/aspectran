@@ -25,15 +25,20 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class AspectNodeParser.
- *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class AspectNodeletAdder implements NodeletAdder {
 
-    private static final AspectNodeletAdder INSTANCE = new AspectNodeletAdder();
+    private static volatile AspectNodeletAdder INSTANCE;
 
     static AspectNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (AspectNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AspectNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

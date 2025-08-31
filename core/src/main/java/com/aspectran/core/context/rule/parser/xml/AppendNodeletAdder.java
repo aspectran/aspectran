@@ -11,9 +11,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class AppendNodeletAdder implements NodeletAdder {
 
-    private static final AppendNodeletAdder INSTANCE = new AppendNodeletAdder();
+    private static volatile AppendNodeletAdder INSTANCE;
 
     static AppendNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (AppendNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AppendNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

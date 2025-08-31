@@ -29,9 +29,16 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 class ExceptionInnerNodeletAdder implements NodeletAdder {
 
-    private static final ExceptionInnerNodeletAdder INSTANCE = new ExceptionInnerNodeletAdder();
+    private static volatile ExceptionInnerNodeletAdder INSTANCE;
 
     static ExceptionInnerNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ExceptionInnerNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ExceptionInnerNodeletAdder();
+                }
+            }
+        }
         return INSTANCE;
     }
 

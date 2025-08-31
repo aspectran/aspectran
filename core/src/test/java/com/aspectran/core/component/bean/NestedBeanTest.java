@@ -50,7 +50,7 @@ class NestedBeanTest {
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setDebugMode(true);
+        builder.setDebugMode(false);
         builder.setActiveProfiles("dev", "debug");
         ActivityContext context = builder.build("/config/bean/nested-bean-test-config.xml");
         beanRegistry = context.getBeanRegistry();
@@ -64,7 +64,7 @@ class NestedBeanTest {
     }
 
     @Test
-    void test1() {
+    void stringBean() {
         assertEquals("String Bean", beanRegistry.getBean("stringBean"));
 
         Map<?, ?> map = beanRegistry.getBean("mapBean");
@@ -75,7 +75,7 @@ class NestedBeanTest {
     }
 
     @Test
-    void test2() {
+    void nestedStringBean() {
         assertEquals("Nested String Bean", beanRegistry.getBean("nestedStringBean"));
     }
 
