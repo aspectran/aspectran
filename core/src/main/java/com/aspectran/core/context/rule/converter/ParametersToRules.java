@@ -415,8 +415,8 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
-                beanRule.setConstructorArgumentItemRuleMap(irm);
+                irm = assistant.profiling(irm, beanRule.getArgumentItemRuleMap());
+                beanRule.setArgumentItemRuleMap(irm);
             }
         }
 
@@ -461,8 +461,8 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
-                beanRule.setConstructorArgumentItemRuleMap(irm);
+                irm = assistant.profiling(irm, beanRule.getArgumentItemRuleMap());
+                beanRule.setArgumentItemRuleMap(irm);
             }
         }
 

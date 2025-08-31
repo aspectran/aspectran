@@ -24,13 +24,13 @@ class PropertiesNodeletAdder implements NodeletAdder {
             .nodelet(attrs -> {
                 ItemRuleMap irm = new ItemRuleMap();
                 irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                AspectranNodeParser.current().pushObject(irm);
+                AspectranNodeParsingContext.pushObject(irm);
             })
             .mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
-                ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                HasProperties hasProperties = AspectranNodeParser.current().peekObject();
-                irm = AspectranNodeParser.current().getAssistant().profiling(irm, hasProperties.getPropertyItemRuleMap());
+                ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                HasProperties hasProperties = AspectranNodeParsingContext.peekObject();
+                irm = AspectranNodeParsingContext.assistant().profiling(irm, hasProperties.getPropertyItemRuleMap());
                 hasProperties.setPropertyItemRuleMap(irm);
             });
     }

@@ -40,23 +40,23 @@ class EnvironmentNodeletAdder implements NodeletAdder {
                 String profile = attrs.get("profile");
 
                 EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
-                AspectranNodeParser.current().pushObject(environmentRule);
+                AspectranNodeParsingContext.pushObject(environmentRule);
             })
             .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
-                EnvironmentRule environmentRule = AspectranNodeParser.current().popObject();
-                AspectranNodeParser.current().getAssistant().addEnvironmentRule(environmentRule);
+                EnvironmentRule environmentRule = AspectranNodeParsingContext.popObject();
+                AspectranNodeParsingContext.assistant().addEnvironmentRule(environmentRule);
             })
             .child("properties")
                 .nodelet(attrs -> {
                     ItemRuleMap irm = new ItemRuleMap();
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParser.current().pushObject(irm);
+                    AspectranNodeParsingContext.pushObject(irm);
                 })
                 .mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                    EnvironmentRule environmentRule = AspectranNodeParser.current().peekObject();
+                    ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                    EnvironmentRule environmentRule = AspectranNodeParsingContext.peekObject();
                     environmentRule.addPropertyItemRuleMap(irm);
                 });
     }

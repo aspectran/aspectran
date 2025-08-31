@@ -15,16 +15,11 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.nodelet.NodeletAdder;
-import com.aspectran.utils.nodelet.NodeletGroup;
 import com.aspectran.utils.nodelet.NodeletParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,21 +36,9 @@ public class AspectranNodeParser {
 
     private static final Logger logger = LoggerFactory.getLogger(AspectranNodeParser.class);
 
-    static final ThreadLocal<AspectranNodeParser> currentAspectranNodeParser = new ThreadLocal<>();
-
-    private final NodeletGroup nodeletGroup = new NodeletGroup("aspectran");
-
-    private final NodeletGroup chooseNodeletGroup = new NodeletGroup();
-    private final NodeletGroup itemNodeletGroup = new NodeletGroup();
-    private final NodeletGroup innerBeanNodeletGroup = new NodeletGroup();
-
-    private final NodeletAdder actionNodeletAdder;
-    private final NodeletAdder adviceInnerNodeAdder;
-    private final NodeletAdder exceptionInnerNodeletAdder;
-    private final NodeletAdder responseInnerNodeletAdder;
+    private final ActivityRuleAssistant assistant;
 
     private final NodeletParser nodeletParser;
-    private final ActivityRuleAssistant assistant;
 
     /**
      * Instantiates a new AspectranNodeParser.
@@ -75,37 +58,7 @@ public class AspectranNodeParser {
      */
     public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
-
-
-        try {
-            currentAspectranNodeParser.set(this);
-
-            this.actionNodeletAdder = new ActionInnerNodeletAdder();
-            this.adviceInnerNodeAdder = new AdviceInnerNodeletAdder();
-            this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
-            this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
-
-            this.chooseNodeletGroup.with(new ChooseNodeletGroup());
-            this.itemNodeletGroup.with(new ItemNodeletGroup());
-            this.innerBeanNodeletGroup.with(new InnerBeanNodeletGroup());
-
-//            this.nodeletGroup = new AspectranNodeletGroup();
-//            this.nodeletGroup = new NodeletGroup("aspectran");
-            this.nodeletGroup
-                    .with(createDescriptionNodeletAdder())
-                    .with(createSettingsNodeletAdder())
-                    .with(createTypeAliasNodeletAdder())
-                    .with(createAppendNodeletAdder())
-                    .with(new EnvironmentNodeletAdder())
-                    .with(new AspectNodeletAdder())
-                    .with(new BeanNodeletAdder())
-                    .with(new ScheduleNodeletAdder())
-                    .with(new TemplateNodeletAdder())
-                    .with(new TransletNodeletAdder());
-        } finally {
-            currentAspectranNodeParser.remove();
-        }
-        this.nodeletParser = new NodeletParser(nodeletGroup);
+        this.nodeletParser = new NodeletParser(AspectranNodeletGroup.instance());
         this.nodeletParser.setValidating(validating);
         this.nodeletParser.setEntityResolver(new AspectranDtdResolver(validating));
         if (trackingLocation) {
@@ -117,63 +70,8 @@ public class AspectranNodeParser {
         return assistant;
     }
 
-    /**
-     * Pushes an object onto the internal object stack.
-     * This stack is used to manage context objects during parsing.
-     * @param object the object to push
-     */
-    public void pushObject(Object object) {
-        nodeletParser.getObjectStack().push(object);
-    }
-
-    /**
-     * Pops an object from the top of the internal object stack.
-     * @param <T> the expected type of the object
-     * @return the object popped from the stack
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T popObject() {
-        return (T)nodeletParser.getObjectStack().pop();
-    }
-
-    /**
-     * Peeks at the object on the top of the internal object stack without removing it.
-     * @param <T> the expected type of the object
-     * @return the object at the top of the stack
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject() {
-        return (T)nodeletParser.getObjectStack().peek();
-    }
-
-    /**
-     * Peeks at an object at a specific depth from the top of the internal object stack.
-     * @param <T> the expected type of the object
-     * @param n the depth from the top (0 for top, 1 for next, etc.)
-     * @return the object at the specified depth
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject(int n) {
-        return (T)nodeletParser.getObjectStack().peek(n);
-    }
-
-    /**
-     * Peeks at an object of a specific type from the internal object stack.
-     * It searches the stack from top to bottom for the first object assignable to the target type.
-     * @param <T> the expected type of the object
-     * @param target the target class type
-     * @return the object of the specified type, or {@code null} if not found
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T peekObject(Class<?> target) {
-        return (T)nodeletParser.getObjectStack().peek(target);
-    }
-
-    /**
-     * Clears all objects from the internal object stack.
-     */
-    public void clearObjectStack() {
-        nodeletParser.getObjectStack().clear();
+    public ArrayStack<Object> getObjectStack() {
+        return nodeletParser.getObjectStack();
     }
 
     /**
@@ -187,10 +85,10 @@ public class AspectranNodeParser {
             try (InputStream inputStream = ruleAppender.getInputStream()) {
                 InputSource inputSource = new InputSource(inputStream);
                 inputSource.setSystemId(ruleAppender.getQualifiedName());
-                currentAspectranNodeParser.set(this);
+                AspectranNodeParsingContext.set(this);
                 nodeletParser.parse(inputSource);
             } finally {
-                currentAspectranNodeParser.remove();
+                AspectranNodeParsingContext.clear();
             }
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
@@ -214,91 +112,6 @@ public class AspectranNodeParser {
         }
         logger.error(detail);
         throw new Exception(detail, cause);
-    }
-
-    static AspectranNodeParser current() {
-        return currentAspectranNodeParser.get();
-    }
-
-    @NonNull
-    private static NodeletAdder createDescriptionNodeletAdder() {
-        return group -> group.child("description")
-                .nodelet(attrs -> {
-                    String profile = attrs.get("profile");
-                    String style = attrs.get("style");
-
-                    DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
-                    AspectranNodeParser.current().pushObject(descriptionRule);
-                })
-                .endNodelet(text -> {
-                    DescriptionRule descriptionRule = AspectranNodeParser.current().popObject();
-                    descriptionRule.setContent(text);
-                    descriptionRule = AspectranNodeParser.current().getAssistant().profiling(
-                            descriptionRule, AspectranNodeParser.current().getAssistant().getAssistantLocal().getDescriptionRule());
-                    AspectranNodeParser.current().getAssistant().getAssistantLocal().setDescriptionRule(descriptionRule);
-                });
-    }
-
-    @NonNull
-    private static NodeletAdder createSettingsNodeletAdder() {
-        return group -> group.child("settings")
-                .endNodelet("/aspectran/settings", text -> {
-                    AspectranNodeParser.current().getAssistant().applySettings();
-                })
-                .child("setting")
-                .nodelet(attrs -> {
-                    String name = attrs.get("name");
-                    String value = attrs.get("value");
-                    AspectranNodeParser.current().pushObject(value);
-                    AspectranNodeParser.current().pushObject(name);
-                })
-                .endNodelet(text -> {
-                    String name = AspectranNodeParser.current().popObject();
-                    String value = AspectranNodeParser.current().popObject();
-                    if (value != null) {
-                        AspectranNodeParser.current().getAssistant().putSetting(name, value);
-                    } else if (text != null) {
-                        AspectranNodeParser.current().getAssistant().putSetting(name, text);
-                    }
-                });
-    }
-
-    @NonNull
-    private static NodeletAdder createTypeAliasNodeletAdder() {
-        return group -> group.child("typeAliases")
-                .nodelet(attrs -> {
-                    String alias = attrs.get("alias");
-                    String type = attrs.get("type");
-                    AspectranNodeParser.current().pushObject(type);
-                    AspectranNodeParser.current().pushObject(alias);
-                })
-                .endNodelet(text -> {
-                    String alias = AspectranNodeParser.current().popObject();
-                    String type = AspectranNodeParser.current().popObject();
-                    if (type != null) {
-                        AspectranNodeParser.current().getAssistant().addTypeAlias(alias, type);
-                    } else if (text != null) {
-                        AspectranNodeParser.current().getAssistant().addTypeAlias(alias, text);
-                    }
-                });
-    }
-
-    @NonNull
-    private static NodeletAdder createAppendNodeletAdder() {
-        return group -> group.child("append")
-                .nodelet(attrs -> {
-                    String file = attrs.get("file");
-                    String resource = attrs.get("resource");
-                    String url = attrs.get("url");
-                    String format = attrs.get("format");
-                    String profile = attrs.get("profile");
-
-                    RuleAppendHandler appendHandler = AspectranNodeParser.current().getAssistant().getRuleAppendHandler();
-                    if (appendHandler != null) {
-                        AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
-                        appendHandler.pending(appendRule);
-                    }
-                });
     }
 
 }

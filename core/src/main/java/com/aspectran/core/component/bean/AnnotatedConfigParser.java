@@ -251,7 +251,7 @@ public class AnnotatedConfigParser {
         } else {
             beanRule.setConstructorAutowireParsed(true);
         }
-        ItemRuleMap ctorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+        ItemRuleMap ctorArgumentItemRuleMap = beanRule.getArgumentItemRuleMap();
         if (ctorArgumentItemRuleMap != null && !ctorArgumentItemRuleMap.isEmpty()) {
             return;
         }

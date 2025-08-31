@@ -57,7 +57,7 @@ class PebbleViewDispatcherTest {
         BeanRule pebbleBeanRule = new BeanRule();
         pebbleBeanRule.setId("pebble");
         pebbleBeanRule.setBeanClass(PebbleTemplateEngine.class);
-        ItemRule constructorArgumentItemRule3 = pebbleBeanRule.newConstructorArgumentItemRule();
+        ItemRule constructorArgumentItemRule3 = pebbleBeanRule.newArgumentItemRule();
         constructorArgumentItemRule3.setValue("#{pebbleEngineFactory}");
         parameters.addRule(pebbleBeanRule);
 

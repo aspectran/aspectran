@@ -53,15 +53,15 @@ class TransletNodeletAdder implements NodeletAdder {
                 String timeout = attrs.get("timeout");
 
                 TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method, async, timeout);
-                AspectranNodeParser.current().pushObject(transletRule);
+                AspectranNodeParsingContext.pushObject(transletRule);
             })
             .with(DiscriptionNodeletAdder.instance())
             .with(ActionInnerNodeletAdder.instance())
             .with(ResponseInnerNodeletAdder.instance())
             .mount(ChooseNodeletGroup.instance())
             .endNodelet(text -> {
-                TransletRule transletRule = AspectranNodeParser.current().popObject();
-                AspectranNodeParser.current().getAssistant().addTransletRule(transletRule);
+                TransletRule transletRule = AspectranNodeParsingContext.popObject();
+                AspectranNodeParsingContext.assistant().addTransletRule(transletRule);
             })
             .child("request")
                 .nodelet(attrs -> {
@@ -69,37 +69,37 @@ class TransletNodeletAdder implements NodeletAdder {
                     String encoding = attrs.get("encoding");
 
                     RequestRule requestRule = RequestRule.newInstance(method, encoding);
-                    AspectranNodeParser.current().pushObject(requestRule);
+                    AspectranNodeParsingContext.pushObject(requestRule);
                 })
                 .endNodelet(text -> {
-                    RequestRule requestRule = AspectranNodeParser.current().popObject();
-                    TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                    RequestRule requestRule = AspectranNodeParsingContext.popObject();
+                    TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     transletRule.setRequestRule(requestRule);
                 })
                 .child("parameters")
                     .nodelet(attrs -> {
                         ItemRuleMap irm = new ItemRuleMap();
                         irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                        AspectranNodeParser.current().pushObject(irm);
+                        AspectranNodeParsingContext.pushObject(irm);
                     })
                     .mount(ItemNodeletGroup.instance())
                     .endNodelet(text -> {
-                        ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                        RequestRule requestRule = AspectranNodeParser.current().peekObject();
-                        irm = AspectranNodeParser.current().getAssistant().profiling(irm, requestRule.getParameterItemRuleMap());
+                        ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                        RequestRule requestRule = AspectranNodeParsingContext.peekObject();
+                        irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getParameterItemRuleMap());
                         requestRule.setParameterItemRuleMap(irm);
                     })
                 .parent().child("attributes")
                     .nodelet(attrs -> {
                         ItemRuleMap irm = new ItemRuleMap();
                         irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                        AspectranNodeParser.current().pushObject(irm);
+                        AspectranNodeParsingContext.pushObject(irm);
                     })
                     .mount(ItemNodeletGroup.instance())
                     .endNodelet(text -> {
-                        ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                        RequestRule requestRule = AspectranNodeParser.current().peekObject();
-                        irm = AspectranNodeParser.current().getAssistant().profiling(irm, requestRule.getAttributeItemRuleMap());
+                        ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                        RequestRule requestRule = AspectranNodeParsingContext.peekObject();
+                        irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getAttributeItemRuleMap());
                         requestRule.setAttributeItemRuleMap(irm);
                     })
                 .parent()
@@ -107,28 +107,28 @@ class TransletNodeletAdder implements NodeletAdder {
                 .nodelet(attrs -> {
                     ItemRuleMap irm = new ItemRuleMap();
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParser.current().pushObject(irm);
+                    AspectranNodeParsingContext.pushObject(irm);
                 })
                 .mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                    TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                    ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                    TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     RequestRule requestRule = transletRule.touchRequestRule(false);
-                    irm = AspectranNodeParser.current().getAssistant().profiling(irm, requestRule.getParameterItemRuleMap());
+                    irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getParameterItemRuleMap());
                     requestRule.setParameterItemRuleMap(irm);
                 })
             .parent().child("attributes")
                 .nodelet(attrs -> {
                     ItemRuleMap irm = new ItemRuleMap();
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParser.current().pushObject(irm);
+                    AspectranNodeParsingContext.pushObject(irm);
                 })
                 .mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                    TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                    ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                    TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     RequestRule requestRule = transletRule.touchRequestRule(false);
-                    irm = AspectranNodeParser.current().getAssistant().profiling(irm, requestRule.getAttributeItemRuleMap());
+                    irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getAttributeItemRuleMap());
                     requestRule.setAttributeItemRuleMap(irm);
                 })
             .parent().child("contents")
@@ -136,12 +136,12 @@ class TransletNodeletAdder implements NodeletAdder {
                     String name = attrs.get("name");
 
                     ContentList contentList = ContentList.newInstance(name);
-                    AspectranNodeParser.current().pushObject(contentList);
+                    AspectranNodeParsingContext.pushObject(contentList);
                 })
                 .endNodelet(text -> {
-                    ContentList contentList = AspectranNodeParser.current().popObject();
+                    ContentList contentList = AspectranNodeParsingContext.popObject();
                     if (!contentList.isEmpty()) {
-                        TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                        TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                         transletRule.setContentList(contentList);
                     }
                 })
@@ -150,35 +150,36 @@ class TransletNodeletAdder implements NodeletAdder {
                         String name = attrs.get("name");
 
                         ActionList actionList = ActionList.newInstance(name);
-                        AspectranNodeParser.current().pushObject(actionList);
+                        AspectranNodeParsingContext.pushObject(actionList);
                     })
                     .with(ActionInnerNodeletAdder.instance())
                     .with(ResponseInnerNodeletAdder.instance())
                     .mount(ChooseNodeletGroup.instance())
                     .endNodelet(text -> {
-                        ActionList actionList = AspectranNodeParser.current().popObject();
+                        ActionList actionList = AspectranNodeParsingContext.popObject();
                         if (!actionList.isEmpty()) {
-                            ContentList contentList = AspectranNodeParser.current().peekObject();
+                            ContentList contentList = AspectranNodeParsingContext.peekObject();
                             contentList.addActionList(actionList);
                         }
                     })
+                .parent()
             .parent().child("content")
                 .nodelet(attrs -> {
                     String name = attrs.get("name");
 
                     ActionList actionList = ActionList.newInstance(name);
-                    AspectranNodeParser.current().pushObject(actionList);
+                    AspectranNodeParsingContext.pushObject(actionList);
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
                 .mount(ChooseNodeletGroup.instance())
                 .endNodelet(text -> {
-                    ActionList actionList = AspectranNodeParser.current().popObject();
+                    ActionList actionList = AspectranNodeParsingContext.popObject();
                     if (!actionList.isEmpty()) {
                         ContentList contentList = new ContentList(false);
                         contentList.add(actionList);
 
-                        TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                        TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                         transletRule.setContentList(contentList);
                     }
                 })
@@ -188,25 +189,25 @@ class TransletNodeletAdder implements NodeletAdder {
                     String encoding = attrs.get("encoding");
 
                     ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
-                    AspectranNodeParser.current().pushObject(responseRule);
+                    AspectranNodeParsingContext.pushObject(responseRule);
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
                 .mount(ChooseNodeletGroup.instance())
                 .endNodelet(text -> {
-                    ResponseRule responseRule = AspectranNodeParser.current().popObject();
-                    TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                    ResponseRule responseRule = AspectranNodeParsingContext.popObject();
+                    TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     transletRule.addResponseRule(responseRule);
                 })
             .parent().child("exception")
                 .nodelet(attrs -> {
                     ExceptionRule exceptionRule = new ExceptionRule();
-                    AspectranNodeParser.current().pushObject(exceptionRule);
+                    AspectranNodeParsingContext.pushObject(exceptionRule);
                 })
                 .with(ExceptionInnerNodeletAdder.instance())
                 .endNodelet(text -> {
-                    ExceptionRule exceptionRule = AspectranNodeParser.current().popObject();
-                    TransletRule transletRule = AspectranNodeParser.current().peekObject();
+                    ExceptionRule exceptionRule = AspectranNodeParsingContext.popObject();
+                    TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     transletRule.setExceptionRule(exceptionRule);
                 });
     }

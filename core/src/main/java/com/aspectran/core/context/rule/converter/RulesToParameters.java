@@ -392,7 +392,7 @@ public class RulesToParameters {
         beanParameters.putValueIfNotNull(BeanParameters.important, beanRule.getImportant());
         beanParameters.putValueIfNotNull(BeanParameters.filter, beanRule.getFilterParameters());
 
-        ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+        ItemRuleMap constructorArgumentItemRuleMap = beanRule.getArgumentItemRuleMap();
         if (constructorArgumentItemRuleMap != null) {
             toItemHolderParameters(constructorArgumentItemRuleMap, beanParameters, BeanParameters.arguments);
         }

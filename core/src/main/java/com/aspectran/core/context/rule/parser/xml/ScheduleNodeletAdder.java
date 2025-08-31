@@ -43,29 +43,29 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
                 ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
 
-                AspectranNodeParser.current().pushObject(scheduleRule);
+                AspectranNodeParsingContext.pushObject(scheduleRule);
             })
             .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
-                ScheduleRule scheduleRule = AspectranNodeParser.current().popObject();
-                AspectranNodeParser.current().getAssistant().addScheduleRule(scheduleRule);
+                ScheduleRule scheduleRule = AspectranNodeParsingContext.popObject();
+                AspectranNodeParsingContext.assistant().addScheduleRule(scheduleRule);
             })
             .child("scheduler")
                 .nodelet(attrs -> {
                     String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
                     if (beanIdOrClass != null) {
-                        ScheduleRule scheduleRule = AspectranNodeParser.current().peekObject();
+                        ScheduleRule scheduleRule = AspectranNodeParsingContext.peekObject();
                         scheduleRule.setSchedulerBeanId(beanIdOrClass);
                     }
                 })
                 .child("trigger")
                     .nodelet(attrs -> {
                         String type = StringUtils.emptyToNull(attrs.get("type"));
-                        AspectranNodeParser.current().pushObject(type);
+                        AspectranNodeParsingContext.pushObject(type);
                     })
                     .endNodelet(text -> {
-                        String type = AspectranNodeParser.current().popObject();
-                        ScheduleRule scheduleRule = AspectranNodeParser.current().peekObject();
+                        String type = AspectranNodeParsingContext.popObject();
+                        ScheduleRule scheduleRule = AspectranNodeParsingContext.peekObject();
                         ScheduleRule.updateTrigger(scheduleRule, type, text);
                     })
                 .parent()
@@ -74,7 +74,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
                     String transletName = StringUtils.emptyToNull(attrs.get("translet"));
                     Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
-                    ScheduleRule scheduleRule = AspectranNodeParser.current().peekObject();
+                    ScheduleRule scheduleRule = AspectranNodeParsingContext.peekObject();
 
                     ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, transletName, disabled);
                     scheduleRule.addScheduledJobRule(scheduledJobRule);

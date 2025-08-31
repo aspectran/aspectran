@@ -66,14 +66,14 @@ class FreeMarkerViewDispatcherTest {
         BeanRule freeMarkerBeanRule = new BeanRule();
         freeMarkerBeanRule.setId("freemarker");
         freeMarkerBeanRule.setBeanClass(FreeMarkerTemplateEngine.class);
-        ItemRule constructorArgumentItemRule1 = freeMarkerBeanRule.newConstructorArgumentItemRule();
+        ItemRule constructorArgumentItemRule1 = freeMarkerBeanRule.newArgumentItemRule();
         constructorArgumentItemRule1.setValue("#{freeMarkerConfiguration}");
         parameters.addRule(freeMarkerBeanRule);
 
         BeanRule freeMarkerViewDispatcherBeanRule = new BeanRule();
         freeMarkerViewDispatcherBeanRule.setId("freeMarkerViewDispatcher");
         freeMarkerViewDispatcherBeanRule.setBeanClass(FreeMarkerViewDispatcher.class);
-        ItemRule constructorArgumentItemRule2 = freeMarkerViewDispatcherBeanRule.newConstructorArgumentItemRule();
+        ItemRule constructorArgumentItemRule2 = freeMarkerViewDispatcherBeanRule.newArgumentItemRule();
         constructorArgumentItemRule2.setValue("#{freeMarkerConfiguration}");
         ItemRule propertyItemRule1 = freeMarkerViewDispatcherBeanRule.newPropertyItemRule("prefix");
         propertyItemRule1.setValue("freemarker/");

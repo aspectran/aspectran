@@ -47,72 +47,73 @@ class AspectNodeletAdder implements NodeletAdder {
                 Boolean disabled = BooleanUtils.toNullableBooleanObject(attrs.get("disabled"));
 
                 AspectRule aspectRule = AspectRule.newInstance(id, order, isolated, disabled);
-                AspectranNodeParser.current().pushObject(aspectRule);
-            })
-            .endNodelet(text -> {
-                AspectRule aspectRule = AspectranNodeParser.current().popObject();
-                AspectranNodeParser.current().getAssistant().addAspectRule(aspectRule);
+                AspectranNodeParsingContext.pushObject(aspectRule);
             })
             .with(DiscriptionNodeletAdder.instance())
-        .parent().child("joinpoint")
-            .nodelet(attrs -> {
-                String target = StringUtils.emptyToNull(attrs.get("target"));
-                AspectranNodeParser.current().pushObject(target);
-            })
             .endNodelet(text -> {
-                String target = AspectranNodeParser.current().popObject();
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
-                AspectRule.updateJoinpoint(aspectRule, target, text);
+                AspectRule aspectRule = AspectranNodeParsingContext.popObject();
+                AspectranNodeParsingContext.assistant().addAspectRule(aspectRule);
             })
-        .parent().child("settings")
-            .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
-                SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule);
-                AspectranNodeParser.current().pushObject(sar);
-            })
-            .endNodelet(text -> {
-                SettingsAdviceRule sar = AspectranNodeParser.current().popObject();
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
-                aspectRule.setSettingsAdviceRule(sar);
-            })
-            .child("setting")
+            .child("joinpoint")
                 .nodelet(attrs -> {
-                    String name = attrs.get("name");
-                    String value = attrs.get("value");
-                    AspectranNodeParser.current().pushObject(value);
-                    AspectranNodeParser.current().pushObject(name);
+                    String target = StringUtils.emptyToNull(attrs.get("target"));
+                    AspectranNodeParsingContext.pushObject(target);
                 })
                 .endNodelet(text -> {
-                    String name = AspectranNodeParser.current().popObject();
-                    String value = AspectranNodeParser.current().popObject();
-                    SettingsAdviceRule sar = AspectranNodeParser.current().peekObject();
-                    if (value != null) {
-                        sar.putSetting(name, value);
-                    } else if (text != null) {
-                        sar.putSetting(name, text);
+                    String target = AspectranNodeParsingContext.popObject();
+                    AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                    AspectRule.updateJoinpoint(aspectRule, target, text);
+                })
+            .parent().child("settings")
+                .nodelet(attrs -> {
+                    AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                    SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule);
+                    AspectranNodeParsingContext.pushObject(sar);
+                })
+                .endNodelet(text -> {
+                    SettingsAdviceRule sar = AspectranNodeParsingContext.popObject();
+                    AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                    aspectRule.setSettingsAdviceRule(sar);
+                })
+                .child("setting")
+                    .nodelet(attrs -> {
+                        String name = attrs.get("name");
+                        String value = attrs.get("value");
+                        AspectranNodeParsingContext.pushObject(value);
+                        AspectranNodeParsingContext.pushObject(name);
+                    })
+                    .endNodelet(text -> {
+                        String name = AspectranNodeParsingContext.popObject();
+                        String value = AspectranNodeParsingContext.popObject();
+                        SettingsAdviceRule sar = AspectranNodeParsingContext.peekObject();
+                        if (value != null) {
+                            sar.putSetting(name, value);
+                        } else if (text != null) {
+                            sar.putSetting(name, text);
+                        }
+                    })
+                .parent()
+            .parent().child("advice")
+                .nodelet(attrs -> {
+                    String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
+                    if (beanIdOrClass != null) {
+                        AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                        aspectRule.setAdviceBeanId(beanIdOrClass);
+                        AspectranNodeParsingContext.assistant().resolveAdviceBeanClass(aspectRule);
                     }
                 })
-        .parent().parent().child("advice")
-            .nodelet(attrs -> {
-                String beanIdOrClass = StringUtils.emptyToNull(attrs.get("bean"));
-                if (beanIdOrClass != null) {
-                    AspectRule aspectRule = AspectranNodeParser.current().peekObject();
-                    aspectRule.setAdviceBeanId(beanIdOrClass);
-                    AspectranNodeParser.current().getAssistant().resolveAdviceBeanClass(aspectRule);
-                }
-            })
-            .with(AdviceInnerNodeletAdder.instance())
-        .parent().child("exception")
-            .nodelet(attrs -> {
-                ExceptionRule exceptionRule = new ExceptionRule();
-                AspectranNodeParser.current().pushObject(exceptionRule);
-            })
-            .with(ExceptionInnerNodeletAdder.instance())
-            .endNodelet(text -> {
-                ExceptionRule exceptionRule = AspectranNodeParser.current().popObject();
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
-                aspectRule.setExceptionRule(exceptionRule);
-            });
+                .with(AdviceInnerNodeletAdder.instance())
+            .parent().child("exception")
+                .nodelet(attrs -> {
+                    ExceptionRule exceptionRule = new ExceptionRule();
+                    AspectranNodeParsingContext.pushObject(exceptionRule);
+                })
+                .with(ExceptionInnerNodeletAdder.instance())
+                .endNodelet(text -> {
+                    ExceptionRule exceptionRule = AspectranNodeParsingContext.popObject();
+                    AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
+                    aspectRule.setExceptionRule(exceptionRule);
+                });
     }
 
 }

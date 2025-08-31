@@ -40,52 +40,52 @@ class AdviceInnerNodeletAdder implements NodeletAdder {
     public void addTo(@NonNull NodeletGroup group) {
         group.child("before")
             .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
+                AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                 AdviceRule adviceRule = aspectRule.newBeforeAdviceRule();
-                AspectranNodeParser.current().pushObject(adviceRule);
+                AspectranNodeParsingContext.pushObject(adviceRule);
             })
             .with(ActionInnerNodeletAdder.instance())
-            .endNodelet(text -> AspectranNodeParser.current().popObject())
+            .endNodelet(text -> AspectranNodeParsingContext.popObject())
         .parent().child("after")
             .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
+                AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                 AdviceRule adviceRule = aspectRule.newAfterAdviceRule();
-                AspectranNodeParser.current().pushObject(adviceRule);
+                AspectranNodeParsingContext.pushObject(adviceRule);
             })
             .with(ActionInnerNodeletAdder.instance())
-            .endNodelet(text -> AspectranNodeParser.current().popObject())
+            .endNodelet(text -> AspectranNodeParsingContext.popObject())
         .parent().child("around")
             .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
+                AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                 AdviceRule adviceRule = aspectRule.newAroundAdviceRule();
-                AspectranNodeParser.current().pushObject(adviceRule);
+                AspectranNodeParsingContext.pushObject(adviceRule);
             })
             .with(ActionInnerNodeletAdder.instance())
-            .endNodelet(text -> AspectranNodeParser.current().popObject())
+            .endNodelet(text -> AspectranNodeParsingContext.popObject())
         .parent().child("finally")
             .nodelet(attrs -> {
-                AspectRule aspectRule = AspectranNodeParser.current().peekObject();
+                AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                 AdviceRule adviceRule = aspectRule.newFinallyAdviceRule();
-                AspectranNodeParser.current().pushObject(adviceRule);
+                AspectranNodeParsingContext.pushObject(adviceRule);
             })
             .with(ActionInnerNodeletAdder.instance())
-            .endNodelet(text -> AspectranNodeParser.current().popObject())
+            .endNodelet(text -> AspectranNodeParsingContext.popObject())
         .parent().child("finally/thrown")
             .nodelet(attrs -> {
                 String exceptionType = attrs.get("type");
-                AdviceRule adviceRule = AspectranNodeParser.current().peekObject();
+                AdviceRule adviceRule = AspectranNodeParsingContext.peekObject();
                 ExceptionThrownRule etr = new ExceptionThrownRule(adviceRule);
                 if (exceptionType != null) {
                     String[] exceptionTypes = StringUtils.splitWithComma(exceptionType);
                     etr.setExceptionTypes(exceptionTypes);
                 }
-                AspectranNodeParser.current().pushObject(etr);
+                AspectranNodeParsingContext.pushObject(etr);
             })
             .with(ActionInnerNodeletAdder.instance())
             .with(ResponseInnerNodeletAdder.instance())
             .endNodelet(text -> {
-                ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
-                AdviceRule adviceRule = AspectranNodeParser.current().peekObject();
+                ExceptionThrownRule etr = AspectranNodeParsingContext.popObject();
+                AdviceRule adviceRule = AspectranNodeParsingContext.peekObject();
                 adviceRule.setExceptionThrownRule(etr);
             });
     }

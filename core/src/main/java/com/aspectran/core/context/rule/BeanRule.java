@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Describable;
+import com.aspectran.core.context.rule.ability.HasArguments;
 import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -39,7 +40,7 @@ import java.util.List;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasProperties {
+public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Describable, HasArguments, HasProperties {
 
     public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
@@ -85,7 +86,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     private Method destroyMethod;
 
-    private ItemRuleMap constructorArgumentItemRuleMap;
+    private ItemRuleMap argumentItemRuleMap;
 
     private ItemRuleMap propertyItemRuleMap;
 
@@ -498,38 +499,46 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * Gets the constructor argument item rule map.
      * @return the constructor argument item rule map
      */
-    public ItemRuleMap getConstructorArgumentItemRuleMap() {
-        return constructorArgumentItemRuleMap;
+    @Override
+    public ItemRuleMap getArgumentItemRuleMap() {
+        return argumentItemRuleMap;
     }
 
     /**
      * Sets the constructor argument item rule map.
      * @param constructorArgumentItemRuleMap the new constructor argument item rule map
      */
-    public void setConstructorArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
-        this.constructorArgumentItemRuleMap = constructorArgumentItemRuleMap;
-    }
-
-    /**
-     * Adds a new constructor argument item rule and returns it.
-     * @return the constructor argument item rule
-     */
-    public ItemRule newConstructorArgumentItemRule() {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setAutoNamed(true);
-        addConstructorArgumentItemRule(itemRule);
-        return itemRule;
+    @Override
+    public void setArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
+        this.argumentItemRuleMap = constructorArgumentItemRuleMap;
     }
 
     /**
      * Adds the constructor argument item rule.
      * @param constructorArgumentItemRule the constructor argument item rule
      */
-    public void addConstructorArgumentItemRule(ItemRule constructorArgumentItemRule) {
-        if (constructorArgumentItemRuleMap == null) {
-            constructorArgumentItemRuleMap = new ItemRuleMap();
+    @Override
+    public void addArgumentItemRule(ItemRule constructorArgumentItemRule) {
+        if (argumentItemRuleMap == null) {
+            argumentItemRuleMap = new ItemRuleMap();
         }
-        constructorArgumentItemRuleMap.putItemRule(constructorArgumentItemRule);
+        argumentItemRuleMap.putItemRule(constructorArgumentItemRule);
+    }
+
+    @Override
+    public ItemRule newArgumentItemRule(String argumentName) {
+        throw new UnsupportedOperationException("Argument name not supported");
+    }
+
+    /**
+     * Adds a new constructor argument item rule and returns it.
+     * @return the constructor argument item rule
+     */
+    public ItemRule newArgumentItemRule() {
+        ItemRule itemRule = new ItemRule();
+        itemRule.setAutoNamed(true);
+        addArgumentItemRule(itemRule);
+        return itemRule;
     }
 
     @Override
@@ -688,8 +697,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
             tsb.append("lazyDestroy", lazyDestroy);
             tsb.append("important", important);
             tsb.append("proxied", proxied);
-            if (constructorArgumentItemRuleMap != null) {
-                tsb.append("constructorArguments", constructorArgumentItemRuleMap.keySet());
+            if (argumentItemRuleMap != null) {
+                tsb.append("constructorArguments", argumentItemRuleMap.keySet());
             }
             if (propertyItemRuleMap != null) {
                 tsb.append("properties", propertyItemRuleMap.keySet());
@@ -837,7 +846,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         newBeanRule.setFactoryMethodName(beanRule.getFactoryMethodName());
         newBeanRule.setInitMethodName(beanRule.getInitMethodName());
         newBeanRule.setDestroyMethodName(beanRule.getDestroyMethodName());
-        newBeanRule.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
+        newBeanRule.setArgumentItemRuleMap(beanRule.getArgumentItemRuleMap());
         newBeanRule.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
         newBeanRule.setLazyInit(beanRule.getLazyInit());
         newBeanRule.setLazyDestroy(beanRule.getLazyDestroy());

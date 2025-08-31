@@ -38,39 +38,39 @@ class ChooseNodeletGroup extends NodeletGroup {
         super("choose");
         nodelet(attrs -> {
             ChooseRule chooseRule = ChooseRule.newInstance();
-            AspectranNodeParser.current().pushObject(chooseRule);
+            AspectranNodeParsingContext.pushObject(chooseRule);
         })
         .endNodelet(text -> {
-            ChooseRule chooseRule = AspectranNodeParser.current().popObject();
-            HasActionRules applicable = AspectranNodeParser.current().peekObject();
+            ChooseRule chooseRule = AspectranNodeParsingContext.popObject();
+            HasActionRules applicable = AspectranNodeParsingContext.peekObject();
             applicable.putActionRule(chooseRule);
         })
         .child("when")
             .nodelet(attrs -> {
                 String expression = StringUtils.emptyToNull(attrs.get("test"));
 
-                ChooseRule chooseRule = AspectranNodeParser.current().peekObject();
+                ChooseRule chooseRule = AspectranNodeParsingContext.peekObject();
                 ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
                 chooseWhenRule.setExpression(expression);
-                AspectranNodeParser.current().pushObject(chooseWhenRule);
+                AspectranNodeParsingContext.pushObject(chooseWhenRule);
             })
             .with(ActionInnerNodeletAdder.instance())
             .with(ResponseInnerNodeletAdder.instance())
             .mount(ChooseNodeletGroup.instance())
             .endNodelet(text -> {
-                AspectranNodeParser.current().popObject();
+                AspectranNodeParsingContext.popObject();
             })
         .parent().child("otherwise")
             .nodelet(attrs -> {
-                ChooseRule chooseRule = AspectranNodeParser.current().peekObject();
+                ChooseRule chooseRule = AspectranNodeParsingContext.peekObject();
                 ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
-                AspectranNodeParser.current().pushObject(chooseWhenRule);
+                AspectranNodeParsingContext.pushObject(chooseWhenRule);
             })
             .with(ActionInnerNodeletAdder.instance())
             .with(ResponseInnerNodeletAdder.instance())
             .mount(ChooseNodeletGroup.instance())
             .endNodelet(text -> {
-                AspectranNodeParser.current().popObject();
+                AspectranNodeParsingContext.popObject();
             });
     }
 

@@ -41,7 +41,7 @@ class BeanNodeletAdder implements NodeletAdder {
         group.child("bean")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));
-                String className = StringUtils.emptyToNull(AspectranNodeParser.current().getAssistant().resolveAliasType(attrs.get("class")));
+                String className = StringUtils.emptyToNull(AspectranNodeParsingContext.assistant().resolveAliasType(attrs.get("class")));
                 String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
                 String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
                 String scan = attrs.get("scan");
@@ -63,16 +63,16 @@ class BeanNodeletAdder implements NodeletAdder {
                             factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
                 }
 
-                AspectranNodeParser.current().pushObject(beanRule);
+                AspectranNodeParsingContext.pushObject(beanRule);
             })
             .with(DiscriptionNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
-                BeanRule beanRule = AspectranNodeParser.current().popObject();
-                AspectranNodeParser.current().getAssistant().resolveBeanClass(beanRule);
-                AspectranNodeParser.current().getAssistant().resolveFactoryBeanClass(beanRule);
-                AspectranNodeParser.current().getAssistant().addBeanRule(beanRule);
+                BeanRule beanRule = AspectranNodeParsingContext.popObject();
+                AspectranNodeParsingContext.assistant().resolveBeanClass(beanRule);
+                AspectranNodeParsingContext.assistant().resolveFactoryBeanClass(beanRule);
+                AspectranNodeParsingContext.assistant().addBeanRule(beanRule);
             })
             .child("filter")
                 .nodelet(attrs -> {
@@ -81,16 +81,16 @@ class BeanNodeletAdder implements NodeletAdder {
                     if (StringUtils.hasText(filterClassName)) {
                         filterParameters.putValue(FilterParameters.filterClass, filterClassName);
                     }
-                    AspectranNodeParser.current().pushObject(filterParameters);
+                    AspectranNodeParsingContext.pushObject(filterParameters);
                 })
                 .endNodelet(text -> {
-                    FilterParameters filterParameters = AspectranNodeParser.current().popObject();
+                    FilterParameters filterParameters = AspectranNodeParsingContext.popObject();
                     if (StringUtils.hasText(text)) {
                         filterParameters = new FilterParameters();
                         filterParameters.readFrom(text);
                     }
                     if (filterParameters.hasFilterClass() || filterParameters.hasPatterns()) {
-                        BeanRule beanRule = AspectranNodeParser.current().peekObject();
+                        BeanRule beanRule = AspectranNodeParsingContext.peekObject();
                         beanRule.setFilterParameters(filterParameters);
                     }
                 });

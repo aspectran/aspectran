@@ -48,13 +48,13 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
                         etr.setExceptionTypes(exceptionTypes);
                     }
 
-                    AspectranNodeParser.current().pushObject(etr);
+                    AspectranNodeParsingContext.pushObject(etr);
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
                 .endNodelet(text -> {
-                    ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
-                    ExceptionRule exceptionRule = AspectranNodeParser.current().peekObject();
+                    ExceptionThrownRule etr = AspectranNodeParsingContext.popObject();
+                    ExceptionRule exceptionRule = AspectranNodeParsingContext.peekObject();
                     exceptionRule.putExceptionThrownRule(etr);
                 });
     }

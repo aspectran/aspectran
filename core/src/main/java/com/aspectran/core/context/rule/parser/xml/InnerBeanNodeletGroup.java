@@ -36,7 +36,7 @@ class InnerBeanNodeletGroup extends NodeletGroup {
     InnerBeanNodeletGroup() {
         super("bean");
         nodelet(attrs -> {
-            String className = StringUtils.emptyToNull(AspectranNodeParser.current().getAssistant().resolveAliasType(attrs.get("class")));
+            String className = StringUtils.emptyToNull(AspectranNodeParsingContext.assistant().resolveAliasType(attrs.get("class")));
             String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
             String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
             String initMethod = StringUtils.emptyToNull(attrs.get("initMethod"));
@@ -49,22 +49,22 @@ class InnerBeanNodeletGroup extends NodeletGroup {
                 beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
             }
 
-            AspectranNodeParser.current().pushObject(beanRule);
+            AspectranNodeParsingContext.pushObject(beanRule);
         })
         .with(DiscriptionNodeletAdder.instance())
         .with(ArgumentsNodeletAdder.instance())
         .with(PropertiesNodeletAdder.instance())
         .endNodelet(text -> {
-            BeanRule beanRule = AspectranNodeParser.current().popObject();
-            AspectranNodeParser.current().getAssistant().resolveBeanClass(beanRule);
-            AspectranNodeParser.current().getAssistant().resolveFactoryBeanClass(beanRule);
-            AspectranNodeParser.current().getAssistant().addInnerBeanRule(beanRule);
+            BeanRule beanRule = AspectranNodeParsingContext.popObject();
+            AspectranNodeParsingContext.assistant().resolveBeanClass(beanRule);
+            AspectranNodeParsingContext.assistant().resolveFactoryBeanClass(beanRule);
+            AspectranNodeParsingContext.assistant().addInnerBeanRule(beanRule);
 
-            ItemRule itemRule = AspectranNodeParser.current().peekObject();
+            ItemRule itemRule = AspectranNodeParsingContext.peekObject();
             if (itemRule.isListableType()) {
                 itemRule.addBeanRule(beanRule);
             } else if (itemRule.isMappableType()) {
-                String name = AspectranNodeParser.current().peekObject();
+                String name = AspectranNodeParsingContext.peekObject();
                 itemRule.putBeanRule(name, beanRule);
             } else {
                 itemRule.setBeanRule(beanRule);

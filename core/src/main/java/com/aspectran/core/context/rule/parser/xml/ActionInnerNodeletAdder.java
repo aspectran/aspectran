@@ -48,19 +48,19 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 HeaderActionRule headersActionRule = HeaderActionRule.newInstance(id, hidden);
-                AspectranNodeParser.current().pushObject(headersActionRule);
+                AspectranNodeParsingContext.pushObject(headersActionRule);
 
                 ItemRuleMap irm = new ItemRuleMap();
-                AspectranNodeParser.current().pushObject(irm);
+                AspectranNodeParsingContext.pushObject(irm);
             })
             .mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
-                ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                HeaderActionRule headersActionRule = AspectranNodeParser.current().popObject();
+                ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                HeaderActionRule headersActionRule = AspectranNodeParsingContext.popObject();
 
                 headersActionRule.setHeaderItemRuleMap(irm);
 
-                HasActionRules applicable = AspectranNodeParser.current().peekObject();
+                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
                 applicable.putActionRule(headersActionRule);
             })
         .parent().child("echo")
@@ -69,21 +69,21 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-                AspectranNodeParser.current().pushObject(echoActionRule);
+                AspectranNodeParsingContext.pushObject(echoActionRule);
 
                 ItemRuleMap irm = new ItemRuleMap();
-                AspectranNodeParser.current().pushObject(irm);
+                AspectranNodeParsingContext.pushObject(irm);
             })
             .mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
-                ItemRuleMap irm = AspectranNodeParser.current().popObject();
-                EchoActionRule echoActionRule = AspectranNodeParser.current().popObject();
+                ItemRuleMap irm = AspectranNodeParsingContext.popObject();
+                EchoActionRule echoActionRule = AspectranNodeParsingContext.popObject();
 
                 if (echoActionRule.getEchoItemRuleMap() == null && !irm.isEmpty()) {
                     echoActionRule.setEchoItemRuleMap(irm);
                 }
 
-                HasActionRules applicable = AspectranNodeParser.current().peekObject();
+                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
                 applicable.putActionRule(echoActionRule);
             })
         .parent().child("action")
@@ -94,12 +94,12 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-                AspectranNodeParser.current().getAssistant().resolveActionBeanClass(invokeActionRule);
-                AspectranNodeParser.current().pushObject(invokeActionRule);
+                AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .endNodelet(text -> {
-                InvokeActionRule invokeActionRule = AspectranNodeParser.current().popObject();
-                HasActionRules applicable = AspectranNodeParser.current().peekObject();
+                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
+                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
                 applicable.putActionRule(invokeActionRule);
             })
             .with(ArgumentsNodeletAdder.instance())
@@ -110,12 +110,12 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(methodName, hidden);
-                AspectranNodeParser.current().getAssistant().resolveActionBeanClass(invokeActionRule);
-                AspectranNodeParser.current().pushObject(invokeActionRule);
+                AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .endNodelet(text -> {
-                InvokeActionRule invokeActionRule = AspectranNodeParser.current().popObject();
-                HasActionRules applicable = AspectranNodeParser.current().peekObject();
+                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
+                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
                 applicable.putActionRule(invokeActionRule);
             })
             .with(ArgumentsNodeletAdder.instance())
@@ -127,14 +127,14 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 String methodType = StringUtils.emptyToNull(attrs.get("method"));
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-                transletName = AspectranNodeParser.current().getAssistant().applyTransletNamePattern(transletName);
+                transletName = AspectranNodeParsingContext.assistant().applyTransletNamePattern(transletName);
 
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
-                AspectranNodeParser.current().pushObject(includeActionRule);
+                AspectranNodeParsingContext.pushObject(includeActionRule);
             })
             .endNodelet(text -> {
-                IncludeActionRule includeActionRule = AspectranNodeParser.current().popObject();
-                HasActionRules applicable = AspectranNodeParser.current().peekObject();
+                IncludeActionRule includeActionRule = AspectranNodeParsingContext.popObject();
+                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
                 applicable.putActionRule(includeActionRule);
             })
             .with(ParametersNodeletAdder.instance())

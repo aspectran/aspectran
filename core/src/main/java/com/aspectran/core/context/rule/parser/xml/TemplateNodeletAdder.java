@@ -53,13 +53,13 @@ class TemplateNodeletAdder implements NodeletAdder {
                 TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file,
                         resource, url, style, null, contentType, encoding, noCache);
 
-                AspectranNodeParser.current().pushObject(templateRule);
+                AspectranNodeParsingContext.pushObject(templateRule);
             })
             .endNodelet(text -> {
-                TemplateRule templateRule = AspectranNodeParser.current().popObject();
+                TemplateRule templateRule = AspectranNodeParsingContext.popObject();
 
                 TemplateRule.updateTemplateSource(templateRule, text);
-                AspectranNodeParser.current().getAssistant().addTemplateRule(templateRule);
+                AspectranNodeParsingContext.assistant().addTemplateRule(templateRule);
             });
     }
 

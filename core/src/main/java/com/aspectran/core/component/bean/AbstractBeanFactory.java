@@ -129,7 +129,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             Object[] args;
             Class<?>[] argTypes;
 
-            ItemRuleMap ctorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+            ItemRuleMap ctorArgumentItemRuleMap = beanRule.getArgumentItemRuleMap();
             if (ctorArgumentItemRuleMap != null && !ctorArgumentItemRuleMap.isEmpty()) {
                 Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(ctorArgumentItemRuleMap);
                 args = new Object[ctorArgumentItemRuleMap.size()];
