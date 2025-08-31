@@ -45,9 +45,9 @@ import java.util.Map;
  * When the parser encounters a node matching a registered XPath, the corresponding Nodelet's
  * {@link Nodelet#process(Map)} method is invoked.</p>
  */
-public class NodeletParser {
+public class NodeletParser2 {
 
-    private static final Logger logger = LoggerFactory.getLogger(NodeletParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(NodeletParser2.class);
 
     private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.emptyMap();
 
@@ -61,7 +61,7 @@ public class NodeletParser {
 
     private NodeTracker nodeTracker;
 
-    public NodeletParser(NodeletGroup nodeletGroup) {
+    public NodeletParser2(NodeletGroup nodeletGroup) {
         this.nodeletGroup = nodeletGroup;
     }
 
@@ -196,15 +196,16 @@ public class NodeletParser {
         private Locator locator;
         private final Path path = new Path(getNodeTracker());
         private final StringBuilder textBuffer = new StringBuilder();
+        private final ArrayStack<NodeletGroup> groupStack = new ArrayStack<>();
 
         @Override
         public void setDocumentLocator(Locator locator) {
-            // Save the locator, so that it can be used later for line tracking when traversing nodes.
             this.locator = locator;
         }
 
         @Override
         public void startDocument() throws SAXException {
+            groupStack.push(nodeletGroup);
             Nodelet nodelet = nodeletGroup.getNodeletMap().get("/");
             if (nodelet != null) {
                 try {
@@ -225,6 +226,7 @@ public class NodeletParser {
                     throw new SAXException("Error processing nodelet at the end of document", e);
                 }
             }
+            groupStack.pop();
         }
 
         @Override
@@ -239,30 +241,19 @@ public class NodeletParser {
                 nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
             }
 
-            Map<String, String> attrs = parseAttributes(attributes);
-            Nodelet nodelet = nodeletGroup.getNodeletMap().get(xpath);
-            if (nodelet == null) {
-                for (Map.Entry<String, NodeletGroup> entry : nodeletGroup.getMountedGroups().entrySet()) {
-                    String mountPath = entry.getKey();
-                    if (xpath.startsWith(mountPath)) {
-                        NodeletGroup mountedGroup = entry.getValue();
-                        String relativePath = xpath.substring(mountPath.length());
-                        if (relativePath.isEmpty()) {
-                            relativePath = "/";
-                        } else if (relativePath.charAt(0) != '/') {
-                            relativePath = "/" + relativePath;
-                        }
-                        nodelet = mountedGroup.getNodeletMap().get(relativePath);
-                        if (nodelet != null) {
-                            break;
-                        }
-                    }
-                }
+            NodeletGroup currentGroup = groupStack.peek();
+            Nodelet nodelet = currentGroup.getNodeletMap().get(xpath);
+
+            NodeletGroup mountedGroup = currentGroup.getMountedGroups().get(qName);
+            if (mountedGroup != null) {
+                currentGroup = mountedGroup;
+                nodelet = currentGroup.getNodeletMap().get("/");
+                groupStack.push(currentGroup);
             }
 
             if (nodelet != null) {
                 try {
-                    nodelet.process(attrs);
+                    nodelet.process(parseAttributes(attributes));
                 } catch (Exception e) {
                     if (nodeTracker != null) {
                         throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
@@ -285,36 +276,20 @@ public class NodeletParser {
             }
 
             String xpath = path.toString();
-            path.remove();
+            NodeletGroup currentGroup = groupStack.peek();
+            EndNodelet nodelet = currentGroup.getEndNodeletMap().get(xpath);
 
-            String text = null;
-            if (!textBuffer.isEmpty()) {
-                text = textBuffer.toString();
-                textBuffer.delete(0, textBuffer.length());
-            }
-
-            EndNodelet nodelet = nodeletGroup.getEndNodeletMap().get(xpath);
-            if (nodelet == null) {
-                for (Map.Entry<String, NodeletGroup> entry : nodeletGroup.getMountedGroups().entrySet()) {
-                    String mountPath = entry.getKey();
-                    if (xpath.startsWith(mountPath)) {
-                        NodeletGroup mountedGroup = entry.getValue();
-                        String relativePath = xpath.substring(mountPath.length());
-                        if (relativePath.isEmpty()) {
-                            continue;
-                        }
-                        if (relativePath.charAt(0) != '/') {
-                            relativePath = "/" + relativePath;
-                        }
-                        nodelet = mountedGroup.getEndNodeletMap().get(relativePath);
-                        if (nodelet != null) {
-                            break;
-                        }
-                    }
-                }
+            if (currentGroup.getMountedGroups().containsKey(qName)) {
+                groupStack.pop();
             }
 
             if (nodelet != null) {
+                String text = null;
+                if (!textBuffer.isEmpty()) {
+                    text = textBuffer.toString();
+                    textBuffer.delete(0, textBuffer.length());
+                }
+
                 try {
                     nodelet.process(text);
                 } catch (Exception e) {
@@ -325,6 +300,8 @@ public class NodeletParser {
                     }
                 }
             }
+
+            //path.remove();
         }
 
         @Override

@@ -119,7 +119,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     ForwardRule forwardRule = AspectranNodeParser.current().peekObject();
@@ -158,7 +159,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     RedirectRule redirectRule = AspectranNodeParser.current().peekObject();

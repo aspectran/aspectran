@@ -60,8 +60,8 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
                 AspectranNodeParser.current().pushObject(etr);
             })
-            .with(AspectranNodeletGroup.actionNodeletAdder)
-            .with(AspectranNodeletGroup.responseInnerNodeletAdder)
+            .with(AspectranNodeParser.current().getActionNodeletAdder())
+            .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
             .endNodelet(text -> {
                 ExceptionThrownRule etr = AspectranNodeParser.current().popObject();
                 ExceptionRule exceptionRule = AspectranNodeParser.current().peekObject();

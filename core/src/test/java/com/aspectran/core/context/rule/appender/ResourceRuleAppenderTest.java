@@ -81,7 +81,7 @@ class ResourceRuleAppenderTest {
                     String value = attrs.get("value");
 
                     String xpath = nodeletParser.getNodeTracker().getPath();
-                    System.out.println(xpath + name + "=" + value);
+                    System.out.println(xpath + " " + name + "=" + value);
                 })
             .parent().child("append")
                 .nodelet(attrs -> {

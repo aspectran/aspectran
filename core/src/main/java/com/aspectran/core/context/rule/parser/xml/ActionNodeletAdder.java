@@ -47,7 +47,8 @@ class ActionNodeletAdder implements NodeletAdder {
                 ItemRuleMap irm = new ItemRuleMap();
                 AspectranNodeParser.current().pushObject(irm);
             })
-            .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+            .mount(AspectranNodeParser.current().getItemNodeletGroup())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParser.current().popObject();
                 HeaderActionRule headersActionRule = AspectranNodeParser.current().popObject();
@@ -68,7 +69,8 @@ class ActionNodeletAdder implements NodeletAdder {
                 ItemRuleMap irm = new ItemRuleMap();
                 AspectranNodeParser.current().pushObject(irm);
             })
-            .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParser.current().popObject();
                 EchoActionRule echoActionRule = AspectranNodeParser.current().popObject();
@@ -102,7 +104,8 @@ class ActionNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     InvokeActionRule invokeActionRule = AspectranNodeParser.current().peekObject();
@@ -115,7 +118,8 @@ class ActionNodeletAdder implements NodeletAdder {
                         irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                         AspectranNodeParser.current().pushObject(irm);
                     })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     InvokeActionRule invokeActionRule = AspectranNodeParser.current().peekObject();
@@ -142,7 +146,8 @@ class ActionNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     InvokeActionRule invokeActionRule = AspectranNodeParser.current().peekObject();
@@ -155,7 +160,8 @@ class ActionNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     InvokeActionRule invokeActionRule = AspectranNodeParser.current().peekObject();
@@ -186,7 +192,8 @@ class ActionNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     IncludeActionRule includeActionRule = AspectranNodeParser.current().peekObject();
@@ -199,7 +206,8 @@ class ActionNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     IncludeActionRule includeActionRule = AspectranNodeParser.current().peekObject();

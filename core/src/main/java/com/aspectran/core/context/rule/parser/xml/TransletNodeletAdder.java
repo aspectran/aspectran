@@ -88,7 +88,8 @@ class TransletNodeletAdder implements NodeletAdder {
                         irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                         AspectranNodeParser.current().pushObject(irm);
                     })
-                    .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                     .endNodelet(text -> {
                         ItemRuleMap irm = AspectranNodeParser.current().popObject();
                         RequestRule requestRule = AspectranNodeParser.current().peekObject();
@@ -101,7 +102,8 @@ class TransletNodeletAdder implements NodeletAdder {
                         irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                         AspectranNodeParser.current().pushObject(irm);
                     })
-                    .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                     .endNodelet(text -> {
                         ItemRuleMap irm = AspectranNodeParser.current().popObject();
                         RequestRule requestRule = AspectranNodeParser.current().peekObject();
@@ -115,7 +117,8 @@ class TransletNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     TransletRule transletRule = AspectranNodeParser.current().peekObject();
@@ -129,7 +132,8 @@ class TransletNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     TransletRule transletRule = AspectranNodeParser.current().peekObject();
@@ -138,9 +142,10 @@ class TransletNodeletAdder implements NodeletAdder {
                     requestRule.setAttributeItemRuleMap(irm);
                 })
             .parent()
-                .with(AspectranNodeletGroup.actionNodeletAdder)
-                .with(AspectranNodeletGroup.responseInnerNodeletAdder)
-                .with(AspectranNodeletGroup.chooseNodeletAdder)
+                .with(AspectranNodeParser.current().getActionNodeletAdder())
+                .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
+//                    .mount("choose", AspectranNodeletGroup.chooseNodeletGroup)
+                .mount(AspectranNodeParser.current().getChooseNodeletGroup())
             .parent()
                 .child("contents")
                     .nodelet(attrs -> {
@@ -163,9 +168,10 @@ class TransletNodeletAdder implements NodeletAdder {
                             ActionList actionList = ActionList.newInstance(name);
                             AspectranNodeParser.current().pushObject(actionList);
                         })
-                        .with(AspectranNodeletGroup.actionNodeletAdder)
-                        .with(AspectranNodeletGroup.responseInnerNodeletAdder)
-                        .with(AspectranNodeletGroup.chooseNodeletAdder)
+                        .with(AspectranNodeParser.current().getActionNodeletAdder())
+                        .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
+//                    .mount("choose", AspectranNodeletGroup.chooseNodeletGroup)
+                .mount(AspectranNodeParser.current().getChooseNodeletGroup())
                         .endNodelet(text -> {
                             ActionList actionList = AspectranNodeParser.current().popObject();
                             if (!actionList.isEmpty()) {
@@ -181,9 +187,10 @@ class TransletNodeletAdder implements NodeletAdder {
                         ActionList actionList = ActionList.newInstance(name);
                         AspectranNodeParser.current().pushObject(actionList);
                     })
-                    .with(AspectranNodeletGroup.actionNodeletAdder)
-                    .with(AspectranNodeletGroup.responseInnerNodeletAdder)
-                    .with(AspectranNodeletGroup.chooseNodeletAdder)
+                    .with(AspectranNodeParser.current().getActionNodeletAdder())
+                    .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
+//                    .mount("choose", AspectranNodeletGroup.chooseNodeletGroup)
+                .mount(AspectranNodeParser.current().getChooseNodeletGroup())
                     .endNodelet(text -> {
                         ActionList actionList = AspectranNodeParser.current().popObject();
                         if (!actionList.isEmpty()) {
@@ -202,9 +209,10 @@ class TransletNodeletAdder implements NodeletAdder {
                         ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
                         AspectranNodeParser.current().pushObject(responseRule);
                     })
-                    .with(AspectranNodeletGroup.actionNodeletAdder)
-                    .with(AspectranNodeletGroup.responseInnerNodeletAdder)
-                    .with(AspectranNodeletGroup.chooseNodeletAdder)
+                    .with(AspectranNodeParser.current().getActionNodeletAdder())
+                    .with(AspectranNodeParser.current().getResponseInnerNodeletAdder())
+//                    .mount("choose", AspectranNodeletGroup.chooseNodeletGroup)
+                    .mount(AspectranNodeParser.current().getChooseNodeletGroup())
                     .endNodelet(text -> {
                         ResponseRule responseRule = AspectranNodeParser.current().popObject();
                         TransletRule transletRule = AspectranNodeParser.current().peekObject();
@@ -215,7 +223,7 @@ class TransletNodeletAdder implements NodeletAdder {
                         ExceptionRule exceptionRule = new ExceptionRule();
                         AspectranNodeParser.current().pushObject(exceptionRule);
                     })
-                    .with(AspectranNodeletGroup.exceptionInnerNodeletAdder)
+                    .with(AspectranNodeParser.current().getExceptionInnerNodeletAdder())
                     .endNodelet(text -> {
                         ExceptionRule exceptionRule = AspectranNodeParser.current().popObject();
                         TransletRule transletRule = AspectranNodeParser.current().peekObject();

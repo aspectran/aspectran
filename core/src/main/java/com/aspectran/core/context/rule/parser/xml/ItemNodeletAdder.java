@@ -27,20 +27,12 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
-import static com.aspectran.core.context.rule.parser.xml.AspectranNodeletGroup.MAX_INNER_BEAN_DEPTH;
-
 /**
  * The Class ItemNodeParser.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class ItemNodeletAdder implements NodeletAdder {
-
-    private final int depth;
-
-    ItemNodeletAdder(int depth) {
-        this.depth = depth;
-    }
 
     @Override
     public void addTo(NodeletGroup group) {
@@ -56,17 +48,11 @@ class ItemNodeletAdder implements NodeletAdder {
 
                 ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
                 if (value != null && itemRule.getType() == ItemType.SINGLE) {
-                itemRule.setValue(value);
+                    itemRule.setValue(value);
                 }
                 AspectranNodeParser.current().pushObject(itemRule);
             })
-            .with(() -> {
-                if (depth < MAX_INNER_BEAN_DEPTH) {
-                    return AspectranNodeletGroup.innerBeanNodeletAdders[depth + 1];
-                } else {
-                    return null;
-                }
-            })
+            .mount(AspectranNodeParser.current().getInnerBeanNodeletGroup())
             .endNodelet(text -> {
                 ItemRule itemRule = AspectranNodeParser.current().popObject();
                 ItemRuleMap itemRuleMap = AspectranNodeParser.current().peekObject();
@@ -105,13 +91,7 @@ class ItemNodeletAdder implements NodeletAdder {
                     AspectranNodeParser.current().pushObject(value);
                     AspectranNodeParser.current().pushObject(name);
                 })
-                .with(() -> {
-                    if (depth < MAX_INNER_BEAN_DEPTH) {
-                        return AspectranNodeletGroup.innerBeanNodeletAdders[depth + 1];
-                    } else {
-                        return null;
-                    }
-                })
+                .mount(AspectranNodeParser.current().getInnerBeanNodeletGroup())
                 .endNodelet(text -> {
                     String name = AspectranNodeParser.current().popObject();
                     String value = AspectranNodeParser.current().popObject();

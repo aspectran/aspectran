@@ -16,6 +16,8 @@ public class NodeletGroup {
 
     private final Map<String, EndNodelet> endNodeletMap;
 
+    private final Map<String, NodeletGroup> mountedGroups;
+
     private final String xpath;
 
     private final NodeletGroup parent;
@@ -24,32 +26,46 @@ public class NodeletGroup {
         this("/" + xpath, null);
     }
 
+    public NodeletGroup() {
+        this("/", null);
+    }
+
     private NodeletGroup(String xpath, NodeletGroup parent) {
         this.parent = parent;
         this.xpath = xpath;
         if (parent == null) {
             this.nodeletMap = new HashMap<>();
             this.endNodeletMap = new HashMap<>();
+            this.mountedGroups = new HashMap<>();
         } else {
             this.nodeletMap = parent.nodeletMap;
             this.endNodeletMap = parent.endNodeletMap;
+            this.mountedGroups = parent.mountedGroups;
         }
     }
 
-    public Nodelet getNodelet(String xpath) {
-        if (parent != null) {
-            return parent.getNodelet(xpath);
-        } else {
-            return nodeletMap.get(xpath);
-        }
+    public Map<String, Nodelet> getNodeletMap() {
+//        if (parent != null) {
+//            return parent.getNodeletMap();
+//        } else {
+            return nodeletMap;
+//        }
     }
 
-    public EndNodelet getEndNodelet(String xpath) {
-        if (parent != null) {
-            return parent.getEndNodelet(xpath);
-        } else {
-            return endNodeletMap.get(xpath);
-        }
+    public Map<String, EndNodelet> getEndNodeletMap() {
+//        if (parent != null) {
+//            return parent.getEndNodeletMap();
+//        } else {
+            return endNodeletMap;
+//        }
+    }
+
+    public Map<String, NodeletGroup> getMountedGroups() {
+//        if (parent != null) {
+//            return parent.getMountedGroups();
+//        } else {
+            return mountedGroups;
+//        }
     }
 
     public NodeletGroup parent() {
@@ -85,35 +101,44 @@ public class NodeletGroup {
         return this;
     }
 
+    public NodeletGroup mount(NodeletGroup group) {
+        getMountedGroups().put(xpath, group);
+        return this;
+    }
+
+    public NodeletGroup mount(String triggerPath, NodeletGroup group) {
+        getMountedGroups().put(makeXpath(triggerPath), group);
+        return this;
+    }
+
     public NodeletGroup nodelet(Nodelet nodelet) {
-        nodeletMap.put(xpath, nodelet);
+        getNodeletMap().put(xpath, nodelet);
         return this;
     }
 
     public NodeletGroup nodelet(String relativePath, Nodelet nodelet) {
-        nodeletMap.put(makeXpath(relativePath), nodelet);
+        getNodeletMap().put(makeXpath(relativePath), nodelet);
         return this;
     }
 
     public NodeletGroup endNodelet(EndNodelet endNodelet) {
-        endNodeletMap.put(xpath, endNodelet);
+        getEndNodeletMap().put(xpath, endNodelet);
         return this;
     }
 
     public NodeletGroup endNodelet(String relativePath, EndNodelet endNodelet) {
-        endNodeletMap.put(makeXpath(relativePath), endNodelet);
+        getEndNodeletMap().put(makeXpath(relativePath), endNodelet);
         return this;
-    }
-
-    @NonNull
-    private String makeXpath() {
-        return "/" + xpath;
     }
 
     @NonNull
     private String makeXpath(String relativePath) {
         Assert.hasLength(relativePath, "relativePath cannot be null or empty");
-        return xpath + "/" + relativePath;
+        if (xpath.endsWith("/")) {
+            return xpath + relativePath;
+        } else {
+            return xpath + "/" + relativePath;
+        }
     }
 
 }

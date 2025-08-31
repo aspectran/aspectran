@@ -12,72 +12,60 @@ import com.aspectran.utils.nodelet.NodeletGroup;
  */
 public class AspectranNodeletGroup extends NodeletGroup {
 
-    public static final int MAX_INNER_BEAN_DEPTH = 3;
-    public static final int MAX_CHOOSE_DEPTH = 1;
+    private final NodeletGroup chooseNodeletGroup = new NodeletGroup();
+    private final NodeletGroup itemNodeletGroup = new NodeletGroup();
+    private final NodeletGroup innerBeanNodeletGroup = new NodeletGroup();
 
-    static final NodeletAdder appendNodeletAdder;
-    static final NodeletAdder descriptionNodeletAdder;
-    static final NodeletAdder settingsNodeletAdder;
-    static final NodeletAdder typeAliasNodeletAdder;
-    static final NodeletAdder environmentNodeletAdder;
-    static final NodeletAdder actionNodeletAdder;
-    static final NodeletAdder adviceInnerNodeAdder;
-    static final NodeletAdder aspectNodeletAdder;
-    static final NodeletAdder beanNodeletAdder;
-    static final NodeletAdder exceptionInnerNodeletAdder;
-    static final NodeletAdder responseInnerNodeletAdder;
-    static final NodeletAdder scheduleNodeletAdder;
-    static final NodeletAdder templateNodeletAdder;
-    static final NodeletAdder transletNodeletAdder;
-    static final ItemNodeletAdder[] itemNodeletAdders;
-    static final ItemNodeletAdder itemNodeletAdder;
-    static final InnerBeanNodeletAdder[] innerBeanNodeletAdders;
-    static final InnerBeanNodeletAdder innerBeanNodeletAdder;
-    static final ChooseNodeletAdder[] chooseNodeletAdders;
-    static final ChooseNodeletAdder chooseNodeletAdder;
-
-    static {
-        descriptionNodeletAdder = createDescriptionNodeletAdder();
-        settingsNodeletAdder = createSettingsNodeletAdder();
-        typeAliasNodeletAdder = createTypeAliasNodeletAdder();
-        environmentNodeletAdder = new EnvironmentNodeletAdder();
-        actionNodeletAdder = new ActionNodeletAdder();
-        adviceInnerNodeAdder = new AdviceInnerNodeletAdder();
-        aspectNodeletAdder = new AspectNodeletAdder();
-        beanNodeletAdder = new BeanNodeletAdder();
-        exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
-        responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
-        scheduleNodeletAdder = new ScheduleNodeletAdder();
-        templateNodeletAdder = new TemplateNodeletAdder();
-        transletNodeletAdder = new TransletNodeletAdder();
-        appendNodeletAdder = createAppendNodeletAdder();
-        itemNodeletAdders = new ItemNodeletAdder[MAX_INNER_BEAN_DEPTH + 1];
-        innerBeanNodeletAdders = new InnerBeanNodeletAdder[MAX_INNER_BEAN_DEPTH + 1];
-        for (int i = 0; i < itemNodeletAdders.length; i++) {
-            itemNodeletAdders[i] = new ItemNodeletAdder(i);
-            innerBeanNodeletAdders[i] = new InnerBeanNodeletAdder(i);
-        }
-        itemNodeletAdder = itemNodeletAdders[0];
-        innerBeanNodeletAdder = innerBeanNodeletAdders[0];
-        chooseNodeletAdders = new ChooseNodeletAdder[MAX_CHOOSE_DEPTH + 1];
-        for (int i = 0; i < chooseNodeletAdders.length; i++) {
-            chooseNodeletAdders[i] = new ChooseNodeletAdder(i);
-        }
-        chooseNodeletAdder = chooseNodeletAdders[0];
-    }
+    private final NodeletAdder actionNodeletAdder = new ActionNodeletAdder();
+    private final NodeletAdder adviceInnerNodeAdder = new AdviceInnerNodeletAdder();
+    private final NodeletAdder exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
+    private final NodeletAdder responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
 
     AspectranNodeletGroup() {
         super("aspectran");
+
+        chooseNodeletGroup.with(new ChooseNodeletAdder());
+        itemNodeletGroup.with(new ItemNodeletAdder());
+        innerBeanNodeletGroup.with(new InnerBeanNodeletAdder());
+
         with(createDescriptionNodeletAdder());
         with(createSettingsNodeletAdder());
         with(createTypeAliasNodeletAdder());
-        with(environmentNodeletAdder);
-        with(aspectNodeletAdder);
-        with(beanNodeletAdder);
-        with(scheduleNodeletAdder);
-        with(templateNodeletAdder);
-        with(transletNodeletAdder);
-        with(appendNodeletAdder);
+        with(createAppendNodeletAdder());
+        with(new EnvironmentNodeletAdder());
+        with(new AspectNodeletAdder());
+        with(new BeanNodeletAdder());
+        with(new ScheduleNodeletAdder());
+        with(new TemplateNodeletAdder());
+        with(new TransletNodeletAdder());
+    }
+
+    public NodeletAdder getActionNodeletAdder() {
+        return actionNodeletAdder;
+    }
+
+    public NodeletAdder getAdviceInnerNodeAdder() {
+        return adviceInnerNodeAdder;
+    }
+
+    public NodeletAdder getExceptionInnerNodeletAdder() {
+        return exceptionInnerNodeletAdder;
+    }
+
+    public NodeletAdder getResponseInnerNodeletAdder() {
+        return responseInnerNodeletAdder;
+    }
+
+    public NodeletGroup getChooseNodeletGroup() {
+        return chooseNodeletGroup;
+    }
+
+    public NodeletGroup getItemNodeletGroup() {
+        return itemNodeletGroup;
+    }
+
+    public NodeletGroup getInnerBeanNodeletGroup() {
+        return innerBeanNodeletGroup;
     }
 
     @NonNull

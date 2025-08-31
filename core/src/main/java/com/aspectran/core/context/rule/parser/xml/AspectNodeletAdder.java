@@ -111,13 +111,13 @@ class AspectNodeletAdder implements NodeletAdder {
                     AspectranNodeParser.current().getAssistant().resolveAdviceBeanClass(aspectRule);
                 }
             })
-            .with(AspectranNodeletGroup.adviceInnerNodeAdder)
+            .with(AspectranNodeParser.current().getAdviceInnerNodeAdder())
         .parent().child("exception")
             .nodelet(attrs -> {
                 ExceptionRule exceptionRule = new ExceptionRule();
                 AspectranNodeParser.current().pushObject(exceptionRule);
             })
-            .with(AspectranNodeletGroup.exceptionInnerNodeletAdder)
+            .with(AspectranNodeParser.current().getExceptionInnerNodeletAdder())
             .endNodelet(text -> {
                 ExceptionRule exceptionRule = AspectranNodeParser.current().popObject();
                 AspectRule aspectRule = AspectranNodeParser.current().peekObject();

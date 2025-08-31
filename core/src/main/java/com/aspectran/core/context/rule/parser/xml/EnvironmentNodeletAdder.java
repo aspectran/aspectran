@@ -62,7 +62,8 @@ class EnvironmentNodeletAdder implements NodeletAdder {
                 irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                 AspectranNodeParser.current().pushObject(irm);
             })
-            .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParser.current().popObject();
                 EnvironmentRule environmentRule = AspectranNodeParser.current().peekObject();

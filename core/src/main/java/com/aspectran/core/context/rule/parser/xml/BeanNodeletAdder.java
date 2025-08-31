@@ -109,7 +109,8 @@ class BeanNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     BeanRule beanRule = AspectranNodeParser.current().peekObject();
@@ -122,7 +123,8 @@ class BeanNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdder)
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     BeanRule beanRule = AspectranNodeParser.current().peekObject();

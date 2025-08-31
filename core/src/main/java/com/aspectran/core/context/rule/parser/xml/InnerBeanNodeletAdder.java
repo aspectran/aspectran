@@ -17,15 +17,12 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DescriptionRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
-
-import static com.aspectran.core.context.rule.parser.xml.AspectranNodeletGroup.MAX_INNER_BEAN_DEPTH;
 
 /**
  * The Class InnerBeanNodeParser.
@@ -34,27 +31,10 @@ import static com.aspectran.core.context.rule.parser.xml.AspectranNodeletGroup.M
  */
 class InnerBeanNodeletAdder implements NodeletAdder {
 
-    private final int depth;
-
-    InnerBeanNodeletAdder(int depth) {
-        this.depth = depth;
-    }
-
     @Override
     public void addTo(@NonNull NodeletGroup group) {
         group.child("bean")
             .nodelet(attrs -> {
-                if (depth >= MAX_INNER_BEAN_DEPTH) {
-                    StringBuilder sb = new StringBuilder("Inner beans can be nested up to ");
-                    if (MAX_INNER_BEAN_DEPTH > 1) {
-                        sb.append(MAX_INNER_BEAN_DEPTH);
-                        sb.append(" times");
-                    } else {
-                        sb.append("at most once");
-                    }
-                    throw new IllegalRuleException(sb.toString());
-                }
-
                 String className = StringUtils.emptyToNull(AspectranNodeParser.current().getAssistant().resolveAliasType(attrs.get("class")));
                 String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
                 String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
@@ -108,7 +88,8 @@ class InnerBeanNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdders[depth])
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     BeanRule beanRule = AspectranNodeParser.current().peekObject();
@@ -121,7 +102,8 @@ class InnerBeanNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParser.current().pushObject(irm);
                 })
-                .with(AspectranNodeletGroup.itemNodeletAdders[depth])
+//            .with(AspectranNodeParser.current().itemNodeletAdder)
+                .mount(AspectranNodeParser.current().getItemNodeletGroup())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParser.current().popObject();
                     BeanRule beanRule = AspectranNodeParser.current().peekObject();
