@@ -91,6 +91,12 @@ class NestedBeanTest {
         assertEquals("Nested String Bean", result);
     }
 
+    @Test
+    void testNewNodeletParser() {
+//        String result = beanRegistry.getBean("nestedStringBeanDepth3");
+//        assertEquals("Nested String Bean", result);
+    }
+
 //    @Test
 //    void overNestedStringBean() {
 //        String result = beanRegistry.getBean("overNestedStringBean");

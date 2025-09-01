@@ -18,6 +18,31 @@
 <!--        </arguments>-->
 <!--    </bean>-->
 
+        <bean id="mapBean2" class="java.util.HashMap" scope="prototype">
+            <arguments>
+                <item type="map">
+                    <entry name="ENTRY-1">
+                        <bean id="mapBean" class="java.util.ArrayList" scope="prototype">
+                            <arguments>
+                                <item type="list">
+                                    <bean class="java.lang.String">
+                                        <arguments>
+                                            <item>ARG-1</item>
+                                        </arguments>
+                                    </bean>
+                                    <bean class="java.lang.String">
+                                        <arguments>
+                                            <item>ARG-2</item>
+                                        </arguments>
+                                    </bean>
+                                </item>
+                            </arguments>
+                        </bean>
+                    </entry>
+                </item>
+            </arguments>
+        </bean>
+
 <!--    <bean id="listBean" class="java.util.LinkedList" scope="prototype">-->
 <!--        <arguments>-->
 <!--            <item type="list">-->
@@ -51,23 +76,23 @@
 <!--        </arguments>-->
 <!--    </bean>-->
 
-    <bean id="nestedStringBeanDepth3" class="java.lang.String" scope="prototype">
-        <arguments>
-            <item>
-                <bean class="java.lang.String">
-                    <arguments>
-                        <item>
-                            <bean class="java.lang.String">
-                                <arguments>
-                                    <item>Nested String Bean</item>
-                                </arguments>
-                            </bean>
-                        </item>
-                    </arguments>
-                </bean>
-            </item>
-        </arguments>
-    </bean>
+<!--    <bean id="nestedStringBeanDepth3" class="java.lang.String" scope="prototype">-->
+<!--        <arguments>-->
+<!--            <item>-->
+<!--                <bean class="java.lang.String">-->
+<!--                    <arguments>-->
+<!--                        <item>-->
+<!--                            <bean class="java.lang.String">-->
+<!--                                <arguments>-->
+<!--                                    <item>Nested String Bean</item>-->
+<!--                                </arguments>-->
+<!--                            </bean>-->
+<!--                        </item>-->
+<!--                    </arguments>-->
+<!--                </bean>-->
+<!--            </item>-->
+<!--        </arguments>-->
+<!--    </bean>-->
 
 <!--    <bean id="overNestedStringBean" class="java.lang.String" scope="prototype">-->
 <!--        <arguments>-->

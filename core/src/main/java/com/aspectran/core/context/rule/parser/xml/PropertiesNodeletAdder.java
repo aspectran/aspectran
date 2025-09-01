@@ -36,15 +36,9 @@ class PropertiesNodeletAdder implements NodeletAdder {
             .with(ItemNodeletAdder.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                Object object = AspectranNodeParsingContext.peekObject();
-                try {
-//                    HasProperties hasProperties = AspectranNodeParsingContextngContext.peekObject();
-                    HasProperties hasProperties = (HasProperties)object;
-                    irm = AspectranNodeParsingContext.assistant().profiling(irm, hasProperties.getPropertyItemRuleMap());
-                    hasProperties.setPropertyItemRuleMap(irm);
-                } catch (ClassCastException e) {
-                    System.out.println(e.getMessage());
-                }
+                HasProperties hasProperties = AspectranNodeParsingContext.peekObject();
+                irm = AspectranNodeParsingContext.assistant().profiling(irm, hasProperties.getPropertyItemRuleMap());
+                hasProperties.setPropertyItemRuleMap(irm);
             });
     }
 

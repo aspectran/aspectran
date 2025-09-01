@@ -138,8 +138,8 @@ public class NodeletParser2 {
             reader.setContentHandler(new DefaultContentHandler());
             reader.setErrorHandler(new DefaultErrorHandler());
             reader.parse(inputSource);
-        } catch (SAXParseException e) {
-            throw new NodeletException("Error parsing XML; " + e);
+//        } catch (SAXParseException e) {
+//            throw new NodeletException("Error parsing XML" + e);
         } catch (Exception e) {
             throw new NodeletException("Error parsing XML", e);
         }
@@ -147,11 +147,12 @@ public class NodeletParser2 {
 
     private static class MountInfo {
         int index;
-        int depth;
+        String path;
         NodeletGroup group;
-        static MountInfo of(int index, NodeletGroup group) {
+        static MountInfo of(int index, String path, NodeletGroup group) {
             MountInfo info = new MountInfo();
             info.index = index;
+            info.path = path;
             info.group = group;
             return info;
         }
@@ -293,7 +294,7 @@ public class NodeletParser2 {
                 try {
                     nodelet.process(EMPTY_ATTRIBUTES);
                 } catch (Exception e) {
-                    throw new SAXException("Error processing nodelet at the beginning of document", e);
+                    throw new SAXException("Error processing the nodelet of the document", e);
                 }
             }
         }
@@ -305,7 +306,7 @@ public class NodeletParser2 {
                 try {
                     nodelet.process(null);
                 } catch (Exception e) {
-                    throw new SAXException("Error processing nodelet at the end of document", e);
+                    throw new SAXException("Error processing the end nodelet of the document", e);
                 }
             }
 //            groupStack.pop();
@@ -323,23 +324,13 @@ public class NodeletParser2 {
                 nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
             }
 
-//            if (path.isMounted()) {
-//                xpath = path.getMountXpath();
-//            }
-
-//            NodeletGroup currentGroup = groupStack.peek();
-//            Nodelet nodelet = currentGroup.getNodelet(xpath);
-            NodeletGroup currentGroup;
+            Nodelet nodelet;
             if (mountStack.isEmpty()) {
-                currentGroup = nodeletGroup;
+                nodelet = nodeletGroup.getNodelet(xpath);
             } else {
                 MountInfo mountInfo = mountStack.peek();
-                mountInfo.depth++;
-                currentGroup = mountInfo.group;
-                xpath = path.getMountXpath();
+                nodelet = mountInfo.group.getNodelet(path.getMountXpath());
             }
-
-            Nodelet nodelet = currentGroup.getNodelet(xpath);
 
             if (nodelet == null) {
                 String triggerName = path.findTriggerName();
@@ -348,14 +339,9 @@ public class NodeletParser2 {
                     NodeletGroup mountedGroup = nodeletGroup.getMountedGroup(mountPath);
                     if (mountedGroup != null) {
                         int mountIndex = path.mount();
-                        MountInfo mountInfo = MountInfo.of(mountIndex, mountedGroup);
+                        MountInfo mountInfo = MountInfo.of(mountIndex, mountPath, mountedGroup);
                         mountStack.push(mountInfo);
                         nodelet = mountedGroup.getNodelet(path.getMountXpath());
-
-//                        String mountXpath = path.mount();
-//                        currentGroup = mountedGroup;
-//                        nodelet = currentGroup.getNodelet(mountXpath);
-//                        groupStack.push(currentGroup);
                     }
                 }
             }
@@ -364,11 +350,12 @@ public class NodeletParser2 {
                 try {
                     nodelet.process(parseAttributes(attributes));
                 } catch (Exception e) {
-                    if (nodeTracker != null) {
-                        throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
-                    } else {
-                        throw new SAXException("Error processing nodelet at start element <" + qName + ">", e);
-                    }
+                    throw new SAXParseException("Error processing nodelet \"" + path + "\"" , locator, e);
+//                    if (nodeTracker != null) {
+//                        throw new SAXException("Error processing nodelet at start element " + nodeTracker, e);
+//                    } else {
+//                        throw new SAXException("Error processing nodelet at start element <" + qName + ">", e);
+//                    }
                 }
             }
 
@@ -384,32 +371,30 @@ public class NodeletParser2 {
                 nodeTracker.setLocation(locator.getLineNumber(), locator.getColumnNumber());
             }
 
-//            String xpath = (path.isMounted() ? path.getMountXpath() : path.toString());
-//            NodeletGroup currentGroup = groupStack.peek();
-//            EndNodelet endNodelet = currentGroup.getEndNodelet(xpath);
-            path.remove();
             String xpath = path.toString();
-            NodeletGroup currentGroup;
-            MountInfo mountInfo;
+
+            EndNodelet endNodelet;
             if (mountStack.isEmpty()) {
-                currentGroup = nodeletGroup;
-                mountInfo = null;
+                endNodelet = nodeletGroup.getEndNodelet(xpath);
             } else {
-                mountInfo = mountStack.peek();
-                mountInfo.depth--;
-                if (mountInfo.depth == 0) {
-                    mountInfo = mountStack.pop();
-                    if (mountStack.isEmpty()) {
-                        path.unmount();
-                    } else {
-                        path.remount(mountInfo.index);
+                MountInfo mountInfo = mountStack.peek();
+                endNodelet = mountInfo.group.getEndNodelet(path.getMountXpath());
+                if (endNodelet == null) {
+                    throw new SAXParseException("End nodelet not found for \"" + path.getMountXpath() + "\"", locator);
+                }
+                String triggerName = path.findTriggerName();
+                if (triggerName != null) {
+                    String mountPath = NodeletGroup.makeMountPath(triggerName, qName);
+                    if (mountPath.equals(mountInfo.path)) {
+                        mountStack.pop();
+                        if (mountStack.isEmpty()) {
+                            path.unmount();
+                        } else {
+                            path.remount(mountStack.peek().index);
+                        }
                     }
                 }
-                currentGroup = mountInfo.group;
-                xpath = path.getMountXpath();
             }
-
-            EndNodelet endNodelet = currentGroup.getEndNodelet(xpath);
 
             if (endNodelet != null) {
                 String text = null;
@@ -421,20 +406,16 @@ public class NodeletParser2 {
                 try {
                     endNodelet.process(text);
                 } catch (Exception e) {
-                    if (nodeTracker != null) {
-                        throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);
-                    } else {
-                        throw new SAXException("Error processing nodelet at end element <" + qName + ">", e);
-                    }
+                    throw new SAXParseException("Error processing end nodelet \"" + path + "\"" , locator, e);
+//                    if (nodeTracker != null) {
+//                        throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);
+//                    } else {
+//                        throw new SAXException("Error processing nodelet at end element <" + qName + ">", e);
+//                    }
                 }
             }
 
-//            if (path.isMounted() && path.getMountDepth() == 0) {
-//                path.unmount();
-//                groupStack.pop();
-//            }
-
-            
+            path.remove();
         }
 
         @Override

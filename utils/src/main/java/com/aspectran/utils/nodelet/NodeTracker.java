@@ -126,7 +126,7 @@ public class NodeTracker implements Cloneable {
      */
     @Override
     public String toString() {
-        return "node '" + name + "' at line " + lineNumber + ", column " + columnNumber;
+        return "\"" + path + "\" at line " + lineNumber + ", column " + columnNumber;
     }
 
 }
