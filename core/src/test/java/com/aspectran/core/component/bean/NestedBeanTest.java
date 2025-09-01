@@ -86,8 +86,8 @@ class NestedBeanTest {
     }
 
     @Test
-    void nestedStringBean_2() {
-        String result = beanRegistry.getBean("nestedStringBean-2");
+    void nestedStringBeanDepth3() {
+        String result = beanRegistry.getBean("nestedStringBeanDepth3");
         assertEquals("Nested String Bean", result);
     }
 
