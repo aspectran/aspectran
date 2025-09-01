@@ -34,7 +34,7 @@ class ChooseNodeletAdder implements NodeletAdder {
 
     private static volatile ChooseNodeletAdder INSTANCE;
 
-    static ChooseNodeletAdder instance(int count) {
+    static ChooseNodeletAdder instance() {
         if (INSTANCE == null) {
             synchronized (ChooseNodeletAdder.class) {
                 if (INSTANCE == null) {
@@ -42,23 +42,20 @@ class ChooseNodeletAdder implements NodeletAdder {
                 }
             }
         }
-        System.out.println("ChooseNodeletGroup instance: " + count);
         return INSTANCE;
     }
 
-    private static final AtomicInteger count = new AtomicInteger(0);
-
     @Override
     public void addTo(@NonNull NodeletGroup group) {
-        group.child("choose")
+        group.child(ChooseNodeletGroup.instance().getName())
             .nodelet(attrs -> {
                 ChooseRule chooseRule = ChooseRule.newInstance();
                 AspectranNodeParsingContext.pushObject(chooseRule);
             })
             .endNodelet(text -> {
                 ChooseRule chooseRule = AspectranNodeParsingContext.popObject();
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(chooseRule);
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(chooseRule);
             })
             .child("when")
                 .nodelet(attrs -> {
@@ -71,10 +68,9 @@ class ChooseNodeletAdder implements NodeletAdder {
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
-                .mount(ChooseNodeletGroup.instance(count.incrementAndGet()))
-//                .with(ChooseNodeletAdder.instance(0))
+                .mount(ChooseNodeletGroup.instance())
                 .endNodelet(text -> {
-                    AspectranNodeParsingContext.popObject();
+                    AspectranNodeParsingContext.popObject(); // chooseWhenRule
                 })
             .parent().child("otherwise")
                 .nodelet(attrs -> {
@@ -84,10 +80,9 @@ class ChooseNodeletAdder implements NodeletAdder {
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
-                .mount(ChooseNodeletGroup.instance(count.incrementAndGet()))
-//                .with(ChooseNodeletAdder.instance(0))
+                .mount(ChooseNodeletGroup.instance())
                 .endNodelet(text -> {
-                    AspectranNodeParsingContext.popObject();
+                    AspectranNodeParsingContext.popObject(); // chooseWhenRule
                 });
         }
 

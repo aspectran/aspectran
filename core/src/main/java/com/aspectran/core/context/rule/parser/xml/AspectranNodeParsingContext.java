@@ -14,6 +14,7 @@ class AspectranNodeParsingContext {
     }
 
     static void clear() {
+        current().getObjectStack().clear();
         CURRENT.remove();
     }
 
@@ -75,13 +76,6 @@ class AspectranNodeParsingContext {
     @SuppressWarnings("unchecked")
     static <T> T peekObject(Class<?> target) {
         return (T)current().getObjectStack().peek(target);
-    }
-
-    /**
-     * Clears all objects from the internal object stack.
-     */
-    static void clearObjectStack() {
-        current().getObjectStack().clear();
     }
 
 }

@@ -15,12 +15,7 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletGroup;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
@@ -29,7 +24,7 @@ class InnerBeanNodeletGroup extends NodeletGroup {
 
     private static volatile InnerBeanNodeletGroup INSTANCE;
 
-    static InnerBeanNodeletGroup instance(int count) {
+    static InnerBeanNodeletGroup instance() {
         if (INSTANCE == null) {
             synchronized (InnerBeanNodeletGroup.class) {
                 if (INSTANCE == null) {
@@ -38,27 +33,15 @@ class InnerBeanNodeletGroup extends NodeletGroup {
                 }
             }
         }
-        System.out.println("InnerBeanNodeletGroup instance: " + count);
         return INSTANCE;
     }
 
-    static final AtomicInteger count = new AtomicInteger(0);
-
     InnerBeanNodeletGroup() {
-        super("bean");
-    }
-
-    @Override
-    public NodeletGroup child(String name) {
-        if (getName().equals(name)) {
-            return this;
-        } else  {
-            return super.child(name);
-        }
+        super("bean", true);
     }
 
     private void lazyInit() {
-        InnerBeanNodeletAdder.instance(0).addTo(this);
+        InnerBeanNodeletAdder.instance().addTo(this);
     }
 
 }

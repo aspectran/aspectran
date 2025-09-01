@@ -7,7 +7,7 @@
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by hasActionRules law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -61,15 +61,14 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(irm);
             })
             .with(ItemNodeletAdder.instance())
-            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HeaderActionRule headersActionRule = AspectranNodeParsingContext.popObject();
 
                 headersActionRule.setHeaderItemRuleMap(irm);
 
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(headersActionRule);
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(headersActionRule);
             })
         .parent().child("echo")
             .nodelet(attrs -> {
@@ -83,7 +82,6 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(irm);
             })
             .with(ItemNodeletAdder.instance())
-            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 EchoActionRule echoActionRule = AspectranNodeParsingContext.popObject();
@@ -92,8 +90,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                     echoActionRule.setEchoItemRuleMap(irm);
                 }
 
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(echoActionRule);
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(echoActionRule);
             })
         .parent().child("action")
             .nodelet(attrs -> {
@@ -106,13 +104,13 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
-            .endNodelet(text -> {
-                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(invokeActionRule);
-            })
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
+            .endNodelet(text -> {
+                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(invokeActionRule);
+            })
         .parent().child("invoke")
             .nodelet(attrs -> {
                 String methodName = StringUtils.emptyToNull(attrs.get("method"));
@@ -122,13 +120,13 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
-            .endNodelet(text -> {
-                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(invokeActionRule);
-            })
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
+            .endNodelet(text -> {
+                InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(invokeActionRule);
+            })
         .parent().child("include")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));
@@ -141,13 +139,13 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
                 AspectranNodeParsingContext.pushObject(includeActionRule);
             })
+            .with(ParametersNodeletAdder.instance())
+            .with(AttributesNodeletAdder.instance())
             .endNodelet(text -> {
                 IncludeActionRule includeActionRule = AspectranNodeParsingContext.popObject();
-                HasActionRules applicable = AspectranNodeParsingContext.peekObject();
-                applicable.putActionRule(includeActionRule);
-            })
-            .with(ParametersNodeletAdder.instance())
-            .with(AttributesNodeletAdder.instance());
+                HasActionRules hasActionRules = AspectranNodeParsingContext.peekObject();
+                hasActionRules.putActionRule(includeActionRule);
+            });
     }
 
 }

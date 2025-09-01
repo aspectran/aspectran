@@ -137,12 +137,12 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Constructs a new text token.
-     * @param defaultValue the plain text content of the token
+     * @param text the plain text content of the token
      */
-    public Token(String defaultValue) {
+    public Token(String text) {
         this.type = TokenType.TEXT;
         this.name = null;
-        this.defaultValue = defaultValue;
+        this.defaultValue = text;
     }
 
     /**
@@ -462,10 +462,14 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", type);
-        tsb.append("name", name);
-        tsb.append("value", value);
-        tsb.append("getterName", getterName);
-        tsb.append("defaultValue", defaultValue);
+        if (type == TokenType.TEXT) {
+            tsb.append("value", defaultValue);
+        } else {
+            tsb.append("name", name);
+            tsb.append("value", value);
+            tsb.append("getterName", getterName);
+            tsb.append("defaultValue", defaultValue);
+        }
         return tsb.toString();
     }
 

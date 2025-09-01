@@ -16,13 +16,12 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
@@ -31,7 +30,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
 
     private static volatile InnerBeanNodeletAdder INSTANCE;
 
-    static InnerBeanNodeletAdder instance(int count) {
+    static InnerBeanNodeletAdder instance() {
         if (INSTANCE == null) {
             synchronized (InnerBeanNodeletAdder.class) {
                 if (INSTANCE == null) {
@@ -39,15 +38,12 @@ class InnerBeanNodeletAdder implements NodeletAdder {
                 }
             }
         }
-        System.out.println("InnerBeanNodeletGroup instance: " + count);
         return INSTANCE;
     }
 
-    static final AtomicInteger count = new AtomicInteger(0);
-
     @Override
     public void addTo(@NonNull NodeletGroup group) {
-        group.child("bean")
+        group.child(InnerBeanNodeletGroup.instance().getName())
             .nodelet(attrs -> {
                 String className = StringUtils.emptyToNull(AspectranNodeParsingContext.assistant().resolveAliasType(attrs.get("class")));
                 String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
@@ -73,14 +69,21 @@ class InnerBeanNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.assistant().resolveFactoryBeanClass(beanRule);
                 AspectranNodeParsingContext.assistant().addInnerBeanRule(beanRule);
 
-                ItemRule itemRule = AspectranNodeParsingContext.peekObject();
-                if (itemRule.isListableType()) {
-                    itemRule.addBeanRule(beanRule);
-                } else if (itemRule.isMappableType()) {
-                    String name = AspectranNodeParsingContext.peekObject();
-                    itemRule.putBeanRule(name, beanRule);
-                } else {
-                    itemRule.setBeanRule(beanRule);
+                Object object = AspectranNodeParsingContext.peekObject();
+                if (object instanceof ItemRule itemRule) {
+                    if (itemRule.isListableType()) {
+                        itemRule.addBeanRule(beanRule);
+                    } else if (itemRule.isMappableType()) {
+                        String name = AspectranNodeParsingContext.peekObject();
+                        itemRule.putBeanRule(name, beanRule);
+                    } else {
+                        itemRule.setBeanRule(beanRule);
+                    }
+                } else if (object instanceof ItemEntry itemEntry) {
+                    ItemRule itemRule = itemEntry.getItemRule();
+                    if (itemRule.getType() == null || itemRule.isMappableType()) {
+                        itemRule.putBeanRule(itemEntry.getName(), beanRule);
+                    }
                 }
             });
     }

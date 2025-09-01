@@ -34,7 +34,6 @@ class AttributesNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(irm);
             })
             .with(ItemNodeletAdder.instance())
-            //.mount(ItemNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HasAttributes hasAttributes = AspectranNodeParsingContext.peekObject();

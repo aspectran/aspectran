@@ -15,14 +15,7 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.ChooseRule;
-import com.aspectran.core.context.rule.ChooseWhenRule;
-import com.aspectran.core.context.rule.ability.HasActionRules;
-import com.aspectran.utils.Assert;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletGroup;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Class ChooseNodeParser.
@@ -33,7 +26,7 @@ class ChooseNodeletGroup extends NodeletGroup {
 
     private static volatile ChooseNodeletGroup INSTANCE;
 
-    static ChooseNodeletGroup instance(int count) {
+    static ChooseNodeletGroup instance() {
         if (INSTANCE == null) {
             synchronized (ChooseNodeletGroup.class) {
                 if (INSTANCE == null) {
@@ -42,27 +35,15 @@ class ChooseNodeletGroup extends NodeletGroup {
                 }
             }
         }
-        System.out.println("ChooseNodeletGroup instance: " + count);
         return INSTANCE;
     }
 
-    private static final AtomicInteger count = new AtomicInteger(0);
-
     ChooseNodeletGroup() {
-        super("choose");
-    }
-
-    @Override
-    public NodeletGroup child(String name) {
-        if (getName().equals(name)) {
-            return this;
-        } else  {
-            return super.child(name);
-        }
+        super("choose", true);
     }
 
     private void lazyInit() {
-        ChooseNodeletAdder.instance(0).addTo(this);
+        ChooseNodeletAdder.instance().addTo(this);
     }
 
 }

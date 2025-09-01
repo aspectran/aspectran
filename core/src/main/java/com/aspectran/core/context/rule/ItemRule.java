@@ -61,17 +61,17 @@ public class ItemRule {
 
     private Map<String, Token[]> tokensMap;
 
-    private Boolean mandatory;
-
-    private Boolean secret;
-
-    private boolean autoNamed;
-
     private BeanRule beanRule;
 
     private List<BeanRule> beanRuleList;
 
     private Map<String, BeanRule> beanRuleMap;
+
+    private Boolean mandatory;
+
+    private Boolean secret;
+
+    private boolean autoNamed;
 
     /**
      * Instantiates a new ItemRule.
@@ -336,6 +336,60 @@ public class ItemRule {
         tokensList = new ArrayList<>(tokensSet);
     }
 
+    public BeanRule getBeanRule() {
+        checkSingleType();
+        return beanRule;
+    }
+
+    public void setBeanRule(BeanRule beanRule) {
+        if (type == null) {
+            type = ItemType.SINGLE;
+        }
+        checkSingleType();
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        this.beanRule = beanRule;
+    }
+
+    public List<BeanRule> getBeanRuleList() {
+        checkListType();
+        return beanRuleList;
+    }
+
+    public void addBeanRule(BeanRule beanRule) {
+        checkListType();
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        if (beanRuleList == null) {
+            beanRuleList = new ArrayList<>();
+        }
+        beanRuleList.add(beanRule);
+    }
+
+    public Map<String, BeanRule> getBeanRuleMap() {
+        checkMappableType();
+        return beanRuleMap;
+    }
+
+    public void putBeanRule(String name, BeanRule beanRule) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
+        if (type == null) {
+            type = ItemType.MAP;
+        }
+        checkMappableType();
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        if (beanRuleMap == null) {
+            beanRuleMap = new LinkedHashMap<>();
+        }
+        beanRuleMap.put(name, beanRule);
+    }
+
     /**
      * Gets the value type of this item.
      * @return the value type of this item
@@ -503,57 +557,6 @@ public class ItemRule {
             }
         }
         return false;
-    }
-
-    public BeanRule getBeanRule() {
-        checkSingleType();
-        return beanRule;
-    }
-
-    public void setBeanRule(BeanRule beanRule) {
-        if (type == null) {
-            type = ItemType.SINGLE;
-        }
-        checkSingleType();
-        if (valueType == null) {
-            valueType = ItemValueType.BEAN;
-        }
-        this.beanRule = beanRule;
-    }
-
-    public List<BeanRule> getBeanRuleList() {
-        checkListType();
-        return beanRuleList;
-    }
-
-    public void addBeanRule(BeanRule beanRule) {
-        checkListType();
-        if (valueType == null) {
-            valueType = ItemValueType.BEAN;
-        }
-        if (beanRuleList == null) {
-            beanRuleList = new ArrayList<>();
-        }
-        beanRuleList.add(beanRule);
-    }
-
-    public Map<String, BeanRule> getBeanRuleMap() {
-        checkMappableType();
-        return beanRuleMap;
-    }
-
-    public void putBeanRule(String name, BeanRule beanRule) {
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
-        }
-        checkMappableType();
-        if (valueType == null) {
-            valueType = ItemValueType.BEAN;
-        }
-        if (beanRuleMap == null) {
-            beanRuleMap = new LinkedHashMap<>();
-        }
-        beanRuleMap.put(name, beanRule);
     }
 
     public boolean isEvaluable() {

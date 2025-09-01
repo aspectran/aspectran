@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -48,7 +49,7 @@ class ItemNodeletAdder implements NodeletAdder {
 
     @Override
     public void addTo(@NonNull NodeletGroup group) {
-        group.child("item")
+        group.child(ItemNodeletGroup.instance().getName())
             .nodelet(attrs -> {
                 String type = attrs.get("type");
                 String name = attrs.get("name");
@@ -64,8 +65,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 }
                 AspectranNodeParsingContext.pushObject(itemRule);
             })
-            .mount(InnerBeanNodeletGroup.instance(InnerBeanNodeletGroup.count.incrementAndGet()))
-//            .with(InnerBeanNodeletAdder.instance(0))
+            .mount(InnerBeanNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRule itemRule = AspectranNodeParsingContext.popObject();
                 ItemRuleMap itemRuleMap = AspectranNodeParsingContext.peekObject();
@@ -100,28 +100,24 @@ class ItemNodeletAdder implements NodeletAdder {
                     String value = attrs.get("value");
                     String tokenize = attrs.get("tokenize");
 
-                    AspectranNodeParsingContext.pushObject(tokenize);
-                    AspectranNodeParsingContext.pushObject(value);
-                    AspectranNodeParsingContext.pushObject(name);
-                })
-                .mount(InnerBeanNodeletGroup.instance(InnerBeanNodeletGroup.count.incrementAndGet()))
-//                .with(InnerBeanNodeletAdder.instance(0))
-                .endNodelet(text -> {
-                    String name = AspectranNodeParsingContext.popObject();
-                    String value = AspectranNodeParsingContext.popObject();
-                    String tokenize = AspectranNodeParsingContext.popObject();
                     ItemRule itemRule = AspectranNodeParsingContext.peekObject();
 
+                    ItemEntry itemEntry = ItemEntry.of(itemRule, name, value, tokenize);
+                    AspectranNodeParsingContext.pushObject(itemEntry);
+                })
+                .mount(InnerBeanNodeletGroup.instance())
+                .endNodelet(text -> {
+                    ItemEntry itemEntry = AspectranNodeParsingContext.popObject();
+                    ItemRule itemRule = itemEntry.getItemRule();
+
                     if (itemRule.isMappableType() && itemRule.getValueType() != ItemValueType.BEAN) {
-                        boolean isTokenize = BooleanUtils.toBoolean(
-                                BooleanUtils.toNullableBooleanObject(tokenize), itemRule.isTokenize());
                         Token[] tokens = null;
-                        if (value != null) {
-                            tokens = TokenParser.makeTokens(value, isTokenize);
+                        if (itemEntry.getValue() != null) {
+                            tokens = TokenParser.makeTokens(itemEntry.getValue(), itemEntry.isTokenizable());
                         } else if (StringUtils.hasText(text)) {
-                            tokens = TokenParser.makeTokens(text, isTokenize);
+                            tokens = TokenParser.makeTokens(text, itemEntry.isTokenizable());
                         }
-                        itemRule.putValue(name, tokens);
+                        itemRule.putValue(itemEntry.getName(), tokens);
                     }
                 });
     }

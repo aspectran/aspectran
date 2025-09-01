@@ -14,6 +14,7 @@ public class AspectranNodeletGroup extends NodeletGroup {
             synchronized (AspectranNodeletGroup.class) {
                 if (INSTANCE == null) {
                     INSTANCE = new AspectranNodeletGroup();
+                    INSTANCE.lazyInit();
                 }
             }
         }
@@ -22,6 +23,9 @@ public class AspectranNodeletGroup extends NodeletGroup {
 
     AspectranNodeletGroup() {
         super("aspectran");
+    }
+
+    private void lazyInit() {
         with(DiscriptionNodeletAdder.instance());
         with(SettingsNodeletAdder.instance());
         with(TypeAliasNodeletAdder.instance());
@@ -32,9 +36,6 @@ public class AspectranNodeletGroup extends NodeletGroup {
         with(ScheduleNodeletAdder.instance());
         with(TemplateNodeletAdder.instance());
         with(TransletNodeletAdder.instance());
-//        mount(ItemNodeletGroup.instance());
-//        mount(InnerBeanNodeletGroup.instance(0));
-//        mount(ChooseNodeletGroup.instance(0));
     }
 
 }

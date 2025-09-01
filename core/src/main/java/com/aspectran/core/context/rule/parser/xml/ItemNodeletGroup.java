@@ -46,16 +46,7 @@ class ItemNodeletGroup extends NodeletGroup {
     }
 
     ItemNodeletGroup() {
-        super("item");
-    }
-
-    @Override
-    public NodeletGroup child(String name) {
-        if (getName().equals(name)) {
-            return this;
-        } else  {
-            return super.child(name);
-        }
+        super("item", true);
     }
 
     private void lazyInit() {

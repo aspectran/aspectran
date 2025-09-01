@@ -65,8 +65,7 @@ class TransletNodeletAdder implements NodeletAdder {
             .with(DiscriptionNodeletAdder.instance())
             .with(ActionInnerNodeletAdder.instance())
             .with(ResponseInnerNodeletAdder.instance())
-//            .mount(ChooseNodeletGroup.instance(0))
-            .with(ChooseNodeletAdder.instance(0))
+            .with(ChooseNodeletAdder.instance())
             .endNodelet(text -> {
                 TransletRule transletRule = AspectranNodeParsingContext.popObject();
                 AspectranNodeParsingContext.assistant().addTransletRule(transletRule);
@@ -79,40 +78,13 @@ class TransletNodeletAdder implements NodeletAdder {
                     RequestRule requestRule = RequestRule.newInstance(method, encoding);
                     AspectranNodeParsingContext.pushObject(requestRule);
                 })
+                .with(ParametersNodeletAdder.instance())
+                .with(AttributesNodeletAdder.instance())
                 .endNodelet(text -> {
                     RequestRule requestRule = AspectranNodeParsingContext.popObject();
                     TransletRule transletRule = AspectranNodeParsingContext.peekObject();
                     transletRule.setRequestRule(requestRule);
                 })
-                .child("parameters")
-                    .nodelet(attrs -> {
-                        ItemRuleMap irm = new ItemRuleMap();
-                        irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                        AspectranNodeParsingContext.pushObject(irm);
-                    })
-                    .with(ItemNodeletAdder.instance())
-                    //.mount(ItemNodeletGroup.instance())
-                    .endNodelet(text -> {
-                        ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                        RequestRule requestRule = AspectranNodeParsingContext.peekObject();
-                        irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getParameterItemRuleMap());
-                        requestRule.setParameterItemRuleMap(irm);
-                    })
-                .parent().child("attributes")
-                    .nodelet(attrs -> {
-                        ItemRuleMap irm = new ItemRuleMap();
-                        irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                        AspectranNodeParsingContext.pushObject(irm);
-                    })
-                    .with(ItemNodeletAdder.instance())
-                    //.mount(ItemNodeletGroup.instance())
-                    .endNodelet(text -> {
-                        ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                        RequestRule requestRule = AspectranNodeParsingContext.peekObject();
-                        irm = AspectranNodeParsingContext.assistant().profiling(irm, requestRule.getAttributeItemRuleMap());
-                        requestRule.setAttributeItemRuleMap(irm);
-                    })
-                .parent()
             .parent().child("parameters")
                 .nodelet(attrs -> {
                     ItemRuleMap irm = new ItemRuleMap();
@@ -120,7 +92,6 @@ class TransletNodeletAdder implements NodeletAdder {
                     AspectranNodeParsingContext.pushObject(irm);
                 })
                 .with(ItemNodeletAdder.instance())
-                //.mount(ItemNodeletGroup.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                     TransletRule transletRule = AspectranNodeParsingContext.peekObject();
@@ -134,7 +105,6 @@ class TransletNodeletAdder implements NodeletAdder {
                     irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
                     AspectranNodeParsingContext.pushObject(irm);
                 })
-//                .mount(ItemNodeletGroup.instance())
                 .with(ItemNodeletAdder.instance())
                 .endNodelet(text -> {
                     ItemRuleMap irm = AspectranNodeParsingContext.popObject();
@@ -166,8 +136,7 @@ class TransletNodeletAdder implements NodeletAdder {
                     })
                     .with(ActionInnerNodeletAdder.instance())
                     .with(ResponseInnerNodeletAdder.instance())
-//                    .mount(ChooseNodeletGroup.instance(0))
-                    .with(ChooseNodeletAdder.instance(0))
+                    .with(ChooseNodeletAdder.instance())
                     .endNodelet(text -> {
                         ActionList actionList = AspectranNodeParsingContext.popObject();
                         if (!actionList.isEmpty()) {
@@ -185,8 +154,7 @@ class TransletNodeletAdder implements NodeletAdder {
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
-//                .mount(ChooseNodeletGroup.instance(0))
-                .with(ChooseNodeletAdder.instance(0))
+                .with(ChooseNodeletAdder.instance())
                 .endNodelet(text -> {
                     ActionList actionList = AspectranNodeParsingContext.popObject();
                     if (!actionList.isEmpty()) {
@@ -207,8 +175,7 @@ class TransletNodeletAdder implements NodeletAdder {
                 })
                 .with(ActionInnerNodeletAdder.instance())
                 .with(ResponseInnerNodeletAdder.instance())
-//                .mount(ChooseNodeletGroup.instance(0))
-                .with(ChooseNodeletAdder.instance(0))
+                .with(ChooseNodeletAdder.instance())
                 .endNodelet(text -> {
                     ResponseRule responseRule = AspectranNodeParsingContext.popObject();
                     TransletRule transletRule = AspectranNodeParsingContext.peekObject();

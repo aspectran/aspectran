@@ -42,10 +42,6 @@ public class AspectranDtdResolver implements EntityResolver {
         doctypeMap.put("aspectran-8.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 
-    public AspectranDtdResolver() {
-        this(true);
-    }
-
     public AspectranDtdResolver(boolean validating) {
         this.validating = validating;
     }

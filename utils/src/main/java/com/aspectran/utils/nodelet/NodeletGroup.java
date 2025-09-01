@@ -25,6 +25,8 @@ public class NodeletGroup {
 
     private final NodeletGroup parent;
 
+    private final boolean ignoreFirstChild;
+
     public NodeletGroup() {
         this("");
     }
@@ -33,10 +35,19 @@ public class NodeletGroup {
         this(name, "/" + name, null);
     }
 
+    public NodeletGroup(String name, boolean ignoreFirstChild) {
+        this(name, "/" + name, null, ignoreFirstChild);
+    }
+
     private NodeletGroup(String name, String xpath, NodeletGroup parent) {
-        this.parent = parent;
+        this(name, xpath, parent, false);
+    }
+
+    private NodeletGroup(String name, String xpath, NodeletGroup parent, boolean ignoreFirstChild) {
         this.name = name;
         this.xpath = xpath;
+        this.parent = parent;
+        this.ignoreFirstChild = ignoreFirstChild;
         if (parent == null) {
             this.nodeletMap = new HashMap<>();
             this.endNodeletMap = new HashMap<>();
@@ -80,6 +91,18 @@ public class NodeletGroup {
         }
     }
 
+    public Nodelet getNodelet(String xpath) {
+        return getNodeletMap().get(xpath);
+    }
+
+    public EndNodelet getEndNodelet(String xpath) {
+        return getEndNodeletMap().get(xpath);
+    }
+
+    public NodeletGroup getMountedGroup(String xpath) {
+        return getMountedGroups().get(xpath);
+    }
+
     public NodeletGroup parent() {
         Assert.state(parent != null, "parent is null");
         return parent;
@@ -87,6 +110,9 @@ public class NodeletGroup {
 
     public NodeletGroup child(String name) {
         Assert.hasLength(name, "Child name cannot be null or empty");
+        if (ignoreFirstChild && getName().equals(name)) {
+            return this;
+        }
         return new NodeletGroup(name, makeXpath(name), this);
     }
 
@@ -115,14 +141,14 @@ public class NodeletGroup {
 
     public NodeletGroup mount(NodeletGroup group) {
         //getMountedGroups().put(group.getXpath(), group);
-        mount(makeTriggerPath(getName(), group.getName()), group);
+        mount(makeMountPath(getName(), group.getName()), group);
 //        getMountedGroups().put(makeTriggerPath(getName(), group.getName()), group);
 //        getMountedGroups().put(group.getName(), group);
         return this;
     }
 
-    public NodeletGroup mount(String triggerPath, NodeletGroup group) {
-        getMountedGroups().put(triggerPath, group);
+    public NodeletGroup mount(String mountPath, NodeletGroup group) {
+        getMountedGroups().put(mountPath, group);
         return this;
     }
 
@@ -157,7 +183,7 @@ public class NodeletGroup {
     }
 
     @NonNull
-    private String makeTriggerPath(String triggerName, String groupName) {
+    static String makeMountPath(String triggerName, String groupName) {
         Assert.hasLength(triggerName, "triggerName cannot be null or empty");
         Assert.hasLength(groupName, "groupName cannot be null or empty");
         return triggerName + "/" + groupName;
