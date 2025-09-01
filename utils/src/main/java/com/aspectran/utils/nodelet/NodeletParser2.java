@@ -211,7 +211,7 @@ public class NodeletParser2 {
 //            return getMountXpath();
         }
 
-        public void mount(int index) {
+        public void remount(int index) {
             mountIndex = index;
             mountXpath = null;
         }
@@ -387,7 +387,7 @@ public class NodeletParser2 {
 //            String xpath = (path.isMounted() ? path.getMountXpath() : path.toString());
 //            NodeletGroup currentGroup = groupStack.peek();
 //            EndNodelet endNodelet = currentGroup.getEndNodelet(xpath);
-
+            path.remove();
             String xpath = path.toString();
             NodeletGroup currentGroup;
             MountInfo mountInfo;
@@ -396,15 +396,14 @@ public class NodeletParser2 {
                 mountInfo = null;
             } else {
                 mountInfo = mountStack.peek();
+                mountInfo.depth--;
                 if (mountInfo.depth == 0) {
                     mountInfo = mountStack.pop();
                     if (mountStack.isEmpty()) {
                         path.unmount();
                     } else {
-                        path.mount(mountInfo.index);
+                        path.remount(mountInfo.index);
                     }
-                } else {
-                    mountInfo.depth--;
                 }
                 currentGroup = mountInfo.group;
                 xpath = path.getMountXpath();
@@ -435,7 +434,7 @@ public class NodeletParser2 {
 //                groupStack.pop();
 //            }
 
-            path.remove();
+            
         }
 
         @Override
