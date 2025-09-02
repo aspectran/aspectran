@@ -206,6 +206,7 @@ public class NodeletParser {
                 nodelet = mountStatus.getNodelet(path.getMountXpath());
             }
 
+            // If no nodelet is found, try to find and activate a mounted nodelet group.
             if (nodelet == null) {
                 String triggerName = path.findTriggerName();
                 if (triggerName != null) {
@@ -246,6 +247,7 @@ public class NodeletParser {
                 if (endNodelet == null) {
                     throw new SAXParseException("End nodelet not found for \"" + path.getMountXpath() + "\"", locator);
                 }
+                // If in a mounted state, check if it's time to unmount.
                 String triggerName = path.findTriggerName();
                 if (triggerName != null) {
                     String mountPath = NodeletGroup.makeMountPath(triggerName, qName);
