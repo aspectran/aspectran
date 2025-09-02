@@ -54,6 +54,7 @@ class BeanCallTest {
     void ready() throws IOException, ActivityContextBuilderException {
         activityContextBuilder = new HybridActivityContextBuilder();
         activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
+        activityContextBuilder.setDebugMode(true);
 
         ActivityContext context = activityContextBuilder.build("/config/bean/call/bean-call-test-config.xml");
         beanRegistry = context.getBeanRegistry();
@@ -70,9 +71,13 @@ class BeanCallTest {
     @Test
     void testBeanCall() {
         TotalBean totalBean = beanRegistry.getBean("totalBean");
-        int count = 1;
-        for (OrderedBean o : totalBean.getOrderedBeans()) {
-            assertEquals(count++, o.getOrder());
+        int count1 = 1;
+        for (OrderedBean o : totalBean.getOrderedBeans1()) {
+            assertEquals(count1++, o.getOrder());
+        }
+        int count2 = 1;
+        for (OrderedBean o : totalBean.getOrderedBeans2()) {
+            assertEquals(count2++, o.getOrder());
         }
     }
 

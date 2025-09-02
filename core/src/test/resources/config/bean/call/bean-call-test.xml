@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-        "https://aspectran.com/dtd/aspectran-8.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <description>
@@ -12,8 +12,13 @@
     <bean id="thirdBean" class="com.aspectran.core.sample.call.ThirdBean"/>
 
     <bean id="totalBean" class="com.aspectran.core.sample.call.TotalBean">
+        <property name="orderedBeans1" type="array">
+            <value>#{firstBean}</value>
+            <value>#{secondBean}</value>
+            <value>#{thirdBean}</value>
+        </property>
         <properties>
-            <item name="orderedBeans" type="array">
+            <item name="orderedBeans2" type="array">
                 <value>#{firstBean}</value>
                 <value>#{secondBean}</value>
                 <value>#{thirdBean}</value>

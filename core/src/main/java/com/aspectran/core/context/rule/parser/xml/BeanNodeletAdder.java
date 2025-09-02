@@ -71,6 +71,8 @@ class BeanNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(beanRule);
             })
             .with(DiscriptionNodeletAdder.instance())
+            .with(ArgumentNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {

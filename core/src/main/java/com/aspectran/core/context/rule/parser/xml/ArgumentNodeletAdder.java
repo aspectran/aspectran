@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.ability;
+package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
+/**
+ * <p>Created: 2025-08-31</p>
+ */
+class ArgumentNodeletAdder extends ItemNodeletAdder {
 
-public interface HasParameters {
+    private static volatile ArgumentNodeletAdder INSTANCE;
 
-    ItemRuleMap getParameterItemRuleMap();
+    static ArgumentNodeletAdder instance() {
+        if (INSTANCE == null) {
+            synchronized (ArgumentNodeletAdder.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ArgumentNodeletAdder();
+                }
+            }
+        }
+        return INSTANCE;
+    }
 
-    void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap);
-
-    void addParameterItemRule(ItemRule parameterItemRule);
-
-    default ItemRule newParameterItemRule(String parameterName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(parameterName);
-        addParameterItemRule(itemRule);
-        return itemRule;
+    ArgumentNodeletAdder() {
+        super("argument");
     }
 
 }

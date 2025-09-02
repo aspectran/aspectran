@@ -98,18 +98,6 @@ public class IncludeActionRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Adds a new parameter rule with the specified name and returns it.
-     * @param parameterName the parameter name
-     * @return the parameter item rule
-     */
-    public ItemRule newParameterItemRule(String parameterName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(parameterName);
-        addParameterItemRule(itemRule);
-        return itemRule;
-    }
-
-    /**
      * Adds the parameter item rule.
      * @param parameterItemRule the parameter item rule
      */

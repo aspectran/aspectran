@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  XML DTD for the Aspectran Configuration File, Version 8.0
+  XML DTD for the Aspectran Configuration File, Version 9.0
 
   Copyright 2018-present The Aspectran Project
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-  PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-  SYSTEM "https://aspectran.com/dtd/aspectran-8.dtd">
+  PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+  SYSTEM "https://aspectran.com/dtd/aspectran-9.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
-  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-          "https://aspectran.com/dtd/aspectran-8.dtd">
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+          "https://aspectran.com/dtd/aspectran-9.dtd">
 -->
 
 <!ELEMENT aspectran (
@@ -77,7 +77,7 @@
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description*, filter?, arguments*, properties*)>
+<!ELEMENT bean (description*, filter?, argument*, property*, arguments*, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
@@ -247,13 +247,13 @@
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT properties (item*)>
-<!ATTLIST properties
+<!ELEMENT arguments (item*)>
+<!ATTLIST arguments
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT arguments (item*)>
-<!ATTLIST arguments
+<!ELEMENT properties (item*)>
+<!ATTLIST properties
   profile CDATA #IMPLIED
 >
 
@@ -266,6 +266,24 @@
   tokenize  (true | false) #IMPLIED
   mandatory (true | false) #IMPLIED
   secret    (true | false) #IMPLIED
+>
+
+<!ELEMENT argument (#PCDATA | value | entry | bean)*>
+<!ATTLIST argument
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+>
+
+<!ELEMENT property (#PCDATA | value | entry | bean)*>
+<!ATTLIST property
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
 >
 
 <!ELEMENT value (#PCDATA)>

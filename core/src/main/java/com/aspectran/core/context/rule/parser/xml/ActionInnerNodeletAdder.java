@@ -104,6 +104,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
+            .with(ArgumentNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
@@ -120,6 +122,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
+            .with(ArgumentNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
@@ -139,6 +143,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
                 AspectranNodeParsingContext.pushObject(includeActionRule);
             })
+            .with(ParameterNodeletAdder.instance())
+            .with(AttributeNodeletAdder.instance())
             .with(ParametersNodeletAdder.instance())
             .with(AttributesNodeletAdder.instance())
             .endNodelet(text -> {

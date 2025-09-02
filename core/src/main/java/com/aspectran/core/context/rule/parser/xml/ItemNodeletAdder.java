@@ -21,11 +21,16 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ability.HasArguments;
+import com.aspectran.core.context.rule.ability.HasAttributes;
+import com.aspectran.core.context.rule.ability.HasParameters;
+import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.nodelet.EndNodelet;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
@@ -40,16 +45,26 @@ class ItemNodeletAdder implements NodeletAdder {
         if (INSTANCE == null) {
             synchronized (ItemNodeletAdder.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new ItemNodeletAdder();
+                    INSTANCE = new ItemNodeletAdder("item");
                 }
             }
         }
         return INSTANCE;
     }
 
+    private final String name;
+
+    ItemNodeletAdder(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+
     @Override
     public void addTo(@NonNull NodeletGroup group) {
-        group.child(ItemNodeletGroup.instance().getName())
+        group.child(name)
             .nodelet(attrs -> {
                 String type = attrs.get("type");
                 String name = attrs.get("name");
@@ -68,14 +83,23 @@ class ItemNodeletAdder implements NodeletAdder {
             .mount(InnerBeanNodeletGroup.instance())
             .endNodelet(text -> {
                 ItemRule itemRule = AspectranNodeParsingContext.popObject();
-                ItemRuleMap itemRuleMap = AspectranNodeParsingContext.peekObject();
-
                 if (itemRule.getType() == ItemType.SINGLE && StringUtils.hasText(text)) {
                     itemRule.setValue(text);
                 }
-
                 AspectranNodeParsingContext.assistant().resolveBeanClass(itemRule);
-                itemRuleMap.putItemRule(itemRule);
+
+                Object object = AspectranNodeParsingContext.peekObject();
+                if (object instanceof ItemRuleMap irm) {
+                    irm.putItemRule(itemRule);
+                } else if (getName().equals(ParameterNodeletAdder.instance().getName())) {
+                    ((HasParameters)object).addParameterItemRule(itemRule);
+                } else if (getName().equals(AttributeNodeletAdder.instance().getName())) {
+                    ((HasAttributes)object).addAttributeItemRule(itemRule);
+                } else if (getName().equals(ArgumentNodeletAdder.instance().getName())) {
+                    ((HasArguments)object).addArgumentItemRule(itemRule);
+                } else if (getName().equals(PropertyNodeletAdder.instance().getName())) {
+                    ((HasProperties)object).addPropertyItemRule(itemRule);
+                }
             })
             .child("value")
                 .endNodelet(text -> {

@@ -15,33 +15,26 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.utils.nodelet.NodeletGroup;
-
 /**
- * <p>Created: 2008. 06. 14 AM 6:56:29</p>
+ * <p>Created: 2025-08-31</p>
  */
-class ItemNodeletGroup extends NodeletGroup {
+class PropertyNodeletAdder extends ItemNodeletAdder {
 
-    private static volatile ItemNodeletGroup INSTANCE;
+    private static volatile PropertyNodeletAdder INSTANCE;
 
-    static ItemNodeletGroup instance() {
+    static PropertyNodeletAdder instance() {
         if (INSTANCE == null) {
-            synchronized (ItemNodeletGroup.class) {
+            synchronized (PropertyNodeletAdder.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new ItemNodeletGroup();
-                    INSTANCE.lazyInit();
+                    INSTANCE = new PropertyNodeletAdder();
                 }
             }
         }
         return INSTANCE;
     }
 
-    ItemNodeletGroup() {
-        super("item", true);
-    }
-
-    private void lazyInit() {
-        ItemNodeletAdder.instance().addTo(this);
+    PropertyNodeletAdder() {
+        super("property");
     }
 
 }

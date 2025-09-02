@@ -65,7 +65,7 @@ git clone https://github.com/aspectran/aspectran.git
 cd aspectran
 ./build rebuild   # or ./mvnw clean install
 ```
-_**Java 17 or higher**: Aspectran requires Java 17 as the minimum runtime version._
+_**Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime version._
 
 ## Running the Demo
 ``` sh

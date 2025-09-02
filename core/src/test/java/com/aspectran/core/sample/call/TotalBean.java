@@ -20,14 +20,23 @@ package com.aspectran.core.sample.call;
  */
 public class TotalBean {
 
-    private OrderedBean[] orderedBeans;
+    private OrderedBean[] orderedBeans1;
+    private OrderedBean[] orderedBeans2;
 
-    public void setOrderedBeans(OrderedBean[] orderedBeans) {
-        this.orderedBeans = orderedBeans;
+    public void setOrderedBeans1(OrderedBean[] orderedBeans1) {
+        this.orderedBeans1 = orderedBeans1;
     }
 
-    public OrderedBean[] getOrderedBeans() {
-        return orderedBeans;
+    public OrderedBean[] getOrderedBeans1() {
+        return orderedBeans1;
+    }
+
+    public OrderedBean[] getOrderedBeans2() {
+        return orderedBeans2;
+    }
+
+    public void setOrderedBeans2(OrderedBean[] orderedBeans2) {
+        this.orderedBeans2 = orderedBeans2;
     }
 
 }

@@ -48,18 +48,19 @@ shell: {
     }
     greetings: (
         |
-        |{{YELLOW}}     ___                         __
-        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____
-        |{{GREEN  }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
-        |{{GREEN  }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
-        |{{CYAN   }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Demo
-        |{{CYAN   }}=========== /_/ ============================================
-        |{{MAGENTA}}:: Built with Aspectran :: #{class:com.aspectran.core.AboutMe^version}
-        |{{reset  }}
-        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
-        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
-        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
-        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+        |{{WHITE,bold}}     ___                         __
+        |{{CYAN      }}    /   |  ___  ____  ___  ___  / /____   ___  ____
+        |{{GREEN     }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
+        |{{YELLOW    }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
+        |{{RED       }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   {{WHITE,bold}}DEMO
+        |{{gray      }}=========== /_/ ====================================================
+        |{{MAGENTA   }}:: Built with Aspectran :: {{reset}}#{class:com.aspectran.core.AboutMe^version}
+        |
+        |{{gray}}To see a list of all built-in commands, type {{GREEN,bold}}help{{gray}}.
+        |{{gray}}To get help for a specific command, type {{GREEN,bold}}command_name -h{{gray}}.
+        |{{gray}}To list all available translets, type {{CYAN,bold}}translet -l{{gray}}.
+        |{{gray}}To run a translet, type {{CYAN,bold}}translet <translet_name>{{gray}} or just {{CYAN,bold}}translet_name{{gray}}.
+        |{{reset}}
     )
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
