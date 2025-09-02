@@ -20,6 +20,8 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
+import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -29,6 +31,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {
+
+    private AspectranNodeParser aspectranNodeParser;
 
     public HybridActivityContextParser(ActivityRuleAssistant assistant) {
         super(assistant);
@@ -73,9 +77,26 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
         }
     }
 
+    @Override
+    public AspectranNodeParser getAspectranNodeParser() {
+        if (aspectranNodeParser == null) {
+            aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
+            AspectranNodeParsingContext.set(aspectranNodeParser);
+        }
+        return aspectranNodeParser;
+    }
+
+    @Override
+    public void close() {
+        if (aspectranNodeParser != null) {
+            AspectranNodeParsingContext.clear();
+            aspectranNodeParser = null;
+        }
+    }
+
     @NonNull
     private RuleAppendHandler createRuleAppendHandler() {
-        RuleAppendHandler appendHandler = new HybridRuleAppendHandler(getContextRuleAssistant(), getEncoding());
+        RuleAppendHandler appendHandler = new HybridRuleAppendHandler(this, getEncoding());
         appendHandler.setUseAponToLoadXml(isUseXmlToApon());
         appendHandler.setDebugMode(isDebugMode());
         getContextRuleAssistant().setRuleAppendHandler(appendHandler);

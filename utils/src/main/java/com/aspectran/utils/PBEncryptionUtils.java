@@ -20,8 +20,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.jasypt.encryption.ByteEncryptor;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
-
 import org.jasypt.iv.RandomIvGenerator;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

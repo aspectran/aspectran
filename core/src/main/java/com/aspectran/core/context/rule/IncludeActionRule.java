@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.HasAttributes;
+import com.aspectran.core.context.rule.ability.HasParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
@@ -26,7 +27,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>Created: 2008. 06. 05 PM 9:25:40</p>
  */
-public class IncludeActionRule implements HasAttributes {
+public class IncludeActionRule implements HasParameters, HasAttributes {
 
     private String actionId;
 

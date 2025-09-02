@@ -25,36 +25,28 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
  */
 public class NodeTracker implements Cloneable {
 
-    private String name;
+    private String resource;
 
-    private String path;
+    private String xpath;
 
     private int lineNumber;
 
     private int columnNumber;
 
-    /**
-     * Returns the name of the tracked node.
-     * @return the node name
-     */
-    public String getName() {
-        return name;
+    public String getResource() {
+        return resource;
     }
 
-    /**
-     * Sets the name of the tracked node.
-     * @param name the node name
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 
-    public String getPath() {
-        return path;
+    public String getXpath() {
+        return xpath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
     }
 
     /**
@@ -104,8 +96,8 @@ public class NodeTracker implements Cloneable {
      * @param snapshot the {@code NodeTracker} instance to restore state from
      */
     void restoreStateFrom(@NonNull NodeTracker snapshot) {
-        this.name = snapshot.name;
-        this.path = snapshot.path;
+        this.resource = snapshot.resource;
+        this.xpath = snapshot.xpath;
         this.lineNumber = snapshot.lineNumber;
         this.columnNumber = snapshot.columnNumber;
     }
@@ -126,7 +118,8 @@ public class NodeTracker implements Cloneable {
      */
     @Override
     public String toString() {
-        return "\"" + path + "\" at line " + lineNumber + ", column " + columnNumber;
+        return "node \"" + xpath + "\" at line " + lineNumber + ", column " + columnNumber +
+                (resource != null ? " on " + resource : "");
     }
 
 }

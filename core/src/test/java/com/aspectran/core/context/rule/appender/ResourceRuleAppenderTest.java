@@ -72,16 +72,14 @@ class ResourceRuleAppenderTest {
                 .endNodelet(text -> {
                     String style = nodeletParser.getObjectStack().pop().toString();
 
-                    String xpath = nodeletParser.getNodeTracker().getPath();
-                    System.out.println(xpath + " style=" + style + ", text=" + TextStyler.styling(text, style));
+                    System.out.println("[" + nodeletParser.getNodeTracker() + "] style=" + style + ", text=" + TextStyler.styling(text, style));
                 })
             .parent().child("settings/setting")
                 .nodelet(attrs -> {
                     String name = attrs.get("name");
                     String value = attrs.get("value");
 
-                    String xpath = nodeletParser.getNodeTracker().getPath();
-                    System.out.println(xpath + " " + name + "=" + value);
+                    System.out.println("[" + nodeletParser.getNodeTracker() + "] " + name + "=" + value);
                 })
             .parent().child("append")
                 .nodelet(attrs -> {
@@ -93,8 +91,7 @@ class ResourceRuleAppenderTest {
 
                     AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
 
-                    String xpath = nodeletParser.getNodeTracker().getPath();
-                    System.out.println(xpath + " rule=" + appendRule);
+                    System.out.println("[" + nodeletParser.getNodeTracker() + "] rule=" + appendRule);
                 });
         }
 

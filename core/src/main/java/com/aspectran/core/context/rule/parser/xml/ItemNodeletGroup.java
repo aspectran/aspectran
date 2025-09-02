@@ -15,15 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.token.TokenParser;
-import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.type.ItemType;
-import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.utils.BooleanUtils;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**

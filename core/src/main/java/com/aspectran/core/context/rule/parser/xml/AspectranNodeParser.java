@@ -15,15 +15,12 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.utils.ArrayStack;
-import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.nodelet.NodeletException;
 import com.aspectran.utils.nodelet.NodeletParser;
-import com.aspectran.utils.nodelet.NodeletParser2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 import java.io.InputStream;
@@ -35,11 +32,9 @@ import java.io.InputStream;
  */
 public class AspectranNodeParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(AspectranNodeParser.class);
-
     private final ActivityRuleAssistant assistant;
 
-    private final NodeletParser2 nodeletParser;
+    private final NodeletParser nodeletParser;
 
     /**
      * Instantiates a new AspectranNodeParser.
@@ -59,7 +54,7 @@ public class AspectranNodeParser {
      */
     public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
-        this.nodeletParser = new NodeletParser2(AspectranNodeletGroup.instance());
+        this.nodeletParser = new NodeletParser(AspectranNodeletGroup.instance());
         this.nodeletParser.setValidating(validating);
         this.nodeletParser.setEntityResolver(new AspectranDtdResolver(validating));
         if (trackingLocation) {
@@ -81,38 +76,23 @@ public class AspectranNodeParser {
      * @throws Exception the exception
      */
     public void parse(RuleAppender ruleAppender) throws Exception {
-        try {
+        Assert.notNull(ruleAppender, "RuleAppender must not be null");
+        if (nodeletParser.getNodeTracker() != null) {
             ruleAppender.setNodeTracker(nodeletParser.getNodeTracker());
-            try (InputStream inputStream = ruleAppender.getInputStream()) {
-                InputSource inputSource = new InputSource(inputStream);
-                inputSource.setSystemId(ruleAppender.getQualifiedName());
-                AspectranNodeParsingContext.set(this);
-                nodeletParser.parse(inputSource);
-            } finally {
-                AspectranNodeParsingContext.clear();
-            }
+        }
+        try (InputStream inputStream = ruleAppender.getInputStream()) {
+            InputSource inputSource = new InputSource(inputStream);
+            inputSource.setSystemId(ruleAppender.getQualifiedName());
+            nodeletParser.parse(inputSource);
+        } catch (NodeletException e) {
+            parsingFailed(e.getCause());
         } catch (Exception e) {
-            Throwable cause = ExceptionUtils.getRootCause(e);
-            if (cause instanceof IllegalRuleException) {
-                parsingFailed(cause.getMessage(), cause);
-            } else {
-                parsingFailed("Error parsing aspectran configuration", e);
-            }
+            parsingFailed(e);
         }
     }
 
-    public void parsingFailed(String message, Throwable cause) throws Exception {
-        String detail;
-        if (getAssistant().getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker().getPath() != null) {
-            detail = message + ": " +
-                getAssistant().getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker() + " on " +
-                getAssistant().getRuleAppendHandler().getCurrentRuleAppender().getQualifiedName();
-        } else {
-            detail = message + ": " +
-                getAssistant().getRuleAppendHandler().getCurrentRuleAppender().getQualifiedName();
-        }
-        logger.error(detail);
-        throw new Exception(detail, cause);
+    public void parsingFailed(Throwable cause) throws Exception {
+        throw new Exception("Error parsing aspectran configuration", cause);
     }
 
 }

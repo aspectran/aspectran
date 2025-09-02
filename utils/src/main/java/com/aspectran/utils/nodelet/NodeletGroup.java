@@ -1,6 +1,22 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.utils.nodelet;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Collections;
@@ -28,15 +44,15 @@ public class NodeletGroup {
     private final boolean ignoreFirstChild;
 
     public NodeletGroup() {
-        this("");
+        this(StringUtils.EMPTY);
     }
 
     public NodeletGroup(String name) {
-        this(name, "/" + name, null);
+        this(name, NodeletPath.DIVIDER + name, null);
     }
 
     public NodeletGroup(String name, boolean ignoreFirstChild) {
-        this(name, "/" + name, null, ignoreFirstChild);
+        this(name, NodeletPath.DIVIDER + name, null, ignoreFirstChild);
     }
 
     private NodeletGroup(String name, String xpath, NodeletGroup parent) {
@@ -140,10 +156,7 @@ public class NodeletGroup {
     }
 
     public NodeletGroup mount(NodeletGroup group) {
-        //getMountedGroups().put(group.getXpath(), group);
         mount(makeMountPath(getName(), group.getName()), group);
-//        getMountedGroups().put(makeTriggerPath(getName(), group.getName()), group);
-//        getMountedGroups().put(group.getName(), group);
         return this;
     }
 
@@ -175,10 +188,10 @@ public class NodeletGroup {
     @NonNull
     private String makeXpath(String relativePath) {
         Assert.hasLength(relativePath, "relativePath cannot be null or empty");
-        if (xpath.endsWith("/")) {
+        if (xpath.endsWith(NodeletPath.DIVIDER)) {
             return xpath + relativePath;
         } else {
-            return xpath + "/" + relativePath;
+            return xpath + NodeletPath.DIVIDER + relativePath;
         }
     }
 
@@ -186,7 +199,7 @@ public class NodeletGroup {
     static String makeMountPath(String triggerName, String groupName) {
         Assert.hasLength(triggerName, "triggerName cannot be null or empty");
         Assert.hasLength(groupName, "groupName cannot be null or empty");
-        return triggerName + "/" + groupName;
+        return triggerName + NodeletPath.DIVIDER + groupName;
     }
 
 }

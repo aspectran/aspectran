@@ -19,6 +19,7 @@ import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeTracker;
 
@@ -132,7 +133,12 @@ abstract class AbstractRuleAppender implements RuleAppender {
 
     @Override
     public void setNodeTracker(NodeTracker nodeTracker) {
+        Assert.notNull(nodeTracker, "NodeTracker must not be null");
         this.nodeTracker = nodeTracker;
+        String qualifiedName = getQualifiedName();
+        if (qualifiedName != null) {
+            nodeTracker.setResource(qualifiedName);
+        }
     }
 
 }

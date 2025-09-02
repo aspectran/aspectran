@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.nodelet;
 
+import org.xml.sax.SAXException;
+
 import java.io.Serial;
 
 /**
@@ -22,43 +24,19 @@ import java.io.Serial;
  * <p>This exception typically indicates issues encountered while parsing
  * structured documents (like XML) using {@link NodeletParser} and its associated {@link Nodelet}s.</p>
  */
-public class NodeletException extends Exception {
+public class NodeletException extends SAXException {
 
     @Serial
     private static final long serialVersionUID = -2205829969856783728L;
 
     /**
-     * Constructs a new {@code NodeletException} with no detail message.
-     */
-    public NodeletException() {
-        super();
-    }
-
-    /**
-     * Constructs a new {@code NodeletException} with the specified detail message.
-     * @param msg the detail message
-     */
-    public NodeletException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Constructs a new {@code NodeletException} with the specified cause.
-     * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
-     *              (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
-     */
-    public NodeletException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
      * Constructs a new {@code NodeletException} with the specified detail message and cause.
-     * @param msg the detail message
+     * @param message the detail message
      * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      *              (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public NodeletException(String msg, Throwable cause) {
-        super(msg, cause);
+    public NodeletException(String message, Exception cause) {
+        super(message, cause);
     }
 
 }

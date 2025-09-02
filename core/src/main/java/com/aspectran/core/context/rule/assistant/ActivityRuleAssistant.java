@@ -475,8 +475,7 @@ public class ActivityRuleAssistant {
                         reserveBeanReference(beanClass, referenceable);
                     }
                 } catch (NoSuchFieldException e) {
-                    throw new IllegalRuleException("Could not access field: " + token.getGetterName() +
-                            " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
+                    throw new IllegalRuleException("Could not access field " + token.getGetterName() + " for " + token, e);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
                 if (token.getGetterName() == null) {
@@ -490,8 +489,7 @@ public class ActivityRuleAssistant {
                         reserveBeanReference(beanClass, referenceable);
                     }
                 } catch (NoSuchMethodException e) {
-                    throw new IllegalRuleException("Could not access method: " + token.getGetterName() +
-                            " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
+                    throw new IllegalRuleException("Could not access method " + token.getGetterName() + " for " + token, e);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
                 Class<?> beanClass = loadClass(token.getValue(), token);
@@ -611,8 +609,7 @@ public class ActivityRuleAssistant {
         try {
             return getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalRuleException("Unable to load class: " + className +
-                    " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + referer, e);
+            throw new IllegalRuleException("Unable to load class " + className + " for " + referer, e);
         }
     }
 

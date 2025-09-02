@@ -145,17 +145,18 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             }
 
             if (contextRules != null || aspectranParameters != null) {
-                ActivityContextParser parser = new HybridActivityContextParser(assistant);
-                parser.setEncoding(getEncoding());
-                parser.setUseXmlToApon(isUseAponToLoadXml());
-                parser.setDebugMode(isDebugMode());
-                if (contextRules != null) {
-                    parser.parse(contextRules);
-                } else {
-                    parser.parse(aspectranParameters);
+                try (ActivityContextParser parser = new HybridActivityContextParser(assistant)) {
+                    parser.setEncoding(getEncoding());
+                    parser.setUseXmlToApon(isUseAponToLoadXml());
+                    parser.setDebugMode(isDebugMode());
+                    if (contextRules != null) {
+                        parser.parse(contextRules);
+                    } else {
+                        parser.parse(aspectranParameters);
+                    }
+                    assistant = parser.getContextRuleAssistant();
+                    assistant.clearCurrentRuleAppender();
                 }
-                assistant = parser.getContextRuleAssistant();
-                assistant.clearCurrentRuleAppender();
             } else {
                 RuleAppendHandler ruleAppendHandler = new ShallowRuleAppendHandler(assistant);
                 assistant.setRuleAppendHandler(ruleAppendHandler);

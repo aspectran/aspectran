@@ -23,8 +23,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * The Class ChooseNodeParser.
  *

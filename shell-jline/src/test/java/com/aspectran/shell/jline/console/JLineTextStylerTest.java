@@ -30,7 +30,7 @@ class JLineTextStylerTest {
         String s1 = "{{black}} Black {{red}} Red {{green}} Green {{yellow}} Yellow {{blue}} Blue {{magenta}} Magenta {{cyan}} Cyan {{gray}} Gray {{reset}}\n";
         String s2 = "{{GRAY}} Bright Gray {{RED}} Bright Red {{GREEN}} Bright Green {{YELLOW}} Bright Yellow {{BLUE}} Bright Blue {{MAGENTA}} Bright Magenta {{CYAN}} Bright Cyan {{white}} White {{reset}}\n";
         String s3 = "{{white,bg:black}} black {{black,bg:red}} red {{white,bg:green}} green {{black,bg:yellow}} yellow {{bg:blue}} blue {{bg:magenta}} magenta {{bg:cyan}} cyan {{black,bg:gray}} gray  {{reset}}\n" +
-                    "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{reset}}\n";
+                "{{white,bg:GRAY}} GRAY  {{black,bg:RED}} RED {{white,bg:GREEN}} GREEN {{black,bg:YELLOW}} YELLOW {{bg:BLUE}} BLUE {{bg:MAGENTA}} MAGENTA {{bg:CYAN}} CYAN {{black,bg:white}} white {{reset}}\n";
 
         ShellConsole console = new JLineShellConsole();
         console.getStyler().setStyle("bg:black", "WHITE", "underline", "bold");

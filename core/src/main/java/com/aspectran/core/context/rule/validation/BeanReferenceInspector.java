@@ -298,16 +298,8 @@ public class BeanReferenceInspector {
             return referenceable;
         }
 
-        RuleAppender getRuleAppender() {
-            return ruleAppender;
-        }
-
         BeanRefererType getBeanRefererType() {
             return referenceable.getBeanRefererType();
-        }
-
-        NodeTracker getNodeTracker() {
-            return nodeTracker;
         }
 
         @Override
@@ -316,10 +308,10 @@ public class BeanReferenceInspector {
             sb.append(referenceable.getBeanRefererType());
             sb.append(" ").append(referenceable);
             if (ruleAppender != null) {
-                sb.append(" in ").append(ruleAppender.getQualifiedName());
-                if (nodeTracker != null) {
-                    sb.append(" ").append(nodeTracker);
-                }
+                sb.append(" in ").append(ruleAppender);
+            }
+            if (nodeTracker != null) {
+                sb.append(" ").append(nodeTracker);
             }
             return sb.toString();
         }

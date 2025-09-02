@@ -16,7 +16,6 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
 
