@@ -27,9 +27,9 @@ public interface EndNodelet {
 
     /**
      * Processes the collected text and CDATA data for a registered XPath.
-     * <p>The {@link NodeletParser} will call this method when it finishes processing
-     * the content of an element, providing the accumulated text.</p>
-     * @param text the text and CDATA data collected within the element
+     * <p>The {@link NodeletParser} will call this method when it encounters the
+     * corresponding element's end tag.</p>
+     * @param text the accumulated text and CDATA content within the element; may be null if the element is empty
      * @throws Exception if an error occurs while processing the nodelet
      */
     void process(String text) throws Exception;

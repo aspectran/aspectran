@@ -23,11 +23,15 @@ import java.util.Objects;
 /**
  * Represents a single pattern within a pointcut, defining criteria for matching
  * translet names, bean IDs, class names, and method names.
- * <p>This class is used to specify a precise target for aspect advice.</p>
+ * <p>This class is used to specify a precise target for aspect advice.
+ * The pointcut pattern string has the following format, where each part is optional
+ * but the separators determine how the pattern is interpreted:
+ * {@code transletNamePattern[@beanOrClassPattern][^methodNamePattern]}
+ * </p>
  */
 public class PointcutPattern {
 
-    /** The delimiter character used to separate the translet name pattern from the bean name pattern. */
+    /** The delimiter character used to separate the translet name pattern from the bean/class pattern. */
     private static final char POINTCUT_BEAN_NAME_DELIMITER = '@';
 
     /** The delimiter character used to separate the bean/class name pattern from the method name pattern. */
@@ -198,7 +202,25 @@ public class PointcutPattern {
 
     /**
      * Parses a combined pointcut pattern string into a {@link PointcutPattern} object.
-     * @param patternString the combined pattern string (e.g., `transletName@beanId^methodName`)
+     * <p>
+     * The parser interprets the pattern based on the presence of '{@code @}' and '{@code ^}' delimiters.
+     * <ul>
+     *   <li>If '{@code @}' is absent, the entire string is treated as a translet name pattern.</li>
+     *   <li>If '{@code @}' is present, it separates the translet name pattern from the bean/class pattern.</li>
+     *   <li>If '{@code ^}' is present, it separates the bean/class pattern from the method name pattern.</li>
+     * </ul>
+     * This leads to the following valid formats:
+     * <ul>
+     *   <li>{@code transletPattern} (e.g., "/a/b/c")</li>
+     *   <li>{@code transletPattern@beanPattern} (e.g., "/a/b@myBean")</li>
+     *   <li>{@code transletPattern@beanPattern^methodPattern} (e.g., "/a/b@myBean^myMethod")</li>
+     *   <li>{@code @beanPattern} (targets a bean in any translet)</li>
+     *   <li>{@code @beanPattern^methodPattern} (targets a method of a bean in any translet)</li>
+     *   <li>{@code @^methodPattern} (targets a method in any bean in any translet)</li>
+     * </ul>
+     * The bean pattern can also specify a class directly using the "class:" prefix (e.g., "@class:com.example.MyClass^myMethod").
+     * </p>
+     * @param patternString the combined pattern string to parse
      * @return a new {@link PointcutPattern} object
      */
     @NonNull

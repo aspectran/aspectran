@@ -17,6 +17,12 @@ package com.aspectran.utils.nodelet;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * Represents the state of a mounted {@link NodeletGroup} during parsing.
+ * This class is used internally by {@link NodeletParser} to manage the context
+ * when a different set of parsing rules is dynamically applied to a sub-section
+ * of an XML document.
+ */
 public class MountStatus {
 
     private int index;

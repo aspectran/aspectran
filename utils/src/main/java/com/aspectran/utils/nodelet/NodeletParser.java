@@ -39,10 +39,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A callback-based parser similar to SAX, but with callbacks mapped to specific XPath expressions.
- * <p>The {@code NodeletParser} registers {@link Nodelet}s (callbacks) with specific XPath patterns.
- * When the parser encounters a node matching a registered XPath, the corresponding Nodelet's
- * {@link Nodelet#process(Map)} method is invoked.</p>
+ * A callback-based XML parser that is similar to SAX, but maps callbacks to specific
+ * XPath expressions. The {@code NodeletParser} uses a {@link NodeletGroup} to define
+ * a set of parsing rules. When the parser encounters an XML element matching a
+ * registered XPath, it invokes the corresponding {@link Nodelet#process(Map)} method.
+ * This approach allows for a more structured and modular way to handle complex
+ * XML documents compared to traditional SAX parsing.
  */
 public class NodeletParser {
 
@@ -60,10 +62,19 @@ public class NodeletParser {
 
     private NodeTracker nodeTracker;
 
+    /**
+     * Constructs a new NodeletParser with the specified set of parsing rules.
+     * @param nodeletGroup the root group of nodelets that defines the parsing behavior
+     */
     public NodeletParser(NodeletGroup nodeletGroup) {
         this.nodeletGroup = nodeletGroup;
     }
 
+    /**
+     * Returns the object stack used by the parser.
+     * This stack can be used by nodelets to pass objects between parent and child element handlers.
+     * @return the object stack
+     */
     public ArrayStack<Object> getObjectStack() {
         return objectStack;
     }
@@ -97,7 +108,7 @@ public class NodeletParser {
 
     /**
      * Returns the {@link NodeTracker} instance used by this parser.
-     * @return the node tracker
+     * @return the node tracker, or null if not enabled
      */
     @Nullable
     public NodeTracker getNodeTracker() {

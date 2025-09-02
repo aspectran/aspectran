@@ -16,10 +16,19 @@
 package com.aspectran.utils.nodelet;
 
 /**
+ * An interface for classes that add a set of {@link Nodelet}s to a {@link NodeletGroup}.
+ * This allows for the encapsulation and reuse of a common set of parsing rules.
+ * Implementations of this interface define a suite of nodelets that can be added
+ * to a group in a single operation using {@link NodeletGroup#with(NodeletAdder)}.
+ *
  * <p>Created: 2025-08-29</p>
  */
 public interface NodeletAdder {
 
+    /**
+     * Adds a collection of nodelets to the given {@link NodeletGroup}.
+     * @param group the nodelet group to which the nodelets will be added
+     */
     void addTo(NodeletGroup group);
 
 }

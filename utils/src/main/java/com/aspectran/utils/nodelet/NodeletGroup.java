@@ -25,6 +25,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
+ * A collection of {@link Nodelet}s that are mapped to specific XPath expressions.
+ * This class provides a fluent API for building a hierarchy of parsing rules,
+ * making it easy to define and reuse complex parsing logic for structured documents.
+ * A group can be nested within another to create a hierarchical structure, and
+ * other groups can be "mounted" to handle specific sub-sections of a document,
+ * enabling modular and reusable parsing configurations.
+ *
  * <p>Created: 2025-08-29</p>
  */
 public class NodeletGroup {
@@ -119,11 +126,21 @@ public class NodeletGroup {
         return getMountedGroups().get(xpath);
     }
 
+    /**
+     * Returns the parent of this nodelet group.
+     * @return the parent nodelet group
+     * @throws IllegalStateException if this is a root group and has no parent
+     */
     public NodeletGroup parent() {
         Assert.state(parent != null, "parent is null");
         return parent;
     }
 
+    /**
+     * Creates a new child nodelet group under the current group's XPath.
+     * @param name the name of the child element
+     * @return the new child nodelet group
+     */
     public NodeletGroup child(String name) {
         Assert.hasLength(name, "Child name cannot be null or empty");
         if (ignoreFirstChild && getName().equals(name)) {
@@ -132,12 +149,23 @@ public class NodeletGroup {
         return new NodeletGroup(name, makeXpath(name), this);
     }
 
+    /**
+     * Adds a set of nodelets to this group using a {@link NodeletAdder}.
+     * @param nodeletAdder the adder that encapsulates the nodelets to be added
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup with(NodeletAdder nodeletAdder) {
         Assert.notNull(nodeletAdder, "nodeletAdder cannot be null");
         nodeletAdder.addTo(this);
         return this;
     }
 
+    /**
+     * Conditionally adds a set of nodelets to this group using a {@link NodeletAdder}.
+     * @param condition the condition to evaluate
+     * @param nodeletAdder the adder to use if the condition is true
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup with(boolean condition, NodeletAdder nodeletAdder) {
         if (condition) {
             with(nodeletAdder);
@@ -145,6 +173,12 @@ public class NodeletGroup {
         return this;
     }
 
+    /**
+     * Lazily adds a set of nodelets to this group using a {@link Supplier}.
+     * The supplier is only invoked if it is not null.
+     * @param supplier a supplier for the NodeletAdder
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup with(Supplier<NodeletAdder> supplier) {
         if (supplier != null) {
             NodeletAdder nodeletAdder = supplier.get();
@@ -155,31 +189,65 @@ public class NodeletGroup {
         return this;
     }
 
+    /**
+     * Mounts another {@link NodeletGroup} at the current path, triggered by the mounted group's name.
+     * This allows for modular and reusable parsing logic.
+     * @param group the nodelet group to mount
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup mount(NodeletGroup group) {
         mount(makeMountPath(getName(), group.getName()), group);
         return this;
     }
 
+    /**
+     * Mounts another {@link NodeletGroup} at a specific path.
+     * @param mountPath the path that triggers the mount
+     * @param group the nodelet group to mount
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup mount(String mountPath, NodeletGroup group) {
         getMountedGroups().put(mountPath, group);
         return this;
     }
 
+    /**
+     * Adds a {@link Nodelet} to handle the start event for the current XPath.
+     * @param nodelet the nodelet to add
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup nodelet(Nodelet nodelet) {
         getNodeletMap().put(xpath, nodelet);
         return this;
     }
 
+    /**
+     * Adds a {@link Nodelet} to handle the start event for a path relative to the current XPath.
+     * @param relativePath the relative path from the current group's path
+     * @param nodelet the nodelet to add
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup nodelet(String relativePath, Nodelet nodelet) {
         getNodeletMap().put(makeXpath(relativePath), nodelet);
         return this;
     }
 
+    /**
+     * Adds an {@link EndNodelet} to handle the end event for the current XPath.
+     * @param endNodelet the end-nodelet to add
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup endNodelet(EndNodelet endNodelet) {
         getEndNodeletMap().put(xpath, endNodelet);
         return this;
     }
 
+    /**
+     * Adds an {@link EndNodelet} to handle the end event for a path relative to the current XPath.
+     * @param relativePath the relative path from the current group's path
+     * @param endNodelet the end-nodelet to add
+     * @return this nodelet group, for fluent method chaining
+     */
     public NodeletGroup endNodelet(String relativePath, EndNodelet endNodelet) {
         getEndNodeletMap().put(makeXpath(relativePath), endNodelet);
         return this;

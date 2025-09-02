@@ -28,8 +28,8 @@ public interface Nodelet {
     /**
      * Processes the node event for a registered XPath.
      * <p>The {@link NodeletParser} will call this method when it encounters
-     * the corresponding node in the document.</p>
-     * @param attrs the attributes of the start element (if applicable), or an empty map if no attributes
+     * the corresponding element's start tag in the document.</p>
+     * @param attrs a map of attributes from the start element, or an empty map if there are no attributes
      * @throws Exception if an error occurs while processing the nodelet
      */
     void process(Map<String, String> attrs) throws Exception;

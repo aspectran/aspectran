@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Inner helper class that assists with building XPath paths.
+ * A helper class for building and managing XPath-like paths during XML parsing.
+ * This class is used internally by the {@link NodeletParser} to track the current
+ * position in the document, and to handle path manipulation for mounted nodelet groups.
  */
 public class NodeletPath {
 
