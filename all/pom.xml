@@ -35,7 +35,6 @@
         <automatic.module.name>com.aspectran.all</automatic.module.name>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
 
-        <!-- plugins configuration -->
         <javadoc.title>Aspectran API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
     </properties>

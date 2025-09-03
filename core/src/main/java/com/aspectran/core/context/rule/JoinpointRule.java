@@ -37,33 +37,33 @@ import java.util.List;
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
  *   &lt;joinpoint&gt;
  *     methods: [
- *       "GET"
- *       "POST"
- *       "PATCH"
- *       "PUT"
- *       "DELETE"
+ *       GET
+ *       POST
+ *       PATCH
+ *       PUT
+ *       DELETE
  *     ]
  *     headers: [
- *       "Origin"
+ *       Origin
  *     ]
  *     pointcut: {
- *       type: "wildcard"
- *       +: "/a/b@sample.bean1^method1"
- *       +: "/x/y@sample.bean2^method1"
- *       -: "/a/b/c@sample.bean3^method1"
- *       -: "/x/y/z@sample.bean4^method1"
+ *       type: wildcard
+ *       +: /a/b@sample.bean1^method1
+ *       +: /x/y@sample.bean2^method1
+ *       -: /a/b/c@sample.bean3^method1
+ *       -: /x/y/z@sample.bean4^method1
  *     }
  *     pointcut: {
- *       type: "regexp"
+ *       type: regexp
  *       include: {
- *         translet: "/a/b"
- *         bean: "sample.bean1"
- *         method: "method1"
+ *         translet: /a/b
+ *         bean: sample.bean1
+ *         method: method1
  *       }
  *       exclude: {
- *         translet: "/a/b/c"
- *         bean: "sample.bean3"
- *         method: "method1"
+ *         translet: /a/b/c
+ *         bean: sample.bean3
+ *         method: method1
  *       }
  *     }
  *   &lt;/joinpoint&gt;
