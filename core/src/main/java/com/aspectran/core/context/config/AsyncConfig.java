@@ -26,80 +26,20 @@ import com.aspectran.utils.apon.ValueType;
  */
 public class AsyncConfig extends AbstractParameters {
 
-    private static final ParameterKey corePoolSize;
-    private static final ParameterKey maxPoolSize;
-    private static final ParameterKey keepAliveSeconds;
-    private static final ParameterKey queueCapacity;
-    private static final ParameterKey waitForTasksToCompleteOnShutdown;
     private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        corePoolSize = new ParameterKey("corePoolSize", ValueType.INT);
-        maxPoolSize = new ParameterKey("maxPoolSize", ValueType.INT);
-        keepAliveSeconds = new ParameterKey("keepAliveSeconds", ValueType.INT);
-        queueCapacity = new ParameterKey("queueCapacity", ValueType.INT);
-        waitForTasksToCompleteOnShutdown = new ParameterKey("waitForTasksToCompleteOnShutdown", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
-                corePoolSize,
-                maxPoolSize,
-                keepAliveSeconds,
-                queueCapacity,
-                waitForTasksToCompleteOnShutdown,
                 enabled
         };
     }
 
     public AsyncConfig() {
         super(parameterKeys);
-    }
-
-    public int getCorePoolSize() {
-        return getInt(corePoolSize, -1);
-    }
-
-    public AsyncConfig setCorePoolSize(int corePoolSize) {
-        putValue(AsyncConfig.corePoolSize, corePoolSize);
-        return this;
-    }
-
-    public int getMaxPoolSize() {
-        return getInt(maxPoolSize, -1);
-    }
-
-    public AsyncConfig setMaxPoolSize(int maxPoolSize) {
-        putValue(AsyncConfig.maxPoolSize, maxPoolSize);
-        return this;
-    }
-
-    public int getKeepAliveSeconds() {
-        return getInt(keepAliveSeconds, -1);
-    }
-
-    public AsyncConfig setKeepAliveSeconds(int keepAliveSeconds) {
-        putValue(AsyncConfig.keepAliveSeconds, keepAliveSeconds);
-        return this;
-    }
-
-    public int getQueueCapacity() {
-        return getInt(queueCapacity, -1);
-    }
-
-    public AsyncConfig setQueueCapacity(int queueCapacity) {
-        putValue(AsyncConfig.queueCapacity, queueCapacity);
-        return this;
-    }
-
-    public boolean isWaitForTasksToCompleteOnShutdown() {
-        return getBoolean(waitForTasksToCompleteOnShutdown, false);
-    }
-
-    public AsyncConfig setWaitForTasksToCompleteOnShutdown(boolean waitForTasksToCompleteOnShutdown) {
-        putValue(AsyncConfig.waitForTasksToCompleteOnShutdown, waitForTasksToCompleteOnShutdown);
-        return this;
     }
 
     public boolean isEnabled() {
