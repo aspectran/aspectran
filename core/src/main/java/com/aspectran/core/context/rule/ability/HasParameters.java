@@ -18,14 +18,34 @@ package com.aspectran.core.context.rule.ability;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
+/**
+ * An interface for rules that can have parameters.
+ */
 public interface HasParameters {
 
+    /**
+     * Gets the parameter item rule map.
+     * @return the parameter item rule map
+     */
     ItemRuleMap getParameterItemRuleMap();
 
+    /**
+     * Sets the parameter item rule map.
+     * @param parameterItemRuleMap the new parameter item rule map
+     */
     void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap);
 
+    /**
+     * Adds the parameter item rule.
+     * @param parameterItemRule the new parameter item rule
+     */
     void addParameterItemRule(ItemRule parameterItemRule);
 
+    /**
+     * A convenience method to create a new parameter rule with the specified name and add it.
+     * @param parameterName the parameter name
+     * @return the new parameter item rule
+     */
     default ItemRule newParameterItemRule(String parameterName) {
         ItemRule itemRule = new ItemRule();
         itemRule.setName(parameterName);

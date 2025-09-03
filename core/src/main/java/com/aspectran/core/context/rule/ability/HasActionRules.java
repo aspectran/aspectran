@@ -24,13 +24,9 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 
 /**
- * Defines a contract for objects that can accept and apply various action rules.
- *
- * <p>This interface acts as a factory or builder for creating {@link Executable} action
- * instances from their corresponding rule definitions. It is a core part of how Aspectran's
- * configuration parser translates rule definitions (e.g., from XML) into executable
- * objects. The primary implementor is typically
- * {@link com.aspectran.core.activity.process.ActionList}.</p>
+ * Defines a contract for rule classes that can contain and manage a list of executable actions.
+ * This interface provides a polymorphic way to add different types of action rules
+ * (e.g., invoke, echo, include) to a parent rule like a Translet or Advice.
  *
  * @since 2011. 2. 21.
  */

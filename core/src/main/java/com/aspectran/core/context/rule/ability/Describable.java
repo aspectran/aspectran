@@ -17,10 +17,21 @@ package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.context.rule.DescriptionRule;
 
+/**
+ * An interface for rules that can have a description.
+ */
 public interface Describable {
 
+    /**
+     * Gets the description rule.
+     * @return the description rule
+     */
     DescriptionRule getDescriptionRule();
 
+    /**
+     * Sets the description rule.
+     * @param descriptionRule the new description rule
+     */
     void setDescriptionRule(DescriptionRule descriptionRule);
 
 }

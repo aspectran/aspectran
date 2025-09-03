@@ -22,13 +22,9 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
- * Defines a contract for objects that can accept and apply various response rules.
- *
- * <p>This interface acts as a factory for creating specific {@link Response} objects
- * from their corresponding rule definitions. It is a core part of how Aspectran's
- * configuration parser translates response-related rules into executable response
- * handler objects. The primary implementor is typically
- * {@link com.aspectran.core.context.rule.ResponseRule}.</p>
+ * Defines a contract for rule classes that can contain and manage response rules.
+ * This interface provides a polymorphic way to add different types of response rules
+ * (e.g., transform, dispatch) to a parent rule, determining how the final output is generated.
  */
 public interface HasResponseRules {
 

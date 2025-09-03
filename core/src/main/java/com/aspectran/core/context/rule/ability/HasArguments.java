@@ -18,6 +18,9 @@ package com.aspectran.core.context.rule.ability;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
+/**
+ * An interface for rules that can have constructor arguments.
+ */
 public interface HasArguments {
 
     /**

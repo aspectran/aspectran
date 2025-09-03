@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 /**
- * Contains a collection of interfaces that define common capabilities or "abilities"
- * for rule classes.
- *
- * <p>This package provides a set of contracts that various rule classes can implement
- * to indicate that they support certain features. This allows the framework to treat
- * different types of rules polymorphically based on the abilities they possess.
- * Key abilities include:
- * <ul>
- *   <li>Applying action rules ({@link com.aspectran.core.context.rule.ability.HasActionRules})</li>
- *   <li>Applying response rules ({@link com.aspectran.core.context.rule.ability.HasResponseRules})</li>
- *   <li>Referencing beans ({@link com.aspectran.core.context.rule.ability.BeanReferenceable})</li>
- *   <li>Cloning or replicating themselves ({@link com.aspectran.core.context.rule.ability.Replicable})</li>
- * </ul>
- * By implementing these interfaces, rule classes can participate in different parts of the
- * application context lifecycle, from parsing and validation to runtime execution.
+ * Contains interfaces that define common capabilities or "abilities" for rule classes.
+ * For example, {@code HasActionRules} indicates that a rule can contain action rules,
+ * allowing the parser to handle rules polymorphically.
  */
 package com.aspectran.core.context.rule.ability;
