@@ -30,8 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A join point is the specific point in the application such as method execution,
- * exception handling, injecting settings values, etc.
+ * Defines a join point, the specific point in the application where an aspect's advice can be applied.
+ * It specifies the target type (e.g., a translet or a bean's method) and can include a pointcut
+ * to precisely match specific execution points.
  *
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
@@ -88,10 +89,18 @@ public class JoinpointRule {
 
     private JoinpointParameters joinpointParameters;
 
+    /**
+     * Gets the join point target type.
+     * @return the join point target type
+     */
     public JoinpointTargetType getJoinpointTargetType() {
         return joinpointTargetType;
     }
 
+    /**
+     * Sets the join point target type.
+     * @param joinpointTargetType the join point target type
+     */
     public void setJoinpointTargetType(JoinpointTargetType joinpointTargetType) {
         this.joinpointTargetType = joinpointTargetType;
         if (joinpointParameters != null) {
@@ -103,30 +112,58 @@ public class JoinpointRule {
         }
     }
 
+    /**
+     * Gets the allowed HTTP methods for the join point.
+     * @return an array of allowed methods
+     */
     public MethodType[] getMethods() {
         return methods;
     }
 
+    /**
+     * Sets the allowed HTTP methods for the join point.
+     * @param methods an array of allowed methods
+     */
     public void setMethods(MethodType[] methods) {
         this.methods = methods;
     }
 
+    /**
+     * Gets the required HTTP headers for the join point.
+     * @return an array of required headers
+     */
     public String[] getHeaders() {
         return headers;
     }
 
+    /**
+     * Sets the required HTTP headers for the join point.
+     * @param headers an array of required headers
+     */
     public void setHeaders(String[] headers) {
         this.headers = headers;
     }
 
+    /**
+     * Gets the pointcut rule.
+     * @return the pointcut rule
+     */
     public PointcutRule getPointcutRule() {
         return pointcutRule;
     }
 
+    /**
+     * Sets the pointcut rule.
+     * @param pointcutRule the pointcut rule
+     */
     public void setPointcutRule(PointcutRule pointcutRule) {
         this.pointcutRule = pointcutRule;
     }
 
+    /**
+     * Gets the joinpoint parameters used for its creation.
+     * @return the joinpoint parameters
+     */
     public JoinpointParameters getJoinpointParameters() {
         return joinpointParameters;
     }
@@ -145,6 +182,10 @@ public class JoinpointRule {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of JoinpointRule.
+     * @return a new JoinpointRule instance
+     */
     @NonNull
     public static JoinpointRule newInstance() {
         return new JoinpointRule();
@@ -185,6 +226,11 @@ public class JoinpointRule {
         }
     }
 
+    /**
+     * A static helper method to update the allowed methods from an array of strings.
+     * @param joinpointRule the joinpoint rule to update
+     * @param methods an array of method strings
+     */
     public static void updateMethods(@NonNull JoinpointRule joinpointRule, String[] methods) {
         if (methods != null && methods.length > 0) {
             List<MethodType> methodTypes = new ArrayList<>(methods.length);
@@ -199,6 +245,11 @@ public class JoinpointRule {
         }
     }
 
+    /**
+     * A static helper method to update the required headers from an array of strings.
+     * @param joinpointRule the joinpoint rule to update
+     * @param headers an array of header strings
+     */
     public static void updateHeaders(@NonNull JoinpointRule joinpointRule, String[] headers) {
         if (headers != null && headers.length > 0) {
             List<String> headerList = new ArrayList<>(headers.length);
@@ -213,6 +264,12 @@ public class JoinpointRule {
         }
     }
 
+    /**
+     * A static helper method to update the pointcut rule from parameters.
+     * @param joinpointRule the joinpoint rule to update
+     * @param pointcutParameters the pointcut parameters
+     * @throws IllegalRuleException if the rule is invalid
+     */
     public static void updatePointcutRule(@NonNull JoinpointRule joinpointRule, PointcutParameters pointcutParameters)
             throws IllegalRuleException {
         if (pointcutParameters == null) {

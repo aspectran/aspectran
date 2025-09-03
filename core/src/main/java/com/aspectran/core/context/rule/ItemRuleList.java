@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * The Class ItemRuleList.
+ * A specialized {@link java.util.ArrayList} for holding a list of {@link ItemRule} objects.
+ * This provides a type-safe collection for rules that contain a list of items,
+ * such as arguments or properties.
  *
  * <p>Created: 2016. 08. 22.</p>
  */
@@ -29,18 +31,33 @@ public class ItemRuleList extends ArrayList<ItemRule> {
     @Serial
     private static final long serialVersionUID = -7578440777195693622L;
 
+    /**
+     * Instantiates a new ItemRuleList.
+     */
     public ItemRuleList() {
         super();
     }
 
+    /**
+     * Instantiates a new ItemRuleList with the specified initial capacity.
+     * @param initialCapacity the initial capacity of the list
+     */
     public ItemRuleList(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Instantiates a new ItemRuleList with the specified collection of item rules.
+     * @param itemRules the collection whose elements are to be placed into this list
+     */
     public ItemRuleList(Collection<ItemRule> itemRules) {
         super(itemRules);
     }
 
+    /**
+     * Gets the names of all items in this list.
+     * @return an array of item names
+     */
     public String[] getItemNames() {
         String[] itemNames = new String[size()];
         for (int i = 0; i < itemNames.length; i++) {

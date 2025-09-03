@@ -18,24 +18,44 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 
 /**
- * Defines a rule to append a URL with defined rules.
+ * A specific {@link AppendRule} for importing rules from a URL.
  * 
  * <p>Created: 2017. 05. 06.</p>
  */
 public class UrlAppendRule extends AppendRule {
 
+    /**
+     * Instantiates a new UrlAppendRule.
+     * @param url the URL of the resource
+     */
     public UrlAppendRule(String url) {
         this(url, null, null);
     }
 
+    /**
+     * Instantiates a new UrlAppendRule.
+     * @param url the URL of the resource
+     * @param profile the profile expression
+     */
     public UrlAppendRule(String url, String profile) {
         this(url, null, profile);
     }
 
+    /**
+     * Instantiates a new UrlAppendRule.
+     * @param url the URL of the resource
+     * @param format the file format
+     */
     public UrlAppendRule(String url, AppendableFileFormatType format) {
         this(url, format, null);
     }
 
+    /**
+     * Instantiates a new UrlAppendRule.
+     * @param url the URL of the resource
+     * @param format the file format
+     * @param profile the profile expression
+     */
     public UrlAppendRule(String url, AppendableFileFormatType format, String profile) {
         setUrl(url);
         setFormat(format);

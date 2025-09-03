@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pointcuts are expressions that match join points and determine whether
- * to execute advice. Pointcuts use a variety of expressions that match
- * join points, and Aspectran uses wildcard pattern matching expressions.
+ * Defines a pointcut that identifies join points where an aspect's advice should be executed.
+ * A pointcut consists of one or more patterns that match against translet names, bean IDs, or method names.
+ *
+ * <p>Created: 2016. 02. 13.</p>
  */
 public class PointcutRule {
 
@@ -34,18 +35,34 @@ public class PointcutRule {
 
     private List<PointcutPatternRule> pointcutPatternRuleList;
 
+    /**
+     * Instantiates a new PointcutRule.
+     * @param pointcutType the type of pointcut (e.g., wildcard, regexp)
+     */
     public PointcutRule(@Nullable PointcutType pointcutType) {
         this.pointcutType = pointcutType;
     }
 
+    /**
+     * Gets the pointcut type.
+     * @return the pointcut type
+     */
     public PointcutType getPointcutType() {
         return pointcutType;
     }
 
+    /**
+     * Gets the list of pointcut pattern rules.
+     * @return the list of pointcut pattern rules
+     */
     public List<PointcutPatternRule> getPointcutPatternRuleList() {
         return pointcutPatternRuleList;
     }
 
+    /**
+     * Adds a pointcut pattern rule.
+     * @param pointcutPatternRule the pointcut pattern rule to add
+     */
     public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
         if (pointcutPatternRule == null) {
             throw new IllegalArgumentException("pointcutPatternRule must not be null");
@@ -54,6 +71,10 @@ public class PointcutRule {
         touchPointcutPatternRuleList().add(pointcutPatternRule);
     }
 
+    /**
+     * Gets the list of pointcut pattern rules, creating it if it does not exist.
+     * @return the list of pointcut pattern rules
+     */
     public List<PointcutPatternRule> touchPointcutPatternRuleList() {
         if (pointcutPatternRuleList == null) {
             pointcutPatternRuleList = new ArrayList<>();
@@ -69,6 +90,12 @@ public class PointcutRule {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of PointcutRule.
+     * @param type the pointcut type as a string
+     * @return a new PointcutRule instance
+     * @throws IllegalRuleException if the type is unrecognized
+     */
     @NonNull
     public static PointcutRule newInstance(String type) throws IllegalRuleException {
         PointcutType pointcutType = null;
@@ -82,6 +109,12 @@ public class PointcutRule {
         return new PointcutRule(pointcutType);
     }
 
+    /**
+     * Creates a new instance of PointcutRule from an array of pattern strings.
+     * @param patterns an array of pattern strings
+     * @return a new PointcutRule instance, or null if patterns are empty
+     * @throws IllegalRuleException if a pattern is invalid
+     */
     public static PointcutRule newInstance(String[] patterns) throws IllegalRuleException {
         if (patterns == null || patterns.length == 0) {
             return null;

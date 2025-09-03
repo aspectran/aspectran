@@ -35,7 +35,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class ItemRule.
+ * Represents a fundamental, configurable item used for parameters, attributes, or properties.
+ * An ItemRule defines a named value that can be a single value, a list, or a map.
+ * It is a versatile building block for passing data into and between various components of the framework.
  *
  * <p>Created: 2008. 03. 27 PM 3:57:48</p>
  */
@@ -80,7 +82,7 @@ public class ItemRule {
     }
 
     /**
-     * Gets the item type.
+     * Gets the item type (e.g., SINGLE, ARRAY, MAP).
      * @return the item type
      */
     public ItemType getType() {
@@ -105,6 +107,7 @@ public class ItemRule {
 
     /**
      * Sets the name of the item.
+     * If the name ends with "[]" or "{}", the item type is automatically set to ARRAY or MAP respectively.
      * @param name the name to set
      */
     public void setName(String name) {
@@ -124,7 +127,7 @@ public class ItemRule {
     }
 
     /**
-     * Returns the value of the item.
+     * Returns the value of the item as a string.
      * @return the value of the item
      */
     public String getValue() {
@@ -136,7 +139,7 @@ public class ItemRule {
     }
 
     /**
-     * Gets the tokens.
+     * Gets the tokens for a single value item.
      * @return the tokens
      */
     public Token[] getTokens() {
@@ -144,7 +147,7 @@ public class ItemRule {
     }
 
     /**
-     * Gets the list of tokens.
+     * Gets the list of tokens for a list-type item.
      * @return the tokens list
      */
     public List<Token[]> getTokensList() {
@@ -171,7 +174,7 @@ public class ItemRule {
     }
 
     /**
-     * Gets the tokens map.
+     * Gets the map of tokens for a map-type item.
      * @return the tokens map
      */
     public Map<String, Token[]> getTokensMap() {
@@ -336,11 +339,19 @@ public class ItemRule {
         tokensList = new ArrayList<>(tokensSet);
     }
 
+    /**
+     * Gets the inner bean rule for a single value item.
+     * @return the bean rule
+     */
     public BeanRule getBeanRule() {
         checkSingleType();
         return beanRule;
     }
 
+    /**
+     * Sets the inner bean rule for a single value item.
+     * @param beanRule the bean rule
+     */
     public void setBeanRule(BeanRule beanRule) {
         if (type == null) {
             type = ItemType.SINGLE;
@@ -352,11 +363,19 @@ public class ItemRule {
         this.beanRule = beanRule;
     }
 
+    /**
+     * Gets the list of inner bean rules for a list-type item.
+     * @return the list of bean rules
+     */
     public List<BeanRule> getBeanRuleList() {
         checkListType();
         return beanRuleList;
     }
 
+    /**
+     * Adds an inner bean rule to a list-type item.
+     * @param beanRule the bean rule to add
+     */
     public void addBeanRule(BeanRule beanRule) {
         checkListType();
         if (valueType == null) {
@@ -368,11 +387,20 @@ public class ItemRule {
         beanRuleList.add(beanRule);
     }
 
+    /**
+     * Gets the map of inner bean rules for a map-type item.
+     * @return the map of bean rules
+     */
     public Map<String, BeanRule> getBeanRuleMap() {
         checkMappableType();
         return beanRuleMap;
     }
 
+    /**
+     * Puts an inner bean rule into a map-type item.
+     * @param name the key for the bean rule
+     * @param beanRule the bean rule to add
+     */
     public void putBeanRule(String name, BeanRule beanRule) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
@@ -391,7 +419,7 @@ public class ItemRule {
     }
 
     /**
-     * Gets the value type of this item.
+     * Gets the value type of this item (e.g., STRING, INT, BEAN).
      * @return the value type of this item
      */
     public ItemValueType getValueType() {
@@ -407,7 +435,7 @@ public class ItemRule {
     }
 
     /**
-     * Returns whether to tokenize.
+     * Returns whether to tokenize the item's value.
      * @return whether to tokenize
      */
     public Boolean getTokenize() {
@@ -415,48 +443,48 @@ public class ItemRule {
     }
 
     /**
-     * Returns whether tokenize.
-     * @return whether tokenize
+     * Returns whether to tokenize the item's value (defaults to true).
+     * @return whether to tokenize
      */
     public boolean isTokenize() {
         return !(tokenize == Boolean.FALSE);
     }
 
     /**
-     * Sets whether tokenize.
-     * @param tokenize whether tokenize
+     * Sets whether to tokenize the item's value.
+     * @param tokenize whether to tokenize
      */
     public void setTokenize(Boolean tokenize) {
         this.tokenize = tokenize;
     }
 
     /**
-     * Returns whether the item name was auto generated.
-     * @return true, if the item name was auto generated
+     * Returns whether the item name was auto-generated.
+     * @return true, if the item name was auto-generated
      */
     public boolean isAutoNamed() {
         return autoNamed;
     }
 
     /**
-     * Sets whether the item is an auto generated name.
-     * @param autoNamed true, if the item name is auto generated
+     * Sets whether the item name was auto-generated.
+     * @param autoNamed true, if the item name is auto-generated
      */
     public void setAutoNamed(boolean autoNamed) {
         this.autoNamed = autoNamed;
     }
 
     /**
-     * Return whether this item is listable type.
-     * @return true, if this item is listable type
+     * Returns whether this item is a list-like type (ARRAY, LIST, or SET).
+     * @return true, if this item is a list-like type
      */
     public boolean isListableType() {
         return (type == ItemType.ARRAY || type == ItemType.LIST || type == ItemType.SET);
     }
 
     /**
-     * Return whether this item is mappable type.
-     * @return true, if this item is mappable type
+     * Returns whether this item is a map-like type (MAP or PROPERTIES).
+     * @return true, if this item is a map-like type
      */
     public boolean isMappableType() {
         return (type == ItemType.MAP || type == ItemType.PROPERTIES);
@@ -464,7 +492,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item is mandatory.
-     * @return whether or not this item is mandatory
+     * @return whether this item is mandatory
      */
     public Boolean getMandatory() {
         return mandatory;
@@ -472,7 +500,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item is mandatory.
-     * @return whether this item is mandatory
+     * @return true if this item is mandatory
      */
     public boolean isMandatory() {
         return (mandatory == Boolean.TRUE);
@@ -487,7 +515,7 @@ public class ItemRule {
     }
 
     /**
-     * Returns whether this item requires secure input.
+     * Returns whether this item requires secure input (e.g., for logging).
      * @return whether this item requires secure input
      */
     public Boolean getSecret() {
@@ -496,7 +524,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item requires secure input.
-     * @return whether this item requires secure input
+     * @return true if this item requires secure input
      */
     public boolean isSecret() {
         return (secret == Boolean.TRUE);
@@ -510,6 +538,10 @@ public class ItemRule {
         this.secret = secret;
     }
 
+    /**
+     * Gets all tokens from the item, regardless of its type (single, list, or map).
+     * @return an array of all tokens
+     */
     public Token[] getAllTokens() {
         if (type == ItemType.SINGLE) {
             return tokens;
@@ -547,6 +579,11 @@ public class ItemRule {
         }
     }
 
+    /**
+     * Checks if the item's value contains a specific token.
+     * @param token the token to check for
+     * @return true if the token is found, false otherwise
+     */
     public boolean containsToken(Token token) {
         Token[] allTokens = getAllTokens();
         if (allTokens != null) {
@@ -559,11 +596,19 @@ public class ItemRule {
         return false;
     }
 
+    /**
+     * Returns whether the item has a value that can be evaluated at runtime.
+     * @return true if the item has an evaluatable value
+     */
     public boolean isEvaluable() {
         return (tokens != null || tokensList != null || tokensMap != null ||
                 beanRule != null || beanRuleList != null || beanRuleMap != null);
     }
 
+    /**
+     * Returns whether the item's value consists only of fixed text (no dynamic tokens).
+     * @return true if the value is fixed, false otherwise
+     */
     public boolean hasOnlyFixedValue() {
         Token[] allTokens = getAllTokens();
         if (allTokens != null) {
@@ -628,15 +673,15 @@ public class ItemRule {
     }
 
     /**
-     * Returns a new derived instance of ItemRule.
-     * @param type the item type
+     * Creates a new instance of ItemRule.
+     * @param type the item type (e.g., "single", "list", "map")
      * @param name the name of the item
-     * @param valueType the type of value an item can have
-     * @param tokenize whether to tokenize
-     * @param mandatory whether this item is mandatory
-     * @param secret whether this item requires secure input
-     * @return the item rule
-     * @throws IllegalRuleException if an illegal rule is found
+     * @param valueType the type of the item's value (e.g., "string", "bean")
+     * @param tokenize whether to tokenize the value
+     * @param mandatory whether the item is mandatory
+     * @param secret whether the item value is secret
+     * @return a new ItemRule instance
+     * @throws IllegalRuleException if the configuration is invalid
      */
     @NonNull
     public static ItemRule newInstance(

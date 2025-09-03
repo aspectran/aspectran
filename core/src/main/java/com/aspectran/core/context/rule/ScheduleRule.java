@@ -34,24 +34,11 @@ import java.util.List;
 
 /**
  * Represents a group of scheduled jobs that share a single trigger configuration.
- * This class corresponds to the {@code <schedule>} element in the Aspectran configuration.
+ * This rule defines which scheduler bean to use, a single trigger (simple or cron)
+ * that determines when the jobs will run, and a list of one or more jobs
+ * ({@link ScheduledJobRule}) to be executed when the trigger fires.
  *
- * <p>A {@code ScheduleRule} defines:
- * <ul>
- *   <li>Which scheduler bean to use.</li>
- *   <li>A single trigger (simple or cron) that determines when the jobs will run.</li>
- *   <li>A list of one or more jobs ({@link ScheduledJobRule}) to be executed when the trigger fires.</li>
- * </ul>
- *
- * <pre>
- * &lt;schedule id="daily-tasks" schedulerBean="myScheduler"&gt;
- *   &lt;scheduler&gt;
- *     &lt;trigger type="cron" expression="0 0 2 * * ?"/&gt;
- *   &lt;/scheduler&gt;
- *   &lt;job translet="/batch/task1"/&gt;
- *   &lt;job translet="/batch/task2"/&gt;
- * &lt;/schedule&gt;
- * </pre>
+ * <p>Created: 2016. 01. 24.</p>
  */
 public class ScheduleRule implements BeanReferenceable, Describable {
 
@@ -175,18 +162,12 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         scheduledJobRuleList.add(scheduledJobRule);
     }
 
-    /**
-     * Gets the description of this schedule.
-     * @return the description rule
-     */
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
-    /**
-     * Sets the description of this schedule.
-     * @param descriptionRule the description rule
-     */
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
@@ -207,7 +188,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Factory method to create a new ScheduleRule instance.
+     * Creates a new instance of ScheduleRule.
      * @param id the ID of the schedule, which is mandatory
      * @return a new {@code ScheduleRule} instance
      * @throws IllegalRuleException if the ID is null
@@ -224,7 +205,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger from a parameter map. Used by the rule parser.
+     * A static helper method to update the trigger from a parameter map.
      * @param scheduleRule the rule to update
      * @param triggerParameters the parameters containing trigger info
      * @throws IllegalRuleException if the parameters are invalid
@@ -241,7 +222,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger from type and expression strings. Used by the rule parser.
+     * A static helper method to update the trigger from type and expression strings.
      * @param scheduleRule the rule to update
      * @param type the trigger type string ("simple" or "cron")
      * @param expression the trigger expression string
@@ -254,7 +235,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger type. Used by the rule parser.
+     * A static helper method to update the trigger type.
      * @param scheduleRule the rule to update
      * @param type the trigger type string
      */
@@ -273,7 +254,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger expression from a string. Used by the rule parser.
+     * A static helper method to update the trigger expression from a string.
      * @param scheduleRule the rule to update
      * @param expression the trigger expression string
      * @throws IllegalRuleException if the expression cannot be parsed
@@ -292,7 +273,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger expression from a parameter object. Used by the rule parser.
+     * A static helper method to update the trigger expression from a parameter object.
      * @param scheduleRule the rule to update
      * @param expressionParameters the trigger expression parameters
      */
@@ -320,7 +301,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger from a {@link SimpleTrigger} annotation. Used by the rule parser.
+     * A static helper method to update the trigger from a {@link SimpleTrigger} annotation.
      * @param scheduleRule the rule to update
      * @param simpleTriggerAnno the source annotation
      */
@@ -352,7 +333,7 @@ public class ScheduleRule implements BeanReferenceable, Describable {
     }
 
     /**
-     * Helper method to update the trigger from a {@link CronTrigger} annotation. Used by the rule parser.
+     * A static helper method to update the trigger from a {@link CronTrigger} annotation.
      * @param scheduleRule the rule to update
      * @param cronTriggerAnno the source annotation
      */

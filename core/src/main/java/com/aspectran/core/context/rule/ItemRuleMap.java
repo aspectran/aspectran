@@ -24,7 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * The Class ItemRuleMap.
+ * A specialized {@link java.util.LinkedHashMap} for holding a collection of named {@link ItemRule} objects.
+ * It supports profile-based rules, allowing different sets of items to be merged based on the active
+ * environment profile. This is the primary data structure for storing properties, attributes, and parameters.
  *
  * <p>Created: 2008. 03. 29 PM 5:00:20</p>
  */
@@ -39,14 +41,17 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
     private List<ItemRuleMap> candidates;
 
+    /**
+     * Instantiates a new ItemRuleMap.
+     */
     public ItemRuleMap() {
         super();
     }
 
     /**
-     * Adds an item rule.
-     * @param itemRule the item rule
-     * @return the item rule
+     * Adds an item rule to the map. If the item rule has no name, a name is auto-generated.
+     * @param itemRule the item rule to add
+     * @return the previous value associated with the key, or null if there was no mapping
      */
     public ItemRule putItemRule(@NonNull ItemRule itemRule) {
         if (itemRule.isAutoNamed()) {
@@ -56,9 +61,8 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
     }
 
     /**
-     * Auto-naming for unnamed item.
-     * Auto-naming if did not specify the name of the item.
-     * @param itemRule the item rule
+     * Auto-generates a name for an unnamed item.
+     * @param itemRule the item rule to name
      */
     private void autoNaming(@NonNull ItemRule itemRule) {
         if (itemRule.getName() == null) {
@@ -66,27 +70,52 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
         }
     }
 
+    /**
+     * Gets the profile expression.
+     * @return the profile expression
+     */
     public String getProfile() {
         return profile;
     }
 
+    /**
+     * Sets the profile expression that determines if this map should be active.
+     * @param profile the profile expression
+     */
     public void setProfile(String profile) {
         this.profile = profile;
         this.profiles = (profile != null ? Profiles.of(profile) : null);
     }
 
+    /**
+     * Gets the parsed profiles.
+     * @return the profiles
+     */
     public Profiles getProfiles() {
         return profiles;
     }
 
+    /**
+     * Gets the list of candidate item rule maps for different profiles.
+     * @return the list of candidate maps
+     */
     public List<ItemRuleMap> getCandidates() {
         return candidates;
     }
 
+    /**
+     * Sets the list of candidate item rule maps.
+     * @param candidates the list of candidate maps
+     */
     public void setCandidates(List<ItemRuleMap> candidates) {
         this.candidates = candidates;
     }
 
+    /**
+     * Adds a candidate item rule map.
+     * @param itemRuleMap the candidate map to add
+     * @return true if the candidate was added successfully
+     */
     public boolean addCandidate(ItemRuleMap itemRuleMap) {
         if (candidates == null) {
             candidates = new ArrayList<>();

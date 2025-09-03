@@ -19,11 +19,14 @@ import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
+ * Represents a single key-value entry within a map-type {@link ItemRule}.
+ * This class is used to construct map-based properties or arguments during the configuration parsing process.
+ *
  * <p>Created: 2025-09-01</p>
  */
 public class ItemEntry {
 
-    private ItemRule itemRule;
+    private final ItemRule itemRule;
 
     private String name;
 
@@ -38,34 +41,70 @@ public class ItemEntry {
         this.tokenizable = tokenizable;
     }
 
+    /**
+     * Gets the parent item rule.
+     * @return the item rule
+     */
     public ItemRule getItemRule() {
         return itemRule;
     }
 
+    /**
+     * Gets the name of the entry.
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the entry.
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the value of the entry.
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets the value of the entry.
+     * @param value the value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Returns whether the value can be tokenized.
+     * @return true if tokenizable, false otherwise
+     */
     public boolean isTokenizable() {
         return tokenizable;
     }
 
+    /**
+     * Sets whether the value can be tokenized.
+     * @param tokenizable true if tokenizable
+     */
     public void setTokenizable(boolean tokenizable) {
         this.tokenizable = tokenizable;
     }
 
+    /**
+     * Creates a new ItemEntry.
+     * @param itemRule the parent item rule
+     * @param name the name of the entry
+     * @param value the value of the entry
+     * @param tokenize whether to tokenize the value
+     * @return a new ItemEntry instance
+     */
     @NonNull
     public static ItemEntry of(@NonNull ItemRule itemRule, String name, String value, String tokenize) {
         boolean tokenizable = BooleanUtils.toBoolean(

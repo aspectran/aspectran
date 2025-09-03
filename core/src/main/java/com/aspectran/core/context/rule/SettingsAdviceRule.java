@@ -29,7 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class SettingsAdviceRule.
+ * A specialized advice rule for injecting configuration settings into a bean.
+ * This allows aspects to provide configuration to other components.
+ *
+ * <p>Created: 2016. 03. 26.</p>
  */
 public class SettingsAdviceRule {
 
@@ -37,6 +40,10 @@ public class SettingsAdviceRule {
 
     private Map<String, Object> settings;
 
+    /**
+     * Instantiates a new SettingsAdviceRule.
+     * @param aspectRule the parent aspect rule
+     */
     public SettingsAdviceRule(AspectRule aspectRule) {
         if (aspectRule == null) {
             throw new IllegalArgumentException("aspectRule must not be null");
@@ -44,27 +51,54 @@ public class SettingsAdviceRule {
         this.aspectRule = aspectRule;
     }
 
+    /**
+     * Gets the ID of the parent aspect.
+     * @return the aspect ID
+     */
     public String getAspectId() {
         return aspectRule.getId();
     }
 
+    /**
+     * Gets the parent aspect rule.
+     * @return the aspect rule
+     */
     public AspectRule getAspectRule() {
         return aspectRule;
     }
 
+    /**
+     * Gets the map of settings.
+     * @return the settings map
+     */
     public Map<String, Object> getSettings() {
         return settings;
     }
 
+    /**
+     * Sets the map of settings.
+     * @param settings the settings map
+     */
     public void setSettings(Map<String, Object> settings) {
         this.settings = settings;
     }
 
+    /**
+     * Gets a specific setting by name.
+     * @param name the name of the setting
+     * @param <T> the type of the setting value
+     * @return the setting value
+     */
     @SuppressWarnings("unchecked")
     public <T> T getSetting(String name) {
         return (T)settings.get(name);
     }
 
+    /**
+     * Adds or updates a setting.
+     * @param name the name of the setting
+     * @param value the value of the setting
+     */
     public void putSetting(String name, Object value) {
         if (StringUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Setting name can not be null");
@@ -75,11 +109,22 @@ public class SettingsAdviceRule {
         settings.put(name, value);
     }
 
+    /**
+     * Creates a new instance of SettingsAdviceRule.
+     * @param aspectRule the parent aspect rule
+     * @return a new SettingsAdviceRule instance
+     */
     @NonNull
     public static SettingsAdviceRule newInstance(AspectRule aspectRule) {
         return new SettingsAdviceRule(aspectRule);
     }
 
+    /**
+     * Creates a new instance of SettingsAdviceRule from parameters.
+     * @param aspectRule the parent aspect rule
+     * @param settingsParameters the settings parameters
+     * @return a new SettingsAdviceRule instance
+     */
     @NonNull
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, SettingsParameters settingsParameters) {
         SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
@@ -87,6 +132,12 @@ public class SettingsAdviceRule {
         return sar;
     }
 
+    /**
+     * Updates a SettingsAdviceRule from an APON string.
+     * @param sar the SettingsAdviceRule to update
+     * @param apon the APON string containing settings
+     * @throws IllegalRuleException if the APON string is invalid
+     */
     public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String apon) throws IllegalRuleException {
         if (StringUtils.hasText(apon)) {
             SettingsParameters settingsParameters = new SettingsParameters();

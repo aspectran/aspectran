@@ -24,7 +24,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.nio.charset.Charset;
 
 /**
- * The Class RequestRule.
+ * Defines rules for processing an incoming request, such as allowed methods,
+ * character encoding, and definitions for parameters and attributes.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
@@ -59,7 +60,7 @@ public class RequestRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Gets whether the request rule is explicitly generated.
+     * Returns whether the request rule was explicitly defined in the configuration.
      * @return true if this request rule is explicit; false otherwise
      */
     public boolean isExplicit() {
@@ -67,7 +68,7 @@ public class RequestRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Returns the method allowed on the requested resource.
+     * Returns the HTTP method allowed for the request.
      * @return the allowed method
      */
     public MethodType getAllowedMethod() {
@@ -75,7 +76,7 @@ public class RequestRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Sets the method allowed on the requested resource.
+     * Sets the HTTP method allowed for the request.
      * @param allowedMethod the new allowed method
      */
     public void setAllowedMethod(MethodType allowedMethod) {
@@ -83,7 +84,7 @@ public class RequestRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Gets the request encoding.
+     * Gets the character encoding for the request.
      * @return the request encoding
      */
     public String getEncoding() {
@@ -91,33 +92,24 @@ public class RequestRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Sets the request encoding.
+     * Sets the character encoding for the request.
      * @param encoding the new request encoding
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-    /**
-     * Gets the parameter item rule map.
-     * @return the parameter item rule map
-     */
+    @Override
     public ItemRuleMap getParameterItemRuleMap() {
         return parameterItemRuleMap;
     }
 
-    /**
-     * Sets the attribute item rule map.
-     * @param parameterItemRuleMap the new attribute item rule map
-     */
+    @Override
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
         this.parameterItemRuleMap = parameterItemRuleMap;
     }
 
-    /**
-     * Adds the parameter item rule.
-     * @param parameterItemRule the parameter item rule
-     */
+    @Override
     public void addParameterItemRule(ItemRule parameterItemRule) {
         if (parameterItemRuleMap == null) {
             parameterItemRuleMap = new ItemRuleMap();
@@ -153,11 +145,23 @@ public class RequestRule implements HasParameters, HasAttributes {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of RequestRule.
+     * @param explicit whether this request rule is explicit
+     * @return a new RequestRule instance
+     */
     @NonNull
     public static RequestRule newInstance(boolean explicit) {
         return new RequestRule(explicit);
     }
 
+    /**
+     * Creates a new instance of RequestRule.
+     * @param allowedMethod the allowed HTTP method
+     * @param encoding the character encoding
+     * @return a new RequestRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static RequestRule newInstance(String allowedMethod, String encoding) throws IllegalRuleException {
         MethodType allowedMethodType = null;

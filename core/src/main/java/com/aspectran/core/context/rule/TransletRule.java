@@ -39,7 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class TransletRule.
+ * Represents the complete blueprint for handling a single request.
+ * A TransletRule aggregates all the necessary rules for a request-response cycle,
+ * including request parsing, a list of actions to execute, and how to generate the final response.
+ * It acts as a central container for a unit of work within the framework.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
@@ -101,7 +104,7 @@ public class TransletRule
     }
 
     /**
-     * Returns the array of methods allowed on the requested resource.
+     * Returns the array of HTTP methods allowed for this translet.
      * @return the allowed methods
      */
     public MethodType[] getAllowedMethods() {
@@ -109,7 +112,7 @@ public class TransletRule
     }
 
     /**
-     * Sets the array of methods allowed on the requested resource.
+     * Sets the array of HTTP methods allowed for this translet.
      * @param allowedMethods the allowed methods
      */
     public void setAllowedMethods(MethodType[] allowedMethods) {
@@ -117,7 +120,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the name pattern.
+     * Gets the wildcard pattern for matching translet names.
      * @return the name pattern
      */
     public WildcardPattern getNamePattern() {
@@ -125,7 +128,7 @@ public class TransletRule
     }
 
     /**
-     * Sets the name pattern.
+     * Sets the wildcard pattern for matching translet names.
      * @param namePattern the new name pattern
      */
     public void setNamePattern(WildcardPattern namePattern) {
@@ -133,7 +136,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the name tokens.
+     * Gets the tokens parsed from the translet name, used for path variables.
      * @return the name tokens
      */
     public Token[] getNameTokens() {
@@ -141,7 +144,7 @@ public class TransletRule
     }
 
     /**
-     * Sets the name tokens.
+     * Sets the tokens parsed from the translet name.
      * @param nameTokens the new name tokens
      */
     public void setNameTokens(Token[] nameTokens) {
@@ -149,7 +152,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the scan path.
+     * Gets the scan path for dynamically generating translets.
      * @return the scan path
      */
     public String getScanPath() {
@@ -157,7 +160,7 @@ public class TransletRule
     }
 
     /**
-     * Sets the scan path.
+     * Sets the scan path for dynamically generating translets.
      * @param scanPath the new scan path
      */
     public void setScanPath(String scanPath) {
@@ -165,7 +168,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the mask pattern.
+     * Gets the mask pattern to exclude from scanning.
      * @return the mask pattern
      */
     public String getMaskPattern() {
@@ -173,7 +176,7 @@ public class TransletRule
     }
 
     /**
-     * Sets the mask pattern.
+     * Sets the mask pattern to exclude from scanning.
      * @param maskPattern the new mask pattern
      */
     public void setMaskPattern(String maskPattern) {
@@ -181,7 +184,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the filter parameters.
+     * Gets the filter parameters for scanning.
      * @return the filter parameters
      */
     public FilterParameters getFilterParameters() {
@@ -189,31 +192,47 @@ public class TransletRule
     }
 
     /**
-     * Sets the filter parameters.
+     * Sets the filter parameters for scanning.
      * @param filterParameters the new filter parameters
      */
     public void setFilterParameters(FilterParameters filterParameters) {
         this.filterParameters = filterParameters;
     }
 
+    /**
+     * Returns whether this translet should be executed asynchronously.
+     * @return true if asynchronous, false otherwise
+     */
     public boolean isAsync() {
         return BooleanUtils.toBoolean(async);
     }
 
+    /**
+     * Sets whether this translet should be executed asynchronously.
+     * @param async true for asynchronous execution
+     */
     public void setAsync(Boolean async) {
         this.async = async;
     }
 
+    /**
+     * Gets the timeout for asynchronous execution.
+     * @return the timeout in milliseconds
+     */
     public Long getTimeout() {
         return timeout;
     }
 
+    /**
+     * Sets the timeout for asynchronous execution.
+     * @param timeout the timeout in milliseconds
+     */
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
     }
 
     /**
-     * Gets the request rule.
+     * Gets the request rule for this translet.
      * @return the request rule
      */
     public RequestRule getRequestRule() {
@@ -221,13 +240,18 @@ public class TransletRule
     }
 
     /**
-     * Sets the request rule.
+     * Sets the request rule for this translet.
      * @param requestRule the new request rule
      */
     public void setRequestRule(RequestRule requestRule) {
         this.requestRule = requestRule;
     }
 
+    /**
+     * Gets the request rule, creating it if it does not exist.
+     * @param explicit whether the rule is explicitly defined
+     * @return the request rule
+     */
     public RequestRule touchRequestRule(boolean explicit) {
         if (requestRule == null) {
             requestRule = RequestRule.newInstance(explicit);
@@ -236,7 +260,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the content list.
+     * Gets the content list which contains the actions to be executed.
      * @return the content list
      */
     public ContentList getContentList() {
@@ -252,8 +276,8 @@ public class TransletRule
     }
 
     /**
-     * Returns whether the translet name has tokens for extracting parameters or attributes.
-     * @return true if the translet name has tokens for extracting parameters or attributes
+     * Returns whether the translet name has tokens for extracting path variables.
+     * @return true if the translet name has path variables
      */
     public boolean hasPathVariables() {
         return (nameTokens != null);
@@ -295,8 +319,7 @@ public class TransletRule
     }
 
     /**
-     * Returns the action list.
-     * If not yet instantiated, then create a new one.
+     * Returns the action list, creating it if it does not yet exist.
      * @return the action list
      */
     private ActionList touchActionList() {
@@ -322,7 +345,7 @@ public class TransletRule
     }
 
     /**
-     * Gets the response rule.
+     * Gets the primary response rule.
      * @return the response rule
      */
     public ResponseRule getResponseRule() {
@@ -330,21 +353,33 @@ public class TransletRule
     }
 
     /**
-     * Sets the response rule.
+     * Sets the primary response rule.
      * @param responseRule the new response rule
      */
     public void setResponseRule(ResponseRule responseRule) {
         this.responseRule = responseRule;
     }
 
+    /**
+     * Gets the list of all response rules, used when multiple responses are defined.
+     * @return the list of response rules
+     */
     public List<ResponseRule> getResponseRuleList() {
         return responseRuleList;
     }
 
+    /**
+     * Sets the list of response rules.
+     * @param responseRuleList the new list of response rules
+     */
     public void setResponseRuleList(List<ResponseRule> responseRuleList) {
         this.responseRuleList = responseRuleList;
     }
 
+    /**
+     * Adds a response rule to the list.
+     * @param responseRule the response rule to add
+     */
     public void addResponseRule(ResponseRule responseRule) {
         if (responseRuleList == null) {
             responseRuleList = new ArrayList<>();
@@ -384,6 +419,9 @@ public class TransletRule
         return responseRule.putResponseRule(redirectRule);
     }
 
+    /**
+     * Determines the final response rule to be used, especially when multiple are defined.
+     */
     public void determineResponseRule() {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);
@@ -396,22 +434,42 @@ public class TransletRule
         setResponseRuleList(null);
     }
 
+    /**
+     * Gets the exception handling rule for this translet.
+     * @return the exception rule
+     */
     public ExceptionRule getExceptionRule() {
         return exceptionRule;
     }
 
+    /**
+     * Sets the exception handling rule for this translet.
+     * @param exceptionRule the new exception rule
+     */
     public void setExceptionRule(ExceptionRule exceptionRule) {
         this.exceptionRule = exceptionRule;
     }
 
+    /**
+     * Gets the registry for advice rules applicable to this translet.
+     * @return the advice rule registry
+     */
     public AdviceRuleRegistry getAdviceRuleRegistry() {
         return adviceRuleRegistry;
     }
 
+    /**
+     * Sets the registry for advice rules.
+     * @param adviceRuleRegistry the new advice rule registry
+     */
     public void setAdviceRuleRegistry(AdviceRuleRegistry adviceRuleRegistry) {
         this.adviceRuleRegistry = adviceRuleRegistry;
     }
 
+    /**
+     * Gets the advice rule registry, creating it if it does not exist.
+     * @return the advice rule registry
+     */
     public AdviceRuleRegistry touchAdviceRuleRegistry() {
         if (adviceRuleRegistry == null) {
             adviceRuleRegistry = new AdviceRuleRegistry();
@@ -419,14 +477,20 @@ public class TransletRule
         return adviceRuleRegistry;
     }
 
+    /**
+     * Creates a replica of the advice rule registry.
+     * @return a replicated advice rule registry, or null if none exists
+     */
     public AdviceRuleRegistry replicateAdviceRuleRegistry() {
         return (adviceRuleRegistry != null ? adviceRuleRegistry.replicate() : null);
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
@@ -460,6 +524,17 @@ public class TransletRule
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of TransletRule.
+     * @param name the translet name
+     * @param scanPath the path to scan for dynamic translets
+     * @param maskPattern the pattern to exclude from scanning
+     * @param method the allowed HTTP methods
+     * @param async whether to execute asynchronously
+     * @param timeout the timeout for async execution
+     * @return a new TransletRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static TransletRule newInstance(
             String name, String scanPath, String maskPattern, String method,
@@ -467,6 +542,17 @@ public class TransletRule
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, parseTimeout(timeout));
     }
 
+    /**
+     * Creates a new instance of TransletRule.
+     * @param name the translet name
+     * @param scanPath the path to scan for dynamic translets
+     * @param maskPattern the pattern to exclude from scanning
+     * @param method the allowed HTTP methods
+     * @param async whether to execute asynchronously
+     * @param timeout the timeout for async execution
+     * @return a new TransletRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static TransletRule newInstance(
             String name, String scanPath, String maskPattern, String method,
@@ -474,6 +560,17 @@ public class TransletRule
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, timeout);
     }
 
+    /**
+     * Creates a new instance of TransletRule.
+     * @param name the translet name
+     * @param scanPath the path to scan for dynamic translets
+     * @param maskPattern the pattern to exclude from scanning
+     * @param allowedMethods the allowed HTTP methods
+     * @param async whether to execute asynchronously
+     * @param timeout the timeout for async execution
+     * @return a new TransletRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static TransletRule newInstance(
             String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
@@ -481,6 +578,15 @@ public class TransletRule
         return newInstance(name, scanPath, maskPattern, allowedMethods, async, parseTimeout(timeout));
     }
 
+    /**
+     * Creates a new instance of TransletRule.
+     * @param name the translet name
+     * @param allowedMethods the allowed HTTP methods
+     * @param async whether to execute asynchronously
+     * @param timeout the timeout for async execution
+     * @return a new TransletRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static TransletRule newInstance(
             String name, MethodType[] allowedMethods, Boolean async, Long timeout)
@@ -536,6 +642,11 @@ public class TransletRule
         return parsedTimeout;
     }
 
+    /**
+     * Creates a replica of the given TransletRule.
+     * @param transletRule the translet rule to replicate
+     * @return a new, replicated instance of TransletRule
+     */
     @NonNull
     public static TransletRule replicate(@NonNull TransletRule transletRule) {
         TransletRule tr = new TransletRule();
@@ -554,6 +665,12 @@ public class TransletRule
         return tr;
     }
 
+    /**
+     * Creates a replica of the given TransletRule with a new name.
+     * @param transletRule the translet rule to replicate
+     * @param newName the new name for the replicated translet
+     * @return a new, replicated instance of TransletRule
+     */
     @NonNull
     public static TransletRule replicate(@NonNull TransletRule transletRule, String newName) {
         TransletRule tr = new TransletRule();

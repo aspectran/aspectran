@@ -21,9 +21,10 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Represents a single job to be executed as part of a schedule.
- * This class corresponds to the {@code <job>} element within a {@code <schedule>} rule.
- * <p>It specifies *what* to run (a translet) and whether the job is currently active.
- * The execution time is determined by the trigger in the parent {@link ScheduleRule}.</p>
+ * This rule specifies *what* to run (a translet) and whether the job is currently active.
+ * The execution time is determined by the trigger in the parent {@link ScheduleRule}.
+ *
+ * <p>Created: 2016. 01. 24.</p>
  */
 public class ScheduledJobRule {
 
@@ -98,7 +99,7 @@ public class ScheduledJobRule {
     }
 
     /**
-     * Factory method to create a new ScheduledJobRule instance.
+     * Creates a new instance of ScheduledJobRule.
      * @param scheduleRule the parent schedule rule
      * @param transletName the name of the translet to execute (required)
      * @param disabled whether the job is disabled

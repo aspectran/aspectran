@@ -24,7 +24,8 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class TransformRule.
+ * Defines a rule for transforming the action results into a specific format like JSON or XML.
+ * It is a type of response rule.
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -53,7 +54,7 @@ public class TransformRule implements Replicable<TransformRule> {
     }
 
     /**
-     * Gets the format type.
+     * Gets the format type (e.g., JSON, XML, TEXT).
      * @return the format type
      */
     public FormatType getFormatType() {
@@ -113,37 +114,31 @@ public class TransformRule implements Replicable<TransformRule> {
     }
 
     /**
-     * Returns whether to format the content of the response
-     * to make it easier to read by adding spaces or tabs.
-     * @return true, if the content of the response should be
-     *      formatted to make it easier to read
+     * Returns whether to format the content of the response for readability.
+     * @return true, if the content should be pretty-printed
      */
     public Boolean getPretty() {
         return pretty;
     }
 
     /**
-     * Returns whether to format the content of the response
-     * to make it easier to read by adding spaces or tabs.
-     * @return true, if the content of the response should be
-     *      formatted to make it easier to read
+     * Returns whether to format the content of the response for readability.
+     * @return true, if the content should be pretty-printed
      */
     public boolean isPretty() {
         return BooleanUtils.toBoolean(pretty);
     }
 
     /**
-     * Set whether to format the content of the response
-     * to make it easier to read by adding spaces or tabs.
-     * @param pretty if true, format the content of the response
-     *      by adding spaces or tabs
+     * Sets whether to format the content of the response for readability.
+     * @param pretty true to pretty-print the content
      */
     public void setPretty(Boolean pretty) {
         this.pretty = pretty;
     }
 
     /**
-     * Gets the template id.
+     * Gets the ID of the template to use for transformation.
      * @return the template id
      */
     public String getTemplateId() {
@@ -151,7 +146,7 @@ public class TransformRule implements Replicable<TransformRule> {
     }
 
     /**
-     * Sets the template id.
+     * Sets the ID of the template to use for transformation.
      * @param templateId the template id
      */
     public void setTemplateId(String templateId) {
@@ -184,24 +179,24 @@ public class TransformRule implements Replicable<TransformRule> {
     }
 
     /**
-     * Returns whether the default response.
-     * @return whether the default response
+     * Returns whether this is the default response.
+     * @return whether this is the default response
      */
     public Boolean getDefaultResponse() {
         return defaultResponse;
     }
 
     /**
-     * Returns whether the default response.
-     * @return true, if is default response
+     * Returns whether this is the default response.
+     * @return true, if this is the default response
      */
     public boolean isDefaultResponse() {
         return BooleanUtils.toBoolean(defaultResponse);
     }
 
     /**
-     * Sets whether the default response.
-     * @param defaultResponse whether the default response
+     * Sets whether this is the default response.
+     * @param defaultResponse whether this is the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
@@ -226,6 +221,15 @@ public class TransformRule implements Replicable<TransformRule> {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of TransformRule.
+     * @param format the format type string
+     * @param contentType the content type
+     * @param encoding the character encoding
+     * @param defaultResponse whether this is the default response
+     * @param pretty whether to pretty-print the output
+     * @return a new TransformRule instance
+     */
     @NonNull
     public static TransformRule newInstance(String format, String contentType,
                                             String encoding, Boolean defaultResponse, Boolean pretty) {
@@ -233,12 +237,29 @@ public class TransformRule implements Replicable<TransformRule> {
         return newInstance(formatType, contentType, encoding, defaultResponse, pretty);
     }
 
+    /**
+     * Creates a new instance of TransformRule.
+     * @param formatType the format type
+     * @param contentType the content type
+     * @param encoding the character encoding
+     * @param pretty whether to pretty-print the output
+     * @return a new TransformRule instance
+     */
     @NonNull
     public static TransformRule newInstance(FormatType formatType, String contentType,
                                             String encoding, Boolean pretty) {
         return newInstance(formatType, contentType, encoding, null, pretty);
     }
 
+    /**
+     * Creates a new instance of TransformRule.
+     * @param formatType the format type
+     * @param contentType the content type
+     * @param encoding the character encoding
+     * @param defaultResponse whether this is the default response
+     * @param pretty whether to pretty-print the output
+     * @return a new TransformRule instance
+     */
     @NonNull
     public static TransformRule newInstance(FormatType formatType, String contentType,
                                             String encoding, Boolean defaultResponse, Boolean pretty) {
@@ -256,7 +277,13 @@ public class TransformRule implements Replicable<TransformRule> {
         return tr;
     }
 
-    @NonNull public static TransformRule replicate(@NonNull TransformRule transformRule) {
+    /**
+     * Creates a replica of the given TransformRule.
+     * @param transformRule the transform rule to replicate
+     * @return a new, replicated instance of TransformRule
+     */
+    @NonNull
+    public static TransformRule replicate(@NonNull TransformRule transformRule) {
         TransformRule tr = new TransformRule();
         tr.setFormatType(transformRule.getFormatType());
         tr.setContentType(transformRule.getContentType());

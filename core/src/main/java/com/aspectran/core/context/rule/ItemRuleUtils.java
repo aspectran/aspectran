@@ -36,7 +36,10 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Miscellaneous {@link ItemRule} utility methods.
+ * A collection of static utility methods for working with {@link ItemRule} objects.
+ * This class provides helper functions for converting between different rule representations
+ * (e.g., from {@code ItemParameters} to {@code ItemRule}), iterating over tokens,
+ * and resolving class types for item values.
  *
  * @since 6.3.0
  */
@@ -229,6 +232,12 @@ public abstract class ItemRuleUtils {
         return itemRule;
     }
 
+    /**
+     * Converts a {@link ParamItem} annotation to an {@link ItemRule}.
+     * @param paramItem the source annotation
+     * @return a new ItemRule instance
+     * @throws IllegalRuleException if the rule is invalid
+     */
     @NonNull
     public static ItemRule toItemRule(ParamItem paramItem) throws IllegalRuleException {
         Assert.notNull(paramItem, "paramItem must not be null");
@@ -244,6 +253,12 @@ public abstract class ItemRuleUtils {
         return itemRule;
     }
 
+    /**
+     * Converts an {@link AttrItem} annotation to an {@link ItemRule}.
+     * @param attrItem the source annotation
+     * @return a new ItemRule instance
+     * @throws IllegalRuleException if the rule is invalid
+     */
     @NonNull
     public static ItemRule toItemRule(AttrItem attrItem) throws IllegalRuleException {
         Assert.notNull(attrItem, "attrItem must not be null");

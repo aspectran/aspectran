@@ -33,7 +33,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.nio.charset.Charset;
 
 /**
- * The Class ResponseRule.
+ * Defines a rule for generating a response. It can contain a single response type
+ * (e.g., transform, dispatch) and a list of actions to execute before responding.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
@@ -60,20 +61,32 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         this.explicit = explicit;
     }
 
+    /**
+     * Returns whether the response rule was explicitly defined in the configuration.
+     * @return true if this response rule is explicit; false otherwise
+     */
     public boolean isExplicit() {
         return explicit;
     }
 
+    /**
+     * Gets the name of the response.
+     * @return the response name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the response.
+     * @param name the new response name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Gets the response encoding.
+     * Gets the character encoding for the response.
      * @return the response encoding
      */
     public String getEncoding() {
@@ -81,17 +94,25 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
     }
 
     /**
-     * Sets the response encoding.
+     * Sets the character encoding for the response.
      * @param encoding the new response encoding
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
+    /**
+     * Gets the list of actions to execute before generating the response.
+     * @return the action list
+     */
     public ActionList getActionList() {
         return actionList;
     }
 
+    /**
+     * Sets the list of actions.
+     * @param actionList the action list
+     */
     public void setActionList(ActionList actionList) {
         this.actionList = actionList;
     }
@@ -132,8 +153,7 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
     }
 
     /**
-     * Returns the action list.
-     * If not yet instantiated then create a new one.
+     * Returns the action list, creating it if it does not yet exist.
      * @return the action list
      */
     private ActionList touchActionList() {
@@ -143,14 +163,26 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return actionList;
     }
 
+    /**
+     * Gets the response object.
+     * @return the response object
+     */
     public Response getResponse() {
         return response;
     }
 
+    /**
+     * Sets the response object.
+     * @param response the response object
+     */
     public void setResponse(Response response) {
         this.response = response;
     }
 
+    /**
+     * Gets the type of the response.
+     * @return the response type
+     */
     public ResponseType getResponseType() {
         return (response != null ? response.getResponseType() : null);
     }
@@ -197,6 +229,13 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of ResponseRule.
+     * @param name the response name
+     * @param encoding the character encoding
+     * @return a new ResponseRule instance
+     * @throws IllegalRuleException if the encoding is unsupported
+     */
     @NonNull
     public static ResponseRule newInstance(String name, String encoding) throws IllegalRuleException {
         if (encoding != null) {
@@ -213,6 +252,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a new instance of ResponseRule from a TransformRule.
+     * @param transformRule the transform rule
+     * @return a new ResponseRule instance
+     */
     @NonNull
     public static ResponseRule newInstance(TransformRule transformRule) {
         ResponseRule responseRule = new ResponseRule(false);
@@ -220,6 +264,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a new instance of ResponseRule from a DispatchRule.
+     * @param dispatchRule the dispatch rule
+     * @return a new ResponseRule instance
+     */
     @NonNull
     public static ResponseRule newInstance(DispatchRule dispatchRule) {
         ResponseRule responseRule = new ResponseRule(false);
@@ -227,6 +276,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a new instance of ResponseRule from a ForwardRule.
+     * @param forwardRule the forward rule
+     * @return a new ResponseRule instance
+     */
     @NonNull
     public static ResponseRule newInstance(ForwardRule forwardRule) {
         ResponseRule responseRule = new ResponseRule(false);
@@ -234,6 +288,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a new instance of ResponseRule from a RedirectRule.
+     * @param redirectRule the redirect rule
+     * @return a new ResponseRule instance
+     */
     @NonNull
     public static ResponseRule newInstance(RedirectRule redirectRule) {
         ResponseRule responseRule = new ResponseRule(false);
@@ -241,6 +300,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a new instance of ResponseRule from a CustomTransformResponse.
+     * @param response the custom transform response
+     * @return a new ResponseRule instance
+     */
     @NonNull
     public static ResponseRule newInstance(CustomTransformResponse response) {
         ResponseRule responseRule = new ResponseRule(false);
@@ -248,6 +312,11 @@ public class ResponseRule implements HasActionRules, HasResponseRules, Replicabl
         return responseRule;
     }
 
+    /**
+     * Creates a replica of the given ResponseRule.
+     * @param responseRule the response rule to replicate
+     * @return a new, replicated instance of ResponseRule
+     */
     @NonNull
     public static ResponseRule replicate(@NonNull ResponseRule responseRule) {
         ResponseRule rr = new ResponseRule(responseRule.isExplicit());

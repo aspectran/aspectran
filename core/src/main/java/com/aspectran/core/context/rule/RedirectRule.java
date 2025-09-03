@@ -28,7 +28,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Map;
 
 /**
- * The Class RedirectRule.
+ * Defines a rule for sending a client-side redirect response to a new URL.
+ * It is a type of response rule.
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -69,7 +70,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Gets the redirect path.
+     * Gets the redirect path or URL.
      * @return the redirect path
      */
     public String getPath() {
@@ -77,9 +78,9 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Gets the redirect path.
-     * @param activity the activity
-     * @return the redirect path
+     * Gets the redirect path, evaluating any tokens in the path.
+     * @param activity the current activity
+     * @return the evaluated redirect path
      */
     public String getPath(Activity activity) {
         if (pathTokens != null) {
@@ -90,7 +91,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Sets the redirect path.
+     * Sets the redirect path or URL.
      * @param path the redirect path
      */
     public void setPath(String path) {
@@ -115,7 +116,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Gets the character encoding.
+     * Gets the character encoding for the redirect URL.
      * @return the character encoding
      */
     public String getEncoding() {
@@ -123,7 +124,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Sets the character encoding.
+     * Sets the character encoding for the redirect URL.
      * @param encoding the new character encoding
      */
     public void setEncoding(String encoding) {
@@ -179,7 +180,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Gets the parameter item rule map.
+     * Gets the map of parameters to include in the redirect URL.
      * @return the parameter item rule map
      */
     public ItemRuleMap getParameterItemRuleMap() {
@@ -187,8 +188,8 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Sets the attribute item rule map.
-     * @param parameterItemRuleMap the new attribute item rule map
+     * Sets the map of parameters to include in the redirect URL.
+     * @param parameterItemRuleMap the new parameter item rule map
      */
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
         this.parameterItemRuleMap = parameterItemRuleMap;
@@ -207,7 +208,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Adds the parameter item rule.
+     * Adds a parameter item rule.
      * @param parameterItemRule the parameter item rule
      */
     public void addParameterItemRule(ItemRule parameterItemRule) {
@@ -238,24 +239,24 @@ public class RedirectRule implements Replicable<RedirectRule> {
     }
 
     /**
-     * Returns whether the default response.
-     * @return whether the default response
+     * Returns whether this is the default response.
+     * @return whether this is the default response
      */
     public Boolean getDefaultResponse() {
         return defaultResponse;
     }
 
     /**
-     * Returns whether the default response.
-     * @return true, if is default response
+     * Returns whether this is the default response.
+     * @return true, if this is the default response
      */
     public boolean isDefaultResponse() {
         return BooleanUtils.toBoolean(defaultResponse);
     }
 
     /**
-     * Sets whether the default response.
-     * @param defaultResponse whether the default response
+     * Sets whether this is the default response.
+     * @param defaultResponse whether this is the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
@@ -280,6 +281,16 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of RedirectRule.
+     * @param contentType the content type
+     * @param path the redirect path
+     * @param encoding the character encoding
+     * @param excludeNullParameters whether to exclude null parameters
+     * @param excludeEmptyParameters whether to exclude empty parameters
+     * @param defaultResponse whether this is the default response
+     * @return a new RedirectRule instance
+     */
     @NonNull
     public static RedirectRule newInstance(String contentType, String path, String encoding,
                                            Boolean excludeNullParameters, Boolean excludeEmptyParameters,
@@ -296,6 +307,12 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return rr;
     }
 
+    /**
+     * Creates a new instance of RedirectRule.
+     * @param path the redirect path
+     * @return a new RedirectRule instance
+     * @throws IllegalRuleException if the path is null
+     */
     @NonNull
     public static RedirectRule newInstance(String path) throws IllegalRuleException {
         if (path == null) {
@@ -306,6 +323,11 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return rr;
     }
 
+    /**
+     * Creates a replica of the given RedirectRule.
+     * @param redirectRule the redirect rule to replicate
+     * @return a new, replicated instance of RedirectRule
+     */
     @NonNull
     public static RedirectRule replicate(@NonNull RedirectRule redirectRule) {
         RedirectRule rr = new RedirectRule();

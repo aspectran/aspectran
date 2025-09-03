@@ -18,24 +18,44 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 
 /**
- * Defines a rule to append a resource with defined rules.
+ * A specific {@link AppendRule} for importing rules from a classpath resource.
  * 
  * <p>Created: 2017. 05. 06.</p>
  */
 public class ResourceAppendRule extends AppendRule {
 
+    /**
+     * Instantiates a new ResourceAppendRule.
+     * @param resource the classpath resource path
+     */
     public ResourceAppendRule(String resource) {
         this(resource, null, null);
     }
 
+    /**
+     * Instantiates a new ResourceAppendRule.
+     * @param resource the classpath resource path
+     * @param profile the profile expression
+     */
     public ResourceAppendRule(String resource, String profile) {
         this(resource, null, profile);
     }
 
+    /**
+     * Instantiates a new ResourceAppendRule.
+     * @param resource the classpath resource path
+     * @param format the file format
+     */
     public ResourceAppendRule(String resource, AppendableFileFormatType format) {
         this(resource, format, null);
     }
 
+    /**
+     * Instantiates a new ResourceAppendRule.
+     * @param resource the classpath resource path
+     * @param format the file format
+     * @param profile the profile expression
+     */
     public ResourceAppendRule(String resource, AppendableFileFormatType format, String profile) {
         setResource(resource);
         setFormat(format);

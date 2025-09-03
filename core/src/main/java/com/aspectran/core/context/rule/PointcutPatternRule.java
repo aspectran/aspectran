@@ -23,7 +23,10 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.List;
 
 /**
- * The pattern rule for identifying pointcut targets.
+ * Represents a single pattern within a {@link PointcutRule}.
+ * This class holds the parsed pattern for matching against translet names, bean IDs, and method names.
+ *
+ * <p>Created: 2016. 02. 14.</p>
  */
 public class PointcutPatternRule {
 
@@ -35,37 +38,72 @@ public class PointcutPatternRule {
 
     private List<PointcutPatternRule> excludePatternRuleList;
 
+    /**
+     * Instantiates a new PointcutPatternRule.
+     */
     public PointcutPatternRule() {
     }
 
+    /**
+     * Gets the pointcut type (e.g., wildcard, regexp).
+     * @return the pointcut type
+     */
     public PointcutType getPointcutType() {
         return pointcutType;
     }
 
+    /**
+     * Sets the pointcut type.
+     * @param pointcutType the pointcut type
+     */
     protected void setPointcutType(PointcutType pointcutType) {
         this.pointcutType = pointcutType;
     }
 
+    /**
+     * Gets the raw pattern string.
+     * @return the pattern string
+     */
     public String getPatternString() {
         return patternString;
     }
 
+    /**
+     * Sets the raw pattern string.
+     * @param patternString the pattern string
+     */
     public void setPatternString(String patternString) {
         this.patternString = patternString;
     }
 
+    /**
+     * Gets the compiled pointcut pattern.
+     * @return the pointcut pattern
+     */
     public PointcutPattern getPointcutPattern() {
         return pointcutPattern;
     }
 
+    /**
+     * Sets the compiled pointcut pattern.
+     * @param pointcutPattern the pointcut pattern
+     */
     public void setPointcutPattern(PointcutPattern pointcutPattern) {
         this.pointcutPattern = pointcutPattern;
     }
 
+    /**
+     * Gets the list of patterns to exclude from this pointcut.
+     * @return the list of exclude pattern rules
+     */
     public List<PointcutPatternRule> getExcludePatternRuleList() {
         return excludePatternRuleList;
     }
 
+    /**
+     * Sets the list of patterns to exclude from this pointcut.
+     * @param excludePatternRuleList the list of exclude pattern rules
+     */
     public void setExcludePatternRuleList(List<PointcutPatternRule> excludePatternRuleList) {
         this.excludePatternRuleList = excludePatternRuleList;
     }
@@ -79,6 +117,11 @@ public class PointcutPatternRule {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of PointcutPatternRule from a pattern string.
+     * @param patternString the pattern string
+     * @return a new PointcutPatternRule instance
+     */
     @NonNull
     public static PointcutPatternRule newInstance(String patternString) {
         PointcutPatternRule ppr = new PointcutPatternRule();
@@ -87,6 +130,13 @@ public class PointcutPatternRule {
         return ppr;
     }
 
+    /**
+     * Creates a new instance of PointcutPatternRule from individual pattern parts.
+     * @param translet the translet name pattern
+     * @param bean the bean ID or class name pattern
+     * @param method the method name pattern
+     * @return a new PointcutPatternRule instance
+     */
     @NonNull
     public static PointcutPatternRule newInstance(String translet, String bean, String method) {
         String transletNamePattern = null;
