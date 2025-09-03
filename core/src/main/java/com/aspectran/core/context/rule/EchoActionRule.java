@@ -20,7 +20,7 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class EchoActionRule.
+ * Rule for an action that echoes attributes from the current activity context into the result.
  *
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */
@@ -49,7 +49,7 @@ public class EchoActionRule {
     }
 
     /**
-     * Gets the echo item rule map.
+     * Gets the map of items to echo.
      * @return the echo item rule map
      */
     public ItemRuleMap getEchoItemRuleMap() {
@@ -57,7 +57,7 @@ public class EchoActionRule {
     }
 
     /**
-     * Sets the echo item rule map.
+     * Sets the map of items to echo.
      * @param echoItemRuleMap the new echo item rule map
      */
     public void setEchoItemRuleMap(ItemRuleMap echoItemRuleMap) {
@@ -77,7 +77,7 @@ public class EchoActionRule {
     }
 
     /**
-     * Adds the echo item rule.
+     * Adds an item rule to the echo map.
      * @param itemRule the echo item rule
      */
     public void addEchoItemRule(ItemRule itemRule) {
@@ -89,7 +89,7 @@ public class EchoActionRule {
 
     /**
      * Returns whether to hide the result of the action.
-     * @return true, if is hidden
+     * @return true, if the result is hidden
      */
     public Boolean getHidden() {
         return hidden;
@@ -97,7 +97,7 @@ public class EchoActionRule {
 
     /**
      * Returns whether to hide the result of the action.
-     * @return true, if is hidden
+     * @return true, if the result is hidden
      */
     public boolean isHidden() {
         return BooleanUtils.toBoolean(hidden);
@@ -123,10 +123,10 @@ public class EchoActionRule {
     }
 
     /**
-     * Returns a new derived instance of EchoActionRule.
+     * Creates a new instance of EchoActionRule.
      * @param id the action id
      * @param hidden whether to hide the result of the action
-     * @return the echo action rule
+     * @return the new echo action rule
      */
     @NonNull
     public static EchoActionRule newInstance(String id, Boolean hidden) {

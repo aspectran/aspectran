@@ -28,6 +28,10 @@ import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.utils.StringUtils;
 
 /**
+ * Represents a single conditional case within a {@link ChooseRule}.
+ * It contains a test expression and a set of actions or a response to execute
+ * if the expression evaluates to true.
+ *
  * <p>Created: 2019-01-06</p>
  *
  * @since 6.0.0
@@ -40,10 +44,18 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
 
     private Response response;
 
+    /**
+     * Gets the boolean expression to be evaluated.
+     * @return the boolean expression
+     */
     public BooleanExpression getBooleanExpression() {
         return booleanEvaluation;
     }
 
+    /**
+     * Gets the raw expression string.
+     * @return the expression string
+     */
     public String getExpression() {
         if (booleanEvaluation != null) {
             return booleanEvaluation.getExpressionString();
@@ -52,6 +64,11 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
         }
     }
 
+    /**
+     * Sets the boolean expression to be evaluated.
+     * @param expression the expression string
+     * @throws IllegalRuleException if the expression is invalid
+     */
     public void setExpression(String expression) throws IllegalRuleException {
         String expressionToUse = (StringUtils.hasText(expression) ? expression.trim() : null);
         if (expressionToUse != null) {
@@ -61,18 +78,34 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
         }
     }
 
+    /**
+     * Gets the list of actions to be executed if the test is true.
+     * @return the action list
+     */
     public ActionList getActionList() {
         return actionList;
     }
 
+    /**
+     * Sets the list of actions.
+     * @param actionList the action list
+     */
     public void setActionList(ActionList actionList) {
         this.actionList = actionList;
     }
 
+    /**
+     * Gets the response to be generated if the test is true.
+     * @return the response
+     */
     public Response getResponse() {
         return response;
     }
 
+    /**
+     * Sets the response.
+     * @param response the response
+     */
     public void setResponse(Response response) {
         this.response = response;
     }
@@ -113,8 +146,7 @@ public class ChooseWhenRule implements HasActionRules, HasResponseRules {
     }
 
     /**
-     * Returns the action list.
-     * If not yet instantiated then create a new one.
+     * Returns the action list, creating it if it does not yet exist.
      * @return the action list
      */
     private ActionList touchActionList() {

@@ -32,7 +32,9 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class ExceptionThrownRule.
+ * Defines a rule for handling a specific type of exception.
+ * It can specify an action to execute or a response to generate when one of the
+ * specified exception types is caught.
  *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
@@ -48,46 +50,74 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
 
     private Response defaultResponse;
 
+    /**
+     * Instantiates a new ExceptionThrownRule.
+     */
     public ExceptionThrownRule() {
         this(null);
     }
 
+    /**
+     * Instantiates a new ExceptionThrownRule.
+     * @param adviceRule the parent advice rule
+     */
     public ExceptionThrownRule(AdviceRule adviceRule) {
         this.adviceRule = adviceRule;
     }
 
+    /**
+     * Gets the parent advice rule.
+     * @return the parent advice rule
+     */
     public AdviceRule getAdviceRule() {
         return adviceRule;
     }
 
+    /**
+     * Gets the exception types that this rule handles.
+     * @return an array of exception type names
+     */
     public String[] getExceptionTypes() {
         return exceptionTypes;
     }
 
+    /**
+     * Sets the exception types that this rule handles.
+     * @param exceptionTypes an array of exception type names
+     */
     public void setExceptionTypes(String... exceptionTypes) {
         this.exceptionTypes = exceptionTypes;
     }
 
     /**
-     * Returns the advice action.
-     * @return the advice action
+     * Gets the action to be executed when the exception is thrown.
+     * @return the executable action
      */
     public Executable getAction() {
         return action;
     }
 
+    /**
+     * Sets the action to be executed.
+     * @param action the executable action
+     */
     public void setAction(AnnotatedAction action) {
         this.action = action;
     }
 
     /**
-     * Returns the action type of the executable action.
+     * Gets the type of the executable action.
      * @return the action type
      */
     public ActionType getActionType() {
         return (action != null ? action.getActionType() : null);
     }
 
+    /**
+     * Gets the response for a given content type.
+     * @param contentType the content type
+     * @return the response
+     */
     public Response getResponse(String contentType) {
         if (responseMap != null && contentType != null) {
             Response response = responseMap.get(contentType);
@@ -107,7 +137,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     }
 
     /**
-     * Gets the response map.
+     * Gets the map of responses, keyed by content type.
      * @return the response map
      */
     public ResponseMap getResponseMap() {
@@ -219,6 +249,12 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
         return response;
     }
 
+    /**
+     * Creates a new instance of ExceptionThrownRule.
+     * @param types the exception types to handle
+     * @param action the action to execute
+     * @return a new ExceptionThrownRule instance
+     */
     @NonNull
     public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedAction action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();

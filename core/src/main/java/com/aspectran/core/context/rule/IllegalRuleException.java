@@ -18,7 +18,9 @@ package com.aspectran.core.context.rule;
 import java.io.Serial;
 
 /**
- * This exception will be thrown if an illegal rule is found.
+ * An exception that is thrown when a configuration rule is found to be invalid
+ * or improperly structured during the parsing phase. This indicates a problem
+ * with the application's configuration files (e.g., XML or APON).
  *
  * <p>Created: 2017. 11. 10.</p>
  */
@@ -28,7 +30,7 @@ public class IllegalRuleException extends Exception {
     private static final long serialVersionUID = 4725758105730046172L;
 
     /**
-     * Simple constructor
+     * Simple constructor.
      */
     public IllegalRuleException() {
         super();

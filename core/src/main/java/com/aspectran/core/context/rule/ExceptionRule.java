@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class ExceptionRule.
+ * Defines a set of rules for handling exceptions.
+ * It contains a list of {@link ExceptionThrownRule}s that map specific exception types
+ * to corresponding actions or responses.
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
@@ -38,21 +40,33 @@ public class ExceptionRule implements Describable {
 
     private DescriptionRule descriptionRule;
 
+    /**
+     * Gets the list of all exception thrown rules.
+     * @return the list of exception thrown rules
+     */
     public List<ExceptionThrownRule> getExceptionThrownRuleList() {
         return exceptionThrownRuleList;
     }
 
+    /**
+     * Gets the map of exception types to their corresponding thrown rules.
+     * @return the map of exception thrown rules
+     */
     public Map<String, ExceptionThrownRule> getExceptionThrownRuleMap() {
         return exceptionThrownRuleMap;
     }
 
+    /**
+     * Gets the default exception thrown rule, which is used when no specific type matches.
+     * @return the default exception thrown rule
+     */
     public ExceptionThrownRule getDefaultExceptionThrownRule() {
         return defaultExceptionThrownRule;
     }
 
     /**
-     * Puts the exception thrown rule.
-     * @param exceptionThrownRule the exception thrown rule
+     * Adds an exception thrown rule.
+     * @param exceptionThrownRule the exception thrown rule to add
      */
     public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
         exceptionThrownRuleList.add(exceptionThrownRule);
@@ -70,9 +84,10 @@ public class ExceptionRule implements Describable {
     }
 
     /**
-     * Gets the exception thrown rule as specified exception.
-     * @param ex the exception
-     * @return the exception thrown rule
+     * Finds the best matching {@link ExceptionThrownRule} for a given exception.
+     * It traverses the exception cause chain to find the most specific match.
+     * @param ex the exception to find a handler for
+     * @return the matching exception thrown rule, or the default rule if no specific match is found
      */
     public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
         ExceptionThrownRule exceptionThrownRule = null;
@@ -119,10 +134,12 @@ public class ExceptionRule implements Describable {
         return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }

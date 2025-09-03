@@ -21,12 +21,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a conditional block that functions like a switch-case statement.
+ * It contains one or more {@link ChooseWhenRule}s, where the first one that
+ * tests true has its actions executed.
+ *
  * <p>Created: 2019-01-06</p>
  */
 public class ChooseRule {
 
     private List<ChooseWhenRule> chooseWhenRules;
 
+    /**
+     * Creates a new ChooseWhenRule and adds it to the list of when-clauses.
+     * @return the new ChooseWhenRule
+     */
     public ChooseWhenRule newChooseWhenRule() {
         if (chooseWhenRules == null) {
             chooseWhenRules = new ArrayList<>();
@@ -36,10 +44,18 @@ public class ChooseRule {
         return chooseWhenRule;
     }
 
+    /**
+     * Gets the list of when-clauses.
+     * @return the list of ChooseWhenRule objects
+     */
     public List<ChooseWhenRule> getChooseWhenRules() {
         return chooseWhenRules;
     }
 
+    /**
+     * Creates a new instance of ChooseRule.
+     * @return a new ChooseRule instance
+     */
     @NonNull
     public static ChooseRule newInstance() {
         return new ChooseRule();

@@ -28,10 +28,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Advices are actions taken for a particular join point.
- * In terms of programming, they are methods that gets executed
- * when a certain join point with matching pointcut is reached
- * in the application.
+ * Defines a rule for an advice that is executed at a specific join point.
+ * It holds the logic (as an action) to be executed and the context of the aspect it belongs to.
  *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
@@ -53,6 +51,11 @@ public class AdviceRule implements HasActionRules {
 
     private ExceptionThrownRule exceptionThrownRule;
 
+    /**
+     * Instantiates a new AdviceRule.
+     * @param aspectRule the aspect rule that this advice belongs to
+     * @param adviceType the type of this advice (e.g., before, after)
+     */
     public AdviceRule(AspectRule aspectRule, AdviceType adviceType) {
         if (aspectRule == null) {
             throw new IllegalArgumentException("aspectRule must not be null");
@@ -67,22 +70,42 @@ public class AdviceRule implements HasActionRules {
         this.adviceType = adviceType;
     }
 
+    /**
+     * Gets the ID of the aspect that this advice belongs to.
+     * @return the aspect ID
+     */
     public String getAspectId() {
         return aspectId;
     }
 
+    /**
+     * Gets the aspect rule that this advice belongs to.
+     * @return the parent aspect rule
+     */
     public AspectRule getAspectRule() {
         return aspectRule;
     }
 
+    /**
+     * Gets the bean ID of the advice bean.
+     * @return the advice bean ID
+     */
     public String getAdviceBeanId() {
         return adviceBeanId;
     }
 
+    /**
+     * Gets the class of the advice bean.
+     * @return the advice bean class
+     */
     public Class<?> getAdviceBeanClass() {
         return adviceBeanClass;
     }
 
+    /**
+     * Gets the type of this advice (e.g., before, after, around).
+     * @return the advice type
+     */
     public AdviceType getAdviceType() {
         return adviceType;
     }
@@ -129,26 +152,50 @@ public class AdviceRule implements HasActionRules {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Gets the executable action that implements the advice logic.
+     * @return the executable advice action
+     */
     public Executable getAdviceAction() {
         return adviceAction;
     }
 
+    /**
+     * Sets the executable action for the advice.
+     * @param adviceAction the executable advice action
+     */
     public void setAdviceAction(Executable adviceAction) {
         this.adviceAction = adviceAction;
     }
 
+    /**
+     * Gets the type of the advice action.
+     * @return the action type
+     */
     public ActionType getActionType() {
         return (adviceAction != null ? adviceAction.getActionType() : null);
     }
 
+    /**
+     * Gets the exception handling rule for this advice.
+     * @return the exception rule
+     */
     public ExceptionRule getExceptionRule() {
         return exceptionRule;
     }
 
+    /**
+     * Gets the rule for a specific exception type that may be thrown.
+     * @return the exception thrown rule
+     */
     public ExceptionThrownRule getExceptionThrownRule() {
         return exceptionThrownRule;
     }
 
+    /**
+     * Sets the rule for a specific exception type, wrapping it in an {@link ExceptionRule}.
+     * @param exceptionThrownRule the exception thrown rule
+     */
     public void setExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
         ExceptionRule exceptionRule = new ExceptionRule();
         exceptionRule.putExceptionThrownRule(exceptionThrownRule);
@@ -194,6 +241,12 @@ public class AdviceRule implements HasActionRules {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of AdviceRule.
+     * @param aspectRule the aspect rule that this advice belongs to
+     * @param adviceType the type of this advice (e.g., before, after)
+     * @return a new AdviceRule instance
+     */
     @NonNull
     public static AdviceRule newInstance(AspectRule aspectRule, AdviceType adviceType) {
         return new AdviceRule(aspectRule, adviceType);

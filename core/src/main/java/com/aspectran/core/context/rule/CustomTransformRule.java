@@ -23,7 +23,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * The Class CustomTransformRule.
+ * Defines a rule for a custom transformation that is implemented by a {@link com.aspectran.core.activity.response.transform.CustomTransformer}.
  *
  * <p>Created: 2019. 06. 16</p>
  */
@@ -37,10 +37,17 @@ public class CustomTransformRule {
 
     private final CustomTransformer transformer;
 
+    /**
+     * Instantiates a new CustomTransformRule.
+     */
     public CustomTransformRule() {
         this(null);
     }
 
+    /**
+     * Instantiates a new CustomTransformRule.
+     * @param transformer the custom transformer
+     */
     public CustomTransformRule(@Nullable CustomTransformer transformer) {
         this.transformer = transformer;
     }
@@ -53,6 +60,10 @@ public class CustomTransformRule {
         return FORMAT_TYPE;
     }
 
+    /**
+     * Gets the custom transformer.
+     * @return the custom transformer
+     */
     public CustomTransformer getTransformer() {
         return transformer;
     }
@@ -66,11 +77,20 @@ public class CustomTransformRule {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of CustomTransformRule.
+     * @return a new CustomTransformRule instance
+     */
     @NonNull
     public static CustomTransformRule newInstance() {
         return new CustomTransformRule();
     }
 
+    /**
+     * Creates a new instance of CustomTransformRule.
+     * @param transformer the custom transformer
+     * @return a new CustomTransformRule instance
+     */
     @NonNull
     public static CustomTransformRule newInstance(@NonNull CustomTransformer transformer) {
         return new CustomTransformRule(transformer);

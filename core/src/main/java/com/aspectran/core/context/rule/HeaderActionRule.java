@@ -20,7 +20,7 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class HeaderActionRule.
+ * Rule for an action that sets headers in the response.
  *
  * <p>Created: 2016. 08. 23.</p>
  *
@@ -51,7 +51,7 @@ public class HeaderActionRule {
     }
 
     /**
-     * Gets the header item rule map.
+     * Gets the map of headers to be set.
      * @return the header item rule map
      */
     public ItemRuleMap getHeaderItemRuleMap() {
@@ -59,7 +59,7 @@ public class HeaderActionRule {
     }
 
     /**
-     * Sets the header rule map.
+     * Sets the map of headers to be set.
      * @param headerItemRuleMap the new header item rule map
      */
     public void setHeaderItemRuleMap(ItemRuleMap headerItemRuleMap) {
@@ -79,7 +79,7 @@ public class HeaderActionRule {
     }
 
     /**
-     * Adds the header item rule.
+     * Adds a header item rule.
      * @param headerItemRule the header item rule
      */
     public void addHeaderItemRule(ItemRule headerItemRule) {
@@ -125,10 +125,10 @@ public class HeaderActionRule {
     }
 
     /**
-     * Returns a new derived instance of HeaderActionRule.
+     * Creates a new instance of HeaderActionRule.
      * @param id the action id
      * @param hidden whether to hide the result of the action
-     * @return the header action rule
+     * @return the new header action rule
      */
     @NonNull
     public static HeaderActionRule newInstance(String id, Boolean hidden) {

@@ -36,7 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class BeanRule.
+ * Defines a bean to be managed by the Aspectran IoC container.
+ * This rule specifies the bean's identity (ID), its class, scope, lifecycle methods (init/destroy),
+ * and configuration for constructor arguments and properties.
+ * It serves as the blueprint for creating and wiring application components.
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
@@ -135,15 +138,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Gets the class type.
-     * @return the class type
+     * Gets the class name of the bean.
+     * @return the class name
      */
     public String getClassName() {
         return className;
     }
 
     /**
-     * Sets the class type.
+     * Sets the class name of the bean.
      * @param className the new class name
      */
     public void setClassName(String className) {
@@ -159,7 +162,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Sets the bean class.
+     * Sets the bean class and determines if it is a FactoryBean, DisposableBean, or InitializableBean.
      * @param beanClass the new bean class
      */
     public void setBeanClass(@NonNull Class<?> beanClass) {
@@ -171,7 +174,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Gets the scan pattern.
+     * Gets the scan pattern for component scanning.
      * @return the scan pattern
      */
     public String getScanPattern() {
@@ -179,7 +182,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Sets the scan pattern.
+     * Sets the scan pattern for component scanning.
      * @param scanPattern the new scan pattern
      */
     public void setScanPattern(String scanPattern) {
@@ -187,7 +190,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Gets the mask pattern.
+     * Gets the mask pattern to exclude from component scanning.
      * @return the mask pattern
      */
     public String getMaskPattern() {
@@ -195,23 +198,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Gets the filter parameters.
-     * @return the filter parameters
-     */
-    public FilterParameters getFilterParameters() {
-        return filterParameters;
-    }
-
-    /**
-     * Sets the filter parameters.
-     * @param filterParameters the new filter parameters
-     */
-    public void setFilterParameters(FilterParameters filterParameters) {
-        this.filterParameters = filterParameters;
-    }
-
-    /**
-     * Sets the mask pattern.
+     * Sets the mask pattern to exclude from component scanning.
      * @param maskPattern the new mask pattern
      */
     public void setMaskPattern(String maskPattern) {
@@ -219,7 +206,23 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Gets the scope type.
+     * Gets the filter parameters for component scanning.
+     * @return the filter parameters
+     */
+    public FilterParameters getFilterParameters() {
+        return filterParameters;
+    }
+
+    /**
+     * Sets the filter parameters for component scanning.
+     * @param filterParameters the new filter parameters
+     */
+    public void setFilterParameters(FilterParameters filterParameters) {
+        this.filterParameters = filterParameters;
+    }
+
+    /**
+     * Gets the scope of the bean.
      * @return the scope type
      */
     public ScopeType getScopeType() {
@@ -227,7 +230,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Sets the scope type.
+     * Sets the scope of the bean.
      * @param scopeType the new scope type
      */
     public void setScopeType(ScopeType scopeType) {
@@ -235,8 +238,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Returns whether this bean is a singleton.
-     *
+     * Returns whether this bean is a singleton (alternative to scope).
      * @return whether this bean is a singleton
      */
     public Boolean getSingleton() {
@@ -245,7 +247,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Sets whether this bean is a singleton.
-     *
      * @param singleton whether this bean is a singleton
      */
     public void setSingleton(Boolean singleton) {
@@ -254,8 +255,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Returns whether this bean is a singleton.
-     *
-     * @return whether this bean is a singleton
+     * @return true if the scope is singleton, false otherwise
      */
     public boolean isSingleton() {
         return (this.scopeType == ScopeType.SINGLETON);
@@ -295,7 +295,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Gets the factory method name.
-     * @return the factory method
+     * @return the factory method name
      */
     public String getFactoryMethodName() {
         return factoryMethodName;
@@ -309,42 +309,82 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         this.factoryMethodName = factoryMethodName;
     }
 
+    /**
+     * Gets the resolved factory method.
+     * @return the factory method
+     */
     public Method getFactoryMethod() {
         return factoryMethod;
     }
 
+    /**
+     * Sets the resolved factory method.
+     * @param factoryMethod the factory method
+     */
     public void setFactoryMethod(Method factoryMethod) {
         this.factoryMethod = factoryMethod;
     }
 
+    /**
+     * Gets the parameter binding rules for the factory method.
+     * @return the parameter binding rules
+     */
     public ParameterBindingRule[] getFactoryMethodParameterBindingRules() {
         return factoryMethodParameterBindingRules;
     }
 
+    /**
+     * Sets the parameter binding rules for the factory method.
+     * @param parameterBindingRules the parameter binding rules
+     */
     public void setFactoryMethodParameterBindingRules(ParameterBindingRule[] parameterBindingRules) {
         this.factoryMethodParameterBindingRules = parameterBindingRules;
     }
 
+    /**
+     * Returns whether this bean is created by an external factory bean.
+     * @return true if created by a factory, false otherwise
+     */
     public boolean isFactoryOffered() {
         return factoryOffered;
     }
 
+    /**
+     * Sets whether this bean is created by an external factory bean.
+     * @param factoryOffered true if created by a factory
+     */
     public void setFactoryOffered(boolean factoryOffered) {
         this.factoryOffered = factoryOffered;
     }
 
+    /**
+     * Returns whether this bean requires production via a factory (either FactoryBean or factory-method).
+     * @return true if a factory is required
+     */
     public boolean isFactoryProductionRequired() {
         return (!isFactoryOffered() && (isFactoryBean() || getFactoryMethod() != null));
     }
 
+    /**
+     * Gets the target bean class, which may be different from the bean class if a factory is used.
+     * @return the target bean class
+     */
     public Class<?> getTargetBeanClass() {
         return (targetBeanClass != null ?  targetBeanClass : beanClass);
     }
 
+    /**
+     * Sets the target bean class.
+     * @param targetBeanClass the target bean class
+     */
     public void setTargetBeanClass(Class<?> targetBeanClass) {
         this.targetBeanClass = targetBeanClass;
     }
 
+    /**
+     * Gets the class name of the target bean.
+     * @return the target bean class name
+     */
     public String getTargetBeanClassName() {
         return (targetBeanClass != null ? targetBeanClass.getName() : className);
     }
@@ -366,7 +406,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Returns the initialization method.
+     * Returns the resolved initialization method.
      * @return the initialization method
      */
     public Method getInitMethod() {
@@ -374,17 +414,25 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Sets the initialization method.
+     * Sets the resolved initialization method.
      * @param initMethod the initialization method
      */
     public void setInitMethod(Method initMethod) {
         this.initMethod = initMethod;
     }
 
+    /**
+     * Gets the parameter binding rules for the init method.
+     * @return the parameter binding rules
+     */
     public ParameterBindingRule[] getInitMethodParameterBindingRules() {
         return initMethodParameterBindingRules;
     }
 
+    /**
+     * Sets the parameter binding rules for the init method.
+     * @param parameterBindingRules the parameter binding rules
+     */
     public void setInitMethodParameterBindingRules(ParameterBindingRule[] parameterBindingRules) {
         this.initMethodParameterBindingRules = parameterBindingRules;
     }
@@ -406,7 +454,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Returns the destroy method.
+     * Returns the resolved destroy method.
      * @return the destroy method
      */
     public Method getDestroyMethod() {
@@ -414,7 +462,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Sets the destroy method.
+     * Sets the resolved destroy method.
      * @param destroyMethod the new destroy method
      */
     public void setDestroyMethod(Method destroyMethod) {
@@ -495,28 +543,16 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return BooleanUtils.toBoolean(important);
     }
 
-    /**
-     * Gets the constructor argument item rule map.
-     * @return the constructor argument item rule map
-     */
     @Override
     public ItemRuleMap getArgumentItemRuleMap() {
         return argumentItemRuleMap;
     }
 
-    /**
-     * Sets the constructor argument item rule map.
-     * @param constructorArgumentItemRuleMap the new constructor argument item rule map
-     */
     @Override
     public void setArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
         this.argumentItemRuleMap = constructorArgumentItemRuleMap;
     }
 
-    /**
-     * Adds the constructor argument item rule.
-     * @param constructorArgumentItemRule the constructor argument item rule
-     */
     @Override
     public void addArgumentItemRule(ItemRule constructorArgumentItemRule) {
         if (argumentItemRuleMap == null) {
@@ -561,7 +597,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Returns whether this bean implements FactoryBean.
-     * @return the boolean
+     * @return true if the bean class implements FactoryBean
      */
     public boolean isFactoryBean() {
         return factoryBean;
@@ -569,7 +605,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Returns whether this bean implements DisposableBean.
-     * @return the boolean
+     * @return true if the bean class implements DisposableBean
      */
     public boolean isDisposableBean() {
         return disposableBean;
@@ -577,16 +613,24 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
 
     /**
      * Returns whether this bean implements InitializableBean.
-     * @return the boolean
+     * @return true if the bean class implements InitializableBean
      */
     public boolean isInitializableBean() {
         return initializableBean;
     }
 
+    /**
+     * Returns whether this is an inner bean.
+     * @return true if this is an inner bean
+     */
     public boolean isInnerBean() {
         return innerBean;
     }
 
+    /**
+     * Sets whether this is an inner bean.
+     * @param innerBean true if this is an inner bean
+     */
     public void setInnerBean(boolean innerBean) {
         this.innerBean = innerBean;
     }
@@ -599,6 +643,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return BooleanUtils.toBoolean(proxied);
     }
 
+    /**
+     * Gets the proxied flag.
+     * @return the proxied flag
+     */
     public Boolean getProxied() {
         return proxied;
     }
@@ -612,17 +660,25 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
     }
 
     /**
-     * Returns whether this bean can be proxied.
-     * @return true if this bean can be proxied; false otherwise
+     * Returns whether this bean can be created by a factory.
+     * @return true if this bean can be created by a factory; false otherwise
      */
     public boolean isFactoryable() {
         return (factoryOffered || factoryBean || factoryMethod != null);
     }
 
+    /**
+     * Gets the list of autowire rules for this bean.
+     * @return the list of autowire rules
+     */
     public List<AutowireRule> getAutowireRuleList() {
         return autowireRuleList;
     }
 
+    /**
+     * Adds an autowire rule to this bean.
+     * @param autowireRule the autowire rule to add
+     */
     public void addAutowireRule(AutowireRule autowireRule) {
         if (autowireRuleList == null) {
             autowireRuleList = new ArrayList<>();
@@ -630,42 +686,76 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         autowireRuleList.add(autowireRule);
     }
 
+    /**
+     * Gets the autowire rule for the constructor.
+     * @return the constructor autowire rule
+     */
     public AutowireRule getConstructorAutowireRule() {
         return constructorAutowireRule;
     }
 
+    /**
+     * Sets the autowire rule for the constructor.
+     * @param constructorAutowireRule the constructor autowire rule
+     */
     public void setConstructorAutowireRule(AutowireRule constructorAutowireRule) {
         this.constructorAutowireRule = constructorAutowireRule;
     }
 
+    /**
+     * Returns whether constructor autowiring has been parsed.
+     * @return true if parsed, false otherwise
+     */
     public boolean isConstructorAutowireParsed() {
         return constructorAutowireParsed;
     }
 
+    /**
+     * Sets whether constructor autowiring has been parsed.
+     * @param constructorAutowireParsed true if parsed
+     */
     public void setConstructorAutowireParsed(boolean constructorAutowireParsed) {
         this.constructorAutowireParsed = constructorAutowireParsed;
     }
 
+    /**
+     * Returns whether field autowiring has been parsed.
+     * @return true if parsed, false otherwise
+     */
     public boolean isFieldAutowireParsed() {
         return fieldAutowireParsed;
     }
 
+    /**
+     * Sets whether field autowiring has been parsed.
+     * @param fieldAutowireParsed true if parsed
+     */
     public void setFieldAutowireParsed(boolean fieldAutowireParsed) {
         this.fieldAutowireParsed = fieldAutowireParsed;
     }
 
+    /**
+     * Returns whether method autowiring has been parsed.
+     * @return true if parsed, false otherwise
+     */
     public boolean isMethodAutowireParsed() {
         return methodAutowireParsed;
     }
 
+    /**
+     * Sets whether method autowiring has been parsed.
+     * @param methodAutowireParsed true if parsed
+     */
     public void setMethodAutowireParsed(boolean methodAutowireParsed) {
         this.methodAutowireParsed = methodAutowireParsed;
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
@@ -718,6 +808,23 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of BeanRule.
+     * @param id the bean ID
+     * @param className the bean class name
+     * @param scanPattern the package pattern to scan for components
+     * @param maskPattern the pattern to exclude from scanning
+     * @param initMethodName the name of the initialization method
+     * @param destroyMethodName the name of the destruction method
+     * @param factoryMethodName the name of the factory method
+     * @param scope the bean scope
+     * @param singleton whether the bean is a singleton
+     * @param lazyInit whether to initialize lazily
+     * @param lazyDestroy whether to destroy lazily
+     * @param important whether this bean is important and cannot be overridden
+     * @return a new BeanRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static BeanRule newInstance(
             String id,
@@ -763,6 +870,21 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return beanRule;
     }
 
+    /**
+     * Creates a new instance of BeanRule for a bean produced by a factory.
+     * @param id the bean ID
+     * @param factoryBeanId the ID of the factory bean
+     * @param factoryMethodName the name of the factory method
+     * @param initMethodName the name of the initialization method
+     * @param destroyMethodName the name of the destruction method
+     * @param scope the bean scope
+     * @param singleton whether the bean is a singleton
+     * @param lazyInit whether to initialize lazily
+     * @param lazyDestroy whether to destroy lazily
+     * @param important whether this bean is important
+     * @return a new BeanRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static BeanRule newOfferedFactoryBeanInstance(
             String id,
@@ -802,6 +924,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return beanRule;
     }
 
+    /**
+     * Creates a new instance of BeanRule for an inner bean.
+     * @param className the bean class name
+     * @param initMethodName the name of the initialization method
+     * @param destroyMethodName the name of the destruction method
+     * @param factoryMethodName the name of the factory method
+     * @return a new BeanRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static BeanRule newInnerBeanRule(
             String className,
@@ -818,6 +949,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return beanRule;
     }
 
+    /**
+     * Creates a new instance of BeanRule for an inner bean produced by a factory.
+     * @param factoryBeanId the ID of the factory bean
+     * @param factoryMethodName the name of the factory method
+     * @param initMethodName the name of the initialization method
+     * @param destroyMethodName the name of the destruction method
+     * @return a new BeanRule instance
+     * @throws IllegalRuleException if the configuration is invalid
+     */
     @NonNull
     public static BeanRule newInnerOfferedFactoryBeanRule(
             String factoryBeanId,
@@ -833,6 +973,11 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         return beanRule;
     }
 
+    /**
+     * Creates a replica of the given BeanRule.
+     * @param beanRule the bean rule to replicate
+     * @return a new, replicated instance of BeanRule
+     */
     @NonNull
     public static BeanRule replicate(@NonNull BeanRule beanRule) {
         BeanRule newBeanRule = new BeanRule();

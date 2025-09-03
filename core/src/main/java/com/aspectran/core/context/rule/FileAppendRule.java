@@ -18,24 +18,44 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 
 /**
- * Defines a rule to append a file with defined rules.
+ * A specific {@link AppendRule} for importing rules from a local file.
  * 
  * <p>Created: 2017. 05. 06.</p>
  */
 public class FileAppendRule extends AppendRule {
 
+    /**
+     * Instantiates a new FileAppendRule.
+     * @param file the path to the file
+     */
     public FileAppendRule(String file) {
         this(file, null, null);
     }
 
+    /**
+     * Instantiates a new FileAppendRule.
+     * @param file the path to the file
+     * @param profile the profile expression
+     */
     public FileAppendRule(String file, String profile) {
         this(file, null, profile);
     }
 
+    /**
+     * Instantiates a new FileAppendRule.
+     * @param file the path to the file
+     * @param format the file format
+     */
     public FileAppendRule(String file, AppendableFileFormatType format) {
         this(file, format, null);
     }
 
+    /**
+     * Instantiates a new FileAppendRule.
+     * @param file the path to the file
+     * @param format the file format
+     * @param profile the profile expression
+     */
     public FileAppendRule(String file, AppendableFileFormatType format, String profile) {
         setFile(file);
         setFormat(format);

@@ -23,7 +23,8 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * Define rule for importing other rules.
+ * Defines a rule for importing an external configuration file (XML or APON)
+ * into the current context, allowing for modular configuration.
  *
  * <p>Created: 2017. 05. 06.</p>
  */
@@ -43,55 +44,107 @@ public class AppendRule {
 
     private AspectranParameters aspectranParameters;
 
+    /**
+     * Gets the path to the local file to append.
+     * @return the file path
+     */
     public String getFile() {
         return file;
     }
 
+    /**
+     * Sets the path to the local file to append.
+     * @param file the file path
+     */
     public void setFile(String file) {
         this.file = file;
     }
 
+    /**
+     * Gets the resource path on the classpath to append.
+     * @return the resource path
+     */
     public String getResource() {
         return resource;
     }
 
+    /**
+     * Sets the resource path on the classpath to append.
+     * @param resource the resource path
+     */
     public void setResource(String resource) {
         this.resource = resource;
     }
 
+    /**
+     * Gets the URL of the resource to append.
+     * @return the URL string
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets the URL of the resource to append.
+     * @param url the URL string
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Gets the format of the file to append (e.g., XML or APON).
+     * @return the file format type
+     */
     public AppendableFileFormatType getFormat() {
         return format;
     }
 
+    /**
+     * Sets the format of the file to append.
+     * @param format the file format type
+     */
     public void setFormat(AppendableFileFormatType format) {
         this.format = format;
     }
 
+    /**
+     * Gets the profile expression.
+     * @return the profile expression
+     */
     public String getProfile() {
         return profile;
     }
 
+    /**
+     * Sets the profile expression that determines if this rule should be active.
+     * @param profile the profile expression
+     */
     public void setProfile(String profile) {
         this.profile = profile;
         this.profiles = (profile != null ? Profiles.of(profile) : null);
     }
 
+    /**
+     * Gets the parsed profiles.
+     * @return the profiles
+     */
     public Profiles getProfiles() {
         return profiles;
     }
 
+    /**
+     * Gets the Aspectran parameters to append.
+     * @return the Aspectran parameters
+     */
     public AspectranParameters getAspectranParameters() {
         return aspectranParameters;
     }
 
+    /**
+     * Sets the Aspectran parameters to append.
+     * @param aspectranParameters the Aspectran parameters
+     */
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
     }

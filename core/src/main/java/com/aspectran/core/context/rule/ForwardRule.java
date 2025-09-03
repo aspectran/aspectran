@@ -24,7 +24,8 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class ForwardRule.
+ * Defines a rule for performing a server-side forward to another translet.
+ * It is a type of response rule.
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -59,7 +60,7 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
     }
 
     /**
-     * Gets the translet name.
+     * Gets the name of the translet to forward to.
      * @return the translet name
      */
     public String getTransletName() {
@@ -67,17 +68,25 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
     }
 
     /**
-     * Sets the translet name.
+     * Sets the name of the translet to forward to.
      * @param transletName the new translet name
      */
     public void setTransletName(String transletName) {
         this.transletName = transletName;
     }
 
+    /**
+     * Gets the request method for the forwarded request.
+     * @return the request method
+     */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Sets the request method for the forwarded request.
+     * @param requestMethod the request method
+     */
     public void setRequestMethod(MethodType requestMethod) {
         this.requestMethod = requestMethod;
     }
@@ -101,24 +110,24 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
     }
 
     /**
-     * Returns whether the default response.
-     * @return whether the default response
+     * Returns whether this is the default response.
+     * @return whether this is the default response
      */
     public Boolean getDefaultResponse() {
         return defaultResponse;
     }
 
     /**
-     * Returns whether the default response.
-     * @return true, if is default response
+     * Returns whether this is the default response.
+     * @return true, if this is the default response
      */
     public boolean isDefaultResponse() {
         return BooleanUtils.toBoolean(defaultResponse);
     }
 
     /**
-     * Sets whether the default response.
-     * @param defaultResponse whether the default response
+     * Sets whether this is the default response.
+     * @param defaultResponse whether this is the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
@@ -141,11 +150,11 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
     }
 
     /**
-     * Returns a new instance of ForwardRule.
+     * Creates a new instance of ForwardRule.
      * @param contentType the content type
      * @param transletName the translet name
      * @param method the request method
-     * @param defaultResponse whether the default response
+     * @param defaultResponse whether it is the default response
      * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -173,7 +182,7 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
     }
 
     /**
-     * Returns a new instance of ForwardRule.
+     * Creates a new instance of ForwardRule.
      * @param transletName the translet name
      * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
@@ -189,6 +198,11 @@ public class ForwardRule implements Replicable<ForwardRule>, HasAttributes {
         return fr;
     }
 
+    /**
+     * Creates a replica of the given ForwardRule.
+     * @param forwardRule the forward rule to replicate
+     * @return a new, replicated instance of ForwardRule
+     */
     @NonNull
     public static ForwardRule replicate(@NonNull ForwardRule forwardRule) {
         ForwardRule fr = new ForwardRule();

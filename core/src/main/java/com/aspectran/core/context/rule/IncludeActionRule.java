@@ -23,7 +23,7 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class IncludeActionRule.
+ * Rule for an action that includes the result of another translet.
  *
  * <p>Created: 2008. 06. 05 PM 9:25:40</p>
  */
@@ -50,15 +50,15 @@ public class IncludeActionRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Sets the id.
-     * @param actionId the new id
+     * Sets the action id.
+     * @param actionId the new action id
      */
     public void setActionId(String actionId) {
         this.actionId = actionId;
     }
 
     /**
-     * Gets the translet name.
+     * Gets the name of the translet to include.
      * @return the translet name
      */
     public String getTransletName() {
@@ -66,41 +66,40 @@ public class IncludeActionRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Sets the translet name.
+     * Sets the name of the translet to include.
      * @param transletName the new translet name
      */
     public void setTransletName(String transletName) {
         this.transletName = transletName;
     }
 
+    /**
+     * Gets the request method for the included translet.
+     * @return the request method type
+     */
     public MethodType getMethodType() {
         return methodType;
     }
 
+    /**
+     * Sets the request method for the included translet.
+     * @param methodType the request method type
+     */
     public void setMethodType(MethodType methodType) {
         this.methodType = methodType;
     }
 
-    /**
-     * Gets the parameter item rule map.
-     * @return the parameter item rule map
-     */
+    @Override
     public ItemRuleMap getParameterItemRuleMap() {
         return parameterItemRuleMap;
     }
 
-    /**
-     * Sets the attribute item rule map.
-     * @param parameterItemRuleMap the new attribute item rule map
-     */
+    @Override
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
         this.parameterItemRuleMap = parameterItemRuleMap;
     }
 
-    /**
-     * Adds the parameter item rule.
-     * @param parameterItemRule the parameter item rule
-     */
+    @Override
     public void addParameterItemRule(ItemRule parameterItemRule) {
         if (parameterItemRuleMap == null) {
             parameterItemRuleMap = new ItemRuleMap();
@@ -166,12 +165,12 @@ public class IncludeActionRule implements HasParameters, HasAttributes {
     }
 
     /**
-     * Returns a new instance of IncludeActionRule.
+     * Creates a new instance of IncludeActionRule.
      * @param id the action id
      * @param transletName the translet name
      * @param method the request method type
      * @param hidden whether to hide the result of the action
-     * @return the include action rule
+     * @return the new include action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull

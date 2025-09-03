@@ -26,7 +26,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.lang.reflect.Method;
 
 /**
- * The Class InvokeActionRule.
+ * Rule for an action that invokes a method on a bean.
+ * This is the most common type of action, used to execute business logic.
  *
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
@@ -69,57 +70,81 @@ public class InvokeActionRule implements BeanReferenceable, HasArguments, HasPro
     }
 
     /**
-     * Gets bean id.
-     * @return the bean id
+     * Gets the bean id or class name.
+     * @return the bean id or class name
      */
     public String getBeanId() {
         return beanId;
     }
 
     /**
-     * Sets bean id.
-     * @param beanId the bean id
+     * Sets the bean id or class name.
+     * @param beanId the bean id or class name
      */
     public void setBeanId(String beanId) {
         this.beanId = beanId;
     }
 
+    /**
+     * Gets the bean class.
+     * @return the bean class
+     */
     public Class<?> getBeanClass() {
         return beanClass;
     }
 
+    /**
+     * Sets the bean class.
+     * @param beanClass the bean class
+     */
     public void setBeanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
     }
 
     /**
-     * Gets the action method name.
-     * @return the action method name
+     * Gets the method name to invoke.
+     * @return the method name
      */
     public String getMethodName() {
         return methodName;
     }
 
     /**
-     * Sets the action method name.
-     * @param methodName the new action method name
+     * Sets the method name to invoke.
+     * @param methodName the new method name
      */
     public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
 
+    /**
+     * Gets the resolved method to invoke.
+     * @return the method
+     */
     public Method getMethod() {
         return method;
     }
 
+    /**
+     * Sets the resolved method to invoke.
+     * @param method the method
+     */
     public void setMethod(Method method) {
         this.method = method;
     }
 
+    /**
+     * Returns whether the action method requires a {@code Translet} as a parameter.
+     * @return true if the method requires a Translet, false otherwise
+     */
     public boolean isRequiresTranslet() {
         return requiresTranslet;
     }
 
+    /**
+     * Sets whether the action method requires a {@code Translet} as a parameter.
+     * @param requiresTranslet true if the method requires a Translet
+     */
     public void setRequiresTranslet(boolean requiresTranslet) {
         this.requiresTranslet = requiresTranslet;
     }
@@ -210,12 +235,12 @@ public class InvokeActionRule implements BeanReferenceable, HasArguments, HasPro
     }
 
     /**
-     * Returns a new instance of BeanActionRule.
+     * Creates a new instance of InvokeActionRule.
      * @param id the action id
      * @param beanId the bean id
      * @param methodName the method name
      * @param hidden true if hiding the result of the action; false otherwise
-     * @return the invoke action rule
+     * @return the new invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull
@@ -237,10 +262,10 @@ public class InvokeActionRule implements BeanReferenceable, HasArguments, HasPro
     }
 
     /**
-     * Returns a new instance of BeanActionRule.
+     * Creates a new instance of InvokeActionRule for an advice bean.
      * @param methodName the method name
      * @param hidden true if hiding the result of the action; false otherwise
-     * @return the invoke action rule
+     * @return the new invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
     @NonNull

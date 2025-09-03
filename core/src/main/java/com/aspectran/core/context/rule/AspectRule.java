@@ -35,9 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An aspect is a class that implements enterprise application concerns that
- * cut across multiple classes, such as transaction management. Aspects can be
- * a bean configured through Aspectran configuration.
+ * Defines an aspect that modularizes a cross-cutting concern.
+ * This rule contains a {@link JoinpointRule} to specify where the aspect is applied
+ * and a set of {@link AdviceRule}s that define the logic to be executed at those join points.
  *
  * <p>ex)
  * <pre>
@@ -122,50 +122,98 @@ public class AspectRule implements BeanReferenceable, Describable {
 
     private DescriptionRule descriptionRule;
 
+    /**
+     * Gets the aspect ID.
+     * @return the aspect ID
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the aspect ID.
+     * @param id the aspect ID
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets the order of precedence for this aspect.
+     * @return the order number
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     * Sets the order of precedence for this aspect.
+     * @param order the order number
+     */
     public void setOrder(int order) {
         this.order = order;
     }
 
+    /**
+     * Gets whether this aspect is isolated from the main flow.
+     * @return true if isolated, false otherwise
+     */
     public Boolean getIsolated() {
         return isolated;
     }
 
+    /**
+     * Returns whether this aspect is isolated from the main flow.
+     * @return true if isolated, false otherwise
+     */
     public boolean isIsolated() {
         return BooleanUtils.toBoolean(isolated);
     }
 
+    /**
+     * Sets whether this aspect is isolated from the main flow.
+     * @param isolated true to isolate the aspect
+     */
     public void setIsolated(Boolean isolated) {
         this.isolated = isolated;
     }
 
+    /**
+     * Gets whether this aspect is disabled.
+     * @return true if disabled, false otherwise
+     */
     public Boolean getDisabled() {
         return disabled;
     }
 
+    /**
+     * Returns whether this aspect is disabled.
+     * @return true if disabled, false otherwise
+     */
     public boolean isDisabled() {
         return BooleanUtils.toBoolean(disabled);
     }
 
+    /**
+     * Sets whether this aspect is disabled.
+     * @param disabled true to disable the aspect
+     */
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
 
+    /**
+     * Gets the join point rule for this aspect.
+     * @return the join point rule
+     */
     public JoinpointRule getJoinpointRule() {
         return joinpointRule;
     }
 
+    /**
+     * Sets the join point rule and creates a corresponding {@link Pointcut}.
+     * @param joinpointRule the join point rule
+     */
     public void setJoinpointRule(JoinpointRule joinpointRule) {
         this.joinpointRule = joinpointRule;
         if (joinpointRule != null && joinpointRule.getPointcutRule() != null) {
@@ -176,22 +224,42 @@ public class AspectRule implements BeanReferenceable, Describable {
         }
     }
 
+    /**
+     * Gets the join point target type.
+     * @return the join point target type
+     */
     public JoinpointTargetType getJoinpointTargetType() {
         return (joinpointRule != null ? joinpointRule.getJoinpointTargetType() : null);
     }
 
+    /**
+     * Gets the allowed HTTP methods for the join point.
+     * @return an array of allowed methods
+     */
     public MethodType[] getMethods() {
         return (joinpointRule != null ? joinpointRule.getMethods() : null);
     }
 
+    /**
+     * Gets the required HTTP headers for the join point.
+     * @return an array of required headers
+     */
     public String[] getHeaders() {
         return (joinpointRule != null ? joinpointRule.getHeaders() : null);
     }
 
+    /**
+     * Gets the pointcut rule.
+     * @return the pointcut rule
+     */
     public PointcutRule getPointcutRule() {
         return (joinpointRule != null ? joinpointRule.getPointcutRule() : null);
     }
 
+    /**
+     * Gets the compiled pointcut expression.
+     * @return the pointcut
+     */
     public Pointcut getPointcut() {
         return pointcut;
     }
@@ -200,30 +268,58 @@ public class AspectRule implements BeanReferenceable, Describable {
         this.pointcut = pointcut;
     }
 
+    /**
+     * Gets the ID of the bean that contains the advice methods.
+     * @return the advice bean ID
+     */
     public String getAdviceBeanId() {
         return adviceBeanId;
     }
 
+    /**
+     * Sets the ID of the bean that contains the advice methods.
+     * @param adviceBeanId the advice bean ID
+     */
     public void setAdviceBeanId(String adviceBeanId) {
         this.adviceBeanId = adviceBeanId;
     }
 
+    /**
+     * Gets the class of the bean that contains the advice methods.
+     * @return the advice bean class
+     */
     public Class<?> getAdviceBeanClass() {
         return adviceBeanClass;
     }
 
+    /**
+     * Sets the class of the bean that contains the advice methods.
+     * @param adviceBeanClass the advice bean class
+     */
     public void setAdviceBeanClass(Class<?> adviceBeanClass) {
         this.adviceBeanClass = adviceBeanClass;
     }
 
+    /**
+     * Gets the settings advice rule.
+     * @return the settings advice rule
+     */
     public SettingsAdviceRule getSettingsAdviceRule() {
         return settingsAdviceRule;
     }
 
+    /**
+     * Sets the settings advice rule.
+     * @param settingsAdviceRule the settings advice rule
+     */
     public void setSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         this.settingsAdviceRule = settingsAdviceRule;
     }
 
+    /**
+     * Gets the settings advice rule, creating it if it does not exist.
+     * @return the settings advice rule
+     */
     public SettingsAdviceRule touchSettingsAdviceRule() {
         if (settingsAdviceRule == null) {
             settingsAdviceRule = new SettingsAdviceRule(this);
@@ -231,14 +327,27 @@ public class AspectRule implements BeanReferenceable, Describable {
         return settingsAdviceRule;
     }
 
+    /**
+     * Gets the list of advice rules (before, after, around, finally).
+     * @return the list of advice rules
+     */
     public List<AdviceRule> getAdviceRuleList() {
         return adviceRuleList;
     }
 
+    /**
+     * Sets the list of advice rules.
+     * @param adviceRuleList the list of advice rules
+     */
     public void setAdviceRuleList(List<AdviceRule> adviceRuleList) {
         this.adviceRuleList = adviceRuleList;
     }
 
+    /**
+     * Creates and adds a new advice rule of the specified type.
+     * @param adviceType the type of advice
+     * @return the new advice rule
+     */
     public AdviceRule newAdviceRule(AdviceType adviceType) {
         AdviceRule adviceRule;
         adviceRule = new AdviceRule(this, adviceType);
@@ -248,22 +357,42 @@ public class AspectRule implements BeanReferenceable, Describable {
         return adviceRule;
     }
 
+    /**
+     * Creates and adds a new 'before' advice rule.
+     * @return the new advice rule
+     */
     public AdviceRule newBeforeAdviceRule() {
         return newAdviceRule(AdviceType.BEFORE);
     }
 
+    /**
+     * Creates and adds a new 'after' advice rule.
+     * @return the new advice rule
+     */
     public AdviceRule newAfterAdviceRule() {
         return newAdviceRule(AdviceType.AFTER);
     }
 
+    /**
+     * Creates and adds a new 'around' advice rule.
+     * @return the new advice rule
+     */
     public AdviceRule newAroundAdviceRule() {
         return newAdviceRule(AdviceType.AROUND);
     }
 
+    /**
+     * Creates and adds a new 'finally' advice rule.
+     * @return the new advice rule
+     */
     public AdviceRule newFinallyAdviceRule() {
         return newAdviceRule(AdviceType.FINALLY);
     }
 
+    /**
+     * Creates and adds a new 'thrown' advice rule.
+     * @return the new advice rule
+     */
     public AdviceRule newThrownAdviceRule() {
         return newAdviceRule(AdviceType.THROWN);
     }
@@ -275,14 +404,26 @@ public class AspectRule implements BeanReferenceable, Describable {
         return adviceRuleList;
     }
 
+    /**
+     * Gets the exception handling rule for this aspect.
+     * @return the exception rule
+     */
     public ExceptionRule getExceptionRule() {
         return exceptionRule;
     }
 
+    /**
+     * Sets the exception handling rule for this aspect.
+     * @param exceptionRule the exception rule
+     */
     public void setExceptionRule(ExceptionRule exceptionRule) {
         this.exceptionRule = exceptionRule;
     }
 
+    /**
+     * Adds a rule for a specific exception type to this aspect's exception handling.
+     * @param exceptionThrownRule the rule for a specific exception
+     */
     public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
         if (exceptionRule == null) {
             exceptionRule = new ExceptionRule();
@@ -290,18 +431,28 @@ public class AspectRule implements BeanReferenceable, Describable {
         exceptionRule.putExceptionThrownRule(exceptionThrownRule);
     }
 
+    /**
+     * Returns whether this aspect is relevant to bean method execution.
+     * @return true if the aspect targets bean methods, false otherwise
+     */
     public boolean isBeanRelevant() {
         return beanRelevant;
     }
 
+    /**
+     * Sets whether this aspect is relevant to bean method execution.
+     * @param beanRelevant true if the aspect targets bean methods
+     */
     public void setBeanRelevant(boolean beanRelevant) {
         this.beanRelevant = beanRelevant;
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
@@ -329,6 +480,15 @@ public class AspectRule implements BeanReferenceable, Describable {
         return tsb.toString();
     }
 
+    /**
+     * Creates a new instance of AspectRule.
+     * @param id the aspect ID
+     * @param order the order of precedence
+     * @param isolated whether the aspect is isolated
+     * @param disabled whether the aspect is disabled
+     * @return a new AspectRule instance
+     * @throws IllegalRuleException if the ID is null
+     */
     @NonNull
     public static AspectRule newInstance(String id, String order, Boolean isolated, Boolean disabled)
             throws IllegalRuleException {
@@ -352,6 +512,13 @@ public class AspectRule implements BeanReferenceable, Describable {
         return aspectRule;
     }
 
+    /**
+     * A static helper method to update the joinpoint configuration from an APON string.
+     * @param aspectRule the aspect rule to update
+     * @param target the joinpoint target type string
+     * @param apon the APON string representing the joinpoint configuration
+     * @throws IllegalRuleException if the APON string is invalid
+     */
     public static void updateJoinpoint(@NonNull AspectRule aspectRule, String target, String apon)
             throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
@@ -360,6 +527,12 @@ public class AspectRule implements BeanReferenceable, Describable {
         aspectRule.setJoinpointRule(joinpointRule);
     }
 
+    /**
+     * A static helper method to update the joinpoint configuration from a parameter map.
+     * @param aspectRule the aspect rule to update
+     * @param joinpointParameters the parameters representing the joinpoint configuration
+     * @throws IllegalRuleException if the parameters are invalid
+     */
     public static void updateJoinpoint(@NonNull AspectRule aspectRule, @NonNull JoinpointParameters joinpointParameters)
             throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();

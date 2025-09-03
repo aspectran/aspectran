@@ -26,7 +26,8 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class DispatchRule.
+ * Defines a rule for dispatching the request to a view technology (e.g., JSP, Thymeleaf)
+ * for rendering. It is a type of response rule.
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -49,7 +50,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
     private ViewDispatcher viewDispatcher;
 
     /**
-     * Gets the dispatch name.
+     * Gets the dispatch name, which typically corresponds to a view template name.
      * @return the view name
      */
     public String getName() {
@@ -57,9 +58,9 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Gets the dispatch name.
-     * @param activity the activity
-     * @return the view name
+     * Gets the dispatch name, evaluating any tokens in the name.
+     * @param activity the current activity
+     * @return the evaluated view name
      */
     public String getName(Activity activity) {
         if (nameTokens != null) {
@@ -100,18 +101,16 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Gets the id or class name of the view dispatcher bean that
-     * implements {@link ViewDispatcher}.
-     * @return the id or class name of the view dispatcher bean
+     * Gets the name of the view dispatcher bean that implements {@link ViewDispatcher}.
+     * @return the name of the view dispatcher bean
      */
     public String getDispatcherName() {
         return dispatcherName;
     }
 
     /**
-     * Gets the id or class name of the view dispatcher bean that
-     * implements {@link ViewDispatcher}.
-     * @param dispatcherName the id or class name of the view dispatcher bean
+     * Sets the name of the view dispatcher bean.
+     * @param dispatcherName the name of the view dispatcher bean
      */
     public void setDispatcherName(String dispatcherName) {
         this.dispatcherName = dispatcherName;
@@ -150,33 +149,41 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Returns whether the default response.
-     * @return whether the default response
+     * Returns whether this is the default response.
+     * @return whether this is the default response
      */
     public Boolean getDefaultResponse() {
         return defaultResponse;
     }
 
     /**
-     * Returns whether the default response.
-     * @return true, if is default response
+     * Returns whether this is the default response.
+     * @return true, if this is the default response
      */
     public boolean isDefaultResponse() {
         return BooleanUtils.toBoolean(defaultResponse);
     }
 
     /**
-     * Sets whether the default response.
-     * @param defaultResponse whether the default response
+     * Sets whether this is the default response.
+     * @param defaultResponse whether this is the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
         this.defaultResponse = defaultResponse;
     }
 
+    /**
+     * Gets the resolved view dispatcher.
+     * @return the view dispatcher
+     */
     public ViewDispatcher getViewDispatcher() {
         return viewDispatcher;
     }
 
+    /**
+     * Sets the resolved view dispatcher.
+     * @param viewDispatcher the view dispatcher
+     */
     public void setViewDispatcher(ViewDispatcher viewDispatcher) {
         this.viewDispatcher = viewDispatcher;
     }
@@ -209,9 +216,9 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Returns a new instance of DispatchRule.
+     * Creates a new instance of DispatchRule.
      * @param name the dispatch name
-     * @param dispatcherName the id or class name of the view dispatcher bean
+     * @param dispatcherName the name of the view dispatcher bean
      * @param contentType the content type
      * @param encoding the character encoding
      * @param defaultResponse whether it is the default response
@@ -231,9 +238,9 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Returns a new instance of DispatchRule.
+     * Creates a new instance of DispatchRule.
      * @param name the dispatch name
-     * @param dispatcher the id or class name of the view dispatcher bean
+     * @param dispatcher the name of the view dispatcher bean
      * @param contentType the content type
      * @param encoding the character encoding
      * @return the dispatch rule
@@ -246,7 +253,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Returns a new instance of DispatchRule.
+     * Creates a new instance of DispatchRule.
      * @param name the dispatch name
      * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
@@ -262,9 +269,9 @@ public class DispatchRule implements Replicable<DispatchRule> {
     }
 
     /**
-     * Returns a new derived instance of DispatchRule.
+     * Creates a replica of the given DispatchRule.
      * @param dispatchRule an instance of DispatchRule
-     * @return the dispatch rule
+     * @return the replicated dispatch rule
      */
     @NonNull
     public static DispatchRule replicate(@NonNull DispatchRule dispatchRule) {

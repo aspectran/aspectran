@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class EnvironmentRule.
+ * Defines a set of properties that are only active when a specific profile is enabled.
+ * This is used to provide environment-specific configuration (e.g., for development vs. production).
  *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
@@ -38,27 +39,51 @@ public class EnvironmentRule implements Describable {
 
     private DescriptionRule descriptionRule;
 
+    /**
+     * Gets the profile expression.
+     * @return the profile expression
+     */
     public String getProfile() {
         return profile;
     }
 
+    /**
+     * Sets the profile expression that determines if this rule should be active.
+     * @param profile the profile expression
+     */
     public void setProfile(String profile) {
         this.profile = profile;
         this.profiles = (profile != null ? Profiles.of(profile) : null);
     }
 
+    /**
+     * Gets the parsed profiles.
+     * @return the profiles
+     */
     public Profiles getProfiles() {
         return profiles;
     }
 
+    /**
+     * Gets the list of property maps for this environment.
+     * @return the list of property item rule maps
+     */
     public List<ItemRuleMap> getPropertyItemRuleMapList() {
         return propertyItemRuleMapList;
     }
 
+    /**
+     * Sets the list of property maps for this environment.
+     * @param propertyItemRuleMapList the list of property item rule maps
+     */
     public void setPropertyItemRuleMapList(List<ItemRuleMap> propertyItemRuleMapList) {
         this.propertyItemRuleMapList = propertyItemRuleMapList;
     }
 
+    /**
+     * Adds a property map to this environment.
+     * @param itemRuleMap the property item rule map to add
+     */
     public void addPropertyItemRuleMap(ItemRuleMap itemRuleMap) {
         if (propertyItemRuleMapList == null) {
             propertyItemRuleMapList = new ArrayList<>();
@@ -77,8 +102,8 @@ public class EnvironmentRule implements Describable {
     }
 
     /**
-     * Returns a new instance of EnvironmentRule.
-     * @param profile the profile
+     * Creates a new instance of EnvironmentRule.
+     * @param profile the profile expression
      * @return an instance of EnvironmentRule
      */
     @NonNull

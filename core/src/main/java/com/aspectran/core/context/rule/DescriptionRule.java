@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a descriptive text block that can be attached to various rules.
+ * It supports profiles to provide different descriptions for different environments.
+ *
  * <p>Created: 2019/12/17</p>
  */
 public class DescriptionRule implements Replicable<DescriptionRule> {
@@ -45,9 +48,16 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
 
     private List<DescriptionRule> candidates;
 
+    /**
+     * Instantiates a new DescriptionRule.
+     */
     public DescriptionRule() {
     }
 
+    /**
+     * Instantiates a new DescriptionRule from another rule.
+     * @param other the other description rule
+     */
     public DescriptionRule(DescriptionRule other) {
         if (other != null) {
             setProfiles(other.getProfile(), other.getProfiles());
@@ -58,15 +68,27 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         }
     }
 
+    /**
+     * Gets the profile expression.
+     * @return the profile expression
+     */
     public String getProfile() {
         return profile;
     }
 
+    /**
+     * Sets the profile expression that determines if this rule should be active.
+     * @param profile the profile expression
+     */
     public void setProfile(String profile) {
         this.profile = profile;
         this.profiles = (profile != null ? Profiles.of(profile) : null);
     }
 
+    /**
+     * Gets the parsed profiles.
+     * @return the profiles
+     */
     public Profiles getProfiles() {
         return profiles;
     }
@@ -76,38 +98,75 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         this.profiles = profiles;
     }
 
+    /**
+     * Gets the content style.
+     * @return the content style
+     */
     public TextStyleType getContentStyle() {
         return contentStyle;
     }
 
+    /**
+     * Sets the content style.
+     * @param contentStyle the content style
+     */
     public void setContentStyle(TextStyleType contentStyle) {
         this.contentStyle = contentStyle;
     }
 
+    /**
+     * Gets the raw content of the description.
+     * @return the content
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the raw content of the description.
+     * @param content the content
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Gets the formatted content.
+     * @return the formatted content
+     */
     public String getFormattedContent() {
         return (formattedContent != null ? formattedContent : content);
     }
 
+    /**
+     * Sets the formatted content.
+     * @param formattedContent the formatted content
+     */
     public void setFormattedContent(String formattedContent) {
         this.formattedContent = formattedContent;
     }
 
+    /**
+     * Gets the list of candidate description rules for different profiles.
+     * @return the list of candidate rules
+     */
     public List<DescriptionRule> getCandidates() {
         return candidates;
     }
 
+    /**
+     * Sets the list of candidate description rules.
+     * @param candidates the list of candidate rules
+     */
     public void setCandidates(List<DescriptionRule> candidates) {
         this.candidates = candidates;
     }
 
+    /**
+     * Adds a candidate description rule.
+     * @param candidate the candidate rule to add
+     * @return true if the candidate was added successfully
+     */
     public boolean addCandidate(DescriptionRule candidate) {
         if (candidates == null) {
             candidates = new ArrayList<>();
@@ -133,6 +192,12 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         return tsb.toString();
     }
 
+    /**
+     * Renders the description content by evaluating any tokens within it.
+     * @param descriptionRule the description rule to render
+     * @param activity the current activity
+     * @return the rendered content
+     */
     public static String render(@NonNull DescriptionRule descriptionRule, Activity activity) {
         String content = descriptionRule.getFormattedContent();
         if (content == null || activity == null) {
@@ -146,6 +211,13 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         return activity.getTokenEvaluator().evaluateAsString(contentTokens);
     }
 
+    /**
+     * Creates a new instance of DescriptionRule.
+     * @param profile the profile expression
+     * @param style the text style
+     * @return a new DescriptionRule instance
+     * @throws IllegalRuleException if the style is invalid
+     */
     @NonNull
     public static DescriptionRule newInstance(String profile, String style)
             throws IllegalRuleException {
