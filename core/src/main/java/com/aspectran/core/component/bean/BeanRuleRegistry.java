@@ -57,10 +57,12 @@ import java.util.Set;
 /**
  * Central registry of {@link com.aspectran.core.context.rule.BeanRule} definitions.
  * <p>
- * Maintains mappings by id and type, tracks configurable and post-process
- * bean rules, manages important beans, and provides base package scanning
- * configuration. Also exposes hooks to ignore certain dependency types and
- * interfaces during autowiring.
+ * This registry maintains mappings by ID and type, tracks configurable and post-process
+ * bean rules, and manages important beans. It supports both annotation-based component
+ * scanning (for classes annotated with {@code @Component}) and XML-based bean rule
+ * scanning (for bean rules defined with a {@code scan} attribute).
+ * Additionally, it provides configuration for base packages to scan and exposes hooks
+ * to ignore certain dependency types and interfaces during autowiring.
  * </p>
  * @see com.aspectran.core.context.rule.BeanRule
  * @see BeanClassScanner

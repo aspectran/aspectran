@@ -122,7 +122,7 @@
 
 <!ELEMENT translet (
   description*,
-  (request? | (parameters*, attributes*)),
+  (request? | (parameter*, attribute*, parameters*, attributes*)),
   ((contents | content)? | (choose | headers | echo | action | include)*),
   (response* | (transform | dispatch | forward | redirect)?),
   exception?
@@ -136,7 +136,7 @@
   timeout CDATA #IMPLIED
 >
 
-<!ELEMENT request (parameters*, attributes*)>
+<!ELEMENT request (parameter*, attribute*, parameters*, attributes*)>
 <!ATTLIST request
   method   CDATA #IMPLIED
   encoding CDATA #IMPLIED
@@ -187,7 +187,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT include (parameters*, attributes*)>
+<!ELEMENT include (parameter*, attribute*, parameters*, attributes*)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED
@@ -266,6 +266,24 @@
   tokenize  (true | false) #IMPLIED
   mandatory (true | false) #IMPLIED
   secret    (true | false) #IMPLIED
+>
+
+<!ELEMENT parameter (#PCDATA | value | entry | bean)*>
+<!ATTLIST parameter
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+>
+
+<!ELEMENT attribute (#PCDATA | value | entry | bean)*>
+<!ATTLIST attribute
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
 >
 
 <!ELEMENT argument (#PCDATA | value | entry | bean)*>
