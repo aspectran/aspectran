@@ -16,8 +16,6 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
@@ -50,22 +48,12 @@ class EnvironmentNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(environmentRule);
             })
             .with(DiscriptionNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
+            .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 EnvironmentRule environmentRule = AspectranNodeParsingContext.popObject();
                 AspectranNodeParsingContext.assistant().addEnvironmentRule(environmentRule);
-            })
-            .child("properties")
-                .nodelet(attrs -> {
-                    ItemRuleMap irm = new ItemRuleMap();
-                    irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-                    AspectranNodeParsingContext.pushObject(irm);
-                })
-                .with(ItemNodeletAdder.instance())
-                .endNodelet(text -> {
-                    ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                    EnvironmentRule environmentRule = AspectranNodeParsingContext.peekObject();
-                    environmentRule.addPropertyItemRuleMap(irm);
-                });
+            });
     }
 
 }

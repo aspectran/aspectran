@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  XML DTD for the Aspectran Configuration File, Version 7.0
+  XML DTD for the Aspectran Configuration File, Version 9.0
 
-  Copyright 2008-2022 The Aspectran Project
+  Copyright 2018-present The Aspectran Project
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
@@ -42,7 +42,7 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT environment (description*, properties+)>
+<!ELEMENT environment (description*, property*, properties*)>
 <!ATTLIST environment
   profile CDATA #IMPLIED
 >
@@ -77,7 +77,7 @@
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description*, filter?, arguments*, properties*)>
+<!ELEMENT bean (description*, filter?, argument*, property*, arguments*, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
@@ -122,7 +122,7 @@
 
 <!ELEMENT translet (
   description*,
-  (request? | (parameters*, attributes*)),
+  (request? | (parameter*, parameters*, attribute*, attributes*)),
   ((contents | content)? | (choose | headers | echo | action | include)*),
   (response* | (transform | dispatch | forward | redirect)?),
   exception?
@@ -132,9 +132,11 @@
   scan    CDATA #IMPLIED
   mask    CDATA #IMPLIED
   method  CDATA #IMPLIED
+  async   (true | false) #IMPLIED
+  timeout CDATA #IMPLIED
 >
 
-<!ELEMENT request (parameters*, attributes*)>
+<!ELEMENT request (parameter*, attribute*, parameters*, attributes*)>
 <!ATTLIST request
   method   CDATA #IMPLIED
   encoding CDATA #IMPLIED
@@ -142,12 +144,12 @@
 
 <!ELEMENT contents (content*)>
 <!ATTLIST contents
-  name      CDATA #IMPLIED
+  name    CDATA #IMPLIED
 >
 
 <!ELEMENT content (choose | headers | echo | action | include)*>
 <!ATTLIST content
-  name      CDATA #IMPLIED
+  name    CDATA #IMPLIED
 >
 
 <!ELEMENT choose (when*, otherwise?)>
@@ -171,7 +173,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT action (arguments*, properties*)>
+<!ELEMENT action (argument*, arguments*, property*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED
   bean    CDATA #REQUIRED
@@ -179,13 +181,13 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT invoke (arguments*, properties*)>
+<!ELEMENT invoke (argument*, arguments*, property*, properties*)>
 <!ATTLIST invoke
   method  CDATA #REQUIRED
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT include (parameters*, attributes*)>
+<!ELEMENT include (parameter*, parameters*, attribute*, attributes*)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED
@@ -217,7 +219,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT forward (attributes*)>
+<!ELEMENT forward (attribute*, attributes*)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED
@@ -225,7 +227,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect (parameters*)>
+<!ELEMENT redirect (parameter*, parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -245,28 +247,68 @@
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT properties (item*)>
-<!ATTLIST properties
-  profile CDATA #IMPLIED
->
-
 <!ELEMENT arguments (item*)>
 <!ATTLIST arguments
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT item (#PCDATA | value | entry | bean)*>
-<!ATTLIST item
-  type         (single | array | list | map | set | properties) #IMPLIED
-  name         CDATA #IMPLIED
-  value        CDATA #IMPLIED
-  valueType    (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
-  tokenize     (true | false) #IMPLIED
-  mandatory    (true | false) #IMPLIED
-  secret       (true | false) #IMPLIED
+<!ELEMENT properties (item*)>
+<!ATTLIST properties
+  profile CDATA #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | bean)*>
+<!ELEMENT item (#PCDATA | value | entry | bean)*>
+<!ATTLIST item
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
+>
+
+<!ELEMENT parameter (#PCDATA | value | entry | bean)*>
+<!ATTLIST parameter
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
+>
+
+<!ELEMENT attribute (#PCDATA | value | entry | bean)*>
+<!ATTLIST attribute
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
+>
+
+<!ELEMENT argument (#PCDATA | value | entry | bean)*>
+<!ATTLIST argument
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+>
+
+<!ELEMENT property (#PCDATA | value | entry | bean)*>
+<!ATTLIST property
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+>
+
+<!ELEMENT value (#PCDATA)>
 
 <!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry
@@ -277,15 +319,16 @@
 
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template
-  id       CDATA #IMPLIED
-  engine   CDATA #IMPLIED
-  style    (apon | compact | compressed) #IMPLIED
-  name     CDATA #IMPLIED
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  encoding CDATA #IMPLIED
-  noCache  (true | false) #IMPLIED
+  id          CDATA #IMPLIED
+  engine      CDATA #IMPLIED
+  name        CDATA #IMPLIED
+  file        CDATA #IMPLIED
+  resource    CDATA #IMPLIED
+  url         CDATA #IMPLIED
+  style       (apon | compact | compressed) #IMPLIED
+  contentType CDATA #IMPLIED
+  encoding    CDATA #IMPLIED
+  noCache     (true | false) #IMPLIED
 >
 
 <!ELEMENT append EMPTY>

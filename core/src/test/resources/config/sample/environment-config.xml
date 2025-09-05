@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
-        "aspectran-7-test.dtd">
+        "aspectran-9-test.dtd">
 <aspectran>
 
     <environment profile="dev">
+        <property name="prop-0">dev-debug-0</property>
         <properties profile="debug">
             <item name="prop-1">dev-debug-1</item>
             <item name="prop-2">dev-debug-2</item>

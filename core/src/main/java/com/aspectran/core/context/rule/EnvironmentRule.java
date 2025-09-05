@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.ability.Describable;
+import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -29,13 +30,13 @@ import java.util.List;
  *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
-public class EnvironmentRule implements Describable {
+public class EnvironmentRule implements Describable, HasProperties {
 
     private String profile;
 
     private Profiles profiles;
 
-    private List<ItemRuleMap> propertyItemRuleMapList;
+    private ItemRuleMap propertyItemRuleMap;
 
     private DescriptionRule descriptionRule;
 
@@ -64,31 +65,22 @@ public class EnvironmentRule implements Describable {
         return profiles;
     }
 
-    /**
-     * Gets the list of property maps for this environment.
-     * @return the list of property item rule maps
-     */
-    public List<ItemRuleMap> getPropertyItemRuleMapList() {
-        return propertyItemRuleMapList;
+    @Override
+    public ItemRuleMap getPropertyItemRuleMap() {
+        return propertyItemRuleMap;
     }
 
-    /**
-     * Sets the list of property maps for this environment.
-     * @param propertyItemRuleMapList the list of property item rule maps
-     */
-    public void setPropertyItemRuleMapList(List<ItemRuleMap> propertyItemRuleMapList) {
-        this.propertyItemRuleMapList = propertyItemRuleMapList;
+    @Override
+    public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+        this.propertyItemRuleMap = propertyItemRuleMap;
     }
 
-    /**
-     * Adds a property map to this environment.
-     * @param itemRuleMap the property item rule map to add
-     */
-    public void addPropertyItemRuleMap(ItemRuleMap itemRuleMap) {
-        if (propertyItemRuleMapList == null) {
-            propertyItemRuleMapList = new ArrayList<>();
+    @Override
+    public void addPropertyItemRule(ItemRule propertyItemRule) {
+        if (propertyItemRuleMap == null) {
+            propertyItemRuleMap = new ItemRuleMap();
         }
-        propertyItemRuleMapList.add(itemRuleMap);
+        propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
     @Override

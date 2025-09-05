@@ -434,17 +434,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             ActivityContext context, @NonNull ActivityRuleAssistant assistant) {
         EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
         ActivityEnvironmentBuilder builder = new ActivityEnvironmentBuilder()
-                .setEnvironmentProfiles(environmentProfiles)
-                .putPropertyItemRules(propertyItemRuleMap);
+                .environmentProfiles(environmentProfiles)
+                .propertyItemRules(propertyItemRuleMap);
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             if (environmentProfiles.acceptsProfiles(environmentRule.getProfiles())) {
-                if (environmentRule.getPropertyItemRuleMapList() != null) {
-                    for (ItemRuleMap propertyIrm : environmentRule.getPropertyItemRuleMapList()) {
-                        if (environmentProfiles.acceptsProfiles(propertyIrm.getProfiles())) {
-                            builder.putPropertyItemRules(propertyIrm);
-                        }
-                    }
-                }
+                builder.propertyItemRules(environmentRule.getPropertyItemRuleMap());
             }
         }
         return builder.build(context);

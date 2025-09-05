@@ -260,8 +260,9 @@ public class ParametersToRules {
             List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
             if (propertyItemHolderParametersList != null) {
                 for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
-                    ItemRuleMap propertyItemRuleMap = toItemRuleMap(itemHolderParameters);
-                    environmentRule.addPropertyItemRuleMap(propertyItemRuleMap);
+                    ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, environmentRule.getPropertyItemRuleMap());
+                    environmentRule.setPropertyItemRuleMap(irm);
                 }
             }
 
@@ -1145,7 +1146,7 @@ public class ParametersToRules {
                             String entryName = parameters.getString(EntryParameters.name);
                             List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
                             if (beanParametersList != null && !beanParametersList.isEmpty()) {
-                                BeanRule beanRule = toInnerBeanRule(beanParametersList.get(0));
+                                BeanRule beanRule = toInnerBeanRule(beanParametersList.getFirst());
                                 itemRule.putBeanRule(entryName, beanRule);
                             } else {
                                 itemRule.putBeanRule(entryName, null);
@@ -1166,13 +1167,13 @@ public class ParametersToRules {
             if (itemRule.getValueType() == ItemValueType.BEAN) {
                 List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
                 if (beanParametersList != null && !beanParametersList.isEmpty()) {
-                    BeanRule beanRule = toInnerBeanRule(beanParametersList.get(0));
+                    BeanRule beanRule = toInnerBeanRule(beanParametersList.getFirst());
                     itemRule.setBeanRule(beanRule);
                 }
             } else {
                 List<String> stringList = itemParameters.getStringList(ItemParameters.value);
                 if (stringList != null && !stringList.isEmpty()) {
-                    itemRule.setValue(stringList.get(0));
+                    itemRule.setValue(stringList.getFirst());
                 }
             }
         }

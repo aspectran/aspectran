@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenParser;
+import com.aspectran.core.context.rule.ability.HasParameters;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.BooleanUtils;
@@ -33,7 +34,7 @@ import java.util.Map;
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectRule implements Replicable<RedirectRule> {
+public class RedirectRule implements Replicable<RedirectRule>, HasParameters {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
@@ -183,6 +184,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
      * Gets the map of parameters to include in the redirect URL.
      * @return the parameter item rule map
      */
+    @Override
     public ItemRuleMap getParameterItemRuleMap() {
         return parameterItemRuleMap;
     }
@@ -191,26 +193,16 @@ public class RedirectRule implements Replicable<RedirectRule> {
      * Sets the map of parameters to include in the redirect URL.
      * @param parameterItemRuleMap the new parameter item rule map
      */
+    @Override
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
         this.parameterItemRuleMap = parameterItemRuleMap;
-    }
-
-    /**
-     * Adds a new parameter rule with the specified name and returns it.
-     * @param parameterName the parameter name
-     * @return the parameter item rule
-     */
-    public ItemRule newParameterItemRule(String parameterName) {
-        ItemRule itemRule = new ItemRule();
-        itemRule.setName(parameterName);
-        addParameterItemRule(itemRule);
-        return itemRule;
     }
 
     /**
      * Adds a parameter item rule.
      * @param parameterItemRule the parameter item rule
      */
+    @Override
     public void addParameterItemRule(ItemRule parameterItemRule) {
         if (parameterItemRuleMap == null) {
             parameterItemRuleMap = new ItemRuleMap();

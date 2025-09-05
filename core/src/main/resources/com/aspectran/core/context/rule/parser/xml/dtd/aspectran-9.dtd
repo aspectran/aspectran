@@ -42,7 +42,7 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT environment (description*, properties+)>
+<!ELEMENT environment (description*, property*, properties*)>
 <!ATTLIST environment
   profile CDATA #IMPLIED
 >
@@ -122,7 +122,7 @@
 
 <!ELEMENT translet (
   description*,
-  (request? | (parameter*, attribute*, parameters*, attributes*)),
+  (request? | (parameter*, parameters*, attribute*, attributes*)),
   ((contents | content)? | (choose | headers | echo | action | include)*),
   (response* | (transform | dispatch | forward | redirect)?),
   exception?
@@ -173,7 +173,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT action (arguments*, properties*)>
+<!ELEMENT action (argument*, arguments*, property*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED
   bean    CDATA #REQUIRED
@@ -181,13 +181,13 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT invoke (arguments*, properties*)>
+<!ELEMENT invoke (argument*, arguments*, property*, properties*)>
 <!ATTLIST invoke
   method  CDATA #REQUIRED
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT include (parameter*, attribute*, parameters*, attributes*)>
+<!ELEMENT include (parameter*, parameters*, attribute*, attributes*)>
 <!ATTLIST include
   id       CDATA #IMPLIED
   translet CDATA #REQUIRED
@@ -219,7 +219,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT forward (attributes*)>
+<!ELEMENT forward (attribute*, attributes*)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED
@@ -227,7 +227,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect (parameters*)>
+<!ELEMENT redirect (parameter*, parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -275,6 +275,8 @@
   value     CDATA #IMPLIED
   valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
   tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
 >
 
 <!ELEMENT attribute (#PCDATA | value | entry | bean)*>
@@ -284,6 +286,8 @@
   value     CDATA #IMPLIED
   valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
   tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
 >
 
 <!ELEMENT argument (#PCDATA | value | entry | bean)*>

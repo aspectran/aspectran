@@ -273,10 +273,9 @@ public class RulesToParameters {
             toDescriptionParameters(environmentRule.getDescriptionRule(), environmentParameters, EnvironmentParameters.description);
         }
         environmentParameters.putValueIfNotNull(EnvironmentParameters.profile, environmentRule.getProfile());
-        if (environmentRule.getPropertyItemRuleMapList() != null) {
-            for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
-                toItemHolderParameters(propertyItemRuleMap, environmentParameters, EnvironmentParameters.properties);
-            }
+        ItemRuleMap propertyItemRuleMap = environmentRule.getPropertyItemRuleMap();
+        if (propertyItemRuleMap != null) {
+            toItemHolderParameters(propertyItemRuleMap, environmentParameters, EnvironmentParameters.properties);
         }
         return environmentParameters;
     }
@@ -757,7 +756,6 @@ public class RulesToParameters {
         return templateParameters;
     }
 
-    @NonNull
     private static void toActionParameters(@NonNull ActionList actionList, Parameters parameters) {
         for (Executable action : actionList) {
             toActionParameters(action, parameters);

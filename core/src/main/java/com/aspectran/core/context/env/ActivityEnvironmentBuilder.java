@@ -46,7 +46,7 @@ public class ActivityEnvironmentBuilder {
      * @param environmentProfiles the environment profiles
      * @return this builder
      */
-    public ActivityEnvironmentBuilder setEnvironmentProfiles(EnvironmentProfiles environmentProfiles) {
+    public ActivityEnvironmentBuilder environmentProfiles(EnvironmentProfiles environmentProfiles) {
         this.environmentProfiles = environmentProfiles;
         return this;
     }
@@ -56,8 +56,8 @@ public class ActivityEnvironmentBuilder {
      * @param propertyItemRuleMap a map of property item rules
      * @return this builder
      */
-    public ActivityEnvironmentBuilder putPropertyItemRules(ItemRuleMap propertyItemRuleMap) {
-        if (propertyItemRuleMap != null) {
+    public ActivityEnvironmentBuilder propertyItemRules(ItemRuleMap propertyItemRuleMap) {
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
             this.propertyItemRuleMap.putAll(propertyItemRuleMap);
         }
         return this;

@@ -105,8 +105,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())
-            .with(PropertyNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
@@ -123,8 +123,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())
-            .with(PropertyNodeletAdder.instance())
             .with(ArgumentsNodeletAdder.instance())
+            .with(PropertyNodeletAdder.instance())
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 InvokeActionRule invokeActionRule = AspectranNodeParsingContext.popObject();
@@ -144,8 +144,8 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 AspectranNodeParsingContext.pushObject(includeActionRule);
             })
             .with(ParameterNodeletAdder.instance())
-            .with(AttributeNodeletAdder.instance())
             .with(ParametersNodeletAdder.instance())
+            .with(AttributeNodeletAdder.instance())
             .with(AttributesNodeletAdder.instance())
             .endNodelet(text -> {
                 IncludeActionRule includeActionRule = AspectranNodeParsingContext.popObject();
