@@ -347,7 +347,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         if (responseRuleList == null || responseRuleList.isEmpty()) {
             saveTransletRule(transletRule);
         } else if (responseRuleList.size() == 1) {
-            transletRule.setResponseRule(responseRuleList.get(0));
+            transletRule.setResponseRule(responseRuleList.getFirst());
             saveTransletRule(transletRule);
         } else {
             // Grouped translets

@@ -22,10 +22,37 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
  */
 public enum DefaultSettingType {
 
+    /**
+     * Specifies a prefix that is automatically added to the names of all translets.
+     * This is useful for avoiding naming conflicts when importing translets from multiple sources.
+     */
     TRANSLET_NAME_PREFIX("transletNamePrefix"),
+
+    /**
+     * Specifies a suffix that is automatically added to the names of all translets.
+     * This can be used, for example, to distinguish translets based on their origin or type.
+     */
     TRANSLET_NAME_SUFFIX("transletNameSuffix"),
+
+    /**
+     * Determines whether to verify the syntax and validity of AOP pointcut patterns
+     * during application startup. Disabling this can speed up initialization but may
+     * lead to runtime errors if patterns are incorrect.
+     */
     POINTCUT_PATTERN_VERIFIABLE("pointcutPatternVerifiable"),
+
+    /**
+     * Defines the bean ID of the template engine to be used by default for
+     * {@code transform} actions when no specific engine is specified.
+     * This allows for a centralized template engine configuration.
+     */
     DEFAULT_TEMPLATE_ENGINE_BEAN("defaultTemplateEngineBean"),
+
+    /**
+     * Defines the bean ID of the scheduler to be used by default for all
+     * {@code schedule} rules when no specific scheduler is referenced.
+     * This provides a global default for job scheduling.
+     */
     DEFAULT_SCHEDULER_BEAN("defaultSchedulerBean");
 
     private final String alias;
