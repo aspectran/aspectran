@@ -19,7 +19,7 @@
 <!ELEMENT aspectran (
   description*,
   settings?,
-  (typeAliases | environment | aspect | bean | template | schedule | translet | append)*
+  (typeAliases | environment | aspect | bean | schedule | translet | template | append)*
 )>
 
 <!ELEMENT description (#PCDATA)>
