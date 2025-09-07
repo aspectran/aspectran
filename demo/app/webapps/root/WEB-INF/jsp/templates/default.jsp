@@ -114,7 +114,7 @@
             <div class="cell">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
-                        <li><a href="https://aspectran.com/en/">Aspectran</a></li>
+                        <li><a href="https://aspectran.com/">Aspectran</a></li>
                         <li><a href="/">Demo</a></li>
                     </ul>
                 </nav>
@@ -139,11 +139,11 @@
         <div class="grid-container">
             <div class="grid-x grid-padding-x">
                 <div class="medium-2 large-1 cell hide-for-small-only t5">
-                    <h5><a class="logo" href="https://aspectran.com/en/aspectran/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
+                    <h5><a class="logo" href="https://aspectran.com/aspectran/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
                 </div>
                 <div class="medium-4 large-4 cell">
-                    <a href="https://aspectran.com/en/aspectran/"><h5>About Aspectran</h5></a>
-                    <p><a href="https://aspectran.com/en/aspectran/">Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.</a></p>
+                    <a href="https://aspectran.com/aspectran/"><h5>About Aspectran</h5></a>
+                    <p><a href="https://aspectran.com/aspectran/">Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.</a></p>
                 </div>
                 <div class="small-6 medium-3 large-3 large-offset-1 cell">
                     <h5>Get Involved</h5>
@@ -154,8 +154,8 @@
                 <div class="small-6 medium-3 large-3 cell">
                     <h5>Support</h5>
                     <ul class="no-bullet">
-                        <li><a href="https://aspectran.com/en/support/faq/" title="Frequently Asked Questions about Aspectran">FAQ</a></li>
-                        <li><a href="https://aspectran.com/en/support/contact/" title="Contact Us">Contact Us</a></li>
+                        <li><a href="https://aspectran.com/support/faq/" title="Frequently Asked Questions about Aspectran">FAQ</a></li>
+                        <li><a href="https://aspectran.com/support/contact/" title="Contact Us">Contact Us</a></li>
                     </ul>
                 </div>
             </div>
