@@ -37,27 +37,21 @@ import java.util.Map;
  * </p>
  * <pre>{@code
  *   <bean class="com.aspectran.undertow.server.servlet.TowFilter">
- *     <arguments>
- *       <item>activityFilter</item>
- *       <item>com.aspectran.web.servlet.filter.WebActivityFilter</item>
- *     </arguments>
- *     <properties>
- *       <item name="initParams" type="map">
- *         <entry name="bypasses">
- *           /assets/**
- *           /favicon.ico
- *           /robots.txt
- *           /ads.txt
- *         </entry>
- *       </item>
- *       <item name="servletMappings" type="array">
- *         <bean class="com.aspectran.undertow.server.servlet.TowFilterMapping">
- *           <arguments>
- *             <item>webActivityServlet</item>
- *           </arguments>
- *         </bean>
- *       </item>
- *     </properties>
+ *     <argument>activityFilter</argument>
+ *     <argument>com.aspectran.web.servlet.filter.WebActivityFilter</argument>
+ *     <property name="initParams" type="map">
+ *       <entry name="bypasses">
+ *         /assets/**
+ *         /favicon.ico
+ *         /robots.txt
+ *         /ads.txt
+ *       </entry>
+ *     </property>
+ *     <property name="servletMappings" type="array">
+ *       <bean class="com.aspectran.undertow.server.servlet.TowFilterMapping">
+ *         <argument>webActivityServlet</item>
+ *       </bean>
+ *     </property>
  *   </bean>
  * }</pre>
  *
