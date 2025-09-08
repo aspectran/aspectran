@@ -94,7 +94,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
                 if (environmentProfiles == null ||
                     environmentProfiles.acceptsProfiles(appender.getProfiles())) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Append rules {}", appender);
+                        logger.debug("Appending rules {}", appender);
                     }
                     handle(appender);
                 }
