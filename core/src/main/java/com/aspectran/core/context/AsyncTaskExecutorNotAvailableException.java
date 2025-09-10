@@ -34,7 +34,7 @@ public class AsyncTaskExecutorNotAvailableException extends IllegalStateExceptio
      */
     public AsyncTaskExecutorNotAvailableException() {
         super("AsyncTaskExecutor is not available. " +
-                "Check if the async feature is enabled in your configuration.");
+                "Check if the async feature is enabled in your aspectran configuration.");
     }
 
 }
