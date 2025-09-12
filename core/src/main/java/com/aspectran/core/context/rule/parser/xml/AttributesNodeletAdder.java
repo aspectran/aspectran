@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.HasAttributes;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -51,9 +52,16 @@ class AttributesNodeletAdder implements NodeletAdder {
             .with(ItemNodeletAdder.instance())
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
-                HasAttributes hasAttributes = AspectranNodeParsingContext.peekObject();
-                irm = AspectranNodeParsingContext.assistant().profiling(irm, hasAttributes.getAttributeItemRuleMap());
-                hasAttributes.setAttributeItemRuleMap(irm);
+                Object object = AspectranNodeParsingContext.peekObject();
+                if (object instanceof TransletRule transletRule) {
+                    HasAttributes hasAttributes = transletRule.touchRequestRule(false);
+                    irm = AspectranNodeParsingContext.assistant().profiling(irm, hasAttributes.getAttributeItemRuleMap());
+                    hasAttributes.setAttributeItemRuleMap(irm);
+                } else {
+                    HasAttributes hasAttributes = (HasAttributes)object;
+                    irm = AspectranNodeParsingContext.assistant().profiling(irm, hasAttributes.getAttributeItemRuleMap());
+                    hasAttributes.setAttributeItemRuleMap(irm);
+                }
             });
     }
 

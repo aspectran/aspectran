@@ -21,6 +21,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.HasArguments;
 import com.aspectran.core.context.rule.ability.HasAttributes;
 import com.aspectran.core.context.rule.ability.HasParameters;
@@ -30,7 +32,6 @@ import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.nodelet.EndNodelet;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
@@ -91,6 +92,13 @@ class ItemNodeletAdder implements NodeletAdder {
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof ItemRuleMap irm) {
                     irm.putItemRule(itemRule);
+                }  else if (object instanceof TransletRule transletRule) {
+                    RequestRule requestRule = transletRule.touchRequestRule(false);
+                    if (getName().equals(ParameterNodeletAdder.instance().getName())) {
+                        requestRule.addParameterItemRule(itemRule);
+                    } else if (getName().equals(AttributeNodeletAdder.instance().getName())) {
+                        requestRule.addAttributeItemRule(itemRule);
+                    }
                 } else if (getName().equals(ParameterNodeletAdder.instance().getName())) {
                     ((HasParameters)object).addParameterItemRule(itemRule);
                 } else if (getName().equals(AttributeNodeletAdder.instance().getName())) {
