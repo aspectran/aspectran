@@ -70,7 +70,8 @@ public class SessionScheduler implements Scheduler {
             throw new IllegalStateException(name + " is already running");
         }
 
-        CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(name);
+        String threadNamePrefix = name + "-";
+        CustomizableThreadFactory threadFactory = new CustomizableThreadFactory(threadNamePrefix);
         threadFactory.setContextClassLoader(classloader);
 
         executor = new ScheduledThreadPoolExecutor(1, threadFactory);

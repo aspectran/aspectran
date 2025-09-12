@@ -77,7 +77,7 @@
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description*, filter?, argument*, property*, arguments*, properties*)>
+<!ELEMENT bean (description*, filter?, argument*, arguments*, property*, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
