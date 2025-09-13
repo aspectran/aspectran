@@ -212,7 +212,7 @@
       });
       if (ul.find('li').length >= ${page.maxFiles}) {
         ul.find('li:eq(0)').fadeOut(400);
-        setTimeout(function() {
+        setTimeout(function () {
           ul.find('li:eq(0)').remove();
           data.context.appendTo(ul);
         }, 400);

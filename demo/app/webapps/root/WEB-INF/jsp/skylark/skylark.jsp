@@ -21,7 +21,7 @@
 <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
 <link href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css" rel="stylesheet"/>
 <script>
-    $(function() {
+    $(function () {
         $('#skylark-term').terminal(function(command, term) {
             if (command !== '') {
                 term.pause();

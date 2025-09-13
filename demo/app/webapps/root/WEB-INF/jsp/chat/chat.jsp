@@ -155,7 +155,7 @@
     var socket;
     var currentUser;
 
-    $(function() {
+    $(function () {
         $("form#chat-controls").submit(function() {
             sendMessage();
             return false;

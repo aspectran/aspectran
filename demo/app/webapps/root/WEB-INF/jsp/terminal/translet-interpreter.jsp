@@ -23,7 +23,7 @@
 <link href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css" rel="stylesheet"/>
 <script>
     const backend = "<aspectran:url value="/"/>";
-    $(function() {
+    $(function () {
         $('#term-demo').terminal(function(command, term) {
             if (command !== '') {
                 term.pause();
