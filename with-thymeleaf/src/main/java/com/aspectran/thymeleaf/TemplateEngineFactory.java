@@ -18,6 +18,7 @@ package com.aspectran.thymeleaf;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.Set;
@@ -37,6 +38,8 @@ public class TemplateEngineFactory implements ActivityContextAware {
 
     private Set<ITemplateResolver> templateResolvers;
 
+    private Set<IDialect> dialects;
+
     @Override
     public void setActivityContext(@NonNull ActivityContext context) {
         this.context = context;
@@ -50,6 +53,10 @@ public class TemplateEngineFactory implements ActivityContextAware {
         this.templateResolvers = templateResolvers;
     }
 
+    public void setDialects(Set<IDialect> dialects) {
+        this.dialects = dialects;
+    }
+
     /**
      * Creates a new {@link AspectranTemplateEngine} instance, configured with
      * the specified template resolvers and Aspectran's message source.
@@ -60,6 +67,11 @@ public class TemplateEngineFactory implements ActivityContextAware {
         templateEngine.setMessageSource(context.getMessageSource());
         if (templateResolvers != null) {
             templateEngine.setTemplateResolvers(templateResolvers);
+        }
+        if (dialects != null) {
+            for (IDialect dialect : dialects) {
+                templateEngine.addDialect(dialect);
+            }
         }
         return templateEngine;
     }
