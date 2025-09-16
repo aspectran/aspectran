@@ -129,7 +129,7 @@
 </section>
 <div class="grid-container ${page.style}">
     <div id="up-to-top" class="grid-x">
-        <div class="small-12 cell" style="text-align: right;">
+        <div class="small-12 cell text-right">
             <a class="iconfont" href="#top-of-page">&#xf108;</a>
         </div>
     </div>
