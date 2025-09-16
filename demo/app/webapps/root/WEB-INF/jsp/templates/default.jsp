@@ -79,7 +79,7 @@
                         <div class="input-group">
                             <input class="input-group-field" type="text" name="keyword" placeholder="Search">
                             <div class="input-group-button">
-                                <button type="submit" class="button"><i class="fi-magnifying-glass"></i></button>
+                                <button type="submit" class="button hollow"><i class="fi-magnifying-glass"></i></button>
                             </div>
                         </div>
                     </form>
