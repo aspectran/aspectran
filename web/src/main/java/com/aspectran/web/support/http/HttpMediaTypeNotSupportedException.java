@@ -21,8 +21,6 @@ import java.io.Serial;
 import java.util.List;
 
 /**
- * <p>This class is a clone of org.springframework.web.HttpMediaTypeNotSupportedException</p>
- *
  * Exception thrown when a client POSTs, PUTs, or PATCHes content of a type
  * not supported by request handler.
  *

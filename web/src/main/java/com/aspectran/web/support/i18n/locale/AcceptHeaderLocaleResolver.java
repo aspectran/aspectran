@@ -30,18 +30,16 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * <p>This class is a clone of org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver</p>
- * <p>
- * {@link LocaleResolver} implementation that looks for a match between locales
+ * A {@link LocaleResolver} implementation that looks for a match between locales
  * in the {@code Accept-Language} header and a list of configured supported
  * locales.
  *
  * <p>See {@link #setSupportedLocales(List)} for further details on how
- * supported and requested locales are matched.
+ * supported and requested locales are matched.</p>
  *
  * <p>Note: This implementation does not support {@link #setLocale} since the
  * {@code Accept-Language} header can only be changed by changing the client's
- * locale settings.
+ * locale settings.</p>
  */
 public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 
