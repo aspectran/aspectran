@@ -143,7 +143,7 @@
                 </div>
                 <div class="medium-4 large-4 cell">
                     <a href="https://aspectran.com/aspectran/"><h5>About Aspectran</h5></a>
-                    <p><a href="https://aspectran.com/aspectran/">Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM. </a></p>
+                    <p><a href="https://aspectran.com/aspectran/">Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM.</a></p>
                 </div>
                 <div class="small-6 medium-3 large-3 large-offset-1 cell">
                     <h5>Get Involved</h5>
