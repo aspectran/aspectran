@@ -38,8 +38,8 @@ import java.util.Properties;
 import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
- * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory}
- * using default MyBatis Configuration.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates a
+ * MyBatis {@link SqlSessionFactory}.
  */
 public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableFactoryBean<SqlSessionFactory> {
 

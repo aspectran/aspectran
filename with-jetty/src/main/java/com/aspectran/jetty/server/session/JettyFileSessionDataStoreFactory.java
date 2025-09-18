@@ -25,6 +25,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
+ * A {@link FileSessionDataStoreFactory} that is aware of the Aspectran
+ * {@link ApplicationAdapter}.
+ *
  * <p>Created: 2025-01-22</p>
  */
 public class JettyFileSessionDataStoreFactory extends FileSessionDataStoreFactory implements ApplicationAdapterAware {

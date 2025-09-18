@@ -18,7 +18,8 @@ package com.aspectran.jetty.server.servlet;
 import jakarta.websocket.server.ServerContainer;
 
 /**
- * The Class JettyWebSocketServerContainerInitializer.
+ * A {@link jakarta.servlet.ServletContainerInitializer} for initializing
+ * a Jetty {@link ServerContainer}.
  *
  * <p>Created: 2021/02/26</p>
  *

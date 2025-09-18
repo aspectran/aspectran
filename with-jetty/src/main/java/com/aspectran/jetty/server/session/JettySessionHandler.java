@@ -23,7 +23,7 @@ import org.eclipse.jetty.session.SessionDataStore;
 import org.eclipse.jetty.session.SessionDataStoreFactory;
 
 /**
- * Extended Jetty's SessionHandler.
+ * An extended version of Jetty's {@link SessionHandler}.
  */
 public class JettySessionHandler extends SessionHandler {
 

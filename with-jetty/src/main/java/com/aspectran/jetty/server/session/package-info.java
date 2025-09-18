@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides integration with MyBatis.
+ * Provides session support for the Jetty server.
  */
-package com.aspectran.mybatis;
+package com.aspectran.jetty.server.session;

@@ -25,7 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Advisory helper around a MyBatis {@link SqlSession} lifecycle and commit/rollback boundaries.
+ * Manages the lifecycle of a MyBatis {@link SqlSession}, including creation,
+ * commit, rollback, and closing. It also handles transactional boundaries.
+ *
+ * <p>This class is intended to be used as an advice bean within Aspectran's
+ * AOP framework to provide declarative transaction management for MyBatis
+ * operations.</p>
+ *
  * <p>
  * Typical usage pattern:
  * </p>
