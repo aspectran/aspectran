@@ -36,6 +36,8 @@ import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * Abstract base class for WebSocket endpoints.
+ *
  * <p>Created: 2025-03-24</p>
  */
 public abstract class AbstractEndpoint extends InstantActivitySupport {

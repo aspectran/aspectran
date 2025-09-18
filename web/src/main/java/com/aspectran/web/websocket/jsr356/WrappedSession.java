@@ -19,6 +19,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.websocket.Session;
 
 /**
+ * A wrapper class for {@link Session}.
+ *
  * <p>Created: 2025-03-25</p>
  */
 public class WrappedSession {

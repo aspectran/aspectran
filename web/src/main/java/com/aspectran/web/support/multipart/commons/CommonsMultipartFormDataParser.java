@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Multipart form data parser that use Apache Commons FileUpload 1.4 or above.
+ * Multipart form data parser that use Apache Commons FileUpload 1.5 or above.
  */
 public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 

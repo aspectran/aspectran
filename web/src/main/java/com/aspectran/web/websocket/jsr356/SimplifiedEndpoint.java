@@ -24,6 +24,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Predicate;
 
 /**
+ * A simplified WebSocket endpoint that manages a collection of authorized sessions
+ * and provides methods for broadcasting messages to them.
+ *
  * <p>Created: 2025-03-24</p>
  */
 public abstract class SimplifiedEndpoint extends AbstractEndpoint {
