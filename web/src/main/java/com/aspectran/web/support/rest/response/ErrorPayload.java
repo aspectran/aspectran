@@ -18,6 +18,9 @@ package com.aspectran.web.support.rest.response;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 
+/**
+ * Represents an error payload in a RESTful response.
+ */
 public class ErrorPayload {
 
     private String code;

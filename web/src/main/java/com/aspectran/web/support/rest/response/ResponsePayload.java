@@ -17,6 +17,9 @@ package com.aspectran.web.support.rest.response;
 
 import com.aspectran.utils.ToStringBuilder;
 
+/**
+ * Represents the payload of a RESTful response.
+ */
 public class ResponsePayload {
 
     private final boolean success;

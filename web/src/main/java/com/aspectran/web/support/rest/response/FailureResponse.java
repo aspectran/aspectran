@@ -17,6 +17,9 @@ package com.aspectran.web.support.rest.response;
 
 import com.aspectran.web.activity.response.DefaultRestResponse;
 
+/**
+ * Represents a failure RESTful response.
+ */
 public class FailureResponse extends DefaultRestResponse {
 
     public FailureResponse() {

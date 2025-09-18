@@ -20,6 +20,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.io.Serial;
 
 /**
+ * Exception thrown when an unsupported HTTP method is encountered.
+ *
  * <p>Created: 2025-07-17</p>
  */
 public class UnsupportedHttpMethodException extends Exception {

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Client to perform HTTP requests underlying Apache HttpComponents.
+ * A client for performing HTTP requests, based on Apache HttpComponents.
  *
  * @since 8.6.0
  */
