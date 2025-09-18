@@ -61,7 +61,11 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
      * @param key the key
      * @param value the value to be added
      */
-    void addIfAbsent(K key, @Nullable V value);
+    default void addIfAbsent(K key, @Nullable V value) {
+        if (!containsKey(key)) {
+            add(key, value);
+        }
+    }
 
     /**
      * Set the given single value under the given key.
