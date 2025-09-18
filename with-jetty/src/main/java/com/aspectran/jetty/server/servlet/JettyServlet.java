@@ -22,6 +22,8 @@ import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import java.util.Map;
 
 /**
+ * A {@link ServletHolder} that holds a {@link Servlet} and its mappings.
+ *
  * <p>Created: 4/21/24</p>
  */
 public class JettyServlet extends ServletHolder {

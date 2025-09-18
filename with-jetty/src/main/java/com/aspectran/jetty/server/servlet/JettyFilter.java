@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * A {@link FilterHolder} that holds a {@link Filter} and its mappings.
+ *
  * ex)
  * <pre>{@code
  *   <bean class="com.aspectran.jetty.server.servlet.TowFilter">

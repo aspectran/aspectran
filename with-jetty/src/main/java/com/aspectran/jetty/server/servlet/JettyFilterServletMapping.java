@@ -24,6 +24,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 /**
+ * A {@link FilterMapping} that maps a filter to a servlet.
+ *
  * <p>Created: 4/23/24</p>
  */
 public class JettyFilterServletMapping extends FilterMapping {

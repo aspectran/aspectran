@@ -24,6 +24,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 /**
+ * A {@link FilterMapping} that maps a filter to a URL pattern.
+ *
  * <p>Created: 4/23/24</p>
  */
 public class JettyFilterUrlMapping extends FilterMapping {

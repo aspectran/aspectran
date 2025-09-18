@@ -18,6 +18,8 @@ package com.aspectran.jetty.server.servlet;
 import jakarta.servlet.DispatcherType;
 
 /**
+ * Represents a filter mapping for a Jetty web application.
+ *
  * <p>Created: 4/23/24</p>
  */
 public class JettyFilterMapping {

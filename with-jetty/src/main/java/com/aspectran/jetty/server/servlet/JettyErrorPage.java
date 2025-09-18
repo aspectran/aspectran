@@ -18,6 +18,8 @@ package com.aspectran.jetty.server.servlet;
 import com.aspectran.utils.ClassUtils;
 
 /**
+ * Represents an error page mapping for a Jetty web application.
+ *
  * <p>Created: 2024-04-25</p>
  */
 public class JettyErrorPage {

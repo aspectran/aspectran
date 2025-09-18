@@ -21,6 +21,8 @@ import org.eclipse.jetty.ee10.servlet.ListenerHolder;
 import java.util.EventListener;
 
 /**
+ * A {@link ListenerHolder} that holds a {@link EventListener}.
+ *
  * <p>Created: 2021-02-12</p>
  */
 public class JettyListener extends ListenerHolder {

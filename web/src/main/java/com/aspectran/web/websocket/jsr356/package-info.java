@@ -13,29 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty.server.servlet;
-
-import org.apache.jasper.servlet.JspServlet;
-
 /**
- * A default servlet for handling JSP requests.
- *
- * <p>Created: 2025-01-23</p>
+ * Support classes for JSR-356 (Java API for WebSocket).
  */
-public class DefaultJspServlet extends JettyServlet {
-
-    public DefaultJspServlet() {
-        super("Default JSP Servlet", JspServlet.class);
-        setMappings(new String[] {
-            "*.jsp",
-            "*.jspf",
-            "*.jspx",
-            "*.xsp",
-            "*.JSP",
-            "*.JSPF",
-            "*.JSPX",
-            "*.XSP"
-        });
-    }
-
-}
+package com.aspectran.web.websocket.jsr356;
