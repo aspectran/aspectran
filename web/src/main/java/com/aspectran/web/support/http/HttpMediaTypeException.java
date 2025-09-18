@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>This class is a clone of org.springframework.web.HttpMediaTypeException</p>
- *
  * Abstract base for exceptions related to media types.
  * Adds a list of supported {@link MediaType MediaTypes}.
  *
@@ -52,7 +50,6 @@ public abstract class HttpMediaTypeException extends Exception {
         super(message);
         this.supportedMediaTypes = Collections.unmodifiableList(supportedMediaTypes);
     }
-
 
     /**
      * Return the list of supported media types.

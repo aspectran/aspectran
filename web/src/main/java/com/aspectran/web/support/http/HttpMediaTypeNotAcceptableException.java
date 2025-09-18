@@ -19,9 +19,8 @@ import java.io.Serial;
 import java.util.List;
 
 /**
- * <p>This class is a clone of org.springframework.web.HttpMediaTypeNotAcceptableException</p>
- *
- * Exception thrown when the request handler cannot generate a response that is acceptable by the client.
+ * Exception thrown when the request handler cannot generate a response that is
+ * acceptable by the client.
  *
  * @author Arjen Poutsma
  */

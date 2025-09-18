@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>This class is a clone of org.springframework.util.MimeTypeUtils</p>
- *
  * Miscellaneous {@link MediaType} utility methods.
  *
  * @author Arjen Poutsma
@@ -144,18 +142,14 @@ public abstract class MediaTypeUtils {
         int i = 0;
         while (i < mediaTypes.length()) {
             switch (mediaTypes.charAt(i)) {
-                case '"':
-                    inQuotes = !inQuotes;
-                    break;
-                case ',':
+                case '"' -> inQuotes = !inQuotes;
+                case ',' -> {
                     if (!inQuotes) {
                         tokens.add(mediaTypes.substring(startIndex, i).trim());
                         startIndex = i + 1;
                     }
-                    break;
-                case '\\':
-                    i++;
-                    break;
+                }
+                case '\\' -> i++;
             }
             i++;
         }
@@ -173,8 +167,8 @@ public abstract class MediaTypeUtils {
     public static String toString(@NonNull Collection<MediaType> mediaTypes) {
         StringBuilder builder = new StringBuilder();
         for (Iterator<? extends MediaType> iterator = mediaTypes.iterator(); iterator.hasNext(); ) {
-            MediaType MediaType = iterator.next();
-            MediaType.appendTo(builder);
+            MediaType mediaType = iterator.next();
+            mediaType.appendTo(builder);
             if (iterator.hasNext()) {
                 builder.append(", ");
             }
