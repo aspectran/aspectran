@@ -28,7 +28,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The Class TemplateRuleRegistry.
+ * The TemplateRuleRegistry class is responsible for managing and providing access to {@link TemplateRule} instances.
+ * It stores template rules in a map, using the template ID as the key, and provides methods for adding,
+ * retrieving, and checking for the existence of template rules.
  *
  * <p>Created: 2016. 1. 11.</p>
  */
@@ -40,25 +42,51 @@ public class TemplateRuleRegistry extends AbstractComponent {
 
     private AssistantLocal assistantLocal;
 
+    /**
+     * Instantiates a new TemplateRuleRegistry.
+     */
     public TemplateRuleRegistry() {
     }
 
+    /**
+     * Sets the assistant local.
+     * @param assistantLocal the assistant local
+     */
     public void setAssistantLocal(AssistantLocal assistantLocal) {
         this.assistantLocal = assistantLocal;
     }
 
+    /**
+     * Returns all the template rules.
+     * @return a collection of all registered template rules
+     */
     public Collection<TemplateRule> getTemplateRules() {
         return templateRuleMap.values();
     }
 
+    /**
+     * Returns the template rule for the given template ID.
+     * @param templateId the ID of the template
+     * @return the template rule, or {@code null} if no such rule exists
+     */
     public TemplateRule getTemplateRule(String templateId) {
         return templateRuleMap.get(templateId);
     }
 
+    /**
+     * Checks if a template rule with the given ID exists.
+     * @param templateId the ID of the template
+     * @return {@code true} if the template rule exists, {@code false} otherwise
+     */
     public boolean contains(String templateId) {
         return templateRuleMap.containsKey(templateId);
     }
 
+    /**
+     * Adds a new template rule to the registry.
+     * @param templateRule the template rule to add
+     * @throws IllegalRuleException if the rule is invalid
+     */
     public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
         if (templateRule == null) {
             throw new IllegalArgumentException("templateRule must not be null");
@@ -81,6 +109,9 @@ public class TemplateRuleRegistry extends AbstractComponent {
         }
     }
 
+    /**
+     * Clears all the registered template rules.
+     */
     private void clear() {
         templateRuleMap.clear();
     }

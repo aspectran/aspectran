@@ -20,27 +20,31 @@ import com.aspectran.core.activity.Activity;
 import java.io.Writer;
 
 /**
- * The Interface TemplateEngine.
+ * A generic interface for template engines.
+ * This interface defines the contract for processing templates, either by name or from a string source,
+ * and writing the output to the response of the current activity.
  *
  * <p>Created: 2016. 1. 9.</p>
  */
 public interface TemplateEngine {
 
     /**
-     * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     * @param templateName the template name
-     * @param activity the activity
-     * @throws TemplateEngineProcessException if an exception occurs during template processing
+     * Processes a template by its name, using the data model from the activity,
+     * and writes the generated output to the activity's response.
+     * @param templateName the name of the template to process
+     * @param activity the current activity which contains the data model and response writer
+     * @throws TemplateEngineProcessException if an error occurs during template processing
      */
     void process(String templateName, Activity activity)
             throws TemplateEngineProcessException;
 
     /**
-     * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     * @param templateSource the template source
-     * @param contentType the content type
-     * @param activity the activity
-     * @throws TemplateEngineProcessException if an exception occurs during template processing
+     * Processes a template from a string source, using the data model from the activity,
+     * and writes the generated output to the activity's response.
+     * @param templateSource the template content as a string
+     * @param contentType the content type of the template
+     * @param activity the current activity which contains the data model and response writer
+     * @throws TemplateEngineProcessException if an error occurs during template processing
      */
     void process(String templateSource, String contentType, Activity activity)
             throws TemplateEngineProcessException;

@@ -18,6 +18,7 @@ package com.aspectran.core.component.template;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.InstantActivityException;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
@@ -26,9 +27,13 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.utils.Assert;
 
 import java.io.Writer;
+import java.util.Map;
 
 /**
- * The Class DefaultTemplateRenderer.
+ * The default implementation of the {@link TemplateRenderer} interface.
+ * It is responsible for rendering templates by retrieving template rules
+ * from a {@link TemplateRuleRegistry} and using a {@link TemplateEngine}
+ * to process them.
  *
  * <p>Created: 2016. 1. 14.</p>
  */
@@ -39,7 +44,7 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
     private final TemplateRuleRegistry templateRuleRegistry;
 
     /**
-     * Instantiates a new context template renderer.
+     * Instantiates a new DefaultTemplateRenderer.
      * @param context the activity context
      * @param templateRuleRegistry the template rule registry
      */
@@ -52,8 +57,29 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
 
     @Override
     public String render(String templateId) {
+        return render(templateId, null, null);
+    }
+
+    @Override
+    public String render(String templateId, ParameterMap parameterMap) {
+        return render(templateId, parameterMap, null);
+    }
+
+    @Override
+    public String render(String templateId, Map<String, Object> attributeMap) {
+        return render(templateId, null, attributeMap);
+    }
+
+    @Override
+    public String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         try {
             InstantActivity activity = new InstantActivity(context);
+            if (parameterMap != null) {
+                activity.setParameterMap(parameterMap);
+            }
+            if (attributeMap != null) {
+                activity.setAttributeMap(attributeMap);
+            }
             return activity.perform(() -> {
                 render(templateId, activity);
                 return activity.getResponseAdapter().getWriter().toString();

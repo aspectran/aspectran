@@ -20,7 +20,8 @@ import com.aspectran.core.context.rule.TemplateRule;
 import java.io.Serial;
 
 /**
- * Thrown when an error occurs during template rendering.
+ * Exception thrown when an error occurs during template rendering.
+ * This exception is thrown if an error occurs while processing a template.
  *
  * <p>Created: 2016. 01. 15.</p>
  */
@@ -34,7 +35,7 @@ public class TemplateRenderingException extends TemplateException {
     /**
      * Instantiates a new TemplateRenderingException.
      * @param msg the detail message
-     * @param templateRule the template rule
+     * @param templateRule the template rule that was being rendered
      */
     public TemplateRenderingException(String msg, TemplateRule templateRule) {
         super(msg + " " + templateRule);
@@ -44,7 +45,7 @@ public class TemplateRenderingException extends TemplateException {
     /**
      * Instantiates a new TemplateRenderingException.
      * @param msg the detail message
-     * @param templateRule the template rule
+     * @param templateRule the template rule that was being rendered
      * @param cause the root cause
      */
     public TemplateRenderingException(String msg, TemplateRule templateRule, Throwable cause) {
@@ -52,6 +53,10 @@ public class TemplateRenderingException extends TemplateException {
         this.templateRule = templateRule;
     }
 
+    /**
+     * Returns the template rule that was being rendered when the error occurred.
+     * @return the template rule
+     */
     public TemplateRule getTemplateRule() {
         return templateRule;
     }

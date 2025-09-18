@@ -18,7 +18,8 @@ package com.aspectran.core.component.template;
 import java.io.Serial;
 
 /**
- * The Class TemplateNotFoundException.
+ * Exception thrown when a template is not found.
+ * This exception is thrown if a template with the specified ID cannot be located.
  */
 public class TemplateNotFoundException extends TemplateException {
 
@@ -29,7 +30,7 @@ public class TemplateNotFoundException extends TemplateException {
 
     /**
      * Instantiates a new TemplateNotFoundException.
-     * @param templateId the template id
+     * @param templateId the ID of the template that could not be found
      */
     public TemplateNotFoundException(String templateId) {
         super("No template named '" + templateId + "' is defined");
@@ -37,8 +38,8 @@ public class TemplateNotFoundException extends TemplateException {
     }
 
     /**
-     * Gets the template id.
-     * @return the template id
+     * Returns the ID of the template that could not be found.
+     * @return the template ID
      */
     public String getTemplateId() {
         return templateId;

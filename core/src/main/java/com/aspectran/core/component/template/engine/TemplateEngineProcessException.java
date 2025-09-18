@@ -18,7 +18,8 @@ package com.aspectran.core.component.template.engine;
 import java.io.Serial;
 
 /**
- * The Class TemplateEngineProcessException.
+ * Exception thrown when a template engine fails to process a template.
+ * This exception is a wrapper for exceptions thrown by the underlying template engine.
  *
  * <p>Created: 2016. 01. 23.</p>
  */

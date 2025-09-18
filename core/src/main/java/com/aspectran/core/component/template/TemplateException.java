@@ -18,7 +18,8 @@ package com.aspectran.core.component.template;
 import java.io.Serial;
 
 /**
- * This class is the basic exception that gets thrown from the template package.
+ * The base exception that gets thrown from the template package.
+ * This exception is thrown when a general error occurs during template processing.
  *
  * <p>Created: 2016. 01. 15.</p>
  */
@@ -28,35 +29,32 @@ public class TemplateException extends RuntimeException {
     private static final long serialVersionUID = -6904998412140480762L;
 
     /**
-     * Creates a new TemplateException without detail message.
+     * Instantiates a new TemplateException.
      */
     public TemplateException() {
         super();
     }
 
     /**
-     * Constructs a TemplateException with the specified detail message.
-     * @param msg a message to associate with the exception
+     * Instantiates a new TemplateException with the specified detail message.
+     * @param msg the detail message
      */
     public TemplateException(String msg) {
         super(msg);
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Instantiates a new TemplateException with the specified cause.
+     * @param cause the root cause
      */
     public TemplateException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a TemplateException with the specified error message and
-     * also the specified root cause exception.
-     * The root cause exception is generally for TypeConversionException's root cause
-     * or something that might have caused a TemplateException.
+     * Instantiates a new TemplateException with the specified detail message and cause.
      * @param msg the detail message
-     * @param cause the real cause of the exception
+     * @param cause the root cause
      */
     public TemplateException(String msg, Throwable cause) {
         super(msg, cause);
