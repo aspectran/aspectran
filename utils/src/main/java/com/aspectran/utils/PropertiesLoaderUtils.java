@@ -19,6 +19,7 @@ import org.jasypt.properties.PropertyValueEncryptionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -28,8 +29,11 @@ import java.util.Properties;
 import static com.aspectran.utils.PBEncryptionUtils.getDefaultEncryptor;
 
 /**
- * Convenient utility methods for loading of java.util.Properties,
+ * Convenient utility methods for loading {@code java.util.Properties},
  * performing standard handling of input streams.
+ * <p>The main feature of this class is its ability to merge properties from
+ * multiple files of the same name in the classpath.
+ * It also supports loading properties from XML files and decrypting encrypted values.</p>
  */
 public abstract class PropertiesLoaderUtils {
 
@@ -118,7 +122,96 @@ public abstract class PropertiesLoaderUtils {
         }
     }
 
+    /**
+     * Load properties from the given InputStream (in ISO-8859-1 encoding).
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @param inputStream the input stream to load from
+     * @throws IOException if loading failed
+     */
     public static void loadIntoProperties(Properties props, String resourceName, InputStream inputStream)
+            throws IOException {
+        doLoad(props, resourceName, inputStream, null);
+    }
+
+    /**
+     * Load all properties from the specified class path resource (in UTF-8 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     * @param resourceName the name of the class path resource
+     * @return the Properties instance
+     * @throws IOException if loading failed
+     */
+    public static Properties loadPropertiesAsUtf8(String resourceName) throws IOException {
+        return loadPropertiesAsUtf8(resourceName, ClassUtils.getDefaultClassLoader());
+    }
+
+    /**
+     * Load all properties from the specified class path resource (in UTF-8 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     * @param resourceName the name of the class path resource
+     * @param classLoader the class loader
+     * @return the Properties instance
+     * @throws IOException if loading failed
+     */
+    public static Properties loadPropertiesAsUtf8(String resourceName, ClassLoader classLoader) throws IOException {
+        Properties props = new Properties();
+        loadIntoPropertiesAsUtf8(props, resourceName, classLoader);
+        return props;
+    }
+
+    /**
+     * Load into the given properties from the specified class path resource (in UTF-8 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @throws IOException if loading failed
+     */
+    public static void loadIntoPropertiesAsUtf8(Properties props, String resourceName) throws IOException {
+        loadIntoPropertiesAsUtf8(props, resourceName, ClassUtils.getDefaultClassLoader());
+    }
+
+    /**
+     * Load into given properties from the specified class path resource (in UTF-8 encoding).
+     * <p>Merges properties if more than one resource of the same name
+     * found in the class path.</p>
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @param classLoader the class loader
+     * @throws IOException if loading failed
+     */
+    public static void loadIntoPropertiesAsUtf8(Properties props, String resourceName, ClassLoader classLoader)
+            throws IOException {
+        Assert.notNull(props, "props must not be null");
+        Assert.notNull(resourceName, "resourceName must not be null");
+        Assert.notNull(classLoader, "classLoader must not be null");
+        Enumeration<URL> urls = classLoader.getResources(resourceName);
+        boolean found = false;
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            URLConnection con = url.openConnection();
+            try (InputStream is = con.getInputStream()) {
+                doLoad(props, resourceName, is, "UTF-8");
+            }
+            found = true;
+        }
+        if (!found) {
+            throw new IOException("Could not find resource '" + resourceName + "'");
+        }
+    }
+
+    /**
+     * Load properties from the given InputStream, using the specified encoding.
+     * If the encoding is null, it defaults to ISO-8859-1.
+     * @param props the Properties instance to load into
+     * @param resourceName the name of the class path resource
+     * @param inputStream the input stream to load from
+     * @param encoding the encoding to use
+     * @throws IOException if loading failed
+     */
+    private static void doLoad(Properties props, String resourceName, InputStream inputStream, String encoding)
             throws IOException {
         Assert.notNull(props, "props must not be null");
         Assert.notNull(resourceName, "resourceName must not be null");
@@ -126,7 +219,11 @@ public abstract class PropertiesLoaderUtils {
         if (resourceName.endsWith(XML_FILE_EXTENSION)) {
             props.loadFromXML(inputStream);
         } else {
-            props.load(inputStream);
+            if (encoding != null) {
+                props.load(new InputStreamReader(inputStream, encoding));
+            } else {
+                props.load(inputStream);
+            }
         }
         if (resourceName.endsWith(ENCRYPTED_RESOURCE_NAME_SUFFIX)) {
             for (Map.Entry<?, ?> entry: props.entrySet()) {
