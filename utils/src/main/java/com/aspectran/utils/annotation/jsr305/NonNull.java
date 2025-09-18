@@ -24,8 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>This class is a clone of org.springframework.lang.NonNull</p>
- *
  * A common Aspectran annotation to declare that annotated elements cannot be {@code null}.
  *
  * <p>Leverages JSR-305 meta-annotations to indicate nullability in Java to common
@@ -38,9 +36,6 @@ import java.lang.annotation.Target;
  * (scope = fields) to set the default behavior to non-nullable in order to avoid annotating
  * your whole codebase with {@code @NonNull}.
  *
- * @author Sebastien Deleuze
- * @author Juergen Hoeller
- * @since 6.2.0
  * @see NonNullApi
  * @see NonNullFields
  * @see Nullable

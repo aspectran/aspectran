@@ -24,8 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>This class is a clone of org.springframework.lang.NonNullApi</p>
- *
  * A common Aspectran annotation to declare that parameters and return values
  * are to be considered as non-nullable by default for a given package.
  *
@@ -35,9 +33,6 @@ import java.lang.annotation.Target;
  * <p>Should be used at package level in association with {@link Nullable}
  * annotations at parameter and return value level.
  *
- * @author Sebastien Deleuze
- * @author Juergen Hoeller
- * @since 6.2.0
  * @see NonNullFields
  * @see Nullable
  * @see NonNull

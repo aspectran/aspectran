@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>This class is a clone of org.springframework.lang.package-info</p>
- *
  * Common annotations with language-level semantics: nullability as well as JDK API indications.
- *
- * <p>Used descriptively within the framework codebase. Can be validated by build-time tools
- * (e.g. FindBugs or Animal Sniffer), alternative JVM languages (e.g. Kotlin), as well as IDEs
- * (e.g. IntelliJ IDEA or Eclipse with corresponding project setup).</p>
  */
 package com.aspectran.utils.annotation.jsr305;

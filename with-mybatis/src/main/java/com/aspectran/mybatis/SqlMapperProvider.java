@@ -24,26 +24,50 @@ import org.apache.ibatis.session.SqlSession;
  */
 public interface SqlMapperProvider {
 
-    /** Returns a SqlSession configured with SIMPLE executor behavior. */
+    /**
+     * Returns a {@link SqlSession} with SIMPLE executor behavior.
+     * @return a {@code SqlSession}
+     */
     SqlSession getSimpleSqlSession();
 
-    /** Returns a SqlSession configured with BATCH executor behavior. */
+    /**
+     * Returns a {@link SqlSession} with BATCH executor behavior.
+     * @return a {@code SqlSession}
+     */
     SqlSession getBatchSqlSession();
 
-    /** Returns a SqlSession configured with REUSE executor behavior. */
+    /**
+     * Returns a {@link SqlSession} with REUSE executor behavior.
+     * @return a {@code SqlSession}
+     */
     SqlSession getReuseSqlSession();
 
-    /** Shortcut to obtain a mapper bound to the SIMPLE SqlSession. */
+    /**
+     * Returns a mapper instance that is bound to the SIMPLE {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     */
     default <T> T simple(Class<T> mapperType) {
         return getSimpleSqlSession().getMapper(mapperType);
     }
 
-    /** Shortcut to obtain a mapper bound to the BATCH SqlSession. */
+    /**
+     * Returns a mapper instance that is bound to the BATCH {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     */
     default <T> T batch(Class<T> mapperType) {
         return getBatchSqlSession().getMapper(mapperType);
     }
 
-    /** Shortcut to obtain a mapper bound to the REUSE SqlSession. */
+    /**
+     * Returns a mapper instance that is bound to the REUSE {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     */
     default <T> T reuse(Class<T> mapperType) {
         return getReuseSqlSession().getMapper(mapperType);
     }

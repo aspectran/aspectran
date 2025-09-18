@@ -25,8 +25,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>This class is a clone of org.springframework.lang.Nullable</p>
- *
  * A common Aspectran annotation to declare that annotated elements can be {@code null} under
  * some circumstance.
  *
@@ -39,9 +37,6 @@ import java.lang.annotation.Target;
  * <p>Can be used in association with {@code @NonNullApi} or {@code @NonNullFields} to
  * override the default non-nullable semantic to nullable.
  *
- * @author Sebastien Deleuze
- * @author Juergen Hoeller
- * @since 6.2.0
  * @see NonNullApi
  * @see NonNullFields
  * @see NonNull
