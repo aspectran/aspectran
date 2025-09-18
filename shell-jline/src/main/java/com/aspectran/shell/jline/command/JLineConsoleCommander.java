@@ -21,12 +21,16 @@ import com.aspectran.shell.jline.console.TerminalPrintStream;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Shell Command Runner.
+ * The JLine-based console commander.
  *
  * <p>Created: 2017. 6. 3.</p>
  */
 public class JLineConsoleCommander extends DefaultConsoleCommander {
 
+    /**
+     * Instantiates a new JLineConsoleCommander.
+     * @param console the JLine-based shell console
+     */
     public JLineConsoleCommander(@NonNull JLineShellConsole console) {
         super(console);
     }

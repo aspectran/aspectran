@@ -20,17 +20,22 @@ import com.aspectran.utils.Assert;
 import java.io.PrintStream;
 
 /**
- * Class that exposes the build information of Aspectran.
- * Fetches the "Implementation-Version" manifest attribute from the jar file.
+ * Provides information about the Aspectran framework build.
+ * <p>This class retrieves the version of Aspectran from the manifest file
+ * of the JAR in which it is packaged.</p>
  */
 public abstract class AboutMe {
 
+    /** The version of Aspectran. */
     public static final String VERSION;
 
+    /** A string indicating that the application is "Powered by Aspectran" with the version. */
     public static final String POWERED_BY;
 
+    /** An HTML link for "Powered by Aspectran" with the version. */
     public static final String POWERED_BY_LINK;
 
+    /** A boolean indicating whether the current version is a stable release. */
     public static final boolean STABLE;
 
     static {
@@ -49,10 +54,19 @@ public abstract class AboutMe {
         STABLE = !VERSION.matches("^.*[.-](RC|M|SNAPSHOT|x)[0-9]?$");
     }
 
+    /**
+     * Returns the version of Aspectran.
+     * @return the version string
+     */
     public static String getVersion() {
         return VERSION;
     }
 
+    /**
+     * Returns the detailed version information of Aspectran.
+     * If the version is not a stable release, a warning message is appended.
+     * @return the detailed version string
+     */
     public static String getVersionDetail() {
         if (STABLE) {
             return VERSION;
@@ -61,17 +75,25 @@ public abstract class AboutMe {
         }
     }
 
+    /**
+     * Returns the "Powered by" string.
+     * @return the "Powered by" string
+     */
     public static String getPoweredBy() {
         return POWERED_BY;
     }
 
+    /**
+     * Returns the "Powered by" HTML link.
+     * @return the "Powered by" HTML link
+     */
     public static String getPoweredByLink() {
         return POWERED_BY_LINK;
     }
 
     /**
-     * Prints Aspectran information to the specified print stream.
-     * @param output a {@link PrintStream} object to print
+     * Prints the Aspectran version and system information to the specified {@link PrintStream}.
+     * @param output a {@link PrintStream} object to print to
      */
     public static void print(PrintStream output) {
         Assert.notNull(output, "output must not be null");
@@ -83,8 +105,8 @@ public abstract class AboutMe {
     }
 
     /**
-     * Prints Aspectran information to the specified print stream.
-     * @param output a {@link PrintStream} object to print
+     * Prints the Aspectran version and system information in a pretty format to the specified {@link PrintStream}.
+     * @param output a {@link PrintStream} object to print to
      */
     public static void printPretty(PrintStream output) {
         Assert.notNull(output, "output must not be null");
@@ -98,7 +120,7 @@ public abstract class AboutMe {
     }
 
     /**
-     * Prints Aspectran information to {@link System#out}.
+     * Prints the Aspectran version and system information in a pretty format to {@link System#out}.
      * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {

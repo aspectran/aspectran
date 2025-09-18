@@ -33,6 +33,10 @@ import java.io.File;
  */
 public class JLineAspectranShell {
 
+    /**
+     * The main entry point for the JLine-based Aspectran Shell.
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
@@ -43,10 +47,19 @@ public class JLineAspectranShell {
         }
     }
 
+    /**
+     * Bootstrap the JLine-based Aspectran Shell.
+     * @param aspectranConfigFile the Aspectran configuration file
+     */
     public static void bootstrap(File aspectranConfigFile) {
         bootstrap(null, aspectranConfigFile);
     }
 
+    /**
+     * Bootstrap the JLine-based Aspectran Shell.
+     * @param basePath the base path
+     * @param aspectranConfigFile the Aspectran configuration file
+     */
     public static void bootstrap(@Nullable String basePath, File aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
