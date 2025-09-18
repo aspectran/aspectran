@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Abstract class shared by RestResponse.
+ * Abstract base class for {@link RestResponse} implementations.
  *
  * <p>Created: 2019-06-16</p>
  */
@@ -59,13 +59,25 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     private MultiValueMap<String, String> headers;
 
+    /**
+     * Instantiates a new {@code AbstractRestResponse}.
+     */
     public AbstractRestResponse() {
     }
 
+    /**
+     * Instantiates a new {@code AbstractRestResponse} with the given data.
+     * @param data the response data
+     */
     public AbstractRestResponse(Object data) {
         this(null, data);
     }
 
+    /**
+     * Instantiates a new {@code AbstractRestResponse} with the given name and data.
+     * @param name the name of the response data
+     * @param data the response data
+     */
     public AbstractRestResponse(String name, Object data) {
         setData(name, data);
     }

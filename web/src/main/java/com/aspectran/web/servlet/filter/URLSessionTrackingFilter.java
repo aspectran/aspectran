@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
+ * A filter that removes the session ID from the request URI.
+ * This is to prevent the session ID from being exposed in the URL.
+ *
  * <p>Created: 2025. 2. 8.</p>
  */
 public class URLSessionTrackingFilter implements Filter {

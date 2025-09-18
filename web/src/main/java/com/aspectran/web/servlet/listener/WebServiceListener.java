@@ -26,7 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class WebServiceListener.
+ * A {@link ServletContextListener} that creates and destroys a {@link WebService}
+ * for the root web application context.
  */
 public class WebServiceListener implements ServletContextListener {
 

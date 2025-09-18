@@ -33,7 +33,9 @@ import java.io.IOException;
 import java.io.Serial;
 
 /**
- * The Class WebActivityServlet.
+ * The central dispatcher for HTTP request handlers/controllers.
+ * Dispatches to registered handlers for processing a web request,
+ * providing convenient mapping and exception handling facilities.
  */
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
@@ -49,7 +51,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     private boolean standalone;
 
     /**
-     * Instantiates a new WebActivityServlet.
+     * Instantiates a new {@code WebActivityServlet}.
      */
     public WebActivityServlet() {
         super();
@@ -107,6 +109,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
      * As a side note, the legacy head handling mode is being deprecated
      * because it may not be accurate in producing the same head as returned
      * by the GET method.
+     * @param req the request
+     * @param res the response
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse res) throws IOException {

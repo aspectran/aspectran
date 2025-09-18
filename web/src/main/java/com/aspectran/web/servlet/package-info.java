@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides servlets and listeners for integration with web application.
+ * Provides the necessary servlets and related classes for integrating Aspectran
+ * with a web application.
  */
 package com.aspectran.web.servlet;

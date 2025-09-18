@@ -29,7 +29,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
- * The Class SpecificIPAllowedWebActivityServlet.
+ * A servlet that allows access only from specific IP addresses.
+ * This servlet extends {@link WebActivityServlet} and adds a security check
+ * based on the remote client's IP address.
+ *
+ * <p>The allowed IP addresses are configured via the 'allowedAddresses' init-param
+ * in the servlet configuration. The addresses can be a comma-separated list of
+ * individual IP addresses or IP address ranges (e.g., 192.168.0.*).</p>
  */
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
@@ -43,7 +49,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     private Set<String> allowedAddresses;
 
     /**
-     * Instantiates a new SpecificIPAllowedWebActivityServlet.
+     * Instantiates a new {@code SpecificIPAllowedWebActivityServlet}.
      */
     public SpecificIPAllowedWebActivityServlet() {
         super();
@@ -79,9 +85,9 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     }
 
     /**
-     * Returns whether IP address is valid.
-     * @param ipAddress the IP address
-     * @return true if IP address is a valid; false otherwise
+     * Returns whether the specified IP address is allowed.
+     * @param ipAddress the IP address to check
+     * @return {@code true} if the IP address is allowed; {@code false} otherwise
      */
     private boolean isAllowedAddress(@NonNull String ipAddress) {
         if (allowedAddresses == null) {

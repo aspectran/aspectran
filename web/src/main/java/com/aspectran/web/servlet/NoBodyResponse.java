@@ -27,10 +27,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 /**
- * A response that includes no body, for use in (dumb) "HEAD" support.
- * This just swallows that body, counting the bytes in order to set the
- * content length appropriately. All other methods delegate directly to
- * the wrapped HTTP Servlet Response object.
+ * A response that includes no body, for use in "HEAD" support.
+ * This class just swallows the body, counting the bytes in order to set
+ * the content length appropriately. All other methods delegate directly
+ * to the wrapped {@link HttpServletResponse} object.
  */
 class NoBodyResponse extends HttpServletResponseWrapper {
 
@@ -142,7 +142,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Servlet output stream that gobbles up all its data.
+     * A {@link ServletOutputStream} that swallows all its data.
      */
     static class NoBodyOutputStream extends ServletOutputStream {
 

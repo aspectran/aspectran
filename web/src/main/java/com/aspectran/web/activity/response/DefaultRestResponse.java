@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The default RestResponse supports APON, JSON, and XML data types.
+ * The default {@link RestResponse} implementation that supports APON, JSON, and XML media types.
  *
  * <p>Created: 2019-06-16</p>
  */
@@ -70,16 +70,28 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 "htm", MediaType.TEXT_HTML);
     }
 
+    /**
+     * Instantiates a new {@code DefaultRestResponse}.
+     */
     public DefaultRestResponse() {
         super();
     }
 
+    /**
+     * Instantiates a new {@code DefaultRestResponse} with the given data.
+     * @param data the response data
+     */
     public DefaultRestResponse(Object data) {
         super(data);
     }
 
-    public DefaultRestResponse(String label, Object data) {
-        super(label, data);
+    /**
+     * Instantiates a new {@code DefaultRestResponse} with the given name and data.
+     * @param name the name of the response data
+     * @param data the response data
+     */
+    public DefaultRestResponse(String name, Object data) {
+        super(name, data);
     }
 
     @Override
