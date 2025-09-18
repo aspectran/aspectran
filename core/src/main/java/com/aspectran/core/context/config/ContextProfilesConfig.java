@@ -22,12 +22,17 @@ import com.aspectran.utils.apon.ValueType;
 /**
  * Configuration for environment profiles.
  * <p>Allows for the registration of beans and properties to be conditional
- * based on the active, default, or base profiles.
+ * based on the active, default, or base profiles.</p>
  */
 public class ContextProfilesConfig extends AbstractParameters {
 
+    /** The base profiles that are always active. */
     private static final ParameterKey baseProfiles;
+
+    /** The default profiles to use when no active profiles are specified. */
     private static final ParameterKey defaultProfiles;
+
+    /** The currently active profiles. */
     private static final ParameterKey activeProfiles;
 
     private static final ParameterKey[] parameterKeys;
@@ -44,6 +49,9 @@ public class ContextProfilesConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new ContextProfilesConfig.
+     */
     public ContextProfilesConfig() {
         super(parameterKeys);
     }

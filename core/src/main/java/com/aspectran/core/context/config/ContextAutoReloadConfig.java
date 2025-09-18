@@ -24,24 +24,17 @@ import com.aspectran.utils.apon.ValueType;
 /**
  * Configuration for the automatic context reloading feature.
  * <p>This allows the application context to be automatically reloaded
- * when configuration files are modified.
+ * when configuration files are modified.</p>
  */
 public class ContextAutoReloadConfig extends AbstractParameters {
 
-    /**
-     * The reload mode, which is either "hard" or "soft".
-     */
+    /** The reload mode, which can be "hard" or "soft". */
     private static final ParameterKey reloadMode;
 
-    /**
-     * The interval in seconds between scanning the specified resources for file changes.
-     * If file changes are detected, the activity context is reloaded.
-     */
+    /** The interval in seconds for scanning for file changes. */
     private static final ParameterKey scanIntervalSeconds;
 
-    /**
-     *  Defaults to {@code false}, which disables automatic reloading.
-     */
+    /** Whether to enable automatic reloading. Defaults to {@code false}. */
     private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
@@ -58,6 +51,9 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new ContextAutoReloadConfig.
+     */
     public ContextAutoReloadConfig() {
         super(parameterKeys);
     }
@@ -82,7 +78,7 @@ public class ContextAutoReloadConfig extends AbstractParameters {
 
     /**
      * Returns the interval in seconds for scanning file changes.
-     * @return the scan interval in seconds
+     * @return the scan interval in seconds, or -1 if not set
      */
     public int getScanIntervalSeconds() {
         return getInt(scanIntervalSeconds, -1);

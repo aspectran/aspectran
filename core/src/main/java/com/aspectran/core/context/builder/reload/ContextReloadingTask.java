@@ -35,7 +35,9 @@ import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
  * A {@link java.util.TimerTask} that detects changes in configuration and resource files
  * to trigger a context reload.
  * <p>It periodically checks the {@code lastModified} timestamp of registered resource files.
- * If a change is detected, it triggers a service restart via the {@link ServiceLifeCycle} interface.
+ * If a change is detected, it triggers a service restart via the {@link ServiceLifeCycle} interface.</p>
+ *
+ * @since 6.3.0
  */
 public class ContextReloadingTask extends TimerTask {
 
@@ -47,10 +49,18 @@ public class ContextReloadingTask extends TimerTask {
 
     private boolean modified = false;
 
+    /**
+     * Instantiates a new ContextReloadingTask.
+     * @param serviceLifeCycle the service life cycle
+     */
     public ContextReloadingTask(ServiceLifeCycle serviceLifeCycle) {
         this.serviceLifeCycle = serviceLifeCycle;
     }
 
+    /**
+     * Sets the resources to be monitored for changes.
+     * @param resources an enumeration of resource URLs
+     */
     public void setResources(Enumeration<URL> resources) {
         if (resources != null) {
             while (resources.hasMoreElements()) {
@@ -73,6 +83,9 @@ public class ContextReloadingTask extends TimerTask {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run() {
         if (modified || modifiedTimeMap.isEmpty()) {
@@ -96,6 +109,9 @@ public class ContextReloadingTask extends TimerTask {
         }
     }
 
+    /**
+     * Restarts the service.
+     */
     private void restartService() {
         try {
             String message = "Some resource file changes have been detected.";

@@ -24,18 +24,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * <p>This class is a clone of org.springframework.util.SerializationUtils.java</p>
- *
  * Static utilities for serialization and deserialization.
- *
- * @author Dave Syer
+ * <p>This class provides methods to serialize an object to a byte array
+ * and deserialize a byte array back to an object.</p>
  */
 public abstract class SerializationUtils {
 
     /**
      * Serialize the given object to a byte array.
-     * @param object the object to serialize
-     * @return an array of bytes representing the object in a portable fashion
+     * @param object the object to serialize (can be {@code null})
+     * @return a byte array representing the serialized object, or {@code null} if the input object is {@code null}
+     * @throws IllegalArgumentException if serialization fails
      */
     @Nullable
     public static byte[] serialize(@Nullable Object object) {
@@ -54,9 +53,11 @@ public abstract class SerializationUtils {
     }
 
     /**
-     * Deserialize the byte array into an object.
-     * @param bytes a serialized object
-     * @return the result of deserializing the bytes
+     * Deserialize the given byte array into an object.
+     * @param bytes a serialized object (can be {@code null})
+     * @return the deserialized object, or {@code null} if the input byte array is {@code null}
+     * @throws IllegalArgumentException if deserialization fails due to an I/O error
+     * @throws IllegalStateException if the class of a serialized object cannot be found
      */
     @Nullable
     public static Object deserialize(@Nullable byte[] bytes) {

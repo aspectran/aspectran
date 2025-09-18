@@ -20,21 +20,18 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 /**
- * <p>This class is a clone of org.apache.commons.collections4.ArrayStack</p>
- *
  * An implementation of the {@link java.util.Stack} API that is based on an
  * <code>ArrayList</code> instead of a <code>Vector</code>, so it is not
- * synchronized to protect against multi-threaded access.  The implementation
- * is therefore operates faster in environments where you do not need to
- * worry about multiple thread contention.
+ * synchronized to protect against multi-threaded access. The implementation
+ * is therefore faster in environments where thread safety is not a concern.
  * <p>
  * The removal order of an <code>ArrayStack</code> is based on insertion
- * order: The most recently added element is removed first.  The iteration
- * order is <i>not</i> the same as the removal order.  The iterator returns
+ * order: The most recently added element is removed first (LIFO). The iteration
+ * order is <i>not</i> the same as the removal order. The iterator returns
  * elements from the bottom up, whereas the {@link #pop()} method removes
- * them from the top down.</p>
+ * them from the top down.
  * <p>
- * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.<p>
+ * Unlike <code>java.util.Stack</code>, this implementation accepts null entries.</p>
  *
  * @param <E> the type of elements in this list
  * @see java.util.Stack
@@ -91,6 +88,13 @@ public class ArrayStack<E> extends ArrayList<E> {
         return get(m);
     }
 
+    /**
+     * Returns the first item of the specified type from the top of this stack
+     * without removing it.
+     * @param target the type of item to look for
+     * @return the first item of the specified type on the stack
+     * @throws EmptyStackException if no items of the specified type are on the stack
+     */
     public E peek(Class<?> target) throws EmptyStackException {
         for (int i = size() - 1; i >= 0; i--) {
             E item = get(i);
@@ -126,8 +130,9 @@ public class ArrayStack<E> extends ArrayList<E> {
     }
 
     /**
-     * Replaces the top item of this stack with another item without removing it.
-     * @return the top item previously on the stack
+     * Replaces the top item of this stack with another item.
+     * @param item the new item to be placed on the top of the stack
+     * @return the item previously at the top of the stack
      * @throws EmptyStackException if the stack is empty
      */
     public E update(E item) throws EmptyStackException {
@@ -140,9 +145,10 @@ public class ArrayStack<E> extends ArrayList<E> {
 
     /**
      * Replaces the n'th item down (zero-relative) from the top of this
-     * stack with another item without removing it.
+     * stack with another item.
      * @param n the number of items down to go
-     * @return the n'th item previously on the stack, zero relative
+     * @param item the new item to be placed at the specified position
+     * @return the item previously at the specified position
      * @throws EmptyStackException if there are not enough items on the
      *      stack to satisfy this request
      */
@@ -155,14 +161,13 @@ public class ArrayStack<E> extends ArrayList<E> {
     }
 
     /**
-     * Returns the one-based position of the distance from the top that the
-     * specified object exists on this stack, where the top-most element is
-     * considered to be at distance <code>1</code>.  If the object is not
-     * present on the stack, return <code>-1</code> instead.  The
-     * <code>equals()</code> method is used to compare to the items
-     * in this stack.
+     * Returns the 1-based position from the top of the stack where the
+     * specified object is located.
+     * <p>If the object is not present on the stack, returns <code>-1</code>.
+     * The <code>equals()</code> method is used to compare the object to the items
+     * in this stack.</p>
      * @param object the object to be searched for
-     * @return the 1-based depth into the stack of the object, or -1 if not found
+     * @return the 1-based distance from the top of the stack, or -1 if not found
      */
     public int search(E object) {
         int i = size() - 1; // Current index

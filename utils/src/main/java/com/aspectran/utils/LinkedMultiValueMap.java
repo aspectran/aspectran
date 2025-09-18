@@ -75,7 +75,6 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
         this.targetMap = new LinkedHashMap<>(otherMap);
     }
 
-
     // MultiValueMap implementation
 
     @Override
@@ -135,7 +134,6 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
     public void setAll(@NonNull Map<K, V> values) {
         values.forEach(this::set);
     }
-
 
     // Map implementation
 

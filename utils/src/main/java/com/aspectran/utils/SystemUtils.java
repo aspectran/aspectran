@@ -20,7 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helpers for java.lang.System.
+ * A utility class for safely accessing {@link System} properties.
+ * <p>Provides methods to get and clear system properties while gracefully
+ * handling security exceptions.</p>
  */
 public abstract class SystemUtils {
 
@@ -33,11 +35,12 @@ public abstract class SystemUtils {
     private static final String USER_DIR_PROPERTY = "user.dir";
 
     /**
-     * Gets a System property, defaulting to {@code null} if the property
-     * cannot be read.
-     * If a {@code SecurityException} is caught, the return value is {@code null}.
+     * Gets a system property, returning {@code null} if the property cannot be read.
+     * If a {@link SecurityException} is caught, the return value is {@code null}
+     * and a debug message is logged.
+     *
      * @param key the name of the system property
-     * @return the system property value or {@code null} if a security problem occurs
+     * @return the system property value, or {@code null} if a security error occurs
      */
     @Nullable
     public static String getProperty(String key) {
@@ -52,11 +55,25 @@ public abstract class SystemUtils {
         }
     }
 
+    /**
+     * Gets a system property, returning a default value if the property is not found or cannot be read.
+     *
+     * @param name the name of the system property
+     * @param defVal the default value to return
+     * @return the system property value, or the default value if not found or a security error occurs
+     */
     public static String getProperty(String name, String defVal) {
         String val = getProperty(name);
         return (val != null ? val : defVal);
     }
 
+    /**
+     * Clears a system property, returning the previous value.
+     * If a {@link SecurityException} is caught, {@code null} is returned.
+     *
+     * @param key the name of the system property to clear
+     * @return the previous string value of the system property, or {@code null}
+     */
     @Nullable
     public static String clearProperty(String key) {
         try {
@@ -70,14 +87,29 @@ public abstract class SystemUtils {
         }
     }
 
+    /**
+     * Returns the value of the {@code java.io.tmpdir} system property.
+     *
+     * @return the temporary directory path
+     */
     public static String getJavaIoTmpDir() {
         return getProperty(JAVA_IO_TMPDIR_PROPERTY);
     }
 
+    /**
+     * Returns the value of the {@code user.home} system property.
+     *
+     * @return the user's home directory path
+     */
     public static String getUserHome() {
         return getProperty(USER_HOME_PROPERTY);
     }
 
+    /**
+     * Returns the value of the {@code user.dir} system property.
+     *
+     * @return the user's current working directory path
+     */
     public static String getUserDir() {
         return getProperty(USER_DIR_PROPERTY);
     }

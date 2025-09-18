@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>This class is a clone of org.springframework.util.MultiValueMap</p>
+ * A specialized {@link Map} interface that can store multiple values for a single key.
  *
- * Extension of the {@code Map} interface that stores multiple values.
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
  */
 public interface MultiValueMap<K, V> extends Map<K, List<V>> {
 
@@ -40,7 +41,7 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
      * @param key the key
      * @param value the value to be added
      */
-    void add(K key, V value);
+    void add(K key, @Nullable V value);
 
     /**
      * Add all the values of the given list to the current list of values for the given key.
@@ -56,16 +57,11 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
     void addAll(MultiValueMap<K, V> values);
 
     /**
-     * {@link #add(Object, Object) Add} the given value, only when the map does not
-     * {@link #containsKey(Object) contain} the given key.
+     * Add the given value, only if the map does not already contain the given key.
      * @param key the key
      * @param value the value to be added
      */
-    default void addIfAbsent(K key, @Nullable V value) {
-        if (!containsKey(key)) {
-            add(key, value);
-        }
-    }
+    void addIfAbsent(K key, @Nullable V value);
 
     /**
      * Set the given single value under the given key.
@@ -77,7 +73,7 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
     /**
      * Set the given values under the given key.
      * @param key the key
-     * @param values the values
+     * @param values the values to set
      */
     void set(K key, @Nullable V[] values);
 

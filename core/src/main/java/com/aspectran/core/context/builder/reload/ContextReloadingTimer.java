@@ -25,7 +25,9 @@ import java.util.Timer;
 /**
  * Manages the timer for automatic reloading of the {@link com.aspectran.core.context.ActivityContext}.
  * <p>This class wraps a {@link java.util.Timer} to schedule a {@link ContextReloadingTask}
- * at a fixed interval, enabling the hot-reloading feature.
+ * at a fixed interval, enabling the hot-reloading feature.</p>
+ *
+ * @since 6.3.0
  */
 public class ContextReloadingTimer {
 
@@ -39,11 +41,20 @@ public class ContextReloadingTimer {
 
     private ContextReloadingTask task;
 
+    /**
+     * Instantiates a new ContextReloadingTimer.
+     * @param classLoader the class loader used to find resources
+     * @param serviceLifeCycle the service life cycle to restart on changes
+     */
     public ContextReloadingTimer(SiblingClassLoader classLoader, ServiceLifeCycle serviceLifeCycle) {
         this.classLoader = classLoader;
         this.serviceLifeCycle = serviceLifeCycle;
     }
 
+    /**
+     * Starts the timer to monitor for resource changes.
+     * @param scanIntervalInSeconds the interval in seconds to scan for changes
+     */
     public void start(int scanIntervalInSeconds) {
         stop();
 
@@ -58,6 +69,9 @@ public class ContextReloadingTimer {
         timer.schedule(task, 0, scanIntervalInSeconds * 1000L);
     }
 
+    /**
+     * Stops the timer.
+     */
     public void stop() {
         if (timer != null) {
             if (logger.isDebugEnabled()) {

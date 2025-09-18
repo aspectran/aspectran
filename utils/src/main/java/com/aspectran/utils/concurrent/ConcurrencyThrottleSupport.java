@@ -173,7 +173,6 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
         }
     }
 
-
     //---------------------------------------------------------------------
     // Serialization support
     //---------------------------------------------------------------------

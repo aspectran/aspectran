@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.config;
-
-import com.aspectran.utils.wildcard.IncludeExcludeParameters;
-
 /**
- * Defines include/exclude wildcard patterns to determine whether a request should be accepted.
- * <p>This configuration is used by a {@code com.aspectran.core.service.RequestAcceptor}
- * to filter requests based on their names.</p>
- *
- * @since 6.3.0
+ * Provides ETag (entity tag) support for web requests.
  */
-public class AcceptableConfig extends IncludeExcludeParameters {
-
-    public AcceptableConfig() {
-        super();
-    }
-
-}
+package com.aspectran.web.support.etag;

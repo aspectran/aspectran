@@ -47,9 +47,16 @@ import java.nio.file.Paths;
  */
 public class AspectranConfig extends AbstractParameters {
 
+    /** The name of the system property that specifies the base path. */
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
+
+    /** The name of the system property that specifies the temporary path. */
     public static final String TEMP_PATH_PROPERTY_NAME = "aspectran.tempPath";
+
+    /** The name of the system property that specifies the working path. */
     public static final String WORK_PATH_PROPERTY_NAME = "aspectran.workPath";
+
+    /** The default name of the Aspectran configuration file. */
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     private static final ParameterKey system;

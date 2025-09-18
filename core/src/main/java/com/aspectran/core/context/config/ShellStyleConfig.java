@@ -38,12 +38,24 @@ import com.aspectran.utils.apon.ValueType;
  */
 public class ShellStyleConfig extends AbstractParameters {
 
+    /** The style for primary text. */
     private static final ParameterKey primary;
+
+    /** The style for secondary text. */
     private static final ParameterKey secondary;
+
+    /** The style for success messages. */
     private static final ParameterKey success;
+
+    /** The style for danger messages. */
     private static final ParameterKey danger;
+
+    /** The style for warning messages. */
     private static final ParameterKey warning;
+
+    /** The style for informational messages. */
     private static final ParameterKey info;
+
     private static final ParameterKey[] parameterKeys;
 
     static {
@@ -64,59 +76,116 @@ public class ShellStyleConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new ShellStyleConfig.
+     */
     public ShellStyleConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the style for primary text.
+     * @return the primary style tokens
+     */
     public String[] getPrimaryStyle() {
         return getStringArray(primary);
     }
 
+    /**
+     * Sets the style for primary text.
+     * @param primary the primary style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setPrimaryStyle(String primary) {
         putValue(ShellStyleConfig.primary, primary);
         return this;
     }
 
+    /**
+     * Returns the style for secondary text.
+     * @return the secondary style tokens
+     */
     public String[] getSecondaryStyle() {
         return getStringArray(secondary);
     }
 
+    /**
+     * Sets the style for secondary text.
+     * @param secondary the secondary style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setSecondaryStyle(String secondary) {
         putValue(ShellStyleConfig.secondary, secondary);
         return this;
     }
 
+    /**
+     * Returns the style for success messages.
+     * @return the success style tokens
+     */
     public String[] getSuccessStyle() {
         return getStringArray(success);
     }
 
+    /**
+     * Sets the style for success messages.
+     * @param success the success style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setSuccessStyle(String success) {
         putValue(ShellStyleConfig.success, success);
         return this;
     }
 
+    /**
+     * Returns the style for danger messages.
+     * @return the danger style tokens
+     */
     public String[] getDangerStyle() {
         return getStringArray(danger);
     }
 
+    /**
+     * Sets the style for danger messages.
+     * @param danger the danger style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setDangerStyle(String danger) {
         putValue(ShellStyleConfig.danger, danger);
         return this;
     }
 
+    /**
+     * Returns the style for warning messages.
+     * @return the warning style tokens
+     */
     public String[] getWarningStyle() {
         return getStringArray(warning);
     }
 
+    /**
+     * Sets the style for warning messages.
+     * @param warning the warning style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setWarningStyle(String warning) {
         putValue(ShellStyleConfig.warning, warning);
         return this;
     }
 
+    /**
+     * Returns the style for informational messages.
+     * @return the info style tokens
+     */
     public String[] getInfoStyle() {
         return getStringArray(info);
     }
 
+    /**
+     * Sets the style for informational messages.
+     * @param info the info style tokens
+     * @return this {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig setInfoStyle(String info) {
         putValue(ShellStyleConfig.info, info);
         return this;

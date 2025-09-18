@@ -20,9 +20,11 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
- * Config for async task executor.
+ * Configuration for the asynchronous task executor.
+ * <p>This class allows enabling or disabling the async feature.
  *
  * <p>Created: 2024. 8. 24.</p>
+ * @since 9.0.0
  */
 public class AsyncConfig extends AbstractParameters {
 
@@ -38,14 +40,26 @@ public class AsyncConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new AsyncConfig.
+     */
     public AsyncConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns whether the async feature is enabled.
+     * @return true if the async feature is enabled, false otherwise
+     */
     public boolean isEnabled() {
         return getBoolean(enabled, false);
     }
 
+    /**
+     * Sets whether to enable the async feature.
+     * @param enabled true to enable, false to disable
+     * @return this {@code AsyncConfig} instance
+     */
     public AsyncConfig setEnabled(boolean enabled) {
         putValue(AsyncConfig.enabled, enabled);
         return this;

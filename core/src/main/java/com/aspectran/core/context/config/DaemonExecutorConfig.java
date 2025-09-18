@@ -21,10 +21,12 @@ import com.aspectran.utils.apon.ValueType;
 
 /**
  * Configuration for the daemon's command executor thread pool.
+ *
  * @since 5.1.0
  */
 public class DaemonExecutorConfig extends AbstractParameters {
 
+    /** The maximum number of threads in the pool. */
     private static final ParameterKey maxThreads;
 
     private static final ParameterKey[] parameterKeys;
@@ -37,6 +39,9 @@ public class DaemonExecutorConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new DaemonExecutorConfig.
+     */
     public DaemonExecutorConfig() {
         super(parameterKeys);
     }

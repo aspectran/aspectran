@@ -62,37 +62,72 @@ public class StringifyContext implements Cloneable {
 
     private Locale locale;
 
+    /**
+     * Instantiates a new Stringify context.
+     */
     public StringifyContext() {
     }
 
+    /**
+     * Returns whether pretty-printing is enabled.
+     * @return true if pretty-printing is set, false otherwise
+     */
     public boolean hasPrettyPrint() {
         return (prettyPrint != null);
     }
 
+    /**
+     * Returns whether to format the output for readability.
+     * @return true if pretty-printing is enabled, false otherwise
+     */
     public boolean isPrettyPrint() {
         return BooleanUtils.toBoolean(prettyPrint);
     }
 
+    /**
+     * Sets whether to format the output for readability.
+     * @param prettyPrint true to enable pretty-printing, false otherwise
+     */
     public void setPrettyPrint(Boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Returns whether the indent size is set.
+     * @return true if the indent size is set, false otherwise
+     */
     public boolean hasIndentSize() {
         return (indentSize != null);
     }
 
+    /**
+     * Returns the number of spaces to use for indentation.
+     * @return the indent size, or 0 if not set
+     */
     public int getIndentSize() {
         return (indentSize != null ? indentSize : 0);
     }
 
+    /**
+     * Sets the number of spaces to use for indentation.
+     * @param indentSize the number of spaces
+     */
     public void setIndentSize(int indentSize) {
         this.indentSize = indentSize;
     }
 
+    /**
+     * Returns whether to use a tab character for indentation.
+     * @return true to use a tab, false otherwise
+     */
     public boolean isIndentTab() {
         return BooleanUtils.toBoolean(indentTab);
     }
 
+    /**
+     * Sets whether to use a tab character for indentation.
+     * @param indentTab true to use a tab, false to use spaces
+     */
     public void setIndentTab(boolean indentTab) {
         this.indentTab = indentTab;
     }
@@ -114,80 +149,159 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Returns whether null values should be written.
+     * @return true if nulls are writable, false otherwise
+     */
     public boolean hasNullWritable() {
         return (nullWritable != null);
     }
 
+    /**
+     * Returns whether null values should be written during serialization.
+     * @return true if nulls should be written, false otherwise
+     */
     public boolean isNullWritable() {
         return BooleanUtils.toBoolean(nullWritable);
     }
 
+    /**
+     * Sets whether null values should be written during serialization.
+     * @param nullWritable true to write nulls, false to omit them
+     */
     public void setNullWritable(Boolean nullWritable) {
         this.nullWritable = nullWritable;
     }
 
+    /**
+     * Returns the format string for date-time values.
+     * @return the date-time format string
+     */
     public String getDateTimeFormat() {
         return dateTimeFormat;
     }
 
+    /**
+     * Sets the format string for date-time values.
+     * This will reset any previously set {@link DateTimeFormatter}.
+     * @param dateTimeFormat the date-time format string
+     */
     public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
         this.dateTimeFormatter = null;
     }
 
+    /**
+     * Returns the {@link DateTimeFormatter} for date-time values.
+     * @return the date-time formatter
+     */
     public DateTimeFormatter getDateTimeFormatter() {
         return dateTimeFormatter;
     }
 
+    /**
+     * Sets the {@link DateTimeFormatter} for date-time values.
+     * This will reset any previously set format string.
+     * @param dateTimeFormatter the date-time formatter
+     */
     public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
         this.dateTimeFormat = null;
         this.dateTimeFormatter = dateTimeFormatter;
     }
 
+    /**
+     * Returns the format string for date values.
+     * @return the date format string
+     */
     public String getDateFormat() {
         return dateFormat;
     }
 
+    /**
+     * Sets the format string for date values.
+     * This will reset any previously set {@link DateTimeFormatter}.
+     * @param dateFormat the date format string
+     */
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
         this.dateFormatter = null;
     }
 
+    /**
+     * Returns the {@link DateTimeFormatter} for date values.
+     * @return the date formatter
+     */
     public DateTimeFormatter getDateFormatter() {
         return dateFormatter;
     }
 
+    /**
+     * Sets the {@link DateTimeFormatter} for date values.
+     * This will reset any previously set format string.
+     * @param dateFormatter the date formatter
+     */
     public void setDateFormatter(DateTimeFormatter dateFormatter) {
         this.dateFormat = null;
         this.dateFormatter = dateFormatter;
     }
 
+    /**
+     * Returns the format string for time values.
+     * @return the time format string
+     */
     public String getTimeFormat() {
         return timeFormat;
     }
 
+    /**
+     * Sets the format string for time values.
+     * This will reset any previously set {@link DateTimeFormatter}.
+     * @param timeFormat the time format string
+     */
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
         this.timeFormatter = null;
     }
 
+    /**
+     * Returns the {@link DateTimeFormatter} for time values.
+     * @return the time formatter
+     */
     public DateTimeFormatter getTimeFormatter() {
         return timeFormatter;
     }
 
+    /**
+     * Sets the {@link DateTimeFormatter} for time values.
+     * This will reset any previously set format string.
+     * @param timeFormatter the time formatter
+     */
     public void setTimeFormatter(DateTimeFormatter timeFormatter) {
         this.timeFormat = null;
         this.timeFormatter = timeFormatter;
     }
 
+    /**
+     * Sets the {@link SimpleDateFormat} for {@link Date} objects.
+     * @param simpleDateFormat the simple date format
+     */
     public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
         this.simpleDateFormat = simpleDateFormat;
     }
 
+    /**
+     * Returns the locale for formatting.
+     * @return the locale
+     */
     public Locale getLocale() {
         return locale;
     }
 
+    /**
+     * Sets the locale for formatting.
+     * This will reset any cached formatters.
+     * @param locale the locale
+     */
     public void setLocale(Locale locale) {
         this.locale = locale;
         this.dateTimeFormatter = null;
@@ -195,10 +309,21 @@ public class StringifyContext implements Cloneable {
         this.timeFormatter = null;
     }
 
+    /**
+     * Converts a {@link LocalDateTime} to a string using the configured format.
+     * @param localDateTime the {@link LocalDateTime} to format
+     * @return the formatted string
+     */
     public String toString(LocalDateTime localDateTime) {
         return toString(localDateTime, null);
     }
 
+    /**
+     * Converts a {@link LocalDateTime} to a string using the specified format.
+     * @param localDateTime the {@link LocalDateTime} to format
+     * @param format the format string to use
+     * @return the formatted string
+     */
     public String toString(LocalDateTime localDateTime, String format) {
         Assert.notNull(localDateTime, "localDateTime must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
@@ -209,10 +334,21 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Converts a {@link LocalDate} to a string using the configured format.
+     * @param localDate the {@link LocalDate} to format
+     * @return the formatted string
+     */
     public String toString(LocalDate localDate) {
         return toString(localDate, null);
     }
 
+    /**
+     * Converts a {@link LocalDate} to a string using the specified format.
+     * @param localDate the {@link LocalDate} to format
+     * @param format the format string to use
+     * @return the formatted string
+     */
     public String toString(LocalDate localDate, String format) {
         Assert.notNull(localDate, "localDate must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateFormatter(format);
@@ -223,10 +359,21 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Converts a {@link LocalTime} to a string using the configured format.
+     * @param localTime the {@link LocalTime} to format
+     * @return the formatted string
+     */
     public String toString(LocalTime localTime) {
         return toString(localTime, null);
     }
 
+    /**
+     * Converts a {@link LocalTime} to a string using the specified format.
+     * @param localTime the {@link LocalTime} to format
+     * @param format the format string to use
+     * @return the formatted string
+     */
     public String toString(LocalTime localTime, String format) {
         Assert.notNull(localTime, "localTime must not be null");
         DateTimeFormatter dateTimeFormatter = touchTimeFormatter(format);
@@ -237,10 +384,21 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Converts a {@link Date} to a string using the configured format.
+     * @param date the {@link Date} to format
+     * @return the formatted string
+     */
     public String toString(Date date) {
         return toString(date, null);
     }
 
+    /**
+     * Converts a {@link Date} to a string using the specified format.
+     * @param date the {@link Date} to format
+     * @param format the format string to use
+     * @return the formatted string
+     */
     public String toString(Date date, String format) {
         Assert.notNull(date, "date must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
@@ -252,46 +410,97 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Converts a string to a {@link LocalDateTime} using the configured format.
+     * @param dateTime the string to parse
+     * @return the parsed {@link LocalDateTime}
+     */
     public LocalDateTime toLocalDateTime(String dateTime) {
         return toLocalDateTime(dateTime, null);
     }
 
+    /**
+     * Converts a string to a {@link LocalDateTime} using the specified format.
+     * @param dateTime the string to parse
+     * @param format the format string to use
+     * @return the parsed {@link LocalDateTime}
+     */
     public LocalDateTime toLocalDateTime(String dateTime, String format) {
         Assert.notNull(dateTime, "dateTime must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
     }
 
+    /**
+     * Converts a string to a {@link LocalDate} using the configured format.
+     * @param date the string to parse
+     * @return the parsed {@link LocalDate}
+     */
     public LocalDate toLocalDate(String date) {
         return toLocalDate(date, null);
     }
 
+    /**
+     * Converts a string to a {@link LocalDate} using the specified format.
+     * @param date the string to parse
+     * @param format the format string to use
+     * @return the parsed {@link LocalDate}
+     */
     public LocalDate toLocalDate(String date, String format) {
         Assert.notNull(date, "date must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateFormatter(format);
         return LocalDate.parse(date, dateTimeFormatter);
     }
 
+    /**
+     * Converts a string to a {@link LocalTime} using the configured format.
+     * @param time the string to parse
+     * @return the parsed {@link LocalTime}
+     */
     public LocalTime toLocalTime(String time) {
         return toLocalTime(time, null);
     }
 
+    /**
+     * Converts a string to a {@link LocalTime} using the specified format.
+     * @param time the string to parse
+     * @param format the format string to use
+     * @return the parsed {@link LocalTime}
+     */
     public LocalTime toLocalTime(String time, String format) {
         Assert.notNull(time, "time must not be null");
         DateTimeFormatter dateTimeFormatter = touchTimeFormatter(format);
         return LocalTime.parse(time, dateTimeFormatter);
     }
 
+    /**
+     * Converts a string to a {@link Date} using the configured format.
+     * @param date the string to parse
+     * @return the parsed {@link Date}
+     * @throws ParseException if the string cannot be parsed
+     */
     public Date toDate(String date) throws ParseException {
         return toDate(date, null);
     }
 
+    /**
+     * Converts a string to a {@link Date} using the specified format.
+     * @param date the string to parse
+     * @param format the format string to use
+     * @return the parsed {@link Date}
+     * @throws ParseException if the string cannot be parsed
+     */
     public Date toDate(String date, String format) throws ParseException {
         Assert.notNull(date, "date must not be null");
         SimpleDateFormat simpleDateFormat = touchSimpleDateFormat(format);
         return simpleDateFormat.parse(date);
     }
 
+    /**
+     * Returns a cached or new {@link DateTimeFormatter} for the given format.
+     * @param format the format string
+     * @return the date time formatter
+     */
     private DateTimeFormatter touchDateTimeFormatter(String format) {
         if (format != null) {
             return createDateTimeFormatter(format, locale);
@@ -301,6 +510,11 @@ public class StringifyContext implements Cloneable {
         return dateTimeFormatter;
     }
 
+    /**
+     * Returns a cached or new {@link DateTimeFormatter} for the given date format.
+     * @param format the format string
+     * @return the date formatter
+     */
     private DateTimeFormatter touchDateFormatter(String format) {
         if (format != null) {
             return createDateTimeFormatter(format, locale);
@@ -310,6 +524,11 @@ public class StringifyContext implements Cloneable {
         return dateFormatter;
     }
 
+    /**
+     * Returns a cached or new {@link DateTimeFormatter} for the given time format.
+     * @param format the format string
+     * @return the time formatter
+     */
     private DateTimeFormatter touchTimeFormatter(String format) {
         if (format != null) {
             return createDateTimeFormatter(format, locale);
@@ -319,6 +538,11 @@ public class StringifyContext implements Cloneable {
         return timeFormatter;
     }
 
+    /**
+     * Returns a cached or new {@link SimpleDateFormat} for the given format.
+     * @param format the format string
+     * @return the simple date format
+     */
     private SimpleDateFormat touchSimpleDateFormat(String format) {
         if (format != null) {
             return createSimpleDateFormat(format, locale);
@@ -328,6 +552,12 @@ public class StringifyContext implements Cloneable {
         return simpleDateFormat;
     }
 
+    /**
+     * Creates a new {@link DateTimeFormatter} for the given format and locale.
+     * @param format the format string
+     * @param locale the locale
+     * @return a new date time formatter
+     */
     @NonNull
     private DateTimeFormatter createDateTimeFormatter(String format, Locale locale) {
         if (locale != null) {
@@ -337,6 +567,12 @@ public class StringifyContext implements Cloneable {
         }
     }
 
+    /**
+     * Creates a new {@link SimpleDateFormat} for the given format and locale.
+     * @param format the format string
+     * @param locale the locale
+     * @return a new simple date format
+     */
     @NonNull
     private SimpleDateFormat createSimpleDateFormat(String format, Locale locale) {
         Assert.notNull(format, "format must not be null");
@@ -350,7 +586,7 @@ public class StringifyContext implements Cloneable {
     /**
      * Merges settings from another {@code StringifyContext} into this one.
      * Settings from the other context will only be applied if they are not already
-     * set in this context.
+     * set in this context (i.e., non-destructive merge).
      * @param from the context to merge settings from
      */
     public void merge(StringifyContext from) {

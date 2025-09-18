@@ -356,9 +356,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         return this.caseInsensitiveKeys.remove(convertKey(key));
     }
 
-
     private class KeySet extends AbstractSet<String> {
-
         private final Set<String> delegate;
 
         KeySet(Set<String> delegate) {
@@ -401,12 +399,9 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         public void forEach(Consumer<? super String> action) {
             this.delegate.forEach(action);
         }
-
     }
 
-
     private class Values extends AbstractCollection<V> {
-
         private final Collection<V> delegate;
 
         Values(Collection<V> delegate) {
@@ -446,9 +441,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         }
     }
 
-
     private class EntrySet extends AbstractSet<Entry<String, V>> {
-
         private final Set<Entry<String, V>> delegate;
 
         public EntrySet(Set<Entry<String, V>> delegate) {
@@ -497,12 +490,9 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         public void forEach(Consumer<? super Entry<String, V>> action) {
             this.delegate.forEach(action);
         }
-
     }
 
-
     private abstract class EntryIterator<T> implements Iterator<T> {
-
         private final Iterator<Entry<String, V>> delegate;
 
         @Nullable
@@ -531,37 +521,27 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
                 this.last = null;
             }
         }
-
     }
 
-
     private class KeySetIterator extends EntryIterator<String> {
-
         @Override
         public String next() {
             return nextEntry().getKey();
         }
-
     }
 
-
     private class ValuesIterator extends EntryIterator<V> {
-
         @Override
         public V next() {
             return nextEntry().getValue();
         }
-
     }
 
-
     private class EntrySetIterator extends EntryIterator<Entry<String, V>> {
-
         @Override
         public Entry<String, V> next() {
             return nextEntry();
         }
-
     }
 
 }

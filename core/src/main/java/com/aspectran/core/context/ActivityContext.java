@@ -46,16 +46,22 @@ import java.nio.charset.StandardCharsets;
  */
 public interface ActivityContext {
 
+    /** The separator for joining IDs. */
     String ID_SEPARATOR = ".";
 
+    /** The separator for joining IDs. */
     char ID_SEPARATOR_CHAR = '.';
 
+    /** The separator for joining names. */
     String NAME_SEPARATOR = "/";
 
+    /** The separator for joining names. */
     char NAME_SEPARATOR_CHAR = '/';
 
+    /** The default character encoding. */
     String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();
 
+    /** The bean ID for the message source. */
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
     /**
@@ -151,8 +157,8 @@ public interface ActivityContext {
 
     /**
      * Returns the currently available activity.
-     * If there is a current activity for the thread, it is returned.
-     * Otherwise, the default activity is returned.
+     * <p>If there is a current activity for the thread, it is returned.
+     * Otherwise, the default activity is returned.</p>
      * @return the available activity
      */
     Activity getAvailableActivity();

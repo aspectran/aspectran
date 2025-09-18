@@ -20,11 +20,15 @@ import com.aspectran.utils.apon.ParameterKey;
 
 /**
  * Configuration for running Aspectran in an embedded mode within another application.
+ *
  * @since 6.3.0
  */
 public class EmbedConfig extends AbstractParameters {
 
+    /** The configuration for the session manager. */
     private static final ParameterKey session;
+
+    /** The configuration for acceptable request patterns. */
     private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
@@ -39,30 +43,58 @@ public class EmbedConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new EmbedConfig.
+     */
     public EmbedConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the session manager configuration.
+     * @return the {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
+    /**
+     * Creates a new session manager configuration.
+     * @return the new {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
+    /**
+     * Returns the existing session manager configuration or creates a new one if it does not exist.
+     * @return a non-null {@code SessionManagerConfig} instance
+     */
     public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
 
+    /**
+     * Returns the configuration for acceptable request patterns.
+     * @return the {@code AcceptableConfig} instance
+     */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
     }
 
+    /**
+     * Creates a new configuration for acceptable request patterns.
+     * @return the new {@code AcceptableConfig} instance
+     */
     public AcceptableConfig newAcceptableConfig() {
         return newParameters(acceptable);
     }
 
+    /**
+     * Returns the existing configuration for acceptable request patterns
+     * or creates a new one if it does not exist.
+     * @return a non-null {@code AcceptableConfig} instance
+     */
     public AcceptableConfig touchAcceptableConfig() {
         return touchParameters(acceptable);
     }

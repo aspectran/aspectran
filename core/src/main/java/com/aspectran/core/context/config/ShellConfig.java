@@ -24,13 +24,28 @@ import com.aspectran.utils.apon.ValueType;
  */
 public class ShellConfig extends AbstractParameters {
 
+    /** The style settings for the shell. */
     private static final ParameterKey style;
+
+    /** The welcome message displayed on startup. */
     private static final ParameterKey greetings;
+
+    /** The command prompt string. */
     private static final ParameterKey prompt;
+
+    /** The list of commands to execute on startup. */
     private static final ParameterKey commands;
+
+    /** The configuration for the session manager. */
     private static final ParameterKey session;
+
+    /** The path to the command history file. */
     private static final ParameterKey historyFile;
+
+    /** Whether to enable verbose output. */
     private static final ParameterKey verbose;
+
+    /** The configuration for acceptable request patterns. */
     private static final ParameterKey acceptable;
 
     private static final ParameterKey[] parameterKeys;
@@ -57,50 +72,97 @@ public class ShellConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new ShellConfig.
+     */
     public ShellConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the shell style configuration.
+     * @return the {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig getShellStyleConfig() {
         return getParameters(style);
     }
 
+    /**
+     * Creates a new shell style configuration.
+     * @return the new {@code ShellStyleConfig} instance
+     */
     public ShellStyleConfig newShellStyleConfig() {
         return newParameters(style);
     }
 
+    /**
+     * Returns the existing shell style configuration or creates a new one if it does not exist.
+     * @return a non-null {@code ShellStyleConfig} instance
+     */
     public SessionManagerConfig touchShellStyleConfig() {
         return touchParameters(style);
     }
 
+    /**
+     * Returns the welcome message.
+     * @return the greetings text
+     */
     public String getGreetings() {
         return getString(greetings);
     }
 
+    /**
+     * Sets the welcome message.
+     * @param greetings the greetings text
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig setGreetings(String greetings) {
         putValue(ShellConfig.greetings, greetings);
         return this;
     }
 
+    /**
+     * Returns the command prompt string.
+     * @return the prompt string
+     */
     public String getPrompt() {
         return getString(prompt);
     }
 
+    /**
+     * Sets the command prompt string.
+     * @param prompt the prompt string
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig setPrompt(String prompt) {
         putValue(ShellConfig.prompt, prompt);
         return this;
     }
 
+    /**
+     * Returns the list of commands to execute on startup.
+     * @return the list of commands
+     */
     public String[] getCommands() {
         return getStringArray(commands);
     }
 
+    /**
+     * Sets the list of commands to execute on startup.
+     * @param commands the list of commands
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig setCommands(String[] commands) {
         removeValue(ShellConfig.commands);
         putValue(ShellConfig.commands, commands);
         return this;
     }
 
+    /**
+     * Adds a command to execute on startup.
+     * @param command the command to add
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig addCommand(String command) {
         putValue(ShellConfig.commands, command);
         return this;
@@ -130,19 +192,37 @@ public class ShellConfig extends AbstractParameters {
         return touchParameters(session);
     }
 
+    /**
+     * Returns the path to the command history file.
+     * @return the history file path
+     */
     public String getHistoryFile() {
         return getString(historyFile);
     }
 
+    /**
+     * Sets the path to the command history file.
+     * @param historyFile the history file path
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig setHistoryFile(String historyFile) {
         putValue(ShellConfig.historyFile, historyFile);
         return this;
     }
 
+    /**
+     * Returns whether verbose output is enabled.
+     * @return true if verbose output is enabled, false otherwise
+     */
     public boolean isVerbose() {
         return getBoolean(verbose, false);
     }
 
+    /**
+     * Sets whether to enable verbose output.
+     * @param verbose true to enable verbose output, false otherwise
+     * @return this {@code ShellConfig} instance
+     */
     public ShellConfig setVerbose(boolean verbose) {
         putValue(ShellConfig.verbose, verbose);
         return this;

@@ -22,10 +22,12 @@ import com.aspectran.utils.apon.VariableParameters;
 
 /**
  * Configuration for system-level properties.
+ *
  * @since 6.6.4
  */
 public class SystemConfig extends AbstractParameters {
 
+    /** The system properties. */
     private static final ParameterKey properties;
 
     private static final ParameterKey[] parameterKeys;
@@ -38,10 +40,17 @@ public class SystemConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new SystemConfig.
+     */
     public SystemConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the names of all properties.
+     * @return the property names
+     */
     public String[] getPropertyNames() {
         Parameters properties = getParameters(SystemConfig.properties);
         if (properties != null) {
@@ -51,6 +60,11 @@ public class SystemConfig extends AbstractParameters {
         }
     }
 
+    /**
+     * Returns the value of the property with the specified name.
+     * @param name the name of the property
+     * @return the property value, or {@code null} if not found
+     */
     public String getProperty(String name) {
         Parameters properties = getParameters(SystemConfig.properties);
         if (properties != null) {
@@ -60,6 +74,11 @@ public class SystemConfig extends AbstractParameters {
         }
     }
 
+    /**
+     * Sets a system property.
+     * @param name the name of the property
+     * @param value the value of the property
+     */
     public void setProperty(String name, String value) {
         Parameters properties = touchParameters(SystemConfig.properties);
         properties.putValue(name, value);

@@ -29,17 +29,8 @@ import java.util.function.Supplier;
  * are used for conditions that should never occur if the program is correct.</p>
  *
  * <p>If an assertion fails, an {@link IllegalStateException} or an
- * {@link IllegalArgumentException} is thrown.</p>
- *
- * <p>This class is a clone of org.springframework.util.Assert and is mainly for
+ * {@link IllegalArgumentException} is thrown. This class is mainly for
  * internal use within the framework.</p>
- *
- * @author Keith Donald
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Colin Sampaleanu
- * @author Rob Harrop
- * @since 6.2.0
  */
 public abstract class Assert {
 

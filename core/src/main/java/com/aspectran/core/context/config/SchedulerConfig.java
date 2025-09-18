@@ -24,8 +24,13 @@ import com.aspectran.utils.apon.ValueType;
  */
 public class SchedulerConfig extends AbstractParameters {
 
+    /** The delay in seconds before the scheduler starts. */
     private static final ParameterKey startDelaySeconds;
+
+    /** Whether to wait for running jobs to complete on shutdown. */
     private static final ParameterKey waitOnShutdown;
+
+    /** Whether the scheduler is enabled. */
     private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
@@ -42,40 +47,78 @@ public class SchedulerConfig extends AbstractParameters {
         };
     }
 
+    /**
+     * Instantiates a new SchedulerConfig.
+     */
     public SchedulerConfig() {
         super(parameterKeys);
     }
 
+    /**
+     * Returns the delay in seconds before the scheduler starts.
+     * @return the start delay in seconds, or -1 if not set
+     */
     public int getStartDelaySeconds() {
         return getInt(startDelaySeconds, -1);
     }
 
+    /**
+     * Returns whether the start delay is set.
+     * @return true if the start delay is set, false otherwise
+     */
     public boolean hasStartDelaySeconds() {
         return hasValue(startDelaySeconds);
     }
 
+    /**
+     * Sets the delay in seconds before the scheduler starts.
+     * @param startDelaySeconds the start delay in seconds
+     * @return this {@code SchedulerConfig} instance
+     */
     public SchedulerConfig setStartDelaySeconds(int startDelaySeconds) {
         putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
         return this;
     }
 
+    /**
+     * Returns whether to wait for running jobs to complete on shutdown.
+     * @return true to wait, false otherwise
+     */
     public boolean isWaitOnShutdown() {
         return getBoolean(waitOnShutdown, false);
     }
 
+    /**
+     * Returns whether the wait-on-shutdown flag is set.
+     * @return true if the flag is set, false otherwise
+     */
     public boolean hasWaitOnShutdown() {
         return hasValue(waitOnShutdown);
     }
 
+    /**
+     * Sets whether to wait for running jobs to complete on shutdown.
+     * @param waitOnShutdown true to wait, false otherwise
+     * @return this {@code SchedulerConfig} instance
+     */
     public SchedulerConfig setWaitOnShutdown(boolean waitOnShutdown) {
         putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
         return this;
     }
 
+    /**
+     * Returns whether the scheduler is enabled.
+     * @return true if enabled, false otherwise
+     */
     public boolean isEnabled() {
         return getBoolean(enabled, false);
     }
 
+    /**
+     * Sets whether the scheduler is enabled.
+     * @param enabled true to enable, false to disable
+     * @return this {@code SchedulerConfig} instance
+     */
     public SchedulerConfig setEnabled(boolean enabled) {
         putValue(SchedulerConfig.enabled, enabled);
         return this;

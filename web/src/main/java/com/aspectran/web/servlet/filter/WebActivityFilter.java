@@ -39,7 +39,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * The Class WebActivityFilter.
+ * A servlet filter that bypasses certain requests to the default servlet,
+ * preventing them from being processed by Aspectran's main servlet.
+ * <p>This is useful for serving static resources (e.g., images, CSS, JavaScript)
+ * directly by the container's default servlet, improving performance by avoiding
+ * unnecessary processing.</p>
+ *
+ * <p>The filter is configured via an init-parameter named "bypasses", which
+ * accepts a comma-separated list of wildcard patterns for the request paths
+ * to bypass.</p>
  */
 public class WebActivityFilter implements Filter {
 
@@ -47,8 +55,10 @@ public class WebActivityFilter implements Filter {
 
     private static final String BYPASS_PATTERN_DELIMITERS = ",;\t\r\n\f";
 
+    /** The patterns for requests to bypass. */
     private WildcardPatterns bypassPatterns;
 
+    /** The handler for default servlet requests. */
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     @Override
@@ -77,6 +87,11 @@ public class WebActivityFilter implements Filter {
         }
     }
 
+    /**
+     * Checks if the request path matches a bypass pattern.
+     * If it matches, the request is handled by the default servlet.
+     * Otherwise, the request is passed to the next filter in the chain.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
