@@ -21,9 +21,6 @@ import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Defines a set of properties that are only active when a specific profile is enabled.
  * This is used to provide environment-specific configuration (e.g., for development vs. production).

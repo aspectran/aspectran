@@ -17,8 +17,6 @@ package com.aspectran.core.component.template.engine;
 
 import com.aspectran.core.activity.Activity;
 
-import java.io.Writer;
-
 /**
  * A generic interface for template engines.
  * This interface defines the contract for processing templates, either by name or from a string source,
