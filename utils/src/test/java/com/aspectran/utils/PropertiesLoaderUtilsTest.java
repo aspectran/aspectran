@@ -42,10 +42,11 @@ class PropertiesLoaderUtilsTest {
 
     @Test
     void testLoadProperties() throws IOException {
-        Properties props = PropertiesLoaderUtils.loadPropertiesAsUtf8("test.encrypted.properties");
-        assertEquals(props.getProperty("name"), "Aspectran");
-        assertEquals(props.getProperty("passwd"), "1234");
-        assertEquals(props.getProperty("name_ko"), "아스펙트란");
+        System.setProperty(PropertiesLoaderUtils.PROPERTIES_ENCODING_PROPERTY, "UTF-8");
+        Properties props = PropertiesLoaderUtils.loadProperties("test.encrypted.properties");
+        assertEquals("Aspectran", props.getProperty("name"));
+        assertEquals("1234", props.getProperty("passwd"));
+        assertEquals("아스펙트란", props.getProperty("name_ko"));
     }
 
 }

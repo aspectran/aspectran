@@ -1,9 +1,16 @@
 system: {
     properties: {
-        aspectran.encryption.password: demo!
+        # The current algorithm is not secure.
+        # For higher security, use PBEWITHHMACSHA256ANDAES_128.
         aspectran.encryption.algorithm: PBEWithMD5AndTripleDES
-        com.aspectran.core.context.builder.debugMode: false
-        com.aspectran.core.context.builder.useAponToLoadXml: false
+        aspectran.encryption.password: demo!
+        # To change the encoding of the properties file,
+        # modify the value below or pass it as a -D option when starting the JVM.
+        aspectran.properties.encoding: UTF-8
+        # Enables statistics collection for the JBoss thread pool (Enhanced Queue Executor),
+        # which is useful for performance monitoring and debugging.
+        jboss.threads.eqe.statistics: true
+        jboss.threads.eqe.statistics.active-count: true
     }
 }
 context: {
