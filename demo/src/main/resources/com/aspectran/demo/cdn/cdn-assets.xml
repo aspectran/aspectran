@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <bean id="cdnAssets" class="com.aspectran.core.support.PropertiesFactoryBean">
+        <properties>
+            <item name="ignoreInvalidResource" valueType="boolean">false</item>
+        </properties>
+        <properties profile="prod">
+            <item name="locations" type="array">
+                <value>classpath:com/aspectran/demo/cdn/cdn-assets-prod.properties</value>
+            </item>
+        </properties>
+        <properties profile="!prod">
+            <item name="locations" type="array">
+                <value>classpath:com/aspectran/demo/cdn/cdn-assets-dev.properties</value>
+            </item>
+        </properties>
+    </bean>
+
+</aspectran>

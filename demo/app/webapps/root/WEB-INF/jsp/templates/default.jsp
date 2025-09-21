@@ -1,88 +1,152 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://aspectran.com/tags" prefix="aspectran" %>
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (() => {
+            const getStoredTheme = () => localStorage.getItem('theme');
+            const getPreferredTheme = () => {
+                const storedTheme = getStoredTheme();
+                if (storedTheme) {
+                    return storedTheme;
+                }
+                return 'auto';
+            };
+            const setTheme = theme => {
+                const newTheme = theme === 'auto'
+                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : theme;
+                document.documentElement.setAttribute('data-bs-theme', newTheme);
+            };
+            setTheme(getPreferredTheme());
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google" content="notranslate">
-    <title>${empty page.title ? "Aspectran Demo Site" : page.title}</title>
+    <title>${empty page.title ? "Aspectran Demo" : page.title}</title>
     <meta name="description" content="${empty page.description ? "Welcome to the Aspectran Demo Site" : page.description}">
-    <link rel="stylesheet" href="https://assets.aspectran.com/foundation@6.9.0/css/aspectran.css">
+    <link rel="mask-icon" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/aspectran-logo.svg" color="#4B555A">
+    <link rel="apple-touch-icon" sizes="57x57" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-96x96.png">
+    <meta name="msapplication-TileImage" content="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/ms-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#4B555A">
+    <link rel="stylesheet" type="text/css" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/bootstrap@5.3.8/css/aspectran.css?v=20250921"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
     <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
-    <script src="https://aspectran.com/assets/js/jquery.min.js"></script>
-    <link rel="mask-icon" href="https://assets.aspectran.com/img/aspectran-logo.svg" color="#4B555A">
-    <link rel="apple-touch-icon" sizes="57x57" href="https://assets.aspectran.com/img/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="https://assets.aspectran.com/img/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="https://assets.aspectran.com/img/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="https://assets.aspectran.com/img/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="https://assets.aspectran.com/img/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://assets.aspectran.com/img/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="https://assets.aspectran.com/img/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://assets.aspectran.com/img/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://assets.aspectran.com/img/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="https://assets.aspectran.com/img/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://assets.aspectran.com/img/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://assets.aspectran.com/img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="https://assets.aspectran.com/img/favicon-96x96.png">
-    <meta name="msapplication-TileImage" content="https://assets.aspectran.com/img/ms-icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#4B555A">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
 <body id="top-of-page" class="${page.style}" itemscope itemtype="https://schema.org/WebPage">
-<nav id="navigation" class="no-js">
-    <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
+<nav id="navigation" class="navbar navbar-expand-lg" data-bs-theme="dark">
+    <div class="title-bar">
         <div class="title-bar-left">
-            <a class="logo" href="/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+            <a class="logo" href="<aspectran:url value="/"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
         </div>
         <div class="title-bar-center">
             <a href="#top-of-page">Aspectran</a>
         </div>
-        <div class="title-bar-right" data-toggle="gnb-menu">
-            <a class="menu-icon" title="Menu"></a>
+        <div class="title-bar-right">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </div>
-    <div class="top-bar" id="gnb-menu" style="display:none">
-        <div class="grid-container ${page.style}">
+    <div class="top-bar">
+        <div class="container collapse navbar-collapse" id="navbarSupportedContent">
             <div class="top-bar-logo">
                 <div class="circle">
-                    <a class="logo" href="/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+                    <aspectran:profile expression="prod">
+                        <a class="navbar-brand logo" href="<aspectran:url value="https://public.aspectran.com/"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+                    </aspectran:profile>
+                    <aspectran:profile expression="!prod">
+                        <a class="navbar-brand logo" href="<aspectran:url value="/../"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+                    </aspectran:profile>
                 </div>
             </div>
-            <div class="top-bar-left">
-                <ul class="dropdown menu" data-dropdown-menu>
-                    <li>
-                        <a>Examples</a>
-                        <ul class="submenu menu vertical" data-submenu>
-                            <li><a href="/examples/hello-world">Hello World</a></li>
-                            <li><a href="/examples/gs-rest-service/">RESTful Web Service</a></li>
-                            <li><a href="/examples/file-upload/">File Upload</a></li>
-                            <li><a href="/chat/">WebSocket Chat Demo</a></li>
-                            <li><a href="/interpreter/">Remote Command Shell</a></li>
-                            <li><a href="/skylark/">Skylark Terminal</a></li>
+            <div class="top-bar-left me-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                            href="<aspectran:url value="/"/>" title="Examples">Examples</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<aspectran:url value="/examples/hello-world"/>">Hello World</a></li>
+                            <li><a class="dropdown-item" href="<aspectran:url value="/examples/gs-rest-service/"/>">RESTful Web Service</a></li>
+                            <li><a class="dropdown-item" href="<aspectran:url value="/examples/file-upload/"/>">File Upload</a></li>
+                            <li><a class="dropdown-item" href="<aspectran:url value="/chat/"/>">WebSocket Chat Demo</a></li>
+                            <li><a class="dropdown-item" href="<aspectran:url value="/interpreter/"/>">Remote Command Shell</a></li>
+                            <li><a class="dropdown-item" href="<aspectran:url value="/skylark/"/>">Skylark Terminal</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Get Involved</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://github.com/aspectran">GitHub</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                            title="More Sample Apps">More Sample Apps</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://petclinic.aspectran.com/">PetClinic Demo</a></li>
+                            <li><a class="dropdown-item" href="https://jpetstore.aspectran.com">JPetStore Demo</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
-            <div class="top-bar-right">
-                <ul class="dropdown menu" data-dropdown-menu>
-                    <li>
-                        <a title="Demo Applications made with Aspectran">More Demo Apps</a>
-                        <ul class="submenu menu vertical" data-submenu>
-                            <li><a href="https://demo.aspectran.com">Aspectran Demo</a></li>
-                            <li><a href="https://jpetstore.aspectran.com">JPetStore Demo</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="quick-search-box">
-                    <form name="google_quick_search">
+            <div class="top-bar-right d-lg-flex align-items-center gap-3">
+                <div class="quick-search-box quick-search-box mx-3 my-2 m-lg-0">
+                    <form name="google_quick_search" role="search">
                         <div class="input-group">
-                            <input class="input-group-field" type="text" name="keyword" placeholder="Search">
-                            <div class="input-group-button">
-                                <button type="submit" class="button hollow"><i class="fi-magnifying-glass"></i></button>
-                            </div>
+                            <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
+                            <button class="btn btn-outline-primary text-white" type="button" id="top-bar-quick-search-btn"><i class="bi bi-search"></i></button>
                         </div>
                     </form>
+                </div>
+                <div class="settings d-flex align-items-center justify-content-end gap-1 gap-2 mx-3 my-1 m-lg-0">
+                    <div class="theme-toggler dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
+                            <i class="bi theme-icon-active"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggler-btn">
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                                    <i class="bi bi-sun-fill me-2 opacity-50"></i>
+                                    Light
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                                    <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
+                                    Dark
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto">
+                                    <i class="bi bi-circle-half me-2 opacity-50"></i>
+                                    Auto
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -90,86 +154,185 @@
 </nav>
 <section itemscope itemtype="https://schema.org/Article">
     <div id="masthead">
-        <div class="grid-container ${page.style}">
-            <div class="grid-x">
-                <div class="cell">
-                    <header>
-                        <p class="subheadline" itemprop="alternativeHeadline">${page.subheadline}</p>
-                        <h1 itemprop="headline">${page.headline}</h1>
-                        <p class="teaser" itemprop="description">
-                            ${page.teaser}
-                        </p>
-                    </header>
-                    <div class="hexagons">
-                        <div class="hexagon hex1"></div>
-                        <div class="hexagon hex2"></div>
-                        <div class="hexagon hex3"></div>
-                        <div class="hexagon hex5"></div>
-                        <div class="hexagon hex6"></div>
-                    </div>
-                </div>
+        <div class="container">
+        <c:if test="${not empty page.headline}">
+            <header>
+                <c:if test="${not empty page.subheadline}">
+                    <p class="subheadline" itemprop="alternativeHeadline">${page.subheadline}</p>
+                </c:if>
+                <c:if test="${not empty page.headline}">
+                    <h1 itemprop="headline">${page.headline}</h1>
+                </c:if>
+                <c:if test="${not empty page.teaser}">
+                    <p class="teaser" itemprop="description">${page.teaser}</p>
+                </c:if>
+            </header>
+        </c:if>
+        <c:if test="${not fn:contains(page.style, 'compact') and not empty page.headline}">
+            <div class="hexagons">
+                <div class="hexagon hex1"></div>
+                <div class="hexagon hex2"></div>
+                <div class="hexagon hex3"></div>
+                <div class="hexagon hex4"></div>
+                <div class="hexagon hex5"></div>
+                <div class="hexagon hex6"></div>
             </div>
+        </c:if>
         </div>
-        <div class="grid-container grid-x breadcrumbs-bar ${page.style}">
-            <div class="cell">
-                <nav role="navigation" aria-label="You are here:">
-                    <ul class="breadcrumbs" itemprop="breadcrumb">
-                        <li><a href="https://aspectran.com/">Aspectran</a></li>
-                        <li><a href="/">Demo</a></li>
-                    </ul>
-                </nav>
-            </div>
+        <c:if test="${not empty page.headinclude}">
+            <jsp:include page="/WEB-INF/jsp/${page.headinclude}.jsp"/>
+        </c:if>
+        <c:if test="${not empty page.headimageinclude}">
+            <jsp:include page="/WEB-INF/jsp/${page.headimageinclude}.jsp"/>
+        </c:if>
+        <div class="container breadcrumb-bar">
+            <nav role="navigation" aria-label="You are here:">
+                <ol class="breadcrumb" itemprop="breadcrumb">
+                </ol>
+            </nav>
         </div>
     </div>
-    <div class="grid-container ${page.style}">
-        <c:if test="${not empty page.include}">
-            <jsp:include page="/WEB-INF/jsp/${page.include}.jsp"/>
-        </c:if>
+    <div class="container page-content">
+    <c:if test="${not empty page.include}">
+        <jsp:include page="/WEB-INF/jsp/${page.include}.jsp"/>
+    </c:if>
     </div>
 </section>
-<div class="grid-container ${page.style}">
-    <div id="up-to-top" class="grid-x">
-        <div class="small-12 cell text-right">
-            <a class="iconfont" href="#top-of-page">&#xf108;</a>
+<div class="container">
+    <div id="up-to-top" class="row">
+        <div class="col text-end">
+            <a class="btn" href="#top-of-page"><i class="bi bi-chevron-up"></i></a>
         </div>
     </div>
 </div>
 <footer id="footer-content">
     <div id="footer">
-        <div class="grid-container">
-            <div class="grid-x grid-padding-x">
-                <div class="medium-2 large-1 cell hide-for-small-only t5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-lg-1 mt-1">
                     <h5><a class="logo" href="https://aspectran.com/aspectran/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
                 </div>
-                <div class="medium-4 large-4 cell">
+                <div class="col-md-4 col-lg-4">
                     <a href="https://aspectran.com/aspectran/"><h5>About Aspectran</h5></a>
                     <p><a href="https://aspectran.com/aspectran/">Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM.</a></p>
                 </div>
-                <div class="small-6 medium-3 large-3 large-offset-1 cell">
+                <div class="col-sm-6 col-md-3 col-lg-3 offset-lg-1">
                     <h5>Get Involved</h5>
-                    <ul class="no-bullet">
-                        <li class="icon-github"> <a href="https://github.com/aspectran" target="_blank" title="" class="external">GitHub</a></li>
+                    <ul class="list-unstyled">
+                        <li class="bi bi-github"> <a href="https://github.com/aspectran" target="_blank" title="" class="external">GitHub</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
     <div id="subfooter">
-        <div class="grid-container">
-            <nav class="grid-x b30">
-                <section id="subfooter-left" class="medium-6 cell credits">
+        <div class="container">
+            <nav class="row mb-1">
+                <section id="subfooter-left" class="col-md-6 credits">
                     <p>Copyright © 2018-present The Aspectran Project</p>
                 </section>
-                <section id="subfooter-right" class="medium-6 cell social-icons text-right">
+                <section id="subfooter-right" class="col-md-6 social-icons text-end">
                     <%= com.aspectran.core.AboutMe.POWERED_BY_LINK %>
                 </section>
             </nav>
         </div>
     </div>
 </footer>
-<script src="https://assets.aspectran.com/foundation@6.9.0/js/foundation.min.js"></script>
 <script>
-    $(document).foundation();
+    $(function () {
+        const getStoredTheme = () => localStorage.getItem('theme');
+        const setStoredTheme = theme => localStorage.setItem('theme', theme);
+
+        const getPreferredTheme = () => {
+            const storedTheme = getStoredTheme();
+            if (storedTheme) {
+                return storedTheme;
+            }
+            return 'auto';
+        };
+
+        const setTheme = theme => {
+            const newTheme = theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
+            $('html').attr('data-bs-theme', newTheme);
+        };
+
+        const showActiveTheme = (theme) => {
+            const $themeToggler = $('.theme-toggler');
+            if (!$themeToggler.length) {
+                return;
+            }
+
+            $themeToggler.find('.dropdown-item.active').removeClass('active');
+            $themeToggler.find('.dropdown-item .bi-check2').addClass('d-none');
+
+            const $activeItem = $themeToggler.find('[data-bs-theme-value="' + theme + '"]');
+            $activeItem.addClass('active');
+            $activeItem.find('.bi-check2').removeClass('d-none');
+
+            const iconClass = $activeItem.find('.bi:first').attr('class').match(/bi-[^\s]+/)[0];
+            $themeToggler.find('.theme-icon-active').attr('class', 'bi theme-icon-active ' + iconClass);
+        };
+
+        const preferredTheme = getPreferredTheme();
+        setTheme(preferredTheme);
+        showActiveTheme(preferredTheme);
+
+        $(window.matchMedia('(prefers-color-scheme: dark)')).on('change', () => {
+            const storedTheme = getStoredTheme();
+            if (storedTheme === 'auto' || !storedTheme) {
+                setTheme('auto');
+            }
+        });
+
+        $('.theme-toggler [data-bs-theme-value]').on('click', function() {
+            const theme = $(this).data('bs-theme-value');
+            setStoredTheme(theme);
+            setTheme(theme);
+            showActiveTheme(theme);
+        });
+    });
+</script>
+<script>
+    const supportedLanguages = ['en', 'ko'];
+    function getPreferredLangCodeFromLocalStorage() {
+        let langCode = localStorage.getItem("preferred-lang-code");
+        if (langCode && supportedLanguages.includes(langCode)) {
+            return langCode;
+        } else {
+            return null;
+        }
+    }
+    function setPreferredLangCodeToLocalStorage(langCode) {
+        localStorage.setItem("preferred-lang-code", langCode);
+    }
+    function getPreferredLangCode() {
+        let langCode = getPreferredLangCodeFromLocalStorage();
+        if (langCode) {
+            return langCode;
+        }
+        const languages = navigator.languages;
+        if (languages && languages.length) {
+            for (const lang of languages) {
+                let code = lang.substring(0, 2);
+                if (supportedLanguages.includes(code)) {
+                    return code;
+                }
+            }
+        }
+        return 'en';
+    }
+    $(function () {
+        $(".choice-preferred-lang").on("click", function (e) {
+            e.preventDefault();
+            let langCode = $(this).attr("lang");
+            if (langCode) {
+                setPreferredLangCodeToLocalStorage(langCode);
+            }
+            location.href = $(this).attr("href");
+        });
+    });
+</script>
+<script>
     $(function () {
         let $win = $(window);
         let $nav = $("#navigation");
@@ -219,117 +382,10 @@
     });
 </script>
 <script>
-    $(function () {
-        $("#masthead h1, article h1, article h2, article h3").each(function (index, item) {
-            let tagn = item.localName;
-            let anchor = "top-of-page";
-            if (tagn !== "h1") {
-                anchor = "anchor-" + (index + 1);
-                $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
-            }
-            $("<li class='toc-" + tagn + "'></li>")
-                .append($("<a anchor='" + anchor + "' href='#" + anchor + "'/>").text($(item).text()))
-                .appendTo("#toc ul");
-        });
-    });
-</script>
-<script>
-    $(function () {
-        $(".lazy-sticky").each(function () {
-            const $win = $(window);
-            const $this = $(this);
-            const baseOffsetTop = $this.offset().top;
-            const upToTopHeight = $("#up-to-top").height() + 30 + 60;
-            let footerHeight = $("#footer-content").height() + upToTopHeight;
-            let offsetTop = 0;
-            let thisHeight = $this.height();
-            let winHeight = $win.height();
-            let scrollTimer = null;
-            let immediate = false;
-            $this.find("#toc ul a").click(function () {
-                immediate = true;
-                let anchor = $(this).attr("anchor");
-                if (anchor !== "top-of-page") {
-                    $("#navigation").addClass("immediate");
-                }
-            });
-            $win.scroll(function () {
-                let scrollTop = $win.scrollTop();
-                if (scrollTop < baseOffsetTop) {
-                    if (scrollTimer) {
-                        clearInterval(scrollTimer);
-                        scrollTimer = null;
-                    }
-                    scrollTimer = setInterval(function () {
-                        if (offsetTop !== 0) {
-                            $this.css({
-                                top: 0
-                            });
-                        }
-                        offsetTop = 0;
-                        clearInterval(scrollTimer);
-                        scrollTimer = null;
-                        immediate = false;
-                    }, immediate ? 250 : 500);
-                } else {
-                    let topBarHeight = $("#navigation.fixed .top-bar").height()||0;
-                    if (immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) ||
-                        (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
-                        if ($this.offset().left >= 15 && $this.width() < 500) {
-                            if (scrollTimer) {
-                                clearInterval(scrollTimer);
-                                scrollTimer = null;
-                            }
-                            scrollTimer = setInterval(function () {
-                                topBarHeight = $("#navigation.fixed .top-bar").height()||0;
-                                scrollTop = $win.scrollTop();
-                                if (scrollTop < baseOffsetTop + topBarHeight) {
-                                    scrollTop = 0;
-                                } else {
-                                    scrollTop = scrollTop - baseOffsetTop + topBarHeight + 30;
-                                }
-                                if (scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight) {
-                                    scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight;
-                                }
-                                offsetTop = scrollTop;
-                                $this.css({
-                                    position: "relative"
-                                });
-                                $this.animate({
-                                    top: scrollTop + "px"
-                                }, 300);
-                                clearInterval(scrollTimer);
-                                scrollTimer = null;
-                                winHeight = $win.height();
-                                thisHeight = $this.height();
-                                footerHeight = $("#footer-content").height() + upToTopHeight;
-                                immediate = false;
-                            }, immediate ? 250 : 500);
-                        }
-                    }
-                }
-            });
-            $win.resize(function () {
-                if ($this.offset().left < 15 || $this.width() >= 500) {
-                    clearInterval(scrollTimer);
-                    $this.css("top", 0);
-                } else {
-                    $win.scroll();
-                }
-            });
-            setTimeout(function () {
-                if ($win.scrollTop() > baseOffsetTop) {
-                    offsetTop = $win.scrollTop();
-                    $win.scroll();
-                }
-            }, 150);
-        });
-    });
-</script>
-<script>
     /* Creating custom :external selector */
     $.expr[':'].external = function (obj) {
         return obj.href
+            && !obj.href.match(/aspectran.com\//)
             && !obj.href.match(/^javascript:/)
             && !obj.href.match(/^mailto:/)
             && (obj.hostname !== location.hostname);
@@ -343,27 +399,33 @@
 </script>
 <script>
     $(function () {
-        let menuitem = $("#gnb-menu .dropdown li a[href='" + location.pathname + "']").last();
-        if (menuitem.length > 0) {
+        let links = $("#navbarSupportedContent .navbar-nav a[href='" + decodeURI(location.pathname) + "']").last();
+        if (links.length > 0) {
             let arr = [];
-            arr.push({'name': menuitem.text(), 'href': null});
-            menuitem.parentsUntil(".dropdown > li:eq(0)").each(function () {
-                if ($(this).hasClass("menu")) {
-                    let a2 = $(this).prev();
-                    if (a2.is("a")) {
-                        arr.push({'name': a2.text(), 'href': a2.attr("href") || ""});
+            arr.push({'name': links.text(), 'href': location.pathname});
+            links.parentsUntil(".navbar-nav").each(function () {
+                let a2 = $(this).find(".nav-link");
+                if (a2.is("a")) {
+                    let href = a2.attr("href");
+                    if (href !== location.pathname) {
+                        arr.push({'name': a2.text(), 'href': href || ""});
                     }
                 }
             });
             arr.reverse();
             for (let i in arr) {
                 let item = arr[i];
+                let li = $("<li class='breadcrumb-item'></li>");
                 if (i < arr.length - 1) {
-                    $(".breadcrumbs").append("<li><a href='" + item.href + "'>" + item.name + "</a></li>");
+                    $("<a/>").attr("href", item.href).text(item.name).appendTo(li);
                 } else {
-                    $(".breadcrumbs").append("<li><span class='show-for-sr'>Current: </span> <span class='current'>" + item.name + "</span></li>");
+                    li.addClass("active").text(item.name);
                 }
+                li.appendTo(".breadcrumb");
             }
+        }
+        if (!$(".breadcrumb li").length) {
+            $(".breadcrumb-bar").addClass("invisible");
         }
     });
 </script>

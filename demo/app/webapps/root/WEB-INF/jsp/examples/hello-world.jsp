@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div class="grid-x grid-padding-x">
-  <div class="cell contour">
+<div class="row gx-3">
+  <div class="col">
     <div class="undercon" style="text-align:center;font-size:100px;font-weight:bold;color:#4B4B4B;padding:50px 0;">
       <svg xmlns="http://www.w3.org/2000/svg"
            version="1.1"

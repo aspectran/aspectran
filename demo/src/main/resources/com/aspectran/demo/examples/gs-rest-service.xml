@@ -7,12 +7,16 @@
         A collection of Translets for the Restful Web Service example.
     </description>
 
-    <translet name="/examples/gs-rest-service/">
+    <settings>
+        <setting name="transletNamePrefix" value="/examples/gs-rest-service"/>
+    </settings>
+
+    <translet name="/">
         <echo id="page">
             <item name="headline">Building a RESTful Web Service</item>
             <item name="teaser">
                 A sample page that uses RESTful web services using HTTP support methods such as
-                GET, PUT, POST, and DELETE.
+                GET, PUT, POST and DELETE.
             </item>
             <item name="include">examples/gs-rest-service</item>
             <item name="style">plate</item>

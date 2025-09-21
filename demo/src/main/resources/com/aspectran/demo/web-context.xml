@@ -33,6 +33,7 @@
         </settings>
     </aspect>
 
+    <append resource="com/aspectran/demo/cdn/cdn-assets.xml"/>
     <append resource="com/aspectran/demo/home/main.xml"/>
     <append resource="com/aspectran/demo/examples/hello-world.xml"/>
     <append resource="com/aspectran/demo/examples/gs-rest-service.xml"/>

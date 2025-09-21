@@ -1,176 +1,172 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div class="grid-x grid-padding-x">
-    <div id="title" class="cell small-12">
-        <h2>Chat <span id="totalPeople"></span></h2>
-        <a class="leave" onclick="leaveRoom();">Leave</a>
+<%@ taglib uri="http://aspectran.com/tags" prefix="aspectran" %>
+<div class="row">
+    <div id="chat-title" class="col-12 p-3">
+        <h2 class="m-0">Chat <span id="totalPeople"></span></h2>
+        <a class="btn btn-outline-secondary leave" onclick="leaveRoom();"><i class="bi bi-box-arrow-left"></i> Leave</a>
     </div>
-    <div id="contacts" class="columns medium-4 large-3 hide-for-small-only"></div>
-    <div id="room" class="cell small-12 medium-8 large-9">
-        <form id="signin" onsubmit="return false;">
+    <div id="chat-contacts" class="col-md-4 col-lg-3 d-none d-md-block p-3"></div>
+    <div id="chat-room" class="col-12 col-md-8 col-lg-9 ps-3">
+        <form id="chat-signin" onsubmit="return false;">
             <h3>Type your username</h3>
-            <input type="text" id="username" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
-            <button class="button" onclick="signIn()">Start Chatting</button>
+            <input type="text" id="chat-username" class="form-control" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
+            <button class="btn btn-primary" onclick="signIn()">Start Chatting <i class="bi bi-box-arrow-right ms-2"></i></button>
         </form>
-        <div id="messages"></div>
-        <form id="chat-controls">
-            <div class="input-group">
-                <input class="input-group-field" type="text" id="message" placeholder="Type a message..."/>
-                <div class="input-group-button">
-                    <button type="submit" class="button">Send</button>
-                </div>
+        <div id="chat-messages" class="pe-3 pb-3"></div>
+        <form id="chat-controls-form">
+            <div class="input-group pe-3">
+                <input class="form-control" type="text" id="chat-message" placeholder="Type a message..."/>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send-fill"></i> Send</button>
             </div>
         </form>
     </div>
 </div>
 <style>
-    #title {
-        background-color: #35505B;
-        padding: 10px 20px 10px 20px;
-        color: #fff;
+    #chat-title {
+        background-color: var(--bs-primary);
+        color: var(--bs-light);
     }
-    #title h2 {
+    #chat-title h2 {
         float: left;
         font-size: 28px;
+        color: var(--bs-light);
     }
-    #title a {
+    #chat-title a {
         float: right;
-        line-height: 38px;
-        vertical-align: bottom;
         display: none;
+        color: var(--bs-light);
     }
 
-    #room {
-        background-color: #f5f5f5;
+    #chat-room {
+        background-color: var(--bs-tertiary-bg);
         height: 580px;
     }
-    #signin {
+    #chat-signin {
         padding: 180px 0 0 0;
-        background-color: #f5f5f5;
+        background-color: var(--bs-tertiary-bg);
+        text-align: center;
     }
-    #signin * {
-        display: block;
+    #chat-signin * {
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 20px;
     }
-    #signin h3 {
+    #chat-signin h3 {
         text-align: center;
         margin-bottom: 30px;
     }
-    #signin input {
+    #chat-signin input {
         max-width: 300px;
     }
 
-    #contacts {
+    #chat-contacts {
         float: left;
-        padding: 15px;
-        background-color: #bbedfe;
+        background-color: var(--bs-secondary-bg);
         height: 580px;
         overflow: auto;
     }
-    #contacts .contact .status {
-        background-color: #13CF13;
+    #chat-contacts .contact .status {
+        background-color: var(--bs-success);
         width: 20px;
         height: 20px;
         border-radius: 50%;
         display: inline-block;
         margin-right: 10px;
     }
-    #contacts .contact .name {
+    #chat-contacts .contact .name {
         line-height: 35px;
         vertical-align: super;
     }
 
-    #messages {
-        height: 500px;
+    #chat-messages {
+        height: 530px;
         overflow-y: auto;
         display: none;
     }
-    #messages .message {
+    #chat-messages .message {
         margin-bottom: 3px;
     }
-    #messages .message .content {
+    #chat-messages .message .content {
         border-radius: 20px;
         padding: 10px;
         display: table;
     }
-    #messages .message.event .content {
-        background-color: #bbedfe;
+    #chat-messages .message.event .content {
+        background-color: var(--bs-info-bg-subtle);
         padding: 7px 20px;
         border-radius: 6px;
         width: 100%;
         text-align: center;
     }
-    #messages .message.event .content strong {
+    #chat-messages .message.event .content strong {
         font-weight: bold;
     }
-    #messages .message.event.error .content {
-        background-color: palevioletred;
-        color: yellow;
+    #chat-messages .message.event.error .content {
+        background-color: var(--bs-danger);
+        color: var(--bs-light);
     }
-    #messages .message.received {
+    #chat-messages .message.received {
         left: 0;
         text-align: left;
     }
-    #messages .message.received .content {
-        background-color: #0084FF;
-        color: #fff;
+    #chat-messages .message.received .content {
+        background-color: var(--bs-primary);
+        color: var(--bs-light);
         border-radius: 0 20px 20px;
     }
-    #messages .message.received .sender {
+    #chat-messages .message.received .sender {
         font-weight: bold;
-        color: #0084FF;
+        color: var(--bs-secondary);
     }
-    #messages .message.sent {
+    #chat-messages .message.sent {
         right: 0;
         text-align: right;
     }
-    #messages .message.sent .content {
-        background-color: #ccc;
+    #chat-messages .message.sent .content {
+        background-color: var(--bs-secondary-bg);
         margin-left: auto;
         margin-right: 0;
         text-align: right;
         border-radius: 20px 0 20px 20px;
     }
-    #messages .message.sent .sender {
+    #chat-messages .message.sent .sender {
         font-weight: bold;
     }
 
-    #chat-controls {
+    #chat-controls-form {
         height: 40px;
-        padding: 20px 0;
         display: none;
     }
 
-    #messages .message.sent.same-sender-previous-message .sender,
-    #messages .message.received.same-sender-previous-message .sender {
+    #chat-messages .message.sent.same-sender-previous-message .sender,
+    #chat-messages .message.received.same-sender-previous-message .sender {
         display: none;
     }
-    #messages .message:not(.same-sender-previous-message) {
+    #chat-messages .message:not(.same-sender-previous-message) {
         margin-top: 10px;
     }
 </style>
 <script>
-    var socket;
-    var currentUser;
+    let socket;
+    let currentUser;
 
     $(function () {
-        $("form#chat-controls").submit(function() {
+        $("form#chat-controls-form").submit(function() {
             sendMessage();
             return false;
         });
     });
 
     function signIn() {
-        currentUser = $("#username").val().trim();
-        $("#username").val("");
+        currentUser = $("#chat-username").val().trim();
+        $("#chat-username").val("");
         if (currentUser) {
-            $("#signin").hide();
-            $("#messages").show();
-            $("#chat-controls").show();
+            $("#chat-signin").hide();
+            $("#chat-messages").show();
+            $("#chat-controls-form").show();
             $("a.leave").show();
-            $("#message").focus();
+            $("#chat-message").focus();
             openSocket();
         }
     }
@@ -179,12 +175,12 @@
         if (socket) {
             socket.close();
         }
-        var url = new URL('/chat', location.href);
+        let url = new URL('<aspectran:url value="/chat"/>', location.href);
         url.protocol = url.protocol.replace('http', 'ws');
         socket = new WebSocket(url.href);
 
         socket.onopen = function(event) {
-            var chatMessage = {
+            let chatMessage = {
                 sendTextMessage: {
                     type: 'JOIN',
                     username: currentUser
@@ -195,9 +191,9 @@
 
         socket.onmessage = function (event) {
             if (typeof event.data === "string") {
-                var chatMessage = JSON.parse(event.data);
+                let chatMessage = JSON.parse(event.data);
                 Object.getOwnPropertyNames(chatMessage).forEach(function(val, idx, array) {
-                    var payload = chatMessage[val];
+                    let payload = chatMessage[val];
                     if (payload) {
                         switch (val) {
                             case "welcomeUser":
@@ -219,7 +215,7 @@
                                 break;
                             case "broadcastAvailableUsers":
                                 cleanAvailableUsers();
-                                for (var i = 0; i < payload.usernames.length; i++) {
+                                for (let i = 0; i < payload.usernames.length; i++) {
                                     addAvailableUsers(payload.usernames[i]);
                                 }
                                 break;
@@ -231,13 +227,13 @@
 
         socket.onclose = function (event) {
             clearTotalPeople();
-            $("#contacts").empty();
-            $("#messages").empty().hide();
-            $("#chat-controls").hide();
+            $("#chat-contacts").empty();
+            $("#chat-messages").empty().hide();
+            $("#chat-controls-form").hide();
             $("a.leave").hide();
-            $("#message").val('');
-            $("#signin").show();
-            $("#username").focus();
+            $("#chat-message").val('');
+            $("#chat-signin").show();
+            $("#chat-username").focus();
         };
 
         socket.onerror = function (event) {
@@ -251,11 +247,11 @@
     }
 
     function sendMessage() {
-        var text = $("#message").val().trim();
-        $("#message").val('');
+        let text = $("#chat-message").val().trim();
+        $("#chat-message").val('');
 
         if (text) {
-            var chatMessage = {
+            let chatMessage = {
                 sendTextMessage: {
                     type: 'CHAT',
                     username: currentUser,
@@ -264,57 +260,57 @@
             };
             socket.send(JSON.stringify(chatMessage));
             displayMessage(currentUser, text);
-            $("#message").val('').focus();
+            $("#chat-message").val('').focus();
         }
     }
 
     function displayMessage(username, text) {
-        var sentByCurrentUer = (currentUser === username);
-        var message = $("<div/>").addClass(sentByCurrentUer === true ? "message sent" : "message received");
+        let sentByCurrentUer = (currentUser === username);
+        let message = $("<div/>").addClass(sentByCurrentUer === true ? "message sent" : "message received");
         message.data("sender", username);
 
-        var sender = $("<span/>").addClass("sender");
+        let sender = $("<span/>").addClass("sender");
         sender.text(sentByCurrentUer === true ? "You" : username);
         sender.appendTo(message);
 
-        var content = $("<span/>").addClass("content").text(text);
+        let content = $("<span/>").addClass("content").text(text);
         content.appendTo(message);
 
-        var lastMessage = $("#messages .message").last();
+        let lastMessage = $("#chat-messages .message").last();
         if (lastMessage.length && lastMessage.data("sender") === username) {
             message.addClass("same-sender-previous-message");
         }
 
-        $("#messages").append(message);
-        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
+        $("#chat-messages").append(message);
+        $("#chat-messages").animate({scrollTop: $("#chat-messages").prop("scrollHeight")});
     }
 
     function displayConnectedUserMessage(username) {
-        var sentByCurrentUer = currentUser === username;
-        var text = (sentByCurrentUer === true ? "Welcome <strong>" + username + "</strong>" : "<strong>" + username + "</strong> joined the chat");
+        let sentByCurrentUer = currentUser === username;
+        let text = (sentByCurrentUer === true ? "Welcome <strong>" + username + "</strong>" : "<strong>" + username + "</strong> joined the chat");
         displayEventMessage(text);
     }
 
     function displayDisconnectedUserMessage(username) {
-        var text = "<strong>" + username + "</strong> left the chat";
+        let text = "<strong>" + username + "</strong> left the chat";
         displayEventMessage(text);
     }
 
     function addAvailableUsers(username) {
-        var contact = $("<div/>").addClass("contact");
-        var status = $("<div/>").addClass("status");
-        var name = $("<span/>").addClass("name").text(username);
-        contact.append(status).append(name).appendTo($("#contacts"));
+        let contact = $("<div/>").addClass("contact");
+        let status = $("<div/>").addClass("status");
+        let name = $("<span/>").addClass("name").text(username);
+        contact.append(status).append(name).appendTo($("#chat-contacts"));
         updateTotalPeople();
     }
 
     function cleanAvailableUsers() {
-        $("#contacts").empty();
+        $("#chat-contacts").empty();
         clearTotalPeople();
     }
 
     function updateTotalPeople() {
-        $("#totalPeople").text("(" + $("#contacts .contact").length + ")");
+        $("#totalPeople").text("(" + $("#chat-contacts .contact").length + ")");
     }
 
     function clearTotalPeople() {
@@ -322,16 +318,16 @@
     }
 
     function displayEventMessage(text) {
-        var div = $("<div/>").addClass("message event");
+        let div = $("<div/>").addClass("message event");
         $("<p/>").addClass("content").html(text).appendTo(div);
-        $("#messages").append(div);
-        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
+        $("#chat-messages").append(div);
+        $("#chat-messages").animate({scrollTop: $("#chat-messages").prop("scrollHeight")});
     }
 
     function displayErrorMessage(text) {
-        var div = $("<div/>").addClass("message event error");
+        let div = $("<div/>").addClass("message event error");
         $("<p/>").addClass("content").html(text).appendTo(div);
-        $("#messages").append(div);
-        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
+        $("#chat-messages").append(div);
+        $("#chat-messages").animate({scrollTop: $("#chat-messages").prop("scrollHeight")});
     }
 </script>

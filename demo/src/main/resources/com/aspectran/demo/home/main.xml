@@ -5,8 +5,9 @@
 
     <translet name="/">
         <echo id="page">
-            <item name="headline">Welcome to the Aspectran Demo Site</item>
-            <item name="teaser">This is a website for demonstrating some recommended best practices developed with Aspectran.</item>
+            <item name="headline">Welcome to Aspectran Demo Site</item>
+            <item name="subheadline">Recommended best practices developed with Aspectran</item>
+            <item name="teaser">This is a site to demonstrate examples developed using Aspectran.</item>
             <item name="include">home/main</item>
             <item name="style">plate solid</item>
         </echo>

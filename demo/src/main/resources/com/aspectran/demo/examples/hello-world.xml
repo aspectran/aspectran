@@ -6,14 +6,10 @@
     <translet name="/examples/hello-world">
         <echo id="page">
             <item name="headline">Hello, World!</item>
-            <item name="teaser">
-                This is the output of a JSP page that is part
-                of the HelloWorld application.
-            </item>
+            <item name="teaser">This is the output of a JSP page that is part of the HelloWorld application.</item>
             <item name="include">examples/hello-world</item>
             <item name="style">plate</item>
         </echo>
-        <action id="helloWorld" bean="helloActivity" method="helloWorld"/>
         <dispatch name="templates/default"/>
     </translet>
 
