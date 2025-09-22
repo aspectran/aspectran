@@ -110,7 +110,7 @@
                 </ul>
             </div>
             <div class="top-bar-right d-lg-flex align-items-center gap-3">
-                <div class="quick-search-box quick-search-box mx-3 my-2 m-lg-0">
+                <div class="quick-search-box m-2 mx-md-0 mb-md-2 m-lg-0">
                     <form name="google_quick_search" role="search">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
@@ -118,7 +118,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="settings d-flex align-items-center justify-content-end gap-1 gap-2 mx-3 my-1 m-lg-0">
+                <div class="settings d-flex align-items-center justify-content-end gap-2 m-2 mx-md-0 mb-md-2 m-lg-0">
                     <div class="theme-toggler dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
                             <i class="bi theme-icon-active"></i>
