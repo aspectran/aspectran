@@ -85,4 +85,4 @@ _**Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime versio
 
 ## License
 
-Aspectran is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+Aspectran is released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).
