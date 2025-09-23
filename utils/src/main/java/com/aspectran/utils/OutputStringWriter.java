@@ -55,7 +55,7 @@ public class OutputStringWriter extends Writer {
     public void write(@NonNull char[] buf, int off, int len) {
         if (off < 0 || len < 0 || off + len > buf.length) {
             throw new IndexOutOfBoundsException("Invalid offset [" + off + "] and / or length [" +
-                len + "] specified for array of size [" + buf.length + "]");
+                    len + "] specified for array of size [" + buf.length + "]");
         } else if (len > 0) {
             touchBuffer().append(buf, off, len);
         }
