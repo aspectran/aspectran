@@ -7,7 +7,7 @@
         |
         |Available commands:
         |   hello     Runs the helloWorld() method of the sampleActivity bean and prints the returned value to the console.
-        |   echo      It accepts parameters and print them to the console.
+        |   echo      It accepts parameters and prints them to the console.
         |   login     It accepts parameters used for login and print them to the console.
         |   chpw      It accepts parameters for changing the password and print them to the console.
         |   free      It uses the Freemarker template engine to output the values of the input parameters to the console.
@@ -66,7 +66,7 @@
 
     <translet name="echo1" async="true">
         <description style="apon">
-            |It accepts parameters and print them to the console.
+            |It accepts parameters and prints them to the console.
         </description>
         <parameters>
             <item name="param1" mandatory="false"/>
@@ -86,7 +86,7 @@
     <translet name="echo2">
         <description style="apon">
             |
-            |   It accepts parameters and print them to the console.
+            |   It accepts parameters and prints them to the console.
             |
         </description>
         <parameters>
@@ -109,7 +109,7 @@
     <translet name="echo3">
         <description style="apon">
             |
-            |   It accepts parameters and print them to the console.
+            |   It accepts parameters and prints them to the console.
             |
         </description>
         <parameters>

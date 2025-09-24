@@ -8,7 +8,7 @@
         |{{bold}}Commands that can run examples:{{bold:off}}
         |   {{CYAN}}hello{{reset}}      Prints "Hello, World!" in your console
         |   {{CYAN}}hello2{{reset}}     Prints "Hello, World!" in your console using ANSI color codes
-        |   {{CYAN}}echo1{{reset}}      It accepts parameters and print as is
+        |   {{CYAN}}echo1{{reset}}      It accepts parameters and prints as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
         |Use the command '{{GREEN}}undertow{{reset}}' to control the built-in Undertow Server.

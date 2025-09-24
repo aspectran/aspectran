@@ -24,8 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,7 +39,7 @@ class ToStringBuilderTest {
 
     @Test
     void testMap() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 
@@ -69,7 +69,7 @@ class ToStringBuilderTest {
 
     @Test
     void testToStringBuilder() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 
@@ -99,7 +99,7 @@ class ToStringBuilderTest {
 
     @Test
     void testCircularReference() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("key1", "value1");
         map.put("key2", map);
 
@@ -120,7 +120,7 @@ class ToStringBuilderTest {
         SimpleDateFormat formatter = new SimpleDateFormat(stringifyContext.getDateTimeFormat(), Locale.ENGLISH);
         Date date1 = formatter.parse("2024-12-01 10:39:24");
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("key1", date1);
 
         String result = ToStringBuilder.toString("Variable", map, stringifyContext);
@@ -129,7 +129,7 @@ class ToStringBuilderTest {
 
     @Test
     void testVariable() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 
