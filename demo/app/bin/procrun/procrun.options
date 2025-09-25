@@ -1,6 +1,6 @@
 # Variables required for execution can be explicitly specified here.
 SERVICE_NAME=Aspectow
-DISPLAY_NAME=Aspectow powered by Aspectran 8
+DISPLAY_NAME=Aspectow powered by Aspectran 9
 DESCRIPTION=Aspectow for Windows Service
 #JAVA_HOME=
 #JVM_MS=256
