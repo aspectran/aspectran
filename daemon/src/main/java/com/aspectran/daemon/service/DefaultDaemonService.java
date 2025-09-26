@@ -103,8 +103,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
      * @throws CoreServiceException if an error occurs while preparing or performing the activity
      */
     @Override
-    public Translet translate(String name, MethodType method,
-                              Map<String, Object> attributeMap, ParameterMap parameterMap) {
+    public Translet translate(
+            String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (checkPaused(name)) {
             return null;
         }

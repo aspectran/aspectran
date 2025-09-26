@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.management.ManagementFactory;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
@@ -38,7 +40,7 @@ public class FileLocker {
 
     private static final String DEFAULT_LOCK_FILENAME = ".lock";
 
-    private File lockFile;
+    private final File lockFile;
 
     private FileChannel fileChannel;
 
@@ -75,7 +77,8 @@ public class FileLocker {
     }
 
     /**
-     * Attempts to acquire a lock on the file.
+     * Attempts to acquire a lock on the file and writes the current process ID (PID)
+     * into the lock file.
      * <p>This method is non-blocking. If the lock is already held by another
      * process, it will return immediately.</p>
      * @return {@code true} if the lock was acquired successfully, {@code false} otherwise
@@ -107,23 +110,37 @@ public class FileLocker {
                 }
                 return false;
             } else {
+                try {
+                    long pid = getPid();
+                    if (pid != -1L) {
+                        fileChannel.truncate(0L);
+                        ByteBuffer buffer = ByteBuffer.wrap(String.valueOf(pid).getBytes());
+                        fileChannel.write(buffer);
+                        fileChannel.force(true);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Successfully wrote PID " + pid + " to " + lockFile.getAbsolutePath());
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.warn("Unable to write PID to lock file " + lockFile.getAbsolutePath(), e);
+                }
                 return true;
             }
         }
     }
 
     /**
-     * Releases the file lock and cleans up associated resources.
-     * <p>This method releases the lock, closes the file channel, and attempts to
-     * delete the lock file.</p>
+     * Releases the file lock.
+     * <p>This method releases the lock, closes the file channel, and deletes the lock file.
+     * The {@code FileLocker} instance can be used again to acquire a new lock.</p>
      * @throws Exception if an error occurs while releasing the lock
      */
     public void release() throws Exception {
         synchronized (this) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Releasing lock on {}", lockFile.getAbsolutePath());
-            }
             if (fileLock != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Releasing lock on {}", lockFile.getAbsolutePath());
+                }
                 try {
                     if (fileLock.isValid()) {
                         fileLock.release();
@@ -144,20 +161,30 @@ public class FileLocker {
                     }
                     fileChannel = null;
                 }
-                if (lockFile != null) {
-                    if (lockFile.delete()) {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Deleted lock file {}", lockFile.getAbsolutePath());
-                        }
-                    } else if (lockFile.exists()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Could not delete lock file {}", lockFile.getAbsolutePath());
-                        }
+                if (lockFile.delete()) {
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Deleted lock file {}", lockFile.getAbsolutePath());
                     }
-                    lockFile = null;
+                } else if (lockFile.exists()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Could not delete lock file {}", lockFile.getAbsolutePath());
+                    }
                 }
             }
         }
+    }
+
+    private long getPid() {
+        String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+        int index = jvmName.indexOf('@');
+        if (index != -1) {
+            try {
+                return Long.parseLong(jvmName.substring(0, index));
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+        return -1L;
     }
 
 }
