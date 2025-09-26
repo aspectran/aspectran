@@ -18,11 +18,17 @@ BASE_DIR="$(
 )"
 
 set -a
+# shellcheck disable=SC1090
 . "$BASE_DIR/bin/run.options"
 set +a
 
+# -----------------------------------------------------------------------------
+# Find JAVA_HOME if not set
+# -----------------------------------------------------------------------------
 if [ -z "$JAVA_HOME" ]; then
+  # Find 'java' binary
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
+  # Resolve symlinks
   while [ -h "$JAVA_BIN" ]; do
     ls=$(ls -ld "$JAVA_BIN")
     link=$(expr "$ls" : '.*-> \(.*\)$')
@@ -32,15 +38,31 @@ if [ -z "$JAVA_HOME" ]; then
       JAVA_BIN="$(dirname "$JAVA_BIN")/$link"
     fi
   done
-  [ -x "$JAVA_BIN" ] && JAVA_HOME="$(dirname "$JAVA_BIN")"
-  [ ! -z "$JAVA_HOME"] && JAVA_HOME=$(
-    cd "$JAVA_HOME/.." >/dev/null || exit
-    pwd
-  )
-else
+  # If java binary is found, set JAVA_HOME to its parent directory
+  if [ -x "$JAVA_BIN" ]; then
+    JAVA_HOME="$(dirname "$JAVA_BIN")"
+    # If JAVA_HOME is not empty, get the real path of its parent directory
+    if [ ! -z "$JAVA_HOME" ]; then
+      JAVA_HOME=$(
+        cd "$JAVA_HOME/.." >/dev/null || exit
+        pwd
+      )
+    fi
+  fi
+fi
+
+# Set JAVA_BIN if JAVA_HOME is set
+if [ -n "$JAVA_HOME" ]; then
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
+# Check if java is available
+if [ ! -x "$JAVA_BIN" ]; then
+  echo "Error: JAVA_HOME is not set and 'java' command is not in your PATH."
+  exit 1
+fi
+
+# Set JVM options
 if [ ! -z "$JVM_MS" ]; then
   JVM_MS_OPT="-Xms${JVM_MS}m"
 fi
@@ -61,7 +83,7 @@ while [ ".$1" != . ]; do
     LOGGING_CONFIG="$BASE_DIR/config/logging/logback-debug.xml"
     shift
     continue
-    ;;
+    ;;  
   *)
     break
     ;;
@@ -71,6 +93,7 @@ if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
   LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 fi
 
+# Run Aspectran Shell
 "$JAVA_BIN" \
   $JVM_MS_OPT \
   $JVM_MX_OPT \

@@ -9,8 +9,8 @@ set BASE_DIR=%CD%
 cd %CURRENT_DIR%
 
 rem Set any explicitly specified variables required to run.
-if exist %~dp0\procrun.options (
-    for /F "eol=# tokens=*" %%i in (%~dp0\procrun.options) do set "%%i"
+if exist "%~dp0procrun.options" (
+    for /F "eol=# tokens=*" %%i in (%~dp0procrun.options) do set "%%i"
 )
 
 if "%SERVICE_NAME%" == "" set SERVICE_NAME=%1
@@ -18,10 +18,35 @@ rem If no ServiceName is specified, the default is "AspectranService"
 if "%SERVICE_NAME%" == "" set SERVICE_NAME=AspectranService
 if "%DISPLAY_NAME%" == "" set DISPLAY_NAME=Aspectran Service
 
-rem Detect JAVA_HOME environment variable
-if "%JAVA_HOME%" == "" goto java-not-set
-call :ResolvePath JAVA_HOME %JAVA_HOME%
-if not exist "%JAVA_HOME%" goto java-not-set
+rem -----------------------------------------------------------------------------
+rem Find or Verify JAVA_HOME
+rem -----------------------------------------------------------------------------
+set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
+
+if defined JAVA_HOME (
+    if not exist "%JAVA_EXE%" (
+        echo Warning: JAVA_HOME is set to "%JAVA_HOME%", but java.exe is not found in the bin directory.
+        set JAVA_HOME=
+    )
+)
+
+if not defined JAVA_HOME (
+    rem Try to find java.exe in the path
+    for /f "delims=" %%j in ('where java.exe 2^>NUL') do (
+        set "JAVA_EXE=%%j"
+        goto :java_exe_found
+    )
+    echo Error: JAVA_HOME is not set and 'java.exe' could not be found in your PATH.
+    goto :end
+    :java_exe_found
+    for %%d in ("%JAVA_EXE%\..\..") do set "JAVA_HOME=%%~fd"
+)
+
+set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
+if not exist "%JAVA_EXE%" (
+    echo Error: Failed to determine a valid JAVA_HOME. Could not find java.exe.
+    goto :end
+)
 
 echo Using SERVICE_NAME: %SERVICE_NAME%
 echo Using DISPLAY_NAME: %DISPLAY_NAME%
@@ -32,8 +57,8 @@ if not "%JVM_MX%" == "" echo Using JVM_MX: %JVM_MX%MB
 if not "%JVM_SS%" == "" echo Using JVM_SS: %JVM_SS%KB
 
 rem Detect x86 or amd64
-if PROCESSOR_ARCHITECTURE == "amd64" goto is-amd64
-if PROCESSOR_ARCHITEW6432 == "amd64" goto is-amd64
+if "%PROCESSOR_ARCHITECTURE%" == "amd64" goto is-amd64
+if "%PROCESSOR_ARCHITEW6432%" == "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
 :is-x86
 echo Current System Architecture: x86
@@ -50,18 +75,14 @@ echo Aspectran Home: %BASE_DIR%
 
 rem Service log configuration
 set PR_LOGPATH=%BASE_DIR%\logs\procrun
-if not exist %PR_LOGPATH% mkdir %PR_LOGPATH%
+if not exist "%PR_LOGPATH%" mkdir "%PR_LOGPATH%"
 set PR_LOGPREFIX=%SERVICE_NAME%
 set PR_LOGLEVEL=Info
 set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%-stdout.log
 set PR_STDERROR=%BASE_DIR%\logs\%SERVICE_NAME%-stderr.log
 
-rem Path to java installation
-set PR_JVM=%JAVA_HOME%\jre\bin\server\jvm.dll
-if exist "%PR_JVM%" goto jvm-detected
-set PR_JVM=%JAVA_HOME%\bin\server\jvm.dll
-:jvm-detected
-if not exist "%PR_JVM%" goto invalid-jvm
+rem Let procrun detect the JVM automatically.
+set PR_JVM=auto
 echo Java VM: %PR_JVM%
 
 set PR_CLASSPATH=%BASE_DIR%\lib\*
@@ -88,7 +109,7 @@ set PR_JVMOPTIONS=%PR_JVMOPTIONS%;-Daspectran.basePath=%BASE_DIR%
 set PR_JVMOPTIONS=%PR_JVMOPTIONS%;-Dlogback.configurationFile=%BASE_DIR%\config\logging\logback.xml
 
 echo Creating Service...
-%PR_INSTALL% //IS/%SERVICE_NAME%^
+"%PR_INSTALL%" //IS//%SERVICE_NAME%^
  --DisplayName="%DISPLAY_NAME%"^
  --Description="%DESCRIPTION%"^
  --Install="%PR_INSTALL%"^
@@ -115,20 +136,12 @@ echo Creating Service...
  
 if not errorlevel 1 (
   echo For easy management, copy the prunmgr.exe file with the same name as the service name.
-  copy /Y %BASE_DIR%\bin\procrun\prunmgr.exe %BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe
+  copy /Y "%BASE_DIR%\bin\procrun\prunmgr.exe" "%BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe"
   goto installed
 )
 
 echo Failed to install "%SERVICE_NAME%" service.
 echo Refer to log in %PR_LOGPATH%
-goto end
-
-:java-not-set
-echo JAVA_HOME environment variable missing. Please set it before using the script.
-goto end
-
-:invalid-jvm
-echo Could not find the jvm.dll %PR_JVM%
 goto end
 
 :invalid-installer
@@ -148,11 +161,3 @@ echo Usage: %~n0 [ServiceName]
 
 :end
 exit /b
-
-rem Resolve path to absolute.
-rem @arg1 Name of output variable
-rem @arg2 Path to resolve
-rem @return Resolved absolute path
-:ResolvePath
-  set %1=%~dpfn2
-  exit /b

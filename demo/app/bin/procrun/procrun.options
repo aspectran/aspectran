@@ -1,8 +1,27 @@
-# Variables required for execution can be explicitly specified here.
+#
+# Configuration options for running the application as a Windows service
+# using Apache Commons Daemon procrun.
+# These settings are used by the service installation and execution scripts.
+#
+
+# The service name used for installation and management.
 SERVICE_NAME=Aspectow
+
+# The name displayed in the Windows Services management console.
 DISPLAY_NAME=Aspectow powered by Aspectran 9
+
+# A brief description of the service.
 DESCRIPTION=Aspectow for Windows Service
+
+# Specifies the path to the Java Development Kit (JDK).
+# If not set, the system's default JAVA_HOME will be used.
 #JAVA_HOME=
+
+# Initial Java heap size in megabytes.
 #JVM_MS=256
+
+# Maximum Java heap size in megabytes.
 #JVM_MX=1024
+
+# Java thread stack size in kilobytes.
 #JVM_SS=4096

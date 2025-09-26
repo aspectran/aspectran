@@ -35,9 +35,11 @@ BASE_DIR="$(
 )"
 
 set -a
+# shellcheck disable=SC1090
 . "$BASE_DIR/bin/run.options"
 set +a
 
+# Parse command-line arguments
 while [ ".$1" != . ]; do
   case "$1" in
   --base-dir)
@@ -58,8 +60,13 @@ while [ ".$1" != . ]; do
   esac
 done
 
+# -----------------------------------------------------------------------------
+# Find JAVA_HOME if not set
+# -----------------------------------------------------------------------------
 if [ -z "$JAVA_HOME" ]; then
+  # Find 'java' binary
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
+  # Resolve symlinks
   while [ -h "$JAVA_BIN" ]; do
     ls=$(ls -ld "$JAVA_BIN")
     link=$(expr "$ls" : '.*-> \(.*\)$')
@@ -69,15 +76,31 @@ if [ -z "$JAVA_HOME" ]; then
       JAVA_BIN="$(dirname "$JAVA_BIN")/$link"
     fi
   done
-  [ -x "$JAVA_BIN" ] && JAVA_HOME="$(dirname "$JAVA_BIN")"
-  [ ! -z "$JAVA_HOME"] && JAVA_HOME=$(
-    cd "$JAVA_HOME/.." >/dev/null || exit
-    pwd
-  )
-else
+  # If java binary is found, set JAVA_HOME to its parent directory
+  if [ -x "$JAVA_BIN" ]; then
+    JAVA_HOME="$(dirname "$JAVA_BIN")"
+    # If JAVA_HOME is not empty, get the real path of its parent directory
+    if [ ! -z "$JAVA_HOME" ]; then
+      JAVA_HOME=$(
+        cd "$JAVA_HOME/.." >/dev/null || exit
+        pwd
+      )
+    fi
+  fi
+fi
+
+# Set JAVA_BIN if JAVA_HOME is set
+if [ -n "$JAVA_HOME" ]; then
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
+# Check if java is available
+if [ ! -x "$JAVA_BIN" ]; then
+  echo "Error: JAVA_HOME is not set and 'java' command is not in your PATH."
+  exit 1
+fi
+
+# Set JVM options
 if [ ! -z "$JVM_MS" ]; then
   JVM_MS_OPT="-Xms${JVM_MS}m"
 fi
@@ -95,6 +118,9 @@ CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
+# Timeout in seconds for start/stop operations
+# This can be overridden in run.options
+: "${WAIT_TIMEOUT:=60}"
 
 start_daemon() {
   rm -f "$DAEMON_OUT"
@@ -113,20 +139,11 @@ start_daemon() {
     $DAEMON_MAIN \
     "$ASPECTRAN_CONFIG" \
     >"$DAEMON_OUT" 2>&1 &
-  sleep 0.5
-  line=""
-  while [ -z "$line" ]; do
-    sleep 0.5
-    line=$(head -n 1 "$DAEMON_OUT")
-  done
-  fail_str="Failed to initialize daemon"
-  if [ "$fail_str" != "$line" ]; then
-    return 0
-  else
-    return 1
-  fi
+  return $?
 }
 
+# Stop the daemon by creating a command file in the 'incoming' directory.
+# The daemon actively monitors this directory and will execute the 'quit' command.
 stop_daemon() {
   echo "command: quit" >"$BASE_DIR/cmd/incoming/99-quit.apon"
   return $?
@@ -140,42 +157,72 @@ version() {
 }
 
 start_aspectran() {
-  sleep 0.5
   if [ -f "$LOCK_FILE" ]; then
-    echo "Aspectran daemon is already running."
-    exit 0
+    PID=$(cat "$LOCK_FILE" 2>/dev/null)
+    if [ -n "$PID" ] && kill -0 "$PID" > /dev/null 2>&1; then
+      echo "Aspectran daemon is already running (pid: $PID)."
+      exit 0
+    else
+      echo "Warning: Found stale lock file. Removing it."
+      rm -f "$LOCK_FILE"
+    fi
   fi
   echo "Starting Aspectran daemon..."
   if start_daemon; then
-    sleep 2
-    version
-    echo "Aspectran daemon started."
+    # Wait for the lock file to appear and contain the PID, with a timeout
+    counter=0
+    while [ ! -s "$LOCK_FILE" ]; do
+      if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
+        echo "Error: Aspectran daemon failed to start within $WAIT_TIMEOUT seconds."
+        if [ -f "$DAEMON_OUT" ]; then
+            echo "--- Daemon Log ---"
+            cat "$DAEMON_OUT"
+            echo "------------------"
+        fi
+        exit 1
+      fi
+      sleep 1
+      counter=$((counter + 1))
+    done
+    # Print the initial daemon output log
+    if [ -f "$DAEMON_OUT" ]; then
+        cat "$DAEMON_OUT"
+    fi
+    PID=$(cat "$LOCK_FILE" 2>/dev/null)
+    echo "Aspectran daemon started (pid: $PID)."
   else
     echo "Can't start aspectran."
-    echo "Refer to log in $DAEMON_OUT"
+    if [ -f "$DAEMON_OUT" ]; then
+        echo "--- Daemon Log ---"
+        cat "$DAEMON_OUT"
+        echo "------------------"
+    fi
     exit 1
   fi
-  sleep 0.5
 }
 
 stop_aspectran() {
-  sleep 0.5
   if [ ! -f "$LOCK_FILE" ]; then
     echo "Aspectran daemon NOT running."
     exit 7
   fi
   echo "Stopping Aspectran daemon..."
   if stop_daemon; then
-    sleep 1
+    # Wait for the lock file to be removed, with a timeout
+    counter=0
     while [ -f "$LOCK_FILE" ]; do
-      sleep 0.5
+      if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
+        echo "Error: Aspectran daemon failed to stop within $WAIT_TIMEOUT seconds."
+        exit 1
+      fi
+      sleep 1
+      counter=$((counter + 1))
     done
     echo "Aspectran daemon stopped."
   else
     echo "Can't stop aspectran."
     exit 1
   fi
-  sleep 0.5
 }
 
 restart_aspectran() {
@@ -209,7 +256,8 @@ try-restart)
   ;;
 status)
   if [ -f "$LOCK_FILE" ]; then
-    echo "Aspectran daemon is running."
+    PID=$(cat "$LOCK_FILE" 2>/dev/null)
+    echo "Aspectran daemon is running (pid: $PID)."
   else
     echo "Aspectran daemon is NOT running."
   fi

@@ -2,13 +2,39 @@
 setlocal
 
 rem Set any explicitly specified variables required to run.
-if exist %~dp0\run.options (
-    for /F "eol=# tokens=*" %%i in (%~dp0\run.options) do set "%%i"
+if exist "%~dp0run.options" (
+    for /F "eol=# tokens=*" %%i in (%~dp0run.options) do set "%%i"
 )
 
-if "%JAVA_HOME%" == "" goto java-not-set
-call :ResolvePath JAVA_HOME %JAVA_HOME%
-if not exist "%JAVA_HOME%" goto java-not-set
+rem -----------------------------------------------------------------------------
+rem Find or Verify JAVA_HOME
+rem -----------------------------------------------------------------------------
+set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
+
+if defined JAVA_HOME (
+    if not exist "%JAVA_EXE%" (
+        echo Warning: JAVA_HOME is set to "%JAVA_HOME%", but java.exe is not found in the bin directory.
+        set JAVA_HOME=
+    )
+)
+
+if not defined JAVA_HOME (
+    rem Try to find java.exe in the path
+    for /f "delims=" %%j in ('where java.exe 2^>NUL') do (
+        set "JAVA_EXE=%%j"
+        goto :java_exe_found
+    )
+    echo Error: JAVA_HOME is not set and 'java.exe' could not be found in your PATH.
+    goto :end
+    :java_exe_found
+    for %%d in ("%JAVA_EXE%\..\..") do set "JAVA_HOME=%%~fd"
+)
+
+set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
+if not exist "%JAVA_EXE%" (
+    echo Error: Failed to determine a valid JAVA_HOME. Could not find java.exe.
+    goto :end
+)
 
 if not "%JVM_MS%" == "" set JVM_MS_OPT=-Xms%JVM_MS%m
 if not "%JVM_MX%" == "" set JVM_MX_OPT=-Xmx%JVM_MX%m
@@ -27,7 +53,7 @@ if "%1" == "debug" (
 echo Using JAVA_HOME: %JAVA_HOME%
 if not "%JAVA_OPTS%" == "" echo Using JAVA_OPTS: %JAVA_OPTS%
 
-"%JAVA_HOME%\bin\java.exe"^
+"%JAVA_EXE%"^
  %JVM_MS_OPT%^
  %JVM_MX_OPT%^
  %JVM_SS_OPT%^
@@ -41,19 +67,6 @@ if not "%JAVA_OPTS%" == "" echo Using JAVA_OPTS: %JAVA_OPTS%
  %ASPECTRAN_OPTS%^
  com.aspectran.shell.AspectranShell^
  "%ASPECTRAN_CONFIG%"
-goto end
-
-:java-not-set
-echo JAVA_HOME environment variable missing. Please set it before using the script.
-goto end
 
 :end
 exit /b
-
-rem Resolve path to absolute.
-rem @arg1 Name of output variable
-rem @arg2 Path to resolve
-rem @return Resolved absolute path
-:ResolvePath
-  set %1=%~dpfn2
-  exit /b

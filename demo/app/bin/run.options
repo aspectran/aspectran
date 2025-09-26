@@ -1,5 +1,21 @@
-# Variables required for execution can be explicitly specified here.
+#
+# JVM options for running the application via command-line scripts located in the bin directory.
+# (daemon.sh, shell.sh, daemon.bat, shell.bat, etc.)
+# Uncomment and modify the settings below to customize the Java runtime environment.
+#
+
+# Specifies the path to the Java Development Kit (JDK).
+# If not set, the system's default JAVA_HOME will be used.
 #JAVA_HOME=
+
+# Initial Java heap size in megabytes.
 #JVM_MS=256
+
+# Maximum Java heap size in megabytes.
 #JVM_MX=1024
+
+# Java thread stack size in kilobytes.
 #JVM_SS=1024
+
+# Timeout in seconds for daemon start/stop operations.
+#WAIT_TIMEOUT=60
