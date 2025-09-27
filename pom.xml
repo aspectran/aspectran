@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-project</artifactId>
-    <version>9.0.2-SNAPSHOT</version>
+    <version>9.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran Project</name>
