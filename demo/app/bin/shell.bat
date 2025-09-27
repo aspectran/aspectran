@@ -65,7 +65,7 @@ if not "%JAVA_OPTS%" == "" echo Using JAVA_OPTS: %JAVA_OPTS%
  -Dlogback.configurationFile="%LOGGING_CONFIG%"^
  -Daspectran.basePath="%BASE_DIR%"^
  %ASPECTRAN_OPTS%^
- com.aspectran.shell.AspectranShell^
+ com.aspectran.shell.jline.JLineAspectranShell^
  "%ASPECTRAN_CONFIG%"
 
 :end

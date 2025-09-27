@@ -42,7 +42,7 @@ various modes on both Windows and Unix-like systems (Linux, macOS, etc.).
 3. Windows Scripts (.bat)
 --------------------------
 
-`shell.bat` / `jline-shell.bat`
+`shell.bat` / `legacy-shell.bat`
   - Starts the application in an interactive shell mode on Windows.
 
 `daemon.bat`
