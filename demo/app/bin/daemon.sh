@@ -113,7 +113,7 @@ fi
 
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
-PID_FILE="$BASE_DIR/daemon.pid"
+PID_FILE="$BASE_DIR/.daemon.pid"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
