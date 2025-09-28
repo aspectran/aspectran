@@ -113,7 +113,7 @@ fi
 
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
-LOCK_FILE="$BASE_DIR/.lock"
+PID_FILE="$BASE_DIR/daemon.pid"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
@@ -139,7 +139,13 @@ start_daemon() {
     $DAEMON_MAIN \
     "$ASPECTRAN_CONFIG" \
     >"$DAEMON_OUT" 2>&1 &
-  return $?
+  PID=$!
+  if [ $? -eq 0 ]; then
+    echo $PID > "$PID_FILE"
+    return 0
+  else
+    return 1
+  fi
 }
 
 # Stop the daemon by creating a command file in the 'incoming' directory.
@@ -153,74 +159,79 @@ version() {
   "$JAVA_BIN" \
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
-    com.aspectran.core.Aspectran
+    com.aspectran.core.AboutMe
 }
 
 start_aspectran() {
-  if [ -f "$LOCK_FILE" ]; then
-    PID=$(cat "$LOCK_FILE" 2>/dev/null)
+  if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE" 2>/dev/null)
     if [ -n "$PID" ] && kill -0 "$PID" > /dev/null 2>&1; then
       echo "Aspectran daemon is already running (pid: $PID)."
       exit 0
     else
-      echo "Warning: Found stale lock file. Removing it."
-      rm -f "$LOCK_FILE"
+      echo "Warning: Found stale PID file. Removing it."
+      rm -f "$PID_FILE"
     fi
   fi
   echo "Starting Aspectran daemon..."
   if start_daemon; then
-    # Wait for the lock file to appear and contain the PID, with a timeout
-    counter=0
-    while [ ! -s "$LOCK_FILE" ]; do
-      if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
-        echo "Error: Aspectran daemon failed to start within $WAIT_TIMEOUT seconds."
-        if [ -f "$DAEMON_OUT" ]; then
-            echo "--- Daemon Log ---"
-            cat "$DAEMON_OUT"
-            echo "------------------"
-        fi
-        exit 1
+    sleep 1
+    PID=$(cat "$PID_FILE" 2>/dev/null)
+    if [ -n "$PID" ] && kill -0 "$PID" > /dev/null 2>&1; then
+      if [ -f "$DAEMON_OUT" ]; then
+          cat "$DAEMON_OUT"
       fi
-      sleep 1
-      counter=$((counter + 1))
-    done
-    # Print the initial daemon output log
-    if [ -f "$DAEMON_OUT" ]; then
-        cat "$DAEMON_OUT"
+      echo "Aspectran daemon started (pid: $PID)."
+    else
+      echo "Error: Aspectran daemon failed to start."
+      if [ -f "$DAEMON_OUT" ]; then
+          cat "$DAEMON_OUT"
+      fi
+      rm -f "$PID_FILE"
+      exit 1
     fi
-    PID=$(cat "$LOCK_FILE" 2>/dev/null)
-    echo "Aspectran daemon started (pid: $PID)."
   else
     echo "Can't start aspectran."
     if [ -f "$DAEMON_OUT" ]; then
-        echo "--- Daemon Log ---"
         cat "$DAEMON_OUT"
-        echo "------------------"
     fi
     exit 1
   fi
 }
 
 stop_aspectran() {
-  if [ ! -f "$LOCK_FILE" ]; then
+  if [ ! -f "$PID_FILE" ]; then
     echo "Aspectran daemon NOT running."
     exit 7
   fi
-  echo "Stopping Aspectran daemon..."
+  PID=$(cat "$PID_FILE" 2>/dev/null)
+  if [ -z "$PID" ]; then
+    echo "Aspectran daemon NOT running (empty PID file)."
+    rm -f "$PID_FILE"
+    exit 7
+  fi
+  echo "Stopping Aspectran daemon (pid: $PID)..."
   if stop_daemon; then
-    # Wait for the lock file to be removed, with a timeout
     counter=0
-    while [ -f "$LOCK_FILE" ]; do
+    while kill -0 "$PID" > /dev/null 2>&1; do
       if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
-        echo "Error: Aspectran daemon failed to stop within $WAIT_TIMEOUT seconds."
-        exit 1
+        echo "Error: Aspectran daemon (pid: $PID) failed to stop within $WAIT_TIMEOUT seconds."
+        echo "Forcibly killing process."
+        kill -9 "$PID"
+        break
       fi
       sleep 1
       counter=$((counter + 1))
     done
-    echo "Aspectran daemon stopped."
+    if kill -0 "$PID" > /dev/null 2>&1; then
+        echo "Error: Failed to stop Aspectran daemon (pid: $PID)."
+        exit 1
+    else
+        rm -f "$PID_FILE"
+        echo "Aspectran daemon stopped."
+    fi
   else
-    echo "Can't stop aspectran."
+    echo "Can't send stop command to aspectran."
     exit 1
   fi
 }
@@ -239,7 +250,7 @@ stop)
   stop_aspectran
   ;;
 restart | reload | force-reload)
-  if [ -e "$LOCK_FILE" ]; then
+  if [ -e "$PID_FILE" ]; then
     restart_aspectran
   else
     echo "Aspectran daemon is not running. Starting!"
@@ -247,7 +258,7 @@ restart | reload | force-reload)
   fi
   ;;
 try-restart)
-  if [ -e "$LOCK_FILE" ]; then
+  if [ -e "$PID_FILE" ]; then
     restart_aspectran
   else
     echo "Aspectran daemon is not running. Try $0 start"
@@ -255,9 +266,13 @@ try-restart)
   fi
   ;;
 status)
-  if [ -f "$LOCK_FILE" ]; then
-    PID=$(cat "$LOCK_FILE" 2>/dev/null)
-    echo "Aspectran daemon is running (pid: $PID)."
+  if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE" 2>/dev/null)
+    if [ -n "$PID" ] && kill -0 "$PID" > /dev/null 2>&1; then
+      echo "Aspectran daemon is running (pid: $PID)."
+    else
+      echo "Aspectran daemon is NOT running (stale PID file)."
+    fi
   else
     echo "Aspectran daemon is NOT running."
   fi

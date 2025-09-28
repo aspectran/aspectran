@@ -141,7 +141,7 @@ if [ ! -x "$JSVC" ]; then
 fi
 
 [ -z "$PROC_NAME" ] && PROC_NAME="jsvc-daemon"
-[ -z "$PID_FILE" ] && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
+[ -z "$PID_FILE" ] && PID_FILE="$BASE_DIR/daemon.pid"
 [ -z "$SERVICE_START_WAIT_TIME" ] && SERVICE_START_WAIT_TIME=90
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
@@ -189,7 +189,7 @@ stop_daemon() {
   return $?
 }
 
-demon_version() {
+daemon_version() {
   "$JSVC" \
     -version \
     -check \
@@ -206,7 +206,7 @@ aspectran_version() {
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.basePath="$BASE_DIR" \
-    com.aspectran.core.Aspectran
+    com.aspectran.core.AboutMe
   return $?
 }
 
