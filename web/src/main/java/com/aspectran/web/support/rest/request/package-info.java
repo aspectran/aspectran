@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * Provides classes for RESTful request handling.
+ * Contains classes for building and executing RESTful HTTP requests.
+ * <p>The main class is {@link com.aspectran.web.support.rest.request.RestRequest},
+ * a fluent client for making HTTP calls.</p>
  */
 package com.aspectran.web.support.rest.request;

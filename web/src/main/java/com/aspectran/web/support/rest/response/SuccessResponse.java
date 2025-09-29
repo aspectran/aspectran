@@ -17,21 +17,42 @@ package com.aspectran.web.support.rest.response;
 
 import com.aspectran.web.activity.response.DefaultRestResponse;
 
+/**
+ * Represents a successful (2xx) REST response.
+ * <p>This response contains a {@link ResponsePayload} that indicates success
+ * and holds the response data.</p>
+ */
 public class SuccessResponse extends DefaultRestResponse {
 
+    /**
+     * Instantiates a new SuccessResponse.
+     */
     public SuccessResponse() {
         super(new ResponsePayload(true));
     }
 
+    /**
+     * Instantiates a new SuccessResponse with the given data payload.
+     * @param data the response data
+     */
     public SuccessResponse(Object data) {
         super(new ResponsePayload(true, data));
     }
 
+    /**
+     * Returns the underlying response payload.
+     * @return the response payload
+     */
     @Override
     public ResponsePayload getData() {
         return (ResponsePayload)super.getData();
     }
 
+    /**
+     * Sets the data on the underlying response payload.
+     * @param data the response data
+     * @return this {@code SuccessResponse} for fluent chaining
+     */
     @Override
     public SuccessResponse setData(Object data) {
         if (hasData()) {

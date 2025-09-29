@@ -19,6 +19,9 @@ import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Represents the payload of a RESTful response.
+ * <p>This class is a generic container for API responses, encapsulating the
+ * success status, a data payload, and error information. It is generally
+ * used via its subclasses, {@link SuccessResponse} and {@link FailureResponse}.</p>
  */
 public class ResponsePayload {
 
@@ -28,37 +31,72 @@ public class ResponsePayload {
 
     private ErrorPayload error;
 
+    /**
+     * Instantiates a new ResponsePayload.
+     * @param success true if the operation was successful
+     */
     ResponsePayload(boolean success) {
         this.success = success;
     }
 
+    /**
+     * Instantiates a new ResponsePayload.
+     * @param success true if the operation was successful
+     * @param data the data payload
+     */
     ResponsePayload(boolean success, Object data) {
         this.success = success;
         this.data = data;
     }
 
+    /**
+     * Instantiates a new ResponsePayload for a failed operation.
+     * @param errorPayload the error details
+     */
     ResponsePayload(ErrorPayload errorPayload) {
         this.success = false;
         this.error = errorPayload;
     }
 
+    /**
+     * Returns whether the operation was successful.
+     * @return true if the operation was successful, false otherwise
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Returns the data payload of the response.
+     * @return the data payload
+     */
     public Object getData() {
         return data;
     }
 
+    /**
+     * Sets the data payload of the response.
+     * @param data the data payload
+     * @return this {@code ResponsePayload} for fluent chaining
+     */
     public ResponsePayload setData(Object data) {
         this.data = data;
         return this;
     }
 
+    /**
+     * Returns the error details if the operation failed.
+     * @return the error details, or null if the operation was successful
+     */
     public ErrorPayload getError() {
         return error;
     }
 
+    /**
+     * Sets the error details for a failed operation.
+     * @param errorPayload the error details
+     * @return this {@code ResponsePayload} for fluent chaining
+     */
     public ResponsePayload setError(ErrorPayload errorPayload) {
         this.error = errorPayload;
         return this;

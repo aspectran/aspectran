@@ -20,6 +20,8 @@ import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Represents an error payload in a RESTful response.
+ * <p>This is typically contained within a {@link FailureResponse} to provide
+ * details about an error that occurred.</p>
  */
 public class ErrorPayload {
 
@@ -27,24 +29,45 @@ public class ErrorPayload {
 
     private String message;
 
+    /**
+     * Instantiates a new ErrorPayload.
+     * @param code the error code
+     * @param message the error message
+     */
     ErrorPayload(String code, String message) {
         this.code = code;
         this.message = message;
     }
 
+    /**
+     * Gets the error code.
+     * @return the error code
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Sets the error code.
+     * @param code the error code
+     */
     public void setCode(String code) {
         Assert.hasText(code, "code must not be empty");
         this.code = code;
     }
 
+    /**
+     * Gets the error message.
+     * @return the error message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Sets the error message.
+     * @param message the error message
+     */
     public void setMessage(String message) {
         this.message = message;
     }

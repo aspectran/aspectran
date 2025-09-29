@@ -20,9 +20,9 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.io.Serial;
 
 /**
- * Exception thrown when an unsupported HTTP method is encountered.
+ * Exception thrown when an unsupported HTTP method is used.
  *
- * <p>Created: 2025-07-17</p>
+ * @since 2024-07-17
  */
 public class UnsupportedHttpMethodException extends Exception {
 
@@ -31,11 +31,19 @@ public class UnsupportedHttpMethodException extends Exception {
 
     private final MethodType methodType;
 
+    /**
+     * Instantiates a new UnsupportedHttpMethodException.
+     * @param methodType the unsupported method type
+     */
     public UnsupportedHttpMethodException(MethodType methodType) {
         super("Unsupported HTTP method: " + methodType);
         this.methodType = methodType;
     }
 
+    /**
+     * Gets the unsupported HTTP method.
+     * @return the unsupported method type
+     */
     public MethodType getMethodType() {
         return methodType;
     }

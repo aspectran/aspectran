@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 /**
- * Provides classes for RESTful response handling.
+ * Contains classes for modeling RESTful HTTP responses.
+ * <p>Key classes include {@link com.aspectran.web.support.rest.response.SuccessResponse}
+ * and {@link com.aspectran.web.support.rest.response.FailureResponse}, which represent
+ * successful and failed API outcomes, respectively.</p>
  */
 package com.aspectran.web.support.rest.response;
