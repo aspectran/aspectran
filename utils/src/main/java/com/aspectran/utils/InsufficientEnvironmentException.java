@@ -58,33 +58,30 @@ public class InsufficientEnvironmentException extends IllegalStateException {
         super(msg, cause);
     }
 
+    /**
+     * Returns a pretty message for this exception.
+     * @return a pretty message
+     */
     public String getPrettyMessage() {
+        final String title = "Insufficient Environment for Aspectran";
         String[] lines = StringUtils.split(getMessage(), ";");
-        int maxLen = 67;
+        int contentWidth = title.length();
         for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if (!line.endsWith(")") && !line.endsWith("}") && !line.endsWith("]") && !line.endsWith(">") &&
-                    !line.endsWith("!") && !line.endsWith("?") && !line.endsWith("'") && !line.endsWith("\"")) {
-                line = line.trim() + ".";
-            } else {
-                line = line.trim();
+            lines[i] = lines[i].trim();
+            if (lines[i].length() > contentWidth) {
+                contentWidth = lines[i].length();
             }
-            if (line.length() > maxLen) {
-                maxLen = line.length();
-            }
-            lines[i] = line;
         }
-        String hr = String.format("-%" + maxLen + "s-", "").replaceAll(" ", "-");
+        String hr1 = String.format("--%" + contentWidth + "s--", "").replace(' ', '-');
+        String hr2 = String.format("==%" + contentWidth + "s==", "").replace(' ', '=');
         StringBuilder sb = new StringBuilder();
-        sb.append(hr);
-        sb.append(System.lineSeparator());
-        sb.append(String.format(" %-" + maxLen + "s ", "Insufficient Environment for Aspectran"));
-        sb.append(System.lineSeparator());
+        sb.append(hr2).append(System.lineSeparator());
+        sb.append(" ").append(title).append(System.lineSeparator());
+        sb.append(hr1).append(System.lineSeparator());
         for (String line : lines) {
-            sb.append(String.format(" %-" + maxLen + "s ", line));
-            sb.append(System.lineSeparator());
+            sb.append(" > ").append(line).append(System.lineSeparator());
         }
-        sb.append(hr);
+        sb.append(hr2);
         return sb.toString();
     }
 
