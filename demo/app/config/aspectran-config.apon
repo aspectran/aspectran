@@ -55,19 +55,18 @@ shell: {
     }
     greetings: (
         |
-        |{{WHITE,bold}}     ___                         __
-        |{{CYAN      }}    /   |  ___  ____  ___  ___  / /____   ___  ____
-        |{{GREEN     }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
-        |{{YELLOW    }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /  {{WHITE,bold}}Aspectow
-        |{{RED       }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   {{WHITE,bold}}Enterprise Edition
-        |{{gray      }}=========== /_/ ==========================================================
-        |{{MAGENTA   }}:: Built with Aspectran :: {{reset}}#{class:com.aspectran.core.AboutMe^version}
+        |{{WHITE  }}     ___                         __
+        |{{CYAN   }}    /   |  _________  ___  _____/ /_____ _      __
+        |{{GREEN  }}   / /| | / ___/ __ \/ _ \/ ___/ __/ __ \ | /| / /
+        |{{YELLOW }}  / ___ |(__  ) /_/ /  __/ /__/ /_/ /_/ / |/ |/ /
+        |{{RED    }} /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    {{WHITE}}Enterprise Edition
+        |{{gray   }}=========== /_/ ==========================================================
+        |{{MAGENTA}}:: Built with Aspectran :: {{RED}}#{class:com.aspectran.core.AboutMe^version}{{reset}}
         |
-        |{{gray}}To see a list of all built-in commands, type {{GREEN,bold}}help{{gray}}.
-        |{{gray}}To get help for a specific command, type {{GREEN,bold}}command_name -h{{gray}}.
-        |{{gray}}To list all available translets, type {{CYAN,bold}}translet -l{{gray}}.
-        |{{gray}}To run a translet, type {{CYAN,bold}}translet <translet_name>{{gray}} or just {{CYAN,bold}}translet_name{{gray}}.
-        |{{reset}}
+        |{{gray   }}To see a list of all built-in commands, type {{GREEN}}help.
+        |{{gray   }}To get help for a specific command, type {{GREEN}}command_name -h.
+        |{{gray   }}To list all available translets, type {{CYAN}}translet -l.
+        |{{gray   }}To run a translet, type {{CYAN}}translet <translet_name>{{gray}} or just {{CYAN}}translet_name.{{reset}}
     )
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
