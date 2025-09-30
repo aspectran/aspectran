@@ -362,36 +362,37 @@ public class JLineTextStyler {
                         currentStyle = currentStyle.backgroundOff();
                         break;
                     default:
-                        int color = -1;
-                        if (style.startsWith("bg:")) {
-                            try {
-                                color = Integer.parseInt(style.substring(3));
-                            } catch (NumberFormatException ignored) {
-                                try {
-                                    color = Colors.rgbColor(style.toLowerCase());
-                                } catch (IllegalArgumentException e) {
-                                    logger.warn("Unable to parse color from string \"{}\"", style, e);
-                                }
-                            }
-                            currentStyle = currentStyle.background(color);
+                        Integer color = null;
+                        boolean isBg = style.startsWith("bg:");
+                        String colorStr;
+                        if (isBg) {
+                            colorStr = style.substring(3);
+                        } else if (style.startsWith("fg:")) {
+                            colorStr = style.substring(3);
                         } else {
-                            try {
-                                if (style.startsWith("fb:")) {
-                                    color = Integer.parseInt(style.substring(3));
-                                } else {
-                                    color = Integer.parseInt(style);
-                                }
-                            } catch (NumberFormatException ignored) {
-                                try {
-                                    color = Colors.rgbColor(style.toLowerCase());
-                                } catch (IllegalArgumentException e) {
-                                    logger.warn("Unable to parse color from string \"{}\"", style, e);
-                                }
-                            }
-                            currentStyle = currentStyle.foreground(color);
+                            colorStr = style;
                         }
-                        if (color == -1) {
-                            logger.warn("Unknown color code \"{}\"", style);
+
+                        try {
+                            // Try to parse as a 256-color palette number
+                            color = Integer.parseInt(colorStr);
+                        } catch (NumberFormatException ignored) {
+                            try {
+                                // Try to parse as a named color or hex RGB
+                                color = Colors.rgbColor(colorStr.toLowerCase());
+                            } catch (IllegalArgumentException e) {
+                                logger.warn("Unable to parse color from string \"{}\"", style, e);
+                            }
+                        }
+
+                        if (color != null) {
+                            if (isBg) {
+                                currentStyle = currentStyle.background(color);
+                            } else {
+                                currentStyle = currentStyle.foreground(color);
+                            }
+                        } else {
+                            logger.warn("Unknown style or color '{}'", style);
                         }
                         break;
                 }
