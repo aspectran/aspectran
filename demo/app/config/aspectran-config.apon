@@ -63,10 +63,10 @@ shell: {
         |{{gray   }}=========== /_/ ==========================================================
         |{{MAGENTA}}:: Built with Aspectran :: {{RED}}#{class:com.aspectran.core.AboutMe^version}{{reset}}
         |
-        |{{gray   }}To see a list of all built-in commands, type {{GREEN}}help.
-        |{{gray   }}To get help for a specific command, type {{GREEN}}command_name -h.
-        |{{gray   }}To list all available translets, type {{CYAN}}translet -l.
-        |{{gray   }}To run a translet, type {{CYAN}}translet <translet_name>{{gray}} or just {{CYAN}}translet_name.{{reset}}
+        |{{gray   }}To see a list of all built-in commands, type {{GREEN}}help{{reset}}.
+        |{{gray   }}To get help for a specific command, type {{GREEN}}command_name -h{{reset}}.
+        |{{gray   }}To list all available translets, type {{CYAN}}translet -l{{reset}}.
+        |{{gray   }}To run a translet, type {{CYAN}}translet <translet_name>{{gray}} or just {{CYAN}}translet_name{{reset}}.
     )
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
