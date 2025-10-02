@@ -66,7 +66,7 @@ echo Aspectran daemon running... To terminate the process press `CTRL+C`.
  -Djava.awt.headless=true^
  -Djava.net.preferIPv4Stack=true^
  -Dlogback.configurationFile="%LOGGING_CONFIG%"^
- -Daspectran.basePath="%BASE_DIR%"
+ -Daspectran.basePath="%BASE_DIR%"^
  %ASPECTRAN_OPTS%^
  com.aspectran.daemon.DefaultDaemon^
  "%ASPECTRAN_CONFIG%"
