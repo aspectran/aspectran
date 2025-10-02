@@ -64,13 +64,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Set;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
+import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
 /**
  * Abstract base class for {@link ActivityContextBuilder} implementations.
@@ -332,7 +335,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     protected SiblingClassLoader createSiblingClassLoader(String contextName, ClassLoader parentClassLoader)
             throws InvalidResourceException {
         if (siblingClassLoader == null || hardReload) {
-            siblingClassLoader = new SiblingClassLoader(contextName, parentClassLoader, resourceLocations);
+            String[] resourcesToLoad = resourceLocations;
+            if (resourceLocations != null) {
+                URL url = ActivityContext.class.getResource("ActivityContext.class");
+                if (url != null && !URL_PROTOCOL_JAR.equals(url.getProtocol())) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Running in an IDE environment, so the resource locations {} " +
+                                "will be ignored to avoid class loading conflicts", Arrays.toString(resourceLocations));
+                    }
+                    resourcesToLoad = null;
+                }
+            }
+            siblingClassLoader = new SiblingClassLoader(contextName, parentClassLoader, resourcesToLoad);
         } else {
             siblingClassLoader.reload();
         }
