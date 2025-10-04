@@ -116,6 +116,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven.compiler.release>21</maven.compiler.release>
+        <!-- [Critical] Must be 'true' to preserve method parameter names, which Aspectran requires for runtime argument mapping. -->
+        <maven.compiler.parameters>true</maven.compiler.parameters>
 
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
@@ -283,6 +285,12 @@
                                     <version>[3.6.3,)</version>
                                     <message>[ERROR] OLD MAVEN in use, Aspectran ${project.version} requires Maven 3.6.3 or newer</message>
                                 </requireMavenVersion>
+                                <requireProperty>
+                                    <property>maven.compiler.parameters</property>
+                                    <message>[ERROR] Must be 'true' for Aspectran's runtime parameter reflection.</message>
+                                    <regex>true</regex>
+                                    <regexMessage>Must be set to 'true' because Aspectran uses method parameter names at runtime.</regexMessage>
+                                </requireProperty>
                             </rules>
                         </configuration>
                     </execution>
@@ -294,7 +302,6 @@
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
-                    <parameters>true</parameters>
                     <proc>full</proc>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
