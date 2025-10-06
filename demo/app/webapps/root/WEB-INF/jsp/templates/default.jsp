@@ -45,7 +45,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/favicon-96x96.png">
     <meta name="msapplication-TileImage" content="<aspectran:token type='bean' expression='cdnAssets^url'/>/img/ms-icon-144x144.png">
     <meta name="msapplication-TileColor" content="#4B555A">
-    <link rel="stylesheet" type="text/css" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/bootstrap@5.3.8/css/aspectran.css?v=20251005"/>
+    <link rel="stylesheet" type="text/css" href="<aspectran:token type='bean' expression='cdnAssets^url'/>/bootstrap@5.3.8/css/aspectran.css?v=20251006"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
     <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -67,8 +67,8 @@
             </button>
         </div>
     </div>
-    <div class="top-bar">
-        <div class="container collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="top-bar collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="container d-lg-flex g-0 g-lg-4">
             <div class="top-bar-logo">
                 <div class="circle">
                     <aspectran:profile expression="prod">
@@ -110,7 +110,7 @@
                 </ul>
             </div>
             <div class="top-bar-right d-lg-flex align-items-center gap-3">
-                <div class="quick-search-box m-2 mx-md-0 mb-md-2 m-lg-0">
+                <div class="quick-search-box m-2 mx-md-3 m-lg-0">
                     <form name="google_quick_search" role="search">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
@@ -118,7 +118,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="settings d-flex align-items-center justify-content-end gap-2 m-2 mx-md-0 mb-md-2 m-lg-0">
+                <div class="settings d-flex align-items-center justify-content-end gap-2 m-2 mx-md-3 m-lg-0">
                     <div class="theme-toggler dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
                             <i class="bi theme-icon-active"></i>
