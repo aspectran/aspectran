@@ -8,6 +8,14 @@
     <Logger name="com.aspectran" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </Logger>
+
+    <!-- Logger for EclipseLink -->
+    <logger name="org.eclipse.persistence.logging.sql" level="DEBUG"/>
+
+    <!-- Logger for Hibernate -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>

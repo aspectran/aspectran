@@ -19,10 +19,12 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Initialize;
+import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.jpa.EntityManagerFactoryBean;
 import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.PersistenceUnitTransactionType;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.cfg.EnvironmentSettings;
 import org.hibernate.cfg.JdbcSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.tool.schema.Action;
@@ -34,6 +36,7 @@ import java.util.Map;
  * <p>Created: 2025-05-02</p>
  */
 @Component
+@Profile("hibernate")
 @Bean(lazyDestroy = true)
 public class DefaultEntityManagerFactory extends EntityManagerFactoryBean {
 
@@ -56,6 +59,7 @@ public class DefaultEntityManagerFactory extends EntityManagerFactoryBean {
         configuration.provider(HibernatePersistenceProvider.class.getName());
         configuration.transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
         configuration.property(JdbcSettings.JAKARTA_NON_JTA_DATASOURCE, dataSource);
+        configuration.property(EnvironmentSettings.CLASSLOADERS, getActivityContext().getClassLoader());
     }
 
     @Initialize(profile = "test")

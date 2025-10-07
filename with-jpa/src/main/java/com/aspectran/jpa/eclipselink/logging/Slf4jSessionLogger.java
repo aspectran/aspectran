@@ -15,7 +15,6 @@
  */
 package com.aspectran.jpa.eclipselink.logging;
 
-import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.eclipse.persistence.logging.AbstractSessionLog;
@@ -144,15 +143,6 @@ public class Slf4jSessionLogger extends AbstractSessionLog {
     }
 
     /**
-     * Return true if SQL logging should log visible bind parameters. If the
-     * shouldDisplayData is not set, return false.
-     */
-    @Override
-    public boolean shouldDisplayData() {
-        return BooleanUtils.toBoolean(shouldDisplayData);
-    }
-
-    /**
      * Initialize loggers eagerly
      */
     private void createCategoryLoggers() {
@@ -196,15 +186,15 @@ public class Slf4jSessionLogger extends AbstractSessionLog {
             return null;
         }
         StringBuilder builder = new StringBuilder();
-        if (shouldPrintSession() && (entry.getSession() != null)) {
-            builder.append(this.getSessionString(entry.getSession()));
+        if (shouldPrintSession() && entry.getSessionId() != null) {
+            builder.append("Session(").append(entry.getSessionId()).append(")");
             builder.append("--");
         }
         if (entry.hasException()) {
             builder.append(entry.getException());
         } else {
-            if (shouldPrintConnection() && (entry.getConnection() != null)) {
-                builder.append(this.getConnectionString(entry.getConnection()));
+            if (shouldPrintConnection() && entry.getConnectionId() != null) {
+                builder.append("Connection(").append(entry.getConnectionId()).append(")");
                 builder.append("--");
             }
             if (entry.getSourceClassName() != null) {

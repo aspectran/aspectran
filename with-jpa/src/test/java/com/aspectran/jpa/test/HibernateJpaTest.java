@@ -30,7 +30,7 @@ import java.io.IOException;
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JpaTest {
+class HibernateJpaTest {
 
     private EmbeddedAspectran aspectran;
 
@@ -40,7 +40,7 @@ class JpaTest {
         String basePath = root.getCanonicalPath();
         System.setProperty(BASE_PATH_PROPERTY_NAME, basePath); // for logback
 
-        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
+        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config-hibernate.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig().setBasePath(basePath);
 

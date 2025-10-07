@@ -11,21 +11,17 @@
         <arguments>
             <item>
                 <bean class="com.zaxxer.hikari.HikariConfig">
-                    <arguments>
-                        <item>
-                            <bean class="com.aspectran.core.support.PropertiesFactoryBean">
-                                <properties profile="h2">
-                                    <item name="locations" type="array">
-                                        <value>classpath:config/h2/db.properties</value>
-                                    </item>
-                                </properties>
-                            </bean>
-                        </item>
-                    </arguments>
-                    <properties>
-                        <item name="poolName">petclinic-test</item>
-                        <item name="registerMbeans" valueType="boolean">true</item>
-                    </properties>
+                    <argument>
+                        <bean class="com.aspectran.core.support.PropertiesFactoryBean">
+                            <properties profile="h2">
+                                <item name="locations" type="array">
+                                    <value>classpath:config/h2/db.properties</value>
+                                </item>
+                            </properties>
+                        </bean>
+                    </argument>
+                    <property name="poolName">petclinic-test</property>
+                    <property name="registerMbeans" valueType="boolean">true</property>
                 </bean>
             </item>
         </arguments>

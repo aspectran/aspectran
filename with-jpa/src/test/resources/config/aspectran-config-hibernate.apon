@@ -6,6 +6,7 @@ context: {
     profiles: {
         base: [
             h2
+            hibernate
         ]
         default: [
             dev
