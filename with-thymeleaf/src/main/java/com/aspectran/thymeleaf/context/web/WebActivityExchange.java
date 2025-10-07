@@ -58,9 +58,9 @@ public class WebActivityExchange implements IWebExchange {
      */
     public WebActivityExchange(
             Activity activity,
-           WebActivityRequest request,
-           WebActivitySession session,
-           WebActivityApplication application) {
+            WebActivityRequest request,
+            WebActivitySession session,
+            WebActivityApplication application) {
         this.activity = activity;
         this.request = request;
         this.session = session;

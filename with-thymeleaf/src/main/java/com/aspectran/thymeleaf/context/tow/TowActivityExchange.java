@@ -141,9 +141,9 @@ public class TowActivityExchange implements IWebExchange {
     public static TowActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");
         if (activity instanceof TowActivity towActivity) {
-            TowActivityApplication application = new TowActivityApplication(towActivity);
             TowActivityRequest request = new TowActivityRequest(towActivity.getRequestAdapter());
             TowActivitySession session = (towActivity.hasSessionAdapter() ? new TowActivitySession(towActivity.getSessionAdapter()) : null);
+            TowActivityApplication application = new TowActivityApplication(towActivity.getActivityContext());
             return new TowActivityExchange(activity, request, session, application);
         } else {
             throw new IllegalArgumentException("activity must be TowActivity");
