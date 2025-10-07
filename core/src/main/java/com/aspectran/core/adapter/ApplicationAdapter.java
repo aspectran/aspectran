@@ -16,7 +16,7 @@
 package com.aspectran.core.adapter;
 
 import java.nio.file.Path;
-import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * Provides an abstraction for the application or container environment.
@@ -71,10 +71,10 @@ public interface ApplicationAdapter {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@link Enumeration} of all application-scoped attribute names.
-     * @return an enumeration of attribute names
+     * Returns an {@link Set} of all application-scoped attribute names.
+     * @return a set of attribute names
      */
-    Enumeration<String> getAttributeNames();
+    Set<String> getAttributeNames();
 
     /**
      * Removes the application-scoped attribute with the given name.

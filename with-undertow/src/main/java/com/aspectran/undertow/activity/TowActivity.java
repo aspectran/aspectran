@@ -36,6 +36,7 @@ import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 
@@ -74,6 +75,14 @@ public class TowActivity extends CoreActivity {
     @Override
     public Mode getMode() {
         return Mode.WEB;
+    }
+
+    /**
+     * Returns the resource manager for serving static files.
+     * @return the static resource manager
+     */
+    public ResourceManager getResourceManager() {
+        return towService.getResourceManager();
     }
 
     /**

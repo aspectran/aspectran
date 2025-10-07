@@ -188,7 +188,7 @@ public class WebActivityRequest implements IWebRequest {
         if (cookies == null) {
             return Collections.emptySet();
         }
-        Set<String> cookieNames = new LinkedHashSet<String>(3);
+        Set<String> cookieNames = new LinkedHashSet<>(3);
         for (Cookie cookie : cookies) {
             cookieNames.add(cookie.getName());
         }

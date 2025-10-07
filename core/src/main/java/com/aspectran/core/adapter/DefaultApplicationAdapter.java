@@ -16,8 +16,8 @@
 package com.aspectran.core.adapter;
 
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -68,11 +68,11 @@ public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation returns an enumeration of keys from the internal map.
+     * <p>This implementation returns a set of keys from the internal map.
      */
     @Override
-    public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(attributes.keySet());
+    public Set<String> getAttributeNames() {
+        return Collections.unmodifiableSet(attributes.keySet());
     }
 
     /**

@@ -124,7 +124,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
         LinkedHashMap<K, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
         this.targetMap.forEach((key, values) -> {
             if (values != null && !values.isEmpty()) {
-                singleValueMap.put(key, values.get(0));
+                singleValueMap.put(key, values.getFirst());
             }
         });
         return singleValueMap;

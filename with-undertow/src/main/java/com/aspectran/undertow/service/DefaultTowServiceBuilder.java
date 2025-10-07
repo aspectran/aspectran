@@ -21,6 +21,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import io.undertow.server.handlers.resource.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,16 @@ public class DefaultTowServiceBuilder {
      * Builds a new, derived {@link DefaultTowService} instance for the given parent service.
      * A derived service inherits its configuration from its parent.
      * @param parentService the parent service
+     * @param resourceManager the static resource manager
      * @return a new, configured {@code DefaultTowService} instance
      */
     @NonNull
-    public static DefaultTowService build(CoreService parentService) {
+    public static DefaultTowService build(CoreService parentService, ResourceManager resourceManager) {
         Assert.notNull(parentService, "parentService must not be null");
         DefaultTowService towService = new DefaultTowService(parentService, true);
+        if (resourceManager != null) {
+            towService.setResourceManager(resourceManager);
+        }
         AspectranConfig aspectranConfig = parentService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -60,12 +65,18 @@ public class DefaultTowServiceBuilder {
      * Builds a new, non-derived {@link DefaultTowService} instance from a specific {@link AspectranConfig}.
      * @param parentService the parent service
      * @param aspectranConfig the Aspectran configuration to apply
+     * @param resourceManager the static resource manager
      * @return a new, configured {@code DefaultTowService} instance
      */
     @NonNull
-    public static DefaultTowService build(CoreService parentService, AspectranConfig aspectranConfig) {
+    public static DefaultTowService build(
+            CoreService parentService, AspectranConfig aspectranConfig,
+          ResourceManager resourceManager) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService(parentService, false);
+        if (resourceManager != null) {
+            towService.setResourceManager(resourceManager);
+        }
         towService.configure(aspectranConfig);
         setServiceStateListener(towService);
         return towService;

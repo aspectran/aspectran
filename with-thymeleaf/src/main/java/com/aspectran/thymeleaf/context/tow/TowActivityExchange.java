@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.thymeleaf.context.web;
+package com.aspectran.thymeleaf.context.tow;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.activity.WebActivity;
 import org.thymeleaf.web.IWebApplication;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.IWebRequest;
@@ -31,36 +31,31 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Thymeleaf {@link IWebExchange} implementation that is backed by an
- * Aspectran {@link Activity}.
+ * A Thymeleaf {@link IWebExchange} implementation for Aspectran's non-servlet
+ * web environment, specifically for the {@link com.aspectran.undertow.activity.TowActivity}.
  *
- * <p>This class provides access to the request, session, and application
- * objects, adapted for Thymeleaf's web context.</p>
+ * <p>This class acts as a container for the suite of non-servlet-specific context
+ * objects, including {@link TowActivityApplication}, {@link TowActivityRequest}, and
+ * {@link TowActivitySession}. It provides a unified entry point for Thymeleaf to access
+ * all levels of context (application, request, session) during template processing.</p>
  *
- * <p>Created: 2024-11-27</p>
+ * <p>Created: 2025-10-07</p>
  */
-public class WebActivityExchange implements IWebExchange {
+public class TowActivityExchange implements IWebExchange {
 
     private final Activity activity;
 
-    private final WebActivityRequest request;
+    private final IWebRequest request;
 
-    private final WebActivitySession session;
+    private final IWebSession session;
 
-    private final WebActivityApplication application;
+    private final IWebApplication application;
 
-    /**
-     * Instantiates a new WebActivityExchange.
-     * @param activity the activity
-     * @param request the request
-     * @param session the session
-     * @param application the application
-     */
-    public WebActivityExchange(
+    public TowActivityExchange(
             Activity activity,
-           WebActivityRequest request,
-           WebActivitySession session,
-           WebActivityApplication application) {
+            IWebRequest request,
+            IWebSession session,
+            IWebApplication application) {
         this.activity = activity;
         this.request = request;
         this.session = session;
@@ -142,22 +137,16 @@ public class WebActivityExchange implements IWebExchange {
         return activity.getResponseAdapter().transformPath(url);
     }
 
-    /**
-     * Builds a new {@link WebActivityExchange} for the given activity.
-     * @param activity the current {@link Activity}
-     * @return a new {@code WebActivityExchange} instance
-     * @throws IllegalArgumentException if the activity is not a {@link WebActivity}
-     */
     @NonNull
-    public static WebActivityExchange buildExchange(Activity activity) {
+    public static TowActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");
-        if (activity instanceof WebActivity webActivity) {
-            WebActivityRequest request = new WebActivityRequest(webActivity.getRequestAdapter());
-            WebActivitySession session = (webActivity.hasSessionAdapter() ? new WebActivitySession(webActivity.getSessionAdapter()) : null);
-            WebActivityApplication application = new WebActivityApplication(webActivity.getRequest().getServletContext());
-            return new WebActivityExchange(activity, request, session, application);
+        if (activity instanceof TowActivity towActivity) {
+            TowActivityApplication application = new TowActivityApplication(towActivity);
+            TowActivityRequest request = new TowActivityRequest(towActivity.getRequestAdapter());
+            TowActivitySession session = (towActivity.hasSessionAdapter() ? new TowActivitySession(towActivity.getSessionAdapter()) : null);
+            return new TowActivityExchange(activity, request, session, application);
         } else {
-            throw new IllegalArgumentException("activity must be WebActivity");
+            throw new IllegalArgumentException("activity must be TowActivity");
         }
     }
 

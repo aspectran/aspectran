@@ -22,6 +22,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import io.undertow.server.handlers.resource.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,13 @@ import java.util.List;
  */
 public abstract class AbstractTowService extends DefaultCoreService implements TowService {
 
+    private ResourceManager resourceManager;
+
+    private boolean sessionAdaptable = true;
+
     private String uriDecoding;
 
     private boolean trailingSlashRedirect;
-
-    private boolean sessionAdaptable = true;
 
     /**
      * Instantiates a new AbstractTowService.
@@ -48,6 +51,19 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
      */
     AbstractTowService(CoreService parentService, boolean derived) {
         super(parentService, derived);
+    }
+
+    @Override
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
+
+    /**
+     * Sets the resource manager for serving static files.
+     * @param resourceManager the static resource manager
+     */
+    protected void setResourceManager(ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
     }
 
     @Override
