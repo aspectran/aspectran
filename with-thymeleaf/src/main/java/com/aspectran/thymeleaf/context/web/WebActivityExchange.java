@@ -43,11 +43,11 @@ public class WebActivityExchange implements IWebExchange {
 
     private final Activity activity;
 
-    private final WebActivityRequest request;
+    private final IWebRequest request;
 
-    private final WebActivitySession session;
+    private final IWebSession session;
 
-    private final WebActivityApplication application;
+    private final IWebApplication application;
 
     /**
      * Instantiates a new WebActivityExchange.
@@ -58,9 +58,9 @@ public class WebActivityExchange implements IWebExchange {
      */
     public WebActivityExchange(
             Activity activity,
-            WebActivityRequest request,
-            WebActivitySession session,
-            WebActivityApplication application) {
+            IWebRequest request,
+            IWebSession session,
+            IWebApplication application) {
         this.activity = activity;
         this.request = request;
         this.session = session;

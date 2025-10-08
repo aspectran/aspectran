@@ -51,7 +51,7 @@ public class TowActivityExchange implements IWebExchange {
 
     private final IWebApplication application;
 
-    public TowActivityExchange(
+    TowActivityExchange(
             Activity activity,
             IWebRequest request,
             IWebSession session,
@@ -137,6 +137,12 @@ public class TowActivityExchange implements IWebExchange {
         return activity.getResponseAdapter().transformPath(url);
     }
 
+    /**
+     * Builds a new {@link TowActivityExchange} for the given activity.
+     * @param activity the current {@link Activity}
+     * @return a new {@code TowActivityExchange} instance
+     * @throws IllegalArgumentException if the activity is not a {@link TowActivity}
+     */
     @NonNull
     public static TowActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");

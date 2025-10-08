@@ -6,6 +6,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +18,6 @@ package com.aspectran.thymeleaf.context.tow;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.web.adapter.WebRequestAdapter;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import org.thymeleaf.web.IWebRequest;
@@ -36,19 +36,13 @@ import java.util.Set;
  * A Thymeleaf {@link IWebRequest} implementation for Aspectran's non-servlet
  * web environment.
  *
- * <p>This class adapts Aspectran's generic {@link WebRequestAdapter} to fit
- * Thymeleaf's {@code IWebRequest} interface. It provides access to request
- * details such as parameters, headers, and URI components by delegating
- * calls to the underlying adapter, without any dependency on native
- * server-specific APIs like {@code HttpServerExchange}.</p>
- *
  * <p>Created: 2025-10-07</p>
  */
 public class TowActivityRequest implements IWebRequest {
 
     private final RequestAdapter requestAdapter;
 
-    public TowActivityRequest(RequestAdapter requestAdapter) {
+    TowActivityRequest(RequestAdapter requestAdapter) {
         this.requestAdapter = requestAdapter;
     }
 

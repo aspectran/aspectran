@@ -45,34 +45,34 @@ public class WebActivityApplication implements IServletWebApplication {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return this.servletContext.getAttributeNames();
+        return servletContext.getAttributeNames();
     }
 
     @Override
     public Object getAttributeValue(String name) {
-        return this.servletContext.getAttribute(name);
+        return servletContext.getAttribute(name);
     }
 
     @Override
     public void setAttributeValue(String name, Object value) {
-        this.servletContext.setAttribute(name, value);
+        servletContext.setAttribute(name, value);
     }
 
     @Override
     public InputStream getResourceAsStream(String path) {
         Assert.notNull(path, "Path cannot be null");
-        return this.servletContext.getResourceAsStream(path);
+        return servletContext.getResourceAsStream(path);
     }
 
     @Override
     public URL getResource(String path) throws MalformedURLException {
         Assert.notNull(path, "Path cannot be null");
-        return this.servletContext.getResource(path);
+        return servletContext.getResource(path);
     }
 
     @Override
     public Object getNativeServletContextObject() {
-        return this.servletContext;
+        return servletContext;
     }
 
 }

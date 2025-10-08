@@ -48,15 +48,10 @@ public class TowActivityApplication implements IServletWebApplication {
 
     private final ApplicationAdapter applicationAdapter;
 
-    public TowActivityApplication(ActivityContext activityContext) {
+    TowActivityApplication(ActivityContext activityContext) {
         Assert.notNull(activityContext, "activityContext must not be null");
         this.activityContext = activityContext;
         this.applicationAdapter = activityContext.getApplicationAdapter();
-    }
-
-    @Override
-    public Object getNativeServletContextObject() {
-        return null;
     }
 
     @Override
@@ -121,6 +116,11 @@ public class TowActivityApplication implements IServletWebApplication {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public Object getNativeServletContextObject() {
+        return null;
     }
 
 }
