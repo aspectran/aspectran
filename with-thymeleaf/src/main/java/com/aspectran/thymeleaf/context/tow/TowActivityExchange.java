@@ -16,6 +16,8 @@
 package com.aspectran.thymeleaf.context.tow;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.thymeleaf.context.common.AbstractActivityExchange;
+import com.aspectran.thymeleaf.context.common.AspectranWebSession;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -24,26 +26,13 @@ import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.IWebRequest;
 import org.thymeleaf.web.IWebSession;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * A Thymeleaf {@link IWebExchange} implementation for Aspectran's non-servlet
  * web environment, specifically for the {@link com.aspectran.undertow.activity.TowActivity}.
  *
- * <p>This class acts as a container for the suite of non-servlet-specific context
- * objects, including {@link TowActivityApplication}, {@link TowActivityRequest}, and
- * {@link TowActivitySession}. It provides a unified entry point for Thymeleaf to access
- * all levels of context (application, request, session) during template processing.</p>
- *
  * <p>Created: 2025-10-07</p>
  */
-public class TowActivityExchange implements IWebExchange {
-
-    private final Activity activity;
+public class TowActivityExchange extends AbstractActivityExchange {
 
     private final IWebRequest request;
 
@@ -51,12 +40,12 @@ public class TowActivityExchange implements IWebExchange {
 
     private final IWebApplication application;
 
-    TowActivityExchange(
+    private TowActivityExchange(
             Activity activity,
             IWebRequest request,
             IWebSession session,
             IWebApplication application) {
-        this.activity = activity;
+        super(activity);
         this.request = request;
         this.session = session;
         this.application = application;
@@ -77,66 +66,6 @@ public class TowActivityExchange implements IWebExchange {
         return application;
     }
 
-    @Override
-    public Principal getPrincipal() {
-        return activity.getRequestAdapter().getPrincipal();
-    }
-
-    @Override
-    public Locale getLocale() {
-        return activity.getRequestAdapter().getLocale();
-    }
-
-    @Override
-    public String getContentType() {
-        return activity.getResponseAdapter().getContentType();
-    }
-
-    @Override
-    public String getCharacterEncoding() {
-        return activity.getResponseAdapter().getEncoding();
-    }
-
-    @Override
-    public boolean containsAttribute(String name) {
-        return activity.getRequestAdapter().hasAttribute(name);
-    }
-
-    @Override
-    public int getAttributeCount() {
-        return activity.getRequestAdapter().getAttributeMap().size();
-    }
-
-    @Override
-    public Set<String> getAllAttributeNames() {
-        return Collections.unmodifiableSet(activity.getRequestAdapter().getAttributeNames());
-    }
-
-    @Override
-    public Map<String, Object> getAttributeMap() {
-        return Collections.unmodifiableMap(activity.getRequestAdapter().getAttributeMap());
-    }
-
-    @Override
-    public Object getAttributeValue(String name) {
-        return activity.getRequestAdapter().getAttribute(name);
-    }
-
-    @Override
-    public void setAttributeValue(String name, Object value) {
-        activity.getRequestAdapter().setAttribute(name, value);
-    }
-
-    @Override
-    public void removeAttribute(String name) {
-        activity.getRequestAdapter().removeAttribute(name);
-    }
-
-    @Override
-    public String transformURL(String url) {
-        return activity.getResponseAdapter().transformPath(url);
-    }
-
     /**
      * Builds a new {@link TowActivityExchange} for the given activity.
      * @param activity the current {@link Activity}
@@ -147,9 +76,9 @@ public class TowActivityExchange implements IWebExchange {
     public static TowActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");
         if (activity instanceof TowActivity towActivity) {
-            TowActivityRequest request = new TowActivityRequest(towActivity.getRequestAdapter());
-            TowActivitySession session = (towActivity.hasSessionAdapter() ? new TowActivitySession(towActivity.getSessionAdapter()) : null);
-            TowActivityApplication application = new TowActivityApplication(towActivity.getActivityContext());
+            IWebRequest request = new TowActivityRequest(towActivity.getRequestAdapter());
+            IWebSession session = (towActivity.hasSessionAdapter() ? new AspectranWebSession(towActivity.getSessionAdapter()) : null);
+            IWebApplication application = new TowActivityApplication(towActivity.getActivityContext());
             return new TowActivityExchange(activity, request, session, application);
         } else {
             throw new IllegalArgumentException("activity must be TowActivity");

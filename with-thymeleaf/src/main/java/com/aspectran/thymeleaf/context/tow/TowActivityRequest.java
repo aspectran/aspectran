@@ -16,11 +16,11 @@
 package com.aspectran.thymeleaf.context.tow;
 
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.thymeleaf.context.common.AbstractActivityRequest;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
-import org.thymeleaf.web.IWebRequest;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,27 +28,24 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * A Thymeleaf {@link IWebRequest} implementation for Aspectran's non-servlet
+ * A Thymeleaf {@link org.thymeleaf.web.IWebRequest} implementation for Aspectran's non-servlet
  * web environment.
  *
  * <p>Created: 2025-10-07</p>
  */
-public class TowActivityRequest implements IWebRequest {
-
-    private final RequestAdapter requestAdapter;
+public class TowActivityRequest extends AbstractActivityRequest {
 
     TowActivityRequest(RequestAdapter requestAdapter) {
-        this.requestAdapter = requestAdapter;
+        super(requestAdapter);
     }
 
-       @Override
+    @Override
     public String getMethod() {
-        return requestAdapter.getRequestMethod().name();
+        return getRequestAdapter().getRequestMethod().name();
     }
 
     @Override
@@ -91,61 +88,17 @@ public class TowActivityRequest implements IWebRequest {
 
     @Override
     public boolean containsHeader(String name) {
-        return requestAdapter.containsHeader(name);
+        return getRequestAdapter().containsHeader(name);
     }
 
     @Override
     public int getHeaderCount() {
-        return requestAdapter.getHeaderNames().size();
+        return getRequestAdapter().getHeaderNames().size();
     }
 
     @Override
     public Set<String> getAllHeaderNames() {
-        return requestAdapter.getHeaderNames();
-    }
-
-    @Override
-    public Map<String, String[]> getHeaderMap() {
-        Map<String, String[]> headerMap = new LinkedHashMap<>(10);
-        requestAdapter.getHeaderMap().forEach((key, value)
-            -> headerMap.put(key, value.toArray(new String[0])));
-        return Collections.unmodifiableMap(headerMap);
-    }
-
-    @Override
-    public String[] getHeaderValues(String name) {
-        List<String> values = requestAdapter.getHeaderValues(name);
-        return (values != null && !values.isEmpty() ? values.toArray(new String[0]) : null);
-    }
-
-    @Override
-    public boolean containsParameter(String name) {
-        return requestAdapter.hasParameter(name);
-    }
-
-    @Override
-    public int getParameterCount() {
-        return requestAdapter.getParameterMap().size();
-    }
-
-    @Override
-    public Set<String> getAllParameterNames() {
-        Collection<String> names = requestAdapter.getParameterNames();
-        if (names != null) {
-            return Set.copyOf(requestAdapter.getParameterNames());
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    @Override
-    public Map<String, String[]> getParameterMap() {
-        return requestAdapter.getParameterMap();
-    }
-
-    @Override
-    public String[] getParameterValues(String name) {
-        return requestAdapter.getParameterValues(name);
+        return getRequestAdapter().getHeaderNames();
     }
 
     @Override
@@ -238,7 +191,7 @@ public class TowActivityRequest implements IWebRequest {
     }
 
     private HttpServerExchange getHttpServerExchange() {
-        return requestAdapter.getAdaptee();
+        return getRequestAdapter().getAdaptee();
     }
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.thymeleaf.context.tow;
+package com.aspectran.thymeleaf.context.common;
 
 import com.aspectran.core.adapter.SessionAdapter;
 import org.thymeleaf.web.IWebSession;
@@ -26,21 +26,20 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Thymeleaf {@link IWebSession} implementation for Aspectran's non-servlet
- * web environment.
+ * A Thymeleaf {@link IWebSession} implementation that wraps an Aspectran
+ * {@link SessionAdapter}.
  *
- * <p>This class acts as a bridge between Aspectran's abstract {@link SessionAdapter}
- * and Thymeleaf's {@code IWebSession} interface. It allows Thymeleaf to interact
- * with session-scoped attributes in a consistent manner, regardless of the
- * underlying session management implementation (e.g., Undertow's native sessions).</p>
- *
- * <p>Created: 2025-10-07</p>
+ * <p>Created: 2024-11-27</p>
  */
-public class TowActivitySession implements IWebSession {
+public class AspectranWebSession implements IWebSession {
 
     private final SessionAdapter sessionAdapter;
 
-    TowActivitySession(SessionAdapter sessionAdapter) {
+    /**
+     * Instantiates a new AspectranWebSession.
+     * @param sessionAdapter the session adapter
+     */
+    public AspectranWebSession(SessionAdapter sessionAdapter) {
         this.sessionAdapter = sessionAdapter;
     }
 

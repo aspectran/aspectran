@@ -16,6 +16,8 @@
 package com.aspectran.thymeleaf.context.web;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.thymeleaf.context.common.AbstractActivityExchange;
+import com.aspectran.thymeleaf.context.common.AspectranWebSession;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.WebActivity;
@@ -23,12 +25,6 @@ import org.thymeleaf.web.IWebApplication;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.IWebRequest;
 import org.thymeleaf.web.IWebSession;
-
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A Thymeleaf {@link IWebExchange} implementation that is backed by an
@@ -39,9 +35,7 @@ import java.util.Set;
  *
  * <p>Created: 2024-11-27</p>
  */
-public class WebActivityExchange implements IWebExchange {
-
-    private final Activity activity;
+public class WebActivityExchange extends AbstractActivityExchange {
 
     private final IWebRequest request;
 
@@ -56,12 +50,12 @@ public class WebActivityExchange implements IWebExchange {
      * @param session the session
      * @param application the application
      */
-    public WebActivityExchange(
+    private WebActivityExchange(
             Activity activity,
             IWebRequest request,
             IWebSession session,
             IWebApplication application) {
-        this.activity = activity;
+        super(activity);
         this.request = request;
         this.session = session;
         this.application = application;
@@ -82,66 +76,6 @@ public class WebActivityExchange implements IWebExchange {
         return application;
     }
 
-    @Override
-    public Principal getPrincipal() {
-        return activity.getRequestAdapter().getPrincipal();
-    }
-
-    @Override
-    public Locale getLocale() {
-        return activity.getRequestAdapter().getLocale();
-    }
-
-    @Override
-    public String getContentType() {
-        return activity.getResponseAdapter().getContentType();
-    }
-
-    @Override
-    public String getCharacterEncoding() {
-        return activity.getResponseAdapter().getEncoding();
-    }
-
-    @Override
-    public boolean containsAttribute(String name) {
-        return activity.getRequestAdapter().hasAttribute(name);
-    }
-
-    @Override
-    public int getAttributeCount() {
-        return activity.getRequestAdapter().getAttributeMap().size();
-    }
-
-    @Override
-    public Set<String> getAllAttributeNames() {
-        return Collections.unmodifiableSet(activity.getRequestAdapter().getAttributeNames());
-    }
-
-    @Override
-    public Map<String, Object> getAttributeMap() {
-        return Collections.unmodifiableMap(activity.getRequestAdapter().getAttributeMap());
-    }
-
-    @Override
-    public Object getAttributeValue(String name) {
-        return activity.getRequestAdapter().getAttribute(name);
-    }
-
-    @Override
-    public void setAttributeValue(String name, Object value) {
-        activity.getRequestAdapter().setAttribute(name, value);
-    }
-
-    @Override
-    public void removeAttribute(String name) {
-        activity.getRequestAdapter().removeAttribute(name);
-    }
-
-    @Override
-    public String transformURL(String url) {
-        return activity.getResponseAdapter().transformPath(url);
-    }
-
     /**
      * Builds a new {@link WebActivityExchange} for the given activity.
      * @param activity the current {@link Activity}
@@ -152,9 +86,9 @@ public class WebActivityExchange implements IWebExchange {
     public static WebActivityExchange buildExchange(Activity activity) {
         Assert.notNull(activity, "activity must not be null");
         if (activity instanceof WebActivity webActivity) {
-            WebActivityRequest request = new WebActivityRequest(webActivity.getRequestAdapter());
-            WebActivitySession session = (webActivity.hasSessionAdapter() ? new WebActivitySession(webActivity.getSessionAdapter()) : null);
-            WebActivityApplication application = new WebActivityApplication(webActivity.getRequest().getServletContext());
+            IWebRequest request = new WebActivityRequest(webActivity.getRequestAdapter());
+            IWebSession session = (webActivity.hasSessionAdapter() ? new AspectranWebSession(webActivity.getSessionAdapter()) : null);
+            IWebApplication application = new WebActivityApplication(webActivity.getRequest().getServletContext());
             return new WebActivityExchange(activity, request, session, application);
         } else {
             throw new IllegalArgumentException("activity must be WebActivity");
