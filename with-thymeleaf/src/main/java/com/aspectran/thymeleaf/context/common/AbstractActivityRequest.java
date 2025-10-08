@@ -35,10 +35,18 @@ public abstract class AbstractActivityRequest implements IWebRequest {
 
     private final RequestAdapter requestAdapter;
 
+    /**
+     * Instantiates a new Abstract activity request.
+     * @param requestAdapter the request adapter
+     */
     public AbstractActivityRequest(RequestAdapter requestAdapter) {
         this.requestAdapter = requestAdapter;
     }
 
+    /**
+     * Returns the request adapter.
+     * @return the request adapter
+     */
     protected RequestAdapter getRequestAdapter() {
         return requestAdapter;
     }

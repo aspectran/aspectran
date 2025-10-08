@@ -35,6 +35,9 @@ import java.util.Set;
  * A Thymeleaf {@link org.thymeleaf.web.IWebRequest} implementation for Aspectran's non-servlet
  * web environment.
  *
+ * <p>This class extends {@link AbstractActivityRequest} to handle Undertow-specific
+ * request details.</p>
+ *
  * <p>Created: 2025-10-07</p>
  */
 public class TowActivityRequest extends AbstractActivityRequest {

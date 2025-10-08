@@ -32,8 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Thymeleaf {@link org.thymeleaf.web.IWebRequest} implementation that wraps an Aspectran
- * {@link RequestAdapter}.
+ * A Thymeleaf {@link org.thymeleaf.web.IWebRequest} implementation for Aspectran's
+ * servlet-based web environment.
+ *
+ * <p>This class extends {@link AbstractActivityRequest} to handle servlet-specific
+ * request details.</p>
  *
  * <p>Created: 2024-11-27</p>
  */

@@ -30,6 +30,9 @@ import org.thymeleaf.web.IWebSession;
  * A Thymeleaf {@link IWebExchange} implementation for Aspectran's non-servlet
  * web environment, specifically for the {@link com.aspectran.undertow.activity.TowActivity}.
  *
+ * <p>This class extends {@link AbstractActivityExchange} and acts as a container for
+ * the suite of non-servlet-specific context objects.</p>
+ *
  * <p>Created: 2025-10-07</p>
  */
 public class TowActivityExchange extends AbstractActivityExchange {

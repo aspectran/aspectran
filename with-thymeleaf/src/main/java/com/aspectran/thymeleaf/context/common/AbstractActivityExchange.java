@@ -34,6 +34,10 @@ public abstract class AbstractActivityExchange implements IWebExchange {
 
     private final Activity activity;
 
+    /**
+     * Instantiates a new Abstract activity exchange.
+     * @param activity the activity
+     */
     public AbstractActivityExchange(Activity activity) {
         this.activity = activity;
     }

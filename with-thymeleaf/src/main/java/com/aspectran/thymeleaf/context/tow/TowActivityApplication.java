@@ -48,6 +48,10 @@ public class TowActivityApplication implements IServletWebApplication {
 
     private final ApplicationAdapter applicationAdapter;
 
+    /**
+     * Instantiates a new Tow activity application.
+     * @param activityContext the activity context
+     */
     TowActivityApplication(ActivityContext activityContext) {
         Assert.notNull(activityContext, "activityContext must not be null");
         this.activityContext = activityContext;

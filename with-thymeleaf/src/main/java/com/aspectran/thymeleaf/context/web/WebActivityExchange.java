@@ -27,11 +27,11 @@ import org.thymeleaf.web.IWebRequest;
 import org.thymeleaf.web.IWebSession;
 
 /**
- * A Thymeleaf {@link IWebExchange} implementation that is backed by an
- * Aspectran {@link Activity}.
+ * A Thymeleaf {@link IWebExchange} implementation for Aspectran's servlet-based
+ * web environment.
  *
- * <p>This class provides access to the request, session, and application
- * objects, adapted for Thymeleaf's web context.</p>
+ * <p>This class extends {@link AbstractActivityExchange} and provides access to
+ * the request, session, and application objects, adapted for Thymeleaf's web context.</p>
  *
  * <p>Created: 2024-11-27</p>
  */
