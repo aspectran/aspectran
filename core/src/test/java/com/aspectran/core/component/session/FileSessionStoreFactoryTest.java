@@ -44,7 +44,7 @@ class FileSessionStoreFactoryTest {
         sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
         sessionManager.initialize();
 
-        sessionManager.setDefaultMaxIdleSecs(1);
+        sessionManager.setDefaultMaxIdleSecs(2);
 
         SessionAgent agent = new SessionAgent(sessionManager);
         try {
