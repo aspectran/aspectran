@@ -88,7 +88,7 @@ public class DefaultWebService extends AbstractWebService {
         if (!isRequestAcceptable(requestName)) {
             try {
                 if (!getDefaultServletHttpRequestHandler().handleRequest(request, response)) {
-                    sendError(response, HttpServletResponse.SC_NOT_FOUND, "Not Exposed");
+                    sendError(response, HttpServletResponse.SC_NOT_FOUND, null);
                 }
             } catch (Exception e) {
                 logger.error("Error while processing with default servlet", e);

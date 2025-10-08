@@ -37,40 +37,32 @@
         <arguments>
             <item>
                 <bean class="com.aspectran.thymeleaf.TemplateEngineFactoryBean">
-                    <properties>
-                        <item name="templateResolvers" type="set">
-                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
-                                <properties>
-                                    <item name="prefix">view/html/</item>
-                                    <item name="resolvablePatterns" type="set">
-                                        <value>*.html</value>
-                                    </item>
-                                    <item name="templateMode">HTML</item>
-                                    <item name="cacheable" valueType="boolean">true</item>
-                                    <!-- Set template cache TTL to 1 hour -->
-                                    <item name="cacheTTLMs" valueType="long">3600000</item>
-                                </properties>
-                            </bean>
-                            <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
-                                <properties>
-                                    <item name="prefix">view/text/</item>
-                                    <item name="resolvablePatterns" type="set">
-                                        <value>*.txt</value>
-                                    </item>
-                                    <item name="templateMode">TEXT</item>
-                                    <item name="cacheable" valueType="boolean">true</item>
-                                    <!-- Set template cache TTL to 1 hour -->
-                                    <item name="cacheTTLMs" valueType="long">3600000</item>
-                                </properties>
-                            </bean>
-                            <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
-                                <properties>
-                                    <item name="templateMode">TEXT</item>
-                                    <item name="cacheable" valueType="boolean">false</item>
-                                </properties>
-                            </bean>
-                        </item>
-                    </properties>
+                    <property name="templateResolvers" type="set">
+                        <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                            <property name="prefix">view/html/</property>
+                            <property name="resolvablePatterns" type="set">
+                                <value>*.html</value>
+                            </property>
+                            <property name="templateMode">HTML</property>
+                            <property name="cacheable" valueType="boolean">true</property>
+                            <!-- Set template cache TTL to 1 hour -->
+                            <property name="cacheTTLMs" valueType="long">3600000</property>
+                        </bean>
+                        <bean class="com.aspectran.thymeleaf.template.ClassLoaderTemplateResolver">
+                            <property name="prefix">view/text/</property>
+                            <property name="resolvablePatterns" type="set">
+                                <value>*.txt</value>
+                            </property>
+                            <property name="templateMode">TEXT</property>
+                            <property name="cacheable" valueType="boolean">true</property>
+                            <!-- Set template cache TTL to 1 hour -->
+                            <property name="cacheTTLMs" valueType="long">3600000</property>
+                        </bean>
+                        <bean class="com.aspectran.thymeleaf.template.StringTemplateResolver">
+                            <property name="templateMode">TEXT</property>
+                            <property name="cacheable" valueType="boolean">false</property>
+                        </bean>
+                    </property>
                 </bean>
             </item>
         </arguments>

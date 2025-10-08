@@ -90,7 +90,7 @@ public class DefaultTowService extends AbstractTowService {
         }
 
         if (!isRequestAcceptable(requestName)) {
-            sendError(exchange, HttpStatus.NOT_FOUND, "Not Exposed");
+            sendError(exchange, HttpStatus.NOT_FOUND, null);
             return false;
         }
 
