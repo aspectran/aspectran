@@ -282,8 +282,8 @@
                                     <message>[ERROR] OLD JDK in use. Aspectran Release ${project.version} MUST use JDK 21 or newer</message>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
-                                    <version>[3.6.3,)</version>
-                                    <message>[ERROR] OLD MAVEN in use, Aspectran ${project.version} requires Maven 3.6.3 or newer</message>
+                                    <version>[3.9.4,)</version>
+                                    <message>[ERROR] OLD MAVEN in use, Aspectran ${project.version} requires Maven 3.9.4 or newer</message>
                                 </requireMavenVersion>
                                 <requireProperty>
                                     <property>maven.compiler.parameters</property>

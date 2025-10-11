@@ -60,7 +60,7 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 ## Building
 
 ```sh
-# Clone and build (requires Maven 3.6.3+)
+# Clone and build (requires Maven 3.9.4+)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
 ./build rebuild   # or ./mvnw clean install
