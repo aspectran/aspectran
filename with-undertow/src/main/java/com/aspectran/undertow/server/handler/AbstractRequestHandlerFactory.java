@@ -72,9 +72,11 @@ public abstract class AbstractRequestHandlerFactory implements ActivityContextAw
      * @return true if the logging group handler wrapper exists, false otherwise
      */
     protected boolean hasLoggingGroupHandlerWrapper() {
-        for (HandlerWrapper handlerWrapper : handlerChainWrappers) {
-            if (handlerWrapper instanceof LoggingGroupHandlerWrapper) {
-                return true;
+        if (handlerChainWrappers != null) {
+            for (HandlerWrapper handlerWrapper : handlerChainWrappers) {
+                if (handlerWrapper instanceof LoggingGroupHandlerWrapper) {
+                    return true;
+                }
             }
         }
         return false;
