@@ -20,7 +20,9 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * This is an activity that does nothing and is mainly used for unit testing.
+ * A 'Null Object' implementation of {@link CoreActivity} that does nothing.
+ * <p>This class is primarily used in unit tests or in situations where an activity
+ * object is required but no actual activity processing is needed.</p>
  */
 public class NonActivity extends CoreActivity {
 
@@ -41,9 +43,13 @@ public class NonActivity extends CoreActivity {
         return super.getRequestAdapter();
     }
 
+    /**
+     * This operation is not supported in a {@code NonActivity}.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
-        throw new UnsupportedOperationException("NonActivity does not support being performed");
+        throw new UnsupportedOperationException("NonActivity cannot be performed");
     }
 
 }

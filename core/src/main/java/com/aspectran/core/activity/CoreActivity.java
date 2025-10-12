@@ -57,6 +57,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
@@ -127,10 +128,10 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Prepare for the activity.
-     * @param requestName the request name
-     * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
+     * Prepares the activity for a given request name. Assumes the GET method.
+     * @param requestName the name of the request to be processed
+     * @throws TransletNotFoundException if no translet matches the request name
+     * @throws ActivityPrepareException if an error occurs during preparation
      */
     public void prepare(String requestName) throws TransletNotFoundException, ActivityPrepareException {
         TransletRule transletRule = findTransletRule(requestName, MethodType.GET);
@@ -142,30 +143,33 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Prepare for the activity.
-     * @param transletRule the translet rule
-     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     * Prepares the activity for a given {@link TransletRule}.
+     * Assumes the GET method and uses the translet rule's name as the request name.
+     * @param transletRule the pre-resolved translet rule to execute
+     * @throws ActivityPrepareException if an error occurs during preparation
      */
     public void prepare(TransletRule transletRule) throws ActivityPrepareException {
         prepare(transletRule.getName(), transletRule);
     }
 
     /**
-     * Prepare for the activity.
-     * @param requestName the request name
-     * @param transletRule the translet rule
-     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     * Prepares the activity for a given {@link TransletRule} with a specific request name.
+     * This is useful when the request name (e.g., from a wildcard match) differs from the
+     * translet rule's defined name. Assumes the GET method.
+     * @param requestName the name of the request to be processed
+     * @param transletRule the pre-resolved translet rule to execute
+     * @throws ActivityPrepareException if an error occurs during preparation
      */
     public void prepare(String requestName, TransletRule transletRule) throws ActivityPrepareException {
         prepare(requestName, MethodType.GET, transletRule);
     }
 
     /**
-     * Prepare for the activity.
-     * @param requestName the request name
-     * @param requestMethod the request method
-     * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
+     * Prepares the activity for a given request name and HTTP method.
+     * @param requestName the name of the request to be processed
+     * @param requestMethod the HTTP method as a string (e.g., "GET", "POST")
+     * @throws TransletNotFoundException if no translet matches the request name and method
+     * @throws ActivityPrepareException if an error occurs during preparation
      */
     public void prepare(String requestName, String requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
@@ -173,11 +177,12 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Prepare for the activity.
-     * @param requestName the request name
-     * @param requestMethod the request method
-     * @throws TransletNotFoundException thrown if the translet is not found
-     * @throws ActivityPrepareException  thrown when an exception occurs while preparing an activity
+     * Prepares the activity for a given request name and {@link MethodType}.
+     * If the method is null, it defaults to GET.
+     * @param requestName the name of the request to be processed
+     * @param requestMethod the HTTP method
+     * @throws TransletNotFoundException if no translet matches the request name and method
+     * @throws ActivityPrepareException if an error occurs during preparation
      */
     public void prepare(String requestName, MethodType requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
@@ -194,11 +199,14 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Prepares a new activity for the Translet Rule by taking
-     * the results of the process that was created earlier.
-     * @param requestName the request name
-     * @param requestMethod the request method
-     * @param transletRule the translet rule
+     * Initializes the core components of the activity based on the provided translet rule.
+     * <p>This internal method sets up the current translet, validates the request method against
+     * the rule's allowed methods, and prepares the AOP advice chain for execution. If a previous
+     * translet existed (e.g., in a forward), its process results are carried over to the new translet.</p>
+     * @param requestName the name of the request being processed
+     * @param requestMethod the HTTP method
+     * @param transletRule the resolved translet rule for the current request
+     * @throws ActivityPrepareException if initialization fails
      */
     protected void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
@@ -230,10 +238,24 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Adapts the native request and response objects to Aspectran's generic interfaces.
+     * This method is a hook for subclasses to wrap vendor-specific objects (e.g.,
+     * {@code HttpServletRequest}) with a corresponding {@code RequestAdapter}.
+     * @throws AdapterException if the adaptation fails
+     */
     protected void adapt() throws AdapterException {
         adapted = true;
     }
 
+    /**
+     * Orchestrates the request parsing phase of the activity.
+     * <p>This involves processing declared parameters and attributes, resolving path variables
+     * from the request name, loading flash attributes from a previous request, and resolving
+     * the current locale.</p>
+     * @throws RequestParseException if a parsing error occurs
+     * @throws ActivityTerminatedException if the activity is terminated during parsing
+     */
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         parseDeclaredParameters();
         parseDeclaredAttributes();
@@ -245,6 +267,12 @@ public class CoreActivity extends AdviceActivity {
         requestParsed = true;
     }
 
+    /**
+     * Resolves the locale and time zone for the current request.
+     * It uses the configured {@link LocaleResolver} to determine the locale and time zone,
+     * and then applies any configured {@link LocaleChangeInterceptor} to allow for
+     * on-the-fly locale changes.
+     */
     protected void resolveLocale() {
         LocaleResolver localeResolver = getLocaleResolver();
         String localeResolverBeanId = getSetting(LOCALE_RESOLVER_SETTING_NAME);
@@ -375,7 +403,11 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Produce the result of the content and its subordinate actions.
+     * Executes the main logic of the translet by processing its content sections.
+     * <p>This method iterates through the {@code <content>} sections defined in the translet rule
+     * and executes the associated actions. It also executes any actions defined directly
+     * within the final {@code <response>} rule.</p>
+     * @throws ActionExecutionException if an action fails during execution
      */
     private void produce() throws ActionExecutionException {
         ContentList contentList = getTransletRule().getContentList();
@@ -402,10 +434,13 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Triggers the response generation process.
-     * It determines the appropriate response object and invokes its {@code respond} method.
-     * Once response processing begins, any raised exception is cleared, as it is considered handled.
-     * @return a {@link ForwardRule} if the response is a forward, otherwise null
+     * Triggers the response generation process for the current activity.
+     * <p>This method selects the appropriate {@link Response} object (a reserved response takes
+     * precedence over a declared one) and invokes its {@code respond()} method. Once response
+     * processing begins, any raised exception is cleared, as it is considered handled.
+     * For redirect responses, it saves flash attributes. For forward responses, it returns
+     * the corresponding {@link ForwardRule} to be handled by the {@code perform} method.</p>
+     * @return a {@link ForwardRule} if the response is a forward; otherwise {@code null}
      * @throws ResponseException if an error occurs during response generation
      */
     @Nullable
@@ -437,8 +472,9 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Forwards the activity to another translet.
-     * This method recursively calls {@code perform()} for the new translet.
+     * Forwards the current activity to another translet.
+     * <p>This method resets the response state and recursively calls {@link #perform()} for the
+     * new translet defined in the {@link ForwardRule}.</p>
      * @param forwardRule the rule defining the forward action
      * @throws TransletNotFoundException if the target translet is not found
      * @throws ActivityPrepareException if preparing the new activity fails
@@ -455,8 +491,10 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Performs final cleanup of the activity.
-     * This includes destroying request-scoped resources and committing the response.
+     * Performs final cleanup of the activity after execution and response generation.
+     * <p>This includes destroying any request-scoped beans and committing the response,
+     * which may involve flushing output streams. It ensures that the current activity is
+     * removed from the thread-local context.</p>
      */
     private void finish() {
         try {
@@ -481,9 +519,11 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Orchestrates the handling of a previously raised exception.
-     * It executes the defined exception handling rules and attempts to generate a response.
-     * If the exception is not handled by any rule, it will be re-thrown.
-     * @throws Exception the original raised exception if not handled
+     * <p>This method first processes all applicable exception handling rules from the translet
+     * and any active aspects. If a rule handles the exception and specifies a response,
+     * this method attempts to generate that response. If the exception remains unhandled
+     * after all rules are processed, it is re-thrown to the caller.</p>
+     * @throws Exception the original raised exception, if not handled by any rule
      */
     private void handleRaisedException() throws Exception {
         try {
@@ -500,7 +540,9 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Executes the exception handling rules defined in the translet and AOP aspects.
+     * Executes all applicable exception handling rules for the currently raised exception.
+     * <p>It processes rules defined both within the current translet and within any
+     * active AOP aspects. This method resets the response state before processing the rules.</p>
      * @throws ActionExecutionException if an action within an exception handler fails
      */
     private void processExceptionRules() throws ActionExecutionException {
@@ -535,6 +577,7 @@ public class CoreActivity extends AdviceActivity {
      * @param instantAction the instant action being executed, if any
      * @return a new, informative {@code ActivityPerformException}
      */
+    @NonNull
     private ActivityPerformException createActivityPerformException(Throwable cause, InstantAction<?> instantAction) {
         String contextDesc = null;
         if (translet != null) {
@@ -550,10 +593,23 @@ public class CoreActivity extends AdviceActivity {
     // Action Executing Methods
     //-------------------------------------------------------------------------------------
 
+    /**
+     * Executes the actions in the given list.
+     * @param actionList the list of actions to execute
+     * @throws ActionExecutionException if an action fails during execution
+     */
     private void execute(ActionList actionList) throws ActionExecutionException {
         execute(actionList, null);
     }
 
+    /**
+     * Executes the actions in the given list, storing the results in a {@link ContentResult}.
+     * <p>If a {@code contentResult} is not provided, this method will create or retrieve one
+     * from the current translet's {@link ProcessResult}.</p>
+     * @param actionList the list of actions to execute
+     * @param contentResult the container for storing action results
+     * @throws ActionExecutionException if an action fails during execution
+     */
     private void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
             ProcessResult processResult = getTranslet().getProcessResult();
@@ -578,6 +634,16 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Executes a single action and records its result.
+     * <p>This method handles the special case for {@code <choose>} actions, executing the
+     * nested actions of the first matching {@code <when>} condition. For all other actions,
+     * it executes the action and, if it is not hidden, adds the result to the provided
+     * {@link ContentResult}.</p>
+     * @param action the action to execute
+     * @param contentResult the container for storing the action's result
+     * @throws ActionExecutionException if the action fails during execution
+     */
     private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
         try {
             if (logger.isDebugEnabled()) {
@@ -614,6 +680,12 @@ public class CoreActivity extends AdviceActivity {
     // Response-related Methods
     //-------------------------------------------------------------------------------------
 
+    /**
+     * Returns the response to be executed.
+     * <p>A reserved response takes precedence over a declared response.
+     * If an exception has been raised, only a reserved response will be returned.</p>
+     * @return the response to execute, or {@code null} if none is available
+     */
     private Response getResponse() {
         Response response = reservedResponse;
         if (response == null && !isExceptionRaised()) {
@@ -627,6 +699,12 @@ public class CoreActivity extends AdviceActivity {
         return (getResponseRule() != null ? getResponseRule().getResponse() : null);
     }
 
+    /**
+     * Reserves a response to be executed, overriding the default declared response.
+     * <p>If an exception has not been raised, the reserved response is also stored as the
+     * "desired response" for later reference, such as in exception handling scenarios.</p>
+     * @param response the response to reserve; can be {@code null} to clear a reservation
+     */
     protected void reserveResponse(@Nullable Response response) {
         reservedResponse = response;
         if (response != null && !isExceptionRaised()) {
@@ -634,6 +712,9 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Reserves the currently declared response.
+     */
     protected void reserveResponse() {
         if (reservedResponse == null) {
             reservedResponse = getDeclaredResponse();
@@ -645,6 +726,12 @@ public class CoreActivity extends AdviceActivity {
         return (reservedResponse != null);
     }
 
+    /**
+     * Returns the response that was desired before any exception was raised.
+     * <p>This is useful in exception handlers to determine what the original
+     * response would have been.</p>
+     * @return the desired response
+     */
     protected Response getDesiredResponse() {
         return (desiredResponse != null ? desiredResponse : getDeclaredResponse());
     }
@@ -660,10 +747,14 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public CoreTranslet getTranslet() {
-        Assert.state(translet != null, "No Translet");
+        Assert.state(translet != null, "No Translet has been prepared");
         return translet;
     }
 
+    /**
+     * Returns whether a translet has been prepared for this activity.
+     * @return true if a translet is available, false otherwise
+     */
     public boolean hasTranslet() {
         return (translet != null);
     }
@@ -683,37 +774,62 @@ public class CoreActivity extends AdviceActivity {
         return activityData;
     }
 
+    /**
+     * Finds a translet rule matching the given request name and method.
+     * @param requestName the name of the request
+     * @param requestMethod the HTTP method
+     * @return the matching {@link TransletRule}, or {@code null} if not found
+     */
     private TransletRule findTransletRule(String requestName, MethodType requestMethod) {
         return getActivityContext().getTransletRuleRegistry().getTransletRule(requestName, requestMethod);
     }
 
+    /**
+     * Returns the rule for the current translet.
+     * @return the current {@link TransletRule}
+     */
     protected TransletRule getTransletRule() {
         return getTranslet().getTransletRule();
     }
 
+    /**
+     * Returns the request rule for the current translet.
+     * @return the current {@link RequestRule}
+     */
     protected RequestRule getRequestRule() {
         return getTranslet().getRequestRule();
     }
 
+    /**
+     * Returns the response rule for the current translet.
+     * @return the current {@link ResponseRule}
+     */
     protected ResponseRule getResponseRule() {
         return getTranslet().getResponseRule();
     }
 
     /**
-     * Returns the definitive request encoding.
-     * @return the definitive request encoding
+     * Determines the definitive request character encoding.
+     * <p>The encoding is resolved in the following order of precedence:
+     * 1. Encoding specified in the translet's request rule.
+     * 2. Default encoding specified in the Aspectran settings.
+     * 3. "UTF-8" as the final fallback.</p>
+     * @return the definitive request encoding, never {@code null}
      */
     protected String getDefinitiveRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
             encoding = getSetting(CHARACTER_ENCODING_SETTING_NAME);
         }
-        return encoding;
+        return (encoding != null ? encoding : StandardCharsets.UTF_8.name());
     }
 
     /**
-     * Returns the definitive response encoding.
-     * @return the definitive response encoding
+     * Determines the definitive response character encoding.
+     * <p>The encoding is resolved in the following order of precedence:
+     * 1. Encoding specified in the translet's response rule.
+     * 2. The definitive request encoding.</p>
+     * @return the definitive response encoding, never {@code null}
      */
     protected String getDefinitiveResponseEncoding() {
         String encoding = getResponseRule().getEncoding();
@@ -724,7 +840,10 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Parses the declared parameters.
+     * Parses and evaluates parameters as defined in the request rule.
+     * <p>This method processes {@code <parameter>} rules, evaluates their values if specified,
+     * and checks for the presence of all mandatory parameters.</p>
+     * @throws MissingMandatoryParametersException if a mandatory parameter is not found
      */
     protected void parseDeclaredParameters() throws MissingMandatoryParametersException {
         ItemRuleMap itemRuleMap = getRequestRule().getParameterItemRuleMap();
@@ -755,8 +874,10 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Parses the declared attributes.
-     * @throws MissingMandatoryAttributesException thrown if a required attribute is missing from the request
+     * Parses and evaluates attributes as defined in the request rule.
+     * <p>This method processes {@code <attribute>} rules, evaluates their values if specified,
+     * and checks for the presence of all mandatory attributes.</p>
+     * @throws MissingMandatoryAttributesException if a mandatory attribute is not found
      */
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
         ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
@@ -786,6 +907,10 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Parses path variables from the request name if the translet rule contains variable tokens.
+     * The extracted variables are then added to the activity's attributes.
+     */
     private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
@@ -796,6 +921,10 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * Retrieves flash attributes from the {@link FlashMapManager} and adds them to the current
+     * translet's attributes. Flash attributes are typically used to pass data between redirects.
+     */
     private void loadFlashAttributes() {
         if (getFlashMapManager() != null) {
             FlashMap flashMap = getFlashMapManager().retrieveAndUpdate(translet);

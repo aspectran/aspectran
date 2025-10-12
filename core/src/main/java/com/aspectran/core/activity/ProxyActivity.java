@@ -22,6 +22,12 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
+ * A proxy or decorator for an {@link Activity} instance.
+ * <p>This class is primarily used to provide an activity context for AOP advice
+ * execution around an {@link InstantAction} without involving a full translet lifecycle.
+ * It allows advice to be applied to arbitrary code blocks that are executed
+ * as an {@code InstantAction}.</p>
+ *
  * <p>Created: 2025-08-27</p>
  */
 public final class ProxyActivity extends AdviceActivity {
@@ -31,13 +37,19 @@ public final class ProxyActivity extends AdviceActivity {
     private ActivityData activityData;
 
     /**
-     * Instantiates a new AdviceActivity.
+     * Instantiates a new proxy activity without an actual underlying activity.
+     * This is useful when only a context is needed for advice execution.
      * @param context the activity context
      */
     public ProxyActivity(ActivityContext context) {
         super(context);
         this.activity = null;
     }
+
+    /**
+     * Instantiates a new proxy activity that wraps an actual activity.
+     * @param activity the actual activity to proxy
+     */
     public ProxyActivity(@NonNull Activity activity) {
         super(activity.getActivityContext());
         this.activity = activity;
@@ -48,19 +60,38 @@ public final class ProxyActivity extends AdviceActivity {
         return Mode.PROXY;
     }
 
+    /**
+     * Returns whether this proxy wraps an actual activity.
+     * @return true if there is an actual activity, false otherwise
+     */
     public boolean hasActualActivity() {
         return (activity != null);
     }
 
+    /**
+     * Returns the actual activity that this proxy wraps.
+     * @return the actual activity, or {@code null} if none
+     */
     public Activity getActualActivity() {
         return activity;
     }
 
+    /**
+     * This operation is not supported in a proxy activity.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void perform() throws ActivityPerformException {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Executes an {@link InstantAction} within the context of this proxy activity.
+     * This allows AOP advice to be applied to the action's execution.
+     * @param instantAction the action to execute
+     * @return the result of the instant action
+     * @throws ActivityPerformException if an exception occurs during execution
+     */
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         try {
@@ -78,6 +109,10 @@ public final class ProxyActivity extends AdviceActivity {
         }
     }
 
+    /**
+     * This operation is not supported in a proxy activity.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Translet getTranslet() {
         throw new UnsupportedOperationException();
@@ -110,16 +145,28 @@ public final class ProxyActivity extends AdviceActivity {
         return activityData;
     }
 
+    /**
+     * This operation is not supported in a proxy activity.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Response getDeclaredResponse() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * This operation is not supported in a proxy activity.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public boolean isResponseReserved() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * This operation is not supported in a proxy activity.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public boolean isResponded() {
         throw new UnsupportedOperationException();
