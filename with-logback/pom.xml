@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>9.1.1</version>
+        <version>9.1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-with-logback</artifactId>
-    <version>9.1.1</version>
+    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran with Logback</name>
