@@ -4,7 +4,7 @@
     <div class="col-lg-4" style="position:relative;">
         <h2>Customer List</h2>
         <span id="customer-total" class="float-end badge bg-warning"
-              style="font-size:2em;position:absolute;top:0;right:10px;border-radius:50%;">0</span>
+              style="font-size:2em;position:absolute;top:0;right:10px;border-radius:50%;z-index:1;">0</span>
         <div id="customer-list-board" class="card card-body bg-primary p-1" style="height:361px;overflow-y:auto;">
             <div id="customer-list-group" class="list-group w-100" role="button">
                 <!-- Customer list items will be appended here -->
@@ -23,7 +23,7 @@
     <div class="col-lg-8" style="position:relative;">
         <h2>Customer Details</h2>
         <span id="customer-number" class="float-end badge bg-success"
-              style="font-size:2em;position:absolute;top:0;right:10px;border-radius:50%;">0</span>
+              style="font-size:2em;position:absolute;top:0;right:10px;border-radius:50%;z-index:1;">0</span>
         <form id="customer-form">
             <div id="customer-details" class="card card-body">
                 <div class="mb-3">
@@ -90,15 +90,15 @@
 
             scrollIntoView(this); // Scroll the clicked item into view
 
-            $("#customer-details, #customer-number").stop(true).fadeOut(300);
+            $("#customer-number").stop(true).fadeOut(300);
             getCustomer(id);
-            $("#customer-details, #customer-number").fadeIn(200);
+            $("#customer-number").fadeIn(200);
         });
 
         $("button.refresh-customers").click(function () {
-            $("#customer-list-board, #customer-total").stop(true).fadeOut(300);
+            $("#customer-total").stop(true).fadeOut(300);
             getCustomerList();
-            $("#customer-list-board, #customer-total").fadeIn(200);
+            $("#customer-total").fadeIn(200);
         });
         $("button.add-customer").click(function () {
             clearForm();
