@@ -20,23 +20,29 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
- * Configuration for the daemon's polling mechanism.
+ * Represents the configuration for the daemon's file-based command polling feature.
+ * This allows the daemon to watch a directory for incoming files, parsing them as
+ * commands to be executed. It is used by the {@code FileCommander} to control
+ * polling behavior such as frequency, threading, and file paths.
  *
  * @since 5.1.0
  */
 public class DaemonPollingConfig extends AbstractParameters {
 
-    /** The interval at which to poll for new commands. */
+    /** Specifies the interval, in milliseconds, at which the daemon polls for new command files. */
     private static final ParameterKey pollingInterval;
 
-    /** The maximum number of threads to use for polling. */
+    /** Defines the maximum number of threads to use for executing polled commands. */
     private static final ParameterKey maxThreads;
 
-    /** Whether to re-queue failed commands. */
+    /** Determines whether commands that fail to execute should be automatically re-queued. */
     private static final ParameterKey requeuable;
 
-    /** The directory to scan for incoming command files. */
+    /** Specifies the path to the directory that the daemon will scan for incoming command files. */
     private static final ParameterKey incoming;
+
+    /** Specifies whether the file polling mechanism is enabled. */
+    private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -45,17 +51,19 @@ public class DaemonPollingConfig extends AbstractParameters {
         maxThreads = new ParameterKey("maxThreads", ValueType.INT);
         requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
         incoming = new ParameterKey("incoming", ValueType.STRING);
+        enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 pollingInterval,
                 maxThreads,
                 requeuable,
-                incoming
+                incoming,
+                enabled
         };
     }
 
     /**
-     * Instantiates a new DaemonPollingConfig.
+     * Creates a new {@code DaemonPollingConfig}.
      */
     public DaemonPollingConfig() {
         super(parameterKeys);
@@ -63,7 +71,8 @@ public class DaemonPollingConfig extends AbstractParameters {
 
     /**
      * Returns the polling interval in milliseconds.
-     * @param defaultPollingInterval the default polling interval
+     * This determines how often the daemon checks for new command files.
+     * @param defaultPollingInterval the default polling interval if not specified
      * @return the polling interval
      */
     public long getPollingInterval(long defaultPollingInterval) {
@@ -72,8 +81,8 @@ public class DaemonPollingConfig extends AbstractParameters {
 
     /**
      * Sets the polling interval in milliseconds.
-     * @param pollingInterval the polling interval
-     * @return this {@code DaemonPollingConfig} instance
+     * @param pollingInterval the polling interval in milliseconds
+     * @return this {@code DaemonPollingConfig} instance for method chaining
      */
     public DaemonPollingConfig setPollingInterval(long pollingInterval) {
         putValue(DaemonPollingConfig.pollingInterval, pollingInterval);
@@ -81,8 +90,8 @@ public class DaemonPollingConfig extends AbstractParameters {
     }
 
     /**
-     * Returns the maximum number of threads for polling.
-     * @param defaultMaxThreads the default maximum number of threads
+     * Returns the maximum number of threads for the command execution pool.
+     * @param defaultMaxThreads the default maximum number of threads if not specified
      * @return the maximum number of threads
      */
     public int getMaxThreads(int defaultMaxThreads) {
@@ -90,9 +99,9 @@ public class DaemonPollingConfig extends AbstractParameters {
     }
 
     /**
-     * Sets the maximum number of threads for polling.
+     * Sets the maximum number of threads for the command execution pool.
      * @param maxThreads the maximum number of threads
-     * @return this {@code DaemonPollingConfig} instance
+     * @return this {@code DaemonPollingConfig} instance for method chaining
      */
     public DaemonPollingConfig setMaxThreads(int maxThreads) {
         putValue(DaemonPollingConfig.maxThreads, maxThreads);
@@ -100,17 +109,17 @@ public class DaemonPollingConfig extends AbstractParameters {
     }
 
     /**
-     * Returns whether failed commands can be re-queued.
-     * @return true if requeuable, false otherwise
+     * Returns whether commands that fail execution should be re-queued.
+     * @return {@code true} if failed commands can be re-queued, {@code false} otherwise
      */
     public boolean isRequeuable() {
         return getBoolean(requeuable, false);
     }
 
     /**
-     * Sets whether failed commands can be re-queued.
-     * @param requeuable true to allow re-queuing, false otherwise
-     * @return this {@code DaemonPollingConfig} instance
+     * Sets whether commands that fail execution should be re-queued.
+     * @param requeuable {@code true} to allow re-queuing, {@code false} otherwise
+     * @return this {@code DaemonPollingConfig} instance for method chaining
      */
     public DaemonPollingConfig setRequeuable(boolean requeuable) {
         putValue(DaemonPollingConfig.requeuable, requeuable);
@@ -118,16 +127,16 @@ public class DaemonPollingConfig extends AbstractParameters {
     }
 
     /**
-     * Returns the path to the incoming directory.
-     * @return the incoming directory path
+     * Returns the path to the directory for incoming command files.
+     * @return the incoming directory path, or {@code null} if not set
      */
     public String getIncoming() {
         return getString(incoming);
     }
 
     /**
-     * Returns the path to the incoming directory.
-     * @param defaultIncoming the default incoming directory path
+     * Returns the path to the directory for incoming command files.
+     * @param defaultIncoming the default incoming directory path if not specified
      * @return the incoming directory path
      */
     public String getIncoming(String defaultIncoming) {
@@ -135,12 +144,30 @@ public class DaemonPollingConfig extends AbstractParameters {
     }
 
     /**
-     * Sets the path to the incoming directory.
+     * Sets the path to the directory for incoming command files.
      * @param incoming the incoming directory path
-     * @return this {@code DaemonPollingConfig} instance
+     * @return this {@code DaemonPollingConfig} instance for method chaining
      */
     public DaemonPollingConfig setIncoming(String incoming) {
         putValue(DaemonPollingConfig.incoming, incoming);
+        return this;
+    }
+
+    /**
+     * Returns whether the file polling feature is enabled.
+     * @return {@code true} if file polling is enabled, {@code false} otherwise
+     */
+    public boolean isEnabled() {
+        return getBoolean(enabled, false);
+    }
+
+    /**
+     * Enables or disables the file polling feature.
+     * @param enabled {@code true} to enable, {@code false} to disable
+     * @return this {@code DaemonPollingConfig} instance for method chaining
+     */
+    public DaemonPollingConfig setEnabled(boolean enabled) {
+        putValue(DaemonPollingConfig.enabled, enabled);
         return this;
     }
 

@@ -143,7 +143,9 @@ public class AbstractDaemon implements Daemon {
             this.commandExecutor = new CommandExecutor(this, executorConfig);
 
             DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
-            this.fileCommander = new DefaultFileCommander(this, pollingConfig);
+            if (pollingConfig.isEnabled()) {
+                this.fileCommander = new DefaultFileCommander(this, pollingConfig);
+            }
 
             DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
             commandRegistry.addCommand(daemonConfig.getCommands());
@@ -179,9 +181,9 @@ public class AbstractDaemon implements Daemon {
 
     protected void start(long waitTimeoutMillis) throws Exception {
         if (!active) {
-            this.waiting = (waitTimeoutMillis >= 0L);
+            waiting = (waitTimeoutMillis >= 0L);
             if (name == null) {
-                name = this.getClass().getSimpleName();
+                name = getClass().getSimpleName();
             }
 
             Runnable runnable = () -> {
@@ -189,15 +191,18 @@ public class AbstractDaemon implements Daemon {
                     active = true;
                     if (fileCommander != null) {
                         fileCommander.requeue();
-                        while (active) {
-                            try {
-                                if (fileCommander != null) {
-                                    fileCommander.polling();
-                                    Thread.sleep(fileCommander.getPollingInterval());
-                                }
-                            } catch (InterruptedException ie) {
-                                active = false;
+                    }
+                    while (active) {
+                        try {
+                            if (fileCommander != null) {
+                                fileCommander.polling();
+                                Thread.sleep(fileCommander.getPollingInterval());
+                            } else {
+                                // If there is no file commander, the daemon thread will just wait until it is stopped.
+                                Thread.sleep(Long.MAX_VALUE);
                             }
+                        } catch (InterruptedException ie) {
+                            active = false;
                         }
                     }
                 }
