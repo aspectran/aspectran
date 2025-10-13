@@ -25,6 +25,7 @@ daemon: {
         pollingInterval: 1000
         requeuable: false
         incoming: /cmd/incoming
+        enabled: true
     }
     commands: [
         com.aspectran.daemon.command.EchoCommand
