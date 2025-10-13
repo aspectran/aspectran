@@ -32,16 +32,6 @@ import java.util.Optional;
  */
 public abstract class ObjectUtils {
 
-    private static final String NULL_STRING = "null";
-
-    private static final String ARRAY_START = "[";
-
-    private static final String ARRAY_END = "]";
-
-    private static final String EMPTY_ARRAY = ARRAY_START + ARRAY_END;
-
-    private static final String ARRAY_ELEMENT_SEPARATOR = ", ";
-
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /**
