@@ -10,9 +10,7 @@
     <bean id="sampleResources" class="com.aspectran.demo.examples.SampleResource"/>
 
     <translet name="resource-file">
-        <parameters>
-            <item name="resourceName" mandatory="true">${resourceName:sample_resource.txt}</item>
-        </parameters>
+        <parameter name="resourceName" mandatory="true">${resourceName:sample_resource.txt}</parameter>
         <action id="sampleResourceFile" bean="sampleResources" method="getResourceFile"/>
         <transform format="text"/>
     </translet>

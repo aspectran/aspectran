@@ -13,9 +13,7 @@
             |The value of each parameter you enter is immediately output to the console.
         </description>
         <action id="sleepAction" bean="asyncActivity" method="sleep">
-            <arguments>
-                <item valueType="long">2000</item>
-            </arguments>
+            <argument valueType="long">2000</argument>
         </action>
         <transform format="text">
             <template engine="token" style="apon">
@@ -30,14 +28,10 @@
         <description style="apon">
             |The value of each parameter you enter is immediately output to the console.
         </description>
-        <parameters>
-            <item name="param1">${param1:hello}</item>
-            <item name="param2" mandatory="true"/>
-        </parameters>
+        <parameter name="param1">${param1:hello}</parameter>
+        <parameter name="param2" mandatory="true"/>
         <action id="sleepAction" bean="asyncActivity" method="sleep">
-            <arguments>
-                <item valueType="long">2000</item>
-            </arguments>
+            <argument valueType="long">2000</argument>
         </action>
         <transform format="text">
             <template engine="token" style="apon">

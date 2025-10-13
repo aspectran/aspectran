@@ -24,10 +24,19 @@ import java.io.IOException;
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 /**
- * Main entry point for the application.
+ * Provides the main entry point for running the Aspectran Demo application
+ * in a rich, JLine-based shell environment.
+ * <p>
+ * This class configures the base path and launches the {@link JLineAspectranShell},
+ * which provides advanced features like command history and auto-completion.
+ * </p>
  */
 public class DemoRichShell {
 
+    /**
+     * The main method that starts the Aspectran Demo JLine shell.
+     * @param args application startup arguments
+     */
     public static void main(String[] args) {
         try {
             File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");

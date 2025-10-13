@@ -24,10 +24,19 @@ import java.io.File;
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 /**
- * Application server for Aspectran Demo.
+ * Provides the main entry point for running the Aspectran Demo application
+ * as a daemon process.
+ * <p>
+ * This class configures the necessary system properties, such as the active
+ * profile and base path, and then launches the {@link DefaultDaemon}.
+ * </p>
  */
 public class DemoDaemon {
 
+    /**
+     * The main method that starts the Aspectran Demo daemon.
+     * @param args application startup arguments
+     */
     public static void main(String[] args) {
         try {
             System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
