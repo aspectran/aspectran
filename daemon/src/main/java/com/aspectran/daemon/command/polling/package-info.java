@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 /**
- * File-based command polling infrastructure for Aspectran Daemon.
+ * Provides a file-based command polling mechanism for the Aspectran Daemon.
  * <p>
- * Provides abstractions and a default implementation to poll the filesystem
- * for serialized command requests and execute them through the daemon.
+ * This package includes the {@link com.aspectran.daemon.command.polling.FileCommander}
+ * interface and its default implementation,
+ * {@link com.aspectran.daemon.command.polling.DefaultFileCommander},
+ * which polls the filesystem for command files and executes them.
  * </p>
  */
 package com.aspectran.daemon.command.polling;

@@ -37,19 +37,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * Default {@link FileCommander} that uses the local filesystem as a queue.
+ * The default {@link FileCommander} implementation that uses the local filesystem
+ * as a command queue.
  * <p>
- * It manages a simple directory layout under the daemon base path:
+ * This commander manages a directory structure for processing command files:
  * <ul>
- *   <li>/cmd/incoming — new commands to be picked up by the poller</li>
- *   <li>/cmd/queued — commands that are being processed</li>
- *   <li>/cmd/completed — successfully processed commands</li>
- *   <li>/cmd/failed — commands that failed during processing</li>
+ *   <li>{@code /cmd/incoming}: New command files are placed here to be picked up by the poller.</li>
+ *   <li>{@code /cmd/queued}: Command files are moved here while they are being processed.</li>
+ *   <li>{@code /cmd/completed}: Successfully processed command files are moved here.</li>
+ *   <li>{@code /cmd/failed}: Command files that failed during processing are moved here.</li>
  * </ul>
- * The polling cycle retrieves command files from the incoming directory, moves
- * them into the queue, executes them via {@link CommandExecutor}, and finally
- * persists the result into the completed/failed directory. When re-queue is
- * enabled, pending items in the queue can be moved back to incoming on restart.
+ * The polling cycle retrieves command files from the incoming directory, moves them
+ * to the queued directory, executes them via the {@link CommandExecutor}, and then
+ * moves them to either the completed or failed directory.
+ * If re-queuing is enabled, commands in the queued directory can be moved back to
+ * the incoming directory upon restart.
  * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
@@ -78,6 +80,12 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     private final File failedDir;
 
+    /**
+     * Instantiates a new DefaultFileCommander.
+     * @param daemon the daemon that owns this commander
+     * @param pollingConfig the polling configuration
+     * @throws Exception if an error occurs while creating the directory structure
+     */
     public DefaultFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) throws Exception {
         super(daemon, pollingConfig);
 
@@ -123,18 +131,34 @@ public class DefaultFileCommander extends AbstractFileCommander {
         }
     }
 
+    /**
+     * Returns the directory where incoming command files are placed.
+     * @return the incoming command directory
+     */
     public File getIncomingDir() {
         return incomingDir;
     }
 
+    /**
+     * Returns the directory where command files are moved while being processed.
+     * @return the queued command directory
+     */
     public File getQueuedDir() {
         return queuedDir;
     }
 
+    /**
+     * Returns the directory where successfully processed command files are moved.
+     * @return the completed command directory
+     */
     public File getCompletedDir() {
         return completedDir;
     }
 
+    /**
+     * Returns the directory where failed command files are moved.
+     * @return the failed command directory
+     */
     public File getFailedDir() {
         return failedDir;
     }

@@ -23,11 +23,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Default {@link CommandRegistry} implementation used by the daemon.
+ * The default {@link CommandRegistry} implementation for the daemon.
  * <p>
- * Maintains an insertion-ordered map of commands keyed by their descriptor name
- * and supports programmatic registration either by class or by fully qualified
- * class name via reflection.
+ * This registry maintains an insertion-ordered map of commands, keyed by their
+ * descriptor names. It supports programmatic registration of commands by class
+ * or by fully qualified class name.
  * </p>
  */
 public class DaemonCommandRegistry implements CommandRegistry {
@@ -36,6 +36,10 @@ public class DaemonCommandRegistry implements CommandRegistry {
 
     private final Daemon daemon;
 
+    /**
+     * Instantiates a new DaemonCommandRegistry.
+     * @param daemon the daemon that owns this registry
+     */
     public DaemonCommandRegistry(Daemon daemon) {
         this.daemon = daemon;
     }
@@ -65,6 +69,11 @@ public class DaemonCommandRegistry implements CommandRegistry {
         return commands.values();
     }
 
+    /**
+     * Adds commands to the registry from an array of class names.
+     * @param classNames the fully qualified class names of the commands to add
+     * @throws IllegalArgumentException if a command class cannot be loaded
+     */
     public void addCommand(String... classNames) {
         if (classNames != null) {
             for (String className : classNames) {
@@ -80,6 +89,11 @@ public class DaemonCommandRegistry implements CommandRegistry {
         }
     }
 
+    /**
+     * Adds a command to the registry from a command class.
+     * @param commandClass the class of the command to add
+     * @throws NullPointerException if the command's descriptor is null
+     */
     public void addCommand(Class<? extends Command> commandClass) {
         Object[] args = { this };
         Class<?>[] argTypes = { CommandRegistry.class };

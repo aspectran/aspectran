@@ -20,11 +20,12 @@ import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 
 /**
- * Base implementation of {@link FileCommander} providing common state and behavior.
+ * Abstract base class for {@link FileCommander} implementations, providing common
+ * state and behavior.
  * <p>
- * Holds a reference to the owning {@link Daemon}, manages the configurable polling
- * interval, and exposes whether queued commands are re-queuable based on the
- * provided {@link DaemonPollingConfig}.
+ * This class manages a reference to the owning {@link Daemon}, the polling
+ * interval, and the re-queueability of commands based on the provided
+ * {@link DaemonPollingConfig}.
  * </p>
  *
  * <p>Created: 2017. 12. 11.</p>
@@ -39,6 +40,11 @@ public abstract class AbstractFileCommander implements FileCommander {
 
     private final boolean requeuable;
 
+    /**
+     * Instantiates a new abstract file commander.
+     * @param daemon the daemon that owns this commander
+     * @param pollingConfig the polling configuration
+     */
     public AbstractFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) {
         if (daemon == null) {
             throw new IllegalArgumentException("daemon must not be null");

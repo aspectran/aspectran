@@ -34,10 +34,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Executes daemon commands asynchronously using a thread pool.
  * <p>
- * Maintains a bounded executor backed by a {@link ThreadPoolExecutor} and
- * tracks queue size to enforce commands marked as {@code isolated} to run
- * without concurrency. Provides a simple {@link Callback} hook to notify
- * callers of success or failure after execution.
+ * This class manages a {@link ThreadPoolExecutor} to run commands. It uses a
+ * {@link SynchronousQueue}, which means that if all threads are busy, new tasks
+ * are rejected immediately rather than being queued. It also enforces that
+ * commands marked as "isolated" run without concurrency.
+ * A {@link Callback} can be provided to receive notifications of success or
+ * failure after a command completes.
  * </p>
  */
 public class CommandExecutor {
@@ -56,6 +58,11 @@ public class CommandExecutor {
 
     private final AtomicBoolean isolated = new AtomicBoolean();
 
+    /**
+     * Instantiates a new CommandExecutor.
+     * @param daemon the daemon that owns this executor
+     * @param executorConfig the executor configuration
+     */
     public CommandExecutor(Daemon daemon, DaemonExecutorConfig executorConfig) {
         if (daemon == null) {
             throw new IllegalArgumentException("daemon must not be null");
@@ -79,14 +86,38 @@ public class CommandExecutor {
         );
     }
 
+    /**
+     * Returns the number of available threads in the pool.
+     * @return the number of available threads
+     */
     public int getAvailableThreads() {
         return (maxThreads - queueSize.get());
     }
 
+    /**
+     * Executes the specified command without a callback.
+     * @param parameters the parameters for the command
+     * @return {@code true} if the command was accepted for execution, {@code false} otherwise
+     * @see #execute(CommandParameters, Callback)
+     */
     public boolean execute(final CommandParameters parameters) {
         return execute(parameters, null);
     }
 
+    /**
+     * Executes the specified command and triggers the callback on completion.
+     * <p>
+     * The command will be rejected under the following conditions:
+     * <ul>
+     *   <li>If an isolated command is already running.</li>
+     *   <li>If the command to be executed is isolated and other commands are already running.</li>
+     *   <li>If the command name is not found in the registry.</li>
+     *   <li>If the executor has no available threads and rejects the task.</li>
+     * </ul>
+     * @param parameters the parameters for the command
+     * @param callback the callback to be invoked on completion
+     * @return {@code true} if the command was accepted for execution, {@code false} otherwise
+     */
     public boolean execute(@NonNull final CommandParameters parameters, final Callback callback) {
         final String commandName = parameters.getCommandName();
 
@@ -128,6 +159,7 @@ public class CommandExecutor {
             Thread currentThread = Thread.currentThread();
             String oldThreadName = currentThread.getName();
             try {
+                // Set a descriptive thread name for easier debugging
                 String threadName = "cmd-" + commandName + "-" + queueSize;
                 currentThread.setName(threadName);
 
@@ -165,6 +197,12 @@ public class CommandExecutor {
         }
     }
 
+    /**
+     * Executes the command and captures the result.
+     * @param command the command to execute
+     * @param parameters the parameters for the command
+     * @return {@code true} if the command executed successfully, {@code false} otherwise
+     */
     private boolean execute(Command command, CommandParameters parameters) {
         try {
             CommandResult commandResult = command.execute(parameters);
@@ -183,6 +221,9 @@ public class CommandExecutor {
         }
     }
 
+    /**
+     * Shuts down the executor service and waits for running tasks to complete.
+     */
     public void shutdown() {
         if (logger.isDebugEnabled()) {
             logger.debug("Shutting down executor...");
@@ -206,10 +247,19 @@ public class CommandExecutor {
         }
     }
 
+    /**
+     * A callback interface for command execution completion.
+     */
     public interface Callback {
 
+        /**
+         * Invoked when the command completes successfully.
+         */
         void success();
 
+        /**
+         * Invoked when the command fails or is not executed.
+         */
         void failure();
 
     }
