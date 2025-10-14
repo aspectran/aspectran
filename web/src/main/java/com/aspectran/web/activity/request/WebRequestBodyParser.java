@@ -62,14 +62,16 @@ public abstract class WebRequestBodyParser {
     public static void parseMultipartFormData(@NonNull Activity activity) throws MultipartRequestParseException {
         String multipartFormDataParser = activity.getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
         if (multipartFormDataParser == null) {
-            throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' for multipart " +
-                    "form data parsing is not specified. Please specify 'multipartFormDataParser' via Aspect so " +
-                    "that Translet can parse multipart form data.");
+            throw new MultipartRequestParseException("The 'multipartFormDataParser' setting is not specified. " +
+                    "This setting is required to parse multipart form data. Please configure it in your " +
+                    "aspect rules with the name of the multipart parser bean.");
         }
 
         MultipartFormDataParser parser = activity.getBean(multipartFormDataParser);
         if (parser == null) {
-            throw new MultipartRequestParseException("No bean named '" + multipartFormDataParser + "' is defined");
+            throw new MultipartRequestParseException("The multipart form data parser bean named '" +
+                    multipartFormDataParser + "' could not be found. Please ensure that a bean with this name " +
+                    "is correctly defined in your configuration.");
         }
         parser.parse(activity.getRequestAdapter());
     }
