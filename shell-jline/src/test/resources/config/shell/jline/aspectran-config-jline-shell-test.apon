@@ -2,6 +2,9 @@ context: {
     rules: classpath:config/shell/jline/shell-test-root-context.xml
     resources: [
     ]
+    scan: [
+        com.aspectran.shell.jline.sample
+    ]
     autoReload: {
         scanIntervalSeconds: 5
         enabled: false

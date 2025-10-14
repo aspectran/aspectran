@@ -484,7 +484,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
                 synchronized (this) {
                     loaded = this.loaded;
                     if (!loaded) {
-                        URL url = context.getAvailableActivity().getClassLoader().getResource(this.resource);
+                        ClassLoader classLoader = context.getAvailableActivity().getClassLoader();
+                        URL url = classLoader.getResource(this.resource);
                         String template = ResourceUtils.read(url, this.encoding);
                         setTemplateSource(template);
                         this.loaded = true;
