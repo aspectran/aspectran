@@ -22,7 +22,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * An output stream which will retain data in memory (always).
+ * An output stream that retains data in memory.
+ * <p>This class extends {@link ThresholdingOutputStream} and is designed to
+ * throw an {@link UnsupportedOperationException} if the amount of data
+ * written exceeds a specified threshold, preventing excessive memory usage.
+ * It is intended for environments where file system access is not available
+ * or desired.
  */
 public class InMemoryOutputStream extends ThresholdingOutputStream {
 
@@ -37,9 +42,9 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     private boolean closed;
 
     /**
-     * Constructs an instance of this class which will trigger throw
-     * UnsupportedOperationException if the specified threshold is reached.
-     * @param threshold the number of bytes at which to trigger an event
+     * Constructs an instance of this class which will throw an
+     * {@link UnsupportedOperationException} if the specified threshold is reached.
+     * @param threshold the maximum number of bytes to be stored in memory
      */
     public InMemoryOutputStream(long threshold) {
         super((int)threshold);
@@ -47,10 +52,9 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     }
 
     /**
-     * Returns the current output stream. This may be memory based or disk based, depending on the
-     * current state with respect to the threshold.
+     * Returns the underlying {@link ByteArrayOutputStream} to which data is written.
      * @return the underlying output stream
-     * @exception IOException if an error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected OutputStream getOutputStream() throws IOException {
@@ -58,8 +62,9 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     }
 
     /**
-     * Not possible in GAE. Will never reach!!
-     * If it happens, try changing max upload size setting.
+     * Throws an {@link UnsupportedOperationException} to indicate that the
+     * memory threshold has been exceeded.
+     * @throws UnsupportedOperationException always
      */
     @Override
     protected void thresholdReached() {
@@ -68,7 +73,7 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     }
 
     /**
-     * Determines whether the data for this output stream has been retained in memory.
+     * Returns {@code true} as this implementation always stores data in memory.
      * @return always {@code true}
      */
     public boolean isInMemory() {

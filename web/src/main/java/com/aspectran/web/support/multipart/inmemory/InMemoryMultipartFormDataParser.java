@@ -40,10 +40,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Multipart form data parser that use Apache Commons FileUpload 1.5 or above.
- *
- * <p>It is designed to store uploaded data items in memory, such as GAE,
- * where the file system is not available.</p>
+ * A {@link MultipartFormDataParser} implementation that stores all uploaded file data
+ * in memory. This is designed for environments where file system access is restricted,
+ * such as Google App Engine.
+ * <p>This parser does not support temporary file storage, so methods related to
+ * file-based operations (e.g., {@code setTempFileDir}) are not supported.
  */
 public class InMemoryMultipartFormDataParser implements MultipartFormDataParser {
 
@@ -65,21 +66,40 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
     public InMemoryMultipartFormDataParser() {
     }
 
+    /**
+     * This operation is not supported by the in-memory parser.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public String getTempFileDir() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * This operation is not supported by the in-memory parser.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setTempFileDir(String tempFileDir) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets the maximum size of the entire multipart request, in bytes.
+     * A value of -1 indicates no limit.
+     * @param maxRequestSize the maximum request size
+     */
     @Override
     public void setMaxRequestSize(long maxRequestSize) {
         this.maxRequestSize = maxRequestSize;
     }
 
+    /**
+     * Sets the maximum size of a single uploaded file, in bytes.
+     * For in-memory storage, this value cannot exceed {@link Integer#MAX_VALUE}.
+     * A value of -1 indicates no limit.
+     * @param maxFileSize the maximum file size
+     */
     @Override
     public void setMaxFileSize(long maxFileSize) {
         if (maxFileSize > Integer.MAX_VALUE) {
@@ -91,21 +111,40 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
         this.maxInMemorySize = (int)maxFileSize;
     }
 
+    /**
+     * This operation is not supported by the in-memory parser.
+     * The max in-memory size is implicitly set by {@link #setMaxFileSize(long)}.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets the comma-separated list of allowed file extensions.
+     * @param allowedFileExtensions a string containing allowed extensions
+     */
     @Override
     public void setAllowedFileExtensions(String allowedFileExtensions) {
         this.allowedFileExtensions = allowedFileExtensions;
     }
 
+    /**
+     * Sets the comma-separated list of denied file extensions.
+     * @param deniedFileExtensions a string containing denied extensions
+     */
     @Override
     public void setDeniedFileExtensions(String deniedFileExtensions) {
         this.deniedFileExtensions = deniedFileExtensions;
     }
 
+    /**
+     * Parses the given multipart request, populating the {@link RequestAdapter} with
+     * parameters and file parameters.
+     * @param requestAdapter the request adapter for the current request
+     * @throws MultipartRequestParseException if the request cannot be parsed
+     */
     @Override
     public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {

@@ -19,7 +19,10 @@ import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class InMemoryMultipartFormDataParserFactoryBean.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates and
+ * configures an {@link InMemoryMultipartFormDataParser}.
+ * <p>This bean simplifies the integration of the in-memory multipart parser into the
+ * Aspectran framework, allowing its properties to be set via bean configuration.
  *
  * @since 5.1.0
  */
@@ -28,6 +31,9 @@ public class InMemoryMultipartFormDataParserFactoryBean extends InMemoryMultipar
 
     private MultipartFormDataParser parser;
 
+    /**
+     * Initializes the bean by creating the {@link MultipartFormDataParser} instance.
+     */
     @Override
     public void initialize() {
         if (parser == null) {
@@ -35,6 +41,10 @@ public class InMemoryMultipartFormDataParserFactoryBean extends InMemoryMultipar
         }
     }
 
+    /**
+     * Returns the created {@link MultipartFormDataParser} instance.
+     * @return the parser instance
+     */
     @Override
     public MultipartFormDataParser getObject() {
         return parser;

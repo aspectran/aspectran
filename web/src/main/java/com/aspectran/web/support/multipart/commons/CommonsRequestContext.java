@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * RequestContext needed by Jakarta Commons Upload.
+ * An adapter that wraps an {@link RequestAdapter} to provide a
+ * {@link RequestContext} for the Apache Commons FileUpload library.
  *
  * <p>Created: 2019-07-31</p>
  *

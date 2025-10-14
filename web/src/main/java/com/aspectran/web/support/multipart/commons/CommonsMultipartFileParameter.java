@@ -28,8 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This class represents a file item that was received within
- * a multipart/form-data POST request.
+ * A {@link FileParameter} implementation that wraps an Apache Commons FileUpload
+ * {@link FileItem}. This class provides access to the metadata and content of a
+ * file uploaded in a multipart/form-data request.
  *
  * <p>Created: 2008. 04. 11 PM 8:55:25</p>
  */
@@ -48,6 +49,13 @@ public class CommonsMultipartFileParameter extends FileParameter {
         this.fileSize = fileItem.getSize();
     }
 
+    /**
+     * Returns the {@link File} object for the uploaded file.
+     * <p>If the uploaded file is stored on disk (as a {@link DiskFileItem}), this
+     * method returns a {@code File} object pointing to that temporary file. Otherwise,
+     * if the file is held in memory, this method returns {@code null}.
+     * @return the file object, or {@code null} if the file is in memory
+     */
     @Override
     public File getFile() {
         if (fileItem instanceof DiskFileItem diskFileItem) {
@@ -58,10 +66,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Gets the content type of the data being uploaded. This is never null, and
-     * defaults to "content/unknown" when the mime type of the data couldn't be
-     * determined and was not set manually.
-     * @return the content type
+     * Returns the content type of the uploaded file.
+     * @return the content type of the file
      */
     @Override
     public String getContentType() {
@@ -69,8 +75,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Returns the file name that was uploaded in the multipart form.
-     * @return the file name
+     * Returns the original filename in the client's filesystem.
+     * @return the original filename, or {@code null} if not defined
      */
     @Override
     public String getFileName() {
@@ -78,8 +84,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Returns the file size that was uploaded in the multipart form.
-     * @return the file size
+     * Returns the size of the uploaded file in bytes.
+     * @return the size of the file in bytes
      */
     @Override
     public long getFileSize() {
@@ -87,9 +93,9 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Return an InputStream to read the contents of the file from.
-     * @return the contents of the file as stream, or an empty stream if empty
-     * @throws IOException in case of access errors (if the temporary store fails)
+     * Returns an {@link InputStream} to read the contents of the file.
+     * @return an {@link InputStream} for the file's contents
+     * @throws IOException if an I/O error occurs
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -98,8 +104,8 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Return an byte array to read the contents of the file from.
-     * @return the byte array
+     * Returns the contents of the file as a byte array.
+     * @return the file's contents as a byte array
      */
     @Override
     public byte[] getBytes() {
@@ -108,11 +114,11 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Save an uploaded file as a given destination file.
+     * Saves the uploaded file to the specified destination file.
      * @param destFile the destination file
-     * @param overwrite whether to overwrite if it already exists
-     * @return a saved file
-     * @throws IOException if an I/O error has occurred
+     * @param overwrite {@code true} to overwrite the destination file if it exists; {@code false} otherwise
+     * @return the saved file
+     * @throws IOException if an I/O error occurs
      */
     @Override
     public File saveAs(File destFile, boolean overwrite) throws IOException {
@@ -135,6 +141,15 @@ public class CommonsMultipartFileParameter extends FileParameter {
         return destFile;
     }
 
+    /**
+     * Renames the temporary file to the specified destination file.
+     * <p>This method is only applicable if the uploaded file is stored on disk.
+     * @param destFile the destination file
+     * @param overwrite {@code true} to overwrite the destination file if it exists; {@code false} otherwise
+     * @return the renamed file
+     * @throws IOException if an I/O error occurs
+     * @throws IllegalStateException if the uploaded file is not stored on disk
+     */
     @Override
     public File renameTo(File destFile, boolean overwrite) throws IOException {
         File file = getFile();
@@ -150,13 +165,17 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Deletes the underlying Commons FileItem instances.
+     * Deletes the underlying storage for the uploaded file, including any
+     * temporary files on disk.
      */
     @Override
     public void delete() {
         fileItem.delete();
     }
 
+    /**
+     * Releases all resources associated with this file parameter.
+     */
     @Override
     public void release() {
         if (fileItem != null) {
@@ -201,10 +220,9 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Return a description for the storage location of the multipart content.
-     * Tries to be as specific as possible: mentions the file location in case
-     * of a temporary file.
-     * @return a description for the storage location of the multipart content
+     * Returns a description of the storage location for the multipart content.
+     * This is primarily for debugging and logging purposes.
+     * @return a description of the storage location
      */
     public String getStorageDescription() {
         if (fileItem.isInMemory()) {

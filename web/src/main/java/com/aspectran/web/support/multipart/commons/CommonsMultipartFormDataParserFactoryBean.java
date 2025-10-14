@@ -21,7 +21,11 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class CommonsMultipartFormDataParserFactoryBean.
+ * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates and
+ * configures a {@link CommonsMultipartFormDataParser}.
+ * <p>This bean simplifies the integration of the multipart parser into the Aspectran
+ * framework, allowing its properties to be set via bean configuration.
+ * It also resolves the temporary directory path relative to the application's base path.
  *
  * @since 2.0.0
  */
@@ -37,6 +41,12 @@ public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartF
         this.applicationAdapter = applicationAdapter;
     }
 
+    /**
+     * Sets the temporary directory for uploaded files.
+     * <p>If an {@link ApplicationAdapter} is available, the given path will be
+     * resolved relative to the application's real path.
+     * @param tempFileDir the path to the temporary directory
+     */
     @Override
     public void setTempFileDir(String tempFileDir) {
         if (applicationAdapter != null) {
@@ -46,6 +56,10 @@ public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartF
         }
     }
 
+    /**
+     * Initializes the bean by creating the {@link MultipartFormDataParser} instance.
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void initialize() throws Exception {
         if (parser == null) {
@@ -53,6 +67,10 @@ public class CommonsMultipartFormDataParserFactoryBean extends CommonsMultipartF
         }
     }
 
+    /**
+     * Returns the created {@link MultipartFormDataParser} instance.
+     * @return the parser instance
+     */
     @Override
     public MultipartFormDataParser getObject() {
         return parser;

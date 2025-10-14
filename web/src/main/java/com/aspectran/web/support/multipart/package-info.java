@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides a multipart-parsing implementation based on Apache Commons FileUpload.
+ * Provides support for multipart file uploads.
  */
-package com.aspectran.web.support.multipart.commons;
+package com.aspectran.web.support.multipart;

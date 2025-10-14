@@ -34,9 +34,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
- * The class is an implementation of the {@link org.apache.commons.fileupload.FileItem FileItem}
- * that removed file-related codes to support environments such as GAE
- * where the file system is not available.
+ * An in-memory implementation of the Apache Commons FileUpload {@link FileItem} interface.
+ * <p>This class is designed for environments where file system access is restricted,
+ * such as Google App Engine, by storing all uploaded file data in memory.
+ * All methods related to file system operations are either adapted for in-memory
+ * handling or are no-ops.
  */
 public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
@@ -95,7 +97,8 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @param sizeThreshold the threshold, in bytes, below which items will be retained in memory.
      *                      (sizeThreshold will always be equal to file upload limit)
      */
-    public InMemoryFileItem(String fieldName, String contentType, boolean isFormField, String fileName, int sizeThreshold) {
+    public InMemoryFileItem(String fieldName, String contentType,
+                            boolean isFormField, String fileName, int sizeThreshold) {
         this.fieldName = fieldName;
         this.contentType = contentType;
         this.isFormField = isFormField;
@@ -104,9 +107,9 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Returns an {@link java.io.InputStream InputStream} that can be used to retrieve the contents of the file.
-     * @return an {@link java.io.InputStream InputStream} that can be used to retrieve the contents of the file
-     * @throws IOException if an error occurs
+     * Returns an {@link InputStream} that can be used to retrieve the contents of the file.
+     * @return an {@link InputStream} for the file's contents
+     * @throws IOException if an I/O error occurs
      */
     public InputStream getInputStream() throws IOException {
         if (cachedContent == null) {
@@ -116,16 +119,16 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Returns the content type passed by the agent or {@code null} if not defined.
-     * @return the content type passed by the agent or {@code null} if not defined
+     * Returns the content type passed by the browser, or {@code null} if not defined.
+     * @return the content type of the item
      */
     public String getContentType() {
         return contentType;
     }
 
     /**
-     * Returns the content charset passed by the agent or {@code null} if not defined.
-     * @return the content charset passed by the agent or {@code null} if not defined
+     * Returns the character encoding of the item, extracted from the content type.
+     * @return the character encoding, or {@code null} if not specified
      */
     public String getCharset() {
         ParameterParser parser = new ParameterParser();
@@ -137,23 +140,23 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the original filename in the client's filesystem.
-     * @return the original filename in the client's filesystem
+     * @return the original filename
      */
     public String getName() {
         return fileName;
     }
 
     /**
-     * Provides a hint whether the file contents will be read from memory.
-     * @return {@code true} if the file contents will be read from memory; {@code false} otherwise
+     * Returns {@code true} as this implementation always stores data in memory.
+     * @return always {@code true}
      */
     public boolean isInMemory() {
         return true;
     }
 
     /**
-     * Returns the size of the file.
-     * @return the size of the file, in bytes
+     * Returns the size of the file item in bytes.
+     * @return the size of the file item, in bytes
      */
     public long getSize() {
         if (cachedContent != null) {
@@ -164,8 +167,8 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Returns the contents of the file as an array of bytes.
-     * @return the contents of the file as an array of bytes
+     * Returns the contents of the file item as an array of bytes.
+     * @return the contents of the file item
      */
     public byte[] get() {
         if (cachedContent == null) {
@@ -176,9 +179,8 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the contents of the file as a String, using the specified encoding.
-     * This method uses {@link #get()} to retrieve the contents of the file.
-     * @param charset the charset to use
-     * @return the contents of the file, as a string
+     * @param charset the character encoding to use
+     * @return the contents of the file as a string
      * @throws UnsupportedEncodingException if the requested character encoding is not available
      */
     public String getString(final String charset) throws UnsupportedEncodingException {
@@ -186,10 +188,8 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Returns the contents of the file as a String, using the default
-     * character encoding.  This method uses {@link #get()} to retrieve the
-     * contents of the file.
-     * @return the contents of the file, as a string
+     * Returns the contents of the file as a String, using the default character encoding.
+     * @return the contents of the file as a string
      */
     public String getString() {
         byte[] rawData = get();
@@ -205,22 +205,11 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * A convenience method to write an uploaded item to disk. The client code
-     * is not concerned with whether the item is stored in memory, or on
-     * disk in a temporary location. They just want to write the uploaded item
-     * to a file.
-     * <p>
-     * This implementation first attempts to rename the uploaded item to the
-     * specified destination file, if the item was originally written to disk.
-     * Otherwise, the data will be copied to the specified file.
-     * <p>
-     * This method is only guaranteed to work <em>once</em>, the first time it
-     * is invoked for a particular item. This is because, in the event that the
-     * method renames a temporary file, that file will no longer be available
-     * to copy or rename again at a later time.
-     * @param file the {@code File} into which the uploaded item should
-     *             be stored
-     * @throws Exception if an error occurs
+     * A convenience method to write an uploaded item to a file.
+     * <p>Since this implementation stores data in memory, this method simply
+     * writes the in-memory data to the specified file.
+     * @param file the file to which the uploaded item should be written
+     * @throws Exception if an error occurs during the write operation
      */
     public void write(File file) throws Exception {
         try (FileOutputStream out = new FileOutputStream(file)) {
@@ -229,7 +218,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Does nothing.
+     * Does nothing, as the data is stored in memory and will be garbage collected.
      */
     public void delete() {
         // As all the data are in Heap, it will be garbage collected.
@@ -238,7 +227,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     /**
      * Returns the name of the field in the multipart form corresponding to this file item.
      * @return the name of the form field
-     * @see #setFieldName(java.lang.String)
      */
     public String getFieldName() {
         return fieldName;
@@ -247,36 +235,31 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     /**
      * Sets the field name used to reference this file item.
      * @param fieldName the name of the form field
-     * @see #getFieldName()
      */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
     /**
-     * Determines whether a <code>FileItem</code> instance represents a simple form field.
-     * @return {@code true} if the instance represents a simple form field;
-     *      {@code false} if it represents an uploaded file.
-     * @see #setFormField(boolean)
+     * Determines whether this instance represents a simple form field.
+     * @return {@code true} if it is a simple form field; {@code false} if it is an uploaded file
      */
     public boolean isFormField() {
         return isFormField;
     }
 
     /**
-     * Specifies whether a <code>FileItem</code> instance represents a simple form field.
-     * @param state {@code true} if the instance represents a simple form field;
-     *      {@code false} if it represents an uploaded file
-     * @see #isFormField()
+     * Specifies whether this instance represents a simple form field.
+     * @param state {@code true} if it is a simple form field; {@code false} if it is an uploaded file
      */
     public void setFormField(boolean state) {
         isFormField = state;
     }
 
     /**
-     * Returns an {@link java.io.OutputStream OutputStream} of the file.
-     * @return an {@link java.io.OutputStream OutputStream} of the file
-     * @throws IOException if an error occurs
+     * Returns an {@link OutputStream} that can be used to store the contents of the file.
+     * @return an {@link OutputStream} to write the file's contents
+     * @throws IOException if an I/O error occurs
      */
     public OutputStream getOutputStream() throws IOException {
         if (mos == null) {

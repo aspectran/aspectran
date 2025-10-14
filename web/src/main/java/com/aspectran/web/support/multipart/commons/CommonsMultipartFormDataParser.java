@@ -42,7 +42,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Multipart form data parser that use Apache Commons FileUpload 1.5 or above.
+ * A {@link MultipartFormDataParser} implementation that uses the Apache Commons
+ * FileUpload library to parse multipart/form-data requests.
+ * <p>This parser handles file uploads and form fields, making them accessible
+ * through the {@link RequestAdapter}.
  */
 public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
 
@@ -71,6 +74,11 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
         return tempFileDir;
     }
 
+    /**
+     * Sets the temporary directory where uploaded files will be stored.
+     * @param tempFileDir the path to the temporary directory
+     * @throws IOException if the directory cannot be created
+     */
     @Override
     public void setTempFileDir(String tempFileDir) throws IOException {
         if (tempFileDir == null) {
@@ -91,31 +99,61 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
         this.tempFileDir = tempFileDir;
     }
 
+    /**
+     * Sets the maximum size of the entire multipart request, in bytes.
+     * A value of -1 indicates no limit.
+     * @param maxRequestSize the maximum request size
+     */
     @Override
     public void setMaxRequestSize(long maxRequestSize) {
         this.maxRequestSize = maxRequestSize;
     }
 
+    /**
+     * Sets the maximum size of a single uploaded file, in bytes.
+     * A value of -1 indicates no limit.
+     * @param maxFileSize the maximum file size
+     */
     @Override
     public void setMaxFileSize(long maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
 
+    /**
+     * Sets the maximum size of a file that will be stored in memory.
+     * Files larger than this threshold will be written to disk.
+     * A value of -1 indicates the system default.
+     * @param maxInMemorySize the maximum memory size
+     */
     @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
         this.maxInMemorySize = maxInMemorySize;
     }
 
+    /**
+     * Sets the comma-separated list of allowed file extensions.
+     * @param allowedFileExtensions a string containing allowed extensions
+     */
     @Override
     public void setAllowedFileExtensions(String allowedFileExtensions) {
         this.allowedFileExtensions = allowedFileExtensions;
     }
 
+    /**
+     * Sets the comma-separated list of denied file extensions.
+     * @param deniedFileExtensions a string containing denied extensions
+     */
     @Override
     public void setDeniedFileExtensions(String deniedFileExtensions) {
         this.deniedFileExtensions = deniedFileExtensions;
     }
 
+    /**
+     * Parses the given multipart request, populating the {@link RequestAdapter} with
+     * parameters and file parameters.
+     * @param requestAdapter the request adapter for the current request
+     * @throws MultipartRequestParseException if the request cannot be parsed
+     */
     @Override
     public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {

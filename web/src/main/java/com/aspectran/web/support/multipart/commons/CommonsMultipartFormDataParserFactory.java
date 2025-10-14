@@ -22,7 +22,9 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
 import java.io.IOException;
 
 /**
- * The Class CommonsMultipartFormDataParserFactory.
+ * A factory for creating and configuring {@link CommonsMultipartFormDataParser} instances.
+ * <p>This class provides a centralized way to set properties such as file size limits
+ * and temporary directories for the multipart parser.
  *
  * @since 2.0.0
  */
@@ -55,8 +57,8 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the directory path used to temporarily files.
-     * @param tempFileDir the directory path used for temporary files
+     * Sets the temporary directory where uploaded files will be stored.
+     * @param tempFileDir the path to the temporary directory
      */
     public void setTempFileDir(String tempFileDir) {
         this.tempFileDir = tempFileDir;
@@ -71,57 +73,52 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the maximum size of the request.
-     * @param maxRequestSize the maximum size of the request
+     * Sets the maximum size of the entire multipart request, in bytes.
+     * @param maxRequestSize the maximum request size in bytes
      */
     public void setMaxRequestSize(long maxRequestSize) {
         this.maxRequestSize = maxRequestSize;
     }
 
     /**
-     * Sets the maximum size of the request in human-readable format.
-     * @param maxRequestSize the maximum size of the request in human-readable format.
-     * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
+     * Sets the maximum size of the entire multipart request using a human-readable
+     * format (e.g., "10MB", "2G").
+     * @param maxRequestSize the maximum request size in a human-readable format
      */
     public void setMaxRequestSize(String maxRequestSize) {
         this.maxRequestSize = StringUtils.toMachineFriendlyByteSize(maxRequestSize);
     }
 
     /**
-     * Sets the maximum size of the file.
-     * @param maxFileSize the maximum size of the file
-     * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
+     * Sets the maximum size of a single uploaded file, in bytes.
+     * @param maxFileSize the maximum file size in bytes
      */
     public void setMaxFileSize(long maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
 
     /**
-     * Sets the maximum size of the file in human-readable format.
-     * @param maxFileSize the maximum size of the file in human-readable format
-     * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
+     * Sets the maximum size of a single uploaded file using a human-readable
+     * format (e.g., "10MB", "2G").
+     * @param maxFileSize the maximum file size in a human-readable format
      */
     public void setMaxFileSize(String maxFileSize) {
         this.maxFileSize = StringUtils.toMachineFriendlyByteSize(maxFileSize);
     }
 
     /**
-     * Set the maximum allowed size (in bytes) before uploads are written to disk.
-     * Uploaded files will still be received past this amount, but they will not be
-     * stored in memory. Default is 10240, according to Commons FileUpload.
-     * @param maxInMemorySize the maximum in memory size allowed
-     * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
+     * Sets the maximum size of a file that will be stored in memory, in bytes.
+     * Files larger than this threshold will be written to disk.
+     * @param maxInMemorySize the maximum memory size in bytes
      */
     public void setMaxInMemorySize(int maxInMemorySize) {
         this.maxInMemorySize = maxInMemorySize;
     }
 
     /**
-     * Set the maximum allowed size (in bytes) before uploads are written to disk.
-     * Uploaded files will still be received past this amount, but they will not be
-     * stored in memory. Default is 10240, according to Commons FileUpload.
-     * @param maxInMemorySize the maximum in memory size allowed (human-readable format)
-     * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
+     * Sets the maximum size of a file that will be stored in memory using a
+     * human-readable format (e.g., "128KB", "1MB").
+     * @param maxInMemorySize the maximum memory size in a human-readable format
      */
     public void setMaxInMemorySize(String maxInMemorySize) {
         this.maxInMemorySize = (int)StringUtils.toMachineFriendlyByteSize(maxInMemorySize);
@@ -136,8 +133,8 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the allowed file extensions.
-     * @param allowedFileExtensions the allowed file extensions
+     * Sets the comma-separated list of allowed file extensions.
+     * @param allowedFileExtensions a string containing allowed extensions
      */
     public void setAllowedFileExtensions(String allowedFileExtensions) {
         this.allowedFileExtensions = allowedFileExtensions;
@@ -152,16 +149,18 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the denied file extensions.
-     * @param deniedFileExtensions the denied file extensions
+     * Sets the comma-separated list of denied file extensions.
+     * @param deniedFileExtensions a string containing denied extensions
      */
     public void setDeniedFileExtensions(String deniedFileExtensions) {
         this.deniedFileExtensions = deniedFileExtensions;
     }
 
     /**
-     * Creates a new MultipartFormDataParser object.
-     * @return the multipart form data parser
+     * Creates and configures a new {@link MultipartFormDataParser} instance.
+     * If a temporary directory is not set, it defaults to the system's temporary directory.
+     * @return a new, configured {@code MultipartFormDataParser} instance
+     * @throws IOException if the temporary directory cannot be accessed or created
      */
     public MultipartFormDataParser createMultipartFormDataParser() throws IOException {
         MultipartFormDataParser parser = new CommonsMultipartFormDataParser();
