@@ -314,10 +314,15 @@ public class RestRequest {
             } else {
                 FailureResponse failureResponse = new FailureResponse();
                 failureResponse.setStatus(statusCode);
-                if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                    failureResponse.setError("-404", "The requested resource was not found");
+                if (isJsonType(contentType)) {
+                    failureResponse.setData(new JsonString(data));
                 } else {
-                    failureResponse.setError("-" + statusCode, data);
+                    failureResponse.setData(data);
+                }
+                if (statusCode == HttpStatus.SC_NOT_FOUND) {
+                    failureResponse.setError("-404", "The Requested Resource Was Not Found");
+                } else {
+                    failureResponse.setError("-" + statusCode, response.getReasonPhrase());
                 }
                 if (isJsonType(getAccept(headers))) {
                     failureResponse.setDefaultContentType(ContentType.APPLICATION_JSON.getMimeType());
