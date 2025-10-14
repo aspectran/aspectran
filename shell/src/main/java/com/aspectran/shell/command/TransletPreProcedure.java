@@ -197,7 +197,7 @@ public class TransletPreProcedure {
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.getStyler().dangerStyle();
-            console.writeLine("Some mandatory parameters are missing:");
+            console.writeLine("The following mandatory parameters are missing:");
             for (ItemRule ir : itemRules) {
                 console.getStyler().warningStyle();
                 console.write(" * ");
@@ -215,7 +215,7 @@ public class TransletPreProcedure {
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.getStyler().dangerStyle();
-            console.writeLine("Some mandatory attributes are missing:");
+            console.writeLine("The following mandatory attributes are missing:");
             for (ItemRule ir : itemRules) {
                 console.getStyler().warningStyle();
                 console.write(" * ");
@@ -250,7 +250,7 @@ public class TransletPreProcedure {
         }
         if (missingItemRules != null) {
             console.getStyler().warningStyle();
-            console.writeLine("Missing mandatory parameters:");
+            console.writeLine("The following mandatory parameters are missing:");
             console.getStyler().resetStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
@@ -328,7 +328,7 @@ public class TransletPreProcedure {
     @Nullable
     private Collection<ItemRule> readEachToken(@NonNull Collection<ItemRule> itemRules) {
         console.getStyler().secondaryStyle();
-        console.writeLine("Enter a value for each token:");
+        console.writeLine("Please enter a value for each placeholder:");
         console.getStyler().resetStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
