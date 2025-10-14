@@ -20,6 +20,15 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.PrintStream;
 
+/**
+ * A {@link PrintStream} that writes to a JLine terminal, supporting styled
+ * text and the ability to print messages above the current command prompt.
+ *
+ * <p>This stream intercepts write operations and routes them through the
+ * {@link JLineTerminal}'s styling and printing mechanisms. This ensures that
+ * output is correctly formatted with ANSI styles and does not interfere with
+ * the user's current input line, especially when using the "above" mode.
+ */
 public class TerminalPrintStream extends PrintStream {
 
     private final JLineTerminal jlineTerminal;
@@ -28,14 +37,29 @@ public class TerminalPrintStream extends PrintStream {
 
     private final String[] styles;
 
+    /**
+     * Instantiates a new TerminalPrintStream.
+     * @param jlineTerminal the JLine terminal to write to
+     */
     public TerminalPrintStream(JLineTerminal jlineTerminal) {
         this(jlineTerminal, false, null);
     }
 
+    /**
+     * Instantiates a new TerminalPrintStream.
+     * @param jlineTerminal the JLine terminal to write to
+     * @param above if true, prints the output above the current prompt line
+     */
     public TerminalPrintStream(JLineTerminal jlineTerminal, boolean above) {
         this(jlineTerminal, above, null);
     }
 
+    /**
+     * Instantiates a new TerminalPrintStream.
+     * @param jlineTerminal the JLine terminal to write to
+     * @param above if true, prints the output above the current prompt line
+     * @param styles the styles to apply to the output
+     */
     public TerminalPrintStream(@NonNull JLineTerminal jlineTerminal, boolean above, String[] styles) {
         super(jlineTerminal.getOutput());
         this.jlineTerminal = jlineTerminal;

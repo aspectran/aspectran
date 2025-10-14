@@ -21,7 +21,15 @@ import com.aspectran.shell.jline.console.TerminalPrintStream;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The JLine-based console commander.
+ * A {@link DefaultConsoleCommander} implementation that is specifically
+ * tailored for the JLine environment.
+ *
+ * <p>This commander extends the default functionality by redirecting the
+ * standard output ({@code System.out}) and standard error ({@code System.err})
+ * streams to the JLine terminal. This ensures that all console output,
+ * including stack traces and other system-level messages, is properly
+ * displayed above the command prompt without interfering with the user's
+ * current input line.
  *
  * <p>Created: 2017. 6. 3.</p>
  */

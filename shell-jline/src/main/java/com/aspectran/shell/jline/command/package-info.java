@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides commands for the JLine-based shell.
+ * Provides JLine-based command components.
  */
 package com.aspectran.shell.jline.command;

@@ -20,6 +20,17 @@ import com.aspectran.shell.console.DefaultConsoleStyler;
 import org.jline.utils.AttributedStyle;
 
 /**
+ * Manages text styling for the JLine-based shell console.
+ *
+ * <p>This class extends {@link DefaultConsoleStyler} to integrate with the
+ * JLine terminal's styling capabilities. It translates abstract style names
+ * (e.g., "success", "danger") into JLine's {@link AttributedStyle} objects.
+ *
+ * <p>For performance, it caches the created {@code Style} objects to avoid
+ * redundant parsing and object creation when styles are frequently reused.
+ * The cache is invalidated and rebuilt if the shell style configuration is
+ * updated.
+ *
  * <p>Created: 2025-08-11</p>
  */
 public class JLineConsoleStyler extends DefaultConsoleStyler {
@@ -137,6 +148,9 @@ public class JLineConsoleStyler extends DefaultConsoleStyler {
         }
     }
 
+    /**
+     * Represents a JLine-specific text style, wrapping an {@link AttributedStyle}.
+     */
     public static class Style {
 
         private final AttributedStyle attributedStyle;

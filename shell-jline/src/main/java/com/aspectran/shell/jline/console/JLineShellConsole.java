@@ -29,7 +29,18 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Console I/O implementation that supports JLine.
+ * A {@link com.aspectran.shell.console.ShellConsole} implementation that uses
+ * JLine for all interactive terminal operations.
+ *
+ * <p>This class serves as the primary bridge between the abstract shell console
+ * interface and the concrete JLine implementation. It delegates all I/O
+ * operations, styling, and advanced features like command history and screen
+ * manipulation to an underlying {@link JLineTerminal} instance.
+ *
+ * <p>It also handles exceptions thrown by JLine, such as
+ * {@link UserInterruptException} (Ctrl+C) and {@link EndOfFileException} (Ctrl+D),
+ * translating them into appropriate shell actions like confirming exit or
+ * terminating input.
  *
  * <p>Created: 2017. 3. 4.</p>
  */
@@ -43,10 +54,19 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     private final JLineConsoleStyler consoleStyler;
 
+    /**
+     * Instantiates a new JLineShellConsole with the default encoding.
+     * @throws IOException if an I/O error occurs
+     */
     public JLineShellConsole() throws IOException {
         this(null);
     }
 
+    /**
+     * Instantiates a new JLineShellConsole with the specified encoding.
+     * @param encoding the character encoding
+     * @throws IOException if an I/O error occurs
+     */
     public JLineShellConsole(String encoding) throws IOException {
         super(encoding);
         this.jlineTerminal = new JLineTerminal(this, encoding);
@@ -55,6 +75,10 @@ public class JLineShellConsole extends AbstractShellConsole {
         this.consoleStyler = new JLineConsoleStyler(jlineTerminal);
     }
 
+    /**
+     * Returns the underlying JLineTerminal instance.
+     * @return the JLineTerminal
+     */
     public JLineTerminal getJlineTerminal() {
         return jlineTerminal;
     }

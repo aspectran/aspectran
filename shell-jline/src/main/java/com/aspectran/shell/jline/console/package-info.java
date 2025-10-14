@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides classes for handling the JLine-based console.
+ * Provides JLine-based console components.
  */
 package com.aspectran.shell.jline.console;

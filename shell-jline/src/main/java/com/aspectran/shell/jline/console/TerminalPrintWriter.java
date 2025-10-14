@@ -19,10 +19,23 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.PrintWriter;
 
+/**
+ * A {@link PrintWriter} that delegates write operations to a {@link JLineTerminal}.
+ *
+ * <p>This class ensures that all text written through it is processed by the
+ * terminal's styling mechanism, allowing for consistent, styled output. It
+ * intercepts standard {@code write} methods and routes them to
+ * {@link JLineTerminal#write(String)}, which handles the conversion to
+ * ANSI-escaped strings before printing.
+ */
 public class TerminalPrintWriter extends PrintWriter {
 
     private final JLineTerminal jlineTerminal;
 
+    /**
+     * Instantiates a new TerminalPrintWriter.
+     * @param jlineTerminal the JLine terminal to write to
+     */
     public TerminalPrintWriter(@NonNull JLineTerminal jlineTerminal) {
         super(jlineTerminal.getWriter());
         this.jlineTerminal = jlineTerminal;

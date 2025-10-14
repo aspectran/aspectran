@@ -20,6 +20,17 @@ import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+/**
+ * A {@link PromptStringBuilder} implementation that supports JLine styling.
+ *
+ * <p>This class builds a shell prompt string by converting text segments into
+ * ANSI-escaped sequences based on the currently applied style. It allows for
+ * creating dynamic, colored prompts that can change based on application state.
+ *
+ * <p>Each appended string is styled using the JLine terminal's styling
+ * mechanism, ensuring that the prompt is rendered correctly in capable
+ * terminals.
+ */
 class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     private final JLineShellConsole console;

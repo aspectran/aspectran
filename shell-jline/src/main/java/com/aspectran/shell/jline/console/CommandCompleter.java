@@ -34,7 +34,20 @@ import java.util.List;
 import static com.aspectran.shell.console.ShellConsole.MULTILINE_DELIMITER;
 
 /**
- * Command and option name autocompleter.
+ * A JLine {@link Completer} that provides tab-completion for shell commands,
+ * translets, and their options.
+ *
+ * <p>This completer suggests:
+ * <ul>
+ *   <li>Built-in command names and translet names when the user is typing the
+ *       first word of a command.</li>
+ *   <li>Command-specific options (e.g., {@code --option}) and arguments after
+ *       a command name has been entered.</li>
+ * </ul>
+ *
+ * <p>It dynamically queries the {@link CommandRegistry} and
+ * {@link TransletRuleRegistry} to provide relevant and context-aware
+ * suggestions, significantly improving the shell's usability.
  *
  * <p>Created: 17/11/2018</p>
  *
@@ -53,10 +66,19 @@ public class CommandCompleter implements Completer {
         this.console = console;
     }
 
+    /**
+     * Returns whether the completer is in a limited mode.
+     * In limited mode, no completions are offered.
+     * @return true if in limited mode, false otherwise
+     */
     public boolean isLimited() {
         return limited;
     }
 
+    /**
+     * Sets whether the completer should operate in a limited mode.
+     * @param limited true to enable limited mode, false otherwise
+     */
     public void setLimited(boolean limited) {
         this.limited = limited;
     }

@@ -35,7 +35,18 @@ import static com.aspectran.shell.console.ShellConsole.COMMENT_DELIMITER;
 import static com.aspectran.shell.console.ShellConsole.MULTILINE_DELIMITER;
 
 /**
- * Command and option name highlighter.
+ * A JLine {@link Highlighter} that provides syntax highlighting for shell commands.
+ *
+ * <p>This implementation highlights:
+ * <ul>
+ *   <li>Built-in command names</li>
+ *   <li>Translet names</li>
+ *   <li>Special characters like the comment delimiter ('#') and the
+ *       multiline delimiter ('\')</li>
+ * </ul>
+ *
+ * <p>Highlighting is applied dynamically as the user types, improving the
+ * readability and user experience of the shell console.
  *
  * <p>Created: 26/1/2019</p>
  *
@@ -54,10 +65,19 @@ public class CommandHighlighter implements Highlighter {
         this.console = console;
     }
 
+    /**
+     * Returns whether the highlighter is in a limited mode.
+     * In limited mode, only basic highlighting is applied.
+     * @return true if in limited mode, false otherwise
+     */
     public boolean isLimited() {
         return limited;
     }
 
+    /**
+     * Sets whether the highlighter should operate in a limited mode.
+     * @param limited true to enable limited mode, false otherwise
+     */
     public void setLimited(boolean limited) {
         this.limited = limited;
     }
@@ -141,10 +161,12 @@ public class CommandHighlighter implements Highlighter {
 
     @Override
     public void setErrorPattern(Pattern pattern) {
+        // This method is not used
     }
 
     @Override
     public void setErrorIndex(int i) {
+        // This method is not used
     }
 
     private String getMatchedCommandName(String buffer) {
