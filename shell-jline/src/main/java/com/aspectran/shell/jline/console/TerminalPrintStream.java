@@ -60,16 +60,7 @@ public class TerminalPrintStream extends PrintStream {
                 jlineTerminal.applyStyle(styles);
             }
             if (above) {
-                if (jlineTerminal.isNormal()) {
-                    jlineTerminal.writeAbove(str);
-                } else {
-                    jlineTerminal.clearLine();
-                    jlineTerminal.write(str);
-                    jlineTerminal.writeLine();
-                    if (jlineTerminal.isReading()) {
-                        jlineTerminal.redrawLine();
-                    }
-                }
+                jlineTerminal.writeAbove(str);
             } else {
                 jlineTerminal.write(str);
             }

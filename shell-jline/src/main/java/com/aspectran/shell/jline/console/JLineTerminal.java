@@ -17,6 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -106,6 +107,10 @@ public class JLineTerminal {
         return terminal.encoding();
     }
 
+    protected boolean isNormal() {
+        return (!isColorlessDumb() && !isColoredDumb());
+    }
+
     protected boolean isDumb() {
         return (isColorlessDumb() || isColoredDumb());
     }
@@ -118,16 +123,23 @@ public class JLineTerminal {
         return coloredDumb;
     }
 
-    protected boolean isNormal() {
-        return (!colorlessDumb && !coloredDumb);
-    }
-
     public LineReader getLineReader() {
         return lineReader;
     }
 
     public LineReader getCommandReader() {
         return commandReader;
+    }
+
+    @Nullable
+    public LineReader getReadingReader() {
+        if (commandReader.isReading()) {
+            return commandReader;
+        } else if (lineReader.isReading()) {
+            return lineReader;
+        } else {
+            return null;
+        }
     }
 
     public CommandCompleter getCommandCompleter() {
@@ -159,14 +171,11 @@ public class JLineTerminal {
 
     public void clearScreen() {
         if (!isColorlessDumb()) {
-            if (commandReader.isReading()) {
-                commandReader.callWidget(LineReader.CLEAR_SCREEN);
-                commandReader.callWidget(LineReader.REDRAW_LINE);
-                commandReader.callWidget(LineReader.REDISPLAY);
-            } else if (lineReader.isReading()) {
-                lineReader.callWidget(LineReader.CLEAR_SCREEN);
-                lineReader.callWidget(LineReader.REDRAW_LINE);
-                lineReader.callWidget(LineReader.REDISPLAY);
+            LineReader reader = getReadingReader();
+            if (reader != null) {
+                reader.callWidget(LineReader.CLEAR_SCREEN);
+                reader.callWidget(LineReader.REDRAW_LINE);
+                reader.callWidget(LineReader.REDISPLAY);
             } else {
                 if (terminal.puts(InfoCmp.Capability.clear_screen)) {
                     terminal.flush();
@@ -177,25 +186,43 @@ public class JLineTerminal {
 
     public void clearLine() {
         if (isNormal()) {
-            if (lineReader.isReading()) {
-                lineReader.callWidget(LineReader.CLEAR);
-            } else {
-                commandReader.callWidget(LineReader.CLEAR);
+            LineReader reader = getReadingReader();
+            if (reader != null) {
+                try {
+                    reader.callWidget(LineReader.CLEAR);
+                    return; // Widget call succeeded
+                } catch (IllegalStateException e) {
+                    // Widget call failed (e.g., wrong thread), fallback to terminal command
+                }
+            }
+
+            // Fallback for when not reading or widget call fails
+            if (terminal.puts(InfoCmp.Capability.carriage_return)) {
+                if (terminal.puts(InfoCmp.Capability.clr_eol)) {
+                    terminal.flush();
+                }
             }
         } else {
-            getWriter().write("\r \r");
+            // For dumb terminals, overwrite the line with spaces
+            int width = terminal.getWidth();
+            if (width > 0) {
+                getWriter().write("\r" + " ".repeat(width) + "\r");
+            } else {
+                // Fallback for terminals with undefined width (e.g., 80 columns)
+                getWriter().write("\r" +
+                        "                                                                                " +
+                        "\r");
+            }
             getWriter().flush();
         }
     }
 
     public void redrawLine() {
         if (!isColorlessDumb()) {
-            if (lineReader.isReading()) {
-                lineReader.callWidget(LineReader.REDRAW_LINE);
-                lineReader.callWidget(LineReader.REDISPLAY);
-            } else if (commandReader.isReading()) {
-                commandReader.callWidget(LineReader.REDRAW_LINE);
-                commandReader.callWidget(LineReader.REDISPLAY);
+            LineReader reader = getReadingReader();
+            if (reader != null) {
+                reader.callWidget(LineReader.REDRAW_LINE);
+                reader.callWidget(LineReader.REDISPLAY);
             }
         }
     }
@@ -209,7 +236,7 @@ public class JLineTerminal {
     }
 
     public boolean isReading() {
-        return commandReader.isReading() || lineReader.isReading();
+        return (commandReader.isReading() || lineReader.isReading());
     }
 
     public boolean hasStyle() {
@@ -247,11 +274,17 @@ public class JLineTerminal {
     }
 
     public void writeAbove(String str) {
-        if (getLineReader().isReading()) {
-            getLineReader().printAbove(toAnsi(str));
-        } else {
-            getCommandReader().printAbove(toAnsi(str));
+        if (isNormal()) {
+            LineReader reader = getReadingReader();
+            if (reader != null) {
+                reader.printAbove(toAnsi(str));
+                return;
+            }
         }
+        clearLine();
+        write(str);
+        writeLine();
+        redrawLine();
     }
 
     public void flush() {
