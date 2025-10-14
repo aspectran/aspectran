@@ -172,11 +172,12 @@ public class JLineTerminal {
     }
 
     /**
-     * Returns the {@link LineReader} for simple line input.
-     * @return the line reader
+     * Checks if either the command reader or the line reader is currently
+     * waiting for input.
+     * @return true if currently reading input
      */
-    public LineReader getLineReader() {
-        return lineReader;
+    public boolean isReading() {
+        return (commandReader.isReading() || lineReader.isReading());
     }
 
     /**
@@ -185,6 +186,14 @@ public class JLineTerminal {
      */
     public LineReader getCommandReader() {
         return commandReader;
+    }
+
+    /**
+     * Returns the {@link LineReader} for simple line input.
+     * @return the line reader
+     */
+    public LineReader getLineReader() {
+        return lineReader;
     }
 
     /**
@@ -337,53 +346,6 @@ public class JLineTerminal {
     }
 
     /**
-     * Checks if either the command reader or the line reader is currently
-     * waiting for input.
-     * @return true if currently reading input
-     */
-    public boolean isReading() {
-        return (commandReader.isReading() || lineReader.isReading());
-    }
-
-    /**
-     * Checks if a style is currently applied.
-     * @return true if a style is set
-     */
-    public boolean hasStyle() {
-        return (style != null);
-    }
-
-    protected Style getStyle() {
-        return style;
-    }
-
-    protected void setStyle(Style style) {
-        this.style = style;
-    }
-
-    /**
-     * Applies a set of styles to the current style.
-     * @param styles the styles to apply
-     */
-    public void applyStyle(String... styles) {
-        setStyle(new Style(this.style, styles));
-    }
-
-    /**
-     * Converts a string to its ANSI-escaped representation based on the current style.
-     * @param str the string to convert
-     * @return the ANSI-escaped string
-     */
-    public String toAnsi(String str) {
-        return toAnsi(str, getStyle());
-    }
-
-    protected String toAnsi(String str, Style style) {
-        AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
-        return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
-    }
-
-    /**
      * Writes a styled string to the terminal.
      * @param str the string to write
      */
@@ -424,6 +386,44 @@ public class JLineTerminal {
      */
     public void flush() {
         getWriter().flush();
+    }
+
+    /**
+     * Checks if a style is currently applied.
+     * @return true if a style is set
+     */
+    public boolean hasStyle() {
+        return (style != null);
+    }
+
+    protected Style getStyle() {
+        return style;
+    }
+
+    protected void setStyle(Style style) {
+        this.style = style;
+    }
+
+    /**
+     * Applies a set of styles to the current style.
+     * @param styles the styles to apply
+     */
+    public void applyStyle(String... styles) {
+        setStyle(new Style(this.style, styles));
+    }
+
+    /**
+     * Converts a string to its ANSI-escaped representation based on the current style.
+     * @param str the string to convert
+     * @return the ANSI-escaped string
+     */
+    public String toAnsi(String str) {
+        return toAnsi(str, getStyle());
+    }
+
+    protected String toAnsi(String str, Style style) {
+        AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
+        return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
     }
 
 }
