@@ -22,7 +22,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A registry that contains the commands known by a shell.
+ * Default implementation of the {@link CommandRegistry} interface.
+ * <p>This class stores commands in a map, keyed by their names, and provides
+ * methods to add and retrieve them.</p>
  *
  * <p>Created: 2017. 10. 25.</p>
  */
@@ -32,6 +34,10 @@ public class ShellCommandRegistry implements CommandRegistry {
 
     private final ConsoleCommander consoleCommander;
 
+    /**
+     * Instantiates a new shell command registry.
+     * @param consoleCommander the console commander that owns this registry
+     */
     public ShellCommandRegistry(ConsoleCommander consoleCommander) {
         this.consoleCommander = consoleCommander;
     }
@@ -61,6 +67,10 @@ public class ShellCommandRegistry implements CommandRegistry {
         return commands.values();
     }
 
+    /**
+     * Adds commands to the registry from an array of class names.
+     * @param classNames the fully qualified class names of the commands to add
+     */
     public void addCommand(String... classNames) {
         if (classNames != null) {
             for (String className : classNames) {
@@ -76,6 +86,12 @@ public class ShellCommandRegistry implements CommandRegistry {
         }
     }
 
+    /**
+     * Instantiates and adds a command to the registry from its class.
+     * <p>The command class must have a constructor that accepts a
+     * {@link CommandRegistry} as its only argument.</p>
+     * @param commandClass the class of the command to add
+     */
     public void addCommand(Class<? extends Command> commandClass) {
         Object[] args = { this };
         Class<?>[] argTypes = { CommandRegistry.class };

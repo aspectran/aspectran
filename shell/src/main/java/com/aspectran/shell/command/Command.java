@@ -23,76 +23,78 @@ import com.aspectran.shell.console.ShellConsole;
 import java.util.List;
 
 /**
- * The Command interface allows the command interpreter to delegate tasks.
+ * The central interface for all executable commands in the Aspectran Shell.
+ * <p>Implementations of this interface define a specific action that can be invoked
+ * from the shell, complete with its own options, arguments, and execution logic.</p>
  */
 public interface Command {
 
+    /**
+     * Returns the options (e.g., "-v", "--file") defined for this command.
+     * @return the command's options
+     */
     Options getOptions();
 
+    /**
+     * Returns the list of positional arguments for this command.
+     * @return the list of arguments
+     */
     List<Arguments> getArgumentsList();
 
     /**
-     * This method will be called as the starting point to execute the logic
-     * for the action mapped to this command.
-     * @param options the parsed options
-     * @param console the console
+     * Executes the logic for the action mapped to this command.
+     * @param options the parsed command-line options
+     * @param console the shell console for I/O
      * @throws Exception if an error occurs during command execution
      */
     void execute(ParsedOptions options, ShellConsole console) throws Exception;
 
     /**
-     * Prints the usage statement for the specified command.
-     * @param console the Console instance
+     * Prints the detailed usage statement for this command to the console.
+     * @param console the shell console to write to
      */
     void printHelp(ShellConsole console);
 
+    /**
+     * Prints a concise usage statement for this command.
+     * @param console the shell console to write to
+     */
     void printQuickHelp(ShellConsole console);
 
     /**
-     * This method returns an instance of Command.Descriptor.
-     * The descriptor is meta information about the command.
-     * @return a Descriptor that is meta information about the command
+     * Returns the descriptor containing metadata about the command.
+     * @return a {@link Descriptor} with metadata about the command
      */
     Command.Descriptor getDescriptor();
 
     /**
-     * An interface that can be used to describe the functionality of the
-     * command implementation.  This is a very important concept in a text-driven
-     * environment such as a command-line user interface.
+     * Describes the functionality and identity of a command.
+     * <p>This metadata is used for command registration, help generation, and display.</p>
      */
     interface Descriptor {
 
         /**
-         * The purpose of the namespace is to provide an identifier to group
-         * commands without relying on class name or other convoluted approaches
-         * to group commands.
-         *
+         * Returns the command's namespace, used for grouping related commands.
          * @return the command's namespace
          */
         String getNamespace();
 
         /**
-         * Implementation of this method should return a simple string (with no spaces)
-         * that identifies the action mapped to this command.
-         *
-         * @return the name of the action mapped to this command.
+         * Returns the name of the action mapped to this command.
+         * This is the string that users will type to invoke the command.
+         * @return the name of the command
          */
         String getName();
 
         /**
-         * This method should return a descriptive text about the command
-         * it is attached to.
-         *
-         * @return a descriptive text about the command
+         * Returns a brief, one-line description of what the command does.
+         * @return a description of the command
          */
         String getDescription();
 
         /**
-         * Implementation of this method should return helpful hint on how
-         * to use the associated command and further description of options that
-         * are supported by the command.
-         *
-         * @return Usage of command
+         * Returns a detailed usage hint, including options and arguments.
+         * @return a usage string for the command
          */
         String getUsage();
 

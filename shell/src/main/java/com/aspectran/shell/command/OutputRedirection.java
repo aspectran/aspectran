@@ -22,13 +22,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +35,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Represents an output redirection operation (e.g., {@code >} or {@code >>})
+ * parsed from a command line.
+ * <p>This class holds the redirection operator and the target file (operand).</p>
+ *
  * <p>Created: 2017. 3. 8.</p>
  */
 public class OutputRedirection {
@@ -45,18 +47,34 @@ public class OutputRedirection {
 
     private String operand;
 
+    /**
+     * Instantiates a new output redirection.
+     * @param operator the redirection operator
+     */
     public OutputRedirection(@NonNull Operator operator) {
         this.operator = operator;
     }
 
+    /**
+     * Gets the operand (e.g., the file path).
+     * @return the operand
+     */
     public String getOperand() {
         return operand;
     }
 
+    /**
+     * Sets the operand (e.g., the file path).
+     * @param operand the operand
+     */
     public void setOperand(String operand) {
         this.operand = operand;
     }
 
+    /**
+     * Gets the redirection operator.
+     * @return the operator
+     */
     public Operator getOperator() {
         return operator;
     }
@@ -90,6 +108,11 @@ public class OutputRedirection {
         return tsb.toString();
     }
 
+    /**
+     * Serializes a collection of redirections into a string.
+     * @param redirectionList the list of redirections
+     * @return the serialized string
+     */
     @NonNull
     public static String serialize(Collection<OutputRedirection> redirectionList) {
         StringBuilder sb = new StringBuilder();
@@ -106,12 +129,13 @@ public class OutputRedirection {
     }
 
     /**
-     * Returns the {@code Writer} instances for translet output redirection.
-     * @param redirectionList a list of the output redirection
-     * @param console the Console instance
-     * @return the {@code Writer} instance
-     * @throws FileNotFoundException if the file has an invalid path
-     * @throws UnsupportedEncodingException if the named encoding is not supported
+     * Creates a {@link PrintWriter} for the specified output redirections.
+     * <p>If multiple redirections are provided, a {@link MultiWriter} is used to
+     * write to all destinations simultaneously.</p>
+     * @param redirectionList a list of the output redirections
+     * @param console the shell console instance
+     * @return a {@code PrintWriter} for the redirected output, or {@code null} if no redirections are given
+     * @throws IOException if an I/O error occurs
      */
     @Nullable
     public static PrintWriter determineOutputWriter(List<OutputRedirection> redirectionList, ShellConsole console)
@@ -128,6 +152,13 @@ public class OutputRedirection {
         return outputWriter;
     }
 
+    /**
+     * Creates an array of {@link Writer} instances for the given redirections.
+     * @param redirectionList the list of redirections
+     * @param console the shell console, used for resolving relative paths
+     * @return an array of writers, or {@code null} if the list is empty
+     * @throws IOException if a file cannot be created
+     */
     private static Writer[] getRedirectionWriters(List<OutputRedirection> redirectionList, ShellConsole console)
             throws IOException {
         if (redirectionList != null && !redirectionList.isEmpty()) {
@@ -150,7 +181,7 @@ public class OutputRedirection {
                         throw new IOException("Could not create directory for output file");
                     }
                 }
-                boolean append = (redirection.getOperator() == OutputRedirection.Operator.APPEND_OUT);
+                boolean append = (redirection.getOperator() == Operator.APPEND_OUT);
                 OutputStream stream = new FileOutputStream(file, append);
                 writers.add(new OutputStreamWriter(stream, console.getEncoding()));
             }
@@ -161,17 +192,17 @@ public class OutputRedirection {
     }
 
     /**
-     * Output redirection operators.
+     * Defines the output redirection operators.
      */
     public enum Operator {
 
         /**
-         * Writes the command output to a text file.
+         * Overwrites the destination file with the command output.
          */
         OVERWRITE_OUT(">"), // >
 
         /**
-         * Appends command output to the end of a text file.
+         * Appends the command output to the end of the destination file.
          */
         APPEND_OUT(">>"); // >>
 
@@ -189,7 +220,7 @@ public class OutputRedirection {
     }
 
     /**
-     * The writer that handles multiple writers.
+     * A {@link Writer} that delegates its operations to an array of underlying writers.
      *
      * <p>Created: 2017. 3. 9.</p>
      */

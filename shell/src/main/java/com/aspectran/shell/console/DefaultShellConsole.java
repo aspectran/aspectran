@@ -27,7 +27,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Console I/O implementation that supports System Console.
+ * A basic, default implementation of {@link ShellConsole} that uses the standard
+ * Java {@link System#in}, {@link System#out}, and {@link System#err} streams.
+ * <p>This implementation is suitable for environments where a sophisticated
+ * terminal is not available. It does not support advanced features like command
+ * history persistence or complex line editing. Styling is handled by a
+ * {@link DefaultConsoleStyler}, which is a no-op styler.</p>
  *
  * <p>Created: 2017. 3. 4.</p>
  */
@@ -37,10 +42,17 @@ public class DefaultShellConsole extends AbstractShellConsole {
 
     private volatile boolean reading;
 
+    /**
+     * Instantiates a new default shell console using the default system encoding.
+     */
     public DefaultShellConsole() {
         this(null);
     }
 
+    /**
+     * Instantiates a new default shell console with the specified encoding.
+     * @param encoding the character encoding for this console
+     */
     public DefaultShellConsole(String encoding) {
         super(encoding);
     }
@@ -60,6 +72,13 @@ public class DefaultShellConsole extends AbstractShellConsole {
         return System.out;
     }
 
+    /**
+     * Returns a {@link PrintWriter} for the console.
+     * <p>If a system console is available (i.e., {@code System.console()} is not null),
+     * it returns the console's writer. Otherwise, it returns a new {@code PrintWriter}
+     * wrapping {@code System.out}.</p>
+     * @return a {@link PrintWriter} instance
+     */
     @Override
     public PrintWriter getWriter() {
         if (System.console() != null) {
@@ -69,24 +88,36 @@ public class DefaultShellConsole extends AbstractShellConsole {
         }
     }
 
+    /**
+     * This operation is not supported in this implementation.
+     */
     @Override
     public void setCommandHistoryFile(String historyFile) {
+        // This is a no-op
     }
 
+    /**
+     * Always returns an empty list as this implementation does not support history.
+     * @return an empty list
+     */
     @Override
     @SuppressWarnings({"unchecked"})
     public List<String> getCommandHistory() {
         return Collections.EMPTY_LIST;
     }
 
+    /**
+     * This operation is not supported in this implementation.
+     */
     @Override
     public void clearCommandHistory() {
+        // This is a no-op
     }
 
     @Override
     public String readCommand() {
         String prompt = getCommandPrompt();
-        String line = readMultiCommand(readLineFromTerminal(prompt));
+        String line = assembleMultiLineCommand(readLineFromTerminal(prompt));
         return (line != null ? line.trim() : null);
     }
 
@@ -114,7 +145,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         String line;
         try {
             reading = true;
-            line = readMultiLine(readLineFromTerminal(prompt));
+            line = assembleMultiLineInput(readLineFromTerminal(prompt));
         } finally {
             reading = false;
         }
@@ -179,6 +210,12 @@ public class DefaultShellConsole extends AbstractShellConsole {
         }
     }
 
+    /**
+     * Reads a password from the terminal without echoing characters.
+     * <p>Falls back to standard line reading if a system console is not available.</p>
+     * @param prompt the prompt to display
+     * @return the password as a string
+     */
     private String readPasswordFromTerminal(String prompt) {
         if (System.console() != null) {
             return new String(System.console().readPassword(prompt));
@@ -227,25 +264,39 @@ public class DefaultShellConsole extends AbstractShellConsole {
         System.err.printf(format + "%n", args);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>In this implementation, it behaves identically to {@link #writeLine(String)}.</p>
+     */
     @Override
     public void writeAbove(String str) {
         writeLine(str);
     }
 
+    /**
+     * Clears the screen using an ANSI escape sequence.
+     * <p>This may not work on all terminals.</p>
+     */
     @Override
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
+    /**
+     * This operation is not supported in this implementation.
+     */
     @Override
     public void clearLine() {
-        // Nothing to do
+        // This is a no-op
     }
 
+    /**
+     * This operation is not supported in this implementation.
+     */
     @Override
     public void redrawLine() {
-        // Nothing to do
+        // This is a no-op
     }
 
     @Override

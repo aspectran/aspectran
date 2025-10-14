@@ -22,12 +22,26 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * A wrapper for a {@link ShellConsole} that can override the output writer.
+ * <p>This class follows the decorator pattern, delegating most calls to the
+ * underlying console instance. Its primary purpose is to allow for temporary
+ * output redirection by providing a custom {@link PrintWriter}. Methods that
+ * would modify the state of the wrapped console (e.g., {@code setWorkingDir})
+ * are unsupported and will throw an {@link UnsupportedOperationException}.</p>
+ *
+ * <p>Created: 2017. 3. 9.</p>
+ */
 public class ShellConsoleWrapper implements ShellConsole {
 
     private final ShellConsole console;
 
     private PrintWriter writer;
 
+    /**
+     * Instantiates a new shell console wrapper.
+     * @param console the console to wrap
+     */
     public ShellConsoleWrapper(ShellConsole console) {
         this.console = console;
     }
@@ -47,6 +61,10 @@ public class ShellConsoleWrapper implements ShellConsole {
         return console.getOutput();
     }
 
+    /**
+     * Returns the overridden writer if set; otherwise, returns the writer from the wrapped console.
+     * @return the active print writer
+     */
     @Override
     public PrintWriter getWriter() {
         if (writer != null) {
@@ -56,6 +74,10 @@ public class ShellConsoleWrapper implements ShellConsole {
         }
     }
 
+    /**
+     * Sets a custom writer to override the default console writer.
+     * @param writer the writer to use for output
+     */
     public void setWriter(PrintWriter writer) {
         this.writer = writer;
     }
@@ -65,6 +87,10 @@ public class ShellConsoleWrapper implements ShellConsole {
         return console.getWorkingDir();
     }
 
+    /**
+     * This operation is not supported on a wrapped console.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setWorkingDir(File workingDir) {
         throw new UnsupportedOperationException();
@@ -75,6 +101,10 @@ public class ShellConsoleWrapper implements ShellConsole {
         return console.getCommandPrompt();
     }
 
+    /**
+     * This operation is not supported on a wrapped console.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setCommandPrompt(String commandPrompt) {
         throw new UnsupportedOperationException();
@@ -90,11 +120,19 @@ public class ShellConsoleWrapper implements ShellConsole {
         return console.getCommander();
     }
 
+    /**
+     * This operation is not supported on a wrapped console.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setCommander(ConsoleCommander runner) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * This operation is not supported on a wrapped console.
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void setCommandHistoryFile(String historyFile) {
         throw new UnsupportedOperationException();

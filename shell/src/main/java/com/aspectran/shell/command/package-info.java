@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 /**
- * Command abstractions and infrastructure for Aspectran Shell.
- * <p>
- * Defines the command SPI used by the interactive shell (interfaces and base classes),
- * a registry for command lookup, a console commander that parses and dispatches
- * commands, and utilities for options, arguments, and output redirection.
- * </p>
+ * Provides the core infrastructure and abstractions for shell command processing.
+ * <p>This package defines the command SPI ({@link com.aspectran.shell.command.Command})
+ * used by the interactive shell, a registry for command lookup
+ * ({@link com.aspectran.shell.command.CommandRegistry}), and a commander
+ * ({@link com.aspectran.shell.command.ConsoleCommander}) that parses and dispatches
+ * commands. It also includes utilities for command-line parsing, options, arguments,
+ * and output redirection.</p>
  */
 package com.aspectran.shell.command;

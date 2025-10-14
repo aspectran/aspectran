@@ -18,8 +18,9 @@ package com.aspectran.shell.command;
 import java.io.Serial;
 
 /**
- * Holds an exception that occurred during command execution
- * and a message to be printed after.
+ * Thrown when an error occurs during the execution of a shell command.
+ * <p>This exception wraps the underlying cause and provides a user-friendly
+ * message to be displayed in the console.</p>
  */
 public class ShellCommandExecutionException extends Exception {
 
@@ -27,9 +28,9 @@ public class ShellCommandExecutionException extends Exception {
     private static final long serialVersionUID = -5340974047528806025L;
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Instantiates a new shell command execution exception.
+     * @param msg the detail message
+     * @param cause the root cause
      */
     public ShellCommandExecutionException(String msg, Throwable cause) {
         super(msg, cause);

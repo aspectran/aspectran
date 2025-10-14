@@ -19,16 +19,33 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 /**
- * The Shell Commander.
+ * The main orchestrator for the Aspectran Shell.
+ * <p>This interface defines the contract for a component that manages the shell's
+ * lifecycle, including configuration, running the read-eval-print loop (REPL),
+ * and dispatching commands for execution. It connects the {@link ShellConsole},
+ * the {@link CommandRegistry}, and the {@link ShellService}.</p>
  *
  * <p>Created: 2017. 6. 3.</p>
  */
 public interface ConsoleCommander {
 
+    /**
+     * Returns the console instance managed by this commander.
+     * @param <T> the type of the shell console
+     * @return the shell console
+     */
     <T extends ShellConsole> T getConsole();
 
+    /**
+     * Returns the registry containing all available commands.
+     * @return the command registry
+     */
     CommandRegistry getCommandRegistry();
 
+    /**
+     * Returns the underlying shell service.
+     * @return the shell service
+     */
     ShellService getShellService();
 
 }

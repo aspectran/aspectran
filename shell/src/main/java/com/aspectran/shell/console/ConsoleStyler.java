@@ -19,12 +19,12 @@ import com.aspectran.core.context.config.ShellStyleConfig;
 
 /**
  * Defines an abstraction for applying and managing console text styles.
- * Implementations may translate style names (e.g., "bold", "fg:green") into
+ * <p>Implementations translate style names (e.g., "bold", "fg:green") into
  * platform-specific markup or ANSI escape sequences. This interface is kept
- * lightweight so UIs without styling capabilities can still implement a
- * no-op variant.
+ * lightweight so that environments without styling capabilities can provide a
+ * simple no-op implementation.</p>
  *
- * <p>Created: 2025-08-11</p>
+ * <p>Created: 2017. 10. 25.</p>
  */
 public interface ConsoleStyler {
 
@@ -43,8 +43,8 @@ public interface ConsoleStyler {
 
     /**
      * Activates one or more styles until a subsequent reset method is called.
-     * Duplicate or unknown style names should be safely ignored by
-     * implementations.
+     * <p>Duplicate or unknown style names should be safely ignored by
+     * implementations.</p>
      * @param styles one or more style names; may be empty
      */
     void setStyle(String... styles);

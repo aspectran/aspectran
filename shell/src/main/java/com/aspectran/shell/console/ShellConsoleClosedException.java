@@ -18,7 +18,9 @@ package com.aspectran.shell.console;
 import java.io.Serial;
 
 /**
- * This exception raised if a console is closed.
+ * Exception thrown when an operation is attempted on a closed console.
+ * <p>This typically occurs when trying to read from a console stream that has been
+ * terminated, for example, by a user pressing Ctrl-D or Ctrl-Z.</p>
  */
 public class ShellConsoleClosedException extends RuntimeException {
 
@@ -26,14 +28,14 @@ public class ShellConsoleClosedException extends RuntimeException {
     private static final long serialVersionUID = -8812494142589655857L;
 
     /**
-     * Simple constructor.
+     * Instantiates a new ShellConsoleClosedException.
      */
     public ShellConsoleClosedException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Instantiates a new ShellConsoleClosedException with the specified detail message.
      * @param msg a message to associate with the exception
      */
     public ShellConsoleClosedException(String msg) {
@@ -41,7 +43,7 @@ public class ShellConsoleClosedException extends RuntimeException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Instantiates a new ShellConsoleClosedException with the specified cause.
      * @param cause the real cause of the exception
      */
     public ShellConsoleClosedException(Throwable cause) {
@@ -49,7 +51,7 @@ public class ShellConsoleClosedException extends RuntimeException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Instantiates a new ShellConsoleClosedException with the specified detail message and cause.
      * @param msg the message
      * @param cause the real cause of the exception
      */

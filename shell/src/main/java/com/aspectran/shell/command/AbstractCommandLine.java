@@ -21,13 +21,12 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Arrays;
 
 /**
- * Base parser for shell command invocations that target translets or commands.
- * <p>
- * Given a tokenized {@link CommandLineParser}, this class extracts a
- * ParameterMap by interpreting arguments that start with "--" as parameter
- * names and subsequent tokens as their values (supporting repeated values).
- * Subclasses provide domain-specific accessors over the parsed data.
- * </p>
+ * An abstract base class for parsing command lines that target translets or commands.
+ * <p>Given a {@link CommandLineParser}, this class extracts a {@link ParameterMap}
+ * by interpreting arguments prefixed with "--" as parameter names. It supports
+ * formats like {@code --name value}, {@code --name=value}, and repeated values for
+ * the same parameter. Subclasses can provide domain-specific accessors over the
+ * parsed data.</p>
  */
 public abstract class AbstractCommandLine {
 
@@ -39,15 +38,27 @@ public abstract class AbstractCommandLine {
 
     private boolean verbose;
 
+    /**
+     * Instantiates a new abstract command line.
+     * @param lineParser the command line parser
+     */
     public AbstractCommandLine(@NonNull CommandLineParser lineParser) {
         this.lineParser = lineParser;
         parse();
     }
 
+    /**
+     * Returns whether verbose output is enabled.
+     * @return true if verbose output is enabled, false otherwise
+     */
     public boolean isVerbose() {
         return verbose;
     }
 
+    /**
+     * Sets whether verbose output is enabled.
+     * @param verbose true to enable verbose output, false otherwise
+     */
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
@@ -78,12 +89,18 @@ public abstract class AbstractCommandLine {
         return parameterMap;
     }
 
+    /**
+     * Parses the command line to extract parameters.
+     */
     protected void parse() {
         if (lineParser.getCommandName() != null) {
             extractParameterMap();
         }
     }
 
+    /**
+     * Extracts parameters from the command line arguments.
+     */
     private void extractParameterMap() {
         if (!lineParser.hasArgs()) {
             return;

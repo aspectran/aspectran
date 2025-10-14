@@ -46,7 +46,11 @@ import java.io.PrintWriter;
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
- * The Shell Command Runner.
+ * Default implementation of the {@link ConsoleCommander} interface.
+ * <p>This class is responsible for initializing the {@link ShellService} from a
+ * configuration file, running the main command loop (REPL), parsing user input,
+ * and dispatching execution to either a built-in {@link Command} or an Aspectran
+ * {@code Translet}.</p>
  *
  * <p>Created: 2017. 6. 3.</p>
  */
@@ -60,6 +64,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
 
     private DefaultShellService shellService;
 
+    /**
+     * Instantiates a new default console commander.
+     * @param console the shell console
+     */
     public DefaultConsoleCommander(@NonNull ShellConsole console) {
         this.console = console;
     }
@@ -80,11 +88,20 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         return shellService;
     }
 
+    /**
+     * Prints the Aspectran banner to the console.
+     */
     protected void consoleReady() {
         AboutMe.printPretty(console.getOutput());
         console.getOutput().flush();
     }
 
+    /**
+     * Configures the commander and initializes the shell service.
+     * @param basePath the base path of the application
+     * @param aspectranConfigFile the Aspectran configuration file
+     * @throws Exception if an error occurs during configuration
+     */
     public void configure(@Nullable String basePath, @NonNull File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig;
         try {
@@ -139,6 +156,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
+    /**
+     * Runs the main read-eval-print loop (REPL) for the shell.
+     */
     public void run() {
         try {
             console.setCommander(this);
@@ -195,7 +215,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     }
 
     /**
-     * Executes a command built into Aspectran Shell.
+     * Executes a built-in shell command.
      * @param command an instance of the built-in command to be executed
      * @param lineParser the command line parser
      */
@@ -227,7 +247,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     }
 
     /**
-     * Executes a Translet defined in Aspectran.
+     * Executes a translet defined in the Aspectran context.
      * @param transletCommandLine the {@code TransletCommandLine} instance
      */
     private void execute(TransletCommandLine transletCommandLine) {
@@ -252,6 +272,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
+    /**
+     * Stops and releases all resources associated with the shell service.
+     */
     public void release() {
         if (shellService != null) {
             if (shellService.isActive()) {
@@ -262,6 +285,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
+    /**
+     * Determines the working directory for the shell.
+     * @return the working directory file, or {@code null} if not specified
+     */
     @Nullable
     private File determineWorkingDir() {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);

@@ -18,7 +18,9 @@ package com.aspectran.shell.console;
 import java.io.Serial;
 
 /**
- * Exception thrown when a command fails to read.
+ * Exception thrown when reading a command from the console fails.
+ * <p>This may be caused by an underlying I/O error or other interruption
+ * during the input reading process.</p>
  */
 public class CommandReadFailedException extends RuntimeException {
 
@@ -26,14 +28,14 @@ public class CommandReadFailedException extends RuntimeException {
     private static final long serialVersionUID = -6982213056770858079L;
 
     /**
-     * Simple constructor.
+     * Instantiates a new CommandReadFailedException.
      */
     public CommandReadFailedException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Instantiates a new CommandReadFailedException with the specified detail message.
      * @param msg a message to associate with the exception
      */
     public CommandReadFailedException(String msg) {
@@ -41,7 +43,7 @@ public class CommandReadFailedException extends RuntimeException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Instantiates a new CommandReadFailedException with the specified cause.
      * @param cause the real cause of the exception
      */
     public CommandReadFailedException(Throwable cause) {
@@ -49,7 +51,7 @@ public class CommandReadFailedException extends RuntimeException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
+     * Instantiates a new CommandReadFailedException with the specified detail message and cause.
      * @param msg the message
      * @param cause the real cause of the exception
      */

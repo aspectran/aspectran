@@ -15,12 +15,22 @@
  */
 package com.aspectran.shell.console;
 
+/**
+ * Default implementation of {@link PromptStringBuilder} that does not support styling.
+ * <p>This class provides a basic, non-styling builder for constructing prompt strings.
+ * All styling methods are implemented as no-ops.</p>
+ *
+ * <p>Created: 2017. 11. 10.</p>
+ */
 public class DefaultPromptStringBuilder implements PromptStringBuilder {
 
     private final StringBuilder buffer = new StringBuilder();
 
     private String defaultValue;
 
+    /**
+     * Instantiates a new default prompt string builder.
+     */
     public DefaultPromptStringBuilder() {
     }
 
@@ -30,41 +40,65 @@ public class DefaultPromptStringBuilder implements PromptStringBuilder {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder setStyle(String... styles) {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder resetStyle(String... styles) {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder resetStyle() {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder secondaryStyle() {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder successStyle() {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder dangerStyle() {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder warningStyle() {
         return this;
     }
 
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public PromptStringBuilder infoStyle() {
         return this;

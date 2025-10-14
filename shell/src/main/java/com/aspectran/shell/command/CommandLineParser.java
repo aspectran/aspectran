@@ -33,7 +33,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The Command Line Parser.
+ * Parses a raw command-line string into a command name, arguments, and output redirections.
+ * <p>This class is responsible for the initial breakdown of user input. It identifies
+ * output redirection operators (e.g., {@code >}, {@code >>}) and separates them from
+ * the main command and its arguments. It also handles arguments enclosed in single or
+ * double quotes to allow for spaces within a single argument.</p>
+ *
+ * <p>Created: 2017. 10. 28.</p>
  */
 public class CommandLineParser {
 
@@ -52,6 +58,10 @@ public class CommandLineParser {
 
     private List<OutputRedirection> redirectionList;
 
+    /**
+     * Instantiates a new command line parser.
+     * @param commandLine the raw command line string to parse
+     */
     public CommandLineParser(String commandLine) {
         this.commandLine = parseOutputRedirection(commandLine);
         if (StringUtils.hasLength(this.commandLine)) {
@@ -60,6 +70,11 @@ public class CommandLineParser {
         shift();
     }
 
+    /**
+     * Separates the command name from the arguments.
+     * The first token in the argument list is treated as the command name,
+     * and the rest remain as arguments.
+     */
     public void shift() {
         if (args != null && args.length > 0) {
             if (!StringUtils.hasLength(args[0])) {
@@ -75,40 +90,71 @@ public class CommandLineParser {
         }
     }
 
+    /**
+     * Returns the original command line, stripped of any output redirection.
+     * @return the command line string
+     */
     public String getCommandLine() {
         return commandLine;
     }
 
+    /**
+     * Returns the parsed command name.
+     * @return the command name
+     */
     public String getCommandName() {
         return commandName;
     }
 
+    /**
+     * Sets the command name.
+     * @param commandName the new command name
+     */
     public void setCommandName(String commandName) {
         this.commandName = commandName;
     }
 
+    /**
+     * Returns the arguments of the command.
+     * @return an array of arguments
+     */
     public String[] getArgs() {
         return args;
     }
 
+    /**
+     * Checks if there are any arguments.
+     * @return {@code true} if arguments exist, {@code false} otherwise
+     */
     public boolean hasArgs() {
         return (args != null && args.length > 0);
     }
 
+    /**
+     * Parses the command-line arguments against the specified options.
+     * @param options the options to parse against
+     * @return the parsed options
+     * @throws OptionParserException if an error occurs during parsing
+     */
     public ParsedOptions parseOptions(Options options) throws OptionParserException {
         OptionParser parser = new DefaultOptionParser();
         return parser.parse(options, args, options.isSkipParsingAtNonOption());
     }
 
     /**
-     * Returns a list of the output redirection extracted
-     * from the command line.
-     * @return a list of the output redirection
+     * Returns a list of the output redirections extracted from the command line.
+     * @return a list of output redirections, or {@code null} if none were found
      */
     public List<OutputRedirection> getRedirectionList() {
         return redirectionList;
     }
 
+    /**
+     * Splits the command line into an array of strings.
+     * This method correctly handles arguments enclosed in quotes.
+     * @param commandLine the command line to split
+     * @return an array of strings representing the command and its arguments
+     */
     @NonNull
     private String[] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
@@ -139,6 +185,11 @@ public class CommandLineParser {
         return list.toArray(new String[0]);
     }
 
+    /**
+     * Parses and extracts output redirection operators ({@code >}, {@code >>}) from the line.
+     * @param line the raw command line
+     * @return the command line with redirection parts removed, or {@code null} if the line is empty
+     */
     @Nullable
     private String parseOutputRedirection(String line) {
         if (!StringUtils.hasLength(line)) {
@@ -198,6 +249,11 @@ public class CommandLineParser {
         }
     }
 
+    /**
+     * Removes leading and trailing quotes from a string if they match.
+     * @param str the string to strip
+     * @return the stripped string
+     */
     @NonNull
     private String stripQuotes(@NonNull String str) {
         if (str.length() > 1 &&

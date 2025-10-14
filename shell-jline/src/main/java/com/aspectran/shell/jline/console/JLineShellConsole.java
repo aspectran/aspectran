@@ -129,7 +129,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             String line = readCommandFromTerminal(getCommandPrompt()).trim();
             jlineTerminal.getCommandCompleter().setLimited(true);
             jlineTerminal.getCommandHighlighter().setLimited(true);
-            line = readMultiCommand(line);
+            line = assembleMultiLineCommand(line);
             jlineTerminal.getCommandCompleter().setLimited(false);
             jlineTerminal.getCommandHighlighter().setLimited(false);
             return line;
@@ -161,7 +161,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             defaultValue = promptStringBuilder.getDefaultValue();
         }
         try {
-            return readMultiLine(readLineFromTerminal(prompt, null, defaultValue));
+            return assembleMultiLineInput(readLineFromTerminal(prompt, null, defaultValue));
         } catch (EndOfFileException | UserInterruptException e) {
             return defaultValue;
         }

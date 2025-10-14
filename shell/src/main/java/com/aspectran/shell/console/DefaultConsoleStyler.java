@@ -18,16 +18,15 @@ package com.aspectran.shell.console;
 import com.aspectran.core.context.config.ShellStyleConfig;
 
 /**
- * Default no-op implementation of ConsoleStyler.
+ * Default no-op implementation of {@link ConsoleStyler}.
  * <p>
- * This implementation stores style presets provided via {@link ShellStyleConfig}
- * so they can be queried, but it does not actually apply any visual styling
- * when its mutating methods are invoked. This is useful in environments where
- * styling is unsupported (e.g., basic consoles or logs without ANSI support),
- * or as a base class for more sophisticated stylers.
+ * This implementation stores style presets from a {@link ShellStyleConfig}
+ * so they can be queried, but it does not apply any visual styling when its
+ * state-changing methods are invoked. It serves as a fallback for environments
+ * where styling is unsupported or as a base for more sophisticated stylers.
  * </p>
  *
- * <p>Created: 2025-08-11</p>
+ * <p>Created: 2017. 10. 25.</p>
  */
 public class DefaultConsoleStyler implements ConsoleStyler {
 
@@ -94,60 +93,76 @@ public class DefaultConsoleStyler implements ConsoleStyler {
     }
 
     /**
-     * Always returns {@code false} as this implementation does not keep track
-     * of active styles.
+     * Always returns {@code false} as this implementation does not track active styles.
+     * @return always {@code false}
      */
     @Override
     public boolean hasStyle() {
         return false;
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void setStyle(String... styles) {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void resetStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void resetStyle(String... styles) {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void secondaryStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void successStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void dangerStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void warningStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
-    /** No-op. */
+    /**
+     * This is a no-op method as this class does not support styling.
+     */
     @Override
     public void infoStyle() {
-        // Nothing to do
+        // This is a no-op
     }
 
 }

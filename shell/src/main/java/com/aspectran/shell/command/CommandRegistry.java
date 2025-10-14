@@ -18,18 +18,38 @@ package com.aspectran.shell.command;
 import java.util.Collection;
 
 /**
- * A registry that contains the commands known by a shell.
+ * A registry that contains and provides access to all commands known by the shell.
+ * <p>This interface acts as a central lookup service for retrieving {@link Command}
+ * instances by name or by class.</p>
  *
  * <p>Created: 2017. 10. 25.</p>
  */
 public interface CommandRegistry {
 
+    /**
+     * Returns the console commander that owns this registry.
+     * @return the console commander
+     */
     ConsoleCommander getConsoleCommander();
 
+    /**
+     * Retrieves a command by its name.
+     * @param commandName the name of the command
+     * @return the command instance, or {@code null} if not found
+     */
     Command getCommand(String commandName);
 
+    /**
+     * Retrieves a command by its class.
+     * @param commandClass the class of the command
+     * @return the command instance, or {@code null} if not found
+     */
     Command getCommand(Class<? extends Command> commandClass);
 
+    /**
+     * Returns a collection of all registered commands.
+     * @return a collection of all commands
+     */
     Collection<Command> getAllCommands();
 
 }

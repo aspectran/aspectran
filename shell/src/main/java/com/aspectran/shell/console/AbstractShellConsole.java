@@ -23,7 +23,13 @@ import java.io.File;
 import java.nio.charset.Charset;
 
 /**
- * The Abstract Class for Console I/O.
+ * Abstract base class for {@link ShellConsole} implementations.
+ *
+ * <p>This class provides default implementations for common console
+ * functionality, such as managing the working directory, command prompt,
+ * and multi-line input handling. Subclasses must implement the abstract
+ * methods for reading from and writing to the underlying terminal or
+ * output stream.</p>
  *
  * <p>Created: 2017. 3. 4.</p>
  */
@@ -37,6 +43,10 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private ConsoleCommander consoleCommander;
 
+    /**
+     * Instantiates a new abstract shell console.
+     * @param encoding the character encoding for this console
+     */
     public AbstractShellConsole(String encoding) {
         if (encoding != null) {
             this.encoding = encoding;
@@ -90,7 +100,15 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return readPassword(null);
     }
 
-    protected String readMultiCommand(String line) {
+    /**
+     * Assembles a command that can span multiple lines.
+     * <p>This method handles multi-line input terminated by a backslash ({@code \})
+     * and also supports quoted strings that span multiple lines.</p>
+     * @param line the initial line of input
+     * @return the complete multi-line command as a single string, or {@code null}
+     *      if the initial input is null
+     */
+    protected String assembleMultiLineCommand(String line) {
         if (line == null) {
             return null;
         }
@@ -99,13 +117,13 @@ public abstract class AbstractShellConsole implements ShellConsole {
             if (next.isEmpty()) {
                 return next;
             }
-            readMultiCommand(COMMENT_DELIMITER);
+            assembleMultiLineCommand(COMMENT_DELIMITER);
         }
         String quote = searchQuote(line);
         if (quote != null || line.endsWith(MULTILINE_DELIMITER)) {
             String next = readCommandFromTerminal(MULTILINE_PROMPT).trim();
             if (next.startsWith(COMMENT_DELIMITER)) {
-                line = readMultiCommand(line);
+                line = assembleMultiLineCommand(line);
             } else if (quote != null) {
                 line += System.lineSeparator() + next;
             } else {
@@ -114,29 +132,59 @@ public abstract class AbstractShellConsole implements ShellConsole {
         }
         quote = searchQuote(line);
         if (quote != null) {
-            return readMultiCommand(line);
+            return assembleMultiLineCommand(line);
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = readMultiCommand(line);
+            line = assembleMultiLineCommand(line);
         }
         return line;
     }
 
-    protected String readMultiLine(String line) {
+    /**
+     * Assembles input that can span multiple lines.
+     * <p>This method handles multi-line input terminated by a backslash ({@code \}).</p>
+     * @param line the initial line of input
+     * @return the complete multi-line input as a single string
+     */
+    protected String assembleMultiLineInput(String line) {
         if (line == null) {
             line = readLineFromTerminal(MULTILINE_PROMPT);
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
-                    System.lineSeparator() + readMultiLine(null);
+                    System.lineSeparator() + assembleMultiLineInput(null);
         }
         return line;
     }
 
+    /**
+     * Reads a single line of command input directly from the terminal.
+     * <p>This method is intended for reading top-level commands from the user.
+     * Advanced implementations may use a reader with command-specific features
+     * like auto-completion based on registered command names.</p>
+     * @param prompt the prompt to display to the user
+     * @return the line read from the terminal
+     */
     protected abstract String readCommandFromTerminal(String prompt);
 
+    /**
+     * Reads a single line of general-purpose text directly from the terminal.
+     * <p>This method is intended for reading non-command input, such as parameter
+     * values during an interactive procedure. Implementations may use a reader
+     * with generic features like file path completion.</p>
+     * <p>In the default console implementation, this method's behavior is identical
+     * to {@link #readCommandFromTerminal(String)}, but advanced implementations
+     * like JLine provide distinct behaviors for each.</p>
+     * @param prompt the prompt to display to the user
+     * @return the line read from the terminal
+     */
     protected abstract String readLineFromTerminal(String prompt);
 
+    /**
+     * Searches for an unclosed quote (single or double) in the given line.
+     * @param line the line to search
+     * @return the type of unclosed quote (" or '), or {@code null} if all quotes are balanced
+     */
     @Nullable
     private String searchQuote(@NonNull String line) {
         boolean doubleQuote = false;
@@ -165,7 +213,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
         }
         PromptStringBuilder psb = newPromptStringBuilder()
                 .warningStyle()
-                .append("Would you like to restart this shell [Y/n]? ");
+                .append("Are you sure you want to restart this shell [Y/n]? ");
         String yn = readLine(psb);
         return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }

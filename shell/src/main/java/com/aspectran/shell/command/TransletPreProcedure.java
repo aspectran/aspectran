@@ -39,6 +39,15 @@ import java.util.Set;
 
 import static com.aspectran.shell.console.ShellConsole.MASK_CHAR;
 
+/**
+ * Manages the pre-execution procedure for a translet in an interactive shell.
+ * <p>This class is responsible for checking for mandatory parameters and, if running
+ * in procedural mode, interactively prompting the user to enter values for them
+ * before the translet is executed. It helps ensure that a translet receives all
+ * its required inputs when invoked from the shell.</p>
+ *
+ * <p>Created: 2017. 11. 10.</p>
+ */
 public class TransletPreProcedure {
 
     private final ShellConsole console;
@@ -51,6 +60,14 @@ public class TransletPreProcedure {
 
     private boolean readSimply;
 
+    /**
+     * Instantiates a new TransletPreProcedure.
+     * @param console the shell console
+     * @param transletRule the rule of the translet to be executed
+     * @param parameterMap the parameter map to be populated
+     * @param procedural {@code true} to enable interactive prompting for parameters;
+     *      {@code false} to only check for missing mandatory parameters
+     */
     public TransletPreProcedure(@NonNull ShellConsole console, @NonNull TransletRule transletRule,
                                 @NonNull ParameterMap parameterMap, boolean procedural) {
         this.console = console;
@@ -59,6 +76,10 @@ public class TransletPreProcedure {
         this.procedural = procedural;
     }
 
+    /**
+     * Executes the pre-procedure.
+     * @throws MissingMandatoryParametersException if mandatory parameters are still missing after the procedure
+     */
     public void proceed() throws MissingMandatoryParametersException {
         determineSimpleReading();
         if (procedural) {
@@ -68,6 +89,10 @@ public class TransletPreProcedure {
         readRequiredParameters();
     }
 
+    /**
+     * Determines whether to use a simple one-by-one parameter prompt or a more
+     * complex token-based prompt.
+     */
     private void determineSimpleReading() {
         ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
@@ -82,6 +107,11 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Checks if all item rules are simple enough for single-line reading.
+     * @param itemRules the collection of item rules
+     * @return {@code true} if all items are simple, {@code false} otherwise
+     */
     private boolean isSimpleItemRules(@NonNull Collection<ItemRule> itemRules) {
         for (ItemRule itemRule : itemRules) {
             if (itemRule.getType() != ItemType.SINGLE) {
@@ -105,6 +135,10 @@ public class TransletPreProcedure {
         return true;
     }
 
+    /**
+     * Prints a description to the console with info styling.
+     * @param description the description to print
+     */
     private void printDescription(String description) {
         if (description != null) {
             console.getStyler().infoStyle();
@@ -113,6 +147,10 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Renders and prints the translet's description if verbose mode is active.
+     * @param activity the current shell activity
+     */
     public void printDescription(@NonNull ShellActivity activity) {
         if (activity.isVerbose()) {
             DescriptionRule descriptionRule = transletRule.getDescriptionRule();
@@ -122,6 +160,9 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Prints the list of required parameters.
+     */
     private void printRequiredParameters() {
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
@@ -134,6 +175,9 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Prints the list of required attributes.
+     */
     private void printRequiredAttributes() {
         if (!readSimply) {
             ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
@@ -146,6 +190,10 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Prints a message indicating that some mandatory parameters are missing.
+     * @param itemRules the collection of missing mandatory item rules
+     */
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.getStyler().dangerStyle();
@@ -160,6 +208,10 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Prints a message indicating that some mandatory attributes are missing.
+     * @param itemRules the collection of missing mandatory item rules
+     */
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.getStyler().dangerStyle();
@@ -174,6 +226,10 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Reads all required parameters, prompting the user if in procedural mode.
+     * @throws MissingMandatoryParametersException if mandatory parameters are missing
+     */
     private void readRequiredParameters() throws MissingMandatoryParametersException {
         Collection<ItemRule> itemRules;
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
@@ -211,6 +267,11 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Interactively reads each parameter from the user.
+     * @param itemRules the item rules for the parameters to read
+     * @return a collection of mandatory item rules that are still missing, or {@code null}
+     */
     @Nullable
     private Collection<ItemRule> readEachParameter(@NonNull Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
@@ -227,6 +288,11 @@ public class TransletPreProcedure {
         return (missingItemRules.isEmpty() ? null : missingItemRules);
     }
 
+    /**
+     * Prompts the user and reads a single parameter value.
+     * @param itemRule the item rule for the parameter
+     * @return the value entered by the user
+     */
     private String readParameter(@NonNull ItemRule itemRule) {
         PromptStringBuilder psb = console.newPromptStringBuilder()
                 .warningStyle()
@@ -254,6 +320,11 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Interactively reads a value for each distinct parameter token.
+     * @param itemRules the item rules for the parameters
+     * @return a collection of mandatory item rules that are still missing, or {@code null}
+     */
     @Nullable
     private Collection<ItemRule> readEachToken(@NonNull Collection<ItemRule> itemRules) {
         console.getStyler().secondaryStyle();
@@ -325,6 +396,11 @@ public class TransletPreProcedure {
         return (missingItemRules.isEmpty() ? null : missingItemRules);
     }
 
+    /**
+     * Checks if any of the item rules are for a secret (password) value.
+     * @param itemRules the collection of item rules
+     * @return {@code true} if a secret item is found, {@code false} otherwise
+     */
     private boolean hasSecretItem(@NonNull Collection<ItemRule> itemRules) {
         boolean secret = false;
         for (ItemRule ir : itemRules) {
@@ -336,11 +412,21 @@ public class TransletPreProcedure {
         return secret;
     }
 
+    /**
+     * Returns a marker string for mandatory items.
+     * @param mandatory whether the item is mandatory
+     * @return an asterisk for mandatory items, spaces otherwise
+     */
     @NonNull
     private String getMandatoryMarker(boolean mandatory) {
         return (mandatory ? " * " : "   ");
     }
 
+    /**
+     * Writes a formatted list of items to the console.
+     * @param itemRules the item rules to write
+     * @param tokenType the token type
+     */
     private void writeItems(@NonNull Collection<ItemRule> itemRules, TokenType tokenType) {
         for (ItemRule itemRule : itemRules) {
             if (readSimply) {
@@ -356,6 +442,11 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Writes a single formatted item to the console.
+     * @param itemRule the item rule to write
+     * @param tokens the tokens associated with the item
+     */
     private void writeItem(@NonNull ItemRule itemRule, Token[] tokens) {
         console.getStyler().warningStyle();
         console.write(getMandatoryMarker(itemRule.isMandatory()));
@@ -375,6 +466,10 @@ public class TransletPreProcedure {
         console.writeLine();
     }
 
+    /**
+     * Writes a single token to the console with appropriate styling.
+     * @param token the token to write
+     */
     private void writeToken(@NonNull Token token) {
         if (token.getType() == TokenType.TEXT) {
             console.write(token.stringify());
@@ -390,6 +485,11 @@ public class TransletPreProcedure {
         }
     }
 
+    /**
+     * Checks for missing mandatory parameters without prompting the user.
+     * @param itemRules the item rules to check
+     * @return a collection of mandatory item rules that are missing, or {@code null}
+     */
     @Nullable
     private Collection<ItemRule> checkRequiredParameters(@NonNull Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();

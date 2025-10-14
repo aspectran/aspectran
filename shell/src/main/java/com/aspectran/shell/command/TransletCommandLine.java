@@ -18,25 +18,36 @@ package com.aspectran.shell.command;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * Parses the command line entered to execute the translet.
+ * A specialized command line parser for executing Aspectran Translets.
+ * <p>This class extends {@link AbstractCommandLine} to add logic for parsing
+ * an optional HTTP request method (e.g., GET, POST) from the command name.
+ * For example, in the command {@code GET /some/translet --param1 value1},
+ * "GET" is parsed as the request method and "/some/translet" becomes the
+ * request name.</p>
  */
 public class TransletCommandLine extends AbstractCommandLine {
 
     private MethodType requestMethod;
 
+    /**
+     * Instantiates a new translet command line parser.
+     * @param lineParser the base command line parser
+     */
     public TransletCommandLine(CommandLineParser lineParser) {
         super(lineParser);
     }
 
     /**
-     * Returns the request method of the target translet
-     * extracted from the command line.
-     * @return the request method
+     * Returns the request method for the target translet, if specified.
+     * @return the request method, or {@code null} if not specified
      */
     public MethodType getRequestMethod() {
         return requestMethod;
     }
 
+    /**
+     * Parses the command line to identify the request method and translet name.
+     */
     @Override
     protected void parse() {
         if (getLineParser().getCommandName() != null) {
