@@ -28,6 +28,7 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class DefaultShellService extends AbstractShellService {
         super(console);
     }
 
+    @Override
     public Translet translate(TransletCommandLine transletCommandLine) throws TransletNotFoundException {
         if (checkPaused()) {
             return null;
@@ -138,6 +140,7 @@ public class DefaultShellService extends AbstractShellService {
 
     private Translet perform(@NonNull ShellActivity activity) {
         Translet translet = null;
+        ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(getServiceClassLoader());
         try {
             activity.perform();
             translet = activity.getTranslet();
@@ -148,6 +151,7 @@ public class DefaultShellService extends AbstractShellService {
         } catch (Exception e) {
             serviceError(activity, e);
         } finally {
+            ThreadContextHelper.restoreClassLoader(origClassLoader);
             if (activity.getOutputWriter() != null) {
                 try {
                     activity.getOutputWriter().close();

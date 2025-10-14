@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
 import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,6 +123,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         activity.setAttributeMap(attributeMap);
         activity.setParameterMap(parameterMap);
         Translet translet = null;
+        ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(getServiceClassLoader());
         try {
             activity.prepare();
             activity.perform();
@@ -140,6 +142,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
             Throwable cause = ExceptionUtils.getRootCause(t);
             throw new CoreServiceException("Error occurred while processing request: " +
                 activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
+        } finally {
+            ThreadContextHelper.restoreClassLoader(origClassLoader);
         }
         return translet;
     }

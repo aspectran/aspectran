@@ -28,6 +28,7 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
@@ -115,6 +116,7 @@ public class DefaultTowService extends AbstractTowService {
      * @param activity the prepared {@link TowActivity} to perform
      */
     private void perform(TowActivity activity) {
+        ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(getServiceClassLoader());
         try {
             activity.perform();
         } catch (ActivityTerminatedException e) {
@@ -123,6 +125,8 @@ public class DefaultTowService extends AbstractTowService {
             }
         } catch (Exception e) {
             sendError(activity, e);
+        } finally {
+            ThreadContextHelper.restoreClassLoader(origClassLoader);
         }
     }
 

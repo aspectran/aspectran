@@ -178,17 +178,18 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     private void perform(@NonNull WebActivity activity) {
-        ThreadContextHelper.run(getServiceClassLoader(), () -> {
-            try {
-                activity.perform();
-            } catch (ActivityTerminatedException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Activity terminated: {}", e.getMessage());
-                }
-            } catch (Exception e) {
-                sendError(activity, e);
+        ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(getServiceClassLoader());
+        try {
+            activity.perform();
+        } catch (ActivityTerminatedException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Activity terminated: {}", e.getMessage());
             }
-        });
+        } catch (Exception e) {
+            sendError(activity, e);
+        } finally {
+            ThreadContextHelper.restoreClassLoader(origClassLoader);
+        }
     }
 
     private void transletNotFound(@NonNull WebActivity activity) {
