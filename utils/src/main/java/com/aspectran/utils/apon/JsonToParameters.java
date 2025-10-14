@@ -20,6 +20,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonReader;
 import com.aspectran.utils.json.JsonReaderCloseable;
+import com.aspectran.utils.json.MalformedJsonException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -172,7 +173,7 @@ public class JsonToParameters {
                 }
                 return;
             default:
-                throw new IllegalStateException();
+                throw new MalformedJsonException("Unexpected token: " + reader.peek());
         }
     }
 
