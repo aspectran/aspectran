@@ -30,6 +30,7 @@ import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.DefaultShellServiceBuilder;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -241,6 +242,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             } catch (ShellConsoleClosedException e) {
                 throw e;
             } catch (Exception e) {
+                console.writeError(ExceptionUtils.getRootCauseSimpleMessage(e));
                 logger.error("Failed to execute command: {}",
                         transletCommandLine.getLineParser().getCommandLine(), e);
             }
