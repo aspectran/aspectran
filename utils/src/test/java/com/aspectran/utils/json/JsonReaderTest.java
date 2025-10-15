@@ -29,6 +29,8 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * Test cases for JsonReader.
+ *
  * <p>Created: 2020/05/30</p>
  */
 class JsonReaderTest {

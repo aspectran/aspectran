@@ -34,6 +34,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test cases for JsonWriter.
+ */
 class JsonWriterTest {
 
     @Test
