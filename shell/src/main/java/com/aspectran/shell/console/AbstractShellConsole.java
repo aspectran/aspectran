@@ -208,6 +208,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     @Override
     public boolean confirmRestart() {
+        if (!isInteractive()) {
+            return true;
+        }
         if (checkReadingState()) {
             return false;
         }
@@ -220,6 +223,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     @Override
     public boolean confirmQuit() {
+        if (!isInteractive()) {
+            return true;
+        }
         if (checkReadingState()) {
             return false;
         }

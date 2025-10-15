@@ -50,7 +50,8 @@ public class QuitCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmQuit()) {
-            throw new ShellConsoleClosedException("Bye.");
+            String message = (console.isInteractive() ? "Bye." : null);
+            throw new ShellConsoleClosedException(message);
         }
     }
 

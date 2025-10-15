@@ -58,6 +58,11 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public boolean isInteractive() {
+        return false;
+    }
+
+    @Override
     public ConsoleStyler getStyler() {
         return consoleStyler;
     }
@@ -194,17 +199,11 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     protected String readLineFromTerminal(String prompt) {
         try {
-            String line;
-            if (System.console() != null) {
-                line = System.console().readLine(prompt);
-            } else {
-                if (prompt != null) {
-                    write(prompt);
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                line = reader.readLine();
+            if (prompt != null) {
+                write(prompt);
             }
-            return line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            return reader.readLine();
         } catch (IOException e) {
             return null;
         }

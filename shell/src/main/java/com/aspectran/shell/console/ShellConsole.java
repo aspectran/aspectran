@@ -176,6 +176,12 @@ public interface ShellConsole {
     boolean isReading();
 
     /**
+     * Returns whether the console is in interactive mode.
+     * @return {@code true} if the console is interactive, {@code false} otherwise
+     */
+    boolean isInteractive();
+
+    /**
      * Writes a string to the console.
      * @param str the string to write
      */

@@ -83,7 +83,12 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal;
     }
 
-        @Override
+    @Override
+    public boolean isInteractive() {
+        return jlineTerminal.isNormal();
+    }
+
+    @Override
     public JLineConsoleStyler getStyler() {
         return consoleStyler;
     }

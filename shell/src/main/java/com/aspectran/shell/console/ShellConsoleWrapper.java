@@ -179,6 +179,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public boolean isInteractive() {
+        return console.isInteractive();
+    }
+
+    @Override
     public void write(String str) {
         console.write(str);
     }
