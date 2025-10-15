@@ -258,7 +258,7 @@ public class JsonWriter {
                 try {
                     Object parsed = JsonParser.parse(json);
                     writeValue(parsed);
-                } catch (MalformedJsonException e) {
+                } catch (IOException e) {
                     throw new IOException("Failed to re-parse JsonString", e);
                 }
             } else {
