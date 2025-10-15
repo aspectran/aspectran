@@ -63,7 +63,14 @@ final class GracefulShutdown {
             shutdown(connector);
         }
         this.shuttingDown = true;
-        new Thread(() -> awaitShutdown(callback), "shutdown").start();
+        Thread shutdownThread = new Thread(() -> awaitShutdown(callback), "shutdown");
+        shutdownThread.start();
+        try {
+            shutdownThread.join();
+        } catch (InterruptedException e) {
+            logger.warn("Graceful shutdown thread interrupted", e);
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
