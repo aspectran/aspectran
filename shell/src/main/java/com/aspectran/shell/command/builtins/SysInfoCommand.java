@@ -53,19 +53,19 @@ public class SysInfoCommand extends AbstractCommand {
 
         addOption(Option.builder("props")
                 .longName("system-properties")
-                .desc("Displays JVM system properties")
+                .desc("Displays Java Virtual Machine (JVM) system properties")
                 .build());
         addOption(Option.builder("cp")
                 .longName("class-path")
-                .desc("Displays JVM classpath information")
+                .desc("Displays the Java class path")
                 .build());
         addOption(Option.builder("mem")
                 .longName("memory-usage")
-                .desc("Displays memory information about current JVM")
+                .desc("Displays memory usage of the JVM")
                 .build());
         addOption(Option.builder("gc")
                 .longName("garbage-collection")
-                .desc("Performs garbage collection")
+                .desc("Performs garbage collection and displays memory usage")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -111,9 +111,9 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     private void printSysProperties(@NonNull ShellConsole console) {
-        console.writeLine("---------------------");
-        console.writeLine("JVM system properties");
-        console.writeLine("---------------------");
+        console.writeLine("--------------------");
+        console.writeLine("System Properties");
+        console.writeLine("--------------------");
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
             String value = entry.getValue() != null ? escape(entry.getValue().toString()) : null;
             console.writeLine("%s=%s", entry.getKey(), StringUtils.nullToEmpty(value));
@@ -121,9 +121,9 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     private void printClasspath(@NonNull ShellConsole console) {
-        console.writeLine("-------------------------");
-        console.writeLine("JVM classpath information");
-        console.writeLine("-------------------------");
+        console.writeLine("-----------");
+        console.writeLine("Classpath");
+        console.writeLine("-----------");
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             console.writeLine(line);
@@ -150,7 +150,7 @@ public class SysInfoCommand extends AbstractCommand {
         long free = Runtime.getRuntime().freeMemory();
 
         console.writeLine("------------------------------------");
-        console.writeLine("Memory information about current JVM");
+        console.writeLine("Memory Information");
         console.writeLine("------------------------------------");
         console.writeLine("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max));
         console.writeLine("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total));
@@ -207,7 +207,7 @@ public class SysInfoCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Displays current JVM runtime information";
+            return "Displays information about the JVM and runtime environment";
         }
 
         @Override

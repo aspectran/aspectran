@@ -47,7 +47,7 @@ public class PBDecryptCommand extends AbstractCommand {
                 .longName("password")
                 .valueName("password")
                 .withEqualSign()
-                .desc("The password to be used for encryption")
+                .desc("The password for decryption")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -56,7 +56,7 @@ public class PBDecryptCommand extends AbstractCommand {
         skipParsingAtNonOption();
 
         Arguments arguments = touchArguments();
-        arguments.put("<text>", "The string to decrypt");
+        arguments.put("<text>", "The string to be decrypted");
         arguments.setRequired(true);
     }
 
@@ -79,14 +79,14 @@ public class PBDecryptCommand extends AbstractCommand {
         }
 
         if (!StringUtils.hasText(password)) {
-            console.writeError("A password is required to attempt password-based encryption or decryption.");
+            console.writeError("A password is required for decryption.");
             printQuickHelp(console);
             return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
-            console.writeError("Please enter a string to encrypt.");
+            console.writeError("Please provide a string to decrypt.");
             printQuickHelp(console);
             return;
         }
@@ -103,8 +103,8 @@ public class PBDecryptCommand extends AbstractCommand {
             try {
                 output = PBEncryptionUtils.decrypt(input, password);
             } catch (Exception e) {
-                console.writeError("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
-                console.writeError("Please make sure that the input string is encrypted with the password you entered.");
+                console.writeError("Decryption failed for input: " + input);
+                console.writeError("Please ensure the input string and password are correct.");
                 console.writeLine("----------------------------------------------------------------------------");
                 return;
             }
@@ -134,7 +134,7 @@ public class PBDecryptCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Decrypts the input string using the encryption password";
+            return "Decrypts a string using a password";
         }
 
         @Override

@@ -107,7 +107,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
         } catch (AponParseException e) {
-            throw new IllegalArgumentException("Failed to parse aspectran config file: " +
+            throw new IllegalArgumentException("Failed to parse Aspectran configuration file: " +
                     aspectranConfigFile, e);
         }
 
@@ -185,16 +185,18 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                         TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
                         execute(transletCommandLine);
                     } else {
-                        console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
+                        console.writeLine("Command not found: " + lineParser.getCommandName());
                     }
                 } catch (ShellConsoleClosedException e) {
-                    if (StringUtils.hasText(e.getMessage())) {
+                    if (!console.isInteractive()) {
+                        console.clearLine();
+                    } else if (StringUtils.hasText(e.getMessage())) {
                         console.writeLine(e.getMessage());
                     }
                     break;
                 } catch (CommandReadFailedException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Command read failed", e.getCause());
+                        logger.debug("Failed to read command", e.getCause());
                     }
                 } catch (IOError e) {
                     console.clearLine();
@@ -235,7 +237,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         } catch (ShellCommandExecutionException e) {
             logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e.getCause());
             console.getStyler().dangerStyle();
-            console.writeAbove(e.getMessage());
+            console.writeAbove("Error: " + e.getMessage());
             console.getStyler().resetStyle();
         } catch (Exception e) {
             logger.error("Failed to execute command: {}", lineParser.getCommandLine(), e);
@@ -252,13 +254,13 @@ public class DefaultConsoleCommander implements ConsoleCommander {
      */
     private void execute(TransletCommandLine transletCommandLine) {
         if (shellService == null) {
-            throw new IllegalStateException("Shell service not available");
+            throw new IllegalStateException("The shell service is not available");
         }
         if (transletCommandLine.getRequestName() != null) {
             try {
                 shellService.translate(transletCommandLine);
             } catch (TransletNotFoundException e) {
-                console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
+                console.writeError("Command or translet not found: " + e.getTransletName());
             } catch (ShellConsoleClosedException e) {
                 throw e;
             } catch (Exception e) {
@@ -267,8 +269,8 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                         transletCommandLine.getLineParser().getCommandLine(), e);
             }
         } else {
-            console.writeError("No command or translet mapped to '" +
-                    transletCommandLine.getLineParser().getCommandLine() + "'");
+            console.writeError("Command or translet not found: " +
+                    transletCommandLine.getLineParser().getCommandLine());
         }
     }
 

@@ -58,24 +58,24 @@ public class AspectCommand extends AbstractCommand {
                 .hasValues()
                 .optionalValue()
                 .valueName("keywords")
-                .desc("Print list of all aspects or those filtered by given keywords")
+                .desc("Lists all aspects or filters them by keywords")
                 .build());
         addOption(Option.builder("d")
                 .longName("detail")
                 .hasValues()
                 .optionalValue()
                 .valueName("aspect_id")
-                .desc("Print detailed information for the aspect")
+                .desc("Displays detailed information for a specific aspect")
                 .build());
         addOption(Option.builder("enable")
                 .hasValues()
                 .valueName("aspect_id")
-                .desc("Enable an aspect with a given name")
+                .desc("Enables a disabled aspect")
                 .build());
         addOption(Option.builder("disable")
                 .hasValues()
                 .valueName("aspect_id")
-                .desc("Disable an aspect with a given name")
+                .desc("Disables an enabled aspect")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -146,7 +146,7 @@ public class AspectCommand extends AbstractCommand {
             }
         }
         if (num == 0) {
-            console.writeLine("%31s %s", " ", "- No Data -");
+            console.writeLine(" %4s   %s", " ", "No aspects found to display.");
         }
         console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-",
                 "----", "----------------------------------------------", "--------", "-------");
@@ -172,7 +172,7 @@ public class AspectCommand extends AbstractCommand {
                     }
                 }
                 if (aspectRule == null) {
-                    console.writeError("Unknown aspect: " + aspectId);
+                    console.writeError("Aspect '" + aspectId + "' not found.");
                     return;
                 }
                 aspectRules.add(aspectRule);
@@ -200,11 +200,11 @@ public class AspectCommand extends AbstractCommand {
         for (String aspectId : aspectIds) {
             AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);
             if (aspectRule == null) {
-                console.writeError("Unknown aspect: " + aspectId);
+                console.writeError("Aspect '" + aspectId + "' not found.");
                 return;
             }
             if (aspectRule.isIsolated()) {
-                console.writeError("Can not be disabled or enabled for isolated Aspect '" + aspectId + "'.");
+                console.writeError("The aspect '" + aspectId + "' is isolated and cannot be enabled or disabled.");
                 return;
             }
             aspectRules.add(aspectRule);
@@ -212,17 +212,17 @@ public class AspectCommand extends AbstractCommand {
         for (AspectRule aspectRule : aspectRules) {
             if (disabled) {
                 if (aspectRule.isDisabled()) {
-                    console.writeLine("Aspect '" + aspectRule.getId() + "' is already inactive.");
+                    console.writeLine("The aspect '" + aspectRule.getId() + "' is already disabled.");
                 } else {
                     aspectRule.setDisabled(true);
-                    console.writeLine("Aspect '" + aspectRule.getId() + "' is now inactive.");
+                    console.writeLine("The aspect '" + aspectRule.getId() + "' has been disabled.");
                 }
             } else {
                 if (!aspectRule.isDisabled()) {
-                    console.writeLine("Aspect '" + aspectRule.getId() + "' is already active.");
+                    console.writeLine("The aspect '" + aspectRule.getId() + "' is already enabled.");
                 } else {
                     aspectRule.setDisabled(false);
-                    console.writeLine("Aspect '" + aspectRule.getId() + "' is now active.");
+                    console.writeLine("The aspect '" + aspectRule.getId() + "' has been enabled.");
                 }
             }
         }

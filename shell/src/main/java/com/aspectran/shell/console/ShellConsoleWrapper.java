@@ -47,6 +47,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public boolean isInteractive() {
+        return console.isInteractive();
+    }
+
+    @Override
     public ConsoleStyler getStyler() {
         return console.getStyler();
     }
@@ -149,6 +154,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public boolean isReading() {
+        return console.isReading();
+    }
+
+    @Override
     public String readCommand() {
         return console.readCommand();
     }
@@ -171,16 +181,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public String readPassword(PromptStringBuilder promptStringBuilder) {
         return console.readPassword(promptStringBuilder);
-    }
-
-    @Override
-    public boolean isReading() {
-        return console.isReading();
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return console.isInteractive();
     }
 
     @Override

@@ -55,6 +55,12 @@ public interface ShellConsole {
     char MASK_CHAR = '*';
 
     /**
+     * Returns whether the console is in interactive mode.
+     * @return {@code true} if the console is interactive, {@code false} otherwise
+     */
+    boolean isInteractive();
+
+    /**
      * Returns the styler for this console.
      * @return the console styler
      */
@@ -138,6 +144,12 @@ public interface ShellConsole {
     PromptStringBuilder newPromptStringBuilder();
 
     /**
+     * Checks if the console is currently in a blocking read operation.
+     * @return {@code true} if reading, {@code false} otherwise
+     */
+    boolean isReading();
+
+    /**
      * Reads a single command from the user, handling multi-line input.
      * @return the command string, or {@code null} if the stream is closed
      */
@@ -168,18 +180,6 @@ public interface ShellConsole {
      * @return the password as a string, or {@code null} if the stream is closed
      */
     String readPassword(PromptStringBuilder promptStringBuilder);
-
-    /**
-     * Checks if the console is currently in a blocking read operation.
-     * @return {@code true} if reading, {@code false} otherwise
-     */
-    boolean isReading();
-
-    /**
-     * Returns whether the console is in interactive mode.
-     * @return {@code true} if the console is interactive, {@code false} otherwise
-     */
-    boolean isInteractive();
 
     /**
      * Writes a string to the console.

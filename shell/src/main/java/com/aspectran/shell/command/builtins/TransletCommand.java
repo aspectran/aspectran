@@ -63,39 +63,39 @@ public class TransletCommand extends AbstractCommand {
                 .hasValues()
                 .optionalValue()
                 .valueName("keywords")
-                .desc("Print list of all translets or those filtered by given keywords")
+                .desc("Lists all translets or filters them by keywords")
                 .build());
         addOption(Option.builder("la")
                 .longName("list-all")
                 .hasValues()
                 .optionalValue()
                 .valueName("keywords")
-                .desc("Print list of all translets or those filtered by given keywords (Include all translets that are not exposed)")
+                .desc("Lists all translets, including non-exposed ones, or filters them by keywords")
                 .build());
         addOption(Option.builder("d")
                 .longName("detail")
                 .hasValues()
                 .optionalValue()
                 .valueName("translet_name")
-                .desc("Print detailed information for the translet")
+                .desc("Displays detailed information for a specific translet")
                 .build());
         addOption(Option.builder("da")
                 .longName("detail-all")
                 .hasValues()
                 .optionalValue()
                 .valueName("translet_name")
-                .desc("Print detailed information for the translet (Include all translets that are not exposed)")
+                .desc("Displays detailed information for a specific translet, including non-exposed ones")
                 .build());
         addOption(Option.builder("m")
                 .longName("method")
                 .hasValue()
                 .optionalValue()
                 .valueName("request_method")
-                .desc("Specifies the request method for the translet\n(GET, PUT, POST, DELETE)")
+                .desc("Specifies the request method for the translet (e.g., GET, POST)")
                 .build());
         addOption(Option.builder("v")
                 .longName("verbose")
-                .desc("Display description about the translet")
+                .desc("Displays a description of the translet before execution")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -123,7 +123,7 @@ public class TransletCommand extends AbstractCommand {
             String method = options.getValue("method");
             MethodType requestMethod = MethodType.resolve(method);
             if (method != null && requestMethod == null) {
-                console.writeError("No request method type for '" + method + "'");
+                console.writeError("Invalid request method: " + method);
                 return;
             }
             describeTransletRule(shellService, console, transletNames, requestMethod, false);
@@ -132,7 +132,7 @@ public class TransletCommand extends AbstractCommand {
             String method = options.getValue("method");
             MethodType requestMethod = MethodType.resolve(method);
             if (method != null && requestMethod == null) {
-                console.writeError("No request method type for '" + method + "'");
+                console.writeError("Invalid request method: " + method);
                 return;
             }
             describeTransletRule(shellService, console, transletNames, requestMethod, true);
@@ -145,7 +145,7 @@ public class TransletCommand extends AbstractCommand {
             try {
                 shellService.translate(transletCommandLine);
             } catch (TransletNotFoundException e) {
-                console.writeError("No translet mapped to '" + e.getTransletName() + "'");
+                console.writeError("Translet not found: " + e.getTransletName());
             }
         } else {
             printQuickHelp(console);
@@ -194,7 +194,7 @@ public class TransletCommand extends AbstractCommand {
             }
         }
         if (num == 0) {
-            console.writeLine("%31s %s", " ", "- No Data -");
+            console.writeLine(" %4s   %s", " ", "No translets found to display.");
         }
         console.writeLine("-%4s-+-%-59s-+-%-5s-",
                 "----", "-----------------------------------------------------------", "-----");
@@ -229,9 +229,9 @@ public class TransletCommand extends AbstractCommand {
                 }
                 if (transletRule == null) {
                     if (requestMethod != null) {
-                        console.writeError("Unknown translet: " + requestMethod + " " + transletName);
+                        console.writeError("Translet not found: " + requestMethod + " " + transletName);
                     } else {
-                        console.writeError("Unknown translet: " + transletName);
+                        console.writeError("Translet not found: " + transletName);
                     }
                     return;
                 }
@@ -277,7 +277,7 @@ public class TransletCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Translet run, or you can find them";
+            return "Executes or inspects translets";
         }
 
         @Override

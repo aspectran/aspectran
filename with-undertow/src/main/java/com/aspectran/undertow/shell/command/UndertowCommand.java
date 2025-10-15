@@ -48,7 +48,7 @@ public class UndertowCommand extends AbstractCommand {
         addOption(Option.builder("server")
                 .valueName("name")
                 .withEqualSign()
-                .desc("ID of bean that defined Undertow server")
+                .desc("The bean ID of the Undertow server to control")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -57,10 +57,10 @@ public class UndertowCommand extends AbstractCommand {
 
         Arguments arguments = touchArguments();
         arguments.setTitle("Available commands:");
-        arguments.put("start", "Start Undertow server");
-        arguments.put("stop", "Stop Undertow server");
-        arguments.put("restart", "Restart Undertow server");
-        arguments.put("status", "Display a brief status report");
+        arguments.put("start", "Starts the Undertow server");
+        arguments.put("stop", "Stops the Undertow server");
+        arguments.put("restart", "Restarts the Undertow server");
+        arguments.put("status", "Displays the status of the Undertow server");
         arguments.setRequired(true);
     }
 
@@ -98,7 +98,7 @@ public class UndertowCommand extends AbstractCommand {
                     printServerStatus(serverName, console);
                     break;
                 default:
-                    console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
+                    console.writeError("Invalid command: " + String.join(" ", options.getArgs()));
                     printQuickHelp(console);
                     break;
             }
@@ -113,7 +113,7 @@ public class UndertowCommand extends AbstractCommand {
             if (hasTowServer(serverName)) {
                 towServer = getTowServer(serverName);
                 if (towServer.isRunning()) {
-                    console.writeError("Undertow server is already running");
+                    console.writeError("The Undertow server is already running.");
                 } else {
                     towServer.start();
                     printStatus(towServer.getState(), console);
@@ -126,16 +126,16 @@ public class UndertowCommand extends AbstractCommand {
                 printStatus(towServer.getState(), console);
             }
         } catch (BeanException e) {
-            console.writeError("Undertow server is not available. Cause: " + e);
+            console.writeError("The Undertow server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
             if (towServer != null) {
                 destroyTowServer(towServer);
             }
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof BindException) {
-                console.writeError("Undertow server failed to start. Cause: Port already in use");
+                console.writeError("Failed to start the Undertow server: Port is already in use.");
             } else {
-                console.writeError(e.toString());
+                console.writeError("Failed to start the Undertow server: " + e);
             }
         }
     }
@@ -150,12 +150,12 @@ public class UndertowCommand extends AbstractCommand {
                 printStatus(LifeCycle.STOPPED, console);
                 success = true;
             } else {
-                console.writeError("Undertow server is not running");
+                console.writeError("The Undertow server is not running.");
             }
         } catch (BeanException e) {
-            console.writeError("Undertow server is not available. Cause: " + e);
+            console.writeError("The Undertow server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
-            console.writeError(e.toString());
+            console.writeError("Failed to stop the Undertow server: " + e);
         }
         return success;
     }
@@ -173,9 +173,9 @@ public class UndertowCommand extends AbstractCommand {
                 printStatus(LifeCycle.STOPPED, console);
             }
         } catch (BeanException e) {
-            console.writeError("Undertow server is not available. Cause: " + e);
+            console.writeError("The Undertow server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
-            console.writeError(e.toString());
+            console.writeError("Failed to get the status of the Undertow server: " + e);
         }
     }
 
@@ -223,7 +223,7 @@ public class UndertowCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Use the command 'undertow' to control the Undertow server";
+            return "Controls the embedded Undertow server";
         }
 
         @Override

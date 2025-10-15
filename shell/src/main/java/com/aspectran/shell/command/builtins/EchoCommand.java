@@ -45,7 +45,7 @@ public class EchoCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.put("<message>", "Specifies the text to display on the screen");
+        arguments.put("<message>", "The text to be displayed");
         arguments.setRequired(false);
     }
 
@@ -79,7 +79,7 @@ public class EchoCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Echoes the given message to the console";
+            return "Displays a line of text";
         }
 
         @Override

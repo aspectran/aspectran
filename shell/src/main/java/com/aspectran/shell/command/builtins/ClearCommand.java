@@ -73,7 +73,7 @@ public class ClearCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Clears your screen if this is possible";
+            return "Clears the console screen";
         }
 
         @Override

@@ -50,8 +50,7 @@ public class QuitCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmQuit()) {
-            String message = (console.isInteractive() ? "Bye." : null);
-            throw new ShellConsoleClosedException(message);
+            throw new ShellConsoleClosedException("Exiting shell.");
         }
     }
 
@@ -75,7 +74,7 @@ public class QuitCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Releases all resources and exits this shell";
+            return "Exits the shell";
         }
 
         @Override

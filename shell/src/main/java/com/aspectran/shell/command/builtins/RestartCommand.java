@@ -51,14 +51,14 @@ public class RestartCommand extends AbstractCommand {
             printHelp(console);
         } else if (console.confirmRestart()) {
             if (!getShellService().getServiceLifeCycle().isActive()) {
-                console.writeError("Oops! This shell is currently not functioning properly. Please fix the problem.");
+                console.writeError("Cannot restart. The shell is not active.");
                 return;
             }
-            console.writeLine("Restarting...");
+            console.writeLine("Restarting shell...");
             try {
                 getShellService().getServiceLifeCycle().restart();
             } catch (Exception e) {
-                throw new ShellCommandExecutionException("Shell restart failed! Please fix the problem.", e);
+                throw new ShellCommandExecutionException("Failed to restart the shell.", e);
             }
         }
     }
@@ -83,7 +83,7 @@ public class RestartCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Restarts the shell to reload all resources";
+            return "Restarts the shell and reloads all resources";
         }
 
         @Override

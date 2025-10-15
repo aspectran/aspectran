@@ -59,24 +59,24 @@ public class JobCommand extends AbstractCommand {
                 .hasValues()
                 .optionalValue()
                 .valueName("keywords")
-                .desc("Print list of all scheduled jobs or those filtered by given keywords")
+                .desc("Lists all scheduled jobs or filters them by keywords")
                 .build());
         addOption(Option.builder("d")
                 .longName("detail")
                 .hasValues()
                 .optionalValue()
                 .valueName("translet_name")
-                .desc("Print detailed information for the scheduled job")
+                .desc("Displays detailed information for a specific job")
                 .build());
         addOption(Option.builder("enable")
                 .hasValues()
                 .valueName("translet_name")
-                .desc("Enable a scheduled job with a given name")
+                .desc("Enables a disabled job")
                 .build());
         addOption(Option.builder("disable")
                 .hasValues()
                 .valueName("translet_name")
-                .desc("Disable a scheduled job with a given name")
+                .desc("Disables an enabled job")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -140,7 +140,7 @@ public class JobCommand extends AbstractCommand {
             }
         }
         if (num == 0) {
-            console.writeLine("%31s %s", " ", "- No Data -");
+            console.writeLine(" %4s   %s", " ", "No scheduled jobs found to display.");
         }
         console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
                 "----", "--------------------", "----------------------------------", "-------");
@@ -153,7 +153,7 @@ public class JobCommand extends AbstractCommand {
         if (transletNames != null && transletNames.length > 0) {
             Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
             if (scheduledJobRules.isEmpty()) {
-                console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+                console.writeError("Job not found: " + Arrays.toString(transletNames));
                 return;
             }
             int count = 0;
@@ -169,7 +169,7 @@ public class JobCommand extends AbstractCommand {
                 count++;
             }
             if (count == 0) {
-                console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+                console.writeError("Job not found: " + Arrays.toString(transletNames));
             }
         } else {
             int count = 0;
@@ -194,26 +194,26 @@ public class JobCommand extends AbstractCommand {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
         if (scheduledJobRules.isEmpty()) {
-            console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));
+            console.writeError("Job not found: " + Arrays.toString(transletNames));
             return;
         }
         for (ScheduledJobRule jobRule : scheduledJobRules) {
             if (disabled) {
                 if (jobRule.isDisabled()) {
-                    console.writeLine("Scheduled job '%s' on schedule '%s' is already inactive.",
+                    console.writeLine("The job '%s' on schedule '%s' is already disabled.",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 } else {
                     jobRule.setDisabled(true);
-                    console.writeLine("Scheduled job '%s' on schedule '%s' is now inactive.",
+                    console.writeLine("The job '%s' on schedule '%s' has been disabled.",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 }
             } else {
                 if (!jobRule.isDisabled()) {
-                    console.writeLine("Scheduled job '%s' on schedule '%s' is already active.",
+                    console.writeLine("The job '%s' on schedule '%s' is already enabled.",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 } else {
                     jobRule.setDisabled(false);
-                    console.writeLine("Scheduled job '%s' on schedule '%s' is now active.",
+                    console.writeLine("The job '%s' on schedule '%s' has been enabled.",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 }
             }
@@ -240,7 +240,7 @@ public class JobCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Shows scheduled jobs, disables or enables them";
+            return "Lists, describes, and toggles scheduled jobs";
         }
 
         @Override

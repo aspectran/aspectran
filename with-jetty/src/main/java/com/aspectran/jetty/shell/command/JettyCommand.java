@@ -48,7 +48,7 @@ public class JettyCommand extends AbstractCommand {
         addOption(Option.builder("server")
                 .valueName("name")
                 .withEqualSign()
-                .desc("ID of bean that defined Jetty server")
+                .desc("The bean ID of the Jetty server to control")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -57,10 +57,10 @@ public class JettyCommand extends AbstractCommand {
 
         Arguments arguments = touchArguments();
         arguments.setTitle("Available commands:");
-        arguments.put("start", "Start Jetty server");
-        arguments.put("stop", "Stop Jetty server");
-        arguments.put("restart", "Restart Jetty server");
-        arguments.put("status", "Display a brief status report");
+        arguments.put("start", "Starts the Jetty server");
+        arguments.put("stop", "Stops the Jetty server");
+        arguments.put("restart", "Restarts the Jetty server");
+        arguments.put("status", "Displays the status of the Jetty server");
         arguments.setRequired(true);
     }
 
@@ -98,7 +98,7 @@ public class JettyCommand extends AbstractCommand {
                     printServerStatus(serverName, console);
                     break;
                 default:
-                    console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
+                    console.writeError("Invalid command: " + String.join(" ", options.getArgs()));
                     printQuickHelp(console);
                     break;
             }
@@ -113,7 +113,7 @@ public class JettyCommand extends AbstractCommand {
             if (hasJettyServer(serverName)) {
                 jettyServer = getJettyServer(serverName);
                 if (jettyServer.isRunning()) {
-                    console.writeError("Jetty server is already running");
+                    console.writeError("The Jetty server is already running.");
                 } else {
                     jettyServer.start();
                     printStatus(jettyServer.getState(), console);
@@ -126,16 +126,16 @@ public class JettyCommand extends AbstractCommand {
                 printStatus(jettyServer.getState(), console);
             }
         } catch (BeanException e) {
-            console.writeError("Jetty server is not available. Cause: " + e);
+            console.writeError("The Jetty server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
             if (jettyServer != null) {
                 destroyJettyServer(jettyServer);
             }
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof BindException) {
-                console.writeError("Jetty server failed to start. Cause: Port already in use");
+                console.writeError("Failed to start the Jetty server: Port is already in use.");
             } else {
-                console.writeError(e.toString());
+                console.writeError("Failed to start the Jetty server: " + e);
             }
         }
     }
@@ -150,12 +150,12 @@ public class JettyCommand extends AbstractCommand {
                 printStatus(LifeCycle.STOPPED, console);
                 success = true;
             } else {
-                console.writeError("Jetty server is not running");
+                console.writeError("The Jetty server is not running.");
             }
         } catch (BeanException e) {
-            console.writeError("Jetty server is not available. Cause: " + e);
+            console.writeError("The Jetty server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
-            console.writeError(e.toString());
+            console.writeError("Failed to stop the Jetty server: " + e);
         }
         return success;
     }
@@ -173,9 +173,9 @@ public class JettyCommand extends AbstractCommand {
                 printStatus(LifeCycle.STOPPED, console);
             }
         } catch (BeanException e) {
-            console.writeError("Jetty server is not available. Cause: " + e);
+            console.writeError("The Jetty server bean '" + serverName + "' could not be found.");
         } catch (Exception e) {
-            console.writeError(e.toString());
+            console.writeError("Failed to get the status of the Jetty server: " + e);
         }
     }
 
@@ -223,7 +223,7 @@ public class JettyCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Use the command 'jetty' to control the Jetty server";
+            return "Controls the embedded Jetty server";
         }
 
         @Override

@@ -129,6 +129,11 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public boolean isReading() {
+        return jlineTerminal.isReading();
+    }
+
+    @Override
     public String readCommand() {
         try {
             String line = readCommandFromTerminal(getCommandPrompt()).trim();
@@ -201,11 +206,6 @@ public class JLineShellConsole extends AbstractShellConsole {
         // Password masking for dumb terminal doesn't seem to work properly
         Character maskToUse = (jlineTerminal.isDumb() ? null : mask);
         return jlineTerminal.getLineReader().readLine(prompt, maskToUse, defaultValue);
-    }
-
-    @Override
-    public boolean isReading() {
-        return jlineTerminal.isReading();
     }
 
     @Override

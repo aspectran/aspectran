@@ -120,6 +120,11 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public boolean isReading() {
+        return reading;
+    }
+
+    @Override
     public String readCommand() {
         String prompt = getCommandPrompt();
         String line = assembleMultiLineCommand(readLineFromTerminal(prompt));
@@ -221,11 +226,6 @@ public class DefaultShellConsole extends AbstractShellConsole {
         } else {
             return readLineFromTerminal(prompt);
         }
-    }
-
-    @Override
-    public boolean isReading() {
-        return reading;
     }
 
     @Override

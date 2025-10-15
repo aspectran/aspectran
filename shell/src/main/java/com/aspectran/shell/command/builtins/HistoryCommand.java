@@ -40,7 +40,7 @@ public class HistoryCommand extends AbstractCommand {
 
         addOption(Option.builder("c")
                 .longName("clear")
-                .desc("Clear command history")
+                .desc("Clears the entire command history")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -61,7 +61,7 @@ public class HistoryCommand extends AbstractCommand {
 
     private void listHistory(@NonNull ShellConsole console) {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
-        console.writeLine(" %4s | %-67s ", "No.", "User input commands");
+        console.writeLine(" %4s | %-67s ", "No.", "Command");
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         int num = 0;
         for (String line : console.getCommandHistory()) {
@@ -93,7 +93,7 @@ public class HistoryCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Display or delete all previously run commands";
+            return "Manages the command history";
         }
 
         @Override

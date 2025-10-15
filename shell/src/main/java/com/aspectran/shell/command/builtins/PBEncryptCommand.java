@@ -47,7 +47,7 @@ public class PBEncryptCommand extends AbstractCommand {
                 .longName("password")
                 .valueName("password")
                 .withEqualSign()
-                .desc("The password to be used for encryption")
+                .desc("The password for encryption")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -56,7 +56,7 @@ public class PBEncryptCommand extends AbstractCommand {
         skipParsingAtNonOption();
 
         Arguments arguments = touchArguments();
-        arguments.put("<text>", "The string to encrypt");
+        arguments.put("<text>", "The string to be encrypted");
         arguments.setRequired(true);
     }
 
@@ -79,14 +79,14 @@ public class PBEncryptCommand extends AbstractCommand {
         }
 
         if (!StringUtils.hasText(password)) {
-            console.writeError("A password is required to attempt password-based encryption or decryption.");
+            console.writeError("A password is required for encryption.");
             printQuickHelp(console);
             return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
-            console.writeError("Please enter a string to decrypt.");
+            console.writeError("Please provide a string to encrypt.");
             printQuickHelp(console);
             return;
         }
@@ -104,7 +104,7 @@ public class PBEncryptCommand extends AbstractCommand {
             try {
                 output = PBEncryptionUtils.encrypt(input, password);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
+                throw new IllegalArgumentException("Encryption failed for input: " + input);
             }
             console.writeLine(" %1$9s : %2$s", "Input", input);
             console.writeLine(" %1$9s : %2$s", "Result", output);
@@ -132,7 +132,7 @@ public class PBEncryptCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Encrypts the input string using the encryption password";
+            return "Encrypts a string using a password";
         }
 
         @Override

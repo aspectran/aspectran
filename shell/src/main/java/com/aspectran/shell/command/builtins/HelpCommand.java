@@ -52,7 +52,7 @@ public class HelpCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.put("<commands>", "Target commands to display help");
+        arguments.put("<commands>", "The command(s) to display help for");
         arguments.setRequired(false);
     }
 
@@ -76,7 +76,7 @@ public class HelpCommand extends AbstractCommand {
             if (command != null) {
                 command.printHelp(console);
             } else {
-                console.writeLine("No command mapped to '" + targetCommands[0] +  "'");
+                console.writeLine("Help: Command not found: " + targetCommands[0]);
             }
         } else {
             console.getStyler().setStyle("bold");
@@ -98,7 +98,7 @@ public class HelpCommand extends AbstractCommand {
         arguments.setTitle("Available commands:");
         for (Command command : list) {
             String commandName = command.getDescriptor().getName();
-            arguments.put(commandName, "Display help for command " + commandName);
+            arguments.put(commandName, "Displays help for the '" + commandName + "' command");
         }
 
         return argumentsList;
@@ -184,7 +184,7 @@ public class HelpCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Display helpful information or command specific help";
+            return "Displays help information for commands";
         }
 
         @Override

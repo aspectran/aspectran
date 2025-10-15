@@ -47,8 +47,8 @@ public class VerboseCommand extends AbstractCommand {
 
         Arguments arguments = touchArguments();
         arguments.setTitle("Available commands:");
-        arguments.put("on", "Enable verbose mode");
-        arguments.put("off", "Disable verbose mode");
+        arguments.put("on", "Enables verbose mode");
+        arguments.put("off", "Disables verbose mode");
     }
 
     @Override
@@ -59,14 +59,13 @@ public class VerboseCommand extends AbstractCommand {
             String arg = options.getFirstArg();
             if ("on".equals(arg)) {
                 getShellService().setVerbose(true);
-                console.writeLine("Verbose mode is enabled.");
-                console.writeLine("Displays a description of the command to be executed.");
+                console.writeLine("Verbose mode enabled.");
+                console.writeLine("A description of the translet will be displayed before execution.");
             } else if ("off".equals(arg)) {
                 getShellService().setVerbose(false);
-                console.writeLine("Verbose mode is disabled.");
-                console.writeLine("Doesn't display a description of the command to be executed.");
+                console.writeLine("Verbose mode disabled.");
             } else {
-                console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
+                console.writeError("Unknown command: " + String.join(" ", options.getArgs()));
                 printQuickHelp(console);
             }
         } else {
@@ -94,7 +93,7 @@ public class VerboseCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Turns on or off the translet description display feature";
+            return "Toggles verbose mode for translet execution";
         }
 
         @Override
