@@ -166,6 +166,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             for (;;) {
                 try {
                     String commandLine = console.readCommand();
+                    if (commandLine == null) {
+                        console.clearLine();
+                        break;
+                    }
                     if (!StringUtils.hasLength(commandLine)) {
                         continue;
                     }
