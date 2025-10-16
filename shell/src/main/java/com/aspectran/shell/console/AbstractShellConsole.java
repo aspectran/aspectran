@@ -43,6 +43,8 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private ConsoleCommander consoleCommander;
 
+    private volatile Boolean interactive;
+
     /**
      * Instantiates a new abstract shell console.
      * @param encoding the character encoding for this console
@@ -53,6 +55,45 @@ public abstract class AbstractShellConsole implements ShellConsole {
         } else {
             this.encoding = Charset.defaultCharset().name();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>The result is cached after the first call.</p>
+     * @return true if the console is interactive, false otherwise
+     */
+    @Override
+    public boolean isInteractive() {
+        if (interactive == null) {
+            synchronized (this) {
+                if (interactive == null) {
+                    this.interactive = determineInteractive();
+                }
+            }
+        }
+        return interactive;
+    }
+
+    /**
+     * Determines the interactive state of the console.
+     * <p>This base implementation checks for common conditions that force an
+     * interactive mode, such as specific system properties or environment
+     * variables used for IDE debugging. Subclasses should override this
+     * method to perform their specific checks after calling this super method.</p>
+     * @return true if forced interactive mode is detected, otherwise false
+     */
+    protected boolean determineInteractive() {
+        if (Boolean.getBoolean("shell.interactive.force")) {
+            // This is not a recommended way for production,
+            // but it can be useful for development and testing in an IDE.
+            return true;
+        }
+        if (System.getenv("IDE_HOME") != null) {
+            // JLine debugging environment in IDE is considered interactive.
+            return true;
+        }
+        // Depends on the actual shell console
+        return false;
     }
 
     @Override

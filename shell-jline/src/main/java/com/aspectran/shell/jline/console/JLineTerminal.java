@@ -263,7 +263,7 @@ public class JLineTerminal {
      * it sends a clear-screen command directly to the terminal.
      */
     public void clearScreen() {
-        if (!isColorlessDumb()) {
+        if (isNormal()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
                 reader.callWidget(LineReader.CLEAR_SCREEN);
@@ -274,6 +274,9 @@ public class JLineTerminal {
                     terminal.flush();
                 }
             }
+        } else {
+            getWriter().write("\033[H\033[2J");
+            getWriter().flush();
         }
     }
 

@@ -83,8 +83,18 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal;
     }
 
+    /**
+     * Determines the interactive state of the console.
+     * <p>This implementation first checks for forced interactive modes via the
+     * superclass method. If not forced, it checks if the underlying JLine
+     * terminal is a normal, interactive terminal.</p>
+     * @return true if the console is determined to be interactive, otherwise false
+     */
     @Override
-    public boolean isInteractive() {
+    protected boolean determineInteractive() {
+        if (super.determineInteractive()) {
+            return true;
+        }
         return jlineTerminal.isNormal();
     }
 

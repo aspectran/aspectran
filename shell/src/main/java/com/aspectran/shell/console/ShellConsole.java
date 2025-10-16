@@ -55,8 +55,8 @@ public interface ShellConsole {
     char MASK_CHAR = '*';
 
     /**
-     * Returns whether the console is in interactive mode.
-     * @return {@code true} if the console is interactive, {@code false} otherwise
+     * Returns whether this shell console is running in an interactive mode.
+     * @return {@code true} if the shell console is interactive, {@code false} otherwise
      */
     boolean isInteractive();
 

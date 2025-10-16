@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
@@ -57,9 +58,34 @@ public class DefaultShellConsole extends AbstractShellConsole {
         super(encoding);
     }
 
+    /**
+     * Determines the interactive state of the console.
+     * <p>This implementation first checks for forced interactive modes via the
+     * superclass method. If not forced, it checks for the availability of a
+     * system console ({@code System.console()}). For Java 22 and later, it
+     * also verifies if the console is connected to a terminal, using reflection
+     * to maintain backward compatibility.</p>
+     * @return true if the console is determined to be interactive, otherwise false
+     */
     @Override
-    public boolean isInteractive() {
-        return false;
+    protected boolean determineInteractive() {
+        if (super.determineInteractive()) {
+            return true;
+        }
+        java.io.Console console = System.console();
+        if (console == null) {
+            return false;
+        }
+        try {
+            // The isTerminal() method was added in JDK 22.
+            // Use reflection for backward compatibility.
+            Method isTerminalMethod = console.getClass().getMethod("isTerminal");
+            return (Boolean) isTerminalMethod.invoke(console);
+        } catch (Exception e) {
+            // If the method doesn't exist (pre-JDK 22),
+            // the presence of a console object is a sufficient check.
+            return true;
+        }
     }
 
     @Override

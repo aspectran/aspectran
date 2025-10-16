@@ -58,9 +58,10 @@ public class DefaultShellServiceBuilder {
                 CoreServiceHolder.hold(shellService);
                 shellService.createSessionManager();
                 shellService.pauseTimeout = 0L;
-                shellService.getConsole().clearScreen();
-                shellService.printGreetings();
-                shellService.printHelp();
+                if (shellService.getConsole().isInteractive()) {
+                    shellService.printGreetings();
+                    shellService.printHelp();
+                }
             }
 
             @Override
@@ -75,7 +76,7 @@ public class DefaultShellServiceBuilder {
                     shellService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
-                        "to a value of greater than 0");
+                            "to a value of greater than 0");
                 }
             }
 
