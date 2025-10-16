@@ -146,7 +146,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     }
 
     @Override
-    public void printHelp() {
+    public void printDescription() {
         if (isVerbose()) {
             String description = getActivityContext().getDescription();
             if (description != null) {

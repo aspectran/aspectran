@@ -58,10 +58,8 @@ public class DefaultShellServiceBuilder {
                 CoreServiceHolder.hold(shellService);
                 shellService.createSessionManager();
                 shellService.pauseTimeout = 0L;
-                if (shellService.getConsole().isInteractive()) {
-                    shellService.printGreetings();
-                    shellService.printHelp();
-                }
+                shellService.printGreetings();
+                shellService.printDescription();
             }
 
             @Override

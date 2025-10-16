@@ -69,7 +69,7 @@ public class HelpCommand extends AbstractCommand {
         if (targetCommands == null) {
             printHelp(null, console);
             if (isServiceAvailable()) {
-                getShellService().printHelp();
+                getShellService().printDescription();
             }
         } else if (targetCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(targetCommands[0]);

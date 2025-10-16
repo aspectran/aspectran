@@ -71,7 +71,7 @@ public interface ShellService extends CoreService {
     /**
      * Prints help information to the console.
      */
-    void printHelp();
+    void printDescription();
 
     /**
      * Creates and returns a new session adapter for the shell environment.

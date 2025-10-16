@@ -83,7 +83,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
      * @return true if forced interactive mode is detected, otherwise false
      */
     protected boolean determineInteractive() {
-        if (Boolean.getBoolean("shell.interactive.force")) {
+        if (Boolean.getBoolean("aspectran.shell.interactive.force")) {
             // This is not a recommended way for production,
             // but it can be useful for development and testing in an IDE.
             return true;
