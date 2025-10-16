@@ -59,19 +59,35 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 
 ## Building
 
+First, clone the repository:
 ```sh
-# Clone and build (requires Maven 3.9.4+)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
-./build rebuild   # or ./mvnw clean install
 ```
+
+Then, run the build script for your operating system:
+```sh
+# On Unix-like systems (Linux, macOS, Git Bash)
+./build.sh rebuild
+
+# On Windows (Command Prompt or PowerShell)
+.\build.bat rebuild
+```
+Alternatively, you can use Maven directly: `./mvnw clean install`.
+
 _**Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime version._
 
 ## Running the Demo
-``` sh
-./build demo      # builds and starts the demo application
-# Open a browser at http://localhost:8080
+
+Run the demo script for your operating system:
+```sh
+# On Unix-like systems (Linux, macOS, Git Bash)
+./build.sh demo
+
+# On Windows (Command Prompt or PowerShell)
+.\build.bat demo
 ```
+Then, open a browser at http://localhost:8080.
 
 ## Continuous Integration
 
