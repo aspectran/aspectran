@@ -192,9 +192,8 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                         console.writeLine("Command not found: " + lineParser.getCommandName());
                     }
                 } catch (ShellConsoleClosedException e) {
-                    if (!console.isInteractive()) {
-                        console.clearLine();
-                    } else if (StringUtils.hasText(e.getMessage())) {
+                    console.clearLine();
+                    if (console.isInteractive() && StringUtils.hasText(e.getMessage())) {
                         console.writeLine(e.getMessage());
                     }
                     break;

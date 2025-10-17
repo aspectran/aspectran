@@ -15,5 +15,29 @@
  */
 /**
  * Built-in commands provided by Aspectran Daemon.
+ * <p>
+ * This package contains the default command implementations available in the
+ * daemon under the {@code "builtins"} namespace. These commands
+ * extend the daemon {@code Command} SPI and are typically registered by the
+ * daemon at startup, offering utilities for inspecting and executing translets,
+ * managing scheduled jobs and aspects, printing system information, and controlling
+ * daemon lifecycle.
+ * </p>
+ * <p>Representative commands include:</p>
+ * <ul>
+ *   <li>{@link com.aspectran.daemon.command.builtins.ComponentCommand ComponentCommand}
+ *       — list/describe/enable/disable aspects, translets, and scheduled jobs</li>
+ *   <li>{@link com.aspectran.daemon.command.builtins.TransletCommand TransletCommand}
+ *       — execute translets</li>
+ *   <li>{@link com.aspectran.daemon.command.builtins.InvokeActionCommand InvokeActionCommand}
+ *       — executes a method on a specified bean</li>
+ *   <li>{@link com.aspectran.daemon.command.builtins.SysInfoCommand SysInfoCommand}
+ *       — print JVM/system information</li>
+ *   <li>{@link com.aspectran.daemon.command.builtins.RestartCommand RestartCommand}
+ *       and {@link com.aspectran.daemon.command.builtins.QuitCommand QuitCommand}
+ *       — control daemon lifecycle</li>
+ *   <li>{@link com.aspectran.daemon.command.builtins.PollingIntervalCommand PollingIntervalCommand}
+ *       — change the polling interval for the file commander</li>
+ * </ul>
  */
 package com.aspectran.daemon.command.builtins;

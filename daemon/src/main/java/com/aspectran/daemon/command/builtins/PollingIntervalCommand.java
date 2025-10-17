@@ -53,15 +53,15 @@ public class PollingIntervalCommand extends AbstractCommand {
             }
 
             if (newPollingInterval == 0L) {
-                return failed(warn("The polling interval does not change"));
+                return failed(warn("The polling interval remains unchanged."));
             } else if (newPollingInterval < 0L) {
-                return failed(error("The polling interval can not be negative: " + newPollingInterval));
+                return failed(error("The polling interval cannot be a negative value: " + newPollingInterval));
             } else if (newPollingInterval < 1000L) {
-                return failed(error("The polling interval must be greater than 1000 ms."));
+                return failed(error("The polling interval must be at least 1000 ms."));
             } else {
                 getCommandRegistry().getDaemon().getFileCommander().setPollingInterval(newPollingInterval);
-                return success(info("The polling interval is changed from " + oldPollingInterval +
-                        "ms to " + newPollingInterval + " ms"));
+                return success(info("The polling interval has been changed from " + oldPollingInterval +
+                        "ms to " + newPollingInterval + "ms."));
             }
         } catch (Exception e) {
             return failed(e);
@@ -88,7 +88,7 @@ public class PollingIntervalCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Specifies in seconds how often the daemon polls for new commands";
+            return "Changes the polling interval for the daemon's file commander";
         }
 
     }

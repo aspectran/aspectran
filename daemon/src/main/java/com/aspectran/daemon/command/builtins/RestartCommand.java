@@ -43,9 +43,9 @@ public class RestartCommand extends AbstractCommand {
         DaemonService daemonService = getDaemonService();
 
         try {
-            info("Restarting Now. See you soon.");
+            info("Restarting the daemon service...");
             daemonService.getServiceLifeCycle().restart();
-            return success(info("Successful restart command"));
+            return success(info("The daemon service has been restarted successfully."));
         } catch (Exception e) {
             return failed(e);
         }
@@ -71,7 +71,7 @@ public class RestartCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Restart the daemon to reload all resources";
+            return "Restarts the daemon service to reload all resources";
         }
 
     }

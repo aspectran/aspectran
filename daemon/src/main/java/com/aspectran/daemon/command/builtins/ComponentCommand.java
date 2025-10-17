@@ -71,7 +71,7 @@ public class ComponentCommand extends AbstractCommand {
         try {
             ParameterMap parameterMap = parameters.getParameterMap();
             if (parameterMap == null) {
-                return failed(error("No parameters specified"));
+                return failed(error("No parameters specified for the component command."));
             }
 
             String type = parameterMap.getParameter("type");
@@ -79,7 +79,7 @@ public class ComponentCommand extends AbstractCommand {
             String[] targets = parameterMap.getParameterValues("targets");
 
             if (!StringUtils.hasLength(type)) {
-                return failed(error("Component type is not specified"));
+                return failed(error("Component type must be specified (e.g., type: aspect)"));
             }
 
             switch (type) {
@@ -122,9 +122,9 @@ public class ComponentCommand extends AbstractCommand {
                     break;
                 }
                 default:
-                    return failed(error("Unknown component type: " + type));
+                    return failed(error("Invalid component type specified: " + type));
             }
-            return failed(error("Unknown mode: " + type));
+            return failed(error("Invalid mode '" + mode + "' for component type '" + type + "'"));
         } catch (Exception e) {
             return failed(e);
         }
@@ -157,7 +157,7 @@ public class ComponentCommand extends AbstractCommand {
                     !aspectRule.isDisabled());
         }
         if (num == 0) {
-            formatter.format("%33s %s%n", " ", "No Data");
+            formatter.format(" %4s   %s%n", " ", "No aspects found to display.");
         }
         formatter.format("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
                 "--------", "--------");
@@ -175,7 +175,7 @@ public class ComponentCommand extends AbstractCommand {
             for (String aspectId : targets) {
                 AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);
                 if (aspectRule == null) {
-                    return failed(error("Unknown aspect: " + aspectId));
+                    return failed(error("Aspect '" + aspectId + "' not found."));
                 }
                 aspectRules.add(aspectRule);
             }
@@ -193,7 +193,7 @@ public class ComponentCommand extends AbstractCommand {
             count++;
         }
         if (count == 0) {
-            return success("No aspects");
+            return success("No aspects found to display.");
         } else {
             return success(writer.toString().trim());
         }
@@ -201,17 +201,17 @@ public class ComponentCommand extends AbstractCommand {
 
     private CommandResult changeAspectActiveState(DaemonService daemonService, String[] targets, boolean disabled) {
         if (targets == null || targets.length == 0) {
-            return failed(error("Please specify aspects to be enabled or disabled"));
+            return failed(error("No aspect ID specified. Please provide one or more aspect IDs to enable or disable."));
         }
         AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Set<AspectRule> aspectRules = new LinkedHashSet<>();
         for (String aspectId : targets) {
             AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);
             if (aspectRule == null) {
-                return failed(error("Unknown aspect: " + aspectId));
+                return failed(error("Aspect '" + aspectId + "' not found."));
             }
             if (aspectRule.isIsolated()) {
-                return failed(error("Can not be disabled or enabled for isolated Aspect '" + aspectId + "'"));
+                return failed(error("The aspect '" + aspectId + "' is isolated and cannot be enabled or disabled."));
             }
             aspectRules.add(aspectRule);
         }
@@ -219,17 +219,17 @@ public class ComponentCommand extends AbstractCommand {
         for (AspectRule aspectRule : aspectRules) {
             if (disabled) {
                 if (aspectRule.isDisabled()) {
-                    formatter.format("Aspect '%s' is already inactive%n", aspectRule.getId());
+                    formatter.format("The aspect '%s' is already disabled.%n", aspectRule.getId());
                 } else {
                     aspectRule.setDisabled(true);
-                    formatter.format("Aspect '%s' is now inactive%n", aspectRule.getId());
+                    formatter.format("The aspect '%s' has been disabled.%n", aspectRule.getId());
                 }
             } else {
                 if (!aspectRule.isDisabled()) {
-                    formatter.format("Aspect '%s' is already active%n", aspectRule.getId());
+                    formatter.format("The aspect '%s' is already enabled.%n", aspectRule.getId());
                 } else {
                     aspectRule.setDisabled(false);
-                    formatter.format("Aspect '%s' is now active%n", aspectRule.getId());
+                    formatter.format("The aspect '%s' has been enabled.%n", aspectRule.getId());
                 }
             }
         }
@@ -268,7 +268,7 @@ public class ComponentCommand extends AbstractCommand {
             formatter.format("%5d | %s%n", ++num, transletName);
         }
         if (num == 0) {
-            formatter.format("%33s %s%n", " ", "No Data");
+            formatter.format(" %4s   %s%n", " ", "No translets found to display.");
         }
         formatter.format("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         return success(formatter.toString());
@@ -298,7 +298,7 @@ public class ComponentCommand extends AbstractCommand {
                     transletRule = transletRuleRegistry.getTransletRule(transletName);
                 }
                 if (transletRule == null) {
-                    return failed(error("Unknown translet: " + targets[0]));
+                    return failed(error("Translet '" + targets[0] + "' not found."));
                 }
                 transletRules.add(transletRule);
             }
@@ -319,7 +319,7 @@ public class ComponentCommand extends AbstractCommand {
             count++;
         }
         if (count == 0) {
-            return success("No translets");
+            return success("No translets found to display.");
         } else {
             return success(writer.toString().trim());
         }
@@ -353,7 +353,7 @@ public class ComponentCommand extends AbstractCommand {
             }
         }
         if (num == 0) {
-            formatter.format("%33s %s%n", " ", "No Data");
+            formatter.format(" %4s   %s%n", " ", "No scheduled jobs found to display.");
         }
         formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
                 "---------------------------------", "--------");
@@ -377,7 +377,7 @@ public class ComponentCommand extends AbstractCommand {
                 count++;
             }
             if (count == 0) {
-                return success("No scheduled jobs");
+                return success("No scheduled jobs found to display.");
             } else {
                 return success(writer.toString().trim());
             }
@@ -393,7 +393,7 @@ public class ComponentCommand extends AbstractCommand {
                 }
             }
             if (transletNames.isEmpty()) {
-                return failed(error("Unknown scheduled jobs " + Arrays.toString(targets)));
+                return failed(error("Job(s) not found: " + Arrays.toString(targets)));
             }
             int count = 0;
             Writer writer = new StringWriter();
@@ -419,31 +419,31 @@ public class ComponentCommand extends AbstractCommand {
 
     private CommandResult changeJobActiveState(DaemonService daemonService, String[] targets, boolean disabled) {
         if (targets == null || targets.length == 0) {
-            return failed(error("Please specify jobs to be enabled or disabled"));
+            return failed(error("No job name specified. Please provide one or more job names to enable or disable."));
         }
         ScheduleRuleRegistry scheduleRuleRegistry = daemonService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(targets);
         if (scheduledJobRules.isEmpty()) {
-            return failed(error("Unknown scheduled jobs " + Arrays.toString(targets)));
+            return failed(error("Job(s) not found: " + Arrays.toString(targets)));
         }
         Formatter formatter = new Formatter();
         for (ScheduledJobRule jobRule : scheduledJobRules) {
             if (disabled) {
                 if (jobRule.isDisabled()) {
-                    formatter.format("Scheduled job '%s' on schedule '%s' is already inactive",
+                    formatter.format("The job '%s' on schedule '%s' is already disabled.%n",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 } else {
                     jobRule.setDisabled(true);
-                    formatter.format("Scheduled job '%s' on schedule '%s' is now inactive",
+                    formatter.format("The job '%s' on schedule '%s' has been disabled.%n",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 }
             } else {
                 if (!jobRule.isDisabled()) {
-                    formatter.format("Scheduled job '%s' on schedule '%s' is already active",
+                    formatter.format("The job '%s' on schedule '%s' is already enabled.%n",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 } else {
                     jobRule.setDisabled(false);
-                    formatter.format("Scheduled job '%s' on schedule '%s' is now active",
+                    formatter.format("The job '%s' on schedule '%s' has been enabled.%n",
                             jobRule.getTransletName(), jobRule.getScheduleRule().getId());
                 }
             }
@@ -471,8 +471,8 @@ public class ComponentCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Display detailed information about aspect, translet, " +
-                    "or scheduled job and control its active state";
+            return "Displays detailed information about aspect, translet, " +
+                    "or scheduled job and controls its active state";
         }
 
     }

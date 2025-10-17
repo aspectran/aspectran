@@ -50,7 +50,7 @@ public class TransletCommand extends AbstractCommand {
 
         String transletName = parameters.getTransletName();
         if (transletName == null) {
-            return failed(error("'translet' parameter is not specified"));
+            return failed(error("The 'translet' parameter is required to specify the translet to execute."));
         }
 
         try {
@@ -88,7 +88,7 @@ public class TransletCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Executes a translet";
+            return "Executes a translet and displays its response";
         }
 
     }

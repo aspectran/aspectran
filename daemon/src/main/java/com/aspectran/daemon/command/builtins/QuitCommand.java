@@ -40,13 +40,13 @@ public class QuitCommand extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         if (!getCommandRegistry().getDaemon().isWaiting()) {
-            return failed(getCommandRegistry().getDaemon().getName() + " does not support the quit command");
+            return failed(getCommandRegistry().getDaemon().getName() + " does not support the 'quit' command.");
         }
 
-        info("Shutting down the " + getCommandRegistry().getDaemon().getName());
+        info("Shutting down " + getCommandRegistry().getDaemon().getName() + "...");
         getCommandRegistry().getDaemon().stop();
 
-        return success(info("Goodbye."));
+        return success(info("The daemon has been shut down successfully."));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class QuitCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Releases all resources and exits this daemon";
+            return "Gracefully shuts down the daemon";
         }
 
     }

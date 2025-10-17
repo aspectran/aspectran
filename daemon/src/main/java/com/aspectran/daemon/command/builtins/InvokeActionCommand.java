@@ -54,10 +54,10 @@ public class InvokeActionCommand extends AbstractCommand {
             ItemRuleMap propertyItemRuleMap = parameters.getPropertyItemRuleMap();
 
             if (beanName == null) {
-                return failed(error("'bean' parameter is not specified"));
+                return failed(error("The 'bean' parameter is required to specify the target bean."));
             }
             if (methodName == null) {
-                return failed(error("'method' parameter is not specified"));
+                return failed(error("The 'method' parameter is required to specify the method to invoke."));
             }
 
             InvokeActionRule invokeActionRule = new InvokeActionRule();

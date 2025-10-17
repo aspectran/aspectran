@@ -86,7 +86,7 @@ public class SysInfoCommand extends AbstractCommand {
 
     private void printSysProperties(@NonNull PrintWriter printWriter) {
         printWriter.println("---------------------");
-        printWriter.println("JVM system properties");
+        printWriter.println("System Properties");
         printWriter.println("---------------------");
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
             String value = entry.getValue() != null ? escape(entry.getValue().toString()) : null;
@@ -96,7 +96,7 @@ public class SysInfoCommand extends AbstractCommand {
 
     private void printClasspath(@NonNull PrintWriter printWriter) {
         printWriter.println("-------------------------");
-        printWriter.println("JVM classpath information");
+        printWriter.println("Classpath Information");
         printWriter.println("-------------------------");
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
@@ -124,7 +124,7 @@ public class SysInfoCommand extends AbstractCommand {
         long free = Runtime.getRuntime().freeMemory();
 
         printWriter.println("------------------------------------");
-        printWriter.println("Memory information about current JVM");
+        printWriter.println("Memory Information");
         printWriter.println("------------------------------------");
         printWriter.format("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max)).println();
         printWriter.format("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total)).println();
@@ -181,7 +181,7 @@ public class SysInfoCommand extends AbstractCommand {
         @Override
         @NonNull
         public String getDescription() {
-            return "Prints current JVM runtime information";
+            return "Displays information about the current JVM and runtime environment";
         }
 
     }
