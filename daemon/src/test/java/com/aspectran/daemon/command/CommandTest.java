@@ -86,7 +86,7 @@ class CommandTest {
 
         Command command = new PollingIntervalCommand(commandRegistry);
         CommandResult result = command.execute(parameters);
-        assertEquals("The polling interval is changed from 1000ms to 2000ms.", result.getResult());
+        assertEquals("The polling interval has been changed from 1000ms to 2000ms.", result.getResult());
     }
 
     @Test
