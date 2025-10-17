@@ -123,15 +123,14 @@ public class CommandExecutor {
 
         if (isolated.get()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Holds '{}' command until the end of the command " +
-                        "requiring a single execution guarantee.", commandName);
+                logger.debug("Command '{}' rejected because an isolated command is already running.", commandName);
             }
             return false;
         }
 
         Command command = daemon.getCommandRegistry().getCommand(commandName);
         if (command == null) {
-            parameters.setResult("No command mapped to '" + commandName + "'");
+            parameters.setResult("Command not found: " + commandName);
             if (callback != null) {
                 try {
                     callback.failure();
@@ -144,8 +143,7 @@ public class CommandExecutor {
 
         if (command.isIsolated() && queueSize.get() > 0) {
             if (logger.isDebugEnabled()) {
-                logger.debug("'{}' command requires a single execution guarantee, " +
-                        "so it is held until another command completes", commandName);
+                logger.debug("Isolated command '{}' rejected because other commands are running.", commandName);
             }
             return false;
         }
@@ -191,7 +189,7 @@ public class CommandExecutor {
             executorService.execute(runnable);
             return true;
         } catch (RejectedExecutionException e) {
-            logger.error("Failed to execute command", e);
+            logger.error("Command '{}' rejected by the executor; no available threads", commandName, e);
             queueSize.decrementAndGet();
             return false;
         }
@@ -215,8 +213,9 @@ public class CommandExecutor {
             }
         } catch (Exception e) {
             logger.error("Error executing daemon command {}", command, e);
-            parameters.setResult("[FAILED] Error executing daemon command " + command +
-                    System.lineSeparator() + ExceptionUtils.getStacktrace(e));
+            parameters.setResult("[FAILED] An unexpected error occurred while executing the command '" +
+                    command.getDescriptor().getName() + "'." + System.lineSeparator() +
+                    ExceptionUtils.getStacktrace(e));
             return false;
         }
     }
@@ -226,13 +225,13 @@ public class CommandExecutor {
      */
     public void shutdown() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Shutting down executor...");
+            logger.debug("Shutting down the command executor...");
         }
 
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             while (true) {
-                logger.info("Waiting for executor to terminate...");
+                logger.info("Waiting for the command executor to terminate...");
                 if (executorService.isTerminated()) {
                     break;
                 }
