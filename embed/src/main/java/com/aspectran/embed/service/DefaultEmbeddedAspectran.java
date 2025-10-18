@@ -27,7 +27,6 @@ import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
@@ -164,9 +163,8 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             } else {
                 t = e;
             }
-            Throwable cause = ExceptionUtils.getRootCause(t);
             throw new CoreServiceException("Error occurred while processing request: " +
-                    activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
+                    activity.getFullRequestName(), t);
         }
         return translet;
     }
@@ -246,7 +244,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("{} is paused", getServiceName());
+                    logger.debug("The service is paused, so the action is not executed.");
                 }
                 return true;
             } else {
@@ -276,8 +274,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 if (millis > 0L) {
                     aspectran.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
-                    logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
+                    logger.warn("The pause timeout in milliseconds must be greater than 0.");
                 }
             }
 

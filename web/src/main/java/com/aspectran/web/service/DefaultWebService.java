@@ -291,13 +291,15 @@ public class DefaultWebService extends AbstractWebService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} is paused, so did not respond to requests", getServiceName());
                 }
-                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Paused");
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                        "Service is temporarily unavailable. Please try again later.");
                 return true;
             } else if (pauseTimeout == -2L) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} is not yet started", getServiceName());
                 }
-                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
+                sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                        "Service is starting. Please try again in a moment.");
                 return true;
             } else {
                 pauseTimeout = 0L;

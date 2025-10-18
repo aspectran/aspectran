@@ -25,7 +25,6 @@ import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.ThreadContextHelper;
@@ -189,23 +188,22 @@ public class DefaultShellService extends AbstractShellService {
         } else {
             t = e;
         }
-        Throwable cause = ExceptionUtils.getRootCause(t);
         throw new CoreServiceException("Error occurred while processing request: " +
-                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
+                activity.getFullRequestName(), t);
     }
 
     private boolean checkPaused() {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
-                    getConsole().writeLine(getServiceName() + " has been paused");
+                    getConsole().writeLine("The service is paused. Type 'resume' to continue.");
                 } else {
-                    long remains = pauseTimeout - System.currentTimeMillis();
+                    long remains = (pauseTimeout - System.currentTimeMillis()) / 1000;
                     if (remains > 0L) {
-                        getConsole().writeLine(getServiceName() + " has been paused and will resume after "
-                                + remains + " ms");
+                        getConsole().writeLine("The service is paused and will resume in "
+                                + remains + " second(s).");
                     } else {
-                        getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
+                        getConsole().writeLine("The service is paused and will resume shortly.");
                     }
                 }
                 return true;

@@ -162,7 +162,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         if (settingsAdviceRuleList == null) {
             settingsAdviceRuleList = new ArrayList<>();
         }
-        settingsAdviceRuleList.add(0, settingsAdviceRule);
+        settingsAdviceRuleList.addFirst(settingsAdviceRule);
     }
 
     /**
@@ -243,7 +243,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         if (exceptionRuleList == null) {
             exceptionRuleList = new LinkedList<>();
         }
-        exceptionRuleList.add(0, exceptionRule);
+        exceptionRuleList.addFirst(exceptionRule);
     }
 
     private int findLessThanIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {

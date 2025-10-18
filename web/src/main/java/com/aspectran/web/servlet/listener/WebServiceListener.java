@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.servlet.listener;
 
-import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
@@ -39,19 +38,19 @@ public class WebServiceListener implements ServletContextListener {
     public void contextInitialized(@NonNull ServletContextEvent event) {
         try {
             WebService.findWebService(event.getServletContext());
-            logger.warn("Root WebService already exists; Remove WebServiceListener as it is unnecessary");
+            logger.warn("A Root WebService already exists. The WebServiceListener is not necessary and will be ignored.");
             return;
         } catch (IllegalStateException ignored) {
             // ignore
         }
 
-        logger.info("Creating Root WebService...");
+        logger.info("Initializing Root WebService...");
 
         try {
             webService = DefaultWebServiceBuilder.build(event.getServletContext());
             webService.start();
 
-            logger.info("Initialized {}", getMyName());
+            logger.info("Root WebService has been initialized");
         } catch (Exception e) {
             logger.error("Failed to create root web service", e);
         }
@@ -63,13 +62,8 @@ public class WebServiceListener implements ServletContextListener {
             webService.stop();
             webService = null;
 
-            logger.info("Destroyed {}", getMyName());
+            logger.info("Root WebService has been destroyed");
         }
-    }
-
-    @NonNull
-    private String getMyName() {
-        return ObjectUtils.simpleIdentityToString(this);
     }
 
 }

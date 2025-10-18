@@ -314,7 +314,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 if (this.scanIntervalSeconds == -1) {
                     this.scanIntervalSeconds = 10;
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
+                        logger.debug("Context option 'autoReload' not specified, defaulting to 10 seconds.");
                     }
                 }
             }

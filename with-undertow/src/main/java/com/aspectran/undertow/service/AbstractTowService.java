@@ -125,7 +125,7 @@ public abstract class AbstractTowService extends DefaultCoreService implements T
         }
         for (CoreService parentService = getParentService();
              parentService != null; parentService = parentService.getParentService()) {
-            webConfigList.add(0, parentService.getAspectranConfig().getWebConfig());
+            webConfigList.addFirst(parentService.getAspectranConfig().getWebConfig());
         }
         for (WebConfig webConfig : webConfigList) {
             configure(webConfig);

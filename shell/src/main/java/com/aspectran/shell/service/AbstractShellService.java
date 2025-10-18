@@ -179,7 +179,7 @@ public abstract class AbstractShellService extends DefaultCoreService implements
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager);
                 } catch (Exception e) {
-                    throw new CoreServiceException("Failed to create session manager for " + getServiceName(), e);
+                    throw new CoreServiceException("Failed to create a session manager", e);
                 }
             }
         }

@@ -196,7 +196,7 @@ public class DefaultCoreService extends AbstractCoreService {
         fileLocker = new FileLocker(getBasePath());
         if (!fileLocker.lock()) {
             throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
-                "running; Only one instance is allowed (context.singleton is set to true)");
+                    "running; Only one instance is allowed (context.singleton is set to true)");
         }
     }
 
@@ -227,7 +227,7 @@ public class DefaultCoreService extends AbstractCoreService {
 
             @Override
             public String toString() {
-                return "Stop " + getServiceName();
+                return ("Stop " + getServiceName());
             }
         });
     }

@@ -15,8 +15,6 @@
  */
 package com.aspectran.web.servlet;
 
-import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
@@ -87,11 +85,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
                 this.webService = newWebService;
             }
         } catch (Exception e) {
-            logger.error("Unable to initialize {}", getMyName(), e);
+            logger.error("Failed to initialize WebActivityServlet", e);
             throw new UnavailableException(e.getMessage());
         }
 
-        logger.info("Initialized {}", getMyName());
+        logger.info("WebActivityServlet '{}' has been initialized.", getServletName());
     }
 
     @Override
@@ -131,12 +129,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             webService.withdraw();
         }
 
-        logger.info("Destroyed {}", getMyName());
-    }
-
-    @NonNull
-    private String getMyName() {
-        return ObjectUtils.simpleIdentityToString(this, getServletName());
+        logger.info("WebActivityServlet '{}' has been destroyed.", getServletName());
     }
 
 }

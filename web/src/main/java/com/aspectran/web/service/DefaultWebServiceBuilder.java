@@ -223,7 +223,7 @@ public class DefaultWebServiceBuilder {
                     webService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
-                            "to a value of greater than 0");
+                            "to a value of greater than 0.");
                 }
             }
 

@@ -21,7 +21,6 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.daemon.activity.DaemonActivity;
-import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,9 +138,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
             } else {
                 t = e;
             }
-            Throwable cause = ExceptionUtils.getRootCause(t);
             throw new CoreServiceException("Error occurred while processing request: " +
-                activity.getFullRequestName() + "; Cause: " + ExceptionUtils.getSimpleMessage(cause), t);
+                    activity.getFullRequestName(), t);
         } finally {
             ThreadContextHelper.restoreClassLoader(origClassLoader);
         }
@@ -165,7 +163,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("{} is paused, so did not execute translet: {}", getServiceName(), name);
+                    logger.debug("The service is paused, so the translet '{}' cannot be executed.", name);
                 }
                 return true;
             } else {

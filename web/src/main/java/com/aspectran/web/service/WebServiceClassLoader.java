@@ -34,7 +34,7 @@ public class WebServiceClassLoader extends URLClassLoader {
      */
     public WebServiceClassLoader(ClassLoader parent) {
         super((parent != null ? parent.getName() : null),
-            new URL[] {}, (parent != null ? parent : ClassUtils.getDefaultClassLoader()));
+                new URL[] {}, (parent != null ? parent : ClassUtils.getDefaultClassLoader()));
     }
 
 }

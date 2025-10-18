@@ -233,13 +233,15 @@ public class DefaultTowService extends AbstractTowService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("{} is paused, so did not respond to requests", getServiceName());
+                    logger.debug("{} is paused, so did not respond to requests.", getServiceName());
                 }
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Paused");
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
+                        "Service is temporarily unavailable. Please try again later.");
                 return true;
             } else if (pauseTimeout == -2L) {
-                logger.warn("{} is not yet started", getServiceName());
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
+                logger.warn("{} is not yet started.", getServiceName());
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
+                        "Service is starting. Please try again in a moment.");
                 return true;
             } else {
                 pauseTimeout = 0L;

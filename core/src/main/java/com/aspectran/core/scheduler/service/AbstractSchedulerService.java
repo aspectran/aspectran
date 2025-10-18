@@ -364,7 +364,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
             if (startDelaySeconds < 0) {
                 startDelaySeconds = 3;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds");
+                    logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 3 seconds.");
                 }
             }
             setStartDelaySeconds(startDelaySeconds);
