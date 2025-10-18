@@ -20,12 +20,14 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.scan.BeanClassFilter;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -37,6 +39,7 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
@@ -61,6 +64,9 @@ import java.util.Set;
  * bean rules, and manages important beans. It supports both annotation-based component
  * scanning (for classes annotated with {@code @Component}) and XML-based bean rule
  * scanning (for bean rules defined with a {@code scan} attribute).
+ * During the post-processing phase, it filters all registered bean rules against the
+ * active environment profiles, ensuring that only beans matching the current profile
+ * are retained for instantiation.
  * Additionally, it provides configuration for base packages to scan and exposes hooks
  * to ignore certain dependency types and interfaces during autowiring.
  * </p>
@@ -419,8 +425,8 @@ public class BeanRuleRegistry {
     private void saveBeanRule(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getId() == null) {
             if (importantBeanTypeSet.contains(beanClass)) {
-                throw new BeanRuleException("Already exists a type-based bean that can not be overridden; Duplicated bean",
-                        beanRule);
+                throw new BeanRuleException("Already exists a type-based bean that can not be " +
+                        "overridden; Duplicated bean", beanRule);
             }
             if (beanRule.isImportant()) {
                 importantBeanTypeSet.add(beanClass);
@@ -483,7 +489,8 @@ public class BeanRuleRegistry {
 
     /**
      * Performs post-processing of bean rules.
-     * This includes resolving factory-offered beans and parsing annotated configurations.
+     * <p>This includes resolving factory-offered beans, filtering all registered bean rules
+     * against active environment profiles, and initiating the parsing of annotated configurations.
      * @param assistant the activity rule assistant
      * @throws IllegalRuleException if an error occurs during post-processing
      */
@@ -516,7 +523,77 @@ public class BeanRuleRegistry {
         }
         importantBeanIdSet.clear();
         importantBeanTypeSet.clear();
+
+        filterBeanRulesByProfile(assistant);
+
         parseAnnotatedConfig(assistant);
+    }
+
+    private void filterBeanRulesByProfile(@NonNull ActivityRuleAssistant assistant) {
+        EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
+        if (environmentProfiles == null) {
+            return;
+        }
+
+        Set<BeanRule> allRules = new HashSet<>();
+        if (!configurableBeanRuleMap.isEmpty()) {
+            allRules.addAll(configurableBeanRuleMap.values());
+        }
+        if (!idBasedBeanRuleMap.isEmpty()) {
+            allRules.addAll(idBasedBeanRuleMap.values());
+        }
+        if (!typeBasedBeanRuleMap.isEmpty()) {
+            for (Set<BeanRule> beanRules : typeBasedBeanRuleMap.values()) {
+                allRules.addAll(beanRules);
+            }
+        }
+
+        if (allRules.isEmpty()) {
+            return;
+        }
+
+        Set<BeanRule> rulesToRemove = new HashSet<>();
+        for (BeanRule beanRule : allRules) {
+            if (isProfileMismatched(beanRule, environmentProfiles)) {
+                rulesToRemove.add(beanRule);
+            }
+        }
+
+        if (rulesToRemove.isEmpty()) {
+            return;
+        }
+
+        if (!configurableBeanRuleMap.isEmpty()) {
+            configurableBeanRuleMap.values().removeAll(rulesToRemove);
+        }
+        if (!idBasedBeanRuleMap.isEmpty()) {
+            idBasedBeanRuleMap.values().removeAll(rulesToRemove);
+        }
+        if (!typeBasedBeanRuleMap.isEmpty()) {
+            for (Set<BeanRule> beanRules : typeBasedBeanRuleMap.values()) {
+                beanRules.removeAll(rulesToRemove);
+            }
+            typeBasedBeanRuleMap.values().removeIf(Set::isEmpty);
+        }
+    }
+
+    private boolean isProfileMismatched(@NonNull BeanRule beanRule,
+                                        @NonNull EnvironmentProfiles environmentProfiles) {
+        Class<?> beanClass = beanRule.getBeanClass();
+        if (beanClass != null) {
+            Profile profileAnno = beanClass.getAnnotation(Profile.class);
+            if (profileAnno != null) {
+                String profile = StringUtils.emptyToNull(profileAnno.value());
+                if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Bean rule '{}' is not enabled because it is not included " +
+                                "in the active profiles", beanRule);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void parseAnnotatedConfig(@NonNull ActivityRuleAssistant assistant) throws IllegalRuleException {

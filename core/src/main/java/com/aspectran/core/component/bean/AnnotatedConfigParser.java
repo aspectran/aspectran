@@ -206,13 +206,6 @@ public class AnnotatedConfigParser {
         Class<?> beanClass = beanRule.getBeanClass();
         Component componentAnno = beanClass.getAnnotation(Component.class);
         if (componentAnno != null) {
-            Profile profileAnno = beanClass.getAnnotation(Profile.class);
-            if (profileAnno != null) {
-                String profile = StringUtils.emptyToNull(profileAnno.value());
-                if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
-                    return;
-                }
-            }
             String[] nameArray = Namespace.splitNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
