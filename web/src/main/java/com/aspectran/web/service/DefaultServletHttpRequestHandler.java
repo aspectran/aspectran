@@ -56,6 +56,9 @@ public class DefaultServletHttpRequestHandler {
     /** Default Servlet name used by Jeus */
     private static final String JEUS_DEFAULT_SERVLET_NAME = "WorkerServlet";
 
+    /** Default Servlet name used by Piranha */
+    private static final String PIRANHA_DEFAULT_SERVLET_NAME = "Piranha Default Servlet";
+
     private final ServletContext servletContext;
 
     private final WebService webService;
@@ -117,10 +120,12 @@ public class DefaultServletHttpRequestHandler {
             defaultServletName = GAE_DEFAULT_SERVLET_NAME;
         } else if (servletContext.getNamedDispatcher(JEUS_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = JEUS_DEFAULT_SERVLET_NAME;
+        } else if (servletContext.getNamedDispatcher(PIRANHA_DEFAULT_SERVLET_NAME) != null) {
+            defaultServletName = PIRANHA_DEFAULT_SERVLET_NAME;
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Unable to locate the default servlet for serving static content. " +
-                    "Please set the 'web.defaultServletName' property explicitly.");
+                        "Please set the 'web.defaultServletName' property explicitly.");
             }
         }
     }
