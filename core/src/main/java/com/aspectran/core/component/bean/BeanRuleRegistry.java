@@ -585,8 +585,8 @@ public class BeanRuleRegistry {
             if (profileAnno != null) {
                 String profile = StringUtils.emptyToNull(profileAnno.value());
                 if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Bean rule '{}' is not enabled because it is not included " +
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Bean rule '{}' is not enabled because it is not included " +
                                 "in the active profiles", beanRule);
                     }
                     return true;
