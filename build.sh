@@ -31,7 +31,7 @@ function die() {
 
 # Show usage and exit
 function usage() {
-  grep '^# ' "$0" | cut -c3-
+  awk '/^# / {print substr($0, 3)} !/^#/ && NR > 1 && !/^$/ {exit}' "$0"
   exit 2
 }
 
