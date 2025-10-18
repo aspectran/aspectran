@@ -81,7 +81,7 @@ import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
@@ -130,14 +130,14 @@ public class AnnotatedConfigParser {
 
     /**
      * Instantiates a new Annotated config parser.
-     * @param assistant the activity rule assistant
+     * @param ruleParsingContext the rule-parsing context
      * @param relater the annotated config relater
      */
-    public AnnotatedConfigParser(@NonNull ActivityRuleAssistant assistant, AnnotatedConfigRelater relater) {
-        this.environmentProfiles = assistant.getEnvironmentProfiles();
-        this.idBasedBeanRules = assistant.getBeanRuleRegistry().getIdBasedBeanRules();
-        this.typeBasedBeanRules = assistant.getBeanRuleRegistry().getTypeBasedBeanRules();
-        this.configurableBeanRules = assistant.getBeanRuleRegistry().getConfigurableBeanRules();
+    public AnnotatedConfigParser(@NonNull RuleParsingContext ruleParsingContext, AnnotatedConfigRelater relater) {
+        this.environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
+        this.idBasedBeanRules = ruleParsingContext.getBeanRuleRegistry().getIdBasedBeanRules();
+        this.typeBasedBeanRules = ruleParsingContext.getBeanRuleRegistry().getTypeBasedBeanRules();
+        this.configurableBeanRules = ruleParsingContext.getBeanRuleRegistry().getConfigurableBeanRules();
         this.relater = relater;
     }
 

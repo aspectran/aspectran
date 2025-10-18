@@ -41,7 +41,7 @@ class SettingsNodeletAdder implements NodeletAdder {
     public void addTo(@NonNull NodeletGroup group) {
         group.child("settings")
             .endNodelet(text -> {
-                AspectranNodeParsingContext.assistant().applySettings();
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().applySettings();
             })
             .child("setting")
                 .nodelet(attrs -> {
@@ -56,9 +56,9 @@ class SettingsNodeletAdder implements NodeletAdder {
                     String value = AspectranNodeParsingContext.popObject();
 
                     if (value != null) {
-                        AspectranNodeParsingContext.assistant().putSetting(name, value);
+                        AspectranNodeParsingContext.getCurrentRuleParsingContext().putSetting(name, value);
                     } else if (text != null) {
-                        AspectranNodeParsingContext.assistant().putSetting(name, text);
+                        AspectranNodeParsingContext.getCurrentRuleParsingContext().putSetting(name, text);
                     }
                 });
     }

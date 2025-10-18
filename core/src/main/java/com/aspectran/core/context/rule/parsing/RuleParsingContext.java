@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
@@ -66,11 +66,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class ActivityRuleAssistant.
+ * The Class RuleParsingContext.
  *
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
-public class ActivityRuleAssistant {
+public class RuleParsingContext {
 
     private final boolean shallow;
 
@@ -98,20 +98,20 @@ public class ActivityRuleAssistant {
 
     private BeanReferenceInspector beanReferenceInspector;
 
-    private AssistantLocal assistantLocal;
+    private RuleParsingScope ruleParsingScope;
 
     private RuleAppendHandler ruleAppendHandler;
 
-    protected ActivityRuleAssistant() {
+    protected RuleParsingContext() {
         this.shallow = true;
         this.classLoader = null;
         this.applicationAdapter = null;
         this.environmentProfiles = null;
     }
 
-    public ActivityRuleAssistant(ClassLoader classLoader,
-                                 ApplicationAdapter applicationAdapter,
-                                 EnvironmentProfiles environmentProfiles) {
+    public RuleParsingContext(ClassLoader classLoader,
+                              ApplicationAdapter applicationAdapter,
+                              EnvironmentProfiles environmentProfiles) {
         Assert.notNull(classLoader, "classLoader must not be null");
         Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
         Assert.notNull(environmentProfiles, "environmentProfiles must not be null");
@@ -125,7 +125,7 @@ public class ActivityRuleAssistant {
         settings = new HashMap<>();
         environmentRules = new LinkedList<>();
         typeAliases = new HashMap<>();
-        assistantLocal = new AssistantLocal(this);
+        ruleParsingScope = new RuleParsingScope(this);
 
         if (!shallow) {
             aspectRuleRegistry = new AspectRuleRegistry();
@@ -134,9 +134,9 @@ public class ActivityRuleAssistant {
             scheduleRuleRegistry = new ScheduleRuleRegistry();
             templateRuleRegistry = new TemplateRuleRegistry();
 
-            transletRuleRegistry.setAssistantLocal(assistantLocal);
-            scheduleRuleRegistry.setAssistantLocal(assistantLocal);
-            templateRuleRegistry.setAssistantLocal(assistantLocal);
+            transletRuleRegistry.setRuleParsingScope(ruleParsingScope);
+            scheduleRuleRegistry.setRuleParsingScope(ruleParsingScope);
+            templateRuleRegistry.setRuleParsingScope(ruleParsingScope);
 
             beanReferenceInspector = new BeanReferenceInspector();
         }
@@ -146,12 +146,12 @@ public class ActivityRuleAssistant {
         settings = null;
         environmentRules = null;
         typeAliases = null;
-        assistantLocal = null;
+        ruleParsingScope = null;
 
         if (!shallow) {
-            scheduleRuleRegistry.setAssistantLocal(null);
-            transletRuleRegistry.setAssistantLocal(null);
-            templateRuleRegistry.setAssistantLocal(null);
+            scheduleRuleRegistry.setRuleParsingScope(null);
+            transletRuleRegistry.setRuleParsingScope(null);
+            templateRuleRegistry.setRuleParsingScope(null);
 
             aspectRuleRegistry = null;
             beanRuleRegistry = null;
@@ -222,7 +222,7 @@ public class ActivityRuleAssistant {
      * Apply settings.
      */
     public void applySettings() {
-        DefaultSettings defaultSettings = assistantLocal.touchDefaultSettings();
+        DefaultSettings defaultSettings = ruleParsingScope.touchDefaultSettings();
         defaultSettings.apply(getSettings());
     }
 
@@ -289,45 +289,45 @@ public class ActivityRuleAssistant {
             return null;
         }
         return Namespace.applyTransletNamePattern(
-            assistantLocal.getDefaultSettings(), transletName, true);
+            ruleParsingScope.getDefaultSettings(), transletName, true);
     }
 
     /**
-     * Gets the assistant local.
-     * @return the assistant local
+     * Gets the rule-parsing scope.
+     * @return the rule-parsing scope
      */
-    public AssistantLocal getAssistantLocal() {
-        return assistantLocal;
+    public RuleParsingScope getRuleParsingScope() {
+        return ruleParsingScope;
     }
 
     /**
-     * Sets the assistant local.
-     * @param newAssistantLocal the new assistant local
+     * Sets the rule-parsing scope.
+     * @param newRuleParsingScope the new rule-parsing scope
      */
-    private void setAssistantLocal(AssistantLocal newAssistantLocal) {
-        this.assistantLocal = newAssistantLocal;
-        scheduleRuleRegistry.setAssistantLocal(newAssistantLocal);
-        transletRuleRegistry.setAssistantLocal(newAssistantLocal);
-        templateRuleRegistry.setAssistantLocal(newAssistantLocal);
+    private void setRuleParsingScope(RuleParsingScope newRuleParsingScope) {
+        this.ruleParsingScope = newRuleParsingScope;
+        scheduleRuleRegistry.setRuleParsingScope(newRuleParsingScope);
+        transletRuleRegistry.setRuleParsingScope(newRuleParsingScope);
+        templateRuleRegistry.setRuleParsingScope(newRuleParsingScope);
     }
 
     /**
-     * Backup the assistant local.
-     * @return the assistant local
+     * Backup the rule-parsing scope.
+     * @return the rule-parsing scope
      */
-    public AssistantLocal backupAssistantLocal() {
-        AssistantLocal oldAssistantLocal = assistantLocal;
-        AssistantLocal newAssistantLocal = assistantLocal.replicate();
-        setAssistantLocal(newAssistantLocal);
-        return oldAssistantLocal;
+    public RuleParsingScope backupRuleParsingScope() {
+        RuleParsingScope oldRuleParsingScope = ruleParsingScope;
+        RuleParsingScope newRuleParsingScope = ruleParsingScope.replicate();
+        setRuleParsingScope(newRuleParsingScope);
+        return oldRuleParsingScope;
     }
 
     /**
-     * Restore the assistant local.
-     * @param oldAssistantLocal the old assistant local
+     * Restore the rule-parsing scope.
+     * @param oldRuleParsingScope the old rule-parsing scope
      */
-    public void restoreAssistantLocal(AssistantLocal oldAssistantLocal) {
-        setAssistantLocal(oldAssistantLocal);
+    public void restoreRuleParsingScope(RuleParsingScope oldRuleParsingScope) {
+        setRuleParsingScope(oldRuleParsingScope);
     }
 
     /**
@@ -335,7 +335,7 @@ public class ActivityRuleAssistant {
      * @return true if pointcut pattern validation is required
      */
     public boolean isPointcutPatternVerifiable() {
-        DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+        DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
         return (defaultSettings != null && defaultSettings.isPointcutPatternVerifiable());
     }
 

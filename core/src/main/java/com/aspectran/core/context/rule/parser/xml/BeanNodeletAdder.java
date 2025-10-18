@@ -46,7 +46,7 @@ class BeanNodeletAdder implements NodeletAdder {
         group.child("bean")
             .nodelet(attrs -> {
                 String id = StringUtils.emptyToNull(attrs.get("id"));
-                String className = StringUtils.emptyToNull(AspectranNodeParsingContext.assistant().resolveAliasType(attrs.get("class")));
+                String className = StringUtils.emptyToNull(AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveAliasType(attrs.get("class")));
                 String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
                 String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
                 String scan = attrs.get("scan");
@@ -58,14 +58,15 @@ class BeanNodeletAdder implements NodeletAdder {
                 Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attrs.get("lazyInit"));
                 Boolean lazyDestroy = BooleanUtils.toNullableBooleanObject(attrs.get("lazyDestroy"));
                 Boolean important = BooleanUtils.toNullableBooleanObject(attrs.get("important"));
+                String profile = attrs.get("profile");
 
                 BeanRule beanRule;
                 if (className == null && scan == null && factoryBean != null) {
                     beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
-                            initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
+                            initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
                 } else {
                     beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                            factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
+                            factoryMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
                 }
 
                 AspectranNodeParsingContext.pushObject(beanRule);
@@ -77,9 +78,9 @@ class BeanNodeletAdder implements NodeletAdder {
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 BeanRule beanRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().resolveBeanClass(beanRule);
-                AspectranNodeParsingContext.assistant().resolveFactoryBeanClass(beanRule);
-                AspectranNodeParsingContext.assistant().addBeanRule(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveFactoryBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addBeanRule(beanRule);
             })
             .child("filter")
                 .nodelet(attrs -> {

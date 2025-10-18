@@ -55,13 +55,13 @@ class DiscriptionNodeletAdder  implements NodeletAdder {
 
                 Describable describable;
                 if ("/aspectran".equals(group.getXpath())) {
-                    describable = AspectranNodeParsingContext.assistant().getAssistantLocal();
+                    describable = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleParsingScope();
                 } else {
                     describable = AspectranNodeParsingContext.peekObject();
                 }
 
                 DescriptionRule oldDescriptionRule = describable.getDescriptionRule();
-                descriptionRule = AspectranNodeParsingContext.assistant().profiling(descriptionRule, oldDescriptionRule);
+                descriptionRule = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(descriptionRule, oldDescriptionRule);
                 describable.setDescriptionRule(descriptionRule);
             });
     }

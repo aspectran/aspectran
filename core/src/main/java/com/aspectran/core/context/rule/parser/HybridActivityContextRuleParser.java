@@ -17,29 +17,29 @@ package com.aspectran.core.context.rule.parser;
 
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class HybridActivityContextParser.
+ * The Class HybridActivityContextRuleParser.
  *
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
-public class HybridActivityContextParser extends AbstractActivityContextParser {
+public class HybridActivityContextRuleParser extends AbstractActivityContextRuleParser {
 
     private AspectranNodeParser aspectranNodeParser;
 
-    public HybridActivityContextParser(ActivityRuleAssistant assistant) {
-        super(assistant);
+    public HybridActivityContextRuleParser(RuleParsingContext ruleParsingContext) {
+        super(ruleParsingContext);
     }
 
     @Override
-    public ActivityRuleAssistant parse(String[] contextRules) throws ActivityContextParserException {
+    public RuleParsingContext parse(String[] contextRules) throws ActivityContextRuleParserException {
         try {
             if (contextRules == null) {
                 throw new IllegalArgumentException("contextRules must not be null");
@@ -50,15 +50,15 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
                 appendHandler.handle(resolveAppender(ruleFile));
             }
 
-            return getContextRuleAssistant();
+            return getRuleParsingContext();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configurations [" +
+            throw new ActivityContextRuleParserException("Failed to parse configurations [" +
                     StringUtils.joinWithCommas(contextRules) + "]", e);
         }
     }
 
     @Override
-    public ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
+    public RuleParsingContext parse(AspectranParameters aspectranParameters) throws ActivityContextRuleParserException {
         try {
             if (aspectranParameters == null) {
                 throw new IllegalArgumentException("aspectranParameters must not be null");
@@ -66,21 +66,21 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
 
-            ParametersToRules ruleConverter = new ParametersToRules(getContextRuleAssistant());
+            ParametersToRules ruleConverter = new ParametersToRules(getRuleParsingContext());
             ruleConverter.toRules(aspectranParameters);
 
             appendHandler.handle(null);
 
-            return getContextRuleAssistant();
+            return getRuleParsingContext();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configuration with given AspectranParameters", e);
+            throw new ActivityContextRuleParserException("Failed to parse configuration with given AspectranParameters", e);
         }
     }
 
     @Override
     public AspectranNodeParser getAspectranNodeParser() {
         if (aspectranNodeParser == null) {
-            aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
+            aspectranNodeParser = new AspectranNodeParser(getRuleParsingContext());
             AspectranNodeParsingContext.set(aspectranNodeParser);
         }
         return aspectranNodeParser;
@@ -99,7 +99,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
         RuleAppendHandler appendHandler = new HybridRuleAppendHandler(this, getEncoding());
         appendHandler.setUseAponToLoadXml(isUseXmlToApon());
         appendHandler.setDebugMode(isDebugMode());
-        getContextRuleAssistant().setRuleAppendHandler(appendHandler);
+        getRuleParsingContext().setRuleAppendHandler(appendHandler);
         return appendHandler;
     }
 

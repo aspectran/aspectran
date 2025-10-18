@@ -55,11 +55,11 @@ class ParametersNodeletAdder implements NodeletAdder {
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof TransletRule transletRule) {
                     HasParameters hasParameters = transletRule.touchRequestRule(false);
-                    irm = AspectranNodeParsingContext.assistant().profiling(irm, hasParameters.getParameterItemRuleMap());
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameters.getParameterItemRuleMap());
                     hasParameters.setParameterItemRuleMap(irm);
                 } else {
                     HasParameters hasParameters = (HasParameters)object;
-                    irm = AspectranNodeParsingContext.assistant().profiling(irm, hasParameters.getParameterItemRuleMap());
+                    irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasParameters.getParameterItemRuleMap());
                     hasParameters.setParameterItemRuleMap(irm);
                 }
             });

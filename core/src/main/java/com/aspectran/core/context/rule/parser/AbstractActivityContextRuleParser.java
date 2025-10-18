@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.parser;
 import com.aspectran.core.context.rule.appender.FileRuleAppender;
 import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
  *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-public abstract class AbstractActivityContextParser implements ActivityContextParser {
+public abstract class AbstractActivityContextRuleParser implements ActivityContextRuleParser {
 
     /** Logger available to subclasses */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ActivityRuleAssistant assistant;
+    private final RuleParsingContext ruleParsingContext;
 
     private String encoding;
 
@@ -43,13 +43,13 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
 
     private boolean debugMode;
 
-    public AbstractActivityContextParser(ActivityRuleAssistant assistant) {
-        this.assistant = assistant;
+    public AbstractActivityContextRuleParser(RuleParsingContext ruleParsingContext) {
+        this.ruleParsingContext = ruleParsingContext;
     }
 
     @Override
-    public ActivityRuleAssistant getContextRuleAssistant() {
-        return assistant;
+    public RuleParsingContext getRuleParsingContext() {
+        return ruleParsingContext;
     }
 
     public String getEncoding() {
@@ -83,12 +83,12 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
         RuleAppender appender;
         if (classpathOrFilePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String resource = classpathOrFilePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            appender = new ResourceRuleAppender(resource, assistant.getClassLoader());
+            appender = new ResourceRuleAppender(resource, ruleParsingContext.getClassLoader());
         } else if (classpathOrFilePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             String filePath = classpathOrFilePath.substring(ResourceUtils.FILE_URL_PREFIX.length());
             appender = new FileRuleAppender(filePath);
         } else {
-            appender = new FileRuleAppender(assistant.getBasePath(), classpathOrFilePath);
+            appender = new FileRuleAppender(ruleParsingContext.getBasePath(), classpathOrFilePath);
         }
         if (classpathOrFilePath.toLowerCase().endsWith(".apon")) {
             appender.setAppendableFileFormatType(AppendableFileFormatType.APON);

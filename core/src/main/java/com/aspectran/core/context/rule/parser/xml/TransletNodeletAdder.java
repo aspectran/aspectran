@@ -70,7 +70,7 @@ class TransletNodeletAdder implements NodeletAdder {
             .with(ChooseNodeletAdder.instance())
             .endNodelet(text -> {
                 TransletRule transletRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().addTransletRule(transletRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addTransletRule(transletRule);
             })
             .child("request")
                 .nodelet(attrs -> {

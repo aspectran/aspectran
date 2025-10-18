@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.utils.BooleanUtils;

@@ -24,7 +24,7 @@ import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +42,13 @@ public class AspectRuleValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AspectRuleValidator.class);
 
-    public void validate(@NonNull ActivityRuleAssistant assistant) {
-        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
+    public void validate(@NonNull RuleParsingContext ruleParsingContext) {
+        boolean pointcutPatternVerifiable = ruleParsingContext.isPointcutPatternVerifiable();
         if (!pointcutPatternVerifiable && !logger.isDebugEnabled()) {
             return;
         }
-        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
-        BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
+        AspectRuleRegistry aspectRuleRegistry = ruleParsingContext.getAspectRuleRegistry();
+        BeanRuleRegistry beanRuleRegistry = ruleParsingContext.getBeanRuleRegistry();
 
         int invalidPointcutPatterns = 0;
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {

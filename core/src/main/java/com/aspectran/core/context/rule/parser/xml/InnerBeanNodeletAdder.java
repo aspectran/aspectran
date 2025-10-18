@@ -45,7 +45,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
     public void addTo(@NonNull NodeletGroup group) {
         group.child(InnerBeanNodeletGroup.instance().getName())
             .nodelet(attrs -> {
-                String className = StringUtils.emptyToNull(AspectranNodeParsingContext.assistant().resolveAliasType(attrs.get("class")));
+                String className = StringUtils.emptyToNull(AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveAliasType(attrs.get("class")));
                 String factoryBean = StringUtils.emptyToNull(attrs.get("factoryBean"));
                 String factoryMethod = StringUtils.emptyToNull(attrs.get("factoryMethod"));
                 String initMethod = StringUtils.emptyToNull(attrs.get("initMethod"));
@@ -67,9 +67,9 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 BeanRule beanRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().resolveBeanClass(beanRule);
-                AspectranNodeParsingContext.assistant().resolveFactoryBeanClass(beanRule);
-                AspectranNodeParsingContext.assistant().addInnerBeanRule(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveFactoryBeanClass(beanRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addInnerBeanRule(beanRule);
 
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof ItemRule itemRule) {

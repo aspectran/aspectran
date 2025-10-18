@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
@@ -34,11 +34,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Class ShallowContextRuleAssistant.
+ * The Class ShallowRuleParsingContext.
  *
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
-public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
+public class ShallowRuleParsingContext extends RuleParsingContext {
 
     private List<AspectRule> aspectRules;
 
@@ -50,7 +50,7 @@ public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
 
     private List<TemplateRule> templateRules;
 
-    public ShallowContextRuleAssistant() {
+    public ShallowRuleParsingContext() {
         super();
     }
 

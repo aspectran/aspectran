@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     /** Logger available to subclasses */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ActivityRuleAssistant assistant;
+    private final RuleParsingContext ruleParsingContext;
 
     private final EnvironmentProfiles environmentProfiles;
 
@@ -46,14 +46,14 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private boolean debugMode;
 
-    AbstractAppendHandler(@NonNull ActivityRuleAssistant assistant) {
-        this.assistant = assistant;
-        this.environmentProfiles = assistant.getEnvironmentProfiles();
+    AbstractAppendHandler(@NonNull RuleParsingContext ruleParsingContext) {
+        this.ruleParsingContext = ruleParsingContext;
+        this.environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
     }
 
     @Override
-    public ActivityRuleAssistant getContextRuleAssistant() {
-        return assistant;
+    public RuleParsingContext getRuleParsingContext() {
+        return ruleParsingContext;
     }
 
     @Override
@@ -62,9 +62,9 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         if (appendRule.getAspectranParameters() != null) {
             appender = new ParametersRuleAppender();
         } else if (StringUtils.hasText(appendRule.getFile())) {
-            appender = new FileRuleAppender(assistant.getBasePath(), appendRule.getFile());
+            appender = new FileRuleAppender(ruleParsingContext.getBasePath(), appendRule.getFile());
         } else if (StringUtils.hasText(appendRule.getResource())) {
-            appender = new ResourceRuleAppender(appendRule.getResource(), assistant.getClassLoader());
+            appender = new ResourceRuleAppender(appendRule.getResource(), ruleParsingContext.getClassLoader());
         } else if (StringUtils.hasText(appendRule.getUrl())) {
             appender = new UrlRuleAppender(appendRule.getUrl());
         }

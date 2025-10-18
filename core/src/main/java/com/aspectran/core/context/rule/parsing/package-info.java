@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Provides assistant classes and utilities for managing context rules.
+ * Contains classes that manage the state and context during the parsing of configuration rules.
+ *
+ * <p>This package provides the data structures used by the rule parsers. The central class,
+ * {@link com.aspectran.core.context.rule.parsing.RuleParsingContext}, collects all parsed
+ * rules and provides the necessary environment for their validation and resolution.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.parsing;

@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
 
     private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
 
-    private AssistantLocal assistantLocal;
+    private RuleParsingScope ruleParsingScope;
 
     /**
      * Constructs a new ScheduleRuleRegistry.
@@ -53,11 +53,11 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     }
 
     /**
-     * Sets the AssistantLocal that provides access to context-wide helpers and default settings.
-     * @param assistantLocal the AssistantLocal instance
+     * Sets the RuleParsingScope that provides access to context-wide helpers and default settings.
+     * @param ruleParsingScope the RuleParsingScope instance
      */
-    public void setAssistantLocal(AssistantLocal assistantLocal) {
-        this.assistantLocal = assistantLocal;
+    public void setRuleParsingScope(RuleParsingScope ruleParsingScope) {
+        this.ruleParsingScope = ruleParsingScope;
     }
 
     /**
@@ -97,15 +97,15 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         if (scheduleRule == null) {
             throw new IllegalArgumentException("scheduleRule must not be null");
         }
-        if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
-            DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+        if (scheduleRule.getSchedulerBeanId() == null && ruleParsingScope != null) {
+            DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
                 scheduleRule.setSchedulerBeanId(defaultSettings.getDefaultSchedulerBean());
             }
         }
         if (scheduleRule.getSchedulerBeanId() != null) {
             if (scheduleRule.getSchedulerBeanClass() == null) {
-                assistantLocal.getAssistant().resolveBeanClass(scheduleRule);
+                ruleParsingScope.getRuleParsingContext().resolveBeanClass(scheduleRule);
             }
         } else if (scheduleRule.getSchedulerBeanClass() != null) {
             scheduleRule.setSchedulerBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX +

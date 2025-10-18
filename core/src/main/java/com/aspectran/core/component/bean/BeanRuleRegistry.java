@@ -34,8 +34,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
@@ -491,12 +491,12 @@ public class BeanRuleRegistry {
      * Performs post-processing of bean rules.
      * <p>This includes resolving factory-offered beans, filtering all registered bean rules
      * against active environment profiles, and initiating the parsing of annotated configurations.
-     * @param assistant the activity rule assistant
+     * @param ruleParsingContext the rule-parsing context
      * @throws IllegalRuleException if an error occurs during post-processing
      */
-    public void postProcess(ActivityRuleAssistant assistant) throws IllegalRuleException {
-        if (assistant == null) {
-            throw new IllegalArgumentException("assistant cannot be null");
+    public void postProcess(RuleParsingContext ruleParsingContext) throws IllegalRuleException {
+        if (ruleParsingContext == null) {
+            throw new IllegalArgumentException("ruleParsingContext cannot be null");
         }
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
@@ -524,13 +524,13 @@ public class BeanRuleRegistry {
         importantBeanIdSet.clear();
         importantBeanTypeSet.clear();
 
-        filterBeanRulesByProfile(assistant);
+        filterBeanRulesByProfile(ruleParsingContext);
 
-        parseAnnotatedConfig(assistant);
+        parseAnnotatedConfig(ruleParsingContext);
     }
 
-    private void filterBeanRulesByProfile(@NonNull ActivityRuleAssistant assistant) {
-        EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
+    private void filterBeanRulesByProfile(@NonNull RuleParsingContext ruleParsingContext) {
+        EnvironmentProfiles environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
         if (environmentProfiles == null) {
             return;
         }
@@ -596,7 +596,7 @@ public class BeanRuleRegistry {
         return false;
     }
 
-    private void parseAnnotatedConfig(@NonNull ActivityRuleAssistant assistant) throws IllegalRuleException {
+    private void parseAnnotatedConfig(@NonNull RuleParsingContext ruleParsingContext) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relate(Class<?> targetBeanClass, @NonNull BeanRule beanRule) throws IllegalRuleException {
@@ -609,26 +609,26 @@ public class BeanRuleRegistry {
 
             @Override
             public void relate(AspectRule aspectRule) throws IllegalRuleException {
-                assistant.addAspectRule(aspectRule);
+                ruleParsingContext.addAspectRule(aspectRule);
             }
 
             @Override
             public void relate(ScheduleRule scheduleRule) throws IllegalRuleException {
-                assistant.addScheduleRule(scheduleRule);
+                ruleParsingContext.addScheduleRule(scheduleRule);
             }
 
             @Override
             public void relate(TransletRule transletRule) throws IllegalRuleException {
-                assistant.addTransletRule(transletRule);
+                ruleParsingContext.addTransletRule(transletRule);
             }
 
             @Override
             public void relate(AutowireRule autowireRule) throws IllegalRuleException {
-                assistant.resolveBeanClass(autowireRule);
+                ruleParsingContext.resolveBeanClass(autowireRule);
             }
         };
 
-        AnnotatedConfigParser parser = new AnnotatedConfigParser(assistant, relater);
+        AnnotatedConfigParser parser = new AnnotatedConfigParser(ruleParsingContext, relater);
         parser.parse();
     }
 

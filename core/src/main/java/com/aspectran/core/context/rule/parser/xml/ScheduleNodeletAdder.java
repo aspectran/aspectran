@@ -56,7 +56,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
                 ScheduleRule scheduleRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().addScheduleRule(scheduleRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addScheduleRule(scheduleRule);
             })
             .child("scheduler")
                 .nodelet(attrs -> {

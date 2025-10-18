@@ -56,9 +56,6 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.appender.RuleAppender;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.params.ActionParameters;
 import com.aspectran.core.context.rule.params.AdviceActionParameters;
 import com.aspectran.core.context.rule.params.AdviceParameters;
@@ -93,6 +90,9 @@ import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
+import com.aspectran.core.context.rule.parsing.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
+import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
@@ -125,25 +125,25 @@ public class RulesToParameters {
     }
 
     @NonNull
-    public static RootParameters toRootParameters(ActivityRuleAssistant assistant) {
+    public static RootParameters toRootParameters(RuleParsingContext ruleParsingContext) {
         RootParameters rootParameters = new RootParameters();
-        rootParameters.putValue(RootParameters.aspectran, toAspectranParameters(assistant));
+        rootParameters.putValue(RootParameters.aspectran, toAspectranParameters(ruleParsingContext));
         return rootParameters;
     }
 
     @NonNull
-    private static AspectranParameters toAspectranParameters(@NonNull ActivityRuleAssistant assistant) {
+    private static AspectranParameters toAspectranParameters(@NonNull RuleParsingContext ruleParsingContext) {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
-        AssistantLocal assistantLocal = assistant.getAssistantLocal();
-        if (assistantLocal.getDescriptionRule() != null) {
-            toDescriptionParameters(assistantLocal.getDescriptionRule(), aspectranParameters, AspectranParameters.description);
+        RuleParsingScope ruleParsingScope = ruleParsingContext.getRuleParsingScope();
+        if (ruleParsingScope.getDescriptionRule() != null) {
+            toDescriptionParameters(ruleParsingScope.getDescriptionRule(), aspectranParameters, AspectranParameters.description);
         }
 
-        SettingsParameters settingsParameters = toDefaultSettings(assistantLocal);
+        SettingsParameters settingsParameters = toDefaultSettings(ruleParsingScope);
         aspectranParameters.putValueIfNotNull(AspectranParameters.settings, settingsParameters);
 
-        Map<String, String> typeAliases = assistant.getTypeAliases();
+        Map<String, String> typeAliases = ruleParsingContext.getTypeAliases();
         if (!typeAliases.isEmpty()) {
             TypeAliasesParameters typeAliasesParameters = aspectranParameters.newParameters(AspectranParameters.typeAliases);
             for (Map.Entry<String, String> entry : typeAliases.entrySet()) {
@@ -151,7 +151,7 @@ public class RulesToParameters {
             }
         }
 
-        List<EnvironmentRule> environmentRules = assistant.getEnvironmentRules();
+        List<EnvironmentRule> environmentRules = ruleParsingContext.getEnvironmentRules();
         if (!environmentRules.isEmpty()) {
             for (EnvironmentRule environmentRule : environmentRules) {
                 EnvironmentParameters ps = toEnvironmentParameters(environmentRule);
@@ -159,32 +159,32 @@ public class RulesToParameters {
             }
         }
 
-        for (AspectRule aspectRule : assistant.getAspectRules()) {
+        for (AspectRule aspectRule : ruleParsingContext.getAspectRules()) {
             AspectParameters ps = toAspectParameters(aspectRule);
             aspectranParameters.putValue(AspectranParameters.aspect, ps);
         }
 
-        for (BeanRule beanRule : assistant.getBeanRules()) {
+        for (BeanRule beanRule : ruleParsingContext.getBeanRules()) {
             BeanParameters ps = toBeanParameters(beanRule);
             aspectranParameters.putValue(AspectranParameters.bean, ps);
         }
 
-        for (ScheduleRule scheduleRule : assistant.getScheduleRules()) {
+        for (ScheduleRule scheduleRule : ruleParsingContext.getScheduleRules()) {
             ScheduleParameters ps = toScheduleParameters(scheduleRule);
             aspectranParameters.putValue(AspectranParameters.schedule, ps);
         }
 
-        for (TransletRule transletRule : assistant.getTransletRules()) {
+        for (TransletRule transletRule : ruleParsingContext.getTransletRules()) {
             TransletParameters ps = toTransletParameters(transletRule);
             aspectranParameters.putValue(AspectranParameters.translet, ps);
         }
 
-        for (TemplateRule templateRule : assistant.getTemplateRules()) {
+        for (TemplateRule templateRule : ruleParsingContext.getTemplateRules()) {
             TemplateParameters ps = toTemplateParameters(templateRule);
             aspectranParameters.putValue(AspectranParameters.template, ps);
         }
 
-        List<RuleAppender> appenderList = assistant.getRuleAppendHandler().getPendingList();
+        List<RuleAppender> appenderList = ruleParsingContext.getRuleAppendHandler().getPendingList();
         if (appenderList != null) {
             for (RuleAppender appender : appenderList) {
                 AppendParameters ps = toAppendParameters(appender);
@@ -212,8 +212,8 @@ public class RulesToParameters {
     }
 
     @Nullable
-    private static SettingsParameters toDefaultSettings(@NonNull AssistantLocal assistantLocal) {
-        DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+    private static SettingsParameters toDefaultSettings(@NonNull RuleParsingScope ruleParsingScope) {
+        DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
         if (defaultSettings != null) {
             SettingsParameters settingsParameters = new SettingsParameters();
             if (defaultSettings.getTransletNamePrefix() != null) {
@@ -389,6 +389,7 @@ public class RulesToParameters {
         beanParameters.putValueIfNotNull(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
         beanParameters.putValueIfNotNull(BeanParameters.lazyInit, beanRule.getLazyInit());
         beanParameters.putValueIfNotNull(BeanParameters.important, beanRule.getImportant());
+        beanParameters.putValueIfNotNull(BeanParameters.profile, beanRule.getProfile());
         beanParameters.putValueIfNotNull(BeanParameters.filter, beanRule.getFilterParameters());
 
         ItemRuleMap constructorArgumentItemRuleMap = beanRule.getArgumentItemRuleMap();

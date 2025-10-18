@@ -22,7 +22,7 @@ import java.io.Serial;
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ActivityContextParserException extends Exception {
+public class ActivityContextRuleParserException extends Exception {
 
     @Serial
     private static final long serialVersionUID = 5702282474852901391L;
@@ -30,7 +30,7 @@ public class ActivityContextParserException extends Exception {
     /**
      * Simple constructor.
      */
-    public ActivityContextParserException() {
+    public ActivityContextRuleParserException() {
         super();
     }
 
@@ -38,7 +38,7 @@ public class ActivityContextParserException extends Exception {
      * Constructor to create exception with a message.
      * @param msg the specific message
      */
-    public ActivityContextParserException(String msg) {
+    public ActivityContextRuleParserException(String msg) {
         super(msg);
     }
 
@@ -46,7 +46,7 @@ public class ActivityContextParserException extends Exception {
      * Constructor to create exception to wrap another exception.
      * @param cause the real cause of the exception
      */
-    public ActivityContextParserException(Throwable cause) {
+    public ActivityContextRuleParserException(Throwable cause) {
         super(cause);
     }
 
@@ -55,7 +55,7 @@ public class ActivityContextParserException extends Exception {
      * @param msg the specific message
      * @param cause the real cause of the exception
      */
-    public ActivityContextParserException(String msg, Throwable cause) {
+    public ActivityContextRuleParserException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

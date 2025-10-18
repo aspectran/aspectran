@@ -48,7 +48,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.ActionParameters;
 import com.aspectran.core.context.rule.params.AdviceActionParameters;
 import com.aspectran.core.context.rule.params.AdviceParameters;
@@ -85,6 +84,7 @@ import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -98,10 +98,10 @@ import java.util.List;
  */
 public class ParametersToRules {
 
-    private final ActivityRuleAssistant assistant;
+    private final RuleParsingContext ruleParsingContext;
 
-    public ParametersToRules(ActivityRuleAssistant assistant) {
-        this.assistant = assistant;
+    public ParametersToRules(RuleParsingContext ruleParsingContext) {
+        this.ruleParsingContext = ruleParsingContext;
     }
 
     public void toRules(RootParameters rootParameters) throws IllegalRuleException {
@@ -122,8 +122,8 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, assistant.getAssistantLocal().getDescriptionRule());
-                assistant.getAssistantLocal().setDescriptionRule(descriptionRule);
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, ruleParsingContext.getRuleParsingScope().getDescriptionRule());
+                ruleParsingContext.getRuleParsingScope().setDescriptionRule(descriptionRule);
             }
         }
 
@@ -199,7 +199,7 @@ public class ParametersToRules {
     }
 
     private void toAppendRule(AppendParameters appendParameters) throws IllegalRuleException {
-        RuleAppendHandler appendHandler = assistant.getRuleAppendHandler();
+        RuleAppendHandler appendHandler = ruleParsingContext.getRuleAppendHandler();
         if (appendHandler != null) {
             AspectranParameters aspectran = appendParameters.getParameters(AppendParameters.aspectran);
             String profile = appendParameters.getString(AppendParameters.profile);
@@ -222,9 +222,9 @@ public class ParametersToRules {
             List<SettingParameters> settingParametersList = settingsParameters.getParametersList(SettingsParameters.setting);
             if (settingParametersList != null) {
                 for (SettingParameters settingParameters : settingParametersList) {
-                    assistant.putSetting(settingParameters.getName(), settingParameters.getValueAsString());
+                    ruleParsingContext.putSetting(settingParameters.getName(), settingParameters.getValueAsString());
                 }
-                assistant.applySettings();
+                ruleParsingContext.applySettings();
             }
         }
     }
@@ -236,7 +236,7 @@ public class ParametersToRules {
                 for (TypeAliasParameters typeAliasParameters : typeAliasParametersList) {
                     String alias = typeAliasParameters.getString(TypeAliasParameters.alias);
                     String type = typeAliasParameters.getString(TypeAliasParameters.type);
-                    assistant.addTypeAlias(alias, type);
+                    ruleParsingContext.addTypeAlias(alias, type);
                 }
             }
         }
@@ -252,7 +252,7 @@ public class ParametersToRules {
             if (descriptionParametersList != null) {
                 for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                     DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = assistant.profiling(descriptionRule, environmentRule.getDescriptionRule());
+                    descriptionRule = ruleParsingContext.profiling(descriptionRule, environmentRule.getDescriptionRule());
                     environmentRule.setDescriptionRule(descriptionRule);
                 }
             }
@@ -261,12 +261,12 @@ public class ParametersToRules {
             if (propertyItemHolderParametersList != null) {
                 for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                     ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                    irm = assistant.profiling(irm, environmentRule.getPropertyItemRuleMap());
+                    irm = ruleParsingContext.profiling(irm, environmentRule.getPropertyItemRuleMap());
                     environmentRule.setPropertyItemRuleMap(irm);
                 }
             }
 
-            assistant.addEnvironmentRule(environmentRule);
+            ruleParsingContext.addEnvironmentRule(environmentRule);
         }
     }
 
@@ -282,7 +282,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, aspectRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, aspectRule.getDescriptionRule());
                 aspectRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -355,7 +355,7 @@ public class ParametersToRules {
             if (descriptionParametersList2 != null) {
                 for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
                     DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = assistant.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    descriptionRule = ruleParsingContext.profiling(descriptionRule, exceptionRule.getDescriptionRule());
                     exceptionRule.setDescriptionRule(descriptionRule);
                 }
             }
@@ -370,13 +370,13 @@ public class ParametersToRules {
             aspectRule.setExceptionRule(exceptionRule);
         }
 
-        assistant.resolveAdviceBeanClass(aspectRule);
-        assistant.addAspectRule(aspectRule);
+        ruleParsingContext.resolveAdviceBeanClass(aspectRule);
+        ruleParsingContext.addAspectRule(aspectRule);
     }
 
     private void toBeanRule(@NonNull BeanParameters beanParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
-        String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
+        String className = StringUtils.emptyToNull(ruleParsingContext.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String scan = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.scan));
         String mask = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.mask));
         String scope = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.scope));
@@ -388,21 +388,22 @@ public class ParametersToRules {
         Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
         Boolean lazyDestroy = beanParameters.getBoolean(BeanParameters.lazyDestroy);
         Boolean important = beanParameters.getBoolean(BeanParameters.important);
+        String profile = beanParameters.getString(BeanParameters.profile);
 
         BeanRule beanRule;
         if (className == null && scan == null && factoryBean != null) {
             beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
-                initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
+                    initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
         } else {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
+                    factoryMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
         }
 
         List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, beanRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, beanRule.getDescriptionRule());
                 beanRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -416,7 +417,7 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getArgumentItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, beanRule.getArgumentItemRuleMap());
                 beanRule.setArgumentItemRuleMap(irm);
             }
         }
@@ -425,18 +426,18 @@ public class ParametersToRules {
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, beanRule.getPropertyItemRuleMap());
                 beanRule.setPropertyItemRuleMap(irm);
             }
         }
 
-        assistant.resolveBeanClass(beanRule);
-        assistant.resolveFactoryBeanClass(beanRule);
-        assistant.addBeanRule(beanRule);
+        ruleParsingContext.resolveBeanClass(beanRule);
+        ruleParsingContext.resolveFactoryBeanClass(beanRule);
+        ruleParsingContext.addBeanRule(beanRule);
     }
 
     private BeanRule toInnerBeanRule(@NonNull BeanParameters beanParameters) throws IllegalRuleException {
-        String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
+        String className = StringUtils.emptyToNull(ruleParsingContext.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
         String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
         String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
@@ -453,7 +454,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, beanRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, beanRule.getDescriptionRule());
                 beanRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -462,7 +463,7 @@ public class ParametersToRules {
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getArgumentItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, beanRule.getArgumentItemRuleMap());
                 beanRule.setArgumentItemRuleMap(irm);
             }
         }
@@ -471,14 +472,14 @@ public class ParametersToRules {
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, beanRule.getPropertyItemRuleMap());
                 beanRule.setPropertyItemRuleMap(irm);
             }
         }
 
-        assistant.resolveBeanClass(beanRule);
-        assistant.resolveFactoryBeanClass(beanRule);
-        assistant.addInnerBeanRule(beanRule);
+        ruleParsingContext.resolveBeanClass(beanRule);
+        ruleParsingContext.resolveFactoryBeanClass(beanRule);
+        ruleParsingContext.addInnerBeanRule(beanRule);
 
         return beanRule;
     }
@@ -492,7 +493,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, scheduleRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, scheduleRule.getDescriptionRule());
                 scheduleRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -519,7 +520,7 @@ public class ParametersToRules {
             }
         }
 
-        assistant.addScheduleRule(scheduleRule);
+        ruleParsingContext.addScheduleRule(scheduleRule);
     }
 
     private void toTransletRule(@NonNull TransletParameters transletParameters) throws IllegalRuleException {
@@ -536,7 +537,7 @@ public class ParametersToRules {
         if (descriptionParametersList != null) {
             for (DescriptionParameters descriptionParameters : descriptionParametersList) {
                 DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                descriptionRule = assistant.profiling(descriptionRule, transletRule.getDescriptionRule());
+                descriptionRule = ruleParsingContext.profiling(descriptionRule, transletRule.getDescriptionRule());
                 transletRule.setDescriptionRule(descriptionRule);
             }
         }
@@ -551,7 +552,7 @@ public class ParametersToRules {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
                 RequestRule requestRule = transletRule.touchRequestRule(false);
-                irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
@@ -561,7 +562,7 @@ public class ParametersToRules {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
                 RequestRule requestRule = transletRule.touchRequestRule(false);
-                irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -628,7 +629,7 @@ public class ParametersToRules {
             if (descriptionParametersList2 != null) {
                 for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
                     DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
-                    descriptionRule = assistant.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    descriptionRule = ruleParsingContext.profiling(descriptionRule, exceptionRule.getDescriptionRule());
                     exceptionRule.setDescriptionRule(descriptionRule);
                 }
             }
@@ -644,7 +645,7 @@ public class ParametersToRules {
             transletRule.setExceptionRule(exceptionRule);
         }
 
-        assistant.addTransletRule(transletRule);
+        ruleParsingContext.addTransletRule(transletRule);
     }
 
     private void toRequestRule(@NonNull RequestParameters requestParameters, TransletRule transletRule)
@@ -658,7 +659,7 @@ public class ParametersToRules {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, requestRule.getParameterItemRuleMap());
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
@@ -667,7 +668,7 @@ public class ParametersToRules {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -759,7 +760,7 @@ public class ParametersToRules {
                 if (argumentItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
                         invokeActionRule.setArgumentItemRuleMap(irm);
                     }
                 }
@@ -767,11 +768,11 @@ public class ParametersToRules {
                 if (propertyItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
                         invokeActionRule.setPropertyItemRuleMap(irm);
                     }
                 }
-                assistant.resolveActionBeanClass(invokeActionRule);
+                ruleParsingContext.resolveActionBeanClass(invokeActionRule);
                 actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
@@ -783,7 +784,7 @@ public class ParametersToRules {
                 if (argumentItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
                         invokeActionRule.setArgumentItemRuleMap(irm);
                     }
                 }
@@ -791,11 +792,11 @@ public class ParametersToRules {
                 if (propertyItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
                         invokeActionRule.setPropertyItemRuleMap(irm);
                     }
                 }
-                assistant.resolveActionBeanClass(invokeActionRule);
+                ruleParsingContext.resolveActionBeanClass(invokeActionRule);
                 actionRuleApplicable.putActionRule(invokeActionRule);
                 break;
             }
@@ -822,7 +823,7 @@ public class ParametersToRules {
             case "include": {
                 String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
                 String translet = actionParameters.getString(ActionParameters.translet);
-                translet = assistant.applyTransletNamePattern(translet);
+                translet = ruleParsingContext.applyTransletNamePattern(translet);
                 String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
                 Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, translet, method, hidden);
@@ -830,7 +831,7 @@ public class ParametersToRules {
                 if (parameterItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, includeActionRule.getParameterItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, includeActionRule.getParameterItemRuleMap());
                         includeActionRule.setParameterItemRuleMap(irm);
                     }
                 }
@@ -838,7 +839,7 @@ public class ParametersToRules {
                 if (attributeItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                         ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());
+                        irm = ruleParsingContext.profiling(irm, includeActionRule.getAttributeItemRuleMap());
                         includeActionRule.setAttributeItemRuleMap(irm);
                     }
                 }
@@ -977,7 +978,7 @@ public class ParametersToRules {
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url, style, content, contentType2, encoding2, noCache);
             transformRule.setTemplateRule(templateRule);
-            assistant.resolveBeanClass(templateRule.getTemplateTokens());
+            ruleParsingContext.resolveBeanClass(templateRule.getTemplateTokens());
         }
 
         responseRuleApplicable.putResponseRule(transformRule);
@@ -1012,7 +1013,7 @@ public class ParametersToRules {
         String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
         Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 
-        translet = assistant.applyTransletNamePattern(translet);
+        translet = ruleParsingContext.applyTransletNamePattern(translet);
 
         ForwardRule forwardRule = ForwardRule.newInstance(contentType, translet, method, defaultResponse);
 
@@ -1020,7 +1021,7 @@ public class ParametersToRules {
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, forwardRule.getAttributeItemRuleMap());
                 forwardRule.setAttributeItemRuleMap(irm);
             }
         }
@@ -1052,13 +1053,13 @@ public class ParametersToRules {
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = toItemRuleMap(itemHolderParameters);
-                irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
+                irm = ruleParsingContext.profiling(irm, redirectRule.getParameterItemRuleMap());
                 redirectRule.setParameterItemRuleMap(irm);
             }
         }
 
         responseRuleApplicable.putResponseRule(redirectRule);
-        assistant.resolveBeanClass(redirectRule.getPathTokens());
+        ruleParsingContext.resolveBeanClass(redirectRule.getPathTokens());
     }
 
     private void toTemplateRule(@NonNull TemplateParameters templateParameters) throws IllegalRuleException {
@@ -1075,7 +1076,7 @@ public class ParametersToRules {
         Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
         TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, style, content, contentType, encoding, noCache);
-        assistant.addTemplateRule(templateRule);
+        ruleParsingContext.addTemplateRule(templateRule);
     }
 
     private ItemRuleMap toItemRuleMap(@NonNull ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
@@ -1089,7 +1090,7 @@ public class ParametersToRules {
         if (itemRuleMap != null) {
             itemRuleMap.setProfile(profile);
             for (ItemRule itemRule : itemRuleMap.values()) {
-                assistant.resolveBeanClass(itemRule);
+                ruleParsingContext.resolveBeanClass(itemRule);
             }
         }
         return itemRuleMap;

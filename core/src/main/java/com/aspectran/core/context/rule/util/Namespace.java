@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.util;
 
-import com.aspectran.core.context.rule.assistant.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.DefaultSettings;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 

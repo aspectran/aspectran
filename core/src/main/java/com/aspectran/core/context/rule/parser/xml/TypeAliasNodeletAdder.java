@@ -52,9 +52,9 @@ class TypeAliasNodeletAdder implements NodeletAdder {
                 String type = AspectranNodeParsingContext.popObject();
 
                 if (type != null) {
-                    AspectranNodeParsingContext.assistant().addTypeAlias(alias, type);
+                    AspectranNodeParsingContext.getCurrentRuleParsingContext().addTypeAlias(alias, type);
                 } else if (text != null) {
-                    AspectranNodeParsingContext.assistant().addTypeAlias(alias, text);
+                    AspectranNodeParsingContext.getCurrentRuleParsingContext().addTypeAlias(alias, text);
                 }
             });
     }

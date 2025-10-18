@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.validation;
 
-import com.aspectran.core.context.rule.parser.ActivityContextParserException;
+import com.aspectran.core.context.rule.parser.ActivityContextRuleParserException;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererInfo;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererKey;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class BeanReferenceException extends ActivityContextParserException {
+public class BeanReferenceException extends ActivityContextRuleParserException {
 
     @Serial
     private static final long serialVersionUID = -244633940486989865L;

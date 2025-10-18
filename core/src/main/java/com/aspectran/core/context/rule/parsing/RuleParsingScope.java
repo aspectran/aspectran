@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.assistant;
+package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
- * The Class AssistantLocal.
+ * The Class RuleParsingScope.
  *
  * <p>Created: 2015. 10. 2.</p>
  */
-public class AssistantLocal implements Replicable<AssistantLocal>, Describable {
+public class RuleParsingScope implements Replicable<RuleParsingScope>, Describable {
 
-    private final ActivityRuleAssistant assistant;
+    private final RuleParsingContext ruleParsingContext;
 
     private DescriptionRule descriptionRule;
 
@@ -34,17 +34,17 @@ public class AssistantLocal implements Replicable<AssistantLocal>, Describable {
 
     private final int replicatedCount;
 
-    public AssistantLocal(ActivityRuleAssistant assistant) {
-        this(assistant, 0);
+    public RuleParsingScope(RuleParsingContext ruleParsingContext) {
+        this(ruleParsingContext, 0);
     }
 
-    private AssistantLocal(ActivityRuleAssistant assistant, int replicatedCount) {
-        this.assistant = assistant;
+    private RuleParsingScope(RuleParsingContext ruleParsingContext, int replicatedCount) {
+        this.ruleParsingContext = ruleParsingContext;
         this.replicatedCount = replicatedCount;
     }
 
-    public ActivityRuleAssistant getAssistant() {
-        return assistant;
+    public RuleParsingContext getRuleParsingContext() {
+        return ruleParsingContext;
     }
 
     public DescriptionRule getDescriptionRule() {
@@ -75,8 +75,8 @@ public class AssistantLocal implements Replicable<AssistantLocal>, Describable {
     }
 
     @Override
-    public AssistantLocal replicate() {
-        AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
+    public RuleParsingScope replicate() {
+        RuleParsingScope al = new RuleParsingScope(ruleParsingContext, replicatedCount + 1);
 
         DescriptionRule dr = getDescriptionRule();
         if (dr != null) {

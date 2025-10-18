@@ -18,8 +18,8 @@ package com.aspectran.core.component.template;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.DefaultSettings;
+import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class TemplateRuleRegistry extends AbstractComponent {
 
     private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<>();
 
-    private AssistantLocal assistantLocal;
+    private RuleParsingScope ruleParsingScope;
 
     /**
      * Instantiates a new TemplateRuleRegistry.
@@ -49,11 +49,11 @@ public class TemplateRuleRegistry extends AbstractComponent {
     }
 
     /**
-     * Sets the assistant local.
-     * @param assistantLocal the assistant local
+     * Sets the rule-parsing scope.
+     * @param ruleParsingScope the rule-parsing scope
      */
-    public void setAssistantLocal(AssistantLocal assistantLocal) {
-        this.assistantLocal = assistantLocal;
+    public void setRuleParsingScope(RuleParsingScope ruleParsingScope) {
+        this.ruleParsingScope = ruleParsingScope;
     }
 
     /**
@@ -91,16 +91,16 @@ public class TemplateRuleRegistry extends AbstractComponent {
         if (templateRule == null) {
             throw new IllegalArgumentException("templateRule must not be null");
         }
-        if (templateRule.getEngine() == null && assistantLocal != null) {
-            DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+        if (templateRule.getEngine() == null && ruleParsingScope != null) {
+            DefaultSettings defaultSettings = ruleParsingScope.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {
                 templateRule.setEngineBeanId(defaultSettings.getDefaultTemplateEngineBean());
                 templateRule.setTemplateSource(templateRule.getTemplateSource());
             }
         }
 
-        if (assistantLocal != null) {
-            assistantLocal.getAssistant().resolveBeanClass(templateRule);
+        if (ruleParsingScope != null) {
+            ruleParsingScope.getRuleParsingContext().resolveBeanClass(templateRule);
         }
         templateRuleMap.put(templateRule.getId(), templateRule);
 

@@ -66,7 +66,7 @@ class TemplateNodeletAdder implements NodeletAdder {
                 TemplateRule templateRule = AspectranNodeParsingContext.popObject();
 
                 TemplateRule.updateTemplateSource(templateRule, text);
-                AspectranNodeParsingContext.assistant().addTemplateRule(templateRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addTemplateRule(templateRule);
             });
     }
 

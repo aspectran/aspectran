@@ -87,7 +87,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 if (itemRule.getType() == ItemType.SINGLE && StringUtils.hasText(text)) {
                     itemRule.setValue(text);
                 }
-                AspectranNodeParsingContext.assistant().resolveBeanClass(itemRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(itemRule);
 
                 Object object = AspectranNodeParsingContext.peekObject();
                 if (object instanceof ItemRuleMap irm) {

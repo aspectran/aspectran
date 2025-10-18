@@ -15,17 +15,17 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 /**
  * The Class ShallowRuleAppendHandler.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class ShallowRuleAppendHandler extends AbstractAppendHandler {
 
-    public ShallowRuleAppendHandler(ActivityRuleAssistant assistant) {
-        super(assistant);
+    public ShallowRuleAppendHandler(RuleParsingContext ruleParsingContext) {
+        super(ruleParsingContext);
     }
 
     @Override

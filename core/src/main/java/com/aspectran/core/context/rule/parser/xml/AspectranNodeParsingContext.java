@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.Assert;
 
@@ -71,8 +71,8 @@ public class AspectranNodeParsingContext {
         return stack.peek();
     }
 
-    static ActivityRuleAssistant assistant() {
-        return current().getAssistant();
+    static RuleParsingContext getCurrentRuleParsingContext() {
+        return current().getRuleParsingContext();
     }
 
     /**

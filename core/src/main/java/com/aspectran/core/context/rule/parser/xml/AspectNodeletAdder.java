@@ -57,7 +57,7 @@ class AspectNodeletAdder implements NodeletAdder {
             .with(DiscriptionNodeletAdder.instance())
             .endNodelet(text -> {
                 AspectRule aspectRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().addAspectRule(aspectRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addAspectRule(aspectRule);
             })
             .child("joinpoint")
                 .nodelet(attrs -> {
@@ -104,7 +104,7 @@ class AspectNodeletAdder implements NodeletAdder {
                     if (beanIdOrClass != null) {
                         AspectRule aspectRule = AspectranNodeParsingContext.peekObject();
                         aspectRule.setAdviceBeanId(beanIdOrClass);
-                        AspectranNodeParsingContext.assistant().resolveAdviceBeanClass(aspectRule);
+                        AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveAdviceBeanClass(aspectRule);
                     }
                 })
                 .with(AdviceInnerNodeletAdder.instance())

@@ -49,7 +49,7 @@ class AppendNodeletAdder implements NodeletAdder {
                 String format = attrs.get("format");
                 String profile = attrs.get("profile");
 
-                RuleAppendHandler appendHandler = AspectranNodeParsingContext.assistant().getRuleAppendHandler();
+                RuleAppendHandler appendHandler = AspectranNodeParsingContext.getCurrentRuleParsingContext().getRuleAppendHandler();
                 if (appendHandler != null) {
                     AppendRule appendRule = AppendRule.newInstance(file, resource, url, format, profile);
                     appendHandler.pending(appendRule);

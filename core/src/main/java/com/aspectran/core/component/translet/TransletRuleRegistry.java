@@ -25,8 +25,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.params.FilterParameters;
+import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
@@ -91,7 +91,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private final ClassLoader classLoader;
 
-    private AssistantLocal assistantLocal;
+    private RuleParsingScope ruleParsingScope;
 
     /**
      * Constructs a new TransletRuleRegistry.
@@ -104,11 +104,11 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     /**
-     * Sets the AssistantLocal that provides access to context-wide helpers and default settings.
-     * @param assistantLocal the AssistantLocal instance
+     * Sets the RuleParsingScope that provides access to context-wide helpers and default settings.
+     * @param ruleParsingScope the RuleParsingScope instance
      */
-    public void setAssistantLocal(AssistantLocal assistantLocal) {
-        this.assistantLocal = assistantLocal;
+    public void setRuleParsingScope(RuleParsingScope ruleParsingScope) {
+        this.ruleParsingScope = ruleParsingScope;
     }
 
     /**
@@ -382,7 +382,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         transletRule.determineResponseRule();
 
         String transletName = Namespace.applyTransletNamePattern(
-            assistantLocal.getDefaultSettings(), transletRule.getName());
+            ruleParsingScope.getDefaultSettings(), transletRule.getName());
         transletRule.setName(transletName);
 
         MethodType[] allowedMethods = transletRule.getAllowedMethods();

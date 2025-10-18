@@ -22,11 +22,8 @@ import com.aspectran.utils.apon.ValueType;
 public class EnvironmentParameters extends AbstractParameters {
 
     public static final ParameterKey description;
-
     public static final ParameterKey profile;
-
     public static final ParameterKey properties;
-
     private static final ParameterKey[] parameterKeys;
 
     static {

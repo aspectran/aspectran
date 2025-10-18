@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public interface RuleAppendHandler {
 
-    ActivityRuleAssistant getContextRuleAssistant();
+    RuleParsingContext getRuleParsingContext();
 
     void pending(AppendRule appendRule);
 

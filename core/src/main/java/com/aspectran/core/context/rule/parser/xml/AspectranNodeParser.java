@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.appender.RuleAppender;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.nodelet.NodeletException;
@@ -32,28 +32,28 @@ import java.io.InputStream;
  */
 public class AspectranNodeParser {
 
-    private final ActivityRuleAssistant assistant;
+    private final RuleParsingContext ruleParsingContext;
 
     private final NodeletParser nodeletParser;
 
     /**
      * Instantiates a new AspectranNodeParser.
-     * @param assistant the assistant for Context Builder
+     * @param ruleParsingContext the rule-parsing context
      */
-    public AspectranNodeParser(ActivityRuleAssistant assistant) {
-        this(assistant, true, true);
+    public AspectranNodeParser(RuleParsingContext ruleParsingContext) {
+        this(ruleParsingContext, true, true);
     }
 
     /**
      * Instantiates a new AspectranNodeParser.
-     * @param assistant the context builder assistant
+     * @param ruleParsingContext the rule-parsing context
      * @param validating true if the parser produced will validate documents
      *      as they are parsed; false otherwise
      * @param trackingLocation true if tracing the location of the node being
      *      parsed; false otherwise
      */
-    public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
-        this.assistant = assistant;
+    public AspectranNodeParser(RuleParsingContext ruleParsingContext, boolean validating, boolean trackingLocation) {
+        this.ruleParsingContext = ruleParsingContext;
         this.nodeletParser = new NodeletParser(AspectranNodeletGroup.instance());
         this.nodeletParser.setValidating(validating);
         this.nodeletParser.setEntityResolver(new AspectranDtdResolver(validating));
@@ -62,8 +62,8 @@ public class AspectranNodeParser {
         }
     }
 
-    public ActivityRuleAssistant getAssistant() {
-        return assistant;
+    public RuleParsingContext getRuleParsingContext() {
+        return ruleParsingContext;
     }
 
     public ArrayStack<Object> getObjectStack() {

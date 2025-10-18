@@ -16,17 +16,17 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.ShallowContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
-import com.aspectran.core.context.rule.parser.ActivityContextParser;
+import com.aspectran.core.context.rule.parser.ActivityContextRuleParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
+import com.aspectran.core.context.rule.parsing.RuleParsingScope;
+import com.aspectran.core.context.rule.parsing.ShallowRuleParsingContext;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -47,22 +47,22 @@ import java.io.Reader;
  */
 public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
-    private final ActivityContextParser activityContextParser;
+    private final ActivityContextRuleParser activityContextParser;
 
     private final String encoding;
 
     private EntityResolver entityResolver;
 
-    public HybridRuleAppendHandler(ActivityContextParser activityContextParser, String encoding) {
-        super(activityContextParser.getContextRuleAssistant());
-        this.activityContextParser = activityContextParser;
+    public HybridRuleAppendHandler(@NonNull ActivityContextRuleParser activityContextRuleParser, String encoding) {
+        super(activityContextRuleParser.getRuleParsingContext());
+        this.activityContextParser = activityContextRuleParser;
         this.encoding = encoding;
     }
 
     @Override
     public void handle(RuleAppender appender) throws Exception {
         setCurrentRuleAppender(appender);
-        AssistantLocal assistantLocal = getContextRuleAssistant().backupAssistantLocal();
+        RuleParsingScope ruleParsingScope = getRuleParsingContext().backupRuleParsingScope();
 
         if (appender != null) {
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
@@ -102,8 +102,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         super.handle();
 
         // The first default settings will remain after all configuration settings have been completed.
-        if (assistantLocal.getReplicatedCount() > 0) {
-            getContextRuleAssistant().restoreAssistantLocal(assistantLocal);
+        if (ruleParsingScope.getReplicatedCount() > 0) {
+            getRuleParsingContext().restoreRuleParsingScope(ruleParsingScope);
         }
     }
 
@@ -115,17 +115,17 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     }
 
     private void convertToRules(RootParameters rootParameters) throws IllegalRuleException {
-        new ParametersToRules(getContextRuleAssistant()).toRules(rootParameters);
+        new ParametersToRules(getRuleParsingContext()).toRules(rootParameters);
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {
-        ActivityRuleAssistant assistant = null;
+        RuleParsingContext ruleParsingContext = null;
         RootParameters rootParameters;
         try {
-            assistant = new ShallowContextRuleAssistant();
-            assistant.prepare();
+            ruleParsingContext = new ShallowRuleParsingContext();
+            ruleParsingContext.prepare();
 
-            AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
+            AspectranNodeParser parser = new AspectranNodeParser(ruleParsingContext, false, false);
             try {
                 AspectranNodeParsingContext.set(parser);
                 parser.parse(fileRuleAppender);
@@ -133,12 +133,12 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 AspectranNodeParsingContext.clear();
             }
 
-            rootParameters = RulesToParameters.toRootParameters(assistant);
+            rootParameters = RulesToParameters.toRootParameters(ruleParsingContext);
         } catch (Exception e) {
             throw new IOException("Failed to convert as Root Parameters: " + fileRuleAppender, e);
         } finally {
-            if (assistant != null) {
-                assistant.release();
+            if (ruleParsingContext != null) {
+                ruleParsingContext.release();
             }
         }
 

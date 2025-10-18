@@ -48,8 +48,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.validation.AspectRuleValidator;
 import com.aspectran.core.context.rule.validation.BeanReferenceException;
@@ -388,43 +388,43 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     /**
      * Returns a new instance of ActivityContext.
-     * @param assistant the activity rule assistant
+     * @param ruleParsingContext the rule-parsing context
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(@NonNull ActivityRuleAssistant assistant)
+    protected ActivityContext createActivityContext(@NonNull RuleParsingContext ruleParsingContext)
             throws BeanReferenceException, IllegalRuleException {
         DefaultActivityContext context = new DefaultActivityContext(
-                assistant.getClassLoader(), assistant.getApplicationAdapter(), masterService);
+                ruleParsingContext.getClassLoader(), ruleParsingContext.getApplicationAdapter(), masterService);
         if (masterService != null) {
             context.setName(masterService.getContextName());
         } else if (contextConfig != null) {
             context.setName(contextConfig.getName());
         }
-        context.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
+        context.setDescriptionRule(ruleParsingContext.getRuleParsingScope().getDescriptionRule());
 
-        ActivityEnvironment activityEnvironment = createActivityEnvironment(context, assistant);
+        ActivityEnvironment activityEnvironment = createActivityEnvironment(context, ruleParsingContext);
         context.setEnvironment(activityEnvironment);
 
-        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
+        AspectRuleRegistry aspectRuleRegistry = ruleParsingContext.getAspectRuleRegistry();
 
         if (contextConfig != null && contextConfig.getAsyncConfig() != null && contextConfig.getAsyncConfig().isEnabled()) {
-            context.setAsyncTaskExecutor(createDefaultAsyncTaskExecutor(assistant.getClassLoader()));
+            context.setAsyncTaskExecutor(createDefaultAsyncTaskExecutor(ruleParsingContext.getClassLoader()));
         }
 
-        BeanRuleRegistry beanRuleRegistry = initBeanRuleRegistry(assistant);
+        BeanRuleRegistry beanRuleRegistry = initBeanRuleRegistry(ruleParsingContext);
         DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(context, beanRuleRegistry);
 
-        ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
+        ScheduleRuleRegistry scheduleRuleRegistry = ruleParsingContext.getScheduleRuleRegistry();
 
-        TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
+        TemplateRuleRegistry templateRuleRegistry = ruleParsingContext.getTemplateRuleRegistry();
         DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(context, templateRuleRegistry);
 
-        TransletRuleRegistry transletRuleRegistry = initTransletRuleRegistry(assistant);
+        TransletRuleRegistry transletRuleRegistry = initTransletRuleRegistry(ruleParsingContext);
 
         AspectRuleValidator aspectRuleValidator = new AspectRuleValidator();
-        aspectRuleValidator.validate(assistant);
+        aspectRuleValidator.validate(ruleParsingContext);
 
         BeanRuleAnalyzer.clearAdvisableMethodsCache();
 
@@ -445,12 +445,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     @NonNull
     private ActivityEnvironment createActivityEnvironment(
-            ActivityContext context, @NonNull ActivityRuleAssistant assistant) {
-        EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
+            ActivityContext context, @NonNull RuleParsingContext ruleParsingContext) {
+        EnvironmentProfiles environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
         ActivityEnvironmentBuilder builder = new ActivityEnvironmentBuilder()
                 .environmentProfiles(environmentProfiles)
                 .propertyItemRules(propertyItemRuleMap);
-        for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
+        for (EnvironmentRule environmentRule : ruleParsingContext.getEnvironmentRules()) {
             if (environmentProfiles.acceptsProfiles(environmentRule.getProfiles())) {
                 builder.propertyItemRules(environmentRule.getPropertyItemRuleMap());
             }
@@ -459,10 +459,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @NonNull
-    private BeanRuleRegistry initBeanRuleRegistry(@NonNull ActivityRuleAssistant assistant)
+    private BeanRuleRegistry initBeanRuleRegistry(@NonNull RuleParsingContext ruleParsingContext)
             throws IllegalRuleException, BeanReferenceException {
-        BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-        beanRuleRegistry.postProcess(assistant);
+        BeanRuleRegistry beanRuleRegistry = ruleParsingContext.getBeanRuleRegistry();
+        beanRuleRegistry.postProcess(ruleParsingContext);
 
         BeanRegistry parentBeanRegistry = null;
         if (masterService != null) {
@@ -471,7 +471,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             }
         }
 
-        BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
+        BeanReferenceInspector beanReferenceInspector = ruleParsingContext.getBeanReferenceInspector();
         beanReferenceInspector.inspect(beanRuleRegistry, parentBeanRegistry);
 
         for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
@@ -489,9 +489,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return beanRuleRegistry;
     }
 
-    private TransletRuleRegistry initTransletRuleRegistry(@NonNull ActivityRuleAssistant assistant) {
-        TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
-        AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
+    private TransletRuleRegistry initTransletRuleRegistry(@NonNull RuleParsingContext ruleParsingContext) {
+        TransletRuleRegistry transletRuleRegistry = ruleParsingContext.getTransletRuleRegistry();
+        AspectRuleRegistry aspectRuleRegistry = ruleParsingContext.getAspectRuleRegistry();
         for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
             if (!transletRule.hasPathVariables()) {
                 for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {

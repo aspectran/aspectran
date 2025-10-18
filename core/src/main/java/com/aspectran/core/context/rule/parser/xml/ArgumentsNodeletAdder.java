@@ -52,7 +52,7 @@ class ArgumentsNodeletAdder implements NodeletAdder {
             .endNodelet(text -> {
                 ItemRuleMap irm = AspectranNodeParsingContext.popObject();
                 HasArguments hasArguments = AspectranNodeParsingContext.peekObject();
-                irm = AspectranNodeParsingContext.assistant().profiling(irm, hasArguments.getArgumentItemRuleMap());
+                irm = AspectranNodeParsingContext.getCurrentRuleParsingContext().profiling(irm, hasArguments.getArgumentItemRuleMap());
                 hasArguments.setArgumentItemRuleMap(irm);
             });
     }

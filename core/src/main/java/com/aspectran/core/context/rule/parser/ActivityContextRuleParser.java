@@ -15,18 +15,18 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 /**
  * The Interface ActivityContextParser.
  *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-public interface ActivityContextParser extends AutoCloseable {
+public interface ActivityContextRuleParser extends AutoCloseable {
 
-    ActivityRuleAssistant getContextRuleAssistant();
+    RuleParsingContext getRuleParsingContext();
 
     void setEncoding(String encoding);
 
@@ -34,9 +34,9 @@ public interface ActivityContextParser extends AutoCloseable {
 
     void setDebugMode(boolean debugMode);
 
-    ActivityRuleAssistant parse(String[] contextRules) throws ActivityContextParserException;
+    RuleParsingContext parse(String[] contextRules) throws ActivityContextRuleParserException;
 
-    ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
+    RuleParsingContext parse(AspectranParameters aspectranParameters) throws ActivityContextRuleParserException;
 
     AspectranNodeParser getAspectranNodeParser();
 

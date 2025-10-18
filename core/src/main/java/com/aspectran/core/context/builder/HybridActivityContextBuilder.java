@@ -22,10 +22,10 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.ShallowRuleAppendHandler;
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.parser.ActivityContextParser;
-import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
+import com.aspectran.core.context.rule.parser.ActivityContextRuleParser;
+import com.aspectran.core.context.rule.parser.HybridActivityContextRuleParser;
+import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ShutdownHook;
@@ -136,16 +136,16 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             EnvironmentProfiles environmentProfiles = createEnvironmentProfiles(contextName);
 
-            ActivityRuleAssistant assistant = new ActivityRuleAssistant(classLoader, applicationAdapter, environmentProfiles);
-            assistant.prepare();
+            RuleParsingContext ruleParsingContext = new RuleParsingContext(classLoader, applicationAdapter, environmentProfiles);
+            ruleParsingContext.prepare();
 
             if (getBasePackages() != null) {
-                BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
+                BeanRuleRegistry beanRuleRegistry = ruleParsingContext.getBeanRuleRegistry();
                 beanRuleRegistry.scanConfigurableBeans(getBasePackages());
             }
 
             if (contextRules != null || aspectranParameters != null) {
-                try (ActivityContextParser parser = new HybridActivityContextParser(assistant)) {
+                try (ActivityContextRuleParser parser = new HybridActivityContextRuleParser(ruleParsingContext)) {
                     parser.setEncoding(getEncoding());
                     parser.setUseXmlToApon(isUseAponToLoadXml());
                     parser.setDebugMode(isDebugMode());
@@ -154,16 +154,16 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                     } else {
                         parser.parse(aspectranParameters);
                     }
-                    assistant = parser.getContextRuleAssistant();
-                    assistant.clearCurrentRuleAppender();
+                    ruleParsingContext = parser.getRuleParsingContext();
+                    ruleParsingContext.clearCurrentRuleAppender();
                 }
             } else {
-                RuleAppendHandler ruleAppendHandler = new ShallowRuleAppendHandler(assistant);
-                assistant.setRuleAppendHandler(ruleAppendHandler);
+                RuleAppendHandler ruleAppendHandler = new ShallowRuleAppendHandler(ruleParsingContext);
+                ruleParsingContext.setRuleAppendHandler(ruleAppendHandler);
             }
 
-            activityContext = createActivityContext(assistant);
-            assistant.release();
+            activityContext = createActivityContext(ruleParsingContext);
+            ruleParsingContext.release();
 
             if (getMasterService() == null) {
                 // If a MasterService is specified, the ActivityContext will be initialized

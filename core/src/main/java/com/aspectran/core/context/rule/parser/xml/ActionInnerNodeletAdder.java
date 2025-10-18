@@ -101,7 +101,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
-                AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())
@@ -119,7 +119,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(methodName, hidden);
-                AspectranNodeParsingContext.assistant().resolveActionBeanClass(invokeActionRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveActionBeanClass(invokeActionRule);
                 AspectranNodeParsingContext.pushObject(invokeActionRule);
             })
             .with(ArgumentNodeletAdder.instance())
@@ -138,7 +138,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 String methodType = StringUtils.emptyToNull(attrs.get("method"));
                 Boolean hidden = BooleanUtils.toNullableBooleanObject(attrs.get("hidden"));
 
-                transletName = AspectranNodeParsingContext.assistant().applyTransletNamePattern(transletName);
+                transletName = AspectranNodeParsingContext.getCurrentRuleParsingContext().applyTransletNamePattern(transletName);
 
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
                 AspectranNodeParsingContext.pushObject(includeActionRule);

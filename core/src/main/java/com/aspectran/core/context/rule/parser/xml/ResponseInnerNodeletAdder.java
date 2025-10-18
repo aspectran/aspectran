@@ -89,7 +89,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     TemplateRule.updateTemplateSource(templateRule, text);
                     transformRule.setTemplateRule(templateRule);
 
-                    AspectranNodeParsingContext.assistant().resolveBeanClass(templateRule);
+                    AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(templateRule);
                 })
             .parent()
         .parent().child("dispatch")
@@ -115,7 +115,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                 String method = attrs.get("method");
                 Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
 
-                transletName = AspectranNodeParsingContext.assistant().applyTransletNamePattern(transletName);
+                transletName = AspectranNodeParsingContext.getCurrentRuleParsingContext().applyTransletNamePattern(transletName);
 
                 ForwardRule forwardRule = ForwardRule.newInstance(contentType, transletName, method, defaultResponse);
                 AspectranNodeParsingContext.pushObject(forwardRule);
@@ -150,7 +150,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                 HasResponseRules hasResponseRules = AspectranNodeParsingContext.peekObject();
                 hasResponseRules.putResponseRule(redirectRule);
 
-                AspectranNodeParsingContext.assistant().resolveBeanClass(redirectRule.getPathTokens());
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().resolveBeanClass(redirectRule.getPathTokens());
             });
     }
 

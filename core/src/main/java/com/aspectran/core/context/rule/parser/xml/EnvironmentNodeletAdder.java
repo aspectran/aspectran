@@ -52,7 +52,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             .with(PropertiesNodeletAdder.instance())
             .endNodelet(text -> {
                 EnvironmentRule environmentRule = AspectranNodeParsingContext.popObject();
-                AspectranNodeParsingContext.assistant().addEnvironmentRule(environmentRule);
+                AspectranNodeParsingContext.getCurrentRuleParsingContext().addEnvironmentRule(environmentRule);
             });
     }
 
