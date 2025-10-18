@@ -165,6 +165,7 @@ public interface ActivityContext {
 
     /**
      * Returns the current activity for the current thread.
+     * <p>If the current activity is a proxy, this method may return the underlying actual activity.
      * @return the current activity
      * @throws NoActivityStateException if no activity is currently associated with the thread
      */

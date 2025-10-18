@@ -26,6 +26,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * An {@link AsyncTaskExecutor} implementation that uses a {@link ThreadPoolExecutor}.
+ * <p>This is a highly configurable task executor that can be managed by the Aspectran
+ * bean container, implementing {@link InitializableBean} and {@link DisposableBean}
+ * for lifecycle management.</p>
+ */
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor, InitializableBean, DisposableBean {
 
     private String threadNamePrefix;
@@ -42,26 +48,52 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor, Initializ
 
     private ExecutorService executor;
 
+    /**
+     * Sets the prefix for thread names created by this executor.
+     * @param threadNamePrefix the thread name prefix
+     */
     public void setThreadNamePrefix(String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
     }
 
+    /**
+     * Sets the core number of threads.
+     * @param corePoolSize the core pool size
+     */
     public void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize;
     }
 
+    /**
+     * Sets the maximum allowed number of threads.
+     * @param maxPoolSize the max pool size
+     */
     public void setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
     }
 
+    /**
+     * Sets the time limit (in seconds) for which threads may remain idle before
+     * being terminated.
+     * @param keepAliveSeconds the keep alive seconds
+     */
     public void setKeepAliveSeconds(int keepAliveSeconds) {
         this.keepAliveSeconds = keepAliveSeconds;
     }
 
+    /**
+     * Sets the capacity of the queue to use for holding tasks before they are
+     * executed.
+     * @param queueCapacity the queue capacity
+     */
     public void setQueueCapacity(int queueCapacity) {
         this.queueCapacity = queueCapacity;
     }
 
+    /**
+     * Sets whether to wait for scheduled tasks to complete on shutdown.
+     * @param waitForTasksToCompleteOnShutdown true to wait, false to not
+     */
     public void setWaitForTasksToCompleteOnShutdown(boolean waitForTasksToCompleteOnShutdown) {
         this.waitForTasksToCompleteOnShutdown = waitForTasksToCompleteOnShutdown;
     }

@@ -64,26 +64,50 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         sessionManager.setActivityContext(context);
     }
 
+    /**
+     * Sets the class loader to be used by the session manager.
+     * @param classLoader the class loader
+     */
     public void setClassLoader(ClassLoader classLoader) {
         sessionManager.setClassLoader(classLoader);
     }
 
+    /**
+     * Returns the underlying Aspectran session manager.
+     * @return the session manager
+     */
     public SessionManager getSessionManager() {
         return sessionManager;
     }
 
+    /**
+     * Returns the configuration for the underlying Aspectran session manager.
+     * @return the session manager configuration
+     */
     public SessionManagerConfig getSessionManagerConfig() {
         return sessionManager.getSessionManagerConfig();
     }
 
+    /**
+     * Sets the configuration for the underlying Aspectran session manager.
+     * @param sessionManagerConfig the session manager configuration
+     */
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
         sessionManager.setSessionManagerConfig(sessionManagerConfig);
     }
 
+    /**
+     * Sets the session store for the underlying Aspectran session manager.
+     * @param sessionStore the session store
+     */
     public void setSessionStore(SessionStore sessionStore) {
         sessionManager.setSessionStore(sessionStore);
     }
 
+    /**
+     * Initializes the underlying Aspectran session manager.
+     * @throws Exception if initialization fails
+     */
     public void initialize() throws Exception {
         if (sessionManager.isInitializable()) {
             sessionManager.initialize();
@@ -123,10 +147,20 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         }
     }
 
-    public String createSessionId(long seedTerm) {
-        return sessionManager.createSessionId(seedTerm);
+    /**
+     * Creates a new, unique session ID.
+     * @return a unique session ID
+     */
+    public String createSessionId() {
+        return sessionManager.createSessionId();
     }
 
+    /**
+     * Renews the ID of an existing session.
+     * @param oldId the current session ID
+     * @param newId the new session ID to assign
+     * @return the new session ID
+     */
     public String renewSessionId(String oldId, String newId) {
         return sessionManager.renewSessionId(oldId, newId);
     }
@@ -141,7 +175,7 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
             return null;
         }
         if (sessionId == null) {
-            sessionId = sessionManager.createSessionId(hashCode());
+            sessionId = sessionManager.createSessionId();
         }
 
         sessionConfig.setSessionId(exchange, sessionId);
@@ -212,8 +246,22 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Note that the initial timeout value set by Undertow may be overridden by
+     * Aspectran's specific session configuration to ensure consistency.
+     * Subsequent calls will update the timeout for all new sessions.</p>
+     */
     @Override
     public void setDefaultSessionTimeout(int timeout) {
+        /*
+         * This logic is intentionally complex to handle a lifecycle interaction with Undertow.
+         * Undertow may call this method with a default value early in the startup sequence.
+         * We want to ignore this initial call and prioritize the timeout value set in Aspectran's
+         * own configuration (`sessionManagerConfig`). Therefore, on the first call, if an
+         * Aspectran config value exists, we only store it locally. Subsequent calls are
+         * treated as runtime changes and are passed through to the underlying session manager.
+         */
         if (defaultSessionTimeout == Integer.MIN_VALUE &&
                 getSessionManagerConfig() != null &&
                 getSessionManagerConfig().hasMaxIdleSeconds()) {

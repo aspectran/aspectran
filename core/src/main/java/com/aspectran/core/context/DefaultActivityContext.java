@@ -119,6 +119,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return descriptionRule;
     }
 
+    /**
+     * Sets the description rule for this context.
+     * @param descriptionRule the description rule
+     */
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         checkInitializable();
         this.descriptionRule = descriptionRule;
@@ -154,6 +158,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return activityEnvironment;
     }
 
+    /**
+     * Sets the environment for this context.
+     * @param activityEnvironment the activity environment
+     */
     public void setEnvironment(ActivityEnvironment activityEnvironment) {
         checkInitializable();
         this.activityEnvironment = activityEnvironment;
@@ -195,6 +203,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return aspectRuleRegistry;
     }
 
+    /**
+     * Sets the aspect rule registry.
+     * @param aspectRuleRegistry the new aspect rule registry
+     */
     public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
         checkInitializable();
         this.aspectRuleRegistry = aspectRuleRegistry;
@@ -206,6 +218,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return scheduleRuleRegistry;
     }
 
+    /**
+     * Sets the schedule rule registry.
+     * @param scheduleRuleRegistry the new schedule rule registry
+     */
     public void setScheduleRuleRegistry(ScheduleRuleRegistry scheduleRuleRegistry) {
         checkInitializable();
         this.scheduleRuleRegistry = scheduleRuleRegistry;
@@ -250,6 +266,10 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return asyncTaskExecutor;
     }
 
+    /**
+     * Sets the asynchronous task executor.
+     * @param asyncTaskExecutor the async task executor
+     */
     public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
         this.asyncTaskExecutor = asyncTaskExecutor;
     }
@@ -348,7 +368,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 try {
                     autoCloseable.close();
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    logger.error("Failed to close AsyncTaskExecutor", e);
                 }
                 asyncTaskExecutor = null;
             }

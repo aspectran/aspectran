@@ -23,7 +23,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /**
- * A simple task executor interface that abstracts the execution of a {@link Runnable}.
+ * An interface that abstracts asynchronous task execution.
+ * Provides a way to submit {@link Runnable} and {@link java.util.concurrent.Callable} tasks
+ * for execution in a background thread.
+ *
+ * <p>This interface extends {@link java.util.concurrent.Executor} and adds
+ * methods for submitting tasks that return a {@link java.util.concurrent.CompletableFuture},
+ * as well as a mechanism for handling uncaught exceptions.</p>
  *
  * <p>Created: 2024. 8. 24.</p>
  */

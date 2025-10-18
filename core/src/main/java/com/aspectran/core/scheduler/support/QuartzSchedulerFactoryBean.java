@@ -116,7 +116,7 @@ public class QuartzSchedulerFactoryBean implements InitializableFactoryBean<Sche
      */
     @Override
     public void initialize() throws Exception {
-        if (schedulerName == null) {
+        if (scheduler == null) {
             scheduler = createScheduler();
         }
     }

@@ -216,8 +216,8 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     }
 
     @Override
-    public String createSessionId(long seedTerm) {
-        return sessionIdGenerator.createSessionId(seedTerm);
+    public String createSessionId() {
+        return sessionIdGenerator.createSessionId();
     }
 
     @Override

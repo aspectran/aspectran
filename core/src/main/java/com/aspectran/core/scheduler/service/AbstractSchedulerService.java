@@ -359,7 +359,7 @@ public abstract class AbstractSchedulerService extends AbstractServiceLifeCycle 
      * @param schedulerConfig the configuration object
      */
     protected void configure(@NonNull SchedulerConfig schedulerConfig) {
-        if (schedulerConfig.hasWaitOnShutdown()) {
+        if (schedulerConfig.hasStartDelaySeconds()) {
             int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
             if (startDelaySeconds < 0) {
                 startDelaySeconds = 3;

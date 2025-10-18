@@ -26,7 +26,7 @@
  *         for the application context.</li>
  *     <li>{@link com.aspectran.core.context.DefaultActivityContext}: The default
  *         implementation of the ActivityContext.</li>
- *     <li>com.aspectran.core.context.builder.ActivityContextBuilder: The builder
+ *     <li>{@link com.aspectran.core.context.builder.ActivityContextBuilder}: The builder
  *         responsible for creating and initializing the ActivityContext.</li>
  * </ul>
  */

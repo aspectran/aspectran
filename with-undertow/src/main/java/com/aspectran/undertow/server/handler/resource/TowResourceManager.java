@@ -33,22 +33,47 @@ public class TowResourceManager extends PathResourceManager implements Applicati
 
     private ApplicationAdapter applicationAdapter;
 
+    /**
+     * Instantiates a new TowResourceManager with default settings.
+     */
     public TowResourceManager() {
         this(1024, true, false, (String[])null);
     }
 
+    /**
+     * Instantiates a new TowResourceManager with the specified base path.
+     * @param base the base path for resources
+     */
     public TowResourceManager(File base) {
         this(base, 1024, true, false, (String[])null);
     }
 
+    /**
+     * Instantiates a new TowResourceManager.
+     * @param base the base path for resources
+     * @param transferMinSize the minimum size for a file to be transferred using direct memory
+     */
     public TowResourceManager(File base, long transferMinSize) {
         this(base, transferMinSize, true, false, (String[])null);
     }
 
+    /**
+     * Instantiates a new TowResourceManager.
+     * @param base the base path for resources
+     * @param transferMinSize the minimum size for a file to be transferred
+     * @param caseSensitive whether path resolution is case-sensitive
+     */
     public TowResourceManager(File base, long transferMinSize, boolean caseSensitive) {
         this(base, transferMinSize, caseSensitive, false, (String[])null);
     }
 
+    /**
+     * Instantiates a new TowResourceManager.
+     * @param base the base path for resources
+     * @param transferMinSize the minimum size for a file to be transferred
+     * @param followLinks whether to follow symbolic links
+     * @param safePaths safe paths for symbolic links
+     */
     public TowResourceManager(File base, long transferMinSize, boolean followLinks, String... safePaths) {
         this(base, transferMinSize, true, followLinks, safePaths);
     }
@@ -92,6 +117,11 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Also creates the directory if it does not exist.</p>
+     * @return this {@code TowResourceManager} instance
+     */
     @Override
     public TowResourceManager setBase(File base) {
         if (base == null) {

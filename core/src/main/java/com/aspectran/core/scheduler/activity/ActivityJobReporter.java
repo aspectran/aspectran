@@ -24,6 +24,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -61,16 +62,18 @@ public class ActivityJobReporter {
         String jobName = key.getName();
         String jobGroup = key.getGroup();
 
-        Activity activity = resolveActivity(context);
+        Activity activity = (Activity)context.getResult();
+        StringifyContext stringifyContext = resolveStringifyContext(activity);
+        DateTimeFormatter formatter = stringifyContext.getDateTimeFormatter();
 
         String title = (vetoed ? "VETOED" : "START");
         ToStringBuilder tsb = new ToStringBuilder(title);
         tsb.append("group", jobGroup);
         tsb.append("name", jobName);
-        tsb.append("scheduledFireTime", toLocalDateTime(context.getScheduledFireTime()));
-        tsb.append("fireTime", toLocalDateTime(context.getFireTime()));
-        tsb.append("previousFireTime", toLocalDateTime(context.getPreviousFireTime()));
-        tsb.append("nextFireTime", toLocalDateTime(context.getNextFireTime()));
+        tsb.append("scheduledFireTime", formatDateTime(context.getScheduledFireTime(), formatter));
+        tsb.append("fireTime", formatDateTime(context.getFireTime(), formatter));
+        tsb.append("previousFireTime", formatDateTime(context.getPreviousFireTime(), formatter));
+        tsb.append("nextFireTime", formatDateTime(context.getNextFireTime(), formatter));
         tsb.append("recovering", context.isRecovering());
         if (context.getRefireCount() > 0) {
             tsb.append("refireCount", context.getRefireCount());
@@ -80,10 +83,10 @@ public class ActivityJobReporter {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
             SchedulerService service = (SchedulerService)jobDataMap.get(DefaultSchedulerService.SERVICE_DATA_KEY);
-            if (!service.isActive()) {
+            if (service != null && !service.isActive()) { // service can be null if job is durable
                 tsb.append("service", "inactive");
             }
-            if (jobRule.isDisabled()) {
+            if (jobRule != null && jobRule.isDisabled()) { // jobRule can be null if job is durable
                 tsb.append("job", "disabled");
             }
         }
@@ -105,13 +108,15 @@ public class ActivityJobReporter {
             String jobName = key.getName();
             String jobGroup = key.getGroup();
 
-            Activity activity = resolveActivity(context);
+            Activity activity = (Activity)context.getResult();
+            StringifyContext stringifyContext = resolveStringifyContext(activity);
+            DateTimeFormatter formatter = stringifyContext.getDateTimeFormatter();
 
             String title = (jobException == null ? "SUCCESS" : "FAILURE");
             ToStringBuilder tsb = new ToStringBuilder(title);
             tsb.append("group", jobGroup);
             tsb.append("name", jobName);
-            tsb.append("fireTime", toLocalDateTime(context.getFireTime()));
+            tsb.append("fireTime", formatDateTime(context.getFireTime(), formatter));
             tsb.append("jobRunTime", context.getJobRunTime());
 
             if (activity != null) {
@@ -135,12 +140,12 @@ public class ActivityJobReporter {
     }
 
     /**
-     * Resolves the {@link Activity} instance from the job execution context.
-     * @param context the job execution context
-     * @return the {@code Activity} instance, or {@code null} if not found
+     * Resolves the {@link StringifyContext} instance from the activity.
+     * @param activity the activity
+     * @return the {@code StringifyContext} instance
      */
-    private static Activity resolveActivity(@NonNull JobExecutionContext context) {
-        Activity activity = (Activity)context.getResult();
+    @NonNull
+    private static StringifyContext resolveStringifyContext(@Nullable Activity activity) {
         StringifyContext stringifyContext;
         if (activity != null && activity.hasStringifyContext()) {
             stringifyContext = activity.getStringifyContext().clone();
@@ -150,17 +155,18 @@ public class ActivityJobReporter {
         if (stringifyContext.getDateTimeFormat() == null || stringifyContext.getDateTimeFormatter() == null) {
             stringifyContext.setDateTimeFormatter(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         }
-        return activity;
+        return stringifyContext;
     }
 
     /**
-     * Converts a {@link Date} to a {@link LocalDateTime}.
+     * Converts a {@link Date} to a formatted string.
      * @param date the date to convert
-     * @return the converted {@code LocalDateTime}, or {@code null} if the input is null
+     * @param formatter the formatter to use
+     * @return the formatted date string, or {@code null} if the input is null
      */
-    private static LocalDateTime toLocalDateTime(Date date) {
+    private static String formatDateTime(Date date, DateTimeFormatter formatter) {
         if (date != null) {
-            return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).format(formatter);
         } else {
             return null;
         }

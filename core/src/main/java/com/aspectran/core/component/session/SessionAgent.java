@@ -91,7 +91,7 @@ public class SessionAgent {
     public Enumeration<String> getAttributeNames() {
         Session session = getSession(false);
         if (session == null) {
-            return null;
+            return Collections.emptyEnumeration();
         }
         return Collections.enumeration(session.getAttributeNames());
     }
@@ -159,7 +159,7 @@ public class SessionAgent {
      * @return the new session
      */
     private Session createSession() {
-        sessionId = sessionManager.createSessionId(hashCode());
+        sessionId = sessionManager.createSessionId();
         return sessionManager.createSession(sessionId);
     }
 

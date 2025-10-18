@@ -50,7 +50,7 @@ public abstract class CoreServiceHolder {
      * Adds a {@link ServiceHoldingListener} to be notified when services are held or released.
      * @param listener the listener to add
      */
-    public static void addServiceHolingListener(ServiceHoldingListener listener) {
+    public static void addServiceHoldingListener(ServiceHoldingListener listener) {
         Assert.notNull(listener, "listener must not be null");
         serviceHoldingListeners.add(listener);
     }
@@ -59,7 +59,7 @@ public abstract class CoreServiceHolder {
      * Removes a {@link ServiceHoldingListener}.
      * @param listener the listener to remove
      */
-    public static void removeServiceHolingListener(ServiceHoldingListener listener) {
+    public static void removeServiceHoldingListener(ServiceHoldingListener listener) {
         Assert.notNull(listener, "listener must not be null");
         serviceHoldingListeners.remove(listener);
     }

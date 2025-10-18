@@ -46,6 +46,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class ConcurrencyThrottleSupport implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = -197708900962718758L;
+
     /** Transient to optimize serialization. */
     protected transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -59,9 +62,9 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
      */
     public static final int NO_CONCURRENCY = 0;
 
-    private final Lock concurrencyLock = new ReentrantLock();
+    private transient Lock concurrencyLock = new ReentrantLock();
 
-    private final Condition concurrencyCondition = this.concurrencyLock.newCondition();
+    private transient Condition concurrencyCondition = this.concurrencyLock.newCondition();
 
     private int concurrencyLimit = UNBOUNDED_CONCURRENCY;
 
@@ -184,6 +187,8 @@ public abstract class ConcurrencyThrottleSupport implements Serializable {
 
         // Initialize transient fields.
         this.logger = LoggerFactory.getLogger(getClass());
+        this.concurrencyLock = new ReentrantLock();
+        this.concurrencyCondition = this.concurrencyLock.newCondition();
     }
 
 }

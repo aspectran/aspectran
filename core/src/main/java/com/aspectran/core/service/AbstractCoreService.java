@@ -114,6 +114,10 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return basePath;
     }
 
+    /**
+     * Sets the base path for the root application.
+     * @param basePath the base path for the root application
+     */
     protected void setBasePath(String basePath) {
         this.basePath = basePath;
     }
@@ -123,6 +127,10 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return contextName;
     }
 
+    /**
+     * Sets the name of this service's context.
+     * @param contextName the context name
+     */
     protected void setContextName(String contextName) {
         this.contextName = contextName;
     }
@@ -132,19 +140,37 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return aspectranConfig;
     }
 
+    /**
+     * Sets the Aspectran configuration parameters.
+     * @param aspectranConfig the Aspectran configuration parameters
+     */
     protected void setAspectranConfig(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
     }
 
+    /**
+     * Returns whether an {@code ActivityContextBuilder} is configured.
+     * @return true if an {@code ActivityContextBuilder} is configured, false otherwise
+     */
     protected boolean hasActivityContextBuilder() {
         return (activityContextBuilder != null);
     }
 
+    /**
+     * Returns the {@code ActivityContextBuilder}.
+     * @return the {@code ActivityContextBuilder}
+     * @throws IllegalStateException if the {@code ActivityContextBuilder} is not configured
+     */
     protected ActivityContextBuilder getActivityContextBuilder() {
         Assert.state(hasActivityContextBuilder(), "No ActivityContextLoader configured");
         return activityContextBuilder;
     }
 
+    /**
+     * Sets the {@code ActivityContextBuilder}.
+     * @param activityContextBuilder the {@code ActivityContextBuilder}
+     * @throws IllegalStateException if the {@code ActivityContextBuilder} is already configured
+     */
     protected void setActivityContextBuilder(ActivityContextBuilder activityContextBuilder) {
         Assert.state(!hasActivityContextBuilder(), "ActivityContextBuilder is already configured");
         this.activityContextBuilder = activityContextBuilder;
@@ -164,10 +190,18 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return activityContext;
     }
 
+    /**
+     * Sets the {@code ActivityContext}.
+     * @param activityContext the {@code ActivityContext}
+     */
     protected void setActivityContext(ActivityContext activityContext) {
         this.activityContext = activityContext;
     }
 
+    /**
+     * Checks if the {@code ActivityContext} is configured.
+     * @throws IllegalStateException if the {@code ActivityContext} is not configured
+     */
     protected void checkContextConfigured() {
         if (activityContext == null) {
             throw new IllegalStateException("No ActivityContext configured yet");
@@ -199,6 +233,10 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         }
     }
 
+    /**
+     * Sets the service-specific class loader.
+     * @param serviceClassLoader the service-specific class loader
+     */
     protected void setServiceClassLoader(ClassLoader serviceClassLoader) {
         this.serviceClassLoader = serviceClassLoader;
     }
@@ -217,6 +255,9 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return schedulerService;
     }
 
+    /**
+     * Builds the scheduler service based on the current configuration.
+     */
     protected void buildSchedulerService() {
         Assert.state(getAspectranConfig() != null, "AspectranConfig is not set");
         SchedulerConfig schedulerConfig = getAspectranConfig().getSchedulerConfig();
@@ -225,6 +266,9 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         }
     }
 
+    /**
+     * Destroys the scheduler service.
+     */
     protected void destroySchedulerService() {
         if (schedulerService != null) {
             if (schedulerService.isActive()) {
@@ -240,6 +284,10 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return (requestAcceptor == null || requestAcceptor.isAcceptable(requestName));
     }
 
+    /**
+     * Sets the request acceptor.
+     * @param requestAcceptor the request acceptor
+     */
     protected void setRequestAcceptor(RequestAcceptor requestAcceptor) {
         this.requestAcceptor = requestAcceptor;
     }
@@ -249,6 +297,12 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return flashMapManager;
     }
 
+    /**
+     * Initializes the {@code FlashMapManager}.
+     * If this service is a derived service, it uses the parent's {@code FlashMapManager}.
+     * Otherwise, it tries to get a bean from the {@code ActivityContext},
+     * falling back to a {@code SessionFlashMapManager} if none is found.
+     */
     protected void initFlashMapManager() {
         if (isDerived()) {
             flashMapManager = getParentService().getFlashMapManager();
@@ -283,10 +337,19 @@ public abstract class AbstractCoreService extends AbstractServiceLifeCycle imple
         return localeResolver;
     }
 
+    /**
+     * Sets the {@code LocaleResolver}.
+     * @param localeResolver the locale resolver
+     */
     protected void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
     }
 
+    /**
+     * Initializes the {@code LocaleResolver}.
+     * If this service is a derived service, it uses the parent's {@code LocaleResolver}.
+     * Otherwise, it tries to get a bean from the {@code ActivityContext}.
+     */
     protected void initLocaleResolver() {
         if (isDerived()) {
             localeResolver = getParentService().getLocaleResolver();

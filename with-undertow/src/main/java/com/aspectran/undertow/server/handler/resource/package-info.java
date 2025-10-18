@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Provides Undertow handlers for serving static resources.
+ * Provides customized Undertow handlers for serving static resources.
+ * <p>This package contains extensions of Undertow's resource handling capabilities,
+ * such as the {@link com.aspectran.undertow.server.handler.resource.TowResourceHandler},
+ * which allows for conditional serving of static resources based on URL patterns,
+ * enabling seamless integration with Aspectran's dynamic request processing.</p>
  */
 package com.aspectran.undertow.server.handler.resource;

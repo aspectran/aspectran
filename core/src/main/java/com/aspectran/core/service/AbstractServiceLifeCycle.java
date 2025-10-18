@@ -177,7 +177,7 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void restart() throws Exception {
         synchronized (lock) {
             Assert.state(isRootService(), "Must be a root service to restart");
-            Assert.state(active, getServiceName() + " is not yet started");
+            Assert.state(active, getServiceName() + " is not running");
 
             String oldThreadName = changeThreadName();
             try {
@@ -229,7 +229,9 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void pause() throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn("{} is not yet started", getServiceName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is not running, will do nothing", getServiceName());
+                }
                 return;
             }
 
@@ -254,7 +256,9 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void pause(long timeout) throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn("{} is not yet started", getServiceName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is not running, will do nothing", getServiceName());
+                }
                 return;
             }
 
@@ -279,7 +283,9 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
     public void resume() throws Exception {
         synchronized (lock) {
             if (!active) {
-                logger.warn("{} is not yet started", getServiceName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is not running, will do nothing", getServiceName());
+                }
                 return;
             }
 

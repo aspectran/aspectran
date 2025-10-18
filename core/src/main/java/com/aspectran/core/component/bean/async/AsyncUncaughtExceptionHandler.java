@@ -39,4 +39,3 @@ public interface AsyncUncaughtExceptionHandler {
     void handleUncaughtException(Throwable ex, Method method, @Nullable Object... params);
 
 }
-

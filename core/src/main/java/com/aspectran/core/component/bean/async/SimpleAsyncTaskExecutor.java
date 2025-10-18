@@ -21,7 +21,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.concurrent.ConcurrencyThrottleSupport;
 import com.aspectran.utils.thread.CustomizableThreadCreator;
 
-import java.io.Serializable;
+import java.io.Serial;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
@@ -40,9 +40,8 @@ import java.util.concurrent.ThreadFactory;
  * stopped and restarted; if such tight lifecycle management is necessary,
  * consider a common {@code ThreadPoolTaskExecutor} setup instead.
  */
-@SuppressWarnings("serial")
 public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
-        implements AsyncTaskExecutor, Serializable, AutoCloseable {
+        implements AsyncTaskExecutor, AutoCloseable {
 
     /**
      * Permit any number of concurrent invocations: that is, don't throttle concurrency.
@@ -311,8 +310,7 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
                             if (!threads.isEmpty()) {
                                 threads.wait(taskTerminationTimeout);
                             }
-                        }
-                        catch (InterruptedException ex) {
+                        } catch (InterruptedException ex) {
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -331,6 +329,9 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      * visible to the surrounding class.
      */
     private class ConcurrencyThrottleAdapter extends ConcurrencyThrottleSupport {
+
+        @Serial
+        private static final long serialVersionUID = 7387694607099871647L;
 
         @Override
         protected void beforeAccess() {

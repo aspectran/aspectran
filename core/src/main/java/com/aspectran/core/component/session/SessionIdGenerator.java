@@ -64,38 +64,37 @@ public class SessionIdGenerator {
 
     /**
      * Creates and returns a new unique session ID.
-     * @param seedTerm a seed value to increase randomness
      * @return a new unique session ID
      */
-    public String createSessionId(long seedTerm) {
-        synchronized (random) {
-            long r0;
-            if (weakRandom) {
+    public String createSessionId() {
+        long r0;
+        long r1;
+        if (weakRandom) {
+            synchronized (random) {
+                long seedTerm = System.nanoTime();
                 r0 = hashCode() ^ Runtime.getRuntime().freeMemory() ^ random.nextInt() ^ (seedTerm << 32);
-            } else {
-                r0 = random.nextLong();
-            }
-            if (r0 < 0) {
-                r0 = -r0;
-            }
-            long r1;
-            if (weakRandom) {
                 r1 = hashCode() ^ Runtime.getRuntime().freeMemory() ^ random.nextInt() ^ (seedTerm << 32);
-            } else {
-                r1 = random.nextLong();
             }
-            if (r1 < 0) {
-                r1 = -r1;
-            }
-            StringBuilder id = new StringBuilder();
-            id.append(Long.toString(r0, Character.MAX_RADIX));
-            id.append(Long.toString(r1, Character.MAX_RADIX));
-            id.append(COUNTER.getAndIncrement());
-            if (workerName != null) {
-                id.append(".").append(workerName);
-            }
-            return id.toString();
+        } else {
+            r0 = random.nextLong();
+            r1 = random.nextLong();
         }
+
+        if (r0 < 0) {
+            r0 = -r0;
+        }
+        if (r1 < 0) {
+            r1 = -r1;
+        }
+
+        StringBuilder id = new StringBuilder();
+        id.append(Long.toString(r0, Character.MAX_RADIX));
+        id.append(Long.toString(r1, Character.MAX_RADIX));
+        id.append(COUNTER.getAndIncrement());
+        if (workerName != null) {
+            id.append(".").append(workerName);
+        }
+        return id.toString();
     }
 
     /**

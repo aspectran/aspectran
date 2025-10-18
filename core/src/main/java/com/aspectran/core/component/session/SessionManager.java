@@ -91,10 +91,9 @@ public interface SessionManager {
 
     /**
      * Creates a new, unique session ID.
-     * @param seedTerm a seed value to initialize the random number generator
      * @return a unique session ID
      */
-    String createSessionId(long seedTerm);
+    String createSessionId();
 
     /**
      * Renews the ID of an existing session.

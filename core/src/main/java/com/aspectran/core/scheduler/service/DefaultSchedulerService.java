@@ -72,7 +72,7 @@ public class DefaultSchedulerService extends AbstractSchedulerService {
     }
 
     @Override
-    public synchronized void resume(String scheduleId) throws SchedulerServiceException {
+    public void resume(String scheduleId) throws SchedulerServiceException {
         synchronized (getLock()) {
             try {
                 Scheduler scheduler = getScheduler(scheduleId);

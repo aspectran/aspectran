@@ -52,19 +52,37 @@ public class TowResourceHandler extends ResourceHandler {
 
     private volatile IncludeExcludeWildcardPatterns pathPatterns;
 
+    /**
+     * Instantiates a new TowResourceHandler.
+     * @param resourceManager the resource manager to use
+     */
     public TowResourceHandler(ResourceManager resourceManager) {
         this(resourceManager, null);
     }
 
+    /**
+     * Instantiates a new TowResourceHandler.
+     * @param resourceManager the resource manager to use
+     * @param next the next handler in the chain
+     */
     public TowResourceHandler(ResourceManager resourceManager, HttpHandler next) {
         super(resourceManager);
         this.next = next;
     }
 
+    /**
+     * Instantiates a new TowResourceHandler.
+     * @param resourceSupplier the resource supplier
+     */
     public TowResourceHandler(ResourceSupplier resourceSupplier) {
         this(resourceSupplier, null);
     }
 
+    /**
+     * Instantiates a new TowResourceHandler.
+     * @param resourceSupplier the resource supplier
+     * @param next the next handler in the chain
+     */
     public TowResourceHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
         super(resourceSupplier);
         this.next = next;
@@ -162,6 +180,8 @@ public class TowResourceHandler extends ResourceHandler {
                 if (Files.isDirectory(child)) {
                     children.add(child);
                 } else {
+                    // If a directory contains any files, consider it a static resource directory
+                    // and do not scan its subdirectories further.
                     children.clear();
                     found = true;
                     break;

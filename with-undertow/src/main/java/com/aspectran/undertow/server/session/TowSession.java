@@ -27,7 +27,8 @@ import io.undertow.server.session.SessionManager;
 import java.util.Set;
 
 /**
- * Class that bridges between Aspectran native session and Undertow one.
+ * An Undertow {@link io.undertow.server.session.Session} implementation that
+ * wraps and delegates to an Aspectran {@link Session}.
  *
  * <p>Created: 2019-08-11</p>
  */
@@ -135,7 +136,7 @@ public final class TowSession implements io.undertow.server.session.Session {
                 return null;
             }
             String oldId = session.getId();
-            String newId = sessionManager.createSessionId(hashCode());
+            String newId = sessionManager.createSessionId();
             String newIdToUse = sessionManager.renewSessionId(oldId, newId);
             if (newIdToUse != null) {
                 config.setSessionId(exchange, newIdToUse);
@@ -144,6 +145,13 @@ public final class TowSession implements io.undertow.server.session.Session {
         }
     }
 
+    /**
+     * Checks if an attribute should not be persisted.
+     * This is used to prevent Undertow's internal attributes from being
+     * saved by Aspectran's session store.
+     * @param name the name of the attribute
+     * @return true if the attribute should be non-persistent, false otherwise
+     */
     private boolean isNonPersistent(@NonNull String name) {
         return name.startsWith("io.undertow.");
     }

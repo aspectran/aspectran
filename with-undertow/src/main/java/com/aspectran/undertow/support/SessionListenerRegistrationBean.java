@@ -26,7 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Bean to register session listener in session manager.
+ * A bean that facilitates the registration of {@link SessionListener}s to a specific
+ * {@link SessionManager} associated with an Undertow deployment.
+ * <p>This class is typically configured as a bean within an Aspectran context. It looks up
+ * a {@link TowServer} instance and uses it to find the target {@code SessionManager}
+ * by deployment name, then adds or removes listeners. This provides a declarative way
+ * to manage session listeners for embedded Undertow servers.</p>
  *
  * <p>Created: 2020/05/09</p>
  *
@@ -40,14 +45,26 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
 
     private final String deploymentName;
 
+    /**
+     * Instantiates a new SessionListenerRegistrationBean.
+     */
     public SessionListenerRegistrationBean() {
         this(null, null);
     }
 
+    /**
+     * Instantiates a new SessionListenerRegistrationBean.
+     * @param towServerId the bean ID of the {@link TowServer}
+     */
     public SessionListenerRegistrationBean(String towServerId) {
         this(towServerId, null);
     }
 
+    /**
+     * Instantiates a new SessionListenerRegistrationBean.
+     * @param towServerId the bean ID of the {@link TowServer}
+     * @param deploymentName the name of the deployment
+     */
     public SessionListenerRegistrationBean(String towServerId, String deploymentName) {
         this.towServerId = towServerId;
         this.deploymentName = deploymentName;
@@ -91,6 +108,14 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport impl
         }
     }
 
+    /**
+     * Finds the {@link SessionManager} for a given deployment name.
+     * <p>It looks up the {@link TowServer} bean (either by a configured ID or as a unique
+     * bean of its type) and then retrieves the session manager for the specified deployment.</p>
+     * @param deploymentName the name of the deployment
+     * @return the {@link SessionManager} instance
+     * @throws IllegalStateException if the {@code TowServer} cannot be found
+     */
     private SessionManager getSessionManager(String deploymentName) {
         Assert.notNull(deploymentName, "deploymentName must not be null");
         TowServer towServer = null;

@@ -59,6 +59,10 @@ public class DefaultCoreService extends AbstractCoreService {
         super(parentService, derived);
     }
 
+    /**
+     * Configures the service with the given {@link AspectranConfig}.
+     * @param aspectranConfig the Aspectran configuration
+     */
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
         Assert.state(!isDerived(), "Must not be called for derived services");
         Assert.state(!hasActivityContextBuilder(), "prepare() method can be called only once");
@@ -108,6 +112,10 @@ public class DefaultCoreService extends AbstractCoreService {
         }
     }
 
+    /**
+     * Builds the {@link ActivityContext}.
+     * @throws ActivityContextBuilderException if an error occurs while building the context
+     */
     protected void buildActivityContext() throws ActivityContextBuilderException {
         Assert.state(getActivityContext() == null,
                 "ActivityContext is already built; Must destroy the current ActivityContext before reloading");
@@ -121,6 +129,9 @@ public class DefaultCoreService extends AbstractCoreService {
         }
     }
 
+    /**
+     * Destroys the {@link ActivityContext}.
+     */
     protected void destroyActivityContext() {
         if (logger.isDebugEnabled()) {
             logger.debug("Destroying all cached resources...");

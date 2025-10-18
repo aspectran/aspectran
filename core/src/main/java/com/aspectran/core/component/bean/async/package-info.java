@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Contains support classes for asynchronous method execution on beans.
+ * Provides interfaces and classes for asynchronous task execution.
+ * <p>This package contains the core {@link com.aspectran.core.component.bean.async.AsyncTaskExecutor}
+ * interface, along with implementations like {@link com.aspectran.core.component.bean.async.SimpleAsyncTaskExecutor}
+ * (which creates a new thread for each task) and {@link com.aspectran.core.component.bean.async.ThreadPoolAsyncTaskExecutor}
+ * (which uses a thread pool). It also includes supporting classes for exception handling and task decoration.</p>
  */
 package com.aspectran.core.component.bean.async;

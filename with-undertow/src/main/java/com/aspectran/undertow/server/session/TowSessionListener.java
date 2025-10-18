@@ -23,7 +23,8 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.handlers.ServletRequestContext;
 
 /**
- * Class that bridges between Aspectran native session listener and Undertow ones.
+ * An Aspectran {@link SessionListener} implementation that wraps and delegates
+ * events to an Undertow {@link io.undertow.server.session.SessionListener}.
  *
  * <p>Created: 2019-08-11</p>
  */
