@@ -30,6 +30,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -277,12 +278,29 @@ public class JettyServer extends Server implements InitializableBean, Disposable
      * @param handler the handler to process
      */
     private void handleDeferredInitialize(Handler handler) {
-        if (handler instanceof JettyWebAppContext jettyWebAppContext) {
-            jettyWebAppContext.deferredInitialize(this);
+        if (handler instanceof JettyWebAppContext webAppContext) {
+            disableLogbackInitializerIfAvailable(webAppContext);
+            webAppContext.deferredInitialize(this);
         } else if (handler instanceof Handler.Wrapper handlerWrapper) {
             handleDeferredInitialize(handlerWrapper.getHandler());
         } else if (handler instanceof Handler.Collection handlerCollection) {
             handleDeferredInitialize(handlerCollection.getHandlers());
+        }
+    }
+
+    private void disableLogbackInitializerIfAvailable(@NonNull JettyWebAppContext webAppContext) {
+        try {
+            // To prevent Logback's ServletContextListener from shutting down the logging context,
+            // set a context parameter to disable the initializer if Logback is the logging implementation.
+            ILoggerFactory iLoggerFactory = LoggerFactory.getILoggerFactory();
+            if (iLoggerFactory != null && iLoggerFactory.getClass().getName().equals("ch.qos.logback.classic.LoggerContext")) {
+                webAppContext.setInitParameter("logbackDisableServletContainerInitializer", "true");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Disabled Logback ServletContainerInitializer for {}", webAppContext.getContextPath());
+                }
+            }
+        } catch (Exception e) {
+            // Ignore exceptions, as this is an optional enhancement
         }
     }
 
