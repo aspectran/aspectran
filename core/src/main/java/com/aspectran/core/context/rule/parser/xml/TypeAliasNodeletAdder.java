@@ -20,7 +20,10 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * <p>Created: 2025-08-31</p>
+ * A {@code NodeletAdder} for parsing the {@code <typeAlias>} elements within
+ * the {@code <typeAliases>} section.
+ *
+ * <p>Created: 2016. 2. 13.</p>
  */
 class TypeAliasNodeletAdder implements NodeletAdder {
 
@@ -40,23 +43,12 @@ class TypeAliasNodeletAdder implements NodeletAdder {
     @Override
     public void addTo(@NonNull NodeletGroup group) {
         group.child("typeAliases")
-            .nodelet(attrs -> {
-                String alias = attrs.get("alias");
-                String type = attrs.get("type");
-
-                AspectranNodeParsingContext.pushObject(type);
-                AspectranNodeParsingContext.pushObject(alias);
-            })
-            .endNodelet(text -> {
-                String alias = AspectranNodeParsingContext.popObject();
-                String type = AspectranNodeParsingContext.popObject();
-
-                if (type != null) {
+            .child("typeAlias")
+                .nodelet(attrs -> {
+                    String alias = attrs.get("alias");
+                    String type = attrs.get("type");
                     AspectranNodeParsingContext.getCurrentRuleParsingContext().addTypeAlias(alias, type);
-                } else if (text != null) {
-                    AspectranNodeParsingContext.getCurrentRuleParsingContext().addTypeAlias(alias, text);
-                }
-            });
+                });
     }
 
 }

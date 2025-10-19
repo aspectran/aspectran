@@ -23,7 +23,8 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ExceptionInnerNodeParser.
+ * A {@code NodeletAdder} for parsing the {@code <thrown>} element within an
+ * {@code <exception>} block.
  *
  * @since 2013. 8. 11.
  */

@@ -36,6 +36,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * A generic {@code NodeletAdder} for parsing item-like elements such as
+ * {@code <item>}, {@code <property>}, and {@code <argument>}.
+ * <p>This class handles the common logic for creating {@link com.aspectran.core.context.rule.ItemRule}
+ * instances from XML attributes and content.</p>
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class ItemNodeletAdder implements NodeletAdder {

@@ -18,6 +18,10 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * The main {@link NodeletGroup} for parsing Aspectran's XML configuration.
+ * <p>This class registers all the specific {@code NodeletAdder} implementations
+ * that handle the various elements of the Aspectran DTD.</p>
+ *
  * <p>Created: 2025-08-30</p>
  */
 public class AspectranNodeletGroup extends NodeletGroup {

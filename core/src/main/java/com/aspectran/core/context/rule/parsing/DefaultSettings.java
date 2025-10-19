@@ -22,7 +22,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.Map;
 
 /**
- * The Class DefaultSettings
+ * Manages default settings that influence the behavior of the rule parsing process.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */

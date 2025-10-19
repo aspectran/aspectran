@@ -25,7 +25,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * A {@code NodeletAdder} for parsing the {@code <aspect>} element and its sub-elements,
+ * creating an {@link com.aspectran.core.context.rule.AspectRule}.
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
+ * @see com.aspectran.core.context.rule.AspectRule
  */
 class AspectNodeletAdder implements NodeletAdder {
 

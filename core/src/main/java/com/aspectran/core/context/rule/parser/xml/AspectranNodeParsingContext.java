@@ -20,11 +20,10 @@ import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.Assert;
 
 /**
- * Manages the parsing context for {@link AspectranNodeParser}.
- * <p>This class provides a thread-safe mechanism for handling nested parsing contexts
- * by using a {@link ThreadLocal} stack of parsers. Each thread has its own stack,
- * ensuring that parsing contexts do not interfere with each other in a multi-threaded
- * environment.</p>
+ * A static helper that provides access to the thread-local {@link AspectranNodeParser} context.
+ * <p>It uses a {@link ThreadLocal} stack to manage {@link AspectranNodeParser}
+ * instances, ensuring that parsing contexts are isolated between threads. This is
+ * crucial for handling nested file appends correctly in a multi-threaded environment.</p>
  *
  * <p>Created: 2024-08-31</p>
  */

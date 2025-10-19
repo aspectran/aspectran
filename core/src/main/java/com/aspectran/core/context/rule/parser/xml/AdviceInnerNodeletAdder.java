@@ -24,7 +24,8 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class AdviceInnerNodeParser.
+ * A {@code NodeletAdder} for parsing advice elements like {@code <before>},
+ * {@code <after>}, {@code <around>}, and {@code <finally>}.
  *
  * @since 2013. 8. 11.
  */

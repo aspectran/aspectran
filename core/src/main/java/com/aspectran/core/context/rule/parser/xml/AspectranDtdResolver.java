@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Offline entity resolver for the Aspectran DTDs.
+ * An offline {@link EntityResolver} for the Aspectran configuration DTDs.
+ * <p>This resolver loads the DTD from the local classpath to avoid network
+ * lookups and to enable offline parsing of XML configuration files.</p>
  *
  * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */

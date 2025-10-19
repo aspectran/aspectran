@@ -34,7 +34,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Class ShallowRuleParsingContext.
+ * A lightweight, "shallow" implementation of {@link RuleParsingContext}.
+ * <p>This version collects rule definitions without performing deep processing
+ * such as class loading, bean reference validation, or alias resolution. It is
+ * primarily used for tools or scenarios where a quick, non-validated overview
+ * of the configuration rules is required.</p>
  *
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */

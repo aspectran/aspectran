@@ -66,7 +66,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class RuleParsingContext.
+ * A central class that holds the state and context during the parsing of Aspectran's
+ * configuration rules.
+ * <p>It acts as a temporary container for all discovered rules (e.g., beans, aspects,
+ * translets) and provides access to essential services like the {@link ClassLoader} and
+ * {@link com.aspectran.core.context.env.EnvironmentProfiles}. The parser populates this
+ * context, which is then used by the {@link com.aspectran.core.context.builder.ActivityContextBuilder}
+ * to construct the final {@link com.aspectran.core.context.ActivityContext}.</p>
  *
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */

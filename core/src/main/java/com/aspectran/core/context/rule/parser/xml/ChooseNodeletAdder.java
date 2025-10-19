@@ -24,7 +24,8 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ChooseNodeParser.
+ * A {@code NodeletAdder} for parsing the {@code <choose>}, {@code <when>}, and
+ * {@code <otherwise>} elements for conditional logic.
  *
  * @since 6.0.0
  */

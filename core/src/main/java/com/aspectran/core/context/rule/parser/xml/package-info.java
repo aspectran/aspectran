@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides a parser for Aspectran's XML configuration files.
+ * Provides a SAX-based parser for Aspectran's XML configuration files, using a
+ * nodelet-based approach for handling different configuration elements.
  */
 package com.aspectran.core.context.rule.parser.xml;

@@ -24,7 +24,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * A {@code NodeletAdder} for parsing the {@code <bean>} element, which defines a
+ * bean to be managed by the IoC container.
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
+ * @see com.aspectran.core.context.rule.BeanRule
  */
 class BeanNodeletAdder implements NodeletAdder {
 

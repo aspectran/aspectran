@@ -18,6 +18,8 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * The {@link NodeletGroup} for parsing a nested {@code <bean>} element.
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class InnerBeanNodeletGroup extends NodeletGroup {

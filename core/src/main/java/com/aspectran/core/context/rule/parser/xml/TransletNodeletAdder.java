@@ -27,9 +27,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class TransletNodeParser.
+ * A {@code NodeletAdder} for parsing the {@code <translet>} element and its
+ * sub-elements.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
+ * @see com.aspectran.core.context.rule.TransletRule
  */
 class TransletNodeletAdder implements NodeletAdder {
 

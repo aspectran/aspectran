@@ -20,7 +20,10 @@ import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 /**
- * The Interface ActivityContextParser.
+ * Defines the contract for a parser that reads Aspectran's configuration rules
+ * and populates a {@link com.aspectran.core.context.rule.parsing.RuleParsingContext}.
+ * <p>Implementations of this interface are responsible for handling different
+ * configuration formats (e.g., XML, APON) and sources.</p>
  *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */

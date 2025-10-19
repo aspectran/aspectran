@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ChooseNodeParser.
+ * The {@link NodeletGroup} for parsing a nested {@code <choose>} element.
  *
  * @since 6.0.0
  */

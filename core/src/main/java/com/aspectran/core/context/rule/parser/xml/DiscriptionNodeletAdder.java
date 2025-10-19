@@ -22,7 +22,9 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * <p>Created: 2025-08-31</p>
+ * A {@code NodeletAdder} for parsing the {@code <description>} element.
+ *
+ * <p>Created: 2016. 2. 13.</p>
  */
 class DiscriptionNodeletAdder  implements NodeletAdder {
 

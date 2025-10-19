@@ -23,9 +23,10 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class TemplateNodeParser.
+ * A {@code NodeletAdder} for parsing the {@code <template>} element.
  *
  * <p>Created: 2016. 01. 09</p>
+ * @see com.aspectran.core.context.rule.TemplateRule
  */
 class TemplateNodeletAdder implements NodeletAdder {
 

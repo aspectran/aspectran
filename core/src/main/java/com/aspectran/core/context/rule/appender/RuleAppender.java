@@ -26,7 +26,10 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * The Interface RuleAppender.
+ * Defines the contract for appending rules from various sources such as files,
+ * classpath resources, or URLs.
+ * <p>Implementations provide an {@link java.io.InputStream} for the configuration
+ * data to be parsed.</p>
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */

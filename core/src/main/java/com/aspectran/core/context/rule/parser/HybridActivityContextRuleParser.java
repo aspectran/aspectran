@@ -26,7 +26,12 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * The Class HybridActivityContextRuleParser.
+ * A hybrid parser that can handle both XML and APON formats for Aspectran's
+ * configuration files.
+ * <p>It determines the format based on the file extension or an explicit
+ * format hint and delegates the parsing to the appropriate underlying parser
+ * ({@link com.aspectran.core.context.rule.parser.xml.AspectranNodeParser} for XML
+ * or {@code AponReader} for APON).</p>
  *
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */

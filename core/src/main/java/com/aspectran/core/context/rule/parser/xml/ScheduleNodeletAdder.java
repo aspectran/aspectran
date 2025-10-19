@@ -24,9 +24,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ScheduleNodeParser.
+ * A {@code NodeletAdder} for parsing the {@code <schedule>} element and its
+ * sub-elements like {@code <scheduler>} and {@code <job>}.
  *
  * <p>Created: 2016. 08. 29.</p>
+ * @see com.aspectran.core.context.rule.ScheduleRule
  */
 class ScheduleNodeletAdder implements NodeletAdder {
 

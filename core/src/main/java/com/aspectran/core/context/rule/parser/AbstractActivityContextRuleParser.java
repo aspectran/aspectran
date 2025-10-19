@@ -26,7 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class AbstractActivityContextParser.
+ * Abstract base class for {@link ActivityContextRuleParser} implementations.
+ * <p>This class manages the {@link com.aspectran.core.context.rule.parsing.RuleParsingContext}
+ * and the {@link com.aspectran.core.context.rule.appender.RuleAppender}, providing a
+ * foundational structure for parsing rules from different sources.</p>
  *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */

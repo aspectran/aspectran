@@ -24,6 +24,9 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * A {@code NodeletAdder} for parsing a nested {@code <bean>} element, which defines
+ * an inner bean.
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class InnerBeanNodeletAdder implements NodeletAdder {

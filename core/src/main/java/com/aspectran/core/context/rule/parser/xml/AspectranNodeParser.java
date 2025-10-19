@@ -26,7 +26,10 @@ import org.xml.sax.InputSource;
 import java.io.InputStream;
 
 /**
- * The Class AspectranNodeParser.
+ * The main XML parser for Aspectran configuration files.
+ * <p>This class orchestrates the parsing process by using a {@link NodeletParser}
+ * configured with Aspectran-specific nodelets ({@link AspectranNodeletGroup}).
+ * It manages the parsing context and handles the lifecycle of a parsing operation.</p>
  *
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */

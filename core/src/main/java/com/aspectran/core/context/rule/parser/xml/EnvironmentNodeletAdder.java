@@ -21,7 +21,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
+ * A {@code NodeletAdder} for parsing the {@code <environment>} element, which is used
+ * to define environment-specific properties.
+ *
  * <p>Created: 2016. 01. 09</p>
+ * @see com.aspectran.core.context.rule.EnvironmentRule
  */
 class EnvironmentNodeletAdder implements NodeletAdder {
 

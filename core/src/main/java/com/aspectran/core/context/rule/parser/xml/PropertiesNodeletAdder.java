@@ -23,7 +23,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * <p>Created: 2025-08-31</p>
+ * A {@code NodeletAdder} for parsing the {@code <properties>} element, which serves as
+ * a container for multiple {@code <item>} or {@code <property>} elements and supports
+ * profile-based conditional inclusion.
+ *
+ * <p>Created: 2016. 2. 13.</p>
  */
 class PropertiesNodeletAdder implements NodeletAdder {
 

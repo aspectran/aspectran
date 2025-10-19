@@ -22,7 +22,11 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * <p>Created: 2025-08-31</p>
+ * A {@code NodeletAdder} for parsing the {@code <append>} element, which is used
+ * to include other configuration files.
+ *
+ * @see com.aspectran.core.context.rule.AppendRule
+ * <p>Created: 2017. 4. 24.</p>
  */
 class AppendNodeletAdder implements NodeletAdder {
 

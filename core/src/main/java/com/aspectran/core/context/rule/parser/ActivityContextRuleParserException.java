@@ -18,7 +18,8 @@ package com.aspectran.core.context.rule.parser;
 import java.io.Serial;
 
 /**
- * This exception is thrown when ActivityContext parsing fails.
+ * Exception thrown when an error occurs during the parsing of Aspectran's
+ * configuration rules.
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

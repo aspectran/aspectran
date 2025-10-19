@@ -28,7 +28,9 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ActionNodeParser.
+ * A {@code NodeletAdder} for parsing inner action elements such as
+ * {@code <headers>}, {@code <echo>}, {@code <action>}, {@code <invoke>},
+ * and {@code <include>}.
  *
  * @since 2011. 1. 9.
  */

@@ -16,7 +16,9 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 /**
- * <p>Created: 2025-08-31</p>
+ * A {@code NodeletAdder} for parsing the {@code <property>} element.
+ *
+ * <p>Created: 2016. 2. 13.</p>
  */
 class PropertyNodeletAdder extends ItemNodeletAdder {
 

@@ -28,7 +28,8 @@ import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
 
 /**
- * The Class ResponseInnerNodeParser.
+ * A {@code NodeletAdder} for parsing response-related elements such as
+ * {@code <transform>}, {@code <dispatch>}, {@code <forward>}, and {@code <redirect>}.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */

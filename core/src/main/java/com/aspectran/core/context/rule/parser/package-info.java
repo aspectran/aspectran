@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Contains the parsing infrastructure for reading configuration sources (XML, APON)
- * and constructing the in-memory rule object model.
+ * Provides the core interfaces and classes for parsing Aspectran's configuration rules
+ * from various formats like XML and APON.
  */
 package com.aspectran.core.context.rule.parser;

@@ -20,7 +20,11 @@ import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
- * The Class RuleParsingScope.
+ * Represents a local scope within the rule parsing process.
+ * <p>This class holds contextual information that is specific to the current
+ * parsing scope, such as the active {@link com.aspectran.core.context.rule.DescriptionRule}
+ * and {@link DefaultSettings}. It is designed to be replicable to support nested
+ * parsing contexts, for example, when one configuration file appends another.</p>
  *
  * <p>Created: 2015. 10. 2.</p>
  */
