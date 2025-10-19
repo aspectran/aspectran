@@ -21,17 +21,15 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * Request scope implementation that stores beans for the lifetime of a
- * single request. Non-locking scope (returns {@code null} lock) since access
- * is typically confined to a single thread/request.
+ * A {@link Scope} implementation that stores beans for the lifetime of a
+ * single request.
+ * <p>This scope is not thread-safe and does not use a lock, as it is
+ * intended for use within a single request-handling thread.</p>
  */
 public final class RequestScope extends AbstractScope {
 
     private static final ScopeType scopeType = ScopeType.REQUEST;
 
-    /**
-     * Instantiates a new Request scope.
-     */
     public RequestScope() {
         super();
     }

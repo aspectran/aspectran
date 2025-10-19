@@ -167,29 +167,23 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                     scopeLock.readLock().unlock();
                     scopeLock.writeLock().lock();
                     try {
+                        // Double-check inside the write lock
                         instance = scope.getBeanInstance(beanRule);
                         if (instance == null) {
                             bean = createBean(beanRule, scope);
                         } else {
                             bean = instance.getBean();
                         }
-                        if (bean != null && beanRule.isFactoryProductionRequired()) {
-                            bean = getFactoryProducedObject(beanRule, bean);
-                        }
                     } finally {
                         scopeLock.writeLock().unlock();
                     }
                 } else {
                     bean = instance.getBean();
-                    if (bean != null && beanRule.isFactoryProductionRequired()) {
-                        readLocked = false;
-                        scopeLock.readLock().unlock();
-                        scopeLock.writeLock().lock();
-                        try {
-                            bean = getFactoryProducedObject(beanRule, bean);
-                        } finally {
-                            scopeLock.writeLock().unlock();
-                        }
+                }
+                if (bean != null && beanRule.isFactoryProductionRequired()) {
+                    // Synchronize on the factory bean instance to ensure thread-safe object production.
+                    synchronized (bean) {
+                        bean = getFactoryProducedObject(beanRule, bean);
                     }
                 }
             } finally {

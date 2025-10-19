@@ -34,12 +34,9 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * Base support implementation of {@link Scope} that manages storage and
- * lifecycle of scoped beans.
- * <p>
- * Provides common facilities for retrieving, saving, and destroying
- * bean instances held within a particular scope.
- * </p>
+ * Abstract base class for {@link Scope} implementations.
+ * <p>Provides the core infrastructure for managing the lifecycle of scoped
+ * bean instances, including storage and destruction logic.</p>
  */
 public abstract class AbstractScope implements Scope {
 
@@ -92,6 +89,14 @@ public abstract class AbstractScope implements Scope {
         }
     }
 
+    /**
+     * Destroys all beans in this scope.
+     * <p>This method ensures that beans marked with {@code lazy-destroy="true"}
+     * are destroyed after all other beans. This is crucial for resources like
+     * database connections that must remain open until all dependent beans
+     * have been destroyed. Beans within each group (non-lazy and lazy) are
+     * destroyed in the reverse order of their creation.</p>
+     */
     @Override
     public void destroy() {
         if (logger.isDebugEnabled()) {
@@ -133,6 +138,14 @@ public abstract class AbstractScope implements Scope {
         scopedBeanInstances.clear();
     }
 
+    /**
+     * Performs the actual destruction of a bean instance.
+     * <p>Invokes the custom destroy method and/or the {@link DisposableBean}
+     * interface method.</p>
+     * @param beanRule the rule for the bean to be destroyed
+     * @param bean the bean instance to be destroyed
+     * @throws Exception if the destruction process fails
+     */
     private void doDestroy(BeanRule beanRule, Object bean) throws Exception {
         if (bean != null) {
             if (beanRule.getDestroyMethod() != null) {

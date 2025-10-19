@@ -28,13 +28,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Session scope implementation storing beans for the lifetime of a user session.
- * <p>
- * Maintains a read/write lock for concurrent access and destroys contained
- * beans when the scope is unbound from a session via {@link SessionBindingListener}.
- * Includes matching logic so that lookups work across equivalent bean rules
- * (e.g., across JVMs/nodes).
- * </p>
+ * A {@link Scope} implementation that stores beans for the lifetime of a user session.
+ * <p>This scope is thread-safe and uses a {@link ReadWriteLock} to manage
+ * concurrent access. It implements {@link SessionBindingListener} to ensure
+ * that all contained beans are destroyed when the session is invalidated.
+ * The bean lookup mechanism is designed to work correctly across different
+ * JVMs in a clustered environment by matching bean rules based on their
+ * ID or class name.</p>
  */
 public class SessionScope extends AbstractScope implements SessionBindingListener {
 
@@ -60,7 +60,7 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
 
     @Override
     public void valueUnbound(Session session, String name, Object value) {
-        // destroys all contained beans when unbound from a session
+        // Destroys all contained beans when unbound from a session.
         destroy();
     }
 
@@ -84,11 +84,6 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     }
 
     @Override
-    public BeanRule getBeanRuleByInstance(Object bean) {
-        throw new UnsupportedOperationException("Not available in session scope; Because it may be created in another JVM");
-    }
-
-    @Override
     public boolean containsBeanRule(BeanRule beanRule) {
         return (findMatchingBeanRule(beanRule) != null);
     }
@@ -97,12 +92,19 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     private BeanRule findMatchingBeanRule(BeanRule beanRule) {
         for (Map.Entry<BeanRule, BeanInstance> entry : getScopedBeanInstances().entrySet()) {
             BeanRule target = entry.getKey();
-            if (beanRule.getId() != null && beanRule.getId().equals(target.getId())) {
-                return target;
-            } else {
-                String className = beanRule.getTargetBeanClassName();
-                if (className != null && className.equals(target.getTargetBeanClassName())) {
+            // If the bean rule to find has an ID, it must match the target's ID.
+            if (beanRule.getId() != null) {
+                if (beanRule.getId().equals(target.getId())) {
                     return target;
+                }
+            } else {
+                // If the bean rule to find has no ID, match by class name,
+                // but only against targets that also have no ID.
+                if (target.getId() == null) {
+                    String className = beanRule.getTargetBeanClassName();
+                    if (className != null && className.equals(target.getTargetBeanClassName())) {
+                        return target;
+                    }
                 }
             }
         }

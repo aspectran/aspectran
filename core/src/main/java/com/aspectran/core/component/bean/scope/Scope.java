@@ -25,8 +25,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * Strategy interface for a bean scope in Aspectran.
- * Defines operations to store, retrieve, and destroy scoped bean instances,
- * as well as metadata such as the {@link ScopeType} and optional scope lock.
+ * <p>Defines operations to store, retrieve, and destroy scoped bean instances,
+ * as well as providing metadata such as the {@link ScopeType} and an optional
+ * scope lock for thread safety.</p>
  */
 public interface Scope extends NonPersistent {
 
@@ -37,49 +38,50 @@ public interface Scope extends NonPersistent {
     ScopeType getScopeType();
 
     /**
-     * Returns the lock of this scope.
-     * @return the scope lock
+     * Returns the lock for this scope, if any.
+     * <p>Scopes that are not thread-safe may return {@code null}.</p>
+     * @return the scope lock, or {@code null} if not applicable
      */
     ReadWriteLock getScopeLock();
 
     /**
-     * Returns an instance of the bean that matches the given bean rule.
-     * @param beanRule the bean rule of the bean to retrieve
-     * @return an instance of the bean
+     * Returns the bean instance associated with the given bean rule.
+     * @param beanRule the bean rule to retrieve the instance for
+     * @return the bean instance, or {@code null} if not found
      */
     BeanInstance getBeanInstance(BeanRule beanRule);
 
     /**
-     * Saves an instantiated bean with the given bean rule into the scope.
+     * Registers a bean instance with this scope.
      * @param activity the current activity
-     * @param beanRule the bean rule of the bean to save
-     * @param beanInstance an instance of the bean
+     * @param beanRule the bean rule defining the instance
+     * @param beanInstance the bean instance to register
      */
     void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance);
 
     /**
-     * Returns the bean rule corresponding to the bean object.
-     * @param bean the bean object to find
-     * @return the bean rule
+     * Returns the bean rule associated with the given bean instance.
+     * @param bean the bean instance to find the rule for
+     * @return the corresponding bean rule, or {@code null} if not found
      */
     BeanRule getBeanRuleByInstance(Object bean);
 
     /**
-     * Returns whether the bean rule exists in this scope.
-     * @param beanRule the bean rule to find
-     * @return {@code true} if the bean rule exists in this scope,  {@code false} otherwise
+     * Checks if a bean defined by the given rule is present in this scope.
+     * @param beanRule the bean rule to check for
+     * @return {@code true} if a bean with the given rule exists, {@code false} otherwise
      */
     boolean containsBeanRule(BeanRule beanRule);
 
     /**
-     * Destroy the bean that matches the given object in this scope.
-     * @param bean the bean object to destroy
-     * @throws Exception if the bean cannot be destroyed
+     * Destroys the specified bean instance within this scope.
+     * @param bean the bean instance to destroy
+     * @throws Exception if destruction fails
      */
     void destroy(Object bean) throws Exception;
 
     /**
-     * Destroy all scoped beans in this scope.
+     * Destroys all beans held in this scope.
      */
     void destroy();
 
