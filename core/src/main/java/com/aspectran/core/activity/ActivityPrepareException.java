@@ -18,7 +18,11 @@ package com.aspectran.core.activity;
 import java.io.Serial;
 
 /**
- * Checked exception thrown when an error occurs while preparing an activity.
+ * Exception thrown when an error occurs during the preparation phase of an
+ * {@link Activity}.
+ *
+ * <p>This phase typically includes operations like parsing the request, resolving
+ * parameters, and setting up the activity for execution.
  *
  * <p>Created: 2019. 03. 25.</p>
  */
@@ -28,9 +32,9 @@ public class ActivityPrepareException extends ActivityException {
     private static final long serialVersionUID = -6964737280809517019L;
 
     /**
-     * Instantiates a new ActivityPrepareException.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Constructs a new ActivityPrepareException.
+     * @param msg the detail message
+     * @param cause the root cause
      */
     public ActivityPrepareException(String msg, Throwable cause) {
         super(msg, cause);

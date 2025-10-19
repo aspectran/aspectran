@@ -33,8 +33,7 @@ import java.util.regex.Pattern;
 public class RegexpPointcut extends AbstractPointcut {
 
     /** Cache for compiled regular expression patterns. */
-    private final Cache<String, Pattern> cache =
-            new ConcurrentReferenceCache<>(Pattern::compile);
+    private final Cache<String, Pattern> cache = new ConcurrentReferenceCache<>(Pattern::compile);
 
     /**
      * Creates a new RegexpPointcut with the given list of pointcut pattern rules.

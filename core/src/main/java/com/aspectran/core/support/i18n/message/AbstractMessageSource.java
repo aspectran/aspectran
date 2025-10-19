@@ -22,25 +22,33 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
- * <p>This class is a clone of org.springframework.context.support.AbstractMessageSource</p>
- *
  * Abstract implementation of the {@link HierarchicalMessageSource} interface,
- * implementing common handling of message variants, making it easy
- * to implement a specific strategy for a concrete MessageSource.
+ * implementing common handling of message variants and delegating the actual
+ * message resolution to subclasses.
  *
- * <p>Subclasses must implement the abstract {@link #resolveCode}
- * method. For efficient resolution of messages without arguments, the
- * {@link #resolveCodeWithoutArguments} method should be overridden
- * as well, resolving messages without a MessageFormat being involved.</p>
+ * <p>This class provides a foundation for concrete {@link MessageSource} implementations,
+ * handling features like parent message source delegation, default message handling,
+ * and message formatting. Subclasses must implement the abstract {@link #resolveCode}
+ * method to resolve a message for a given code and locale. For optimized performance,
+ * it is also recommended to override the {@link #resolveCodeWithoutArguments} method
+ * to resolve messages without involving a {@link MessageFormat}.
  *
- * <p><b>Note:</b> By default, message texts are only parsed through
- * MessageFormat if arguments have been passed in for the message. In case
- * of no arguments, message texts will be returned as-is. As a consequence,
- * you should only use MessageFormat escaping for messages with actual
- * arguments, and keep all other messages unescaped. If you prefer to
- * escape all messages, set the "alwaysUseMessageFormat" flag to "true".</p>
+ * <p>By default, messages are only parsed through {@code MessageFormat} if they contain
+ * arguments. If no arguments are provided, the message text is returned as-is.
+ * To enforce {@code MessageFormat} parsing for all messages (e.g., to handle
+ * escaped characters like single quotes), set the {@link #setAlwaysUseMessageFormat}
+ * flag to {@code true}.
+ *
+ * <p>This class supports the use of the message code as the default message, which is
+ * useful during development. This can be enabled via the
+ * {@link #setUseCodeAsDefaultMessage(boolean)} method.
  *
  * <p>Created: 2016. 2. 8.</p>
+ *
+ * @see #resolveCode(String, java.util.Locale)
+ * @see #resolveCodeWithoutArguments(String, java.util.Locale)
+ * @see #setUseCodeAsDefaultMessage(boolean)
+ * @see com.aspectran.core.support.i18n.message.ResourceBundleMessageSource
  */
 public abstract class AbstractMessageSource extends MessageSourceSupport implements HierarchicalMessageSource {
 

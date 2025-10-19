@@ -30,6 +30,14 @@ import com.aspectran.core.activity.Activity;
  */
 public interface CustomTransformer {
 
+    /**
+     * Executes the transformation logic.
+     * <p>Implementations should use the provided {@link Activity} to access the
+     * process results and write the transformed output to the response.</p>
+     * @param activity the current activity, providing access to process results
+     *      and the response adapter
+     * @throws Exception if the transformation fails
+     */
     void transform(Activity activity) throws Exception;
 
 }

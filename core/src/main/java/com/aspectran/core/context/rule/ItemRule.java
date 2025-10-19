@@ -549,7 +549,7 @@ public class ItemRule {
             if (tokensList == null || tokensList.isEmpty()) {
                 return null;
             } else if (tokensList.size() == 1) {
-                return tokensList.get(0);
+                return tokensList.getFirst();
             } else {
                 List<Token> list = new ArrayList<>();
                 for (Token[] tokens : tokensList) {

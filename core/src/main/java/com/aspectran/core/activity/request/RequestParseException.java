@@ -18,7 +18,9 @@ package com.aspectran.core.activity.request;
 import java.io.Serial;
 
 /**
- * Exception thrown when request could not be parsed.
+ * Exception thrown when a request cannot be parsed.
+ * <p>This can be caused by issues such as malformed multipart requests or
+ * invalid request body formats.</p>
  */
 public class RequestParseException extends RequestException {
 
@@ -26,14 +28,14 @@ public class RequestParseException extends RequestException {
     private static final long serialVersionUID = -2918986957102012812L;
 
     /**
-     * Simple constructor.
+     * Constructs a new request parse exception with no detail message.
      */
     public RequestParseException() {
         super();
     }
 
     /**
-     * Constructor to create exception with a message.
+     * Constructs a new request parse exception with the specified detail message.
      * @param msg a message to associate with the exception
      */
     public RequestParseException(String msg) {
@@ -41,8 +43,8 @@ public class RequestParseException extends RequestException {
     }
 
     /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
+     * Constructs a new request parse exception with the specified detail message and cause.
+     * @param msg the detail message
      * @param cause the real cause of the exception
      */
     public RequestParseException(String msg, Throwable cause) {

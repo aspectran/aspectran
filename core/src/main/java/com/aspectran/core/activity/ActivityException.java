@@ -18,7 +18,13 @@ package com.aspectran.core.activity;
 import java.io.Serial;
 
 /**
- * Checked exception thrown when an activity fails.
+ * The base class for checked exceptions thrown when an error occurs during the
+ * lifecycle of an {@link Activity}.
+ *
+ * <p>This exception and its subclasses indicate failures that can occur during
+ * the preparation or performance phases of an activity. See
+ * {@link ActivityPrepareException} and {@link ActivityPerformException} for exceptions
+ * that are specific to those phases.
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -28,14 +34,14 @@ public class ActivityException extends Exception {
     private static final long serialVersionUID = -4400747654771758521L;
 
     /**
-     * Creates a new ActivityException.
+     * Constructs a new ActivityException with no detail message.
      */
     public ActivityException() {
         super();
     }
 
     /**
-     * Creates a new ActivityException with the specified detail message.
+     * Constructs a new ActivityException with the specified detail message.
      * @param msg the detail message
      */
     public ActivityException(String msg) {
@@ -43,7 +49,7 @@ public class ActivityException extends Exception {
     }
 
     /**
-     * Creates a new ActivityException with the specified cause.
+     * Constructs a new ActivityException with the specified cause.
      * @param cause the root cause
      */
     public ActivityException(Throwable cause) {
@@ -51,7 +57,7 @@ public class ActivityException extends Exception {
     }
 
     /**
-     * Creates a new ActivityException with the specified detail message and cause.
+     * Constructs a new ActivityException with the specified detail message and cause.
      * @param msg the detail message
      * @param cause the root cause
      */

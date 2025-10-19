@@ -266,7 +266,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             while (true) {
                 AdviceRule adviceRuleToUse = null;
                 if (executedAdviceRules == null) {
-                    adviceRuleToUse = adviceRuleList.get(0);
+                    adviceRuleToUse = adviceRuleList.getFirst();
                 } else {
                     for (AdviceRule adviceRule : adviceRuleList) {
                         if (!executedAdviceRules.contains(adviceRule)) {

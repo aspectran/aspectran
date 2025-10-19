@@ -81,7 +81,7 @@ class BeanEventBusTest {
         publisher.publish(message1);
 
         assertEquals(1, listener.getReceivedEvents().size());
-        assertEquals(message1, listener.getReceivedEvents().get(0).getMessage());
+        assertEquals(message1, listener.getReceivedEvents().getFirst().getMessage());
 
         String message2 = "This is the second event.";
         publisher.publish(message2);

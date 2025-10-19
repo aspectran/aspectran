@@ -16,52 +16,64 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Interface for locale and timezone resolution strategies.
+ * A strategy interface for resolving the current locale and time zone of a request.
+ *
+ * <p>This is a central component for internationalization (i18n), allowing the
+ * application to determine the user's preferred locale and time zone from the
+ * current {@link Translet}. Implementations can provide different strategies,
+ * such as resolving from the session, cookies, or the request header.
  *
  * <p>Created: 2016. 3. 13.</p>
+ *
+ * @see SessionLocaleResolver
  */
 public interface LocaleResolver {
 
-    /** Well-known name for the LocaleResolver object in the bean factory for this namespace. */
-	String LOCALE_RESOLVER_BEAN_ID = "localeResolver";
+    /**
+     * The bean name for the default {@code LocaleResolver} instance.
+     */
+    String LOCALE_RESOLVER_BEAN_ID = "localeResolver";
 
     /**
-     * Resolve the current locale via the given translet.
-     * Can return a default locale as fallback in any case.
+     * Resolves the current locale from the given translet.
      * @param translet the translet to resolve the locale for
      * @return the current locale (never {@code null})
      */
     Locale resolveLocale(Translet translet);
 
     /**
-     * Resolve the current timezone via the given translet.
-     * Can return a default timezone as fallback in any case.
-     * @param translet the translet to resolve the timezone for
-     * @return the current timezone (never {@code null})
+     * Resolves the current time zone from the given translet.
+     * @param translet the translet to resolve the time zone for
+     * @return the current time zone (never {@code null})
      */
     TimeZone resolveTimeZone(Translet translet);
 
     /**
-     * Set the current locale to the given one.
-     * @param translet the translet to resolve the locale for
-     * @param locale the new locale, or {@code null} to clear the locale
-     * @throws UnsupportedOperationException if the LocaleResolver implementation does not
-     *      support dynamic changing of the locale
+     * Sets the current locale to the given one.
+     * <p>Passing {@code null} for the locale value is intended to clear
+     * the locale setting, reverting to the default behavior of the resolver.
+     * @param translet the translet to set the locale for
+     * @param locale the new locale, or {@code null} to clear the current locale
+     * @throws UnsupportedOperationException if the {@code LocaleResolver} implementation
+     *      does not support dynamically changing the locale
      */
-    void setLocale(Translet translet, Locale locale);
+    void setLocale(Translet translet, @Nullable Locale locale);
 
     /**
-     * Set the current timezone to the given one.
-     * @param translet the translet to resolve the locale for
-     * @param timeZone the new timezone, or {@code null} to clear the timezone
-     * @throws UnsupportedOperationException if the LocaleResolver implementation does not
-     *      support dynamic changing of the timezone
+     * Sets the current time zone to the given one.
+     * <p>Passing {@code null} for the time zone value is intended to clear
+     * the time zone setting, reverting to the default behavior of the resolver.
+     * @param translet the translet to set the time zone for
+     * @param timeZone the new time zone, or {@code null} to clear the current time zone
+     * @throws UnsupportedOperationException if the {@code LocaleResolver} implementation
+     *      does not support dynamically changing the time zone
      */
-    void setTimeZone(Translet translet, TimeZone timeZone);
+    void setTimeZone(Translet translet, @Nullable TimeZone timeZone);
 
 }

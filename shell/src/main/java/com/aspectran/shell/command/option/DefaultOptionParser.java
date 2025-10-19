@@ -265,7 +265,7 @@ public class DefaultOptionParser implements OptionParser {
         } else if (matchingOpts.size() > 1 && !options.hasLongOption(token)) {
             throw new AmbiguousOptionException(token, matchingOpts);
         } else {
-            String key = (options.hasLongOption(token) ? token : matchingOpts.get(0));
+            String key = (options.hasLongOption(token) ? token : matchingOpts.getFirst());
             handleOption(options.getOption(key));
         }
     }
@@ -291,7 +291,7 @@ public class DefaultOptionParser implements OptionParser {
         } else if (matchingOpts.size() > 1 && !options.hasLongOption(name)) {
             throw new AmbiguousOptionException(name, matchingOpts);
         } else {
-            String key = (options.hasLongOption(name) ? name : matchingOpts.get(0));
+            String key = (options.hasLongOption(name) ? name : matchingOpts.getFirst());
             Option option = options.getOption(key);
             if (option.acceptsValue()) {
                 handleOption(option);

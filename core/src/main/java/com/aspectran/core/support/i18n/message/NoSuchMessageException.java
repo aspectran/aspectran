@@ -19,9 +19,11 @@ import java.io.Serial;
 import java.util.Locale;
 
 /**
- * Exception thrown when a message can't be resolved.
+ * Exception thrown when a message cannot be resolved by a {@link MessageSource}.
  *
  * <p>Created: 2016. 2. 8.</p>
+ *
+ * @see com.aspectran.core.support.i18n.message.MessageSource
  */
 public class NoSuchMessageException extends RuntimeException {
 

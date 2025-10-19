@@ -113,7 +113,7 @@ final class ProfilesParser {
     private static Profiles merge(String expression, @NonNull List<Profiles> elements, Operator operator) {
         assertWellFormed(expression, !elements.isEmpty(), "");
         if (elements.size() == 1) {
-            return elements.get(0);
+            return elements.getFirst();
         } else {
             Profiles[] profiles = elements.toArray(new Profiles[0]);
             return (operator == Operator.AND ? and(profiles) : or(profiles));

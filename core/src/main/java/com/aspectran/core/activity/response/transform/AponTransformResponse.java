@@ -60,6 +60,11 @@ public class AponTransformResponse extends TransformResponse {
         this.pretty = transformRule.getPretty();
     }
 
+    /**
+     * Converts the process result into APON format and writes it to the response.
+     * @param activity the current activity
+     * @throws Exception if an error occurs during transformation
+     */
     @Override
     public void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -91,12 +96,28 @@ public class AponTransformResponse extends TransformResponse {
         return new AponTransformResponse(transformRule);
     }
 
+    /**
+     * Transforms the given {@link Parameters} object into an APON formatted string
+     * and writes it to the provided writer.
+     * @param parameters the parameters to transform
+     * @param writer the writer to output the APON string to
+     * @param stringifyContext the context for custom string conversion
+     * @throws IOException if an I/O error occurs
+     */
     public static void transform(
             Parameters parameters, Writer writer, StringifyContext stringifyContext)
             throws IOException {
         transform(parameters, writer, stringifyContext, null);
     }
 
+    /**
+     * Transforms the given {@link Parameters} object into an APON formatted string.
+     * @param parameters the parameters to transform
+     * @param writer the writer to output the APON string to
+     * @param stringifyContext the context for custom string conversion
+     * @param prettyForce whether to force pretty printing
+     * @throws IOException if an I/O error occurs
+     */
     private static void transform(
             Parameters parameters, Writer writer, StringifyContext stringifyContext,
             Boolean prettyForce) throws IOException {

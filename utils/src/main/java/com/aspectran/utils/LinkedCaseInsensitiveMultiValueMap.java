@@ -68,7 +68,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     @Override
     public V getFirst(String key) {
         List<V> values = this.targetMap.get(key);
-        return (values != null ? values.get(0) : null);
+        return (values != null ? values.getFirst() : null);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     public Map<String, V> toSingleValueMap() {
         LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
         for (Entry<String, List<V>> entry : this.targetMap.entrySet()) {
-            singleValueMap.put(entry.getKey(), entry.getValue().get(0));
+            singleValueMap.put(entry.getKey(), entry.getValue().getFirst());
         }
         return singleValueMap;
     }

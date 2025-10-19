@@ -15,66 +15,70 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 import java.util.Locale;
 
 /**
- * Strategy interface for resolving messages, with support for the parameterization
- * and internationalization of such messages.
+ * The central strategy interface for resolving messages, with support for
+ * parameterization and internationalization.
+ *
+ * <p>Implementations of this interface are responsible for resolving a message
+ * for a given code and locale. If a message is not found, they can optionally
+ * delegate to a parent message source.
+ *
+ * <p>It is recommended to base message code names on the relevant fully qualified
+ * class name of the component that uses them, avoiding conflicts and ensuring
+ * maximum clarity.
  *
  * <p>Created: 2016. 2. 8.</p>
+ *
+ * @see HierarchicalMessageSource
+ * @see ResourceBundleMessageSource
  */
 public interface MessageSource {
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param locale the Locale in which to do the lookup
+     * Resolves the message for the given code and locale.
+     * @param code the message code to look up (e.g., "calculator.noRateSet")
+     * @param locale the locale in which to do the lookup
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message could not be found
      */
     String getMessage(String code, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param defaultMessage String to return if the lookup fails
-     * @param locale the Locale in which to do the lookup
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves the message for the given code and locale, returning a default
+     * message if the lookup fails.
+     * @param code the message code to look up (e.g., "calculator.noRateSet")
+     * @param defaultMessage the string to return if the lookup fails
+     * @param locale the locale in which to do the lookup
+     * @return the resolved message, or the default message if the lookup was unsuccessful
      */
-    String getMessage(String code, String defaultMessage, Locale locale);
+    String getMessage(String code, @Nullable String defaultMessage, Locale locale);
 
     /**
-     * Try to resolve the message. Treat as an error if the message can't be found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args Array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param locale the Locale in which to do the lookup
+     * Resolves the message for the given code and locale, filling in any
+     * arguments found in the message.
+     * @param code the message code to look up (e.g., "calculator.noRateSet")
+     * @param args an array of arguments that will be filled in for params within
+     *      the message (e.g., "{0}", "{1,date}"), or {@code null} if none
+     * @param locale the locale in which to do the lookup
      * @return the resolved message
-     * @throws NoSuchMessageException if the message wasn't found
-     * @see java.text.MessageFormat
+     * @throws NoSuchMessageException if the message could not be found
      */
-    String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
+    String getMessage(String code, @Nullable Object[] args, Locale locale) throws NoSuchMessageException;
 
     /**
-     * Try to resolve the message. Return default message if no message was found.
-     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-     *         this class are encouraged to base message names on the relevant fully
-     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
-     * @param args array of arguments that will be filled in for params within
-     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-     *         or {@code null} if none.
-     * @param defaultMessage String to return if the lookup fails
-     * @param locale the Locale in which to do the lookup
-     * @return the resolved message if the lookup was successful;
-     *         otherwise the default message passed as a parameter
-     * @see java.text.MessageFormat
+     * Resolves the message for the given code and locale, filling in any
+     * arguments and returning a default message if the lookup fails.
+     * @param code the message code to look up (e.g., "calculator.noRateSet")
+     * @param args an array of arguments that will be filled in for params within
+     *      the message (e.g., "{0}", "{1,date}"), or {@code null} if none
+     * @param defaultMessage the string to return if the lookup fails
+     * @param locale the locale in which to do the lookup
+     * @return the resolved message, or the default message if the lookup was unsuccessful
      */
-    String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
+    String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage, Locale locale);
 
 }

@@ -22,11 +22,14 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * <p>This class is a clone of org.springframework.context.support.MessageSourceResourceBundle</p>
+ * An adapter that exposes a {@link MessageSource} as a {@link java.util.ResourceBundle}.
  *
- * Helper class that allows for accessing an Aspectran
- * {@link MessageSource} as a {@link ResourceBundle}.
+ * <p>This class allows an Aspectran {@code MessageSource} to be used in contexts
+ * where a standard {@code ResourceBundle} is required, for example, for integration
+ * with third-party libraries or legacy code that relies on the {@code ResourceBundle}
+ * API.
  *
+ * @see com.aspectran.core.support.i18n.message.MessageSource
  * @see java.util.ResourceBundle
  */
 public class MessageSourceResourceBundle extends ResourceBundle {
@@ -60,8 +63,9 @@ public class MessageSourceResourceBundle extends ResourceBundle {
     }
 
     /**
-     * This implementation resolves the code in the MessageSource.
-     * Returns {@code null} if the message could not be resolved.
+     * Resolves the given key from the underlying {@code MessageSource}.
+     * If the message is not found, it catches the {@link NoSuchMessageException}
+     * and returns {@code null}.
      */
     @Override
     protected Object handleGetObject(@NonNull String key) {

@@ -126,7 +126,7 @@ public class BeanDescriptor {
     private void resolveSetterConflicts(@NonNull Map<String, List<Method>> conflictingSetters) {
         for (String propName : conflictingSetters.keySet()) {
             List<Method> setters = conflictingSetters.get(propName);
-            Method firstMethod = setters.get(0);
+            Method firstMethod = setters.getFirst();
             if (setters.size() == 1) {
                 addSetterMethod(propName, firstMethod);
             } else {

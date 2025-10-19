@@ -24,9 +24,22 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Base class for message source implementations, providing support infrastructure
- * such as {@link java.text.MessageFormat} handling but not implementing concrete
- * methods defined in the {@link MessageSource}.
+ * Base class for {@link MessageSource} implementations, providing common support
+ * infrastructure.
+ *
+ * <p>This class provides a foundation for message formatting, handling {@link java.text.MessageFormat}
+ * instances and caching them for efficiency. It does not implement the concrete
+ * message resolution methods defined in the {@link MessageSource} interface, such
+ * as {@code getMessage}.
+ *
+ * <p>Key features include:
+ * <ul>
+ *     <li>Support for caching {@code MessageFormat} objects to avoid repeated parsing.</li>
+ *     <li>An {@code alwaysUseMessageFormat} flag to enforce strict formatting rules
+ *     for all messages.</li>
+ *     <li>Template methods like {@link #renderDefaultMessage} and {@link #resolveArguments}
+ *     that subclasses can override to customize behavior.</li>
+ * </ul>
  *
  * <p>{@link AbstractMessageSource} derives from this class, providing concrete
  * {@code getMessage} implementations that delegate to a central template
@@ -90,7 +103,7 @@ public class MessageSourceSupport {
      * @param args array of arguments that will be filled in for params within the message, or {@code null} if none.
      * @param locale the Locale used for formatting
      * @return the rendered default message (with resolved arguments)
-     * @see #formatMessage(String, Object[], java.util.Locale) #formatMessage(String, Object[], java.util.Locale)
+     * @see #formatMessage(String, Object[], java.util.Locale)
      */
     protected String renderDefaultMessage(String defaultMessage, Object[] args, Locale locale) {
         return formatMessage(defaultMessage, args, locale);

@@ -18,7 +18,13 @@ package com.aspectran.core.activity;
 import java.io.Serial;
 
 /**
- * Thrown when an error occurs while performing an instant activity.
+ * An unchecked exception thrown when an error occurs while performing an
+ * instant (on-the-fly) activity.
+ *
+ * <p>Unlike other activity exceptions, this is a {@link RuntimeException}.
+ * Instant activities are often executed in contexts where checked exceptions are
+ * inconvenient, so this exception is designed to avoid forcing try-catch blocks
+ * on the caller.
  */
 public class InstantActivityException extends RuntimeException {
 
@@ -26,8 +32,8 @@ public class InstantActivityException extends RuntimeException {
     private static final long serialVersionUID = 3431407337587193795L;
 
     /**
-     * Instantiates a new InstantActivityException.
-     * @param cause the real cause of the exception
+     * Constructs a new InstantActivityException.
+     * @param cause the root cause
      */
     public InstantActivityException(Throwable cause) {
         super("An error occurred while performing an instant activity", cause);

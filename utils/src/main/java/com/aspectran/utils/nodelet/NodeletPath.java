@@ -76,7 +76,7 @@ public class NodeletPath {
                 return null;
             }
             if (nameList.size() == 1) {
-                mountXpath = nameList.get(0);
+                mountXpath = nameList.getFirst();
             } else {
                 StringBuilder sb = new StringBuilder(32);
                 for (int i = mountIndex; i < nameList.size(); i++) {

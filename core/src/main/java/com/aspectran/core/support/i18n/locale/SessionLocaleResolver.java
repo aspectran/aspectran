@@ -18,32 +18,40 @@ package com.aspectran.core.support.i18n.locale;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * {@link LocaleResolver} implementation that
- * uses a locale attribute in the user's session in case of a custom setting,
- * with a fallback to the specified default locale or the request's
- * accept-header locale.
+ * A {@link LocaleResolver} implementation that uses locale and time zone attributes
+ * in the user's session.
+ *
+ * <p>This resolver checks for a custom locale/time zone in the session. If one is not
+ * found, it falls back to the default locale specified in {@link AbstractLocaleResolver},
+ * or ultimately to the locale from the request's "accept-header".
  *
  * <p>Created: 2016. 3. 13.</p>
+ *
+ * @see #LOCALE_SESSION_ATTR_NAME
+ * @see #TIME_ZONE_SESSION_ATTR_NAME
  */
 public class SessionLocaleResolver extends AbstractLocaleResolver {
 
     /**
-     * Name of the session attribute that holds the Locale.
-     * Only used internally by this implementation.
+     * The name of the session attribute that holds the {@link Locale}.
      */
     public static final String LOCALE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".LOCALE";
 
     /**
-     * Name of the session attribute that holds the TimeZone.
-     * Only used internally by this implementation.
+     * The name of the session attribute that holds the {@link TimeZone}.
      */
     public static final String TIME_ZONE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".TIME_ZONE";
 
+    /**
+     * Resolves the locale from the session attribute, falling back to the default
+     * locale if not found.
+     */
     @Override
     public Locale resolveLocale(@NonNull Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
@@ -57,6 +65,10 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         return determineDefaultLocale(translet);
     }
 
+    /**
+     * Resolves the time zone from the session attribute, falling back to the default
+     * time zone if not found.
+     */
     @Override
     public TimeZone resolveTimeZone(@NonNull Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
@@ -70,8 +82,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         return determineDefaultTimeZone(translet);
     }
 
+    /**
+     * Sets the locale in the request and stores it in the session for future requests.
+     */
     @Override
-    public void setLocale(@NonNull Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, @Nullable Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
@@ -79,8 +94,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         }
     }
 
+    /**
+     * Sets the time zone in the request and stores it in the session for future requests.
+     */
     @Override
-    public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, @Nullable TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {

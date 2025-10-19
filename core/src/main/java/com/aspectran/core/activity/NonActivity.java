@@ -34,6 +34,13 @@ public class NonActivity extends CoreActivity {
         super(context);
     }
 
+    /**
+     * Returns the request adapter.
+     * <p>This method is overridden to ensure that a non-null {@code RequestAdapter}
+     * is always returned, creating a {@link DefaultRequestAdapter} if one does not
+     * already exist.</p>
+     * @return a non-null request adapter
+     */
     @Override
     public RequestAdapter getRequestAdapter() {
         if (super.getRequestAdapter() == null) {

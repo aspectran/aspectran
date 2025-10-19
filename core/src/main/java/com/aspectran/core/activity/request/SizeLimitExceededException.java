@@ -19,6 +19,8 @@ import java.io.Serial;
 
 /**
  * Thrown to indicate that the request size exceeds the configured maximum.
+ * This is typically encountered during file uploads or when processing large
+ * request bodies.
  *
  * @since 6.3.0
  */
@@ -44,10 +46,18 @@ public class SizeLimitExceededException extends RequestParseException {
         this.permitted = permitted;
     }
 
+    /**
+     * Returns the actual size of the request.
+     * @return the actual size
+     */
     public long getActual() {
         return actual;
     }
 
+    /**
+     * Returns the maximum permitted size of the request.
+     * @return the permitted size
+     */
     public long getPermitted() {
         return permitted;
     }

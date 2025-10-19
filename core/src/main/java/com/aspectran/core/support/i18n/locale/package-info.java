@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 /**
- * Locale support classes for Aspectran.
+ * Provides strategies for resolving the current locale and time zone information
+ * for internationalization (i18n) purposes.
+ * 
+ * <p>The central interface is {@link com.aspectran.core.support.i18n.locale.LocaleResolver},
+ * which defines methods to resolve and modify the current {@link java.util.Locale} and
+ * {@link java.util.TimeZone} for a given request. The primary implementation provided
+ * is {@link com.aspectran.core.support.i18n.locale.SessionLocaleResolver}, which manages
+ * locale settings on a per-session basis.
  */
 package com.aspectran.core.support.i18n.locale;

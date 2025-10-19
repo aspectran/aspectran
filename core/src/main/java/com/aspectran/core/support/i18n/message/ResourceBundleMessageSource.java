@@ -38,25 +38,31 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>This class is a clone of org.springframework.context.support.ResourceBundleMessageSource</p>
+ * A {@link MessageSource} implementation that accesses messages from resource bundles
+ * using specified basenames. This class relies on the standard JDK's
+ * {@link java.util.ResourceBundle} implementation, in combination with the JDK's
+ * message parsing provided by {@link java.text.MessageFormat}.
  *
- * {@link MessageSource} implementation that
- * accesses resource bundles using specified basenames. This class relies
- * on the underlying JDK's {@link java.util.ResourceBundle} implementation,
- * in combination with the JDK's standard message parsing provided by
- * {@link java.text.MessageFormat}.
+ * <p>This message source caches both the accessed {@code ResourceBundle} instances and
+ * the generated {@code MessageFormat} for each message. It also supports resolving
+ * messages without arguments, as defined in the {@link AbstractMessageSource} base class.
+ * The caching provided by this class is significantly more performant than the built-in
+ * caching of {@code java.util.ResourceBundle}.
  *
- * <p>This MessageSource caches both the accessed ResourceBundle instances and
- * the generated MessageFormats for each message. It also implements rendering of
- * no-arg messages without MessageFormat, as supported by the AbstractMessageSource
- * base class. The caching provided by this MessageSource is significantly faster
- * than the built-in caching of the {@code java.util.ResourceBundle} class.</p>
+ * <p>This class implements {@link ActivityContextAware} to obtain a class loader from the
+ * current {@link ActivityContext}. This ensures that resource bundles are loaded from
+ * the appropriate classpath.
  *
- * <p>Unfortunately, {@code java.util.ResourceBundle} caches loaded bundles
- * forever: Reloading a bundle during VM execution is <i>not</i> possible.
- * As this MessageSource relies on ResourceBundle, it faces the same limitation.</p>
+ * <p>A known limitation of {@code java.util.ResourceBundle} is that it caches loaded
+ * bundles indefinitely. Therefore, reloading a bundle during application execution is
+ * not possible. This message source inherits that limitation.
  *
  * <p>Created: 2016. 2. 8.</p>
+ *
+ * @see #setBasenames
+ * @see #setDefaultEncoding
+ * @see java.util.ResourceBundle
+ * @see java.text.MessageFormat
  */
 public class ResourceBundleMessageSource extends AbstractMessageSource implements ActivityContextAware {
 
@@ -90,11 +96,20 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     private final Map<ResourceBundle, Map<String, Map<Locale, MessageFormat>>> cachedBundleMessageFormats =
             new ConcurrentHashMap<>();
 
+    /**
+     * Sets the {@link ActivityContext} to obtain a {@link ClassLoader}.
+     * @param context the current {@code ActivityContext}
+     */
     @Override
     public void setActivityContext(@NonNull ActivityContext context) {
         this.classLoader = context.getAvailableActivity().getClassLoader();
     }
 
+    /**
+     * Returns the {@link ClassLoader} to load resource bundles with.
+     * <p>The default is the context's class loader.
+     * @return the {@code ClassLoader}
+     */
     public ClassLoader getClassLoader() {
         if (classLoader == null) {
             return ClassUtils.getDefaultClassLoader();
@@ -104,8 +119,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     }
 
     /**
-     * Set the default charset to use for parsing resource bundle files.
-     * <p>Default is the {@code java.util.ResourceBundle} default encoding: ISO-8859-1.
+     * Set the default encoding to use for parsing property-based resource bundle files.
+     * <p>The default is the system's default encoding.
      * @param defaultEncoding the default encoding
      */
     public void setDefaultEncoding(String defaultEncoding) {

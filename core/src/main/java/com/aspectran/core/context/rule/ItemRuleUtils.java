@@ -224,7 +224,7 @@ public abstract class ItemRuleUtils {
             if (itemRule.getValueType() != ItemValueType.BEAN) {
                 List<String> stringList = itemParameters.getStringList(ItemParameters.value);
                 if (stringList != null && !stringList.isEmpty()) {
-                    itemRule.setValue(stringList.get(0));
+                    itemRule.setValue(stringList.getFirst());
                 }
             }
         }

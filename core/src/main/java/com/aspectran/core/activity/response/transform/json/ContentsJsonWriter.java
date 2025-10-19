@@ -69,7 +69,7 @@ public class ContentsJsonWriter extends JsonWriter {
         if (processResult.isEmpty()) {
             writeNull(processResult.getName() == null);
         } else if (processResult.size() == 1) {
-            writeValue(processResult.get(0));
+            writeValue(processResult.getFirst());
         } else {
             beginArray();
             for (ContentResult contentResult : processResult) {
@@ -96,7 +96,7 @@ public class ContentsJsonWriter extends JsonWriter {
         if (contentResult.isEmpty()) {
             writeNull();
         } else if (contentResult.size() == 1) {
-            ActionResult actionResult = contentResult.get(0);
+            ActionResult actionResult = contentResult.getFirst();
             if (actionResult.getActionId() != null) {
                 beginObject();
                 writeName(actionResult.getActionId());

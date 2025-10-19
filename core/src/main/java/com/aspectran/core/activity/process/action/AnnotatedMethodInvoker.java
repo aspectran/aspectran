@@ -143,6 +143,22 @@ public abstract class AnnotatedMethodInvoker {
         }
     }
 
+    /**
+     * Resolves a method argument from the given {@link Translet}.
+     * <p>This method handles various special argument types, such as {@link Translet},
+     * {@link ParameterMap}, {@link Map}, {@link Collection}, and {@link Parameters}.
+     * It also handles arrays of values and delegates to {@link #bindModel} for
+     * complex object binding.</p>
+     * @param translet the current translet
+     * @param type the target type of the method parameter
+     * @param name the name of the parameter
+     * @param stringifyContext the context for string-to-object conversion
+     * @param format the format for date/time conversion
+     * @return the resolved argument value
+     * @throws MethodArgumentTypeMismatchException if type conversion fails
+     * @throws RequestParseException if parsing the request body fails
+     * @throws NoSuchMethodException if a suitable constructor or method is not found
+     */
     private static Object resolveArgumentWithTranslet(
             Translet translet, Class<?> type, String name, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException, RequestParseException, NoSuchMethodException {
@@ -225,6 +241,17 @@ public abstract class AnnotatedMethodInvoker {
         return result;
     }
 
+    /**
+     * Resolves a method argument from the {@link Activity}'s bean container.
+     * <p>This is used in non-translet environments (e.g., daemon) where arguments
+     * are resolved as beans.</p>
+     * @param activity the current activity
+     * @param type the target type of the method parameter
+     * @param name the name of the parameter, used for disambiguation in case of
+     *      multiple beans of the same type
+     * @return the resolved bean instance
+     * @throws MethodArgumentTypeMismatchException if the bean cannot be resolved
+     */
     private static Object resolveArgument(Activity activity, Class<?> type, String name)
             throws MethodArgumentTypeMismatchException {
         Object result;
@@ -242,6 +269,17 @@ public abstract class AnnotatedMethodInvoker {
         return result;
     }
 
+    /**
+     * Creates an instance of the target model class and populates its properties from
+     * the translet's parameters.
+     * <p>This method respects {@link Required} annotations on setter methods and will
+     * throw an exception if a required property is not present in the request.</p>
+     * @param translet the current translet
+     * @param type the type of the model object to create and bind
+     * @param stringifyContext the context for string-to-object conversion
+     * @return the populated model object
+     * @throws NoSuchMethodException if a setter method is not found
+     */
     @NonNull
     private static Object bindModel(Translet translet, Class<?> type, StringifyContext stringifyContext)
             throws NoSuchMethodException {
@@ -290,6 +328,17 @@ public abstract class AnnotatedMethodInvoker {
         return model;
     }
 
+    /**
+     * Converts a single string value to the specified target type.
+     * <p>Handles primitives, their wrapper types, and common Java types like
+     * {@link String}, {@link BigDecimal}, and date/time types.</p>
+     * @param type the target type
+     * @param value the string value to convert
+     * @param stringifyContext the context for date/time conversion
+     * @param format the format for date/time conversion
+     * @return the converted object, or {@link Void#TYPE} if the type is not supported
+     * @throws MethodArgumentTypeMismatchException if the conversion fails
+     */
     private static Object resolveValue(Class<?> type, String value, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException {
         try {
@@ -405,6 +454,15 @@ public abstract class AnnotatedMethodInvoker {
         }
     }
 
+    /**
+     * Converts an array of string values to an array of the specified target type.
+     * @param type the target component type
+     * @param values the array of string values to convert
+     * @param stringifyContext the context for date/time conversion
+     * @param format the format for date/time conversion
+     * @return an array of converted objects, or {@link Void#TYPE} if the type is not supported
+     * @throws MethodArgumentTypeMismatchException if the conversion fails
+     */
     private static Object resolveValue(
             Class<?> type, String[] values, StringifyContext stringifyContext, String format)
             throws MethodArgumentTypeMismatchException {

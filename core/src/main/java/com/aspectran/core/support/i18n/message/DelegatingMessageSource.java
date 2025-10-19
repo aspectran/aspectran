@@ -18,10 +18,17 @@ package com.aspectran.core.support.i18n.message;
 import java.util.Locale;
 
 /**
- * Empty {@link MessageSource} that delegates all calls to the parent MessageSource.
- * If no parent is available, it simply won't resolve any message.
+ * A {@link MessageSource} implementation that delegates all message resolution calls
+ * to its parent {@code MessageSource}.
+ *
+ * <p>This class does not resolve any messages on its own. If no parent is configured,
+ * it will either throw a {@link NoSuchMessageException} or return a default message,
+ * depending on the invoked method. It is useful as a placeholder in a message
+ * source hierarchy that will be populated later.
  *
  * <p>Created: 2016. 3. 13.</p>
+ *
+ * @see #setParentMessageSource
  */
 public class DelegatingMessageSource extends MessageSourceSupport implements HierarchicalMessageSource {
 

@@ -90,7 +90,7 @@ public class CommandCompleter implements Completer {
                 makeCommandCandidates(line.word(), candidates);
                 makeTransletCandidates(line.word(), candidates);
             } else if (line.wordIndex() > 0) {
-                String word = line.words().get(0);
+                String word = line.words().getFirst();
                 makeArgumentsCandidates(word, line.word(), candidates);
             }
         }

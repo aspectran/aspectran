@@ -20,7 +20,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.io.Serial;
 
 /**
- * Exception thrown when a specific request method is not allowed.
+ * Exception thrown when a request is received with an HTTP method that is not
+ * allowed for the matched translet.
  */
 public class RequestMethodNotAllowedException extends RequestException {
 
@@ -48,7 +49,7 @@ public class RequestMethodNotAllowedException extends RequestException {
     }
 
     /**
-     * Gets the request method type.
+     * Returns the HTTP method that was not allowed.
      * @return the request method type
      */
     public MethodType getRequestMethod() {

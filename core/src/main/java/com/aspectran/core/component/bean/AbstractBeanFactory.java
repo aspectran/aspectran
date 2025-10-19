@@ -440,8 +440,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
             AnnotatedMethodInvoker.invoke(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing an initialization method of bean",
-                    beanRule, e);
+            throw new BeanCreationException("An exception occurred while executing an initialization " +
+                    "method of bean", beanRule, e);
         }
     }
 
@@ -465,10 +465,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
         }
         if (resultBean == null) {
-            throw new FactoryBeanNotInitializedException(
-                    "FactoryBean returned null object: " +
-                            "probably not fully initialized (maybe due to circular bean reference)",
-                    beanRule);
+            throw new FactoryBeanNotInitializedException("FactoryBean returned null object: " +
+                    "probably not fully initialized (maybe due to circular bean reference)", beanRule);
         }
         return resultBean;
     }

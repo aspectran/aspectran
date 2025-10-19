@@ -960,7 +960,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (mediaTypes == null || mediaTypes.isEmpty()) {
             return Collections.emptyList();
         } else if (mediaTypes.size() == 1) {
-            return parseMediaTypes(mediaTypes.get(0));
+            return parseMediaTypes(mediaTypes.getFirst());
         } else {
             List<MediaType> result = new ArrayList<>(8);
             for (String mediaType : mediaTypes) {

@@ -100,7 +100,7 @@ public class MultiException extends Exception {
             return;
         }
         if (nested.size() == 1) {
-            Throwable th = nested.get(0);
+            Throwable th = nested.getFirst();
             if (th instanceof Error) {
                 throw (Error)th;
             }
@@ -125,7 +125,7 @@ public class MultiException extends Exception {
             return;
         }
         if (nested.size() == 1) {
-            Throwable th = nested.get(0);
+            Throwable th = nested.getFirst();
             if (th instanceof Error) {
                 throw (Error)th;
             } else if (th instanceof RuntimeException) {

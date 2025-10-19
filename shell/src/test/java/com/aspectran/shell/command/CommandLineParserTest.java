@@ -59,7 +59,7 @@ class CommandLineParserTest {
         assertEquals(" encrypt ", lineParser.getCommandName());
         assertEquals("[ arg1 , arg2]", Arrays.toString(lineParser.getArgs()));
         assertEquals("[{operator=>, operand= C:\\temp\\hello.txt  }]", list.toString());
-        assertEquals(OutputRedirection.Operator.OVERWRITE_OUT, list.get(0).getOperator());
+        assertEquals(OutputRedirection.Operator.OVERWRITE_OUT, list.getFirst().getOperator());
     }
 
     @Test

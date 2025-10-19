@@ -124,7 +124,7 @@ public class TowRequestAdapter extends AbstractWebRequestAdapter {
         String acceptLanguage = exchange.getRequestHeaders().getFirst(Headers.ACCEPT_LANGUAGE);
         List<Locale> locales = LocaleUtils.getLocalesFromHeader(acceptLanguage);
         if (!locales.isEmpty()) {
-            setLocale(locales.get(0));
+            setLocale(locales.getFirst());
         }
     }
 

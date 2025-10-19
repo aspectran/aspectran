@@ -16,17 +16,24 @@
 package com.aspectran.core.activity;
 
 /**
- * An action to execute on Instant Activity.
+ * A functional interface that represents a command to be executed by an
+ * {@link InstantActivity}.
+ *
+ * <p>This interface encapsulates a piece of work that can be run within the
+ * context of an activity, providing access to beans and other framework components.
+ * It is designed to be used with lambda expressions.
  *
  * <p>Created: 2020/05/19</p>
+ *
+ * @param <V> the type of the result returned by the action
  */
+@FunctionalInterface
 public interface InstantAction<V> {
 
     /**
-     * Executes an instant action and throw an exception
-     * if an error occurs during execution.
-     * @return the result of the execution
-     * @throws Exception if an error occurs
+     * Executes the action within the context of an {@code InstantActivity}.
+     * @return the result of the execution, of type {@code V}
+     * @throws Exception if an error occurs during execution
      */
     V execute() throws Exception;
 

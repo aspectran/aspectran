@@ -36,10 +36,30 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for {@link CoreService} implementations.
+ *
  * <p>This class provides a skeletal implementation of the {@link CoreService} interface,
  * handling common functionalities such as managing the {@link ActivityContext},
- * {@link AspectranConfig}, and {@link SchedulerService}. It also provides mechanisms
- * for handling derived services, class loaders, and request acceptability.
+ * {@link AspectranConfig}, and {@link SchedulerService}. It introduces the concept
+ * of a "derived" service, which can inherit the {@code ActivityContext} from a
+ * parent service. This is useful in environments where multiple service endpoints
+ * need to share a common application context.
+ *
+ * <p>Key responsibilities of this class include:
+ * <ul>
+ *     <li>Managing the lifecycle of the service (see {@link AbstractServiceLifeCycle}).</li>
+ *     <li>Holding references to the core components like {@link ActivityContext} and
+ *     {@link AspectranConfig}.</li>
+ *     <li>Providing mechanisms for building and destroying the {@link SchedulerService}.</li>
+ *     <li>Handling class loaders for the service.</li>
+ *     <li>Initializing and providing access to shared components like {@link FlashMapManager}
+ *     and {@link LocaleResolver}.</li>
+ * </ul>
+ *
+ * <p>Concrete implementations should extend this class and provide specific strategies
+ * for building and managing the {@code ActivityContext}.
+ *
+ * @see com.aspectran.core.service.CoreService
+ * @see com.aspectran.core.service.DefaultCoreService
  */
 public abstract class AbstractCoreService extends AbstractServiceLifeCycle implements CoreService {
 

@@ -38,6 +38,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
@@ -195,8 +196,10 @@ public class XslTransformResponse extends TransformResponse {
 
     private Templates createTemplates(@NonNull URL url) throws TransformerConfigurationException, IOException {
         URLConnection conn = url.openConnection();
-        Source source = new StreamSource(conn.getInputStream());
-        return createTemplates(source);
+        try (InputStream inputStream = conn.getInputStream()) {
+            Source source = new StreamSource(inputStream);
+            return createTemplates(source);
+        }
     }
 
     private Templates createTemplates(Source source) throws TransformerConfigurationException {

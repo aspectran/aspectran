@@ -38,9 +38,9 @@ import java.util.Map;
  * An action that invokes a specified method on a managed bean.
  *
  * <p>This is a core action used to execute business logic by calling methods on
- * beans defined in the application context. It supports dynamic argument resolution
- * from the current {@link com.aspectran.core.activity.Translet} and can set properties on the bean before
- * invocation.</p>
+ * beans defined in the application context. It supports setting properties on the
+ * bean before invocation and dynamically resolving method arguments from the current
+ * {@link com.aspectran.core.activity.Translet}.
  */
 public class InvokeAction implements Executable {
 
@@ -58,6 +58,13 @@ public class InvokeAction implements Executable {
         this.invokeActionRule = invokeActionRule;
     }
 
+    /**
+     * Executes the invoke action. This method resolves the target bean and then
+     * proceeds with the method invocation.
+     * @param activity the current activity
+     * @return the result of the method invocation
+     * @throws Exception if an error occurs during action execution
+     */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         Object bean = resolveBean(activity);
@@ -176,6 +183,15 @@ public class InvokeAction implements Executable {
         return tsb.toString();
     }
 
+    /**
+     * Invokes a method with or without the current translet as an argument.
+     * @param activity the current activity
+     * @param bean the target bean
+     * @param method the method to invoke
+     * @param requiresTranslet whether the translet should be passed as an argument
+     * @return the result of the invocation
+     * @throws Exception if the invocation fails
+     */
     private static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
             throws Exception {
         Object[] args;
@@ -187,6 +203,14 @@ public class InvokeAction implements Executable {
         return invokeMethod(bean, method, args);
     }
 
+    /**
+     * Invokes the specified method on the target bean with the given arguments.
+     * @param bean the target bean
+     * @param method the method to invoke
+     * @param args the arguments to pass to the method
+     * @return the result of the invocation, or {@link Void#TYPE} if the method returns void
+     * @throws Exception if the invocation fails
+     */
     private static Object invokeMethod(Object bean, @NonNull Method method, Object[] args) throws Exception {
         if (method.getReturnType() == Void.TYPE) {
             method.invoke(bean, args);
@@ -196,6 +220,16 @@ public class InvokeAction implements Executable {
         }
     }
 
+    /**
+     * Dynamically resolves and invokes a method based on its name and argument rules.
+     * @param activity the current activity
+     * @param bean the target bean
+     * @param methodName the name of the method to invoke
+     * @param argumentItemRuleMap the rules for resolving method arguments
+     * @param requiresTranslet whether the translet should be passed as the first argument
+     * @return the result of the invocation
+     * @throws Exception if the method cannot be found or the invocation fails
+     */
     private static Object invokeMethod(
             Activity activity, Object bean, String methodName,
             ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) throws Exception {
@@ -232,6 +266,17 @@ public class InvokeAction implements Executable {
         return invokeMethod(bean, methodName, argsObjects, argsTypes);
     }
 
+    /**
+     * Invokes a method on an object with the given arguments and parameter types.
+     * @param object the object to invoke the method on
+     * @param methodName the name of the method
+     * @param args the arguments to pass
+     * @param paramTypes the parameter types of the method
+     * @return the result of the invocation, or {@link Void#TYPE} if the method returns void
+     * @throws NoSuchMethodException if a matching method is not found
+     * @throws IllegalAccessException if the method is not accessible
+     * @throws InvocationTargetException if the invoked method throws an exception
+     */
     private static Object invokeMethod(
             @NonNull Object object, String methodName, Object[] args, Class<?>[] paramTypes)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -248,6 +293,13 @@ public class InvokeAction implements Executable {
         }
     }
 
+    /**
+     * Creates an array of arguments for a method invocation.
+     * @param activity the current activity
+     * @param argumentItemRuleMap the rules for the arguments
+     * @param requiresTranslet whether to include the translet as the first argument
+     * @return an array of resolved argument objects
+     */
     @NonNull
     private static Object[] createArguments(
             @NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) {

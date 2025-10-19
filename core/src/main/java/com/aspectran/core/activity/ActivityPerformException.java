@@ -18,7 +18,11 @@ package com.aspectran.core.activity;
 import java.io.Serial;
 
 /**
- * Checked exception thrown when an error occurs while performing an activity.
+ * Exception thrown when an error occurs during the performance phase of an
+ * {@link Activity}.
+ *
+ * <p>This phase involves the execution of the actions defined within the translet,
+ * such as invoking beans or transforming the response.
  *
  * <p>Created: 2019. 03. 25.</p>
  */
@@ -28,14 +32,14 @@ public class ActivityPerformException extends ActivityException {
     private static final long serialVersionUID = 2728451652587414622L;
 
     /**
-     * Creates a new ActivityPerformException.
+     * Constructs a new ActivityPerformException with no detail message.
      */
     public ActivityPerformException() {
         super();
     }
 
     /**
-     * Creates a new ActivityPerformException with the specified detail message.
+     * Constructs a new ActivityPerformException with the specified detail message.
      * @param msg the detail message
      */
     public ActivityPerformException(String msg) {
@@ -43,7 +47,7 @@ public class ActivityPerformException extends ActivityException {
     }
 
     /**
-     * Creates a new ActivityPerformException with the specified detail message and cause.
+     * Constructs a new ActivityPerformException with the specified detail message and cause.
      * @param msg the detail message
      * @param cause the root cause
      */
@@ -52,7 +56,7 @@ public class ActivityPerformException extends ActivityException {
     }
 
     /**
-     * Creates a new ActivityPerformException with the specified cause.
+     * Constructs a new ActivityPerformException with the specified cause.
      * @param cause the root cause
      */
     public ActivityPerformException(Throwable cause) {

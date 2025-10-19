@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 /**
- * Core activity abstractions and implementations.
+ * Provides the core abstractions and implementations for the Activity model.
  * <p>
- * This package defines the Activity model used throughout Aspectran to
- * perform requests, execute business logic, and render responses. It includes
- * the main contracts and base classes for activities and their lightweight
- * instant variants used for programmatic, transactional work.
+ * This package defines the 'Activity' as the central context for a unit of work in
+ * Aspectran. It is used to process requests, execute business logic, and render
+ * responses. This package includes the main contracts and base classes for all
+ * activity-related operations.
  * </p>
  *
- * <p>Key types:</p>
+ * <p>Key types include:</p>
  * <ul>
- *   <li>{@link com.aspectran.core.activity.Activity Activity} — primary contract representing an executable unit</li>
- *   <li>{@link com.aspectran.core.activity.InstantActivity InstantActivity} and
- *       {@link com.aspectran.core.activity.InstantActivitySupport InstantActivitySupport} — helpers for
- *       ad-hoc, short-lived work that requires access to the activity context</li>
- *   <li>{@link com.aspectran.core.activity.Translet Translet} — an activity scoped to a single request</li>
- *   <li>{@link com.aspectran.core.activity.FlashMap FlashMap} and
- *       {@link com.aspectran.core.activity.FlashMapManager FlashMapManager} — utilities for passing
- *       attributes across redirects or successive interactions</li>
+ *   <li>{@link com.aspectran.core.activity.Activity} — The primary contract representing the
+ *       context for a single, executable unit of work.</li>
+ *   <li>{@link com.aspectran.core.activity.Translet} — The core executable plan derived
+ *       from a user request, containing the actions to be performed.</li>
+ *   <li>{@link com.aspectran.core.activity.InstantActivity} — A specialized activity that
+ *       can be created and run programmatically for ad-hoc tasks requiring access to the
+ *       application context.</li>
+ *   <li>{@link com.aspectran.core.activity.FlashMap} and
+ *       {@link com.aspectran.core.activity.FlashMapManager} — Utilities for passing
+ *       attributes between requests, typically across a redirect.</li>
  * </ul>
  */
 package com.aspectran.core.activity;

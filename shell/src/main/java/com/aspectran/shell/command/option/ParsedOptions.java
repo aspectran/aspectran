@@ -312,7 +312,7 @@ public class ParsedOptions implements Serializable {
                     props.put(values.get(0), values.get(1));
                 } else if (values.size() == 1) {
                     // no explicit value, handle it as a boolean
-                    props.put(values.get(0), "true");
+                    props.put(values.getFirst(), "true");
                 }
             }
         }
@@ -340,7 +340,7 @@ public class ParsedOptions implements Serializable {
                     props.put(values.get(0), values.get(1));
                 } else if (values.size() == 1) {
                     // no explicit value, handle it as a boolean
-                    props.put(values.get(0), "true");
+                    props.put(values.getFirst(), "true");
                 }
             }
         }
@@ -390,7 +390,7 @@ public class ParsedOptions implements Serializable {
     }
 
     public String getFirstArg() {
-        return (!args.isEmpty() ? args.get(0) : null);
+        return (!args.isEmpty() ? args.getFirst() : null);
     }
 
     /**

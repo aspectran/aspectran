@@ -57,9 +57,9 @@ public class ContentsToParameters extends ObjectToParameters {
         Assert.notNull(object, "object must not be null");
         if (object instanceof ProcessResult processResult) {
             if (processResult.size() == 1) {
-                ContentResult contentResult = processResult.get(0);
+                ContentResult contentResult = processResult.getFirst();
                 if (contentResult.getName() == null && contentResult.size() == 1) {
-                    ActionResult actionResult = contentResult.get(0);
+                    ActionResult actionResult = contentResult.getFirst();
                     if (actionResult.getActionId() == null) {
                         Object resultValue = actionResult.getResultValue();
                         if (resultValue instanceof Parameters parameters) {

@@ -18,7 +18,11 @@ package com.aspectran.core.activity;
 import java.io.Serial;
 
 /**
- * Checked exception thrown when activity is terminated while preparing or performing.
+ * Exception thrown when an activity is forcefully terminated during its lifecycle.
+ *
+ * <p>This exception indicates that the activity did not complete its normal execution
+ * path, often due to external factors such as a timeout, a system shutdown signal,
+ * or other forms of interruption.
  */
 public class ActivityTerminatedException extends ActivityPerformException {
 
@@ -26,14 +30,14 @@ public class ActivityTerminatedException extends ActivityPerformException {
     private static final long serialVersionUID = 6615572357964634821L;
 
     /**
-     * Simple constructor.
+     * Constructs a new ActivityTerminatedException with no detail message.
      */
     public ActivityTerminatedException() {
         super();
     }
 
     /**
-     * Constructor to create an exception with a message.
+     * Constructs a new ActivityTerminatedException with the specified detail message.
      * @param msg a message to associate with the exception
      */
     public ActivityTerminatedException(String msg) {
@@ -41,17 +45,17 @@ public class ActivityTerminatedException extends ActivityPerformException {
     }
 
     /**
-     * Constructor to create an exception to wrap another exception.
-     * @param cause the real cause of the exception
+     * Constructs a new ActivityTerminatedException with the specified cause.
+     * @param cause the root cause of the termination
      */
     public ActivityTerminatedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructor to create an exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
+     * Constructs a new ActivityTerminatedException with the specified detail message and cause.
+     * @param msg the detail message
+     * @param cause the root cause of the termination
      */
     public ActivityTerminatedException(String msg, Throwable cause) {
         super(msg, cause);

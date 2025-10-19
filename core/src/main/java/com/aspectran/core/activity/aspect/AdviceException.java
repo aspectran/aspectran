@@ -37,7 +37,6 @@ public class AdviceException extends ActivityException {
     /**
      * Creates a new {@code AdviceException} with the specified detail message,
      * associated {@link AdviceRule}, and root cause.
-     *
      * @param msg        the detail message explaining the error
      * @param adviceRule the {@code AdviceRule} that was being executed when the error occurred
      * @param cause      the underlying exception that caused this failure (may be {@code null})

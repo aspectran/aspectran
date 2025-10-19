@@ -49,8 +49,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation supports wildcard characters (`*`, `?`) and OR-matching (`|`).
-     * </p>
+     * <p>This implementation supports wildcard characters (`*`, `?`) and OR-matching (`|`).</p>
      * @throws IllegalArgumentException if the patternString is null
      */
     @Override
@@ -144,8 +143,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation clears the internal cache of compiled wildcard patterns.
-     * </p>
+     * <p>This implementation clears the internal cache of compiled wildcard patterns.</p>
      */
     @Override
     public void clear() {

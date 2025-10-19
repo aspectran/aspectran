@@ -31,8 +31,23 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * CoreActivity could only be executed by the framework, but
- * using this InstantActivity could also be executed by user code.
+ * A specialized {@link CoreActivity} that can be instantiated and executed
+ * programmatically by user code.
+ *
+ * <p>While a standard {@code CoreActivity} is typically managed by the framework in
+ * response to an external request (e.g., an HTTP request), this class allows for
+ * the on-the-fly execution of a block of code (an {@link InstantAction}) or a
+ * translet within a fully-managed activity context. This is useful for:
+ * <ul>
+ *   <li>Executing a translet from within another service or job.</li>
+ *   <li>Unit or integration testing of components that require an active
+ *   {@code Activity} context.</li>
+ *   <li>Running a piece of logic with access to the full Aspectran environment,
+ *   including beans, configuration, and other services.</li>
+ * </ul>
+ * <p>It can be configured with its own request parameters and attributes, and if no
+ * response adapter is provided, it defaults to using an {@link OutputStringWriter}
+ * to capture any output.
  */
 public class InstantActivity extends CoreActivity {
 
@@ -52,7 +67,7 @@ public class InstantActivity extends CoreActivity {
     private ParameterMap parameterMap;
 
     /**
-     * Instantiates a new InstantActivity.
+     * Creates a new standalone {@code InstantActivity}.
      * @param context the activity context
      */
     public InstantActivity(ActivityContext context) {
@@ -61,7 +76,7 @@ public class InstantActivity extends CoreActivity {
     }
 
     /**
-     * Creates a new InstantActivity inheriting state from the given activity.
+     * Creates a new {@code InstantActivity} that inherits state from an existing one.
      * The response adapter is inherited by default.
      * @param activity the existing activity to inherit state from (must not be {@code null})
      */
@@ -70,7 +85,7 @@ public class InstantActivity extends CoreActivity {
     }
 
     /**
-     * Creates a new InstantActivity inheriting state from the given activity.
+     * Creates a new {@code InstantActivity} that inherits state from an existing one.
      * @param activity the existing activity to inherit state from (must not be {@code null})
      * @param responseAdapterInheritable whether to inherit the response adapter as well
      */
@@ -109,7 +124,7 @@ public class InstantActivity extends CoreActivity {
     }
 
     /**
-     * Sets additional request attributes to be exposed to the instant activity.
+     * Sets request attributes to be exposed to this instant activity.
      * @param attributeMap attributes to add to the RequestAdapter (may be {@code null})
      */
     public void setAttributeMap(Map<String, Object> attributeMap) {
@@ -117,7 +132,7 @@ public class InstantActivity extends CoreActivity {
     }
 
     /**
-     * Sets additional request parameters to be exposed to the instant activity.
+     * Sets request parameters to be exposed to this instant activity.
      * @param parameterMap parameters to add to the RequestAdapter (may be {@code null})
      */
     public void setParameterMap(ParameterMap parameterMap) {
@@ -126,8 +141,9 @@ public class InstantActivity extends CoreActivity {
 
     /**
      * Prepares this instant activity by ensuring adapters are initialized and by
-     * applying any configured attributes and parameters. Also ensures a writer-backed
-     * ResponseAdapter if none is present.
+     * applying any configured attributes and parameters. If no response adapter is
+     * present, a new {@link DefaultResponseAdapter} backed by an
+     * {@link OutputStringWriter} will be created to capture output.
      * @throws AdapterException if adapter initialization fails
      */
     @Override

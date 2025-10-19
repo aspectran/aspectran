@@ -327,7 +327,7 @@ public class TransletRule
             if (contentList.isExplicit() || contentList.size() != 1) {
                 contentList = null;
             } else {
-                ActionList actionList = contentList.get(0);
+                ActionList actionList = contentList.getFirst();
                 if (actionList.isExplicit()) {
                     contentList = null;
                 }
@@ -339,7 +339,7 @@ public class TransletRule
             actionList = new ActionList(false);
             contentList.add(actionList);
         } else {
-            actionList = contentList.get(0);
+            actionList = contentList.getFirst();
         }
         return actionList;
     }

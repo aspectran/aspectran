@@ -345,7 +345,7 @@ public class Option implements Cloneable, Serializable {
      *      {@code null} if there is no value
      */
     public String getValue() {
-        return (hasNoValues() ? null : values.get(0));
+        return (hasNoValues() ? null : values.getFirst());
     }
 
     /**

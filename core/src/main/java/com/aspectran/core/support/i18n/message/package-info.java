@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 /**
- * Provides classes for message internationalization (i18n).
+ * Provides classes and interfaces for internationalization (i18n) support, allowing
+ * applications to resolve text messages for different locales.
+ * 
+ * <p>The central interface in this package is {@link com.aspectran.core.support.i18n.message.MessageSource},
+ * which provides a standard way to resolve messages. The {@link com.aspectran.core.support.i18n.message.HierarchicalMessageSource}
+ * sub-interface adds support for nested message resolution, allowing message sources
+ * to be arranged in a parent-child hierarchy.
+ * 
+ * <p>The primary implementation is {@link com.aspectran.core.support.i18n.message.ResourceBundleMessageSource},
+ * which resolves messages from standard Java {@link java.util.ResourceBundle} files.
  */
 package com.aspectran.core.support.i18n.message;
