@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>
+        Test case for profile-specific bean loading.
+    </description>
+
+    <bean scan="com.aspectran.core.sample.profile.**"/>
+
+</aspectran>

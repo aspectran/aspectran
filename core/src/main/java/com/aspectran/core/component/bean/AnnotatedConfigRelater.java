@@ -64,4 +64,10 @@ public interface AnnotatedConfigRelater {
      */
     void relate(AutowireRule autowireRule) throws IllegalRuleException;
 
+    /**
+     * Adds the given bean rule to the removal list.
+     * @param beanRule the bean rule to remove
+     */
+    void addForRemoval(BeanRule beanRule);
+
 }

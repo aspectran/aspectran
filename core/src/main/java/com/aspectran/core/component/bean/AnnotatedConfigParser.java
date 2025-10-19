@@ -213,6 +213,7 @@ public class AnnotatedConfigParser {
             if (profileAnno != null) {
                 String profile = StringUtils.emptyToNull(profileAnno.value());
                 if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
+                    relater.addForRemoval(beanRule);
                     return false;
                 }
             }

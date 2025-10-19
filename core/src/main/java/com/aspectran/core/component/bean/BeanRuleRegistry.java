@@ -20,14 +20,12 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.scan.BeanClassFilter;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -39,7 +37,6 @@ import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -48,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -357,7 +355,9 @@ public class BeanRuleRegistry {
             final Map<Class<?>, String> beanClasses = new HashMap<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
-                beanClasses.putIfAbsent(targetClass, resourceName);
+                if (!targetClass.isInterface() && !Modifier.isAbstract(targetClass.getModifiers())) {
+                    beanClasses.putIfAbsent(targetClass, resourceName);
+                }
             });
             for (Map.Entry<Class<?>, String> entry : beanClasses.entrySet()) {
                 Class<?> beanClass = entry.getKey();
@@ -440,12 +440,12 @@ public class BeanRuleRegistry {
             for (Class<? extends Annotation> ann : COMPONENT_DEPENDENT_ANNOTATIONS) {
                 if (targetClass.isAnnotationPresent(ann)) {
                     if (beanRule != null) {
-                        logger.warn("The bean class [" + targetClass.getName() + "] defined in the bean rule " +
-                                beanRule + " has an @" + ann.getSimpleName() + " annotation but is missing @Component. " +
-                                "The annotation will be ignored.");
+                        logger.warn("The bean class [{}] defined in the bean rule {} has an @{} annotation but " +
+                                "is missing @Component. The annotation will be ignored.",
+                                targetClass.getName(), beanRule, ann.getSimpleName());
                     } else {
-                        logger.warn("Found @" + ann.getSimpleName() + " on class [" + targetClass.getName() +
-                                "] but it is not annotated with @Component. This annotation will be ignored.");
+                        logger.warn("Found @{} on class [{}] but it is not annotated with @Component. " +
+                                "This annotation will be ignored.", ann.getSimpleName(), targetClass.getName());
                     }
                     break;
                 }
@@ -455,8 +455,8 @@ public class BeanRuleRegistry {
 
     private void saveBeanRule(@NonNull String beanId, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (importantBeanIdSet.contains(beanId)) {
-            throw new BeanRuleException("Already exists an ID-based bean that can not be overridden; Duplicated bean",
-                    beanRule);
+            throw new BeanRuleException("Already exists an ID-based bean that can not be " +
+                    "overridden; Duplicated bean", beanRule);
         }
         if (beanRule.isImportant()) {
             importantBeanIdSet.add(beanRule.getId());
@@ -570,6 +570,8 @@ public class BeanRuleRegistry {
     }
 
     private void parseAnnotatedConfig(@NonNull RuleParsingContext ruleParsingContext) throws IllegalRuleException {
+        final Set<BeanRule> rulesToRemove = new HashSet<>();
+
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relate(Class<?> targetBeanClass, @NonNull BeanRule beanRule) throws IllegalRuleException {
@@ -599,10 +601,28 @@ public class BeanRuleRegistry {
             public void relate(AutowireRule autowireRule) throws IllegalRuleException {
                 ruleParsingContext.resolveBeanClass(autowireRule);
             }
+
+            @Override
+            public void addForRemoval(BeanRule beanRule) {
+                rulesToRemove.add(beanRule);
+            }
         };
 
         AnnotatedConfigParser parser = new AnnotatedConfigParser(ruleParsingContext, relater);
         parser.parse();
+
+        if (!rulesToRemove.isEmpty()) {
+            configurableBeanRuleMap.values().removeAll(rulesToRemove);
+            if (!idBasedBeanRuleMap.isEmpty()) {
+                idBasedBeanRuleMap.values().removeAll(rulesToRemove);
+            }
+            if (!typeBasedBeanRuleMap.isEmpty()) {
+                for (Set<BeanRule> beanRules : typeBasedBeanRuleMap.values()) {
+                    beanRules.removeAll(rulesToRemove);
+                }
+                typeBasedBeanRuleMap.values().removeIf(Set::isEmpty);
+            }
+        }
     }
 
     private Class<?> resolveOfferedFactoryBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
