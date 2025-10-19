@@ -59,7 +59,7 @@ class AnnotatedConfigurationTest {
     @Test
     void firstTest() {
         ThirdResult thirdResult = aspectran.getBean("thirdResult");
-        assertEquals(thirdResult.getMessage(), "This is a second bean.");
+        assertEquals("This is a second bean.", thirdResult.getMessage());
     }
 
     @Test
@@ -183,7 +183,7 @@ class AnnotatedConfigurationTest {
     }
 
     @Test
-    void testInvokeMethod_13() throws IOException {
+    void testInvokeMethod_13() {
         ParameterMap params = new ParameterMap();
         params.setParameter("one", "1");
         params.setParameter("two", "2");
