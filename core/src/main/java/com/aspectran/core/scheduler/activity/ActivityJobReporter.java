@@ -33,9 +33,6 @@ import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -57,42 +54,45 @@ public class ActivityJobReporter {
      * @param vetoed {@code true} if the job execution was vetoed by a trigger listener
      */
     public static void jobToBeExecuted(@NonNull JobExecutionContext context, boolean vetoed) {
-        JobDetail jobDetail = context.getJobDetail();
-        JobKey key = jobDetail.getKey();
-        String jobName = key.getName();
-        String jobGroup = key.getGroup();
+        try {
+            JobDetail jobDetail = context.getJobDetail();
+            JobKey key = jobDetail.getKey();
+            String jobName = key.getName();
+            String jobGroup = key.getGroup();
 
-        Activity activity = (Activity)context.getResult();
-        StringifyContext stringifyContext = resolveStringifyContext(activity);
-        DateTimeFormatter formatter = stringifyContext.getDateTimeFormatter();
+            Activity activity = (Activity) context.getResult();
+            StringifyContext stringifyContext = resolveStringifyContext(activity);
 
-        String title = (vetoed ? "VETOED" : "START");
-        ToStringBuilder tsb = new ToStringBuilder(title);
-        tsb.append("group", jobGroup);
-        tsb.append("name", jobName);
-        tsb.append("scheduledFireTime", formatDateTime(context.getScheduledFireTime(), formatter));
-        tsb.append("fireTime", formatDateTime(context.getFireTime(), formatter));
-        tsb.append("previousFireTime", formatDateTime(context.getPreviousFireTime(), formatter));
-        tsb.append("nextFireTime", formatDateTime(context.getNextFireTime(), formatter));
-        tsb.append("recovering", context.isRecovering());
-        if (context.getRefireCount() > 0) {
-            tsb.append("refireCount", context.getRefireCount());
-        }
-
-        if (activity == null) {
-            JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            ScheduledJobRule jobRule = (ScheduledJobRule)jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
-            SchedulerService service = (SchedulerService)jobDataMap.get(DefaultSchedulerService.SERVICE_DATA_KEY);
-            if (service != null && !service.isActive()) { // service can be null if job is durable
-                tsb.append("service", "inactive");
+            String title = (vetoed ? "VETOED" : "START");
+            ToStringBuilder tsb = new ToStringBuilder(title);
+            tsb.append("group", jobGroup);
+            tsb.append("name", jobName);
+            tsb.append("scheduledFireTime", formatDateTime(context.getScheduledFireTime(), stringifyContext));
+            tsb.append("fireTime", formatDateTime(context.getFireTime(), stringifyContext));
+            tsb.append("previousFireTime", formatDateTime(context.getPreviousFireTime(), stringifyContext));
+            tsb.append("nextFireTime", formatDateTime(context.getNextFireTime(), stringifyContext));
+            tsb.append("recovering", context.isRecovering());
+            if (context.getRefireCount() > 0) {
+                tsb.append("refireCount", context.getRefireCount());
             }
-            if (jobRule != null && jobRule.isDisabled()) { // jobRule can be null if job is durable
-                tsb.append("job", "disabled");
-            }
-        }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(tsb.toString());
+            if (activity == null) {
+                JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                ScheduledJobRule jobRule = (ScheduledJobRule) jobDataMap.get(DefaultSchedulerService.JOB_RULE_DATA_KEY);
+                SchedulerService service = (SchedulerService) jobDataMap.get(DefaultSchedulerService.SERVICE_DATA_KEY);
+                if (service != null && !service.isActive()) { // service can be null if job is durable
+                    tsb.append("service", "inactive");
+                }
+                if (jobRule != null && jobRule.isDisabled()) { // jobRule can be null if job is durable
+                    tsb.append("job", "disabled");
+                }
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug(tsb.toString());
+            }
+        } catch (Exception e) {
+            logger.error("Error in job reporter", e);
         }
     }
 
@@ -110,13 +110,12 @@ public class ActivityJobReporter {
 
             Activity activity = (Activity)context.getResult();
             StringifyContext stringifyContext = resolveStringifyContext(activity);
-            DateTimeFormatter formatter = stringifyContext.getDateTimeFormatter();
 
             String title = (jobException == null ? "SUCCESS" : "FAILURE");
             ToStringBuilder tsb = new ToStringBuilder(title);
             tsb.append("group", jobGroup);
             tsb.append("name", jobName);
-            tsb.append("fireTime", formatDateTime(context.getFireTime(), formatter));
+            tsb.append("fireTime", stringifyContext.toString(context.getFireTime()));
             tsb.append("jobRunTime", context.getJobRunTime());
 
             if (activity != null) {
@@ -134,8 +133,8 @@ public class ActivityJobReporter {
                     logger.debug(tsb.toString());
                 }
             }
-        } catch (IOException e) {
-            logger.warn("Failed to report job activity", e);
+        } catch (Exception e) {
+            logger.error("Error in job reporter", e);
         }
     }
 
@@ -153,7 +152,7 @@ public class ActivityJobReporter {
             stringifyContext = new StringifyContext();
         }
         if (stringifyContext.getDateTimeFormat() == null || stringifyContext.getDateTimeFormatter() == null) {
-            stringifyContext.setDateTimeFormatter(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            stringifyContext.setDateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
         return stringifyContext;
     }
@@ -161,12 +160,12 @@ public class ActivityJobReporter {
     /**
      * Converts a {@link Date} to a formatted string.
      * @param date the date to convert
-     * @param formatter the formatter to use
+     * @param stringifyContext the {@code StringifyContext} instance
      * @return the formatted date string, or {@code null} if the input is null
      */
-    private static String formatDateTime(Date date, DateTimeFormatter formatter) {
+    private static String formatDateTime(Date date, StringifyContext stringifyContext) {
         if (date != null) {
-            return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).format(formatter);
+            return stringifyContext.toString(date);
         } else {
             return null;
         }

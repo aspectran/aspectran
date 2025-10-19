@@ -18,13 +18,14 @@ package com.aspectran.utils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -57,8 +58,6 @@ public class StringifyContext implements Cloneable {
     private DateTimeFormatter dateFormatter;
 
     private DateTimeFormatter timeFormatter;
-
-    private SimpleDateFormat simpleDateFormat;
 
     private Locale locale;
 
@@ -282,14 +281,6 @@ public class StringifyContext implements Cloneable {
     }
 
     /**
-     * Sets the {@link SimpleDateFormat} for {@link Date} objects.
-     * @param simpleDateFormat the simple date format
-     */
-    public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
-        this.simpleDateFormat = simpleDateFormat;
-    }
-
-    /**
      * Returns the locale for formatting.
      * @return the locale
      */
@@ -328,7 +319,11 @@ public class StringifyContext implements Cloneable {
         Assert.notNull(localDateTime, "localDateTime must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
         if (dateTimeFormatter != null) {
-            return localDateTime.format(dateTimeFormatter);
+            try {
+                return localDateTime.format(dateTimeFormatter);
+            } catch (UnsupportedTemporalTypeException e) {
+                return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            }
         } else {
             return localDateTime.toString();
         }
@@ -353,7 +348,11 @@ public class StringifyContext implements Cloneable {
         Assert.notNull(localDate, "localDate must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateFormatter(format);
         if (dateTimeFormatter != null) {
-            return localDate.format(dateTimeFormatter);
+            try {
+                return localDate.format(dateTimeFormatter);
+            } catch (UnsupportedTemporalTypeException e) {
+                return localDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            }
         } else {
             return localDate.toString();
         }
@@ -378,7 +377,11 @@ public class StringifyContext implements Cloneable {
         Assert.notNull(localTime, "localTime must not be null");
         DateTimeFormatter dateTimeFormatter = touchTimeFormatter(format);
         if (dateTimeFormatter != null) {
-            return localTime.format(dateTimeFormatter);
+            try {
+                return localTime.format(dateTimeFormatter);
+            } catch (UnsupportedTemporalTypeException e) {
+                return localTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+            }
         } else {
             return localTime.toString();
         }
@@ -403,8 +406,7 @@ public class StringifyContext implements Cloneable {
         Assert.notNull(date, "date must not be null");
         DateTimeFormatter dateTimeFormatter = touchDateTimeFormatter(format);
         if (dateTimeFormatter != null) {
-            LocalDateTime ldt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            return ldt.format(dateTimeFormatter);
+            return date.toInstant().atZone(ZoneId.systemDefault()).format(dateTimeFormatter);
         } else {
             return date.toString();
         }
@@ -477,9 +479,8 @@ public class StringifyContext implements Cloneable {
      * Converts a string to a {@link Date} using the configured format.
      * @param date the string to parse
      * @return the parsed {@link Date}
-     * @throws ParseException if the string cannot be parsed
      */
-    public Date toDate(String date) throws ParseException {
+    public Date toDate(String date) {
         return toDate(date, null);
     }
 
@@ -488,12 +489,26 @@ public class StringifyContext implements Cloneable {
      * @param date the string to parse
      * @param format the format string to use
      * @return the parsed {@link Date}
-     * @throws ParseException if the string cannot be parsed
      */
-    public Date toDate(String date, String format) throws ParseException {
+    public Date toDate(String date, String format) {
         Assert.notNull(date, "date must not be null");
-        SimpleDateFormat simpleDateFormat = touchSimpleDateFormat(format);
-        return simpleDateFormat.parse(date);
+        DateTimeFormatter formatter = touchDateTimeFormatter(format);
+        if (formatter == null) {
+            // Fallback if no formatter is configured at all, assuming ISO format
+            return Date.from(Instant.parse(date));
+        }
+        TemporalAccessor temporal = formatter.parse(date);
+        Instant instant;
+        if (temporal.isSupported(java.time.temporal.ChronoField.INSTANT_SECONDS)) {
+            instant = Instant.from(temporal);
+        } else if (temporal.isSupported(java.time.temporal.ChronoField.HOUR_OF_DAY)) {
+            LocalDateTime ldt = LocalDateTime.from(temporal);
+            instant = ldt.atZone(ZoneId.systemDefault()).toInstant();
+        } else {
+            LocalDate ld = LocalDate.from(temporal);
+            instant = ld.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        }
+        return Date.from(instant);
     }
 
     /**
@@ -539,20 +554,6 @@ public class StringifyContext implements Cloneable {
     }
 
     /**
-     * Returns a cached or new {@link SimpleDateFormat} for the given format.
-     * @param format the format string
-     * @return the simple date format
-     */
-    private SimpleDateFormat touchSimpleDateFormat(String format) {
-        if (format != null) {
-            return createSimpleDateFormat(format, locale);
-        } else if (dateTimeFormat != null && simpleDateFormat == null) {
-            simpleDateFormat = createSimpleDateFormat(dateTimeFormat, locale);
-        }
-        return simpleDateFormat;
-    }
-
-    /**
      * Creates a new {@link DateTimeFormatter} for the given format and locale.
      * @param format the format string
      * @param locale the locale
@@ -564,22 +565,6 @@ public class StringifyContext implements Cloneable {
             return DateTimeFormatter.ofPattern(format, locale);
         } else {
             return DateTimeFormatter.ofPattern(format);
-        }
-    }
-
-    /**
-     * Creates a new {@link SimpleDateFormat} for the given format and locale.
-     * @param format the format string
-     * @param locale the locale
-     * @return a new simple date format
-     */
-    @NonNull
-    private SimpleDateFormat createSimpleDateFormat(String format, Locale locale) {
-        Assert.notNull(format, "format must not be null");
-        if (locale != null) {
-            return new SimpleDateFormat(format, locale);
-        } else {
-            return new SimpleDateFormat(format);
         }
     }
 
@@ -619,9 +604,6 @@ public class StringifyContext implements Cloneable {
         }
         if (timeFormatter == null && from.timeFormatter != null) {
             timeFormatter = from.timeFormatter;
-        }
-        if (simpleDateFormat == null && from.simpleDateFormat != null) {
-            simpleDateFormat = from.simpleDateFormat;
         }
         if (locale == null && from.locale != null) {
             locale = from.locale;
