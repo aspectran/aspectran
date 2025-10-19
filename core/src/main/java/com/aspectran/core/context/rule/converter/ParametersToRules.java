@@ -388,15 +388,14 @@ public class ParametersToRules {
         Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
         Boolean lazyDestroy = beanParameters.getBoolean(BeanParameters.lazyDestroy);
         Boolean important = beanParameters.getBoolean(BeanParameters.important);
-        String profile = beanParameters.getString(BeanParameters.profile);
 
         BeanRule beanRule;
         if (className == null && scan == null && factoryBean != null) {
             beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
-                    initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
+                    initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
         } else {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                    factoryMethod, scope, singleton, lazyInit, lazyDestroy, important, profile);
+                    factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
         }
 
         List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);

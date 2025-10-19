@@ -105,13 +105,15 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Parses annotations on component classes and methods to build configuration
- * metadata used by Aspectran.
- * <p>
- * Derives bean, aspect, schedule and request/translet rules from annotations
- * such as {@code @Component}, {@code @Bean}, {@code @Aspect}, {@code @Schedule},
- * and request mapping annotations, taking active environment profiles into
- * account. Relations are delegated to {@link AnnotatedConfigRelater}.
+ * Parses component classes for Aspectran's configuration annotations.
+ * <p>This parser is responsible for interpreting annotations like {@code @Component},
+ * {@code @Aspect}, {@code @Bean}, {@code @Schedule}, and request mapping annotations
+ * to derive the corresponding configuration rules.
+ * It acts as a gatekeeper for profile-based configurations by checking
+ * {@code @Profile} on {@code @Component} classes and skipping those that do not
+ * match the active environment profiles.
+ * The discovered rules are then passed to an {@link AnnotatedConfigRelater} to be
+ * integrated into the main configuration model.
  * </p>
  */
 public class AnnotatedConfigParser {
@@ -159,10 +161,11 @@ public class AnnotatedConfigParser {
                     logger.trace("configurableBeanRule {}", beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
-                    parseConfigurableBean(beanRule);
-                    parseConstructorAutowire(beanRule);
-                    parseFieldAutowire(beanRule);
-                    parseMethodAutowire(beanRule);
+                    if (parseConfigurableBean(beanRule)) {
+                        parseConstructorAutowire(beanRule);
+                        parseFieldAutowire(beanRule);
+                        parseMethodAutowire(beanRule);
+                    }
                 }
             }
         }
@@ -202,10 +205,17 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseConfigurableBean(@NonNull BeanRule beanRule) throws IllegalRuleException {
+    private boolean parseConfigurableBean(@NonNull BeanRule beanRule) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Component componentAnno = beanClass.getAnnotation(Component.class);
         if (componentAnno != null) {
+            Profile profileAnno = beanClass.getAnnotation(Profile.class);
+            if (profileAnno != null) {
+                String profile = StringUtils.emptyToNull(profileAnno.value());
+                if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
+                    return false;
+                }
+            }
             String[] nameArray = Namespace.splitNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
@@ -235,7 +245,9 @@ public class AnnotatedConfigParser {
                     parseTransletRule(beanClass, method, nameArray);
                 }
             }
+            return true;
         }
+        return false;
     }
 
     private void parseConstructorAutowire(@NonNull BeanRule beanRule) throws IllegalRuleException {

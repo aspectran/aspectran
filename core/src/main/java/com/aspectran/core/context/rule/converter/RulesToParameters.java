@@ -389,7 +389,6 @@ public class RulesToParameters {
         beanParameters.putValueIfNotNull(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
         beanParameters.putValueIfNotNull(BeanParameters.lazyInit, beanRule.getLazyInit());
         beanParameters.putValueIfNotNull(BeanParameters.important, beanRule.getImportant());
-        beanParameters.putValueIfNotNull(BeanParameters.profile, beanRule.getProfile());
         beanParameters.putValueIfNotNull(BeanParameters.filter, beanRule.getFilterParameters());
 
         ItemRuleMap constructorArgumentItemRuleMap = beanRule.getArgumentItemRuleMap();

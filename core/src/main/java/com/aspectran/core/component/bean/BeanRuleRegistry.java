@@ -42,6 +42,7 @@ import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,17 +59,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Central registry of {@link com.aspectran.core.context.rule.BeanRule} definitions.
+ * Central registry for {@link com.aspectran.core.context.rule.BeanRule} definitions.
  * <p>
- * This registry maintains mappings by ID and type, tracks configurable and post-process
- * bean rules, and manages important beans. It supports both annotation-based component
- * scanning (for classes annotated with {@code @Component}) and XML-based bean rule
- * scanning (for bean rules defined with a {@code scan} attribute).
- * During the post-processing phase, it filters all registered bean rules against the
- * active environment profiles, ensuring that only beans matching the current profile
- * are retained for instantiation.
- * Additionally, it provides configuration for base packages to scan and exposes hooks
- * to ignore certain dependency types and interfaces during autowiring.
+ * This registry manages the lifecycle of bean rules, from their initial addition to
+ * post-processing. It maintains mappings of bean rules by both ID and type, and it
+ * supports various registration methods, including explicit addition, XML-based scanning
+ * (using the {@code scan} attribute), and annotation-based component scanning
+ * (for classes annotated with {@code @Component}).
+ * During component scanning, it also validates that other Aspectran configuration
+ * annotations (e.g., {@code @Aspect}, {@code @Bean}) are used only on classes that
+ * are also marked with {@code @Component}.
+ * The registry also provides hooks to ignore specific dependency types and interfaces
+ * during the autowiring process.
  * </p>
  * @see com.aspectran.core.context.rule.BeanRule
  * @see BeanClassScanner
@@ -77,6 +79,23 @@ import java.util.Set;
 public class BeanRuleRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanRuleRegistry.class);
+
+    private static final Class<? extends Annotation>[] COMPONENT_DEPENDENT_ANNOTATIONS;
+
+    static {
+        @SuppressWarnings("unchecked")
+        Class<? extends Annotation>[] annotations = new Class[] {
+                com.aspectran.core.component.bean.annotation.Aspect.class,
+                com.aspectran.core.component.bean.annotation.Bean.class,
+                com.aspectran.core.component.bean.annotation.Profile.class,
+                com.aspectran.core.component.bean.annotation.Schedule.class,
+                com.aspectran.core.component.bean.annotation.Scope.class,
+                com.aspectran.core.component.bean.annotation.Joinpoint.class,
+                com.aspectran.core.component.bean.annotation.Settings.class,
+                com.aspectran.core.component.bean.annotation.Description.class
+        };
+        COMPONENT_DEPENDENT_ANNOTATIONS = annotations;
+    }
 
     private final Set<String> basePackages = new HashSet<>();
 
@@ -296,14 +315,17 @@ public class BeanRuleRegistry {
         for (String basePackage : basePackages) {
             this.basePackages.add(basePackage);
 
-            final Set<Class<?>> beanClasses = new HashSet<>();
+            final Set<Class<?>> componentClasses = new HashSet<>();
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
                 if (targetClass.isAnnotationPresent(Component.class)) {
-                    beanClasses.add(targetClass);
+                    componentClasses.add(targetClass);
+                } else {
+                    checkDependentAnnotations(targetClass, null);
                 }
             });
-            for (Class<?> beanClass : beanClasses) {
+
+            for (Class<?> beanClass : componentClasses) {
                 BeanRule beanRule = new BeanRule();
                 beanRule.setBeanClass(beanClass);
                 beanRule.setScopeType(ScopeType.SINGLETON);
@@ -353,10 +375,10 @@ public class BeanRuleRegistry {
                 }
                 replicated.setBeanClass(beanClass);
 
-                dissectBeanRule(replicated);
+                registerBeanRule(replicated);
             }
         } else {
-            dissectBeanRule(beanRule);
+            registerBeanRule(beanRule);
         }
     }
 
@@ -389,24 +411,44 @@ public class BeanRuleRegistry {
         return scanner;
     }
 
-    private void dissectBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
+    private void registerBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
         } else {
+            checkDependentAnnotations(targetBeanClass, beanRule);
             if (beanRule.getId() != null) {
                 saveBeanRule(beanRule.getId(), beanRule);
             }
             if (!beanRule.isFactoryOffered()) {
                 if (targetBeanClass.isAnnotationPresent(Component.class)) {
                     saveConfigurableBeanRule(beanRule);
-                } else {
+                }
+                else {
                     saveBeanRule(targetBeanClass, beanRule);
                 }
                 saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
             }
             if (logger.isTraceEnabled()) {
                 logger.trace("add BeanRule {}", beanRule);
+            }
+        }
+    }
+
+    private void checkDependentAnnotations(@NonNull Class<?> targetClass, @Nullable BeanRule beanRule) {
+        if (!targetClass.isAnnotationPresent(Component.class)) {
+            for (Class<? extends Annotation> ann : COMPONENT_DEPENDENT_ANNOTATIONS) {
+                if (targetClass.isAnnotationPresent(ann)) {
+                    if (beanRule != null) {
+                        logger.warn("The bean class [" + targetClass.getName() + "] defined in the bean rule " +
+                                beanRule + " has an @" + ann.getSimpleName() + " annotation but is missing @Component. " +
+                                "The annotation will be ignored.");
+                    } else {
+                        logger.warn("Found @" + ann.getSimpleName() + " on class [" + targetClass.getName() +
+                                "] but it is not annotated with @Component. This annotation will be ignored.");
+                    }
+                    break;
+                }
             }
         }
     }
@@ -524,76 +566,7 @@ public class BeanRuleRegistry {
         importantBeanIdSet.clear();
         importantBeanTypeSet.clear();
 
-        filterBeanRulesByProfile(ruleParsingContext);
-
         parseAnnotatedConfig(ruleParsingContext);
-    }
-
-    private void filterBeanRulesByProfile(@NonNull RuleParsingContext ruleParsingContext) {
-        EnvironmentProfiles environmentProfiles = ruleParsingContext.getEnvironmentProfiles();
-        if (environmentProfiles == null) {
-            return;
-        }
-
-        Set<BeanRule> allRules = new HashSet<>();
-        if (!configurableBeanRuleMap.isEmpty()) {
-            allRules.addAll(configurableBeanRuleMap.values());
-        }
-        if (!idBasedBeanRuleMap.isEmpty()) {
-            allRules.addAll(idBasedBeanRuleMap.values());
-        }
-        if (!typeBasedBeanRuleMap.isEmpty()) {
-            for (Set<BeanRule> beanRules : typeBasedBeanRuleMap.values()) {
-                allRules.addAll(beanRules);
-            }
-        }
-
-        if (allRules.isEmpty()) {
-            return;
-        }
-
-        Set<BeanRule> rulesToRemove = new HashSet<>();
-        for (BeanRule beanRule : allRules) {
-            if (isProfileMismatched(beanRule, environmentProfiles)) {
-                rulesToRemove.add(beanRule);
-            }
-        }
-
-        if (rulesToRemove.isEmpty()) {
-            return;
-        }
-
-        if (!configurableBeanRuleMap.isEmpty()) {
-            configurableBeanRuleMap.values().removeAll(rulesToRemove);
-        }
-        if (!idBasedBeanRuleMap.isEmpty()) {
-            idBasedBeanRuleMap.values().removeAll(rulesToRemove);
-        }
-        if (!typeBasedBeanRuleMap.isEmpty()) {
-            for (Set<BeanRule> beanRules : typeBasedBeanRuleMap.values()) {
-                beanRules.removeAll(rulesToRemove);
-            }
-            typeBasedBeanRuleMap.values().removeIf(Set::isEmpty);
-        }
-    }
-
-    private boolean isProfileMismatched(@NonNull BeanRule beanRule,
-                                        @NonNull EnvironmentProfiles environmentProfiles) {
-        Class<?> beanClass = beanRule.getBeanClass();
-        if (beanClass != null) {
-            Profile profileAnno = beanClass.getAnnotation(Profile.class);
-            if (profileAnno != null) {
-                String profile = StringUtils.emptyToNull(profileAnno.value());
-                if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Bean rule '{}' is not enabled because it is not included " +
-                                "in the active profiles", beanRule);
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private void parseAnnotatedConfig(@NonNull RuleParsingContext ruleParsingContext) throws IllegalRuleException {
