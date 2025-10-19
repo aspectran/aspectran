@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a choose-when rule.
+ */
 public class ChooseWhenParameters extends AbstractParameters {
 
     public static final ParameterKey test;

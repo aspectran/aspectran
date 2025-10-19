@@ -29,6 +29,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
+/**
+ * Represents the root parameters for Aspectran configuration.
+ */
 public class AspectranParameters extends AbstractParameters {
 
     public static final ParameterKey description;

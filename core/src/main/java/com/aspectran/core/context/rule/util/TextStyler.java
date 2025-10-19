@@ -26,6 +26,13 @@ import com.aspectran.utils.apon.AponFormat;
  */
 public class TextStyler {
 
+    /**
+     * Styles the given text based on the specified style alias.
+     * @param text the text to style
+     * @param style the style alias (e.g., "apon", "compact", "compressed")
+     * @return the styled text
+     * @throws IllegalArgumentException if no text style type is found for the given alias
+     */
     public static String styling(String text, String style) {
         TextStyleType textStyleType = TextStyleType.resolve(style);
         if (style != null && textStyleType == null) {
@@ -34,6 +41,12 @@ public class TextStyler {
         return styling(text, textStyleType);
     }
 
+    /**
+     * Styles the given text based on the specified {@code TextStyleType}.
+     * @param text the text to style
+     * @param textStyleType the text style type
+     * @return the styled text
+     */
     public static String styling(String text, TextStyleType textStyleType) {
         if (textStyleType == TextStyleType.APON) {
             return TextStyler.stripAponStyle(text);
@@ -46,6 +59,11 @@ public class TextStyler {
         }
     }
 
+    /**
+     * Strips APON style formatting from the given text.
+     * @param text the text to strip APON style from
+     * @return the text with APON style stripped
+     */
     public static String stripAponStyle(String text) {
         if (StringUtils.isEmpty(text)) {
             return text;
@@ -91,6 +109,11 @@ public class TextStyler {
         return text.substring(start, end);
     }
 
+    /**
+     * Compacts the given text by removing leading/trailing whitespace from each line and replacing multiple newlines with a single one.
+     * @param text the text to compact
+     * @return the compacted text
+     */
     public static String compact(String text) {
         if (text == null || text.isEmpty()) {
             return text;

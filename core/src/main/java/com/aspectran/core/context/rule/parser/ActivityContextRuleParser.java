@@ -29,18 +29,50 @@ import com.aspectran.core.context.rule.parsing.RuleParsingContext;
  */
 public interface ActivityContextRuleParser extends AutoCloseable {
 
+    /**
+     * Returns the rule parsing context.
+     * @return the rule parsing context
+     */
     RuleParsingContext getRuleParsingContext();
 
+    /**
+     * Sets the character encoding to be used for parsing.
+     * @param encoding the character encoding
+     */
     void setEncoding(String encoding);
 
+    /**
+     * Sets whether to use APON to load XML-based configuration.
+     * @param useXmlToApon true to use APON for XML
+     */
     void setUseXmlToApon(boolean useXmlToApon);
 
+    /**
+     * Sets whether to run in debug mode.
+     * @param debugMode true to run in debug mode
+     */
     void setDebugMode(boolean debugMode);
 
+    /**
+     * Parses the specified configuration files.
+     * @param contextRules the context rules
+     * @return the rule parsing context
+     * @throws ActivityContextRuleParserException if an error occurs during parsing
+     */
     RuleParsingContext parse(String[] contextRules) throws ActivityContextRuleParserException;
 
+    /**
+     * Parses the specified Aspectran parameters.
+     * @param aspectranParameters the aspectran parameters
+     * @return the rule parsing context
+     * @throws ActivityContextRuleParserException if an error occurs during parsing
+     */
     RuleParsingContext parse(AspectranParameters aspectranParameters) throws ActivityContextRuleParserException;
 
+    /**
+     * Returns the XML node parser for Aspectran.
+     * @return the aspectran node parser
+     */
     AspectranNodeParser getAspectranNodeParser();
 
 }

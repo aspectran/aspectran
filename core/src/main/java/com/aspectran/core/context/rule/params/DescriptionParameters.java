@@ -23,6 +23,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a description rule.
+ */
 public class DescriptionParameters extends AbstractParameters {
 
     public static final ParameterKey profile;

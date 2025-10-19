@@ -38,6 +38,10 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
 
     private final int replicatedCount;
 
+    /**
+     * Instantiates a new RuleParsingScope.
+     * @param ruleParsingContext the rule parsing context
+     */
     public RuleParsingScope(RuleParsingContext ruleParsingContext) {
         this(ruleParsingContext, 0);
     }
@@ -47,22 +51,36 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
         this.replicatedCount = replicatedCount;
     }
 
+    /**
+     * Returns the rule parsing context.
+     * @return the rule parsing context
+     */
     public RuleParsingContext getRuleParsingContext() {
         return ruleParsingContext;
     }
 
+    @Override
     public DescriptionRule getDescriptionRule() {
         return descriptionRule;
     }
 
+    @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
     }
 
+    /**
+     * Returns the default settings.
+     * @return the default settings
+     */
     public DefaultSettings getDefaultSettings() {
         return defaultSettings;
     }
 
+    /**
+     * Returns the default settings, creating a new instance if it does not already exist.
+     * @return the default settings
+     */
     public DefaultSettings touchDefaultSettings() {
         if (defaultSettings == null) {
             defaultSettings = new DefaultSettings();
@@ -70,10 +88,18 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
         return defaultSettings;
     }
 
+    /**
+     * Sets the default settings.
+     * @param defaultSettings the default settings
+     */
     public void setDefaultSettings(DefaultSettings defaultSettings) {
         this.defaultSettings = defaultSettings;
     }
 
+    /**
+     * Returns the replicated count.
+     * @return the replicated count
+     */
     public int getReplicatedCount() {
         return replicatedCount;
     }

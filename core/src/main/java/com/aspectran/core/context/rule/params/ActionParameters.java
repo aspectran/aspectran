@@ -19,6 +19,15 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for an action rule.
+ *
+ * @see com.aspectran.core.context.rule.InvokeActionRule
+ * @see com.aspectran.core.context.rule.EchoActionRule
+ * @see com.aspectran.core.context.rule.HeaderActionRule
+ * @see com.aspectran.core.context.rule.IncludeActionRule
+ * @see com.aspectran.core.context.rule.ChooseRule
+ */
 public class ActionParameters extends AbstractParameters {
 
     public static final ParameterKey id;

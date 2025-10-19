@@ -115,7 +115,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Converts rules for context configuration into {@code Parameters} objects.
+ * Converts rule objects for the context configuration into {@link com.aspectran.utils.apon.Parameters} objects.
  *
  * <p>Created: 2017. 5. 5.</p>
  */
@@ -124,6 +124,11 @@ public class RulesToParameters {
     private RulesToParameters() {
     }
 
+    /**
+     * Converts the given {@code RuleParsingContext} to {@code RootParameters}.
+     * @param ruleParsingContext the rule parsing context
+     * @return the root parameters
+     */
     @NonNull
     public static RootParameters toRootParameters(RuleParsingContext ruleParsingContext) {
         RootParameters rootParameters = new RootParameters();
@@ -195,6 +200,12 @@ public class RulesToParameters {
         return aspectranParameters;
     }
 
+    /**
+     * Converts a {@code DescriptionRule} to {@code DescriptionParameters} and adds it to the given {@code Parameters}.
+     * @param descriptionRule the description rule
+     * @param parameters the parameters to add to
+     * @param key the parameter key
+     */
     public static void toDescriptionParameters(DescriptionRule descriptionRule, Parameters parameters, ParameterKey key) {
         if (descriptionRule == null) {
             throw new IllegalArgumentException("descriptionRule must not be null");
@@ -246,6 +257,11 @@ public class RulesToParameters {
         return toAppendParameters(appendRule);
     }
 
+    /**
+     * Converts an {@code AppendRule} to {@code AppendParameters}.
+     * @param appendRule the append rule
+     * @return the append parameters
+     */
     @NonNull
     public static AppendParameters toAppendParameters(AppendRule appendRule) {
         if (appendRule == null) {
@@ -262,6 +278,11 @@ public class RulesToParameters {
         return appendParameters;
     }
 
+    /**
+     * Converts an {@code EnvironmentRule} to {@code EnvironmentParameters}.
+     * @param environmentRule the environment rule
+     * @return the environment parameters
+     */
     @NonNull
     public static EnvironmentParameters toEnvironmentParameters(EnvironmentRule environmentRule) {
         if (environmentRule == null) {
@@ -280,6 +301,11 @@ public class RulesToParameters {
         return environmentParameters;
     }
 
+    /**
+     * Converts an {@code AspectRule} to {@code AspectParameters}.
+     * @param aspectRule the aspect rule
+     * @return the aspect parameters
+     */
     @NonNull
     public static AspectParameters toAspectParameters(AspectRule aspectRule) {
         if (aspectRule == null) {
@@ -364,6 +390,11 @@ public class RulesToParameters {
         return aspectParameters;
     }
 
+    /**
+     * Converts a {@code BeanRule} to {@code BeanParameters}.
+     * @param beanRule the bean rule
+     * @return the bean parameters
+     */
     @NonNull
     public static BeanParameters toBeanParameters(BeanRule beanRule) {
         if (beanRule == null) {
@@ -404,11 +435,22 @@ public class RulesToParameters {
         return beanParameters;
     }
 
+    /**
+     * Converts a {@code ScheduleRule} to {@code ScheduleParameters}.
+     * @param scheduleRule the schedule rule
+     * @return the schedule parameters
+     */
     @NonNull
     public static ScheduleParameters toScheduleParameters(ScheduleRule scheduleRule) {
         return toScheduleParameters(scheduleRule, null);
     }
 
+    /**
+     * Converts a {@code ScheduleRule} to {@code ScheduleParameters} with an optional {@code ScheduledJobRule}.
+     * @param scheduleRule the schedule rule
+     * @param scheduledJobRule the scheduled job rule (optional)
+     * @return the schedule parameters
+     */
     @NonNull
     public static ScheduleParameters toScheduleParameters(ScheduleRule scheduleRule, ScheduledJobRule scheduledJobRule) {
         if (scheduleRule == null) {
@@ -445,6 +487,11 @@ public class RulesToParameters {
         return scheduleParameters;
     }
 
+    /**
+     * Converts a {@code ScheduledJobRule} to {@code ScheduledJobParameters}.
+     * @param scheduledJobRule the scheduled job rule
+     * @return the scheduled job parameters
+     */
     @NonNull
     public static ScheduledJobParameters toScheduledJobParameters(ScheduledJobRule scheduledJobRule) {
         if (scheduledJobRule == null) {
@@ -457,6 +504,11 @@ public class RulesToParameters {
         return scheduledJobParameters;
     }
 
+    /**
+     * Converts a {@code TransletRule} to {@code TransletParameters}.
+     * @param transletRule the translet rule
+     * @return the translet parameters
+     */
     @NonNull
     public static TransletParameters toTransletParameters(TransletRule transletRule) {
         if (transletRule == null) {
@@ -573,6 +625,11 @@ public class RulesToParameters {
         return transletParameters;
     }
 
+    /**
+     * Converts an {@code ExceptionThrownRule} to {@code ExceptionThrownParameters}.
+     * @param exceptionThrownRule the exception thrown rule
+     * @return the exception thrown parameters
+     */
     @NonNull
     public static ExceptionThrownParameters toExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
         if (exceptionThrownRule == null) {
@@ -611,6 +668,11 @@ public class RulesToParameters {
         return exceptionThrownParameters;
     }
 
+    /**
+     * Converts a {@code ResponseRule} to {@code ResponseParameters}.
+     * @param responseRule the response rule
+     * @return the response parameters
+     */
     @NonNull
     public static ResponseParameters toResponseParameters(ResponseRule responseRule) {
         if (responseRule == null) {
@@ -645,6 +707,11 @@ public class RulesToParameters {
         return responseParameters;
     }
 
+    /**
+     * Converts a {@code TransformRule} to {@code TransformParameters}.
+     * @param transformRule the transform rule
+     * @return the transform parameters
+     */
     @NonNull
     public static TransformParameters toTransformParameters(TransformRule transformRule) {
         if (transformRule == null) {
@@ -663,6 +730,11 @@ public class RulesToParameters {
         return transformParameters;
     }
 
+    /**
+     * Converts a {@code DispatchRule} to {@code DispatchParameters}.
+     * @param dispatchRule the dispatch rule
+     * @return the dispatch parameters
+     */
     @NonNull
     public static DispatchParameters toDispatchParameters(DispatchRule dispatchRule) {
         if (dispatchRule == null) {
@@ -678,6 +750,11 @@ public class RulesToParameters {
         return dispatchParameters;
     }
 
+    /**
+     * Converts a {@code ForwardRule} to {@code ForwardParameters}.
+     * @param forwardRule the forward rule
+     * @return the forward parameters
+     */
     @NonNull
     public static ForwardParameters toForwardParameters(ForwardRule forwardRule) {
         if (forwardRule == null) {
@@ -697,6 +774,11 @@ public class RulesToParameters {
         return forwardParameters;
     }
 
+    /**
+     * Converts a {@code RedirectRule} to {@code RedirectParameters}.
+     * @param redirectRule the redirect rule
+     * @return the redirect parameters
+     */
     @NonNull
     public static RedirectParameters toRedirectParameters(RedirectRule redirectRule) {
         if (redirectRule == null) {
@@ -719,6 +801,11 @@ public class RulesToParameters {
         return redirectParameters;
     }
 
+    /**
+     * Converts a {@code TemplateRule} to {@code TemplateParameters}.
+     * @param templateRule the template rule
+     * @return the template parameters
+     */
     @NonNull
     public static TemplateParameters toTemplateParameters(TemplateRule templateRule) {
         if (templateRule == null) {
@@ -785,6 +872,11 @@ public class RulesToParameters {
         }
     }
 
+    /**
+     * Converts a {@code HeaderActionRule} to {@code ActionParameters}.
+     * @param headerActionRule the header action rule
+     * @return the action parameters
+     */
     @NonNull
     public static ActionParameters toActionParameters(HeaderActionRule headerActionRule) {
         if (headerActionRule == null) {
@@ -803,6 +895,11 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    /**
+     * Converts an {@code EchoActionRule} to {@code ActionParameters}.
+     * @param echoActionRule the echo action rule
+     * @return the action parameters
+     */
     @NonNull
     public static ActionParameters toActionParameters(EchoActionRule echoActionRule) {
         if (echoActionRule == null) {
@@ -821,6 +918,11 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    /**
+     * Converts an {@code InvokeActionRule} to {@code ActionParameters}.
+     * @param invokeActionRule the invoke action rule
+     * @return the action parameters
+     */
     @NonNull
     public static ActionParameters toActionParameters(InvokeActionRule invokeActionRule) {
         if (invokeActionRule == null) {
@@ -846,6 +948,11 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    /**
+     * Converts an {@code IncludeActionRule} to {@code ActionParameters}.
+     * @param includeActionRule the include action rule
+     * @return the action parameters
+     */
     @NonNull
     public static ActionParameters toActionParameters(IncludeActionRule includeActionRule) {
         if (includeActionRule == null) {
@@ -922,6 +1029,11 @@ public class RulesToParameters {
         }
     }
 
+    /**
+     * Converts an {@code ItemRuleMap} to {@code ItemHolderParameters}.
+     * @param itemRuleMap the item rule map
+     * @return the item holder parameters
+     */
     @NonNull
     public static ItemHolderParameters toItemHolderParameters(ItemRuleMap itemRuleMap) {
         if (itemRuleMap == null) {
@@ -946,6 +1058,11 @@ public class RulesToParameters {
         }
     }
 
+    /**
+     * Converts an {@code ItemRule} to {@code ItemParameters}.
+     * @param itemRule the item rule
+     * @return the item parameters
+     */
     @NonNull
     public static ItemParameters toItemParameters(ItemRule itemRule) {
         if (itemRule == null) {

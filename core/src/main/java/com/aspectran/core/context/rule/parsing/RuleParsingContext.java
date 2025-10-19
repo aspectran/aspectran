@@ -127,6 +127,9 @@ public class RuleParsingContext {
         this.environmentProfiles = environmentProfiles;
     }
 
+    /**
+     * Initializes the rule parsing context.
+     */
     public void prepare() {
         settings = new HashMap<>();
         environmentRules = new LinkedList<>();
@@ -148,6 +151,9 @@ public class RuleParsingContext {
         }
     }
 
+    /**
+     * Releases all resources used by the rule parsing context.
+     */
     public void release() {
         settings = null;
         environmentRules = null;
@@ -169,15 +175,27 @@ public class RuleParsingContext {
         }
     }
 
+    /**
+     * Returns the class loader used for loading classes.
+     * @return the class loader
+     */
     public ClassLoader getClassLoader() {
         Assert.notNull(classLoader, "ClassLoader is not set");
         return classLoader;
     }
 
+    /**
+     * Returns the application adapter.
+     * @return the application adapter
+     */
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
 
+    /**
+     * Returns the base path of the application.
+     * @return the base path
+     */
     public String getBasePath() {
         if (applicationAdapter != null) {
             return applicationAdapter.getBasePathString();
@@ -186,6 +204,10 @@ public class RuleParsingContext {
         }
     }
 
+    /**
+     * Returns the environment profiles.
+     * @return the environment profiles
+     */
     public EnvironmentProfiles getEnvironmentProfiles() {
         return environmentProfiles;
     }
@@ -619,14 +641,30 @@ public class RuleParsingContext {
         }
     }
 
+    /**
+     * Reserves to bean reference inspection.
+     * @param beanId the bean id
+     * @param referenceable the object to be inspected
+     */
     public void reserveBeanReference(String beanId, BeanReferenceable referenceable) {
         reserveBeanReference(beanId, null, referenceable);
     }
 
+    /**
+     * Reserves to bean reference inspection.
+     * @param beanClass the bean class
+     * @param referenceable the object to be inspected
+     */
     public void reserveBeanReference(Class<?> beanClass, BeanReferenceable referenceable) {
         reserveBeanReference(null, beanClass, referenceable);
     }
 
+    /**
+     * Reserves to bean reference inspection.
+     * @param beanId the bean id
+     * @param beanClass the bean class
+     * @param referenceable the object to be inspected
+     */
     public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceable referenceable) {
         beanReferenceInspector.reserve(beanId, beanClass, referenceable, ruleAppendHandler.getCurrentRuleAppender());
     }
@@ -657,6 +695,11 @@ public class RuleParsingContext {
         beanRuleRegistry.addBeanRule(beanRule);
     }
 
+    /**
+     * Adds the inner bean rule.
+     * @param beanRule the inner bean rule to add
+     * @throws IllegalRuleException if an error occurs while adding an inner bean rule
+     */
     public void addInnerBeanRule(BeanRule beanRule) throws IllegalRuleException {
         beanRuleRegistry.addInnerBeanRule(beanRule);
     }
@@ -810,6 +853,12 @@ public class RuleParsingContext {
         }
     }
 
+    /**
+     * Returns a new description rule that is a combination of two description rules.
+     * @param newDr the new description rule
+     * @param oldDr the old description rule
+     * @return the combined description rule
+     */
     public DescriptionRule profiling(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
         if (newDr.getProfiles() != null && getEnvironmentProfiles() != null) {
             if (getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles())) {
@@ -859,6 +908,12 @@ public class RuleParsingContext {
         return dr;
     }
 
+    /**
+     * Returns a new item rule map that is a combination of two item rule maps.
+     * @param newIrm the new item rule map
+     * @param oldIrm the old item rule map
+     * @return the combined item rule map
+     */
     public ItemRuleMap profiling(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm) {
         if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
             if (getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles())) {

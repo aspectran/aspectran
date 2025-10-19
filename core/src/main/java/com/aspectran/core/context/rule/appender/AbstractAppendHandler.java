@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class AbstractAppendHandler.
+ * Abstract base class for {@link RuleAppendHandler} implementations.
  */
 abstract class AbstractAppendHandler implements RuleAppendHandler {
 
@@ -74,6 +74,10 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         }
     }
 
+    /**
+     * Adds a {@code RuleAppender} to the pending list.
+     * @param appender the rule appender to add
+     */
     private void pending(RuleAppender appender) {
         if (pendingList == null) {
             pendingList = new ArrayList<>();
@@ -85,6 +89,10 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         }
     }
 
+    /**
+     * Handles all pending {@link RuleAppender}s.
+     * @throws Exception if an error occurs during handling
+     */
     protected void handle() throws Exception {
         if (pendingList != null) {
             List<RuleAppender> pendedList = pendingList;
@@ -117,6 +125,10 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         this.currentRuleAppender = currentRuleAppender;
     }
 
+    /**
+     * Returns whether to use APON parser to load XML configuration.
+     * @return true if APON parser is used for XML
+     */
     protected boolean isUseAponToLoadXml() {
         return useAponToLoadXml;
     }
@@ -126,6 +138,10 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         this.useAponToLoadXml = useAponToLoadXml;
     }
 
+    /**
+     * Returns whether to run in debug mode.
+     * @return true if in debug mode
+     */
     protected boolean isDebugMode() {
         return debugMode;
     }

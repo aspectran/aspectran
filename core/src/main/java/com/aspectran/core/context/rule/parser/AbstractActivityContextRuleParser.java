@@ -55,6 +55,10 @@ public abstract class AbstractActivityContextRuleParser implements ActivityConte
         return ruleParsingContext;
     }
 
+    /**
+     * Gets the character encoding.
+     * @return the character encoding
+     */
     public String getEncoding() {
         return encoding;
     }

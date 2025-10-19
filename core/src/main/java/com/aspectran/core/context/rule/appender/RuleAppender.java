@@ -35,34 +35,98 @@ import java.io.Reader;
  */
 public interface RuleAppender {
 
+    /**
+     * Returns the appender type.
+     * @return the appender type
+     */
     AppenderType getAppenderType();
 
+    /**
+     * Returns the append rule.
+     * @return the append rule
+     */
     AppendRule getAppendRule();
 
+    /**
+     * Sets the append rule.
+     * @param appendRule the append rule
+     */
     void setAppendRule(AppendRule appendRule);
 
+    /**
+     * Returns the appendable file format type.
+     * @return the appendable file format type
+     */
     AppendableFileFormatType getAppendableFileFormatType();
 
+    /**
+     * Sets the appendable file format type.
+     * @param appendableFileFormatType the appendable file format type
+     */
     void setAppendableFileFormatType(AppendableFileFormatType appendableFileFormatType);
 
+    /**
+     * Returns the profiles.
+     * @return the profiles
+     */
     Profiles getProfiles();
 
+    /**
+     * Sets the profile.
+     * @param profile the profile
+     */
     void setProfile(String profile);
 
+    /**
+     * Returns the qualified name of the resource.
+     * @return the qualified name
+     */
     String getQualifiedName();
 
+    /**
+     * Returns the last modified time of the resource.
+     * @return the last modified time
+     */
     long getLastModified();
 
+    /**
+     * Sets the last modified time of the resource.
+     * @param lastModified the last modified time
+     */
     void setLastModified(long lastModified);
 
+    /**
+     * Returns an input stream for reading the rules.
+     * @return the input stream
+     * @throws IOException if an I/O error has occurred
+     */
     InputStream getInputStream() throws IOException;
 
+    /**
+     * Returns a reader for reading the rules.
+     * @return the reader
+     * @throws IOException if an I/O error has occurred
+     */
     Reader getReader() throws IOException;
 
+    /**
+     * Returns a reader for reading the rules with the specified encoding.
+     * @param encoding the encoding
+     * @return the reader
+     * @throws IOException if an I/O error has occurred
+     */
     Reader getReader(String encoding) throws IOException;
 
+    /**
+     * Returns the node tracker.
+     * @return the node tracker
+     */
     NodeTracker getNodeTracker();
 
+    /**
+     * Sets the node tracker.
+     * @param nodeTracker the node tracker
+     */
     void setNodeTracker(NodeTracker nodeTracker);
 
 }

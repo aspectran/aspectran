@@ -25,7 +25,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * The Class UrlRuleAppender.
+ * A {@link RuleAppender} implementation that reads rules from a URL.
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
@@ -33,6 +33,10 @@ public class UrlRuleAppender extends AbstractRuleAppender {
 
     private final String ruleUrl;
 
+    /**
+     * Instantiates a new UrlRuleAppender.
+     * @param ruleUrl the rule URL
+     */
     public UrlRuleAppender(String ruleUrl) {
         super(AppenderType.URL);
         this.ruleUrl = ruleUrl;

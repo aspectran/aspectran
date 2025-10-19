@@ -28,10 +28,17 @@ import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR;
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
 
 /**
+ * A utility class for handling namespaces.
+ *
  * <p>Created: 2023/06/18</p>
  */
 public class Namespace {
 
+    /**
+     * Splits a namespace string into an array of its components.
+     * @param namespace the namespace string
+     * @return an array of namespace components, or {@code null} if the input is empty
+     */
     @Nullable
     public static String[] splitNamespace(String namespace) {
         if (!StringUtils.hasText(namespace)) {
@@ -54,6 +61,12 @@ public class Namespace {
         return list.toArray(new String[0]);
     }
 
+    /**
+     * Applies a namespace to a given last name, combining them with the ID separator.
+     * @param nameArray an array of namespace components
+     * @param lastName the last name to append
+     * @return the combined namespace string
+     */
     public static String applyNamespace(String[] nameArray, String lastName) {
         if (nameArray == null || nameArray.length == 0) {
             return lastName;
@@ -76,6 +89,12 @@ public class Namespace {
         return sb.toString();
     }
 
+    /**
+     * Applies a namespace for a translet, combining components with the name separator.
+     * @param nameArray an array of namespace components
+     * @param lastName the last name to append
+     * @return the combined translet name string
+     */
     public static String applyNamespaceForTranslet(String[] nameArray, String lastName) {
         if (nameArray == null || nameArray.length == 0) {
             return lastName;
@@ -131,6 +150,14 @@ public class Namespace {
         return applyTransletNamePattern(prefix, transletName, suffix, absolutely);
     }
 
+    /**
+     * Returns the translet name with the given prefix and suffix applied.
+     * @param prefix the prefix to apply
+     * @param transletName the translet name
+     * @param suffix the suffix to apply
+     * @param absolutely whether to allow an absolute name for the translet
+     * @return the new translet name
+     */
     public static String applyTransletNamePattern(String prefix, String transletName, String suffix,
                                                   boolean absolutely) {
         if (prefix == null && suffix == null) {

@@ -23,6 +23,9 @@ import com.aspectran.utils.apon.ValueType;
 
 import java.util.Arrays;
 
+/**
+ * Represents the parameters for a trigger expression within a schedule rule.
+ */
 public class TriggerExpressionParameters extends AbstractParameters {
 
     public static final ParameterKey startDelaySeconds;

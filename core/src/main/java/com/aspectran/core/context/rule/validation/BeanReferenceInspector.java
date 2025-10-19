@@ -43,7 +43,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * The Class BeanReferenceInspector.
+ * Inspects bean references to find broken references.
  */
 public class BeanReferenceInspector {
 

@@ -43,7 +43,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 
 /**
- * The Class HybridRuleAppendHandler.
+ * A {@link RuleAppendHandler} for hybrid parsing of XML and APON formats.
  */
 public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
@@ -53,6 +53,11 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private EntityResolver entityResolver;
 
+    /**
+     * Instantiates a new HybridRuleAppendHandler.
+     * @param activityContextRuleParser the activity context rule parser
+     * @param encoding the encoding
+     */
     public HybridRuleAppendHandler(@NonNull ActivityContextRuleParser activityContextRuleParser, String encoding) {
         super(activityContextRuleParser.getRuleParsingContext());
         this.activityContextParser = activityContextRuleParser;

@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a request rule.
+ */
 public class RequestParameters extends AbstractParameters {
 
     public static final ParameterKey method;

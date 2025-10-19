@@ -18,12 +18,17 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 /**
- * The Class ShallowRuleAppendHandler.
+ * A {@link RuleAppendHandler} that does nothing.
+ * This is used when a quick, non-validated overview of the configuration rules is required.
  *
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class ShallowRuleAppendHandler extends AbstractAppendHandler {
 
+    /**
+     * Instantiates a new ShallowRuleAppendHandler.
+     * @param ruleParsingContext the rule parsing context
+     */
     public ShallowRuleAppendHandler(RuleParsingContext ruleParsingContext) {
         super(ruleParsingContext);
     }

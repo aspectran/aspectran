@@ -21,24 +21,57 @@ import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import java.util.List;
 
 /**
- * The Interface RuleAppendHandler.
+ * Defines the contract for handling the appending of context rules.
  */
 public interface RuleAppendHandler {
 
+    /**
+     * Returns the rule parsing context.
+     * @return the rule parsing context
+     */
     RuleParsingContext getRuleParsingContext();
 
+    /**
+     * Adds an {@code AppendRule} to the pending list for later processing.
+     * @param appendRule the append rule
+     */
     void pending(AppendRule appendRule);
 
+    /**
+     * Handles the given {@code RuleAppender} to append rules.
+     * @param appender the rule appender
+     * @throws Exception if an error occurs during handling
+     */
     void handle(RuleAppender appender) throws Exception;
 
+    /**
+     * Returns the list of pending rule appenders.
+     * @return the list of pending rule appenders
+     */
     List<RuleAppender> getPendingList();
 
+    /**
+     * Returns the currently processing rule appender.
+     * @return the current rule appender
+     */
     RuleAppender getCurrentRuleAppender();
 
+    /**
+     * Sets the currently processing rule appender.
+     * @param currentRuleAppender the current rule appender
+     */
     void setCurrentRuleAppender(RuleAppender currentRuleAppender);
 
+    /**
+     * Sets whether to use APON parser to load XML configuration.
+     * @param useAponToLoadXml true to use APON parser for XML
+     */
     void setUseAponToLoadXml(boolean useAponToLoadXml);
 
+    /**
+     * Sets whether to run in debug mode.
+     * @param debugMode true to run in debug mode
+     */
     void setDebugMode(boolean debugMode);
 
 }

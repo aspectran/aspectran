@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
- * The Class AbstractRuleAppender.
+ * Abstract base class for {@link RuleAppender} implementations.
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
@@ -80,6 +80,10 @@ abstract class AbstractRuleAppender implements RuleAppender {
         this.appendableFileFormatType = appendableFileFormatType;
     }
 
+    /**
+     * Determines the appended file format type based on the resource name.
+     * @param resourceName the name of the resource
+     */
     protected void determineAppendedFileFormatType(String resourceName) {
         if (resourceName != null && resourceName.toLowerCase().endsWith(".apon")) {
             setAppendableFileFormatType(AppendableFileFormatType.APON);

@@ -21,6 +21,9 @@ import com.aspectran.utils.apon.ParameterKey;
 
 import java.io.Reader;
 
+/**
+ * Represents the root parameters for the entire Aspectran configuration.
+ */
 public class RootParameters extends AbstractParameters {
 
     public static final ParameterKey aspectran;

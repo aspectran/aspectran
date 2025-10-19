@@ -92,7 +92,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.List;
 
 /**
- * Converts {@code Parameters} objects to rules for context configuration.
+ * Converts {@link com.aspectran.utils.apon.Parameters} objects to rule objects
+ * for the context configuration.
  *
  * <p>Created: 2017. 5. 5.</p>
  */
@@ -100,10 +101,19 @@ public class ParametersToRules {
 
     private final RuleParsingContext ruleParsingContext;
 
+    /**
+     * Instantiates a new ParametersToRules.
+     * @param ruleParsingContext the rule parsing context
+     */
     public ParametersToRules(RuleParsingContext ruleParsingContext) {
         this.ruleParsingContext = ruleParsingContext;
     }
 
+    /**
+     * Converts the given {@code RootParameters} to rules.
+     * @param rootParameters the root parameters
+     * @throws IllegalRuleException if an illegal rule is found
+     */
     public void toRules(RootParameters rootParameters) throws IllegalRuleException {
         if (rootParameters == null) {
             throw new IllegalArgumentException("rootParameters must not be null");
@@ -113,6 +123,11 @@ public class ParametersToRules {
         toRules(aspectranParameters);
     }
 
+    /**
+     * Converts the given {@code AspectranParameters} to rules.
+     * @param aspectranParameters the aspectran parameters
+     * @throws IllegalRuleException if an illegal rule is found
+     */
     public void toRules(AspectranParameters aspectranParameters) throws IllegalRuleException {
         if (aspectranParameters == null) {
             throw new IllegalArgumentException("aspectranParameters must not be null");

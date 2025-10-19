@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The Class ResourceRuleAppender.
+ * A {@link RuleAppender} implementation that reads rules from a classpath resource.
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
@@ -37,6 +37,11 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
         this(resource, null);
     }
 
+    /**
+     * Instantiates a new ResourceRuleAppender.
+     * @param resource the resource
+     * @param classLoader the class loader
+     */
     public ResourceRuleAppender(String resource, ClassLoader classLoader) {
         super(AppenderType.RESOURCE);
         this.resource = resource;

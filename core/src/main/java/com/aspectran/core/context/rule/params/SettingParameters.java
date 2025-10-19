@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a single setting.
+ */
 public class SettingParameters extends AbstractParameters {
 
     public static final ParameterKey name;

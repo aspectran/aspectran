@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The Class FileRuleAppender.
+ * A {@link RuleAppender} implementation that reads rules from a file.
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
@@ -39,6 +39,11 @@ public class FileRuleAppender extends AbstractRuleAppender {
         this(null, filePath);
     }
 
+    /**
+     * Instantiates a new FileRuleAppender.
+     * @param basePath the base path
+     * @param filePath the file path
+     */
     public FileRuleAppender(String basePath, String filePath) {
         super(AppenderType.FILE);
         this.basePath = basePath;
@@ -46,14 +51,26 @@ public class FileRuleAppender extends AbstractRuleAppender {
         determineAppendedFileFormatType(filePath);
     }
 
+    /**
+     * Returns the base path.
+     * @return the base path
+     */
     public String getBasePath() {
         return basePath;
     }
 
+    /**
+     * Returns the file path.
+     * @return the file path
+     */
     public String getFilePath() {
         return filePath;
     }
 
+    /**
+     * Returns the file.
+     * @return the file
+     */
     public File getFile() {
         if (StringUtils.hasText(basePath)) {
             return new File(basePath, filePath);

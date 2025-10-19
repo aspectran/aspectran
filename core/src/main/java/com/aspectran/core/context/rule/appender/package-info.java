@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides classes for appending rules to the context.
+ * Provides classes for appending rules from various sources to the context.
  */
 package com.aspectran.core.context.rule.appender;

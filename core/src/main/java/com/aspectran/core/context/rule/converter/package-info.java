@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides classes for converting context rules from a parsed format to rule objects.
+ * Provides classes for converting between rule objects and {@link com.aspectran.utils.apon.Parameters} objects.
  */
 package com.aspectran.core.context.rule.converter;

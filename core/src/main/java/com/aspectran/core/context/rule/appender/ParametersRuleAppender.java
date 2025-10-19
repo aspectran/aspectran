@@ -24,12 +24,15 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * The Class ParametersRuleAppender.
+ * A {@link RuleAppender} for appending rules from {@link com.aspectran.core.context.rule.params.AspectranParameters}.
  *
  * <p>Created: 2017. 05. 09.</p>
  */
 public class ParametersRuleAppender extends AbstractRuleAppender {
 
+    /**
+     * Instantiates a new ParametersRuleAppender.
+     */
     public ParametersRuleAppender() {
         super(AppenderType.PARAMETERS);
         setAppendableFileFormatType(AppendableFileFormatType.APON);

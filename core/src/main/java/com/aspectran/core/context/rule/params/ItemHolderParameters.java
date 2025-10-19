@@ -22,6 +22,9 @@ import com.aspectran.utils.apon.ValueType;
 
 import java.util.List;
 
+/**
+ * Represents the parameters for an item holder, which can contain multiple item parameters.
+ */
 public class ItemHolderParameters extends AbstractParameters {
 
     public static final ParameterKey profile;

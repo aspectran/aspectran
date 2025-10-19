@@ -20,6 +20,9 @@ import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
 
+/**
+ * Represents the parameters for a filter rule.
+ */
 public class FilterParameters extends IncludeExcludeParameters {
 
     public static final ParameterKey filterClass;

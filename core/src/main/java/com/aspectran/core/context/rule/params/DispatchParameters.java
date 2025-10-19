@@ -19,6 +19,9 @@ import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a dispatch rule.
+ */
 public class DispatchParameters extends AbstractParameters {
 
     public static final ParameterKey name;

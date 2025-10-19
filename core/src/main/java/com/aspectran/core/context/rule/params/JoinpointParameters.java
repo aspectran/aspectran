@@ -20,6 +20,9 @@ import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+/**
+ * Represents the parameters for a joinpoint rule.
+ */
 public class JoinpointParameters extends AbstractParameters {
 
     public static final ParameterKey target;

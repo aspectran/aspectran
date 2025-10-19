@@ -18,6 +18,9 @@ package com.aspectran.core.context.rule.params;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
+/**
+ * Represents the parameters for an advice action.
+ */
 public class AdviceActionParameters extends AbstractParameters {
 
     public static final ParameterKey thrown;
