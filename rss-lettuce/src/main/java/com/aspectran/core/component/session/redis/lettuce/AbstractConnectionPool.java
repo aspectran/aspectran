@@ -37,8 +37,8 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  *
  * <p>Created: 2025/10/20</p>
  */
-public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>, C, P extends GenericObjectPoolConfig<T>>
-        implements ConnectionPool<T> {
+public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>, C, P
+        extends GenericObjectPoolConfig<T>> implements ConnectionPool<T> {
 
     protected final P poolConfig;
 

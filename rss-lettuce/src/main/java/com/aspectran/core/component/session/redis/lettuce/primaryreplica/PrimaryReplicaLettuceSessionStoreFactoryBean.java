@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce.masterreplica;
+package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 
 /**
- * FactoryBean variant of {@link MasterReplicaLettuceSessionStoreFactory} that eagerly creates
- * and exposes a singleton {@link MasterReplicaLettuceSessionStore} instance.
+ * FactoryBean variant of {@link PrimaryReplicaLettuceSessionStoreFactory} that eagerly creates
+ * and exposes a singleton {@link PrimaryReplicaLettuceSessionStore} instance.
  *
  * <p>Created: 2024. 12. 26.</p>
  */
-public class MasterReplicaLettuceSessionStoreFactoryBean extends MasterReplicaLettuceSessionStoreFactory
-        implements InitializableFactoryBean<MasterReplicaLettuceSessionStore> {
+public class PrimaryReplicaLettuceSessionStoreFactoryBean extends PrimaryReplicaLettuceSessionStoreFactory
+        implements InitializableFactoryBean<PrimaryReplicaLettuceSessionStore> {
 
-    private MasterReplicaLettuceSessionStore sessionStore;
+    private PrimaryReplicaLettuceSessionStore sessionStore;
 
     @Override
     public void initialize() throws Exception {
@@ -36,7 +36,7 @@ public class MasterReplicaLettuceSessionStoreFactoryBean extends MasterReplicaLe
     }
 
     @Override
-    public MasterReplicaLettuceSessionStore getObject() {
+    public PrimaryReplicaLettuceSessionStore getObject() {
         return sessionStore;
     }
 

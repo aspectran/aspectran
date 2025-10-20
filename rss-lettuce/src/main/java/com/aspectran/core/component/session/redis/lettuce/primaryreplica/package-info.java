@@ -20,4 +20,4 @@
  * upstream node for writes while allowing replica reads via Lettuce.
  * </p>
  */
-package com.aspectran.core.component.session.redis.lettuce.masterreplica;
+package com.aspectran.core.component.session.redis.lettuce.primaryreplica;

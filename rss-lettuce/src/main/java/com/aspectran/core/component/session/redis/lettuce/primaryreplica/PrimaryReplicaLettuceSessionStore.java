@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce.masterreplica;
+package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
@@ -21,15 +21,15 @@ import com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionS
 import io.lettuce.core.api.StatefulRedisConnection;
 
 /**
- * A Redis-based session store using Lettuce as the client.
+ * A specialization of {@link DefaultLettuceSessionStore} for Primary-Replica setups.
  *
  * <p>Created: 2019/12/06</p>
  *
  * @since 6.6.0
  */
-public class MasterReplicaLettuceSessionStore extends DefaultLettuceSessionStore {
+public class PrimaryReplicaLettuceSessionStore extends DefaultLettuceSessionStore {
 
-    public MasterReplicaLettuceSessionStore(ConnectionPool<StatefulRedisConnection<String, SessionData>> pool) {
+    public PrimaryReplicaLettuceSessionStore(ConnectionPool<StatefulRedisConnection<String, SessionData>> pool) {
         super(pool);
     }
 

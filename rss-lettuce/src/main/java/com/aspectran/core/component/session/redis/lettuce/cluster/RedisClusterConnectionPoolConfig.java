@@ -48,7 +48,8 @@ import java.util.List;
  *
  * <p>Created: 2019/12/07</p>
  */
-public class RedisClusterConnectionPoolConfig extends GenericObjectPoolConfig<StatefulRedisClusterConnection<String, SessionData>> {
+public class RedisClusterConnectionPoolConfig
+        extends GenericObjectPoolConfig<StatefulRedisClusterConnection<String, SessionData>> {
 
     private RedisURI[] redisURIs;
 

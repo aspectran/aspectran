@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce.masterreplica;
+package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -27,16 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2019/12/24</p>
  */
-class MasterReplicaLettuceSessionStoreFactoryTest {
+class PrimaryReplicaLettuceSessionStoreFactoryTest {
 
     public static void main(String[] args) {
-        RedisMasterReplicaConnectionPoolConfig poolConfig = new RedisMasterReplicaConnectionPoolConfig();
+        RedisPrimaryReplicaConnectionPoolConfig poolConfig = new RedisPrimaryReplicaConnectionPoolConfig();
         //poolConfig.setUri("redis://localhost:6379/0");
         poolConfig.setNodes(new String[] {"redis://localhost:6379/0", "redis://localhost:6380/0"});
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
         try {
-            MasterReplicaLettuceSessionStoreFactory sessionStoreFactory = new MasterReplicaLettuceSessionStoreFactory();
+            PrimaryReplicaLettuceSessionStoreFactory sessionStoreFactory = new PrimaryReplicaLettuceSessionStoreFactory();
             sessionStoreFactory.setPoolConfig(poolConfig);
             sessionManager.setSessionStore(sessionStoreFactory.createSessionStore());
             sessionManager.initialize();

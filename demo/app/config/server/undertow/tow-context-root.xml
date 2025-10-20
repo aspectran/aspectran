@@ -99,7 +99,7 @@
                 </bean>
             </item>
         </properties>
-        <properties profile="(!rss-lettuce, !rss-lettuce-masterreplica, !rss-lettuce-cluster)">
+        <properties profile="(!rss-lettuce, !rss-lettuce-primaryreplica, !rss-lettuce-cluster)">
             <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
                     <properties>
@@ -123,7 +123,7 @@
                 </bean>
             </item>
         </properties>
-        <properties profile="rss-lettuce-masterreplica">
+        <properties profile="rss-lettuce-primaryreplica">
             <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactoryBean">
                     <properties>

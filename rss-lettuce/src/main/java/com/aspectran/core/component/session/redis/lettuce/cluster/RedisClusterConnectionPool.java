@@ -18,6 +18,7 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
@@ -29,7 +30,8 @@ import java.util.Arrays;
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisClusterConnectionPool extends AbstractConnectionPool<StatefulRedisClusterConnection<String, SessionData>,
+public class RedisClusterConnectionPool
+        extends AbstractConnectionPool<StatefulRedisClusterConnection<String, SessionData>,
         RedisClusterClient, RedisClusterConnectionPoolConfig> {
 
     /**
@@ -54,12 +56,12 @@ public class RedisClusterConnectionPool extends AbstractConnectionPool<StatefulR
     }
 
     @Override
-    protected StatefulRedisClusterConnection<String, SessionData> connect(RedisClusterClient client, SessionDataCodec codec) {
+    protected StatefulRedisClusterConnection<String, SessionData> connect(@NonNull RedisClusterClient client, SessionDataCodec codec) {
         return client.connect(codec);
     }
 
     @Override
-    protected void shutdownClient(RedisClusterClient client) {
+    protected void shutdownClient(@NonNull RedisClusterClient client) {
         client.shutdown();
     }
 

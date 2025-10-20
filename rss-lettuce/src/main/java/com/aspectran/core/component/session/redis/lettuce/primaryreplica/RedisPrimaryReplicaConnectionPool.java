@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce.masterreplica;
+package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -28,14 +29,19 @@ import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
 import java.util.Arrays;
 
 /**
- * Redis Master-Replica connection pool based on Lettuce.
+ * Redis Primary-Replica connection pool based on Lettuce.
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool<StatefulRedisConnection<String, SessionData>,
-        RedisClient, RedisMasterReplicaConnectionPoolConfig> {
+public class RedisPrimaryReplicaConnectionPool
+        extends AbstractConnectionPool<StatefulRedisConnection<String, SessionData>,
+        RedisClient, RedisPrimaryReplicaConnectionPoolConfig> {
 
-    public RedisMasterReplicaConnectionPool(RedisMasterReplicaConnectionPoolConfig poolConfig) {
+    /**
+     * Instantiates a new RedisPrimaryReplicaConnectionPool.
+     * @param poolConfig the pool configuration
+     */
+    public RedisPrimaryReplicaConnectionPool(RedisPrimaryReplicaConnectionPoolConfig poolConfig) {
         super(poolConfig);
     }
 
@@ -61,12 +67,13 @@ public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool<Sta
         } else {
             connection = MasterReplica.connect(client, codec, Arrays.asList(redisURIs));
         }
+        // Prefer to read from the upstream (primary) to ensure read-after-write consistency
         connection.setReadFrom(ReadFrom.UPSTREAM_PREFERRED);
         return connection;
     }
 
     @Override
-    protected void shutdownClient(RedisClient client) {
+    protected void shutdownClient(@NonNull RedisClient client) {
         client.shutdown();
     }
 
