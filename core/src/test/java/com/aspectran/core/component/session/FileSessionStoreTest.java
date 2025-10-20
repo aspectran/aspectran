@@ -18,14 +18,19 @@ package com.aspectran.core.component.session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -127,6 +132,107 @@ class FileSessionStoreTest {
         assertTrue(expiredIds.contains("expired-1"));
         assertFalse(expiredIds.contains("active-1"));
         assertFalse(expiredIds.contains("immortal-1"));
+    }
+
+    @Test
+    void testUpdateExistingSession() throws Exception {
+        String id = "test-session-update";
+        SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
+        data.setAttribute("status", "initial");
+        sessionStore.doSave(id, data);
+
+        SessionData loadedData1 = sessionStore.load(id);
+        assertNotNull(loadedData1);
+        assertEquals("initial", loadedData1.getAttribute("status"));
+
+        // Update the session
+        data.setAttribute("status", "updated");
+        sessionStore.doSave(id, data);
+
+        SessionData loadedData2 = sessionStore.load(id);
+        assertNotNull(loadedData2);
+        assertEquals("updated", loadedData2.getAttribute("status"));
+    }
+
+    @Test
+    void testSessionExpiry() throws Exception {
+        String id = "test-session-expiry";
+        SessionData data = new SessionData(id, Instant.now().toEpochMilli(), 1000); // 1 second expiry
+        sessionStore.doSave(id, data);
+
+        assertTrue(sessionStore.exists(id));
+
+        // Wait for the session to expire
+        Thread.sleep(1500);
+
+        // Check for logical expiry
+        assertFalse(sessionStore.exists(id));
+
+        // Simulate scavenger: get expired session IDs and delete them
+        Set<String> expiredIds = sessionStore.doGetExpired(System.currentTimeMillis());
+        for (String expiredId : expiredIds) {
+            sessionStore.delete(expiredId);
+        }
+
+        // Now that it's physically deleted, load should return null
+        assertNull(sessionStore.load(id));
+    }
+
+    @Test
+    void testLoadNonExistentSession() throws Exception {
+        String id = "non-existent-session";
+        assertNull(sessionStore.load(id));
+    }
+
+    private static class CustomObject implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1L;
+        private final String value;
+
+        public CustomObject(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            CustomObject that = (CustomObject) obj;
+            return value.equals(that.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
+    }
+
+    @Test
+    void testDifferentDataTypes() throws Exception {
+        String id = "test-session-types";
+        SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
+
+        List<String> list = new ArrayList<>();
+        list.add("item1");
+        list.add("item2");
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("key1", 100);
+        map.put("key2", 200);
+
+        CustomObject customObject = new CustomObject("custom-data");
+
+        data.setAttribute("list-data", list);
+        data.setAttribute("map-data", map);
+        data.setAttribute("custom-object-data", customObject);
+
+        sessionStore.doSave(id, data);
+
+        SessionData loadedData = sessionStore.load(id);
+        assertNotNull(loadedData);
+        assertEquals(list, loadedData.getAttribute("list-data"));
+        assertEquals(map, loadedData.getAttribute("map-data"));
+        assertEquals(customObject, loadedData.getAttribute("custom-object-data"));
     }
 
 }
