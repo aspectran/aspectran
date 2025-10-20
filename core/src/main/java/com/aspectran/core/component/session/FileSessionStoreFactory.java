@@ -33,7 +33,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     /**
      * Returns the directory where session data files are stored.
-     *
      * @return the session data store directory
      */
     public String getStoreDir() {
@@ -42,7 +41,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     /**
      * Sets the directory where session data files are stored.
-     *
      * @param storeDir the session data store directory
      */
     public void setStoreDir(String storeDir) {
@@ -51,7 +49,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     /**
      * Returns whether to delete session files that cannot be restored.
-     *
      * @return true to delete, false otherwise
      */
     public boolean isDeleteUnrestorableFiles() {
@@ -60,7 +57,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     /**
      * Sets whether to delete session files that cannot be restored.
-     *
      * @param deleteUnrestorableFiles true to delete, false otherwise
      */
     public void setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
@@ -69,7 +65,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     /**
      * Creates a new {@link FileSessionStore} instance.
-     *
      * @return a new {@link FileSessionStore}
      * @throws IOException if the session store cannot be created
      */

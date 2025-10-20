@@ -39,19 +39,24 @@ import java.util.stream.Stream;
  * A file system-based implementation of {@link SessionStore}.
  *
  * <p>This store saves each session's data to a separate file within a
- * configured storage directory. The filename contains the session's expiry
- * time, allowing for efficient expiration checks based on filenames alone.
- * It is suitable for single-node environments or for persistence across
- * server restarts.
+ * configured storage directory. The filename for each session includes its expiry
+ * time, allowing for efficient expiration checks based on filenames alone without
+ * needing to deserialize the session data. This implementation is suitable for
+ * single-node environments or for simple persistence across server restarts.
+ *
+ * <p>Created: 2017. 9. 10.</p>
  */
 public class FileSessionStore extends AbstractSessionStore {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSessionStore.class);
 
+    /** In-memory map of session ID to filename. */
     private final Map<String, String> sessionFileMap = new ConcurrentHashMap<>();
 
+    /** The directory where session files are stored. */
     private final File storeDir;
 
+    /** If true, any session files that cannot be deserialized will be deleted. */
     private boolean deleteUnrestorableFiles = true;
 
     /**
@@ -90,7 +95,8 @@ public class FileSessionStore extends AbstractSessionStore {
     /**
      * {@inheritDoc}
      * <p>This implementation reads a session file from the store directory and
-     * deserializes its content into a {@link SessionData} object.</p>
+     * deserializes its content into a {@link SessionData} object. The filename
+     * is retrieved from an in-memory map for quick access.
      */
     @Override
     public SessionData load(String id) throws Exception {
@@ -118,7 +124,8 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation deletes the file corresponding to the session ID.</p>
+     * <p>This implementation deletes the file corresponding to the session ID
+     * and removes its entry from the in-memory map.
      */
     @Override
     public boolean delete(String id) throws IOException {
@@ -149,7 +156,8 @@ public class FileSessionStore extends AbstractSessionStore {
      * {@inheritDoc}
      * <p>This implementation checks for the existence of the session file and
      * verifies that it has not yet expired based on the expiry time encoded
-     * in the filename.</p>
+     * in the filename. This check is efficient as it does not require reading
+     * the file contents.
      */
     @Override
     public boolean exists(String id) {
@@ -171,7 +179,8 @@ public class FileSessionStore extends AbstractSessionStore {
     /**
      * {@inheritDoc}
      * <p>This implementation serializes the {@link SessionData} to a file.
-     * The filename includes the session's expiry time for efficient lookup.</p>
+     * The filename includes the session's expiry time for efficient lookup.
+     * It also updates the in-memory map with the new filename.
      */
     @Override
     public void doSave(String id, SessionData data) throws Exception {
@@ -192,6 +201,11 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation iterates over the in-memory map of managed sessions
+     * and checks for expiration based on the expiry time encoded in the filenames.
+     */
     @Override
     public Set<String> doGetExpired(long time) {
         Set<String> expired = new HashSet<>();
@@ -209,6 +223,11 @@ public class FileSessionStore extends AbstractSessionStore {
         return expired;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation scans the store directory on disk to find and remove
+     * session files that are not present in the in-memory map (orphans) and have expired.
+     */
     @Override
     public void doCleanOrphans(long time) {
         sweepDisk(time, false);

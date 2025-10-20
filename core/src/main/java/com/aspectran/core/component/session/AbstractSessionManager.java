@@ -39,10 +39,12 @@ import static java.lang.Math.round;
 /**
  * Provides a base implementation for the {@link SessionManager} interface.
  *
- * <p>This abstract class handles the common logic for session lifecycle management,
- * including session creation, retrieval, invalidation, and event notification.
- * It coordinates with {@link SessionCache}, {@link SessionStore}, and {@link HouseKeeper}
- * to provide a robust and extensible session management system.
+ * <p>This abstract class serves as the central coordinator for session management.
+ * It handles the common logic for the session lifecycle, including creation, retrieval,
+ * invalidation, and event notification. It orchestrates the interactions between
+ * the {@link SessionCache} (for in-memory session access), the {@link SessionStore}
+ * (for persistent storage), and the {@link HouseKeeper} (for background tasks like
+ * session scavenging).
  *
  * <p>Created: 2017. 6. 12.</p>
  */
@@ -74,9 +76,17 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
     /** The last time in milliseconds that orphaned sessions were deleted. */
     private long lastOrphanSweepTime = 0L;
 
+    /**
+     * Instantiates a new Abstract session manager.
+     */
     AbstractSessionManager() {
     }
 
+    /**
+     * Returns the {@link ClassLoader} for the session manager.
+     * This is used for deserializing session attributes.
+     * @return the class loader
+     */
     public abstract ClassLoader getClassLoader();
 
     @Override
@@ -84,6 +94,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return workerName;
     }
 
+    /**
+     * Sets the worker name for this session manager.
+     * In a clustered environment, this name must be unique for each node.
+     * @param workerName the unique name for this node
+     */
     protected void setWorkerName(String workerName) {
         if (this.workerName != null) {
             throw new IllegalStateException("workerName already set");
@@ -99,6 +114,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return scheduler;
     }
 
+    /**
+     * Sets the scheduler for background tasks.
+     * @param scheduler the scheduler
+     */
     protected void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
@@ -108,6 +127,10 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return sessionIdGenerator;
     }
 
+    /**
+     * Sets the session ID generator.
+     * @param sessionIdGenerator the session ID generator
+     */
     protected void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
         this.sessionIdGenerator = sessionIdGenerator;
     }
@@ -117,14 +140,26 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return sessionCache;
     }
 
+    /**
+     * Sets the session cache.
+     * @param sessionCache the session cache
+     */
     protected void setSessionCache(SessionCache sessionCache) {
         this.sessionCache = sessionCache;
     }
 
+    /**
+     * Gets the house keeper (scavenger).
+     * @return the house keeper
+     */
     public HouseKeeper getHouseKeeper() {
         return houseKeeper;
     }
 
+    /**
+     * Sets the house keeper (scavenger).
+     * @param houseKeeper the house keeper
+     */
     protected void setHouseKeeper(HouseKeeper houseKeeper) {
         this.houseKeeper = houseKeeper;
     }
@@ -147,10 +182,21 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return maxIdleSecsForNew;
     }
 
+    /**
+     * Sets the maximum idle time for newly created, empty sessions.
+     * This allows for quicker eviction of sessions that are created but never used.
+     * @param maxIdleSecsForNew the maximum idle time in seconds for new sessions
+     */
     public void setMaxIdleSecsForNew(int maxIdleSecsForNew) {
         this.maxIdleSecsForNew = maxIdleSecsForNew;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation retrieves a session from the {@link SessionCache}. If the
+     * session is found to be expired upon retrieval, it is immediately invalidated
+     * and this method returns {@code null}.
+     */
     @Override
     public ManagedSession getSession(String id) {
         ManagedSession session = null;
@@ -178,6 +224,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation creates a new session with the default maximum idle time
+     * and adds it to the {@link SessionCache}.
+     */
     @Override
     public ManagedSession createSession(String id) {
         long inactiveInterval;
@@ -199,6 +250,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         }
     }
 
+    /**
+     * Refreshes a session's data from the persistent store.
+     * This is primarily used in a clustered environment to synchronize session state.
+     * @param session the session to refresh
+     */
     protected void refreshSession(ManagedSession session) {
         try {
             sessionCache.refresh(session);
@@ -207,6 +263,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         }
     }
 
+    /**
+     * Releases a session, saving its state to the persistent store.
+     * Depending on the eviction policy, the session may be removed from the in-memory cache.
+     * @param session the session to release
+     */
     protected void releaseSession(ManagedSession session) {
         try {
             sessionCache.release(session);
@@ -220,6 +281,11 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return sessionIdGenerator.createSessionId();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation delegates the session ID renewal to the {@link SessionCache}
+     * and notifies listeners of the change.
+     */
     @Override
     public String renewSessionId(String oldId, String newId) {
         try {
@@ -243,6 +309,12 @@ public abstract class AbstractSessionManager extends AbstractComponent implement
         return removeSession(id, invalidate, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation removes the session from the {@link SessionCache}, which in
+     * turn removes it from the {@link SessionStore}. If {@code invalidate} is true,
+     * it also triggers the session invalidation process and notifies listeners.
+     */
     @Override
     public ManagedSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
         if (!StringUtils.hasText(id)) {

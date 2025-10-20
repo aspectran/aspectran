@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * initializing and wiring together all the necessary session components such as
  * {@link SessionCache}, {@link SessionStore}, {@link HouseKeeper}, and
  * {@link SessionIdGenerator}. It manages the complete lifecycle of the session
- * management system.
+ * management system based on the provided configuration.
  *
  * <p>Created: 2017. 6. 12.</p>
  */
@@ -59,10 +59,17 @@ public class DefaultSessionManager
 
     private SessionStore sessionStore;
 
+    /**
+     * Instantiates a new DefaultSessionManager.
+     */
     public DefaultSessionManager() {
         super();
     }
 
+    /**
+     * Instantiates a new DefaultSessionManager with a specific worker name.
+     * @param workerName the worker name, which must be unique in a cluster
+     */
     public DefaultSessionManager(String workerName) {
         super();
         setWorkerName(workerName);
@@ -80,15 +87,27 @@ public class DefaultSessionManager
         return classLoader;
     }
 
+    /**
+     * Sets the class loader to be used for deserializing session attributes.
+     * @param classLoader the class loader
+     */
     public void setClassLoader(ClassLoader classLoader) {
         checkInitializable();
         this.classLoader = classLoader;
     }
 
+    /**
+     * Gets the application adapter.
+     * @return the application adapter
+     */
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
 
+    /**
+     * Gets the session manager configuration.
+     * @return the session manager configuration
+     */
     public SessionManagerConfig getSessionManagerConfig() {
         return sessionManagerConfig;
     }
@@ -138,7 +157,7 @@ public class DefaultSessionManager
      *   <li>Initializes the {@link SessionIdGenerator}.</li>
      *   <li>Conditionally creates a {@link FileSessionStore} from configuration if no other store is provided.</li>
      *   <li>Creates and configures the {@link DefaultSessionCache} with eviction and persistence policies.</li>
-     *   <li>Completes the lifecycle initialization.</li>
+     *   <li>Completes the lifecycle initialization by calling the superclass method.</li>
      * </ol>
      * @throws Exception if an error occurs during initialization
      */

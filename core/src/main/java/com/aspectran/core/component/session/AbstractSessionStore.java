@@ -29,7 +29,8 @@ import java.util.concurrent.TimeUnit;
  * An abstract base implementation of the {@link SessionStore} interface.
  * This class provides common functionality for session stores, such as handling
  * grace periods for session expiration and periodic saving of session data.
- * Subclasses must implement the persistence-specific methods.
+ * Subclasses must implement the persistence-specific methods for loading, saving,
+ * and deleting session data.
  *
  * <p>Created: 2017. 9. 10.</p>
  */
@@ -57,7 +58,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     /**
      * Returns the grace period in seconds.
-     * This is an interval to prevent overly aggressive session scavenging.
+     * This is an interval to prevent overly aggressive session scavenging, especially
+     * in a clustered environment where nodes might have minor clock differences.
      * @return the grace period in seconds
      */
     public int getGracePeriodSecs() {
@@ -78,8 +80,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
-     * Sets the interval in secs to prevent too eager session scavenging.
-     * @param gracePeriodSecs interval in secs to prevent too eager session scavenging
+     * Sets the interval in seconds to prevent overly eager session scavenging.
+     * @param gracePeriodSecs interval in seconds
      */
     public void setGracePeriodSecs(int gracePeriodSecs) {
         this.gracePeriodSecs = gracePeriodSecs;
@@ -106,18 +108,15 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
-     * The minimum time in seconds between save operations.
-     * Saves normally occur every time the last request
-     * exits as session. If nothing changes on the session
-     * except for the access time and the persistence technology
-     * is slow, this can cause delays.
-     * <p>By default the value is 0, which means we save
-     * after the last request exists. A non zero value
-     * means that we will skip doing the save if the
-     * session isn't dirty if the elapsed time since
-     * the session was last saved does not exceed this
-     * value.</p>
-     * @param savePeriodSecs the savePeriodSecs to set
+     * Sets the minimum time in seconds between save operations.
+     * <p>Saves normally occur every time a request finishes with a session.
+     * If the session data has not changed (is not "dirty"), a save can be skipped.
+     * However, if only the last access time has changed, frequent saves can cause
+     * performance overhead, especially with slow persistence layers.
+     * <p>A value of 0 (default) means the session is saved if it is dirty or if the
+     * save period is exceeded. A non-zero value ensures that even if the session
+     * is not dirty, it will be saved if the time since the last save exceeds this period.
+     * @param savePeriodSecs the minimum save period in seconds
      */
     public void setSavePeriodSecs(int savePeriodSecs) {
         this.savePeriodSecs = savePeriodSecs;
@@ -129,7 +128,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
-     * Specifies attributes that should be excluded from serialization.
+     * Specifies attributes that should be excluded from serialization when persisting the session.
      * @param nonPersistentAttributes the attribute names to exclude from serialization
      */
     public void setNonPersistentAttributes(String... nonPersistentAttributes) {
@@ -156,6 +155,12 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation decides whether to call the persistence-specific
+     * {@link #doSave(String, SessionData)} method based on whether the session is
+     * dirty or if the configured save period has elapsed.
+     */
     @Override
     public void save(String id, SessionData data) throws Exception {
         checkAvailable();
@@ -196,13 +201,20 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
-     * Store the session data persistently.
-     * @param id identity of session to store
-     * @param data info of the session
-     * @throws Exception if unable to store data
+     * Persistently stores the session data.
+     * Subclasses must implement this method to handle the specific storage mechanism.
+     * @param id the ID of the session to store
+     * @param data the {@link SessionData} to be persisted
+     * @throws Exception if the session data cannot be stored
      */
     public abstract void doSave(String id, SessionData data) throws Exception;
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation uses a grace period to avoid overly frequent checks
+     * and to prevent conflicts in a clustered environment. It delegates the actual
+     * search for expired sessions to {@link #doGetExpired(long)}.
+     */
     @Override
     public Set<String> getExpired(Set<String> candidates) {
         if (candidates == null) {
@@ -268,22 +280,19 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     }
 
     /**
-     * Implemented by subclasses to resolve which sessions this store
-     * should attempt to expire.
-     * @param time the upper limit of expiry times to check
-     * @return the reconciled set of session ids that this store should attempt to expire
+     * Finds all session IDs in the store that expired at or before the given time.
+     * Subclasses must implement this method to query the backing store.
+     * @param time the upper limit of expiry times to check, in milliseconds
+     * @return a set of expired session IDs
      */
     public abstract Set<String> doGetExpired(long time);
 
     /**
-     * Implemented by subclasses to delete unmanaged sessions that expired
-     * before a specified time. This is to remove 'orphaned' sessions that are
-     * no longer actively managed on any node, while sessions that are
-     * explicitly managed on each node are handled by other mechanisms such
-     * as doGetExpired.
-     * <p>This is called only periodically to avoid placing
-     * excessive load on the store.</p>
-     * @param time the upper limit of the expiry time to check in msec
+     * Deletes unmanaged (orphaned) sessions that expired before a specified time.
+     * <p>This is called periodically to remove sessions that are no longer actively
+     * managed by any node, which might happen if a node shuts down uncleanly.
+     * @param time the expiry time limit in milliseconds; sessions expired at or before
+     *      this time will be removed
      */
     public abstract void doCleanOrphans(long time);
 
