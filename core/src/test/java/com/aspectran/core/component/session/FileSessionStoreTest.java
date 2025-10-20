@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce;
+package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.component.session.redis.lettuce.junit.EnabledIfDockerAvailable;
-import io.lettuce.core.api.sync.RedisServerCommands;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,32 +36,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Integration tests for {@link DefaultLettuceSessionStore}.
+ * Test cases for FileSessionStore.
  */
-@Testcontainers
-@EnabledIfDockerAvailable
-class DefaultLettuceSessionStoreTest {
+class FileSessionStoreTest {
 
-    @Container
-    private static final GenericContainer<?> redis = new GenericContainer<>("redis:7-alpine").withExposedPorts(6379);
-
-    private DefaultLettuceSessionStore sessionStore;
+    private FileSessionStore sessionStore;
 
     @BeforeEach
     void beforeEach() throws Exception {
-        RedisConnectionPoolConfig poolConfig = new RedisConnectionPoolConfig();
-        poolConfig.setUri("redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
-
-        RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
-        sessionStore = new DefaultLettuceSessionStore(pool);
-
-        // Set non-persistent attributes before initialization
-        sessionStore.setNonPersistentAttributes(new String[]{"temp-data"});
-
+        File storeDir = new File("./target/_sessions/fileSessionStoreTest");
+        try (Stream<Path> stream = Files.walk(storeDir.toPath(), 1, FileVisitOption.FOLLOW_LINKS)) {
+            stream.filter(p -> !Files.isDirectory(p))
+                    .forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        sessionStore = new FileSessionStore(storeDir);
         sessionStore.initialize();
-
-        // Clean up all keys in Redis before each test
-        sessionStore.sync(RedisServerCommands::flushall);
     }
 
     @AfterEach
@@ -71,7 +67,7 @@ class DefaultLettuceSessionStoreTest {
     }
 
     @Test
-    void testSaveAndLoad() {
+    void testSaveAndLoad() throws Exception {
         String id = "test-session-1";
         SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
         data.setAttribute("name", "John Doe");
@@ -87,7 +83,7 @@ class DefaultLettuceSessionStoreTest {
     }
 
     @Test
-    void testExists() {
+    void testExists() throws Exception {
         String id = "test-session-2";
         SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
 
@@ -97,7 +93,7 @@ class DefaultLettuceSessionStoreTest {
     }
 
     @Test
-    void testDelete() {
+    void testDelete() throws Exception {
         String id = "test-session-3";
         SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
 
@@ -110,7 +106,7 @@ class DefaultLettuceSessionStoreTest {
     }
 
     @Test
-    void testGetExpired() throws InterruptedException {
+    void testGetExpired() throws Exception {
         long now = System.currentTimeMillis();
 
         SessionData session1 = new SessionData("expired-1", now, 1000);
@@ -130,21 +126,6 @@ class DefaultLettuceSessionStoreTest {
         assertTrue(expiredIds.contains("expired-1"));
         assertFalse(expiredIds.contains("active-1"));
         assertFalse(expiredIds.contains("immortal-1"));
-    }
-
-    @Test
-    void testNonPersistentAttributes() {
-        String id = "test-session-4";
-        SessionData data = new SessionData(id, Instant.now().toEpochMilli(), -1L);
-        data.setAttribute("persistent-data", "This should be saved");
-        data.setAttribute("temp-data", "This should NOT be saved");
-
-        sessionStore.doSave(id, data);
-
-        SessionData loadedData = sessionStore.load(id);
-        assertNotNull(loadedData);
-        assertEquals("This should be saved", loadedData.getAttribute("persistent-data"));
-        assertNull(loadedData.getAttribute("temp-data"));
     }
 
 }

@@ -291,7 +291,7 @@ public class FileSessionStore extends AbstractSessionStore {
                 .filter(p -> !Files.isDirectory(p))
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
                 .filter(p -> withManaged || !sessionFileMap.containsValue(p.getFileName().toString()))
-                .forEach(p -> sweepFile(time, p));
+                .forEach(p -> sweepFile(p, time));
         } catch (Exception e) {
             logger.warn("Unable to walk path {}", storeDir, e);
         }
@@ -299,10 +299,10 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Deletes a file if it expired at or before the given time.
-     * @param time the expiry time limit in milliseconds
      * @param p the file to check
+     * @param time the expiry time limit in milliseconds
      */
-    private void sweepFile(long time, Path p) {
+    private void sweepFile(Path p, long time) {
         if (p != null) {
             String filename = p.getFileName().toString();
             long expiry = getExpiryFromFilename(filename);
@@ -367,7 +367,7 @@ public class FileSessionStore extends AbstractSessionStore {
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
                 .forEach(p -> {
                     // first get rid of all ancient files
-                    sweepFile(now - getGracePeriodMillis(6), p);
+                    sweepFile(p, now - getGracePeriodMillis(6));
 
                     // now process it if it wasn't deleted
                     if (Files.exists(p)) {

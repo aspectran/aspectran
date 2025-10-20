@@ -84,7 +84,11 @@ public class SessionData implements Serializable {
      * @param inactiveInterval the maximum inactive interval in milliseconds
      */
     public SessionData(String id, long created, long inactiveInterval) {
-        this(id, created, created, created, inactiveInterval);
+        this.id = id;
+        this.created = created;
+        this.accessed = created;
+        this.lastAccessed = created;
+        this.inactiveInterval = inactiveInterval;
         calcAndSetExpiry(created);
     }
 
@@ -95,13 +99,15 @@ public class SessionData implements Serializable {
      * @param accessed the last accessed timestamp
      * @param lastAccessed the previously accessed timestamp
      * @param inactiveInterval the maximum inactive interval in milliseconds
+     * @param expiry the time the session will expire
      */
-    public SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
+    private SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval, long expiry) {
         this.id = id;
         this.created = created;
         this.accessed = accessed;
         this.lastAccessed = lastAccessed;
         this.inactiveInterval = inactiveInterval;
+        this.expiry = expiry;
     }
 
     /**
@@ -438,9 +444,8 @@ public class SessionData implements Serializable {
         long expiry = dataInputStream.readLong();
         int entries = dataInputStream.readInt();
 
-        SessionData data = new SessionData(id, created, accessed, lastAccessed, inactiveInterval);
+        SessionData data = new SessionData(id, created, accessed, lastAccessed, inactiveInterval, expiry);
         data.setExtraInactiveInterval(extraInactiveInterval);
-        data.setExpiry(expiry);
 
         // Load all attributes
         if (entries > 0) {
