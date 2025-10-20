@@ -83,7 +83,7 @@ public class SessionData implements Serializable {
      * @param created the creation timestamp
      * @param inactiveInterval the maximum inactive interval in milliseconds
      */
-    protected SessionData(String id, long created, long inactiveInterval) {
+    public SessionData(String id, long created, long inactiveInterval) {
         this(id, created, created, created, inactiveInterval);
         calcAndSetExpiry(created);
     }
@@ -96,7 +96,7 @@ public class SessionData implements Serializable {
      * @param lastAccessed the previously accessed timestamp
      * @param inactiveInterval the maximum inactive interval in milliseconds
      */
-    protected SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
+    public SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
         this.id = id;
         this.created = created;
         this.accessed = accessed;
