@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.scope;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
@@ -57,8 +56,7 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance) {
-        Assert.notNull(activity, "activity must not be null");
+    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
         Assert.notNull(beanRule, "beanRule must not be null");
         Assert.notNull(beanInstance, "beanInstance must not be null");
         scopedBeanInstances.put(beanRule, beanInstance);
@@ -105,15 +103,17 @@ public abstract class AbstractScope implements Scope {
             }
         }
 
-        List<BeanRule> targets = new ArrayList<>(scopedBeanInstances.keySet());
-        List<BeanRule> leftBehinds = new ArrayList<>();
-        for (ListIterator<BeanRule> iter = targets.listIterator(targets.size()); iter.hasPrevious();) {
+        List<BeanRule> beanRulesToDestroy = new ArrayList<>(scopedBeanInstances.keySet());
+        List<BeanRule> lazyDestroyBeans = new ArrayList<>();
+
+        // Step 1: Destroy non-lazy beans in reverse creation order.
+        for (ListIterator<BeanRule> iter = beanRulesToDestroy.listIterator(beanRulesToDestroy.size()); iter.hasPrevious();) {
             BeanRule beanRule = iter.previous();
             BeanInstance instance = scopedBeanInstances.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {
                 if (beanRule.isLazyDestroy()) {
-                    leftBehinds.add(beanRule);
+                    lazyDestroyBeans.add(beanRule);
                 } else {
                     try {
                         doDestroy(beanRule, bean);
@@ -123,7 +123,9 @@ public abstract class AbstractScope implements Scope {
                 }
             }
         }
-        for (BeanRule beanRule : leftBehinds) {
+
+        // Step 2: Destroy the lazy-destroy beans.
+        for (BeanRule beanRule : lazyDestroyBeans) {
             BeanInstance instance = scopedBeanInstances.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {

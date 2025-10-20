@@ -205,7 +205,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             Object bean = instantiateBean(beanRule, args, argTypes);
 
             if (scope != null) {
-                scope.putBeanInstance(activity, beanRule, new BeanInstance(bean));
+                scope.putBeanInstance(beanRule, new BeanInstance(bean));
             }
 
             invokeAwareMethods(bean);
@@ -263,7 +263,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
 
         if (scope != null) {
-            scope.putBeanInstance(activity, beanRule, new BeanInstance(bean));
+            scope.putBeanInstance(beanRule, new BeanInstance(bean));
         }
 
         try {

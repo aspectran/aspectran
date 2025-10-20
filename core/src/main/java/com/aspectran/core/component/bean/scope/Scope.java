@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.scope;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.session.NonPersistent;
 import com.aspectran.core.context.rule.BeanRule;
@@ -53,11 +52,10 @@ public interface Scope extends NonPersistent {
 
     /**
      * Registers a bean instance with this scope.
-     * @param activity the current activity
      * @param beanRule the bean rule defining the instance
      * @param beanInstance the bean instance to register
      */
-    void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance);
+    void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance);
 
     /**
      * Returns the bean rule associated with the given bean instance.

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.scope;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionBindingListener;
@@ -75,12 +74,12 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     }
 
     @Override
-    public void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance) {
+    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
         BeanRule matchingBeanRule = findMatchingBeanRule(beanRule);
         if (matchingBeanRule == null) {
             matchingBeanRule = beanRule;
         }
-        super.putBeanInstance(activity, matchingBeanRule, beanInstance);
+        super.putBeanInstance(matchingBeanRule, beanInstance);
     }
 
     @Override
