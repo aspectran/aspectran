@@ -45,6 +45,7 @@ class FileSessionStoreTest {
     @BeforeEach
     void beforeEach() throws Exception {
         File storeDir = new File("./target/_sessions/fileSessionStoreTest");
+        storeDir.mkdirs();
         try (Stream<Path> stream = Files.walk(storeDir.toPath(), 1, FileVisitOption.FOLLOW_LINKS)) {
             stream.filter(p -> !Files.isDirectory(p))
                     .forEach(path -> {
