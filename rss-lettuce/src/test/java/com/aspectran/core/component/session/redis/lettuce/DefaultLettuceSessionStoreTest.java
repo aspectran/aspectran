@@ -16,7 +16,6 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.component.session.redis.lettuce.junit.EnabledIfDockerAvailable;
 import io.lettuce.core.api.sync.RedisServerCommands;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Integration tests for {@link DefaultLettuceSessionStore}.
  */
-@EnabledIfDockerAvailable
+@Testcontainers(disabledWithoutDocker = true)
 class DefaultLettuceSessionStoreTest {
 
     private static GenericContainer<?> redis;
