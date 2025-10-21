@@ -36,6 +36,10 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
         super();
     }
 
+    protected RedisConnectionPoolConfig getPoolConfig() {
+        return poolConfig;
+    }
+
     public void setPoolConfig(RedisConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }

@@ -22,9 +22,11 @@ import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import io.lettuce.core.resource.ClientResources;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,13 +40,17 @@ import java.util.List;
  *   <li>{@link #getClusterClientOptions() clusterClientOptions} — optional
  *       {@link io.lettuce.core.cluster.ClusterClientOptions} applied to the underlying
  *       {@link io.lettuce.core.cluster.RedisClusterClient}</li>
+ *   <li>{@link #getClientResources() clientResources} — optional
+ *       {@link io.lettuce.core.resource.ClientResources} for advanced configuration like
+ *       a {@code SocketAddressResolver}</li>
  * </ul>
  * The remaining pooling knobs (maxTotal, maxIdle, minIdle, etc.) are inherited from
  * {@code GenericObjectPoolConfig}.
  *
  * <p>Typical usage: populate this config (either with {@link #setRedisURIs(RedisURI...)}
- * or {@link #setUri(String)}), optionally set {@link #setClusterClientOptions(ClusterClientOptions)},
- * then supply it to {@link RedisClusterConnectionPool} which will create/configure the actual pool.</p>
+ * or {@link #setUri(String)}), optionally set {@link #setClusterClientOptions(ClusterClientOptions)}
+ * or {@link #setClientResources(ClientResources)}, then supply it to {@link RedisClusterConnectionPool}
+ * which will create/configure the actual pool.</p>
  *
  * <p>Created: 2019/12/07</p>
  */
@@ -55,12 +61,11 @@ public class RedisClusterConnectionPoolConfig
 
     private ClusterClientOptions clusterClientOptions;
 
+    private ClientResources clientResources;
+
     /**
      * Creates a new config with default pooling parameters inherited from
-     * {@link GenericObjectPoolConfig}. Customize pool sizing and behavior via the
-     * superclass setters (e.g., setMaxTotal, setMaxIdle) and cluster specifics via
-     * {@link #setRedisURIs(RedisURI...)}/{@link #setUri(String)} and
-     * {@link #setClusterClientOptions(ClusterClientOptions)}.
+     * {@link GenericObjectPoolConfig}.
      */
     public RedisClusterConnectionPoolConfig() {
         super();
@@ -68,16 +73,16 @@ public class RedisClusterConnectionPoolConfig
 
     /**
      * Returns the Redis Cluster node URIs used to create new connections.
-     * @return the array of RedisURIs to connect to (may be a single-element array)
+     * @return the array of RedisURIs to connect to
      */
     public RedisURI[] getRedisURIs() {
         return redisURIs;
     }
 
     /**
-     * Sets the cluster node endpoints.
+     * Sets the Redis URIs for the cluster nodes from one or more {@link RedisURI} objects.
+     * This is the primary, type-safe method for programmatic configuration.
      * @param redisURIs one or more RedisURIs (must not be {@code null} or empty)
-     * @throws IllegalArgumentException if {@code redisURIs} is {@code null} or empty
      */
     public void setRedisURIs(RedisURI... redisURIs) {
         if (redisURIs == null || redisURIs.length == 0) {
@@ -87,13 +92,26 @@ public class RedisClusterConnectionPoolConfig
     }
 
     /**
-     * Convenience to parse a single cluster-style URI and set the resulting node list.
-     * <p>
-     * The URI may reference a seed node or a comma-separated list, which will be converted
-     * into {@link RedisURI}s via {@link RedisClusterURIUtil#toRedisURIs(URI)}.
-     * </p>
+     * Sets Redis URIs from one or more individual URI strings.
+     * <p>e.g., "redis://host1:6379", "redis://host2:6380"</p>
+     * @param nodes an array of Redis node URI strings
+     */
+    public void setNodes(String... nodes) {
+        if (nodes == null || nodes.length == 0) {
+            throw new IllegalArgumentException("nodes must not be null or empty");
+        }
+        this.redisURIs = Arrays.stream(nodes)
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .map(RedisURI::create)
+                .toArray(RedisURI[]::new);
+    }
+
+    /**
+     * Sets Redis Cluster URIs from a single URI string that may contain multiple hosts, delimited by commas.
+     * This is the recommended method for XML-based configuration.
+     * <p>e.g., "redis://host1:port1,host2:port2"</p>
      * @param uri a Redis Cluster URI string (must not be {@code null} or empty)
-     * @throws IllegalArgumentException if {@code uri} is {@code null} or empty
      */
     public void setUri(String uri) {
         if (!StringUtils.hasText(uri)) {
@@ -113,11 +131,28 @@ public class RedisClusterConnectionPoolConfig
 
     /**
      * Sets optional Lettuce cluster client options to apply to the {@code RedisClusterClient}
-     * created by the pool. Safe to leave {@code null}.
+     * created by the pool.
      * @param clusterClientOptions the cluster client options
      */
     public void setClusterClientOptions(ClusterClientOptions clusterClientOptions) {
         this.clusterClientOptions = clusterClientOptions;
+    }
+
+    /**
+     * Returns the custom {@link ClientResources} for the Lettuce client.
+     * @return the client resources
+     */
+    public ClientResources getClientResources() {
+        return clientResources;
+    }
+
+    /**
+     * Sets custom {@link ClientResources} for the Lettuce client, allowing for advanced
+     * configuration like a {@code SocketAddressResolver}.
+     * @param clientResources the client resources
+     */
+    public void setClientResources(ClientResources clientResources) {
+        this.clientResources = clientResources;
     }
 
     @Override

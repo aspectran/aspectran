@@ -32,6 +32,10 @@ public class PrimaryReplicaLettuceSessionStoreFactory extends AbstractSessionSto
 
     private RedisPrimaryReplicaConnectionPoolConfig poolConfig;
 
+    protected RedisPrimaryReplicaConnectionPoolConfig getPoolConfig() {
+        return poolConfig;
+    }
+
     /**
      * Sets the configuration for the connection pool.
      * @param poolConfig the pool configuration

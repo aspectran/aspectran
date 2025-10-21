@@ -50,6 +50,10 @@ public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>,
         this.poolConfig = poolConfig;
     }
 
+    protected P getPoolConfig() {
+        return poolConfig;
+    }
+
     @Override
     public T getConnection() throws Exception {
         Assert.state(pool != null, "No " + this.getClass().getSimpleName() + " configured");

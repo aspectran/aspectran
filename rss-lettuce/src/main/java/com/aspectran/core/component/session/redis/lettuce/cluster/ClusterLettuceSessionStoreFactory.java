@@ -32,6 +32,10 @@ public class ClusterLettuceSessionStoreFactory extends AbstractSessionStoreFacto
 
     private RedisClusterConnectionPoolConfig poolConfig;
 
+    protected RedisClusterConnectionPoolConfig getPoolConfig() {
+        return poolConfig;
+    }
+
     public void setPoolConfig(RedisClusterConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }

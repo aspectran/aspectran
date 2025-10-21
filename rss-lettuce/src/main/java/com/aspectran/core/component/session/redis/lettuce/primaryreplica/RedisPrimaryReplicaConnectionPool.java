@@ -51,10 +51,18 @@ public class RedisPrimaryReplicaConnectionPool
         if (redisURIs == null || redisURIs.length == 0) {
             throw new IllegalArgumentException("redisURIs must not be null or empty");
         }
-        RedisClient client = RedisClient.create();
+
+        RedisClient client;
+        if (poolConfig.getClientResources() != null) {
+            client = RedisClient.create(poolConfig.getClientResources());
+        } else {
+            client = RedisClient.create();
+        }
+
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }
+
         return client;
     }
 

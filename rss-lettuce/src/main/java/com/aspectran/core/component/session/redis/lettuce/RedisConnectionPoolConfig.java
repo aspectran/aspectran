@@ -24,7 +24,7 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
- * Configuration holder for a Lettuce-backed Redis connection pool.
+ * Configuration holder for a Lettuce-backed Redis connection pool for a single, standalone node.
  * <p>
  * Extends Apache Commons Pool's {@link org.apache.commons.pool2.impl.GenericObjectPoolConfig}
  * to expose Redis-specific properties:
@@ -50,10 +50,7 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
     private ClientOptions clientOptions;
 
     /**
-     * Creates a new config with default pooling parameters inherited from
-     * {@link GenericObjectPoolConfig}. Customize pool sizing and behavior via the
-     * superclass setters (e.g., setMaxTotal, setMaxIdle) and Redis specifics via
-     * {@link #setRedisURI(RedisURI)}/{@link #setUri(String)} and {@link #setClientOptions(ClientOptions)}.
+     * Creates a new config with default pooling parameters.
      */
     public RedisConnectionPoolConfig() {
         super();
@@ -68,9 +65,9 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
     }
 
     /**
-     * Sets the Redis target endpoint.
+     * Sets the Redis target endpoint from a {@link RedisURI} object.
+     * This is the primary, type-safe method for programmatic configuration.
      * @param redisURI the Redis URI (must not be {@code null})
-     * @throws IllegalArgumentException if {@code redisURI} is {@code null}
      */
     public void setRedisURI(RedisURI redisURI) {
         if (redisURI == null) {
@@ -80,9 +77,10 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
     }
 
     /**
-     * Convenience to set the Redis endpoint from a String.
-     * @param uri the Redis URI string (e.g., redis://host:port)
-     * @throws IllegalArgumentException if {@code uri} is {@code null} or empty
+     * Sets the Redis endpoint from a single URI string.
+     * This is the recommended method for XML-based configuration.
+     * <p>e.g., "redis://host:port/0"</p>
+     * @param uri the Redis URI string
      */
     public void setUri(String uri) {
         if (!StringUtils.hasText(uri)) {
@@ -101,17 +99,13 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
 
     /**
      * Sets optional Lettuce client options to apply to the {@code RedisClient} created
-     * by the pool. Safe to leave {@code null}.
+     * by the pool.
      * @param clientOptions the client options
      */
     public void setClientOptions(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
     }
 
-    /**
-     * Returns a string representation including Redis-specific fields plus any inherited
-     * pooling configuration appended by {@link ToStringBuilder}.
-     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

@@ -48,7 +48,14 @@ public class RedisClusterConnectionPool
         if (redisURIs == null || redisURIs.length == 0) {
             throw new IllegalArgumentException("redisURIs must not be null or empty");
         }
-        RedisClusterClient client = RedisClusterClient.create(Arrays.asList(redisURIs));
+
+        RedisClusterClient client;
+        if (poolConfig.getClientResources() != null) {
+            client = RedisClusterClient.create(poolConfig.getClientResources(), Arrays.asList(redisURIs));
+        } else {
+            client = RedisClusterClient.create(Arrays.asList(redisURIs));
+        }
+
         if (poolConfig.getClusterClientOptions() != null) {
             client.setOptions(poolConfig.getClusterClientOptions());
         }
