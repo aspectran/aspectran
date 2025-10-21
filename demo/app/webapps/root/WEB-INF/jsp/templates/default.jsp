@@ -75,7 +75,7 @@
                         <a class="navbar-brand logo" href="<aspectran:url value="https://public.aspectran.com/"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
                     </aspectran:profile>
                     <aspectran:profile expression="!prod">
-                        <a class="navbar-brand logo" href="<aspectran:url value="/../"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+                        <a class="navbar-brand logo" href="<aspectran:url value="/"/>" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-site-logo.png" alt="Aspectran"/></a>
                     </aspectran:profile>
                 </div>
             </div>
