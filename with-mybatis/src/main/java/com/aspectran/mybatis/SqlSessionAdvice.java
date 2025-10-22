@@ -59,10 +59,18 @@ public class SqlSessionAdvice {
 
     private boolean arbitrarilyClosed;
 
+    /**
+     * Instantiates a new SqlSessionAdvice.
+     * @param sqlSessionFactory the SqlSessionFactory to create sessions from
+     */
     public SqlSessionAdvice(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    /**
+     * Returns whether auto-commit is enabled for the session.
+     * @return true if auto-commit is enabled, false otherwise
+     */
     public boolean isAutoCommit() {
         return autoCommit;
     }
@@ -77,6 +85,10 @@ public class SqlSessionAdvice {
         this.autoCommit = autoCommit;
     }
 
+    /**
+     * Returns the executor type for the session.
+     * @return the executor type
+     */
     public ExecutorType getExecutorType() {
         return executorType;
     }
@@ -100,9 +112,10 @@ public class SqlSessionAdvice {
     }
 
     /**
-     * Returns an open SqlSession.
-     * If no SqlSession is open, then return null.
-     * @return a SqlSession instance
+     * Returns the managed {@link SqlSession} instance.
+     * This session is created by the {@code open()} method and its lifecycle
+     * (commit, rollback, close) is controlled by this advice.
+     * @return the active SqlSession, or {@code null} if the session has not been opened
      */
     public SqlSession getSqlSession() {
         return sqlSession;
@@ -130,27 +143,49 @@ public class SqlSessionAdvice {
         }
     }
 
+    /**
+     * Opens a new SqlSession with the specified auto-commit setting.
+     * @param autoCommit true to enable auto-commit, false otherwise
+     */
     public void open(boolean autoCommit) {
         setAutoCommit(autoCommit);
         open();
     }
 
+    /**
+     * Opens a new SqlSession with the specified executor type.
+     * @param executorType the executor type
+     */
     public void open(ExecutorType executorType) {
         setExecutorType(executorType);
         open();
     }
 
+    /**
+     * Opens a new SqlSession with the specified executor type and auto-commit setting.
+     * @param executorType the executor type
+     * @param autoCommit true to enable auto-commit, false otherwise
+     */
     public void open(ExecutorType executorType, boolean autoCommit) {
         setExecutorType(executorType);
         setAutoCommit(autoCommit);
         open();
     }
 
+    /**
+     * Opens a new SqlSession with the specified executor type.
+     * @param executorType the executor type name (e.g., "SIMPLE", "REUSE", "BATCH")
+     */
     public void open(String executorType) {
         setExecutorType(executorType);
         open();
     }
 
+    /**
+     * Opens a new SqlSession with the specified executor type and auto-commit setting.
+     * @param executorType the executor type name (e.g., "SIMPLE", "REUSE", "BATCH")
+     * @param autoCommit true to enable auto-commit, false otherwise
+     */
     public void open(String executorType, boolean autoCommit) {
         setExecutorType(executorType);
         setAutoCommit(autoCommit);

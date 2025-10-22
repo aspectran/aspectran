@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 /**
- * Provides integration with MyBatis.
+ * Provides integration with the MyBatis persistence framework.
+ * <p>This package includes key components to seamlessly use MyBatis within an
+ * Aspectran application, featuring AOP-based transaction management and
+ * simplified session access.</p>
+ *
+ * <h3>Key Classes:</h3>
+ * <ul>
+ *   <li>{@link com.aspectran.mybatis.SqlSessionFactoryBean}: A factory bean that
+ *       creates and configures the MyBatis {@code SqlSessionFactory}.</li>
+ *   <li>{@link com.aspectran.mybatis.SqlSessionAdvice}: An advice bean that provides
+ *       declarative transaction management for {@code SqlSession} operations,
+ *       handling commit, rollback, and closing automatically via AOP.</li>
+ *   <li>{@link com.aspectran.mybatis.SqlSessionAgent}: A proxy for {@code SqlSession}
+ *       that simplifies data access and automatically participates in transactions.
+ *       It can be configured to dynamically register the required AOP advice,
+ *       making setup trivial.</li>
+ *   <li>{@link com.aspectran.mybatis.SqlMapperAccess}: A convenience base class for
+ *       accessing typed mapper interfaces with different executor types (SIMPLE,
+ *       BATCH, REUSE).</li>
+ * </ul>
  */
 package com.aspectran.mybatis;

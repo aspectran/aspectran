@@ -17,18 +17,8 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
-import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
-import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -55,6 +45,10 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private boolean autoCommit;
 
+    /**
+     * Instantiates a new SqlSessionProvider.
+     * @param relevantAspectId the ID of the aspect that provides the SqlSessionAdvice
+     */
     public SqlSessionProvider(String relevantAspectId) {
         if (relevantAspectId == null) {
             throw new IllegalArgumentException("relevantAspectId must not be null");
@@ -62,16 +56,41 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         this.relevantAspectId = relevantAspectId;
     }
 
+    /**
+     * Sets the bean ID of the {@link SqlSessionFactory} to use for the advice.
+     * @param sqlSessionFactoryBeanId the bean ID of the SqlSessionFactory
+     */
     public void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
     }
 
+    /**
+     * Sets the default {@link ExecutorType} for the advice.
+     * @param executorType the executor type
+     */
     public void setExecutorType(ExecutorType executorType) {
         this.executorType = executorType;
     }
 
+    /**
+     * Sets whether to enable auto-commit for the advice.
+     * @param autoCommit true to enable auto-commit, false otherwise
+     */
     public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
+    }
+
+    @Override
+    public void initialize() {
+        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
+            SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
+            register.setRelevantAspectId(relevantAspectId);
+            register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
+            register.setExecutorType(executorType);
+            register.setAutoCommit(autoCommit);
+            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.register();
+        }
     }
 
     /**
@@ -115,80 +134,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
                     " needs to be wrapped in an instant activity.");
-        }
-    }
-
-    @Override
-    public void initialize() {
-        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
-            registerSqlSessionAdvice();
-        }
-    }
-
-    protected void registerSqlSessionAdvice() {
-        if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
-            throw new IllegalStateException("SqlSessionAdvice is already registered");
-        }
-
-        SqlSessionFactory sqlSessionFactory;
-        try {
-            sqlSessionFactory = getBeanRegistry().getBean(SqlSessionFactory.class, sqlSessionFactoryBeanId);
-        } catch (NoSuchBeanException e) {
-            if (sqlSessionFactoryBeanId != null) {
-                throw new IllegalStateException("Cannot resolve SqlSessionFactory with id=" + sqlSessionFactoryBeanId, e);
-            } else {
-                throw new IllegalStateException("SqlSessionFactory is not defined", e);
-            }
-        }
-
-        AspectRule aspectRule = new AspectRule();
-        aspectRule.setId(relevantAspectId);
-        aspectRule.setOrder(0);
-
-        String pattern = "**@class:" + ClassUtils.getUserClass(getClass()).getName();
-        PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
-
-        PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
-        pointcutRule.addPointcutPatternRule(pointcutPatternRule);
-
-        JoinpointRule joinpointRule = new JoinpointRule();
-        joinpointRule.setJoinpointTargetType(JoinpointTargetType.ACTIVITY);
-        joinpointRule.setPointcutRule(pointcutRule);
-
-        aspectRule.setJoinpointRule(joinpointRule);
-
-        AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
-            if (executorType != null) {
-                sqlSessionAdvice.setExecutorType(executorType);
-            }
-            sqlSessionAdvice.setAutoCommit(autoCommit);
-            sqlSessionAdvice.open();
-            return sqlSessionAdvice;
-        });
-
-        AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
-        afterAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionAdvice.commit();
-            return null;
-        });
-
-        AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
-        finallyAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionAdvice.close();
-            return null;
-        });
-
-        try {
-            getActivityContext().getAspectRuleRegistry().addAspectRule(aspectRule);
-        } catch (IllegalRuleException e) {
-            ToStringBuilder tsb = new ToStringBuilder("Failed to register SqlSessionAdvice with");
-            tsb.append("relevantAspectId", relevantAspectId);
-            tsb.append("sqlSessionFactoryBeanId", sqlSessionFactoryBeanId);
-            throw new RuntimeException(tsb.toString(), e);
         }
     }
 

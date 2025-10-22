@@ -28,6 +28,8 @@ import org.apache.ibatis.session.SqlSession;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * An {@link SqlSession} facade that delegates to a context-bound SqlSession
@@ -39,22 +41,46 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 
     private boolean autoParameters;
 
+    /**
+     * Instantiates a new SqlSessionAgent.
+     * @param relevantAspectId the ID of the aspect that provides the SqlSessionAdvice
+     */
     public SqlSessionAgent(String relevantAspectId) {
         super(relevantAspectId);
     }
 
+    /**
+     * Sets whether to automatically pass the current {@link ActivityData} as a parameter
+     * to statement methods when no other parameter is provided.
+     * <p>For example, if enabled, a call to {@code selectOne("some.statement")} will
+     * effectively be executed as {@code selectOne("some.statement", activity.getActivityData())}.
+     * The default is {@code false}.</p>
+     * @param autoParameters true to enable auto-parameter injection, false otherwise
+     */
     public void setAutoParameters(boolean autoParameters) {
         this.autoParameters = autoParameters;
+    }
+
+    /**
+     * Executes one of the two provided functions based on the 'autoParameters' flag.
+     * @param withoutAutoParams function to execute when auto-parameters are disabled
+     * @param withAutoParams function to execute when auto-parameters are enabled
+     * @param <R> the return type
+     * @return the result of the executed function
+     */
+    private <R> R execute(Supplier<R> withoutAutoParams, Function<Object, R> withAutoParams) {
+        if (autoParameters) {
+            return withAutoParams.apply(getActivityData());
+        } else {
+            return withoutAutoParams.get();
+        }
     }
 
     @Advisable
     @Override
     public <T> T selectOne(String statement) {
-        if (autoParameters) {
-            return getSqlSession().selectOne(statement, getActivityData());
-        } else {
-            return getSqlSession().selectOne(statement);
-        }
+        return execute(() -> getSqlSession().selectOne(statement),
+                p -> getSqlSession().selectOne(statement, p));
     }
 
     @Advisable
@@ -66,11 +92,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public <E> List<E> selectList(String statement) {
-        if (autoParameters) {
-            return getSqlSession().selectList(statement, getActivityData());
-        } else {
-            return getSqlSession().selectList(statement);
-        }
+        return execute(() -> getSqlSession().selectList(statement),
+                p -> getSqlSession().selectList(statement, p));
     }
 
     @Advisable
@@ -88,11 +111,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
-        if (autoParameters) {
-            return getSqlSession().selectMap(statement, getActivityData(), mapKey);
-        } else {
-            return getSqlSession().selectMap(statement, mapKey);
-        }
+        return execute(() -> getSqlSession().selectMap(statement, mapKey),
+                p -> getSqlSession().selectMap(statement, p, mapKey));
     }
 
     @Advisable
@@ -110,11 +130,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public <T> Cursor<T> selectCursor(String statement) {
-        if (autoParameters) {
-            return getSqlSession().selectCursor(statement, getActivityData());
-        } else {
-            return getSqlSession().selectCursor(statement);
-        }
+        return execute(() -> getSqlSession().selectCursor(statement),
+                p -> getSqlSession().selectCursor(statement, p));
     }
 
     @Advisable
@@ -154,11 +171,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public int insert(String statement) {
-        if (autoParameters) {
-            return getSqlSession().insert(statement, getActivityData());
-        } else {
-            return getSqlSession().insert(statement);
-        }
+        return execute(() -> getSqlSession().insert(statement),
+                p -> getSqlSession().insert(statement, p));
     }
 
     @Advisable
@@ -170,11 +184,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public int update(String statement) {
-        if (autoParameters) {
-            return getSqlSession().update(statement, getActivityData());
-        } else {
-            return getSqlSession().update(statement);
-        }
+        return execute(() -> getSqlSession().update(statement),
+                p -> getSqlSession().update(statement, p));
     }
 
     @Advisable
@@ -186,11 +197,8 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public int delete(String statement) {
-        if (autoParameters) {
-            return getSqlSession().delete(statement, getActivityData());
-        } else {
-            return getSqlSession().delete(statement);
-        }
+        return execute(() -> getSqlSession().delete(statement),
+                p -> getSqlSession().delete(statement, p));
     }
 
     @Advisable

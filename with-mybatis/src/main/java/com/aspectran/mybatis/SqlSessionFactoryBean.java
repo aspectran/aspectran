@@ -39,7 +39,11 @@ import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * A {@link com.aspectran.core.component.bean.ablility.FactoryBean} that creates a
- * MyBatis {@link SqlSessionFactory}.
+ * MyBatis {@link SqlSessionFactory}. This is the usual way to set up a shared
+ * MyBatis SqlSessionFactory in an Aspectran application context.
+ *
+ * <p>Either {@code configLocation} or {@code configuration} must be specified.
+ * If both are specified, the {@code configuration} property will be used.</p>
  */
 public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableFactoryBean<SqlSessionFactory> {
 
@@ -74,14 +78,26 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.variables = variables;
     }
 
+    /**
+     * Sets the environment id.
+     * @param environmentId the environment id
+     */
     public void setEnvironmentId(String environmentId) {
         this.environmentId = environmentId;
     }
 
+    /**
+     * Sets the MyBatis environment.
+     * @param environment the MyBatis environment
+     */
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
 
+    /**
+     * Sets the database id provider.
+     * @param databaseIdProvider the database id provider
+     */
     public void setDatabaseIdProvider(DatabaseIdProvider databaseIdProvider) {
         this.databaseIdProvider = databaseIdProvider;
     }
@@ -94,6 +110,10 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.configLocation = configLocation;
     }
 
+    /**
+     * Sets the MyBatis configuration.
+     * @param configuration the MyBatis configuration
+     */
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -130,9 +150,18 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         }
     }
 
+    /**
+     * A hook for subclasses to further customize the {@link Configuration}
+     * before the {@link SqlSessionFactory} is built.
+     * @param configuration the MyBatis configuration
+     */
     protected void configure(Configuration configuration) {
     }
 
+    /**
+     * Builds the {@link SqlSessionFactory} instance.
+     * @throws Exception if the factory cannot be built
+     */
     @Override
     public void initialize() throws Exception {
         if (sqlSessionFactory == null) {
@@ -150,6 +179,10 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         }
     }
 
+    /**
+     * Returns the singleton {@link SqlSessionFactory} instance.
+     * @return the SqlSessionFactory instance, or {@code null} if it has not been initialized yet
+     */
     @Override
     public SqlSessionFactory getObject() {
         return sqlSessionFactory;
