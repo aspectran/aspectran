@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides additional utilities to use Logback as the underlying logging library.
- * <p>The package contains classes that handle log message formatting, level filtering,
- * and integration with external logging providers. It also defines common exception types
- * related to logging operations.</p>
+ * Provides utilities for Logback integration.
  */
 package com.aspectran.logging;

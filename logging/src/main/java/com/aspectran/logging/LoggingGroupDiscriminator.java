@@ -27,11 +27,21 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import java.util.Map;
 
 /**
- * Discriminates logging events based on the name given to the ActivityContext of the current CoreService.
- * <p>ex)
+ * A logback discriminator that separates logging events based on a value in the MDC
+ * or the name of the current {@link com.aspectran.core.context.ActivityContext}.
+ * <p>This is useful for separating logs per tenant in a multi-tenant application
+ * or for different application contexts.</p>
+ * <p>The discriminating value is determined as follows:
+ * <ol>
+ *   <li>Check for a value in the MDC using the configured 'key'.</li>
+ *   <li>If not found, use the name of the current {@code ActivityContext}.</li>
+ *   <li>If still not found, use the configured 'defaultValue'.</li>
+ * </ol>
+ * </p>
+ * <p>Example logback configuration:
  * <pre>{@code
  *   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
- *     <discriminator class="com.aspectran.core.support.logging.LoggingGroupDiscriminator">
+ *     <discriminator class="com.aspectran.logging.LoggingGroupDiscriminator">
  *       <key>LOGGING_GROUP</key>
  *       <defaultValue>app</defaultValue>
  *     </discriminator>
@@ -54,9 +64,9 @@ public class LoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEve
     private String defaultValue;
 
     /**
-     * Returns the name of the current CoreService's ActivityContext.
-     * If that value is null, then return the value assigned to the defaultValue
-     * property.
+     * Determines the discriminating value for the logging event.
+     * @param event the logging event
+     * @return the discriminating value
      */
     @Override
     public String getDiscriminatingValue(@NonNull ILoggingEvent event) {
@@ -83,23 +93,42 @@ public class LoggingGroupDiscriminator extends AbstractDiscriminator<ILoggingEve
         return (mdcMap != null ? mdcMap.get(key) : null);
     }
 
+    /**
+     * Gets the key that will be used to store the discriminating value in the MDC.
+     * @return the key
+     */
     @Override
     public String getKey() {
         return key;
     }
 
+    /**
+     * Sets the key that will be used to store the discriminating value in the MDC.
+     * @param key the key to set
+     */
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Gets the default value to use when a discriminating value cannot be determined.
+     * @return the default value
+     */
     public String getDefaultValue() {
         return defaultValue;
     }
 
+    /**
+     * Sets the default value to use when a discriminating value cannot be determined.
+     * @param defaultValue the default value to set
+     */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
+    /**
+     * Checks that the key and defaultValue properties have been set.
+     */
     @Override
     public void start() {
         int errors = 0;
