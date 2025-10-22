@@ -59,7 +59,7 @@ class DefaultTowServerTest {
     void finish() {
         if (aspectran != null) {
             aspectran.translate("undertow stop");
-            aspectran.release();
+            aspectran.destroy();
         }
     }
 

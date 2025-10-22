@@ -59,7 +59,7 @@ class JettyServerTest {
     void finish() {
         if (aspectran != null) {
             aspectran.translate("jetty stop");
-            aspectran.release();
+            aspectran.destroy();
         }
     }
 

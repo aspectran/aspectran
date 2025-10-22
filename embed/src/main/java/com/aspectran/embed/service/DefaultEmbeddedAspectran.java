@@ -35,11 +35,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * Default implementation of the {@link EmbeddedAspectran} service.
+ * The default implementation of the {@link EmbeddedAspectran} interface.
  * <p>This class provides the concrete implementation for executing instant actions,
  * translating translets, and rendering templates within an embedded Aspectran instance.
- * It manages the lifecycle of activities and integrates with the core service holder
- * for global service management.
+ * It manages the lifecycle of the {@code CoreService} and its activities.
+ *
+ * @see EmbeddedAspectran
  */
 public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
@@ -110,21 +111,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return translate(name, method, attributeMap, parameterMap, null);
     }
 
-    /**
-     * Translates a request to a translet based on the provided parameters.
-     * This method handles request routing, parameter binding, and execution.
-     * <p>If the service is paused, returns {@code null}. If the request name is invalid,
-     * logs an error and returns {@code null}. Otherwise, creates an {@code AspectranActivity}
-     * with the specified request details, performs preparation and execution, and returns
-     * the resulting translet.
-     * @param name the name of the translet to execute; must not be null
-     * @param method the request method (e.g., GET, POST); defaults to GET if null
-     * @param attributeMap additional application-level attributes for the request
-     * @param parameterMap request parameters (e.g., query or form parameters)
-     * @param body the request body (if applicable, e.g., for POST)
-     * @return the resulting translet, or {@code null} if the request is invalid or paused
-     * @throws CoreServiceException if an error occurs during processing (wrapped in the exception)
-     */
     @Override
     public Translet translate(
             String name, @Nullable MethodType method,
@@ -184,18 +170,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return render(templateId, null, parameterMap);
     }
 
-    /**
-     * Renders a template using the provided template ID and optional attributes and parameters.
-     * This method creates an {@code InstantActivity} to manage the rendering context,
-     * sets the template and attributes, and executes the rendering logic.
-     * <p>If the service is paused, returns {@code null}. Otherwise, the template is rendered
-     * and the output is returned as a string.
-     * @param templateId the ID of the template to render
-     * @param attributeMap additional attributes to pass to the renderer
-     * @param parameterMap request parameters to pass to the renderer (e.g., query params)
-     * @return the rendered text as a string, or {@code null} if the service is paused
-     * @throws CoreServiceException if an error occurs during rendering (wrapped in exception)
-     */
     @Override
     public String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (checkPaused()) {

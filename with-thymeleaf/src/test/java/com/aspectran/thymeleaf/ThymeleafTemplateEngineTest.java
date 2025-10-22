@@ -50,7 +50,7 @@ class ThymeleafTemplateEngineTest {
 
     @AfterAll
     void finish() {
-        aspectran.release();
+        aspectran.destroy();
     }
 
     @Test

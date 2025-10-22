@@ -25,8 +25,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -52,7 +50,7 @@ class AnnotatedConfigurationTest {
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            aspectran.release();
+            aspectran.destroy();
         }
     }
 

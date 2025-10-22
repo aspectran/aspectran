@@ -48,7 +48,7 @@ class PebbleTemplateEngineTest {
 
     @AfterAll
     void finish() {
-        aspectran.release();
+        aspectran.destroy();
     }
 
     @Test

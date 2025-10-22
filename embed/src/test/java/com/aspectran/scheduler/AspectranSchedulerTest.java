@@ -46,7 +46,7 @@ class AspectranSchedulerTest {
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            aspectran.release();
+            aspectran.destroy();
         }
     }
 

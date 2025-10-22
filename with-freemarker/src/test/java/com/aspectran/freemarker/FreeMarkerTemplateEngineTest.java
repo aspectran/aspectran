@@ -47,7 +47,7 @@ class FreeMarkerTemplateEngineTest {
 
     @AfterAll
     void finish() {
-        aspectran.release();
+        aspectran.destroy();
     }
 
     @Test

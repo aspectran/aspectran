@@ -80,7 +80,7 @@ class PebbleViewDispatcherTest {
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            aspectran.release();
+            aspectran.destroy();
         }
     }
 

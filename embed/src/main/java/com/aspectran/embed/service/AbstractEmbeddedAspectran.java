@@ -115,7 +115,7 @@ public abstract class AbstractEmbeddedAspectran extends DefaultCoreService imple
     }
 
     @Override
-    public void release() {
+    public void destroy() {
         stop();
     }
 
