@@ -230,7 +230,41 @@ public class DefaultTowService extends AbstractTowService {
      * @return true if the service is paused, false otherwise
      */
     private boolean checkPaused(@NonNull HttpServerExchange exchange) {
+        // A value of 0L means the service is active.
+        // A value of -1L means the service is paused indefinitely.
+        // A value of -2L means the service is not yet started.
+        // Any other positive value is the time in milliseconds until the service is paused.
         if (pauseTimeout != 0L) {
+            // If the service is not yet started, wait for it to start.
+            // This is necessary because a request can come in before the service is fully initialized.
+            if (pauseTimeout == -2L) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} is not yet started, waiting for it to start...", getServiceName());
+                }
+                while (pauseTimeout == -2L) {
+                    try {
+                        // Poll every 100ms to see if the state has changed.
+                        Thread.sleep(100L);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.warn("Interrupted while waiting for service to start", e);
+                        sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
+                                "Service is starting. Please try again in a moment.");
+                        return true;
+                    }
+                }
+                // If the service has started successfully, pauseTimeout will be 0L.
+                // In this case, we can proceed with the request.
+                if (pauseTimeout == 0L) {
+                    return false;
+                }
+                // If the service state changes to paused (-1L) during startup,
+                // fall through to the next check.
+            }
+
+            // Check if the service is paused (indefinitely or temporarily).
+            // This check is separate from the one above to handle the race condition where
+            // the service is paused while it is starting up.
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} is paused, so did not respond to requests.", getServiceName());
@@ -238,12 +272,8 @@ public class DefaultTowService extends AbstractTowService {
                 sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
                         "Service is temporarily unavailable. Please try again later.");
                 return true;
-            } else if (pauseTimeout == -2L) {
-                logger.warn("{} is not yet started.", getServiceName());
-                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE,
-                        "Service is starting. Please try again in a moment.");
-                return true;
             } else {
+                // If a temporary pause has expired, reset the timeout and allow requests.
                 pauseTimeout = 0L;
             }
         }
