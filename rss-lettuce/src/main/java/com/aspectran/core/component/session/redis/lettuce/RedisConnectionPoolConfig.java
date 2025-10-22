@@ -21,6 +21,7 @@ import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.resource.ClientResources;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
@@ -48,6 +49,8 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
     private RedisURI redisURI;
 
     private ClientOptions clientOptions;
+
+    private ClientResources clientResources;
 
     /**
      * Creates a new config with default pooling parameters.
@@ -106,11 +109,29 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns the custom {@link ClientResources} for the Lettuce client.
+     * @return the client resources
+     */
+    public ClientResources getClientResources() {
+        return clientResources;
+    }
+
+    /**
+     * Sets custom {@link ClientResources} for the Lettuce client, allowing for advanced
+     * configuration like a {@code SocketAddressResolver}.
+     * @param clientResources the client resources
+     */
+    public void setClientResources(ClientResources clientResources) {
+        this.clientResources = clientResources;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURI", redisURI);
         tsb.append("clientOptions", clientOptions);
+        tsb.append("clientResources", clientResources);
         return tsb.toString();
     }
 

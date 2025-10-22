@@ -58,11 +58,9 @@ public class RedisPrimaryReplicaConnectionPool
         } else {
             client = RedisClient.create();
         }
-
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }
-
         return client;
     }
 

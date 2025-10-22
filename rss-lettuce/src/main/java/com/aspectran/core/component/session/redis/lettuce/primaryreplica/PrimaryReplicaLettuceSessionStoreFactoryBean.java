@@ -28,6 +28,10 @@ public class PrimaryReplicaLettuceSessionStoreFactoryBean extends PrimaryReplica
 
     private PrimaryReplicaLettuceSessionStore sessionStore;
 
+    /**
+     * Initialize the session store.
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void initialize() throws Exception {
         if (sessionStore == null) {
@@ -35,6 +39,10 @@ public class PrimaryReplicaLettuceSessionStoreFactoryBean extends PrimaryReplica
         }
     }
 
+    /**
+     * Return the session store.
+     * @return the session store
+     */
     @Override
     public PrimaryReplicaLettuceSessionStore getObject() {
         return sessionStore;

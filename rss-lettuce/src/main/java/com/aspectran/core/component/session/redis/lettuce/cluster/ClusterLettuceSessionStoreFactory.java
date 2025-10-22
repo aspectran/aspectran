@@ -32,10 +32,18 @@ public class ClusterLettuceSessionStoreFactory extends AbstractSessionStoreFacto
 
     private RedisClusterConnectionPoolConfig poolConfig;
 
+    /**
+     * Returns the configuration for the connection pool.
+     * @return the pool configuration
+     */
     protected RedisClusterConnectionPoolConfig getPoolConfig() {
         return poolConfig;
     }
 
+    /**
+     * Sets the configuration for the connection pool.
+     * @param poolConfig the pool configuration
+     */
     public void setPoolConfig(RedisClusterConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }

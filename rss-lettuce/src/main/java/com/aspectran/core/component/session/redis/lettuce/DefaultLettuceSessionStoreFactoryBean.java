@@ -28,6 +28,10 @@ public class DefaultLettuceSessionStoreFactoryBean extends DefaultLettuceSession
 
     private DefaultLettuceSessionStore sessionStore;
 
+    /**
+     * Eagerly creates and initializes a singleton {@link DefaultLettuceSessionStore} instance.
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void initialize() throws Exception {
         if (sessionStore == null) {
@@ -35,6 +39,10 @@ public class DefaultLettuceSessionStoreFactoryBean extends DefaultLettuceSession
         }
     }
 
+    /**
+     * Returns the singleton {@link DefaultLettuceSessionStore} instance.
+     * @return the session store instance
+     */
     @Override
     public DefaultLettuceSessionStore getObject() {
         return sessionStore;

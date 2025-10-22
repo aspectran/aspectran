@@ -30,9 +30,8 @@ public class RedisConnectionPool extends AbstractConnectionPool<StatefulRedisCon
         RedisClient, RedisConnectionPoolConfig> {
 
     /**
-     * Create a new pool with the given configuration.
-     * @param poolConfig the pool configuration providing Redis URI, client options,
-     *                   and commons-pool2 settings (must not be {@code null})
+     * Instantiates a new RedisConnectionPool.
+     * @param poolConfig the pool configuration
      */
     public RedisConnectionPool(RedisConnectionPoolConfig poolConfig) {
         super(poolConfig);
@@ -44,7 +43,12 @@ public class RedisConnectionPool extends AbstractConnectionPool<StatefulRedisCon
         if (redisURI == null) {
             throw new IllegalArgumentException("redisURI must not be null");
         }
-        RedisClient client = RedisClient.create(redisURI);
+        RedisClient client;
+        if (poolConfig.getClientResources() != null) {
+            client = RedisClient.create(poolConfig.getClientResources(), redisURI);
+        } else {
+            client = RedisClient.create(redisURI);
+        }
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }

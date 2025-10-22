@@ -153,6 +153,7 @@ public class RedisPrimaryReplicaConnectionPoolConfig
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
         tsb.append("clientOptions", clientOptions);
+        tsb.append("clientResources", clientResources);
         return tsb.toString();
     }
 

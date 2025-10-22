@@ -20,29 +20,29 @@ import com.aspectran.core.component.session.redis.lettuce.AbstractLettuceSession
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import io.lettuce.core.RedisConnectionException;
-import io.lettuce.core.ScanIterator;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Redis-backed SessionStore for Redis Cluster using Lettuce.
  * <p>
- * Extends {@link com.aspectran.core.component.session.redis.lettuce.AbstractLettuceSessionStore}
- * and interacts with the cluster via a pooled
+ * Extends {@link AbstractLettuceSessionStore} and interacts with the cluster via a pooled
  * {@link io.lettuce.core.cluster.api.StatefulRedisClusterConnection}.
  * </p>
  *
  * <p>Created: 2019/12/06</p>
  * @since 6.6.0
  */
-public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore {
+public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore<
+        StatefulRedisClusterConnection<String, SessionData>,
+        RedisClusterCommands<String, SessionData>> {
 
     private final ConnectionPool<StatefulRedisClusterConnection<String, SessionData>> pool;
 
+    /**
+     * Instantiates a new ClusterLettuceSessionStore.
+     * @param pool the connection pool
+     */
     public ClusterLettuceSessionStore(ConnectionPool<StatefulRedisClusterConnection<String, SessionData>> pool) {
         this.pool = pool;
     }
@@ -58,95 +58,15 @@ public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore {
         pool.destroy();
     }
 
-    private StatefulRedisClusterConnection<String, SessionData> getConnection() {
-        try {
-            return pool.getConnection();
-        } catch (Exception e) {
-            throw RedisConnectionException.create(e);
-        }
-    }
-
-    /**
-     * Executes a synchronous Redis Cluster callback with a borrowed connection, ensuring
-     * the connection is returned to the pool when finished.
-     * @param func function receiving the cluster synchronous command API
-     * @param <R> result type
-     * @return the callback result
-     * @throws io.lettuce.core.RedisConnectionException if a connection cannot be obtained
-     */
-    <R> R sync(@NonNull Function<RedisClusterCommands<String, SessionData>, R> func) {
-        try (StatefulRedisClusterConnection<String, SessionData> conn = getConnection()) {
-            return func.apply(conn.sync());
-        }
-    }
-
-    /**
-     * Iterates all cluster keys and feeds decoded SessionData to the given consumer.
-     * Uses Redis SCAN to avoid blocking the server.
-     * @param func consumer that will receive each SessionData (may receive nulls if keys are missing)
-     */
     @Override
-    public void scan(Consumer<SessionData> func) {
-        sync(c -> {
-            ScanIterator<String> scanIterator = ScanIterator.scan(c);
-            while (scanIterator.hasNext()) {
-                String key = scanIterator.next();
-                SessionData data = c.get(key);
-                func.accept(data);
-            }
-            return null;
-        });
+    protected ConnectionPool<StatefulRedisClusterConnection<String, SessionData>> getPool() {
+        return pool;
     }
 
-    /**
-     * Loads a session by id from the cluster.
-     * @param id the session id
-     * @return the decoded SessionData, or {@code null} if not found
-     */
     @Override
-    public SessionData load(String id) {
-        return sync(c -> c.get(id));
-    }
-
-    /**
-     * Deletes a session by id from the cluster.
-     * @param id the session id
-     * @return {@code true} if at least one key was removed
-     */
-    @Override
-    public boolean delete(String id) {
-        return sync(c -> {
-            Long deleted = c.del(id);
-            return (deleted != null && deleted > 0L);
-        });
-    }
-
-    /**
-     * Checks if a session exists and is not expired in the cluster.
-     * @param id the session id
-     * @return {@code true} if the session exists and has not expired
-     */
-    @Override
-    public boolean exists(String id) {
-        long now = System.currentTimeMillis();
-        return sync(c -> {
-            SessionData data = c.get(id);
-            if (data != null) {
-                return checkExpiry(data, now);
-            } else {
-                return false;
-            }
-        });
-    }
-
-    /**
-     * Persists the SessionData under the given id in the cluster.
-     * @param id the session id
-     * @param data the session data to store
-     */
-    @Override
-    public void doSave(String id, SessionData data) {
-        sync(c -> c.set(id, data));
+    protected RedisClusterCommands<String, SessionData> getCommands(
+            @NonNull StatefulRedisClusterConnection<String, SessionData> connection) {
+        return connection.sync();
     }
 
 }

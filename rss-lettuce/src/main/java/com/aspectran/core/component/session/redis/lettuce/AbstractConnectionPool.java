@@ -46,6 +46,10 @@ public abstract class AbstractConnectionPool<T extends StatefulConnection<?, ?>,
 
     protected GenericObjectPool<T> pool;
 
+    /**
+     * Instantiates a new AbstractConnectionPool.
+     * @param poolConfig the pool configuration
+     */
     public AbstractConnectionPool(P poolConfig) {
         this.poolConfig = poolConfig;
     }

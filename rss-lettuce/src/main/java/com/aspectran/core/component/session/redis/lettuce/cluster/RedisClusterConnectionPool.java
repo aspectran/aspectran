@@ -35,8 +35,8 @@ public class RedisClusterConnectionPool
         RedisClusterClient, RedisClusterConnectionPoolConfig> {
 
     /**
-     * Create a new pool with the given configuration.
-     * @param poolConfig the pool configuration providing Redis URIs and client options
+     * Instantiates a new RedisClusterConnectionPool.
+     * @param poolConfig the pool configuration
      */
     public RedisClusterConnectionPool(RedisClusterConnectionPoolConfig poolConfig) {
         super(poolConfig);
@@ -55,7 +55,6 @@ public class RedisClusterConnectionPool
         } else {
             client = RedisClusterClient.create(Arrays.asList(redisURIs));
         }
-
         if (poolConfig.getClusterClientOptions() != null) {
             client.setOptions(poolConfig.getClusterClientOptions());
         }

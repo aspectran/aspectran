@@ -22,6 +22,12 @@ import io.lettuce.core.api.StatefulRedisConnection;
 
 /**
  * A specialization of {@link DefaultLettuceSessionStore} for Primary-Replica setups.
+ * <p>
+ * This class leverages the {@code DefaultLettuceSessionStore} implementation, as the command API
+ * for a Primary-Replica setup is identical to that of a standalone setup. All Primary-Replica-specific
+ * logic, such as routing reads and writes, is handled by the {@link RedisPrimaryReplicaConnectionPool}
+ * and the underlying {@link io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection}.
+ * </p>
  *
  * <p>Created: 2019/12/06</p>
  *
@@ -29,6 +35,10 @@ import io.lettuce.core.api.StatefulRedisConnection;
  */
 public class PrimaryReplicaLettuceSessionStore extends DefaultLettuceSessionStore {
 
+    /**
+     * Instantiates a new PrimaryReplicaLettuceSessionStore.
+     * @param pool the connection pool
+     */
     public PrimaryReplicaLettuceSessionStore(ConnectionPool<StatefulRedisConnection<String, SessionData>> pool) {
         super(pool);
     }

@@ -160,6 +160,7 @@ public class RedisClusterConnectionPoolConfig
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("redisURIs", redisURIs);
         tsb.append("clusterClientOptions", clusterClientOptions);
+        tsb.append("clientResources", clientResources);
         return tsb.toString();
     }
 

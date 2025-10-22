@@ -28,6 +28,10 @@ public class ClusterLettuceSessionStoreFactoryBean extends ClusterLettuceSession
 
     private ClusterLettuceSessionStore sessionStore;
 
+    /**
+     * Initialize the session store.
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void initialize() throws Exception {
         if (sessionStore == null) {
@@ -35,6 +39,10 @@ public class ClusterLettuceSessionStoreFactoryBean extends ClusterLettuceSession
         }
     }
 
+    /**
+     * Return an instance (possibly shared or independent) of the object managed by this factory.
+     * @return an instance of the session store
+     */
     @Override
     public ClusterLettuceSessionStore getObject() {
         return sessionStore;

@@ -32,14 +32,18 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
 
     private RedisConnectionPoolConfig poolConfig;
 
-    public DefaultLettuceSessionStoreFactory() {
-        super();
-    }
-
+    /**
+     * Returns the configuration for the connection pool.
+     * @return the pool configuration
+     */
     protected RedisConnectionPoolConfig getPoolConfig() {
         return poolConfig;
     }
 
+    /**
+     * Sets the configuration for the connection pool.
+     * @param poolConfig the pool configuration
+     */
     public void setPoolConfig(RedisConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }

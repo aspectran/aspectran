@@ -28,6 +28,11 @@ public class SessionDataSerializationException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -4113369748730396646L;
 
+    /**
+     * Instantiates a new SessionDataSerializationException.
+     * @param msg the detail message
+     * @param cause the root cause
+     */
     public SessionDataSerializationException(String msg, Throwable cause) {
         super(msg, cause);
     }
