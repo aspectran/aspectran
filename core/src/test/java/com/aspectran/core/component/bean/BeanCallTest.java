@@ -18,7 +18,6 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.AboutMe;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.call.OrderedBean;
@@ -44,7 +43,7 @@ class BeanCallTest {
 
     private final File baseDir = new File("./target/test-classes");
 
-    private ActivityContextBuilder activityContextBuilder;
+    private HybridActivityContextBuilder activityContextBuilder;
 
     private BeanRegistry beanRegistry;
 

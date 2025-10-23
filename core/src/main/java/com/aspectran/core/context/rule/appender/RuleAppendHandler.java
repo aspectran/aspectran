@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
+import com.aspectran.core.context.rule.parser.FileAppendedListener;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 import java.util.List;
@@ -24,6 +25,12 @@ import java.util.List;
  * Defines the contract for handling the appending of context rules.
  */
 public interface RuleAppendHandler {
+
+    /**
+     * Sets the file appended listener.
+     * @param listener the file appended listener
+     */
+    void setFileAppendedListener(FileAppendedListener listener);
 
     /**
      * Returns the rule parsing context.

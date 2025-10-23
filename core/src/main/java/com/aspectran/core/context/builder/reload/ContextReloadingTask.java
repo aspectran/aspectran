@@ -16,30 +16,27 @@
 package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceLifeCycle;
-import com.aspectran.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URI;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
 
-import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
 import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
 /**
- * A {@link java.util.TimerTask} that detects changes in configuration and resource files
+ * A {@link Runnable} that detects changes in configuration and resource files
  * to trigger a context reload.
  * <p>It periodically checks the {@code lastModified} timestamp of registered resource files.
  * If a change is detected, it triggers a service restart via the {@link ServiceLifeCycle} interface.</p>
  *
  * @since 6.3.0
  */
-public class ContextReloadingTask extends TimerTask {
+public class ContextReloadingTask implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTask.class);
 
@@ -51,15 +48,15 @@ public class ContextReloadingTask extends TimerTask {
 
     /**
      * Instantiates a new ContextReloadingTask.
-     * @param serviceLifeCycle the service life cycle
+     * @param serviceLifeCycle the service life cycle to be controlled for restarts
      */
     public ContextReloadingTask(ServiceLifeCycle serviceLifeCycle) {
         this.serviceLifeCycle = serviceLifeCycle;
     }
 
     /**
-     * Sets the resources to be monitored for changes.
-     * @param resources an enumeration of resource URLs
+     * Sets the classpath resources to be monitored for changes.
+     * @param resources an enumeration of resource URLs, typically from a classloader
      */
     public void setResources(Enumeration<URL> resources) {
         if (resources != null) {
@@ -68,23 +65,33 @@ public class ContextReloadingTask extends TimerTask {
                 try {
                     File file;
                     if (URL_PROTOCOL_JAR.equals(url.getProtocol())) {
-                        URL fileUrl = new URI(url.getFile()).toURL();
-                        String[] parts = StringUtils.split(fileUrl.getFile(), JAR_URL_SEPARATOR);
-                        file = new File(parts[0]);
+                        JarURLConnection conn = (JarURLConnection)url.openConnection();
+                        URL jarFileUrl = conn.getJarFileURL();
+                        file = new File(jarFileUrl.toURI());
                     } else {
-                        file = new File(url.getFile());
+                        file = new File(url.toURI());
                     }
-                    String filePath = file.getAbsolutePath();
-                    modifiedTimeMap.put(filePath, file.lastModified());
+                    addResource(file);
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    logger.error("Failed to inspect resource for context reloading: {}", url, e);
                 }
             }
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Adds a file-system based resource to be monitored for changes.
+     * @param file the resource file to monitor
+     */
+    public void addResource(File file) {
+        if (file != null && file.exists()) {
+            modifiedTimeMap.put(file.getAbsolutePath(), file.lastModified());
+        }
+    }
+
+    /**
+     * Executes the check for modified resources. If a change is detected,
+     * it triggers a service restart.
      */
     @Override
     public void run() {
@@ -110,7 +117,8 @@ public class ContextReloadingTask extends TimerTask {
     }
 
     /**
-     * Restarts the service.
+     * Restarts the service through the {@link ServiceLifeCycle} interface.
+     * This method is called internally when a file modification is detected.
      */
     private void restartService() {
         try {

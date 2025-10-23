@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ class ActivityDataTest {
 
     @Test
     void testEvaluateAsString() throws ActivityContextBuilderException, ActivityPerformException {
-        ActivityContextBuilder builder = new HybridActivityContextBuilder();
+        HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
         builder.setDebugMode(true);
         ActivityContext context = builder.build();
 

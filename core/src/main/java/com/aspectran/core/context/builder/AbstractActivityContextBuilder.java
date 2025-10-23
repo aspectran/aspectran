@@ -120,15 +120,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ItemRuleMap propertyItemRuleMap;
 
+    private SiblingClassLoader siblingClassLoader;
+
     private ContextReloadingTimer contextReloadingTimer;
 
     private boolean hardReload;
 
-    private boolean autoReloadEnabled;
-
     private int scanIntervalSeconds;
 
-    private SiblingClassLoader siblingClassLoader;
+    private boolean autoReloadEnabled;
 
     private boolean useAponToLoadXml;
 
@@ -136,6 +136,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     public AbstractActivityContextBuilder(CoreService masterService) {
         this.masterService = masterService;
+        if (masterService != null) {
+            this.basePath = masterService.getBasePath();
+        }
         this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY_NAME));
         this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
     }
@@ -263,6 +266,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.propertyItemRuleMap.putItemRule(propertyItemRule);
     }
 
+    /**
+     * Configures the builder with settings from the provided {@link ContextConfig}.
+     * This method extracts properties such as context rules, resource locations, profiles,
+     * and auto-reloading settings.
+     * @param contextConfig the context configuration object
+     * @throws IOException if an I/O error occurs while checking directories
+     * @throws InvalidResourceException if any specified resource locations are invalid
+     */
     @Override
     public void configure(@Nullable ContextConfig contextConfig) throws IOException, InvalidResourceException {
         if (this.basePath == null) {
@@ -304,8 +315,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
                 boolean autoReloadEnabled = autoReloadConfig.isEnabled();
                 this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
-                this.autoReloadEnabled = autoReloadEnabled;
                 this.scanIntervalSeconds = scanIntervalSeconds;
+                this.autoReloadEnabled = autoReloadEnabled;
             }
             if (this.autoReloadEnabled && this.resourceLocations == null) {
                 this.autoReloadEnabled = false;
@@ -332,6 +343,16 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return siblingClassLoader;
     }
 
+    /**
+     * Creates a new {@link SiblingClassLoader} or reloads an existing one.
+     * If {@code hardReload} is enabled or if the classloader has not been created yet,
+     * a new instance is created. Otherwise, the existing classloader is reloaded.
+     * In an IDE environment, resource locations are ignored to prevent class loading conflicts.
+     * @param contextName the name of the context, used for naming the classloader
+     * @param parentClassLoader the parent classloader
+     * @return the created or reloaded {@link SiblingClassLoader}
+     * @throws InvalidResourceException if any specified resource locations are invalid
+     */
     protected SiblingClassLoader createSiblingClassLoader(String contextName, ClassLoader parentClassLoader)
             throws InvalidResourceException {
         if (siblingClassLoader == null || hardReload) {
@@ -387,11 +408,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     /**
-     * Returns a new instance of ActivityContext.
-     * @param ruleParsingContext the rule-parsing context
-     * @return the activity context
-     * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
-     * @throws IllegalRuleException if an illegal rule is found
+     * Creates and initializes a new {@link ActivityContext} instance based on the parsed rules.
+     * @param ruleParsingContext the context containing all parsed configuration rules
+     * @return a fully configured {@link ActivityContext}
+     * @throws BeanReferenceException if a bean reference cannot be resolved
+     * @throws IllegalRuleException if an illegal rule is found during validation
      */
     protected ActivityContext createActivityContext(@NonNull RuleParsingContext ruleParsingContext)
             throws BeanReferenceException, IllegalRuleException {
@@ -508,10 +529,28 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return transletRuleRegistry;
     }
 
-    protected void startContextReloadingTimer() {
-        if (autoReloadEnabled && masterService != null && siblingClassLoader != null) {
-            contextReloadingTimer = new ContextReloadingTimer(siblingClassLoader, masterService.getServiceLifeCycle());
-            contextReloadingTimer.start(scanIntervalSeconds);
+    /**
+     * Starts the context reloading timer if auto-reloading is enabled and a master service is present.
+     * The timer monitors all classpath resources and specified rule files for modifications.
+     * @param ruleFiles the list of rule files to monitor, including those appended during parsing
+     */
+    protected void startContextReloadingTimer(Iterable<File> ruleFiles) {
+        if (autoReloadEnabled && masterService != null) {
+            if (scanIntervalSeconds > 0) {
+                contextReloadingTimer = new ContextReloadingTimer(masterService.getServiceLifeCycle());
+                if (siblingClassLoader != null) {
+                    contextReloadingTimer.setResources(siblingClassLoader.getAllResources());
+                }
+                if (ruleFiles != null) {
+                    for (File file : ruleFiles) {
+                        contextReloadingTimer.addResource(file);
+                    }
+                }
+                contextReloadingTimer.start(scanIntervalSeconds);
+            } else {
+                logger.warn("Context auto-reloading is enabled, but 'scanIntervalSeconds' is not a positive " +
+                        "value; Was {}. The reloading timer will not be started.", scanIntervalSeconds);
+            }
         }
     }
 
@@ -522,21 +561,42 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    @Override
+    /**
+     * Returns whether the reloading timer is currently running.
+     * @return true if the timer is running, otherwise false
+     */
+    public boolean isReloadingTimerRunning() {
+        return (contextReloadingTimer != null);
+    }
+
     public boolean isHardReload() {
         return hardReload;
     }
 
-    @Override
     public void setHardReload(boolean hardReload) {
         this.hardReload = hardReload;
+    }
+
+    public int getScanIntervalSeconds() {
+        return scanIntervalSeconds;
+    }
+
+    public void setScanIntervalSeconds(int scanIntervalSeconds) {
+        this.scanIntervalSeconds = scanIntervalSeconds;
+    }
+
+    public boolean isAutoReloadEnabled() {
+        return autoReloadEnabled;
+    }
+
+    public void setAutoReloadEnabled(boolean autoReloadEnabled) {
+        this.autoReloadEnabled = autoReloadEnabled;
     }
 
     protected boolean isUseAponToLoadXml() {
         return useAponToLoadXml;
     }
 
-    @Override
     public void setUseAponToLoadXml(boolean useAponToLoadXml) {
         this.useAponToLoadXml = useAponToLoadXml;
     }
@@ -545,7 +605,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return debugMode;
     }
 
-    @Override
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
     }

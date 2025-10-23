@@ -33,18 +33,20 @@ import com.aspectran.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The primary, concrete implementation of {@link ActivityContextBuilder}.
  *
- * <p>This builder is responsible for orchestrating the entire process of parsing
- * configurations, creating component registries, and initializing a fully-functional
- * {@link com.aspectran.core.context.ActivityContext}. It is designed to be thread-safe
- * with respect to its build and destroy operations.
+ * <p>This builder orchestrates the entire process of parsing configuration, creating component
+ * registries, and initializing a fully-functional {@link com.aspectran.core.context.ActivityContext}.
+ * It is designed to be thread-safe with respect to its build and destroy operations.
  *
- * <p>For standalone applications (i.e., not managed by a {@link CoreService}),
- * it automatically registers a shutdown hook to ensure graceful destruction of the context.
+ * <p>For standalone applications not managed by a {@link CoreService}, it automatically
+ * registers a shutdown hook to ensure graceful destruction of the context.
  */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
@@ -91,6 +93,20 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         }
     }
 
+    /**
+     * Performs the actual build process, which includes the following steps:
+     * <ol>
+     *   <li>Creates a classloader.</li>
+     *   <li>Parses the configuration rules (XML or APON). During this phase, if auto-reloading
+     *       is enabled, it collects all appended configuration files.</li>
+     *   <li>Creates the {@link ActivityContext} and its internal components (registries, etc.).</li>
+     *   <li>Initializes the context if not managed by a master service.</li>
+     *   <li>Starts the context reloading timer if auto-reloading is enabled and a master service exists.</li>
+     *   <li>Registers a shutdown hook for standalone applications.</li>
+     * </ol>
+     * @return a fully initialized {@link ActivityContext}
+     * @throws ActivityContextBuilderException if the build process fails
+     */
     private ActivityContext doBuild() throws ActivityContextBuilderException {
         try {
             Assert.state(!this.active.get(), "ActivityContext is already configured");
@@ -144,11 +160,20 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 beanRuleRegistry.scanConfigurableBeans(getBasePackages());
             }
 
+            List<File> appendedFiles = new ArrayList<>();
+
             if (contextRules != null || aspectranParameters != null) {
                 try (ActivityContextRuleParser parser = new HybridActivityContextRuleParser(ruleParsingContext)) {
                     parser.setEncoding(getEncoding());
                     parser.setUseXmlToApon(isUseAponToLoadXml());
                     parser.setDebugMode(isDebugMode());
+                    if (isAutoReloadEnabled() && getMasterService() != null) {
+                        parser.setFileAppendedListener(file -> {
+                            if (file != null && !appendedFiles.contains(file)) {
+                                appendedFiles.add(file);
+                            }
+                        });
+                    }
                     if (contextRules != null) {
                         parser.parse(contextRules);
                     } else {
@@ -165,10 +190,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             activityContext = createActivityContext(ruleParsingContext);
             ruleParsingContext.release();
 
-            if (getMasterService() == null) {
+            if (getMasterService() == null && activityContext instanceof Component component) {
                 // If a MasterService is specified, the ActivityContext will be initialized
                 // by that service, otherwise it must be explicitly initialized here
-                ((Component)activityContext).initialize();
+                component.initialize();
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;
@@ -177,7 +202,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (getMasterService() != null) {
                 // Timer starts only if it is driven by a service
-                startContextReloadingTimer();
+                startContextReloadingTimer(appendedFiles);
             } else {
                 // If it is driven by a builder without a service
                 registerDestroyTask();
@@ -191,6 +216,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         }
     }
 
+    /**
+     * Destroys the managed {@link ActivityContext} and cleans up all associated resources.
+     * This includes stopping the reloading timer and removing any registered shutdown hooks.
+     */
     @Override
     public void destroy() {
         synchronized (this.buildDestroyMonitor) {
@@ -203,7 +232,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         if (this.active.get()) {
             stopContextReloadingTimer();
             if (activityContext != null) {
-                ((Component)activityContext).destroy();
+                if (activityContext instanceof Component component && component.isInitialized()) {
+                    component.destroy();
+                }
                 activityContext = null;
             }
             this.active.set(false);
@@ -213,7 +244,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private void registerDestroyTask() {
         shutdownHookManager = ShutdownHook.Manager.create(new ShutdownHook.Task() {
             @Override
-            public void run() throws Exception {
+            public void run() {
                 synchronized (buildDestroyMonitor) {
                     doDestroy();
                 }

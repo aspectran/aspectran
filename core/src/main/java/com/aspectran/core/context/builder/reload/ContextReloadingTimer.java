@@ -15,16 +15,23 @@
  */
 package com.aspectran.core.context.builder.reload;
 
-import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.core.service.ServiceLifeCycle;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Timer;
+import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Manages the timer for automatic reloading of the {@link com.aspectran.core.context.ActivityContext}.
- * <p>This class wraps a {@link java.util.Timer} to schedule a {@link ContextReloadingTask}
+ * Manages the scheduled task for automatic reloading of the {@link com.aspectran.core.context.ActivityContext}.
+ * <p>This class wraps a {@link ScheduledExecutorService} to schedule a {@link ContextReloadingTask}
  * at a fixed interval, enabling the hot-reloading feature.</p>
  *
  * @since 6.3.0
@@ -33,55 +40,72 @@ public class ContextReloadingTimer {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimer.class);
 
-    private final SiblingClassLoader classLoader;
-
-    private final ServiceLifeCycle serviceLifeCycle;
-
-    private volatile Timer timer;
+    private volatile ScheduledExecutorService executor;
 
     private ContextReloadingTask task;
 
     /**
      * Instantiates a new ContextReloadingTimer.
-     * @param classLoader the class loader used to find resources
      * @param serviceLifeCycle the service life cycle to restart on changes
      */
-    public ContextReloadingTimer(SiblingClassLoader classLoader, ServiceLifeCycle serviceLifeCycle) {
-        this.classLoader = classLoader;
-        this.serviceLifeCycle = serviceLifeCycle;
+    public ContextReloadingTimer(ServiceLifeCycle serviceLifeCycle) {
+        this.task = new ContextReloadingTask(serviceLifeCycle);
+    }
+
+    /**
+     * Sets the classpath resources to be monitored for changes.
+     * @param resources an enumeration of resource URLs, typically from a classloader
+     */
+    public void setResources(Enumeration<URL> resources) {
+        task.setResources(resources);
+    }
+
+    /**
+     * Adds a file-system based resource to be monitored for changes.
+     * @param file the resource file to monitor
+     */
+    public void addResource(File file) {
+        task.addResource(file);
     }
 
     /**
      * Starts the timer to monitor for resource changes.
      * @param scanIntervalInSeconds the interval in seconds to scan for changes
+     * @throws IllegalArgumentException if scanIntervalInSeconds is not a positive value
      */
     public void start(int scanIntervalInSeconds) {
+        if (scanIntervalInSeconds <= 0) {
+            throw new IllegalArgumentException("scanIntervalInSeconds must be greater than 0");
+        }
+
         stop();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Starting ContextReloadingTimer...");
         }
 
-        task = new ContextReloadingTask(serviceLifeCycle);
-        task.setResources(classLoader.getAllResources());
-
-        timer = new Timer("ContextReloading");
-        timer.schedule(task, 0, scanIntervalInSeconds * 1000L);
+        executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            private final AtomicInteger threadNumber = new AtomicInteger(1);
+            @Override
+            public Thread newThread(@NonNull Runnable r) {
+                Thread t = new Thread(r, "ContextReloading-" + threadNumber.getAndIncrement());
+                t.setDaemon(true);
+                return t;
+            }
+        });
+        executor.scheduleAtFixedRate(task, 0, scanIntervalInSeconds, TimeUnit.SECONDS);
     }
 
     /**
-     * Stops the timer.
+     * Stops the timer and shuts down the underlying scheduler.
      */
     public void stop() {
-        if (timer != null) {
+        if (executor != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Stopping ContextReloadingTimer...");
             }
-
-            timer.cancel();
-            timer = null;
-
-            task.cancel();
+            executor.shutdownNow();
+            executor = null;
             task = null;
         }
     }

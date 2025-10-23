@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.core.context.rule.parser;
+
+import java.io.File;
+
 /**
- * Provides classes for automatic reloading of the ActivityContext by monitoring for changes in configuration files.
+ * The listener interface for receiving file appended events.
  */
-package com.aspectran.core.context.builder.reload;
+@FunctionalInterface
+public interface FileAppendedListener {
+
+    /**
+     * Invoked when a file has been appended.
+     *
+     * @param file the appended file
+     */
+    void onFileAppended(File file);
+
+}

@@ -21,7 +21,6 @@ import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AsyncConfig;
@@ -47,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AsyncMethodTest {
 
-    private ActivityContextBuilder builder;
+    private HybridActivityContextBuilder builder;
 
     private ActivityContext context;
 

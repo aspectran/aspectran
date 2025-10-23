@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextRuleParser;
+import com.aspectran.core.context.rule.parser.FileAppendedListener;
 import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
@@ -53,6 +54,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private EntityResolver entityResolver;
 
+    private FileAppendedListener fileAppendedListener;
+
     /**
      * Instantiates a new HybridRuleAppendHandler.
      * @param activityContextRuleParser the activity context rule parser
@@ -64,12 +67,20 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         this.encoding = encoding;
     }
 
+    public void setFileAppendedListener(FileAppendedListener listener) {
+        this.fileAppendedListener = listener;
+    }
+
     @Override
     public void handle(RuleAppender appender) throws Exception {
         setCurrentRuleAppender(appender);
         RuleParsingScope ruleParsingScope = getRuleParsingContext().backupRuleParsingScope();
 
         if (appender != null) {
+            if (fileAppendedListener != null && appender.getAppenderType() == AppenderType.FILE) {
+                fileAppendedListener.onFileAppended(makeFile((FileRuleAppender)appender));
+            }
+
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
                 AspectranParameters aspectranParameters = appender.getAppendRule().getAspectranParameters();
                 RootParameters rootParameters = new RootParameters(aspectranParameters);

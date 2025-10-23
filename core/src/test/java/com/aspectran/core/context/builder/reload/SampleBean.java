@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Provides classes for automatic reloading of the ActivityContext by monitoring for changes in configuration files.
- */
 package com.aspectran.core.context.builder.reload;
+
+/**
+ * Simple bean for testing context reloading.
+ */
+public class SampleBean {
+
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+}

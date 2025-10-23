@@ -17,7 +17,6 @@ package com.aspectran.core.component.bean.event;
 
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.utils.ResourceUtils;
@@ -40,9 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BeanEventBusTest {
 
-    private ActivityContextBuilder builder;
-
-    private ActivityContext context;
+    private HybridActivityContextBuilder builder;
 
     private BeanRegistry beanRegistry;
 
@@ -55,7 +52,7 @@ class BeanEventBusTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean.event");
-        context = builder.build();
+        ActivityContext context = builder.build();
         beanRegistry = context.getBeanRegistry();
     }
 

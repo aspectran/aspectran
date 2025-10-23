@@ -39,8 +39,15 @@ public class HybridActivityContextRuleParser extends AbstractActivityContextRule
 
     private AspectranNodeParser aspectranNodeParser;
 
+    private FileAppendedListener fileAppendedListener;
+
     public HybridActivityContextRuleParser(RuleParsingContext ruleParsingContext) {
         super(ruleParsingContext);
+    }
+
+    @Override
+    public void setFileAppendedListener(FileAppendedListener listener) {
+        this.fileAppendedListener = listener;
     }
 
     @Override
@@ -104,6 +111,9 @@ public class HybridActivityContextRuleParser extends AbstractActivityContextRule
         RuleAppendHandler appendHandler = new HybridRuleAppendHandler(this, getEncoding());
         appendHandler.setUseAponToLoadXml(isUseXmlToApon());
         appendHandler.setDebugMode(isDebugMode());
+        if (fileAppendedListener != null) {
+            appendHandler.setFileAppendedListener(fileAppendedListener);
+        }
         getRuleParsingContext().setRuleAppendHandler(appendHandler);
         return appendHandler;
     }

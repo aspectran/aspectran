@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HybridActivityContextBuilderTest {
 
-    private ActivityContextBuilder builder;
+    private HybridActivityContextBuilder builder;
 
     private ActivityContext context;
 

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.appender;
 
+import com.aspectran.core.context.rule.parser.FileAppendedListener;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 
 /**
@@ -31,6 +32,11 @@ public class ShallowRuleAppendHandler extends AbstractAppendHandler {
      */
     public ShallowRuleAppendHandler(RuleParsingContext ruleParsingContext) {
         super(ruleParsingContext);
+    }
+
+    @Override
+    public void setFileAppendedListener(FileAppendedListener listener) {
+        // Do Nothing
     }
 
     @Override

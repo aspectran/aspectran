@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
-        "aspectran-7-test.dtd">
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <translet name="/echo">

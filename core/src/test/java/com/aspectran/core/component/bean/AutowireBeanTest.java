@@ -17,7 +17,6 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.utils.ResourceUtils;
@@ -42,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AutowireBeanTest {
 
-    private ActivityContextBuilder builder;
+    private HybridActivityContextBuilder builder;
 
     private BeanRegistry beanRegistry;
 

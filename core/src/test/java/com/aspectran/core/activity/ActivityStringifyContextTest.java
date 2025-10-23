@@ -19,7 +19,6 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.utils.StringifyContext;
@@ -36,7 +35,7 @@ class ActivityStringifyContextTest {
 
     @Test
     void testClone() throws ActivityContextBuilderException, ActivityPerformException {
-        ActivityContextBuilder builder = new HybridActivityContextBuilder();
+        HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
         builder.setDebugMode(true);
         ActivityContext context = builder.build();
 

@@ -30,6 +30,13 @@ import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 public interface ActivityContextRuleParser extends AutoCloseable {
 
     /**
+     * Sets the file appended listener.
+     *
+     * @param listener the file appended listener
+     */
+    void setFileAppendedListener(FileAppendedListener listener);
+
+    /**
      * Returns the rule parsing context.
      * @return the rule parsing context
      */

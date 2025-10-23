@@ -205,35 +205,10 @@ public interface ActivityContextBuilder {
     void destroy();
 
     /**
-     * Returns whether to perform a hard reload.
-     * A hard reload involves reloading all Java classes, resources, and the entire context configuration.
-     * @return true to perform a hard reload, false for a soft reload (context configuration only)
-     */
-    boolean isHardReload();
-
-    /**
-     * Sets whether to perform a hard reload.
-     * @param hardReload true to perform a hard reload, false for a soft reload
-     */
-    void setHardReload(boolean hardReload);
-
-    /**
      * Checks if the {@link ActivityContext} is currently active.
      * @return true if the context is active, otherwise false
      */
     boolean isActive();
-
-    /**
-     * Sets whether to use APON for parsing XML configuration files.
-     * @param useAponToLoadXml true to use APON, false otherwise
-     */
-    void setUseAponToLoadXml(boolean useAponToLoadXml);
-
-    /**
-     * Sets whether to run in debug mode.
-     * @param debugMode true for debug mode, false otherwise
-     */
-    void setDebugMode(boolean debugMode);
 
     /**
      * Clears any system properties that were set by this builder.
