@@ -69,6 +69,14 @@ public class ContextReloadingTimer {
     }
 
     /**
+     * Returns whether there are any resources to monitor for current changes.
+     * @return {@code true} if one or more monitored resources exist, otherwise {@code false}.
+     */
+    public boolean hasResources() {
+        return task.hasResources();
+    }
+
+    /**
      * Starts the timer to monitor for resource changes.
      * @param scanIntervalInSeconds the interval in seconds to scan for changes
      * @throws IllegalArgumentException if scanIntervalInSeconds is not a positive value

@@ -276,12 +276,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      */
     @Override
     public void configure(@Nullable ContextConfig contextConfig) throws IOException, InvalidResourceException {
-        if (this.basePath == null) {
-            if (masterService != null) {
-                this.basePath = masterService.getBasePath();
-            } else if (contextConfig != null) {
-                this.basePath = contextConfig.getBasePath();
-            }
+        if (this.basePath == null && contextConfig != null) {
+            this.basePath = contextConfig.getBasePath();
         }
 
         if (masterService == null || masterService.isRootService()) {
@@ -317,9 +313,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
                 this.scanIntervalSeconds = scanIntervalSeconds;
                 this.autoReloadEnabled = autoReloadEnabled;
-            }
-            if (this.autoReloadEnabled && this.resourceLocations == null) {
-                this.autoReloadEnabled = false;
             }
             if (this.autoReloadEnabled) {
                 if (this.scanIntervalSeconds == -1) {
@@ -546,7 +539,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                         contextReloadingTimer.addResource(file);
                     }
                 }
-                contextReloadingTimer.start(scanIntervalSeconds);
+                if (contextReloadingTimer.hasResources()) {
+                    contextReloadingTimer.start(scanIntervalSeconds);
+                } else {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Context auto-reloading is enabled, but no resources to monitor for reloading. " +
+                                "The reloading timer will not be started.");
+                    }
+                }
             } else {
                 logger.warn("Context auto-reloading is enabled, but 'scanIntervalSeconds' is not a positive " +
                         "value; Was {}. The reloading timer will not be started.", scanIntervalSeconds);

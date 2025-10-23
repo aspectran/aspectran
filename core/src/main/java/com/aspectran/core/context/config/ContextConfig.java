@@ -329,6 +329,14 @@ public class ContextConfig extends AbstractParameters {
     }
 
     /**
+     * Sets the configuration for automatic context reloading.
+     * @param autoReloadConfig the {@code ContextAutoReloadConfig} instance
+     */
+    public void setAutoReloadConfig(ContextAutoReloadConfig autoReloadConfig) {
+        putValue(autoReload, autoReloadConfig);
+    }
+
+    /**
      * Creates a new configuration for automatic context reloading.
      * @return the new {@code ContextAutoReloadConfig} instance
      */

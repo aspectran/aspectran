@@ -90,6 +90,14 @@ public class ContextReloadingTask implements Runnable {
     }
 
     /**
+     * Returns whether there are any resources to monitor for current changes.
+     * @return {@code true} if one or more monitored resources exist, otherwise {@code false}.
+     */
+    public boolean hasResources() {
+        return !modifiedTimeMap.isEmpty();
+    }
+
+    /**
      * Executes the check for modified resources. If a change is detected,
      * it triggers a service restart.
      */

@@ -21,6 +21,7 @@ import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.SystemConfig;
 import com.aspectran.core.scheduler.service.SchedulerService;
@@ -97,8 +98,18 @@ public class DefaultCoreService extends AbstractCoreService {
             } else {
                 setBasePath(getParentService().getBasePath());
             }
-            if (getContextName() == null && contextConfig != null && contextConfig.hasName()) {
-                setContextName(contextConfig.getName());
+            if (contextConfig != null) {
+                if (getContextName() == null && contextConfig.hasName()) {
+                    setContextName(contextConfig.getName());
+                }
+                ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
+                if (autoReloadConfig == null && getParentService() != null) {
+                    ContextConfig parentContextConfig = getParentService().getAspectranConfig().getContextConfig();
+                    if (parentContextConfig != null) {
+                        ContextAutoReloadConfig parentAutoReloadConfig = parentContextConfig.getAutoReloadConfig();
+                        contextConfig.setAutoReloadConfig(parentAutoReloadConfig);
+                    }
+                }
             }
 
             ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder(this);
@@ -113,7 +124,7 @@ public class DefaultCoreService extends AbstractCoreService {
                 if (activityContextBuilder.hasOwnBasePath()) {
                     acquireSingletonLock();
                 } else {
-                    logger.warn("Since no base directory is explicitly specified, no singleton lock is applied");
+                    logger.warn("Since no base directory is explicitly specified, no singleton lock is applied.");
                 }
             }
         } catch (Exception e) {
