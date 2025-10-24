@@ -299,7 +299,7 @@ class ContextReloadingTest {
 
         @Override
         public boolean isRootService() {
-            return false;
+            return true;
         }
 
         @Override
