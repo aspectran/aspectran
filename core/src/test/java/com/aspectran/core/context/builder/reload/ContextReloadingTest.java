@@ -454,7 +454,7 @@ class ContextReloadingTest {
 
         @Override
         public CoreService getRootService() {
-            return null;
+            return this;
         }
 
         @Override
