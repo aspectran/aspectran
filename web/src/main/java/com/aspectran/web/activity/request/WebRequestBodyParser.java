@@ -57,7 +57,10 @@ public abstract class WebRequestBodyParser {
     private static final int BUFFER_SIZE = 1024;
 
     /**
-     * Parse the multipart form data.
+     * Parses a multipart form data request using the configured {@link MultipartFormDataParser}.
+     * The name of the parser bean must be specified as a setting in the activity.
+     * @param activity the current activity
+     * @throws MultipartRequestParseException if the parser is not configured or if parsing fails
      */
     public static void parseMultipartFormData(@NonNull Activity activity) throws MultipartRequestParseException {
         String multipartFormDataParser = activity.getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
@@ -76,6 +79,14 @@ public abstract class WebRequestBodyParser {
         parser.parse(activity.getRequestAdapter());
     }
 
+    /**
+     * Parses the request body as a string.
+     * This method respects the maximum request size limit.
+     * @param requestAdapter the web request adapter
+     * @return the request body as a string
+     * @throws IOException if an I/O error occurs
+     * @throws SizeLimitExceededException if the request size exceeds the configured maximum
+     */
     @NonNull
     public static String parseBody(WebRequestAdapter requestAdapter) throws IOException, SizeLimitExceededException {
         Charset encoding = determineEncoding(requestAdapter);
@@ -100,6 +111,17 @@ public abstract class WebRequestBodyParser {
         return sb.toString();
     }
 
+    /**
+     * Parses the request body into a {@link Parameters} object of the specified type,
+     * based on the request's Content-Type.
+     * <p>Supports {@code application/x-www-form-urlencoded}, {@code application/json},
+     * {@code application/apon}, and {@code application/xml}.</p>
+     * @param requestAdapter the web request adapter
+     * @param requiredType the target {@code Parameters} type
+     * @param <T> the type of the parameters object
+     * @return the parsed {@code Parameters} object, or {@code null} if the content type is not supported
+     * @throws RequestParseException if parsing fails
+     */
     @Nullable
     public static <T extends Parameters> T parseBodyAsParameters(
             @NonNull WebRequestAdapter requestAdapter, Class<T> requiredType) throws RequestParseException {
@@ -151,11 +173,22 @@ public abstract class WebRequestBodyParser {
         }
     }
 
+    /**
+     * Returns whether the request is a multipart form data request.
+     * @param requestMethod the HTTP request method
+     * @param mediaType the media type of the request
+     * @return true if the request is multipart, false otherwise
+     */
     public static boolean isMultipartForm(MethodType requestMethod, MediaType mediaType) {
         return MethodType.POST.equals(requestMethod) &&
             MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(mediaType);
     }
 
+    /**
+     * Returns whether the request's content type is {@code application/x-www-form-urlencoded}.
+     * @param mediaType the media type of the request
+     * @return true if the request is a URL-encoded form, false otherwise
+     */
     public static boolean isURLEncodedForm(MediaType mediaType) {
         return MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(mediaType);
     }

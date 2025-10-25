@@ -31,15 +31,15 @@ public interface MultipartFormDataParser {
     String getTempFileDir();
 
     /**
-     * Sets the directory path used to temporarily files.
+     * Sets the directory path used for temporary files.
      * @param tempFileDir the directory path used for temporary files
      */
     void setTempFileDir(String tempFileDir) throws IOException;
 
     /**
-     * Sets the maximum length of HTTP GET Request
+     * Sets the maximum size of the entire multipart request.
      * -1 indicates no limit (the default).
-     * @param maxRequestSize the maximum length of HTTP GET Request
+     * @param maxRequestSize the maximum request size in bytes
      * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
      */
     void setMaxRequestSize(long maxRequestSize);
@@ -75,7 +75,7 @@ public interface MultipartFormDataParser {
     void setDeniedFileExtensions(String deniedFileExtensions);
 
     /**
-     * Parse the given servlet request, resolving its multipart elements.
+     * Parse the given request, resolving its multipart elements.
      * @param requestAdapter the request adapter
      * @throws MultipartRequestParseException if multipart resolution failed
      */

@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Wrapper class for getting attributes from HttpServletRequest().
+ * Wrapper class for getting attributes from a {@link ServletRequest}.
  *
  * <p>Created: 2018. 9. 15.</p>
  *
@@ -41,20 +41,35 @@ public final class RequestAttributeMap implements Map<String, Object> {
 
     private ServletRequest request;
 
+    /**
+     * Returns the underlying {@link ServletRequest} that this map wraps.
+     * @return the servlet request
+     */
     public ServletRequest getRequest() {
         return request;
     }
 
+    /**
+     * Sets the underlying {@link ServletRequest} to be wrapped by this map.
+     * @param request the servlet request
+     */
     public void setRequest(@NonNull ServletRequest request) {
         this.request = request;
     }
 
+    /**
+     * Checks that the underlying {@link ServletRequest} is not null.
+     * @throws IllegalStateException if the request is null
+     */
     private void checkState() {
         if (request == null) {
             throw new IllegalStateException("ServletRequest is not specified");
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int size() {
         if (request == null) {
@@ -63,6 +78,9 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return Collections.list(request.getAttributeNames()).size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         if (request == null) {
@@ -71,6 +89,9 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return !request.getAttributeNames().hasMoreElements();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsKey(Object key) {
         if (request == null) {
@@ -79,6 +100,9 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return (request.getAttribute((String)key) != null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsValue(Object value) {
         if (request == null) {
@@ -95,8 +119,11 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation retrieves the attribute from the underlying {@link ServletRequest}.
+     */
     @Override
-    @NonNull
     public Object get(Object key) {
         if (request == null) {
             return null;
@@ -104,6 +131,11 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return request.getAttribute((String)key);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation sets the attribute on the underlying {@link ServletRequest}.
+     * @throws IllegalStateException if the underlying request has not been specified
+     */
     @Override
     public Object put(String name, Object value) {
         checkState();
@@ -112,6 +144,11 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return old;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation removes the attribute from the underlying {@link ServletRequest}.
+     * @throws IllegalStateException if the underlying request has not been specified
+     */
     @Override
     public Object remove(@NonNull Object key) {
         checkState();
@@ -120,6 +157,11 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return old;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation sets all attributes on the underlying {@link ServletRequest}.
+     * @throws IllegalStateException if the underlying request has not been specified
+     */
     @Override
     public void putAll(@Nullable Map<? extends String, ?> map) {
         checkState();
@@ -130,6 +172,10 @@ public final class RequestAttributeMap implements Map<String, Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation removes all attributes from the underlying {@link ServletRequest}.
+     */
     @Override
     public void clear() {
         if (request != null) {
@@ -139,6 +185,10 @@ public final class RequestAttributeMap implements Map<String, Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>The returned set is an unmodifiable view of the attribute names in the underlying {@link ServletRequest}.
+     */
     @Override
     @NonNull
     public Set<String> keySet() {
@@ -148,6 +198,10 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return Set.copyOf(Collections.list(request.getAttributeNames()));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>The returned collection is an unmodifiable view of the attribute values in the underlying {@link ServletRequest}.
+     */
     @Override
     @NonNull
     public Collection<Object> values() {
@@ -164,6 +218,10 @@ public final class RequestAttributeMap implements Map<String, Object> {
         return Collections.unmodifiableList(list);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>The returned set is an unmodifiable view of the attribute entries in the underlying {@link ServletRequest}.
+     */
     @Override
     @NonNull
     public Set<Entry<String, Object>> entrySet() {
