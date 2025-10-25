@@ -25,14 +25,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * A specialized {@link SessionScope} for the Servlet environment.
- * <p>This class implements {@link HttpSessionBindingListener} to receive notifications
- * when it is bound to or unbound from an {@link jakarta.servlet.http.HttpSession}.
- * When unbound, it automatically calls the {@link #destroy()} method to clean up all
- * session-scoped beans.
+ * A specialized {@link com.aspectran.core.component.bean.scope.SessionScope} for the
+ * Servlet environment.
+ * <p>This class implements {@link jakarta.servlet.http.HttpSessionBindingListener}
+ * to receive notifications when it is bound to or unbound from an
+ * {@link jakarta.servlet.http.HttpSession}. When unbound from the session, it
+ * automatically calls the {@link #destroy()} method to clean up all session-scoped beans.
  * </p>
  *
- * @author Juho Jeong
  * @since 2.0.0
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {

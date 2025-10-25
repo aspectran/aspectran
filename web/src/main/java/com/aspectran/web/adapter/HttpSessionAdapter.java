@@ -23,13 +23,15 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * An adapter that wraps an {@link HttpServletRequest} to expose session management
- * capabilities via the {@link com.aspectran.core.adapter.SessionAdapter} interface.
- * <p>This class lazily retrieves the underlying {@link HttpSession} from the request
- * as needed, providing a bridge between the Servlet API and the Aspectran core.
+ * An adapter that wraps an {@link jakarta.servlet.http.HttpServletRequest} to expose
+ * session management capabilities via the {@link com.aspectran.core.adapter.SessionAdapter}
+ * interface.
+ * <p>This class lazily retrieves the underlying {@link jakarta.servlet.http.HttpSession}
+ * from the request as needed, providing a bridge between the Servlet API and the Aspectran
+ * core. While this adapter holds an {@code HttpServletRequest}, the {@link #getAdaptee()}
+ * method returns the underlying {@code HttpSession} for direct access.
  * </p>
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter {

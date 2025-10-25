@@ -19,13 +19,12 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
 /**
- * A specialization of {@link RequestAdapter} for web-based environments.
+ * A specialization of {@link com.aspectran.core.adapter.RequestAdapter} for web-based environments.
  * <p>This interface extends the base request adapter with methods for handling
  * web-specific concepts, such as the request body's {@link MediaType} and
  * a pre-parsing mechanism for initializing the adapter from a native request.
  * </p>
  *
- * @author Juho Jeong
  * @since 6.3.0
  */
 public interface WebRequestAdapter extends RequestAdapter {

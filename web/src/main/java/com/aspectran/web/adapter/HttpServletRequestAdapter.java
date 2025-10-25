@@ -21,6 +21,8 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,16 +32,17 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * An adapter that wraps a {@link HttpServletRequest}, exposing it as a
- * {@link WebRequestAdapter} for the Aspectran framework.
+ * An adapter that wraps a {@link jakarta.servlet.http.HttpServletRequest},
+ * exposing it as a {@link WebRequestAdapter} for the Aspectran framework.
  * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
  * allowing the framework to handle web requests in a consistent, abstracted manner.
  * </p>
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpServletRequestAdapter.class);
 
     private boolean headersObtained;
 
@@ -148,7 +151,9 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
                     setEncoding(mediaType.getCharset().name());
                 }
             } catch (Exception e) {
-                // ignore
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Could not parse content type: {}", contentType, e);
+                }
             }
         }
 

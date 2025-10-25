@@ -26,12 +26,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for {@link WebRequestAdapter} implementations.
- * <p>This class extends {@link AbstractRequestAdapter} and provides common
- * functionality for web-based request adapters, such as handling the request's
- * {@link MediaType} and parsing the request body on demand.
+ * <p>This class extends {@link com.aspectran.core.adapter.AbstractRequestAdapter}
+ * and provides common functionality for web-based request adapters, such as handling
+ * the request's {@link MediaType} and parsing the request body on demand.
  * </p>
  *
- * @author Juho Jeong
  * @since 6.3.0
  */
 public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter implements WebRequestAdapter {

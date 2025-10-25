@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 /**
- * Provides adapter implementations for a standard Servlet API-based web environment.
+ * Provides adapter implementations that bridge the Aspectran framework with the
+ * standard Jakarta Servlet API, enabling Aspectran to operate in a web environment.
+ * <p>This package contains adapters for {@code HttpServletRequest},
+ * {@code HttpServletResponse}, and {@code HttpSession}, which wrap the native
+ * Servlet objects to expose them through Aspectran's unified adapter interfaces.
+ * This abstraction allows the core framework to remain independent of the
+ * specific execution environment.
  */
 package com.aspectran.web.adapter;

@@ -33,13 +33,12 @@ import java.io.Writer;
 import java.util.Collection;
 
 /**
- * An adapter that wraps a {@link HttpServletResponse}, exposing it as a
- * {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
+ * An adapter that wraps a {@link jakarta.servlet.http.HttpServletResponse},
+ * exposing it as a {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
  * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
  * allowing the framework to write to the servlet response in a consistent, abstracted manner.
  * </p>
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
