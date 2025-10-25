@@ -40,7 +40,7 @@ import java.util.Map;
 public abstract class MediaTypeUtils {
 
     private static final Cache<String, MediaType> cachedMimeTypes =
-        new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
+            new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 
     /**
      * Parse the given String into a single {@code MediaType}.
