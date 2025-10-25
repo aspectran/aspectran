@@ -30,9 +30,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Etag interceptor to enable If-None-Match request with ETAG support.
- * If the ETag generated for each request matches the value in the If-None-Match header,
- * an empty response with status code 304 (not modified) is sent to the client.
+ * A strategy for handling ETag (entity tag) generation and validation to support
+ * conditional HTTP requests.
+ * <p>This class can be used from an aspect to intercept a request. It checks for
+ * the {@code If-None-Match} header and, if it matches the ETag generated for the
+ * current resource state, it sends a {@code 304 Not Modified} response.
+ * Otherwise, it computes and sets the {@code ETag} header on the response.
+ * </p>
  *
  * @since 6.9.4
  */
@@ -50,12 +54,17 @@ public class ETagInterceptor {
 
     private boolean writeWeakETag = false;
 
+    /**
+     * Instantiates a new ETag interceptor.
+     * @param tokenFactory the factory to generate the token for the ETag
+     */
     public ETagInterceptor(@NonNull ETagTokenFactory tokenFactory) {
         this.tokenFactory = tokenFactory;
     }
 
     /**
-     * Set whether the ETag value written to the response should be weak, as per RFC 7232.
+     * Sets whether the ETag value written to the response should be weak, as per RFC 7232.
+     * @param writeWeakETag {@code true} to write a weak ETag, {@code false} for a strong one
      * @see <a href="https://tools.ietf.org/html/rfc7232#section-2.3">RFC 7232 section 2.3</a>
      */
     public void setWriteWeakETag(boolean writeWeakETag) {
@@ -63,12 +72,17 @@ public class ETagInterceptor {
     }
 
     /**
-     * Return whether the ETag value written to the response should be weak, as per RFC 7232.
+     * Returns whether the ETag value written to the response should be weak, as per RFC 7232.
+     * @return {@code true} if the ETag should be weak, {@code false} otherwise
      */
     public boolean isWriteWeakETag() {
         return this.writeWeakETag;
     }
 
+    /**
+     * Intercepts the request to perform ETag validation and generation.
+     * @param translet the current translet
+     */
     public void intercept(@NonNull Translet translet) {
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
@@ -90,6 +104,12 @@ public class ETagInterceptor {
         }
     }
 
+    /**
+     * Generates an ETag token for the current request.
+     * @param translet the current translet
+     * @param isWeak whether to generate a weak ETag
+     * @return the generated ETag string (e.g., "0a1b2c3d..." or W/"0a1b2c3d...")
+     */
     protected String generateETagToken(Translet translet, boolean isWeak) {
         byte[] token = tokenFactory.getToken(translet);
         if (token == null || token.length == 0) {
@@ -113,7 +133,7 @@ public class ETagInterceptor {
         }
 
         // We will perform this validation...
-        token = padETagTokenIfNecessary(token);
+        token = ensureQuoted(token);
         if (token.startsWith("W/")) {
             token = token.substring(2);
         }
@@ -130,7 +150,7 @@ public class ETagInterceptor {
     }
 
     @NonNull
-    private String padETagTokenIfNecessary(@NonNull String token) {
+    private String ensureQuoted(@NonNull String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;
         } else {

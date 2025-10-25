@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Provides ETag (entity tag) support for web requests.
+ * Provides server-side support for HTTP ETag (entity tag) generation and validation.
+ * <p>ETags are used for web cache validation, allowing a client to make conditional
+ * GET requests via the {@code If-None-Match} header. If the content has not changed,
+ * the server can respond with a {@code 304 Not Modified} status, saving bandwidth.
+ * This package contains the core components for integrating ETag support into an
+ * Aspectran application.</p>
  */
 package com.aspectran.web.support.etag;

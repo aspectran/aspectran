@@ -18,10 +18,19 @@ package com.aspectran.web.support.etag;
 import com.aspectran.core.activity.Translet;
 
 /**
- * Interface to generate ETag tokens for requests.
+ * A factory for creating a token that will be used to generate an ETag.
+ * <p>Implementations of this interface are responsible for providing the raw
+ * data (as a byte array) that uniquely represents the state of a resource.
+ * The {@link ETagInterceptor} will then compute a hash of this data to create
+ * the final ETag value.</p>
  */
 public interface ETagTokenFactory {
 
+    /**
+     * Returns a byte array that represents the state of the resource.
+     * @param translet the current translet
+     * @return a byte array representing the resource state
+     */
     byte[] getToken(Translet translet);
 
 }
