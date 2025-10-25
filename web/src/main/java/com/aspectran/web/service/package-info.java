@@ -17,9 +17,9 @@
  * Provides a service implementation for running Aspectran in a Java Servlet-based
  * web environment.
  * <p>This package acts as a bridge between the generic Aspectran core and the
- * specific world of {@code HttpServletRequest}, {@code HttpServletResponse},
- * and {@code ServletContext}. The central component is the
- * {@link com.aspectran.web.service.WebService}, which handles incoming HTTP requests
- * and dispatches them to Aspectran's processing pipeline.</p>
+ * specific world of {@link jakarta.servlet.http.HttpServletRequest},
+ * {@link jakarta.servlet.http.HttpServletResponse}, and {@link jakarta.servlet.ServletContext}.
+ * The central component is the {@link com.aspectran.web.service.WebService},
+ * which handles incoming HTTP requests and dispatches them to Aspectran's processing pipeline.</p>
  */
 package com.aspectran.web.service;

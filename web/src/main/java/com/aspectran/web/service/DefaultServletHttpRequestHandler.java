@@ -33,6 +33,7 @@ import java.io.IOException;
  * <p>This class is responsible for determining the appropriate default servlet name for various
  * application servers and dispatching requests for static content (e.g., CSS, JavaScript, images)
  * to that servlet, allowing Aspectran to focus on dynamic content generation.
+ * </p>
  */
 public class DefaultServletHttpRequestHandler {
 

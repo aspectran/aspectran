@@ -53,6 +53,7 @@ import static com.aspectran.core.component.session.MaxSessionsExceededException.
  * within a Servlet container. It handles incoming HTTP requests, dispatches them
  * to Aspectran's processing pipeline, and manages web-specific concerns like
  * URI decoding, static resource handling, and asynchronous request processing.
+ * </p>
  */
 public class DefaultWebService extends AbstractWebService {
 

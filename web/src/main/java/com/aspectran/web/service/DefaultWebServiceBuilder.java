@@ -38,10 +38,11 @@ import java.io.IOException;
 /**
  * A builder class for creating and configuring {@link DefaultWebService} instances.
  * <p>This class provides static factory methods to construct a web service,
- * applying configuration from an {@link AspectranConfig} object and integrating it
- * with a {@link ServletContext}. It also sets up a {@link ServiceStateListener} to
+ * applying configuration from an {@link com.aspectran.core.context.config.AspectranConfig} object and integrating it
+ * with a {@link jakarta.servlet.ServletContext}. It also sets up a {@link com.aspectran.core.service.ServiceStateListener} to
  * manage the service's lifecycle, including session management, registration with
  * the {@link com.aspectran.core.service.CoreServiceHolder}, and pause/resume state.
+ * </p>
  */
 public class DefaultWebServiceBuilder {
 
@@ -167,7 +168,13 @@ public class DefaultWebServiceBuilder {
             if (aspectranConfigParam.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
                 String filePath = aspectranConfigParam.substring(ResourceUtils.FILE_URL_PREFIX.length()).stripLeading();
                 try {
-                    File configFile = new File(servletContext.getRealPath(filePath));
+                    String realPath = servletContext.getRealPath(filePath);
+                    if (realPath == null) {
+                        throw new IOException("Failed to resolve real path for [" +
+                                ResourceUtils.FILE_URL_PREFIX + filePath + "] in the servlet context. " +
+                                "It may be because the content is being made available from a .war archive");
+                    }
+                    File configFile = new File(realPath);
                     aspectranConfig = new AspectranConfig(configFile);
                 } catch (IOException e) {
                     throw new CoreServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
