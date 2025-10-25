@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 /**
- * Provides the necessary servlets and related classes for integrating Aspectran
- * with a web application.
+ * Provides the core servlet components for integrating Aspectran with a web application.
+ * <p>The central class in this package is {@link com.aspectran.web.servlet.WebActivityServlet},
+ * which acts as the main dispatcher for incoming web requests, handing them off to the
+ * Aspectran framework for processing.</p>
  */
 package com.aspectran.web.servlet;

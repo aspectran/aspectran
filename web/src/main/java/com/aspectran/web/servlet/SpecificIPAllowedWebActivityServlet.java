@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serial;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -32,10 +36,14 @@ import java.util.StringTokenizer;
  * A servlet that allows access only from specific IP addresses.
  * This servlet extends {@link WebActivityServlet} and adds a security check
  * based on the remote client's IP address.
- *
  * <p>The allowed IP addresses are configured via the 'allowedAddresses' init-param
  * in the servlet configuration. The addresses can be a comma-separated list of
- * individual IP addresses or IP address ranges (e.g., 192.168.0.*).</p>
+ * individual IP addresses or IP address ranges in CIDR notation (e.g., {@code 192.168.0.0/24}).
+ * </p>
+ * <p>
+ * <strong>Note:</strong> For more advanced and robust security, using a dedicated
+ * firewall or a reverse proxy for access control is recommended.
+ * </p>
  */
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
@@ -46,7 +54,9 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     private static final String DELIMITERS = " ,;\t\r\n\f";
 
-    private Set<String> allowedAddresses;
+    private List<Subnet> allowedSubnets;
+
+    private Set<InetAddress> allowedAddresses;
 
     /**
      * Instantiates a new {@code SpecificIPAllowedWebActivityServlet}.
@@ -57,13 +67,22 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     @Override
     public void init() throws ServletException {
-        String addresses = getServletConfig().getInitParameter("allowedAddresses");
-        if (addresses != null) {
+        String addressesParam = getServletConfig().getInitParameter("allowedAddresses");
+        if (addressesParam != null) {
+            allowedSubnets = new ArrayList<>();
             allowedAddresses = new HashSet<>();
-            StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
+            StringTokenizer st = new StringTokenizer(addressesParam, DELIMITERS);
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
-                allowedAddresses.add(token);
+                try {
+                    if (token.contains("/")) {
+                        allowedSubnets.add(new Subnet(token));
+                    } else {
+                        allowedAddresses.add(InetAddress.getByName(token));
+                    }
+                } catch (Exception e) {
+                    logger.error("Invalid IP address or CIDR subnet '{}' in 'allowedAddresses' init-param", token, e);
+                }
             }
         }
 
@@ -72,10 +91,9 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     @Override
     public void service(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res) throws IOException {
-        String remoteAddr = req.getRemoteAddr();
-        if (!isAllowedAddress(remoteAddr)) {
+        if (!isAllowedAddress(req.getRemoteAddr())) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Access Denied: {}", remoteAddr);
+                logger.debug("Access Denied: {}", req.getRemoteAddr());
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -86,26 +104,78 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     /**
      * Returns whether the specified IP address is allowed.
-     * @param ipAddress the IP address to check
+     * @param remoteAddr the IP address to check
      * @return {@code true} if the IP address is allowed; {@code false} otherwise
      */
-    private boolean isAllowedAddress(@NonNull String ipAddress) {
-        if (allowedAddresses == null) {
-            return false;
+    private boolean isAllowedAddress(String remoteAddr) {
+        if ((allowedSubnets == null || allowedSubnets.isEmpty()) &&
+                (allowedAddresses == null || allowedAddresses.isEmpty())) {
+            return false; // Fail-closed if nothing is configured
         }
 
-        // IPv4
-        int offset = ipAddress.lastIndexOf('.');
-        if (offset == -1) {
-            // IPv6
-            offset = ipAddress.lastIndexOf(':');
-            if (offset == -1) {
-                return false;
+        try {
+            InetAddress remoteAddress = InetAddress.getByName(remoteAddr);
+            if (allowedAddresses != null && allowedAddresses.contains(remoteAddress)) {
+                return true;
+            }
+            if (allowedSubnets != null) {
+                for (Subnet subnet : allowedSubnets) {
+                    if (subnet.matches(remoteAddress)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (UnknownHostException e) {
+            logger.warn("Could not parse remote address '{}'", remoteAddr, e);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * Represents an IP subnet in CIDR notation.
+     */
+    private static class Subnet {
+
+        private final byte[] networkAddress;
+
+        private final int prefixLength;
+
+        Subnet(@NonNull String cidr) throws UnknownHostException {
+            String[] parts = cidr.split("/");
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("Invalid CIDR format: " + cidr);
+            }
+            networkAddress = InetAddress.getByName(parts[0]).getAddress();
+            prefixLength = Integer.parseInt(parts[1]);
+            if (prefixLength < 0 || prefixLength > networkAddress.length * 8) {
+                throw new IllegalArgumentException("Invalid prefix length: " + prefixLength);
             }
         }
 
-        String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
-        return (allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress));
+        boolean matches(@NonNull InetAddress remoteAddress) {
+            byte[] remoteIpBytes = remoteAddress.getAddress();
+            if (networkAddress.length != remoteIpBytes.length) {
+                return false;
+            }
+
+            int fullBytes = prefixLength / 8;
+            int remainingBits = prefixLength % 8;
+
+            for (int i = 0; i < fullBytes; i++) {
+                if (networkAddress[i] != remoteIpBytes[i]) {
+                    return false;
+                }
+            }
+
+            if (remainingBits > 0) {
+                int mask = 0xFF << (8 - remainingBits);
+                return (networkAddress[fullBytes] & mask) == (remoteIpBytes[fullBytes] & mask);
+            }
+
+            return true;
+        }
+
     }
 
 }

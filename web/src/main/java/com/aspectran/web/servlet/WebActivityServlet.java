@@ -31,9 +31,18 @@ import java.io.IOException;
 import java.io.Serial;
 
 /**
- * The central dispatcher for HTTP request handlers/controllers.
- * Dispatches to registered handlers for processing a web request,
- * providing convenient mapping and exception handling facilities.
+ * The central dispatcher for HTTP request handlers/controllers, which acts as the
+ * main entry point for Aspectran in a Servlet-based web application.
+ * <p>This servlet integrates Aspectran with the Servlet container. Upon initialization,
+ * it either locates an existing root {@link WebService} (usually created by
+ * {@link com.aspectran.web.servlet.listener.WebServiceListener}) or creates its own.
+ * It then dispatches incoming {@link HttpServletRequest}s to the {@code WebService}
+ * for processing.
+ * </p>
+ * <p>This servlet also provides special handling for HTTP HEAD requests by wrapping
+ * the response to prevent a message body from being written, while still calculating
+ * the appropriate content length.
+ * </p>
  */
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
