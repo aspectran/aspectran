@@ -25,8 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link ServletContextListener} that creates and destroys a {@link WebService}
- * for the root web application context.
+ * A {@link jakarta.servlet.ServletContextListener} that bootstraps and tears down
+ * the Aspectran framework as part of the web application's lifecycle.
+ * <p>This listener is responsible for initializing the root {@link WebService}
+ * when the servlet context is created and destroying it when the context is
+ * shut down. It ensures that Aspectran is properly started before any requests
+ * are handled and gracefully stopped upon application undeployment.
+ * </p>
+ * <p>This listener should be registered in the {@code web.xml} deployment descriptor
+ * or programmatically via a {@code ServletContainerInitializer}.</p>
  */
 public class WebServiceListener implements ServletContextListener {
 

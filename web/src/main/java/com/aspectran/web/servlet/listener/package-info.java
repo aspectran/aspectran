@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 /**
- * Contains Servlet Listener implementations for web applications.
+ * Provides {@link jakarta.servlet.ServletContextListener} implementations for bootstrapping
+ * and tearing down the Aspectran framework within a web application.
+ * <p>These listeners manage the lifecycle of the core Aspectran services in
+ * response to servlet context initialization and destruction events.</p>
  */
 package com.aspectran.web.servlet.listener;
