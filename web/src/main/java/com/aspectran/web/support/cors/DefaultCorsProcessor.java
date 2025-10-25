@@ -27,10 +27,12 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * Process an incoming cross-origin (CORS) requests.
- * Encapsulates the CORS processing logic as specified by the
- * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
- * recommendation</a> from 2013-01-29.
+ * The default implementation of the {@link CorsProcessor} interface.
+ * <p>This class extends {@link AbstractCorsProcessor} and implements the core logic
+ * for handling pre-flight and actual CORS requests. It applies the appropriate
+ * {@code Access-Control-*} headers to the response based on the configured CORS
+ * rules and rejects requests that do not comply with those rules.
+ * </p>
  *
  * @since 2.3.0
  */

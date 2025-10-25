@@ -26,12 +26,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Process an incoming cross-origin (CORS) requests.
- * Encapsulates the CORS processing logic as specified by the
- * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
- * recommendation</a> from 2013-01-29.
+ * Abstract base class for {@link CorsProcessor} implementations.
+ * <p>This class provides the configuration properties and common logic for processing
+ * Cross-Origin Resource Sharing (CORS) requests, based on the W3C recommendation.
+ * It encapsulates settings for allowed origins, methods, headers, and other CORS
+ * attributes, and provides helper methods to check requests against this configuration.
+ * </p>
  *
  * @since 2.3.0
+ * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommendation</a>
  */
 public abstract class AbstractCorsProcessor implements CorsProcessor {
 
@@ -41,8 +44,14 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     static final String ALL = "*";
 
     /**
+     * The default set of allowed HTTP methods.
+     */
+    private static final Set<String> DEFAULT_ALLOWED_METHODS = Set.of(MethodType.GET.name(), MethodType.HEAD.name());
+
+    /**
      * Origins that the CORS filter must allow. Requests from origins not
      * included here must be refused with a HTTP 403 "Forbidden" response.
+     * A {@code null} value means a wildcard {@code *} is configured.
      */
     private Set<String> allowedOrigins;
 
@@ -50,6 +59,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
      * The supported HTTP methods. Requests for methods not included here
      * must be refused by the CORS filter with a HTTP 405 "Method not
      * allowed" response.
+     * A {@code null} value means a wildcard {@code *} is configured.
      */
     private Set<String> allowedMethods;
 
@@ -91,6 +101,10 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
      */
     private int maxAgeSeconds = -1;
 
+    /**
+     * Gets the allowed origins for CORS requests.
+     * @return the array of allowed origins, or {@code null} if all origins are allowed
+     */
     public String[] getAllowedOrigins() {
         if (allowedOrigins != null) {
             return allowedOrigins.toArray(new String[0]);
@@ -99,11 +113,19 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Sets the allowed origins from a comma-separated string.
+     * @param allowedOrigins a comma-separated string of allowed origins
+     */
     public void setAllowedOrigins(String allowedOrigins) {
         String[] origins = StringUtils.splitWithComma(allowedOrigins);
         setAllowedOrigins(origins);
     }
 
+    /**
+     * Sets the allowed origins from a string array.
+     * @param allowedOrigins an array of allowed origins
+     */
     public void setAllowedOrigins(String[] allowedOrigins) {
         Set<String> set = new HashSet<>();
         if (allowedOrigins != null) {
@@ -112,6 +134,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         setAllowedOrigins(set);
     }
 
+    /**
+     * Sets the allowed origins from a set. If the set contains the wildcard "*",
+     * all origins will be allowed.
+     * @param allowedOrigins a set of allowed origins
+     */
     public void setAllowedOrigins(Set<String> allowedOrigins) {
         if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
             boolean allowAnyOrigin = allowedOrigins.contains("*");
@@ -121,6 +148,10 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Gets the allowed HTTP methods for CORS requests.
+     * @return the array of allowed methods
+     */
     public String[] getAllowedMethods() {
         if (allowedMethods != null) {
             return allowedMethods.toArray(new String[0]);
@@ -129,19 +160,37 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Returns whether the specified method is in the list of allowed methods.
+     * @param method the HTTP method
+     * @return {@code true} if the method is allowed, {@code false} otherwise
+     */
     public boolean containsMethod(String method) {
         return (allowedMethods != null && allowedMethods.contains(method));
     }
 
+    /**
+     * Gets the pre-computed string of allowed HTTP methods for the
+     * {@code Access-Control-Allow-Methods} header.
+     * @return the comma-separated string of allowed methods
+     */
     public String getAllowedMethodsString() {
         return allowedMethodsString;
     }
 
+    /**
+     * Sets the allowed HTTP methods from a comma-separated string.
+     * @param allowedMethods a comma-separated string of allowed methods
+     */
     public void setAllowedMethods(String allowedMethods) {
         String[] methods = StringUtils.splitWithComma(allowedMethods);
         setAllowedMethods(methods);
     }
 
+    /**
+     * Sets the allowed HTTP methods from a string array.
+     * @param allowedMethods an array of allowed methods
+     */
     public void setAllowedMethods(String[] allowedMethods) {
         Set<String> set = new HashSet<>();
         if (allowedMethods != null) {
@@ -150,22 +199,30 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         setAllowedMethods(set);
     }
 
+    /**
+     * Sets the allowed HTTP methods from a set. If the set is null or empty, it defaults
+     * to GET and HEAD. If the set contains the wildcard "*", all methods are allowed.
+     * @param allowedMethods a set of allowed methods
+     */
     public void setAllowedMethods(Set<String> allowedMethods) {
-        if (allowedMethods != null && !allowedMethods.isEmpty()) {
-            boolean allowAnyMethod = allowedMethods.contains(ALL);
-            if (allowAnyMethod) {
-                this.allowedMethods = null;
-                this.allowedMethodsString = null;
-            } else {
-                this.allowedMethods = allowedMethods;
-                this.allowedMethodsString = StringUtils.joinWithCommas(allowedMethods);
-            }
+        if (allowedMethods == null || allowedMethods.isEmpty()) {
+            this.allowedMethods = DEFAULT_ALLOWED_METHODS;
+        } else if (allowedMethods.contains(ALL)) {
+            this.allowedMethods = null; // Allow all
         } else {
-            this.allowedMethods = null;
+            this.allowedMethods = allowedMethods;
+        }
+        if (this.allowedMethods != null) {
+            this.allowedMethodsString = StringUtils.joinWithCommas(this.allowedMethods);
+        } else {
             this.allowedMethodsString = null;
         }
     }
 
+    /**
+     * Gets the allowed headers for CORS requests.
+     * @return the array of allowed headers, or {@code null} if all headers are allowed
+     */
     public String[] getAllowedHeaders() {
         if (allowedHeaders != null) {
             return allowedHeaders.toArray(new String[0]);
@@ -174,15 +231,28 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Gets the pre-computed string of allowed headers for the
+     * {@code Access-Control-Allow-Headers} header.
+     * @return the comma-separated string of allowed headers
+     */
     public String getAllowedHeadersString() {
         return allowedHeadersString;
     }
 
+    /**
+     * Sets the allowed headers from a comma-separated string.
+     * @param allowedHeaders a comma-separated string of allowed headers
+     */
     public void setAllowedHeaders(String allowedHeaders) {
         String[] headers = StringUtils.splitWithComma(allowedHeaders);
         setAllowedHeaders(headers);
     }
 
+    /**
+     * Sets the allowed headers from a string array.
+     * @param allowedHeaders an array of allowed headers
+     */
     public void setAllowedHeaders(String[] allowedHeaders) {
         Set<String> set = new HashSet<>();
         if (allowedHeaders != null) {
@@ -191,6 +261,11 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         setAllowedHeaders(set);
     }
 
+    /**
+     * Sets the allowed headers from a set. If the set contains the wildcard "*",
+     * all headers will be allowed.
+     * @param allowedHeaders a set of allowed headers
+     */
     public void setAllowedHeaders(Set<String> allowedHeaders) {
         if (allowedHeaders != null && !allowedHeaders.isEmpty()) {
             boolean allowAnyHeader = allowedHeaders.contains(ALL);
@@ -207,6 +282,10 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Gets the headers to expose to the client.
+     * @return the array of exposed headers
+     */
     public String[] getExposedHeaders() {
         if (exposedHeaders != null) {
             return exposedHeaders.toArray(new String[0]);
@@ -215,15 +294,28 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Gets the pre-computed string of exposed headers for the
+     * {@code Access-Control-Expose-Headers} header.
+     * @return the comma-separated string of exposed headers
+     */
     public String getExposedHeadersString() {
         return exposedHeadersString;
     }
 
+    /**
+     * Sets the exposed headers from a comma-separated string.
+     * @param exposedHeaders a comma-separated string of exposed headers
+     */
     public void setExposedHeaders(String exposedHeaders) {
         String[] headers = StringUtils.splitWithComma(exposedHeaders);
         setExposedHeaders(headers);
     }
 
+    /**
+     * Sets the exposed headers from a string array.
+     * @param exposedHeaders an array of exposed headers
+     */
     public void setExposedHeaders(String[] exposedHeaders) {
         Set<String> set = new HashSet<>();
         if (exposedHeaders != null) {
@@ -232,6 +324,10 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         setExposedHeaders(set);
     }
 
+    /**
+     * Sets the exposed headers from a set.
+     * @param exposedHeaders a set of exposed headers
+     */
     public void setExposedHeaders(Set<String> exposedHeaders) {
         if (exposedHeaders != null && !exposedHeaders.isEmpty()) {
             boolean allowAnyHeader = exposedHeaders.contains(ALL);
@@ -248,40 +344,74 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
         }
     }
 
+    /**
+     * Returns whether user credentials are to be supported.
+     * @return {@code true} if credentials are to be supported, {@code false} otherwise
+     */
     public boolean isAllowCredentials() {
         return allowCredentials;
     }
 
+    /**
+     * Sets whether user credentials, such as cookies, HTTP authentication or
+     * client-side certificates, are to be supported.
+     * @param allowCredentials {@code true} to support credentials, {@code false} otherwise
+     */
     public void setAllowCredentials(boolean allowCredentials) {
         this.allowCredentials = allowCredentials;
     }
 
+    /**
+     * Gets the cache duration for pre-flight requests.
+     * @return the cache duration in seconds, or -1 if not specified
+     */
     public int getMaxAgeSeconds() {
         return maxAgeSeconds;
     }
 
+    /**
+     * Sets how long the results of a pre-flight request can be cached by the
+     * web client, in seconds.
+     * @param maxAgeSeconds the cache duration in seconds, or -1 to disable
+     */
     public void setMaxAgeSeconds(int maxAgeSeconds) {
         this.maxAgeSeconds = maxAgeSeconds;
     }
 
+    /**
+     * Returns whether any origins are configured.
+     * @return {@code true} if origins are configured, {@code false} otherwise
+     */
     protected boolean hasAllowedOrigins() {
         return (allowedOrigins != null);
     }
 
+    /**
+     * Returns whether any methods are configured.
+     * @return {@code true} if methods are configured, {@code false} otherwise
+     */
     protected boolean hasAllowedMethods() {
         return (allowedMethods != null);
     }
 
+    /**
+     * Returns whether any headers are configured.
+     * @return {@code true} if headers are configured, {@code false} otherwise
+     */
     protected boolean hasAllowedHeaders() {
         return (allowedHeaders != null);
     }
 
+    /**
+     * Returns whether any exposed headers are configured.
+     * @return {@code true} if exposed headers are configured, {@code false} otherwise
+     */
     protected boolean hasExposedHeaders() {
         return (exposedHeaders != null);
     }
 
     /**
-     * Helper method to check whether requests from the specified origin must be allowed.
+     * Checks whether requests from the specified origin must be allowed.
      * @param origin The origin as reported by the web client (browser), {@code null} if unknown.
      * @return {@code true} if the origin is allowed, else {@code false}.
      */
@@ -290,22 +420,24 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
     }
 
     /**
-     * Helper method to check whether the specified HTTP method is
-     * supported. This is done by looking up {@link #allowedMethods}.
-     * GET and HEAD, must never be disabled and should not return 405 error code.
+     * Checks whether the specified HTTP method is supported. If a wildcard ({@code *})
+     * was configured, all methods are allowed. If no methods were configured, it
+     * defaults to GET and HEAD.
      * @param method The HTTP method.
      * @return {@code true} if the method is supported, else {@code false}.
      */
     protected boolean isAllowedMethod(String method) {
         if (allowedMethods == null) {
-            return ("GET".equals(method) || "HEAD".equals(method));
-        } else {
-            return allowedMethods.contains(method);
+            return true; // Wildcard '*' was configured, allow all
         }
+        if (method == null) {
+            return false;
+        }
+        return allowedMethods.contains(method);
     }
 
     /**
-     * Helper method to check whether the specified HTTP header is supported.
+     * Checks whether the specified HTTP header is supported.
      * @param header the HTTP header
      * @return {@code true} if the header is supported, else {@code false}.
      */

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Provides Cross-Origin Resource Sharing (CORS) support.
+ * Provides a server-side implementation for Cross-Origin Resource Sharing (CORS) support.
+ * <p>CORS is a W3C recommendation that allows web browsers to make cross-domain
+ * requests. This package provides a flexible implementation for processing CORS
+ * requests in an Aspectran application, including pre-flight and actual requests,
+ * based on a configurable set of rules.</p>
  */
 package com.aspectran.web.support.cors;

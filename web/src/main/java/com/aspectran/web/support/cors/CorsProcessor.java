@@ -20,13 +20,15 @@ import com.aspectran.core.activity.Translet;
 import java.io.IOException;
 
 /**
- * Process an incoming cross-origin (CORS) requests.
- * Encapsulates the CORS processing logic as specified by the
- * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
- * recommendation</a> from 2013-01-29.
+ * Defines the contract for processing Cross-Origin Resource Sharing (CORS) requests.
+ * <p>This interface encapsulates the core logic for handling both simple/actual and
+ * pre-flight CORS requests, as specified by the W3C recommendation.
+ * Implementations of this interface are responsible for checking the validity of
+ * a CORS request and applying the appropriate CORS headers to the response.
+ * </p>
  *
  * @since 2.3.0
- * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommandation</a>
+ * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommendation</a>
  */
 public interface CorsProcessor {
 

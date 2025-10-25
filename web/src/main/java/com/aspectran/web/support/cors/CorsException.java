@@ -20,10 +20,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.Serial;
 
 /**
- * Process an incoming cross-origin (CORS) requests.
- * Encapsulates the CORS processing logic as specified by the
- * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
- * recommendation</a> from 2013-01-29.
+ * A checked exception thrown when a Cross-Origin Resource Sharing (CORS) request
+ * is invalid or denied.
+ * <p>This exception encapsulates a specific CORS error condition and the corresponding
+ * HTTP status code to be sent back to the client. It provides several predefined
+ * static instances for common CORS errors.
+ * </p>
  *
  * @since 2.3.0
  */
