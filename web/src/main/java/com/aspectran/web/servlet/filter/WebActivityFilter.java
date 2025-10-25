@@ -22,6 +22,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.utils.wildcard.WildcardPatterns;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
+import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.Filter;
@@ -43,11 +44,10 @@ import java.io.IOException;
  * preventing them from being processed by Aspectran's main servlet.
  * <p>This is useful for serving static resources (e.g., images, CSS, JavaScript)
  * directly by the container's default servlet, improving performance by avoiding
- * unnecessary processing.</p>
- *
- * <p>The filter is configured via an init-parameter named "bypasses", which
- * accepts a comma-separated list of wildcard patterns for the request paths
- * to bypass.</p>
+ * unnecessary processing. The filter is configured via an init-parameter named
+ * "bypasses", which accepts a comma-separated list of wildcard patterns for the
+ * request paths to bypass.
+ * </p>
  */
 public class WebActivityFilter implements Filter {
 
@@ -70,17 +70,15 @@ public class WebActivityFilter implements Filter {
                 this.bypassPatterns = WildcardPatterns.of(bypasses, ActivityContext.NAME_SEPARATOR_CHAR);
 
                 ServletContext servletContext = filterConfig.getServletContext();
-                WebService webService = WebService.findWebService(servletContext);
-                DefaultServletHttpRequestHandler defaultHandler = new DefaultServletHttpRequestHandler(servletContext, webService);
-                defaultHandler.lookupDefaultServletName();
-                this.defaultServletHttpRequestHandler = defaultHandler;
+                DefaultWebService webService = WebService.findWebService(servletContext);
+                this.defaultServletHttpRequestHandler = webService.getDefaultServletHttpRequestHandler();
 
                 if (logger.isDebugEnabled()) {
                     for (WildcardPattern pattern : bypassPatterns.getPatterns()) {
                         logger.debug("{} is bypassed by {} to servlet '{}'",
                                 pattern,
                                 ObjectUtils.simpleIdentityToString(this, filterConfig.getFilterName()),
-                                defaultHandler.getDefaultServletName());
+                                this.defaultServletHttpRequestHandler.getDefaultServletName());
                     }
                 }
             }

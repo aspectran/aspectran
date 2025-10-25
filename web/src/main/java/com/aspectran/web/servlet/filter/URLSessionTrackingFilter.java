@@ -34,8 +34,17 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
- * A filter that removes the session ID from the request URI.
- * This is to prevent the session ID from being exposed in the URL.
+ * A filter that removes the session ID from the request URI if it is present.
+ * <p>URL-based session tracking is a fallback mechanism for when cookies are disabled,
+ * but it has several drawbacks:
+ * <ul>
+ *     <li>Security: Session IDs can be easily leaked through logs, browser history, or referrer headers.</li>
+ *     <li>SEO: Search engines may index multiple URLs for the same content, diluting page rank.</li>
+ *     <li>Caching: It can interfere with the caching of responses by intermediate proxies.</li>
+ * </ul>
+ * This filter mitigates these issues by stripping the session ID from the URI,
+ * relying on cookie-based sessions. It dynamically detects the session ID parameter name
+ * (e.g., {@code jsessionid}) from the servlet context's session cookie configuration.
  *
  * <p>Created: 2025. 2. 8.</p>
  */

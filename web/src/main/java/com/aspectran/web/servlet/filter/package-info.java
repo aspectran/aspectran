@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Contains servlet filters for web applications.
+ * Contains a collection of servlet filters that can be used in an Aspectran-based
+ * web application to handle common cross-cutting concerns.
+ * <p>This package includes filters for tasks such as bypassing Aspectran for
+ * static resources and sanitizing request URIs by removing session tracking
+ * information.</p>
  */
 package com.aspectran.web.servlet.filter;
