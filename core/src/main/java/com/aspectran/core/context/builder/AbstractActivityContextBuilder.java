@@ -307,12 +307,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
             ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
             if (autoReloadConfig != null) {
-                String reloadMode = autoReloadConfig.getReloadMode();
-                int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
-                boolean autoReloadEnabled = autoReloadConfig.isEnabled();
-                this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
-                this.scanIntervalSeconds = scanIntervalSeconds;
-                this.autoReloadEnabled = autoReloadEnabled;
+                this.hardReload = AutoReloadType.HARD.toString().equals(autoReloadConfig.getReloadMode());
+                this.scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
+                this.autoReloadEnabled = autoReloadConfig.isEnabled();
             }
             if (this.autoReloadEnabled) {
                 if (this.scanIntervalSeconds == -1) {
@@ -531,7 +528,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (autoReloadEnabled && masterService != null) {
             if (scanIntervalSeconds > 0) {
                 // The restart command must be delivered to the root service to safely reload the entire application.
-                contextReloadingTimer = new ContextReloadingTimer(masterService.getRootService().getServiceLifeCycle());
+                contextReloadingTimer = new ContextReloadingTimer(
+                        masterService.getRootService().getServiceLifeCycle(),
+                        scanIntervalSeconds);
                 if (siblingClassLoader != null) {
                     contextReloadingTimer.setResources(siblingClassLoader.getAllResources());
                 }
@@ -541,7 +540,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     }
                 }
                 if (contextReloadingTimer.hasResources()) {
-                    contextReloadingTimer.start(scanIntervalSeconds);
+                    contextReloadingTimer.start();
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Context auto-reloading is enabled, but no resources to monitor for reloading. " +

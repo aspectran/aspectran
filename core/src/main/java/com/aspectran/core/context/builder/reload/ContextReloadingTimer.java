@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceLifeCycle;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.thread.CustomizableThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Manages the scheduled task for automatic reloading of the {@link com.aspectran.core.context.ActivityContext}.
@@ -40,16 +39,28 @@ public class ContextReloadingTimer {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimer.class);
 
+    private static final ThreadFactory THREAD_FACTORY;
+
+    static {
+        CustomizableThreadFactory tf = new CustomizableThreadFactory("ContextReloading-");
+        tf.setDaemon(true);
+        THREAD_FACTORY = tf;
+    }
+
+    private final int scanIntervalSeconds;
+
     private volatile ScheduledExecutorService executor;
 
-    private ContextReloadingTask task;
+    private final ContextReloadingTask task;
 
     /**
      * Instantiates a new ContextReloadingTimer.
      * @param serviceLifeCycle the service life cycle to restart on changes
+     * @param scanIntervalSeconds the scan interval in seconds
      */
-    public ContextReloadingTimer(ServiceLifeCycle serviceLifeCycle) {
+    public ContextReloadingTimer(ServiceLifeCycle serviceLifeCycle, int scanIntervalSeconds) {
         this.task = new ContextReloadingTask(serviceLifeCycle);
+        this.scanIntervalSeconds = scanIntervalSeconds;
     }
 
     /**
@@ -78,12 +89,10 @@ public class ContextReloadingTimer {
 
     /**
      * Starts the timer to monitor for resource changes.
-     * @param scanIntervalInSeconds the interval in seconds to scan for changes
-     * @throws IllegalArgumentException if scanIntervalInSeconds is not a positive value
      */
-    public void start(int scanIntervalInSeconds) {
-        if (scanIntervalInSeconds <= 0) {
-            throw new IllegalArgumentException("scanIntervalInSeconds must be greater than 0");
+    public void start() {
+        if (scanIntervalSeconds <= 0) {
+            throw new IllegalArgumentException("scanIntervalSeconds must be greater than 0");
         }
 
         stop();
@@ -92,16 +101,8 @@ public class ContextReloadingTimer {
             logger.debug("Starting ContextReloadingTimer...");
         }
 
-        executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            private final AtomicInteger threadNumber = new AtomicInteger(1);
-            @Override
-            public Thread newThread(@NonNull Runnable r) {
-                Thread t = new Thread(r, "ContextReloading-" + threadNumber.getAndIncrement());
-                t.setDaemon(true);
-                return t;
-            }
-        });
-        executor.scheduleAtFixedRate(task, 0, scanIntervalInSeconds, TimeUnit.SECONDS);
+        executor = Executors.newSingleThreadScheduledExecutor(THREAD_FACTORY);
+        executor.scheduleAtFixedRate(task, 0, scanIntervalSeconds, TimeUnit.SECONDS);
     }
 
     /**
@@ -114,7 +115,6 @@ public class ContextReloadingTimer {
             }
             executor.shutdownNow();
             executor = null;
-            task = null;
         }
     }
 

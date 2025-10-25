@@ -44,7 +44,9 @@ public class ContextReloadingTask implements Runnable {
 
     private final Map<String, Long> modifiedTimeMap = new HashMap<>();
 
-    private boolean modified = false;
+    private boolean changeDetectedInPreviousRun;
+
+    private boolean restarting;
 
     /**
      * Instantiates a new ContextReloadingTask.
@@ -103,25 +105,43 @@ public class ContextReloadingTask implements Runnable {
      */
     @Override
     public void run() {
-        if (modified || modifiedTimeMap.isEmpty()) {
+        if (restarting || modifiedTimeMap.isEmpty()) {
             return;
         }
+
+        boolean changed = hasChanged();
+
+        if (changed) {
+            changeDetectedInPreviousRun = true;
+        } else {
+            if (changeDetectedInPreviousRun) {
+                restarting = true;
+                changeDetectedInPreviousRun = false;
+                restartService();
+            }
+        }
+    }
+
+    private boolean hasChanged() {
+        boolean changed = false;
         for (Map.Entry<String, Long> entry : modifiedTimeMap.entrySet()) {
             String filePath = entry.getKey();
             long prevLastModifiedTime = entry.getValue();
             File file = new File(filePath);
             long lastModifiedTime = file.lastModified();
             if (prevLastModifiedTime != lastModifiedTime) {
-                modified = true;
-                modifiedTimeMap.put(filePath, lastModifiedTime);
+                entry.setValue(lastModifiedTime);
+                changed = true;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Detected modified resource: {}", filePath);
+                    if (lastModifiedTime > 0) {
+                        logger.debug("Detected modified resource: {}", filePath);
+                    } else {
+                        logger.debug("Detected deleted resource: {}", filePath);
+                    }
                 }
             }
         }
-        if (modified) {
-            restartService();
-        }
+        return changed;
     }
 
     /**
@@ -130,12 +150,12 @@ public class ContextReloadingTask implements Runnable {
      */
     private void restartService() {
         try {
-            String message = "Some resource file changes have been detected.";
+            String message = "Resource file changes have been detected; restarting after a quiet period.";
             serviceLifeCycle.restart(message);
         } catch (Exception e) {
             // ignore
         } finally {
-            modified = false;
+            restarting = false;
         }
     }
 
