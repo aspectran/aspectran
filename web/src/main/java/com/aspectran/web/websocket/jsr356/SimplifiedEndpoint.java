@@ -24,16 +24,24 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Predicate;
 
 /**
- * A simplified WebSocket endpoint that manages a collection of authorized sessions
- * and provides methods for broadcasting messages to them.
+ * A simplified abstract WebSocket endpoint that manages a thread-safe collection of
+ * authorized sessions and provides convenient methods for broadcasting messages.
+ * <p>This class is ideal for typical WebSocket use cases where messages need to be
+ * sent to multiple clients.
+ * </p>
  *
  * <p>Created: 2025-03-24</p>
  */
 public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
-    /** A collection of authorized sessions */
+    /** A thread-safe collection of authorized sessions */
     private final Set<Session> sessions = new CopyOnWriteArraySet<>();
 
+    /**
+     * Adds a session to the collection of authorized sessions.
+     * @param session the session to add
+     * @return {@code true} if the session was added, {@code false} otherwise
+     */
     protected boolean addSession(@NonNull Session session) {
         synchronized (sessions) {
             return (session.isOpen() && sessions.add(session));
@@ -49,10 +57,16 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
         }
     }
 
+    /**
+     * A hook method called when a session is removed.
+     * @param session the session that was removed
+     */
     protected abstract void onSessionRemoved(Session session);
 
     /**
      * Returns whether a session matching the given predicate exists in the authorized sessions.
+     * @param predicate the predicate to apply to each session
+     * @return {@code true} if a matching session is found, {@code false} otherwise
      */
     public boolean containsSession(Predicate<Session> predicate) {
         Assert.notNull(predicate, "predicate must not be null");
@@ -68,6 +82,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     /**
      * Returns the number of currently authorized sessions.
+     * @return the session count
      */
     public int countSessions() {
         return sessions.size();
@@ -75,6 +90,7 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
 
     /**
      * Sends a message to all authorized sessions.
+     * @param message the text message to send
      */
     public void broadcast(String message) {
         for (Session session : sessions) {
@@ -83,7 +99,9 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a message to all authorized sessions.
+     * Sends a message to all authorized sessions except for the one to be skipped.
+     * @param message the text message to send
+     * @param sessionToSkip the session to exclude from the broadcast
      */
     public void broadcast(String message, Session sessionToSkip) {
         for (Session session : sessions) {
@@ -94,7 +112,9 @@ public abstract class SimplifiedEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * Sends a text message to the given session.
+     * Sends a text message to the given session asynchronously.
+     * @param session the session to send the message to
+     * @param text the text message to send
      */
     public void sendText(Session session, String text) {
         Assert.notNull(session, "session must not be null");

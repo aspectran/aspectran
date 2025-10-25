@@ -17,14 +17,17 @@ package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreServiceHolder;
-import jakarta.websocket.server.ServerEndpointConfig;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link ServerEndpointConfig.Configurator} for initializing ServerEndpoint-annotated
- * classes through Aspectran.
+ * A JSR-356 {@link jakarta.websocket.server.ServerEndpointConfig.Configurator}
+ * that retrieves endpoint instances from the Aspectran bean registry.
+ * <p>This allows standard {@link jakarta.websocket.server.ServerEndpoint}-annotated
+ * classes to be managed as Aspectran beans, enabling dependency injection and other
+ * framework features within your WebSocket endpoints.
+ * </p>
  *
  * <p>Created: 01/10/2019</p>
  */

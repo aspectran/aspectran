@@ -36,7 +36,12 @@ import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Abstract base class for WebSocket endpoints.
+ * An abstract base class for WebSocket endpoints, providing common lifecycle handling
+ * and integration with the Aspectran framework.
+ * <p>This class handles {@link OnOpen}, {@link OnClose}, and {@link OnError} events,
+ * provides a hook for authorization ({@link #checkAuthorized}), and manages a
+ * logging context for endpoint activities.
+ * </p>
  *
  * <p>Created: 2025-03-24</p>
  */
@@ -56,6 +61,11 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         this.loggingGroupResolved = true;
     }
 
+    /**
+     * Handles the opening of a new WebSocket session.
+     * @param session the new session
+     * @throws IOException if an I/O error occurs during session closing
+     */
     @OnOpen
     public void doOnOpen(@NonNull Session session) throws IOException {
         setLoggingGroup();
@@ -71,12 +81,28 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         }
     }
 
+    /**
+     * Checks if the session is authorized to connect. Subclasses can override this
+     * method to implement their own authorization logic.
+     * @param session the session to check
+     * @return {@code true} if the session is authorized, {@code false} otherwise
+     */
     protected boolean checkAuthorized(Session session) {
         return true;
     }
 
+    /**
+     * Subclasses must implement this method to register the appropriate message
+     * handlers for the session.
+     * @param session the session to register handlers for
+     */
     protected abstract void registerMessageHandlers(Session session);
 
+    /**
+     * Handles the closing of a WebSocket session.
+     * @param session the closed session
+     * @param reason the reason for closing
+     */
     @OnClose
     public void doOnClose(Session session, CloseReason reason) {
         setLoggingGroup();
@@ -86,6 +112,11 @@ public abstract class AbstractEndpoint extends InstantActivitySupport {
         removeSession(session);
     }
 
+    /**
+     * Handles any errors that occur during the WebSocket session.
+     * @param session the session in which the error occurred
+     * @param error the throwable representing the error
+     */
     @OnError
     public void doOnError(@NonNull Session session, Throwable error) {
         setLoggingGroup();

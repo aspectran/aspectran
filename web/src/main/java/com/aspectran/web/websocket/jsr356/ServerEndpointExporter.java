@@ -33,10 +33,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Detects beans of type {@link ServerEndpointConfig} and registers with the standard
- * Java WebSocket runtime. Also detects beans annotated with {@link ServerEndpoint} and
- * registers them as well. Although not required, it is likely annotated endpoints should
- * have their {@code configurator} property set to {@link AspectranConfigurator}.
+ * A component that detects and registers WebSocket endpoints with the standard
+ * Java WebSocket runtime (JSR-356).
+ * <p>This class scans the Aspectran bean registry for beans annotated with
+ * {@link ServerEndpoint} and beans of type {@link ServerEndpointConfig}, and then
+ * registers them with the underlying {@link ServerContainer}. This mechanism is essential
+ * for bridging Aspectran-managed beans with the Servlet container's WebSocket support.
+ * </p>
+ * <p>Although not required, it is recommended that annotated endpoints have their
+ * {@code configurator} property set to {@link AspectranConfigurator} to enable
+ * dependency injection.
+ * </p>
  *
  * <p>Created: 29/09/2019</p>
  */

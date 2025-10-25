@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 /**
- * Support classes for JSR-356 (Java API for WebSocket).
+ * Provides support classes for integrating the Java API for WebSocket (JSR-356)
+ * with the Aspectran framework.
+ * <p>This package allows standard WebSocket endpoints to be managed as Aspectran beans,
+ * enabling dependency injection and lifecycle management within the Aspectran container.
+ * </p>
  */
 package com.aspectran.web.websocket.jsr356;
