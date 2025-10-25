@@ -16,82 +16,34 @@
 package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
-import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
-import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
- * JSP or other web resource integration.
- * Sends the model produced by Aspectran's internal activity
- * to the JSP to render the final view page.
+ * A view dispatcher for integrating with JSP (JavaServer Pages) or other web
+ * resources that can be dispatched to via a {@link jakarta.servlet.RequestDispatcher}.
+ * <p>This dispatcher takes the results from an activity (the model) and exposes
+ * them as request attributes before forwarding the request to a JSP page for
+ * rendering.
+ * </p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class JspViewDispatcher extends AbstractViewDispatcher {
+public class JspViewDispatcher extends AbstractJspViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(JspViewDispatcher.class);
 
-    private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
-
     @Override
-    public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
-        String jspPath = null;
-        try {
-            jspPath = resolveViewName(dispatchRule, activity);
-
-            RequestAdapter requestAdapter = activity.getRequestAdapter();
-            ResponseAdapter responseAdapter = activity.getResponseAdapter();
-
-            String contentType = dispatchRule.getContentType();
-            if (contentType == null) {
-                contentType = getContentType();
-            }
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            } else {
-                responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
-            }
-
-            String encoding = dispatchRule.getEncoding();
-            if (encoding == null && responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getDefinitiveResponseEncoding();
-            }
-            if (encoding != null) {
-                responseAdapter.setEncoding(encoding);
-            }
-
-            ProcessResult processResult = activity.getProcessResult();
-            DispatchResponse.saveAttributes(requestAdapter, processResult);
-
-            HttpServletResponse response = responseAdapter.getAdaptee();
-            if (response.isCommitted()) {
-                response.reset();
-            }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to {}", jspPath);
-            }
-
-            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
-            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(jspPath);
-            requestDispatcher.forward(requestWrapper, response);
-
-            if (response.getStatus() == 404) {
-                logger.warn("Resource file {} not found", jspPath);
-            }
-        } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, jspPath), e);
+    protected void doDispatch(Activity activity, HttpServletResponse response, String viewName)
+            throws ServletException, IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Dispatching to {}", viewName);
         }
+        forward(activity, response, viewName);
     }
 
 }

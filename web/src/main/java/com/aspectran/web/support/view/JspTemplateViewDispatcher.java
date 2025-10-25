@@ -16,32 +16,30 @@
 package com.aspectran.web.support.view;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.AbstractViewDispatcher;
-import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
-import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
- * JSP or other web resource integration.
- * Sends the model produced by Aspectran's internal activity
- * to the JSP to render the final view page.
+ * A JSP view dispatcher that implements the Composite View pattern.
+ * <p>This dispatcher forwards the request to a single main template page (the layout).
+ * The path to the actual content page is passed as a request attribute. The main
+ * template is then responsible for including the content page, allowing for a
+ * consistent layout across multiple views.
+ * </p>
+ * <p>For example, the main template can use {@code <jsp:include page="${includePage}"/>}
+ * to render the content, where "includePage" is the configured {@code includePageKey}.
+ * </p>
  *
  * <p>Created: 2019. 02. 18</p>
  */
-public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
+public class JspTemplateViewDispatcher extends AbstractJspViewDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(JspTemplateViewDispatcher.class);
-
-    private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
     private String template;
 
@@ -56,63 +54,21 @@ public class JspTemplateViewDispatcher extends AbstractViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
-        try {
-            if (template == null) {
-                throw new IllegalArgumentException("No specified template page");
-            }
-            if (includePageKey == null) {
-                throw new IllegalArgumentException("No attribute name to specify the include page name");
-            }
-
-            String jspPath = resolveViewName(dispatchRule, activity);
-
-            RequestAdapter requestAdapter = activity.getRequestAdapter();
-            ResponseAdapter responseAdapter = activity.getResponseAdapter();
-
-            requestAdapter.setAttribute(includePageKey, jspPath);
-
-            String contentType = dispatchRule.getContentType();
-            if (contentType == null) {
-                contentType = getContentType();
-            }
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            } else {
-                responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
-            }
-
-            String encoding = dispatchRule.getEncoding();
-            if (encoding == null && responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getDefinitiveResponseEncoding();
-            }
-            if (encoding != null) {
-                responseAdapter.setEncoding(encoding);
-            }
-
-            ProcessResult processResult = activity.getProcessResult();
-            DispatchResponse.saveAttributes(requestAdapter, processResult);
-
-            HttpServletResponse response = responseAdapter.getAdaptee();
-            if (response.isCommitted()) {
-                response.reset();
-            }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Dispatching to {} for {}", template, jspPath);
-            }
-
-            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
-            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(template);
-            requestDispatcher.forward(requestWrapper, response);
-
-            if (response.getStatus() == 404) {
-                logger.warn("Resource file {} not found", template);
-            }
-        } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, null), e);
+    protected void doDispatch(Activity activity, HttpServletResponse response, String viewName)
+            throws ServletException, IOException {
+        if (template == null) {
+            throw new IllegalArgumentException("No specified template page");
         }
+        if (includePageKey == null) {
+            throw new IllegalArgumentException("No attribute name to specify the include page name");
+        }
+
+        activity.getRequestAdapter().setAttribute(includePageKey, viewName);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Dispatching to {} for {}", template, viewName);
+        }
+        forward(activity, response, template);
     }
 
     @Override

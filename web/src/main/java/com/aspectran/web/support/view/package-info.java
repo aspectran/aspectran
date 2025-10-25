@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * Provides support classes for view resolution in a web environment.
+ * Provides view dispatcher implementations for JSP-based rendering in a web environment.
+ * <p>These classes are responsible for forwarding the request and model data to JSP
+ * pages to render the final view for the user.</p>
  */
 package com.aspectran.web.support.view;
