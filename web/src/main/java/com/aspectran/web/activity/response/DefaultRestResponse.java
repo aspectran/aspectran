@@ -41,7 +41,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The default {@link RestResponse} implementation that supports APON, JSON, and XML media types.
+ * The default {@link RestResponse} implementation that supports transformation to
+ * APON, JSON, XML, and plain text formats.
+ *
+ * <p>This class determines the response content type through content negotiation
+ * and serializes the data accordingly. It supports path extension-based and
+ * 'Accept' header-based content negotiation.
  *
  * <p>Created: 2019-06-16</p>
  */
@@ -137,6 +142,12 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    /**
+     * Transforms the response data based on the negotiated content type.
+     * @param activity the current activity
+     * @param contentType the negotiated content type
+     * @throws Exception if an error occurs during transformation
+     */
     protected void transformByContentType(Activity activity, MediaType contentType) throws Exception {
         if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
             toJSON(activity, parseIndent(contentType));
@@ -151,6 +162,13 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    /**
+     * Serializes the response data to JSON format.
+     * Supports JSONP by checking for a 'callback' request parameter.
+     * @param activity the current activity
+     * @param indent the indentation level for pretty-printing
+     * @throws IOException if an I/O error occurs
+     */
     private void toJSON(@NonNull Activity activity, int indent) throws IOException {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -179,6 +197,12 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    /**
+     * Serializes the response data to APON format.
+     * @param activity the current activity
+     * @param indent the indentation level for pretty-printing
+     * @throws IOException if an I/O error occurs
+     */
     private void toAPON(Activity activity, int indent) throws IOException {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -196,6 +220,14 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    /**
+     * Serializes the response data to XML format.
+     * @param activity the current activity
+     * @param encoding the character encoding
+     * @param indent the indentation level for pretty-printing
+     * @throws IOException if an I/O error occurs
+     * @throws TransformerException if an error occurs during XML transformation
+     */
     private void toXML(Activity activity, String encoding, int indent) throws IOException, TransformerException {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -212,6 +244,11 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    /**
+     * Converts the response data to a plain text string.
+     * @param activity the current activity
+     * @throws IOException if an I/O error occurs
+     */
     private void toText(Activity activity) throws IOException {
         if (getName() != null || getData() != null) {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();

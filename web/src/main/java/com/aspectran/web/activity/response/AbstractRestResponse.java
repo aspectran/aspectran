@@ -37,6 +37,11 @@ import java.util.Locale;
 /**
  * Abstract base class for {@link RestResponse} implementations.
  *
+ * <p>This class provides the basic structure for managing response data,
+ * headers, status, and content negotiation settings. Subclasses must implement
+ * {@link #getSupportedContentTypes()} and {@link #getContentTypeByPathExtension(String)}
+ * to define the supported media types.
+ *
  * <p>Created: 2019-06-16</p>
  */
 public abstract class AbstractRestResponse implements RestResponse {
@@ -387,8 +392,25 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     protected abstract MediaType getContentTypeByPathExtension(String extension);
 
+    /**
+     * Determines the most appropriate content type based on the request, using content negotiation.
+     * The negotiation process is as follows:
+     * <ol>
+     *     <li>If {@code favorPathExtension} is true, it first checks the request's path extension.
+     *     If a supported media type is found, it is returned immediately.</li>
+     *     <li>If no content type is found via the path extension or if path extension is not favored,
+     *     it checks the {@code Accept} header (unless {@code ignoreAcceptHeader} is true).</li>
+     *     <li>If a compatible type is found in the {@code Accept} header, it is returned.</li>
+     *     <li>If no compatible type is found, and a {@code defaultContentType} is configured and supported,
+     *     the default is returned.</li>
+     * </ol>
+     * @param activity the current activity
+     * @return the resolved content type
+     * @throws HttpMediaTypeNotAcceptableException if no acceptable content type can be found
+     */
     protected MediaType determineAcceptContentType(@NonNull Activity activity)
             throws HttpMediaTypeNotAcceptableException {
+        // 1. Check path extension
         if (isFavorPathExtension()) {
             String path = activity.getTranslet().getRequestName();
             String ext = FilenameUtils.getExtension(path);
@@ -403,6 +425,8 @@ public abstract class AbstractRestResponse implements RestResponse {
                 throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
             }
         }
+
+        // 2. Check 'Accept' header
         if (!isIgnoreAcceptHeader()) {
             List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
             for (MediaType contentType : acceptContentTypes) {
@@ -417,11 +441,14 @@ public abstract class AbstractRestResponse implements RestResponse {
                     }
                 }
             }
+            // 3. Check default content type
             if (getDefaultContentType() != null &&
                     getSupportedContentTypes().contains(getDefaultContentType())) {
                 return getDefaultContentType();
             }
         }
+
+        // 4. Not acceptable
         throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
     }
 

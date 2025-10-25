@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 /**
- * Provides web-specific implementations and extensions for handling responses.
+ * Provides web-specific implementations for handling RESTful responses.
  *
- * <p>This package builds upon the core response mechanisms defined in
- * {@code com.aspectran.core.activity.response} to provide functionalities
- * tailored for web environments. It primarily focuses on RESTful responses,
- * offering abstractions and concrete implementations for generating various
- * HTTP responses with structured data.</p>
+ * <p>This package contains the {@link com.aspectran.web.activity.response.RestResponse}
+ * interface, which defines a contract for building HTTP responses, and its default
+ * implementation, {@link com.aspectran.web.activity.response.DefaultRestResponse},
+ * which supports data transformation into formats like JSON, APON, and XML.
+ * It builds upon the core response mechanisms to provide functionalities
+ * tailored for web environments, focusing on RESTful services.
  */
 package com.aspectran.web.activity.response;
