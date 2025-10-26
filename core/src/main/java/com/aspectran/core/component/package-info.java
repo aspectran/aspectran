@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 /**
- * Contains the core components of Aspectran.
+ * Provides the basic infrastructure for component lifecycle management.
+ *
+ * <p>This package contains the fundamental {@link com.aspectran.core.component.Component}
+ * interface and its abstract base implementation, {@link com.aspectran.core.component.AbstractComponent},
+ * which together define a consistent lifecycle (initialize, destroy) for all major
+ * components within the Aspectran framework.
  */
 package com.aspectran.core.component;

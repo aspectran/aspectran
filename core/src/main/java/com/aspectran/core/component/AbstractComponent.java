@@ -21,7 +21,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract Implementation of {@link Component}.
+ * Abstract base class for {@link Component} implementations.
+ *
+ * <p>This class provides a thread-safe, stateful lifecycle management mechanism.
+ * It uses an {@link AutoLock} to synchronize state transitions and ensures that
+ * lifecycle methods are called in the correct order. Subclasses must implement
+ * the {@link #doInitialize()} and {@link #doDestroy()} template methods to provide
+ * specific initialization and destruction logic.
+ * </p>
  *
  * <p>Created: 2017. 7. 4.</p>
  */
@@ -39,8 +46,16 @@ public abstract class AbstractComponent implements Component {
 
     private volatile boolean destroyed;
 
+    /**
+     * Template method for component-specific initialization logic.
+     * @throws Exception if initialization fails
+     */
     protected abstract void doInitialize() throws Exception;
 
+    /**
+     * Template method for component-specific destruction logic.
+     * @throws Exception if destruction fails
+     */
     protected abstract void doDestroy() throws Exception;
 
     @Override
@@ -135,6 +150,10 @@ public abstract class AbstractComponent implements Component {
         }
     }
 
+    /**
+     * Checks if the component is in an available state.
+     * @throws UnavailableException if the component is not initialized or has been destroyed
+     */
     public void checkAvailable() {
         if (isDestroyed() || isDestroying()) {
             throw new UnavailableException("Already destroyed " + getComponentName());
@@ -144,6 +163,10 @@ public abstract class AbstractComponent implements Component {
         }
     }
 
+    /**
+     * Checks if the component has not been destroyed.
+     * @throws UnavailableException if the component has been destroyed
+     */
     public void checkNotDestroyed() {
         if (isDestroyed()) {
             throw new UnavailableException("Already destroyed " + getComponentName());

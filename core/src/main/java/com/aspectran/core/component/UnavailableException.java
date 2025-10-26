@@ -18,7 +18,9 @@ package com.aspectran.core.component;
 import java.io.Serial;
 
 /**
- * Exception occurs when there is no current activity.
+ * Exception thrown when a component is not in an available state for the
+ * requested operation (e.g., it has not been initialized or has already
+ * been destroyed).
  */
 public class UnavailableException extends IllegalStateException {
 
@@ -26,7 +28,8 @@ public class UnavailableException extends IllegalStateException {
     private static final long serialVersionUID = -7917663896173904952L;
 
     /**
-     * Constructs a NoActivityStateException.
+     * Constructs an UnavailableException with the specified detail message.
+     * @param message the detail message
      */
     public UnavailableException(String message) {
         super(message);
