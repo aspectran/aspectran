@@ -16,7 +16,6 @@
 package com.aspectran.core.context.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConversionException;
 import com.aspectran.utils.StringifyContext;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +23,8 @@ import java.util.Date;
 
 /**
  * Converts a String to a {@link java.util.Date}.
+ * <p>This converter supports custom date formats using the {@link com.aspectran.core.component.bean.annotation.Format}
+ * annotation on the target parameter or property.</p>
  *
  * <p>Created: 2025. 10. 26.</p>
  */

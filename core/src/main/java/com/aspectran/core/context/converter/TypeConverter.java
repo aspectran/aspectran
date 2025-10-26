@@ -31,6 +31,7 @@ public interface TypeConverter<T> {
      * @param value the value to convert, typically a String or String[]
      * @param annotations the annotations on the target parameter or property,
      *                    which can be used to influence the conversion
+     * @param activity the current activity
      * @return the converted object
      * @throws Exception if the conversion fails
      */

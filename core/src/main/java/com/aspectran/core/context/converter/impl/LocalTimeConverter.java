@@ -16,7 +16,6 @@
 package com.aspectran.core.context.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConversionException;
 import com.aspectran.utils.StringifyContext;
 
 import java.lang.annotation.Annotation;

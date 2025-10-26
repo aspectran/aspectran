@@ -22,6 +22,8 @@ import java.lang.annotation.Annotation;
 
 /**
  * Converts a String to a {@link Character}.
+ * <p>This converter returns the first character of the string. If the string is
+ * {@code null} or empty, it returns {@code null}.</p>
  *
  * <p>Created: 2025. 10. 26.</p>
  */

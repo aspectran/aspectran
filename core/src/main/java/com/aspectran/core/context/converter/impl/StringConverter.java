@@ -21,7 +21,7 @@ import com.aspectran.core.context.converter.TypeConverter;
 import java.lang.annotation.Annotation;
 
 /**
- * Converts a String to a {@link String}.
+ * A simple pass-through converter that returns the input string without any change.
  *
  * <p>Created: 2025. 10. 26.</p>
  */

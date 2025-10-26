@@ -68,7 +68,8 @@ public abstract class AnnotatedMethodInvoker {
      * @param method the method to be invoked
      * @param parameterBindingRules an array of rules that describe how to bind and convert each parameter
      * @return the result of the method invocation
-     * @throws Exception if any error occurs during parameter binding or method invocation
+     * @throws ParameterBindingException if an error occurs during parameter resolution or binding
+     * @throws Exception if the underlying method invocation throws an exception
      */
     public static Object invoke(
             @NonNull Activity activity,
@@ -136,6 +137,15 @@ public abstract class AnnotatedMethodInvoker {
         }
     }
 
+    /**
+     * Resolves the argument for a single method parameter when a {@link Translet} is available.
+     * <p>It handles various parameter types, including the Translet itself, request parameters,
+     * maps, collections, and APON objects. It can also perform bean lookups and model binding.</p>
+     * @param activity the current activity
+     * @param pbr the binding rule for the parameter to resolve
+     * @return the resolved argument value
+     * @throws Exception if resolution fails for any reason
+     */
     private static Object resolveArgumentWithTranslet(@NonNull Activity activity, @NonNull ParameterBindingRule pbr)
             throws Exception {
         Translet translet = activity.getTranslet();
@@ -220,6 +230,13 @@ public abstract class AnnotatedMethodInvoker {
         return result;
     }
 
+    /**
+     * Resolves the argument for a single method parameter in a non-translet environment (e.g., daemon).
+     * <p>Resolution is typically limited to injecting beans from the activity context.</p>
+     * @param activity the current activity
+     * @param pbr the binding rule for the parameter to resolve
+     * @return the resolved argument value (usually a bean)
+     */
     private static Object resolveArgument(@NonNull Activity activity, @NonNull ParameterBindingRule pbr) {
         Class<?> type = pbr.getType();
         String name = pbr.getName();
@@ -239,6 +256,14 @@ public abstract class AnnotatedMethodInvoker {
         return result;
     }
 
+    /**
+     * Creates an instance of the specified type and populates its properties from request parameters.
+     * This is used for binding complex objects (models) from the request.
+     * @param activity the current activity, which provides access to the translet and request parameters
+     * @param type the type of the model object to create and bind
+     * @return the populated model object
+     * @throws Exception if the model cannot be instantiated or a property cannot be set
+     */
     @NonNull
     private static Object bindModel(@NonNull Activity activity, Class<?> type) throws Exception {
         Translet translet = activity.getTranslet();
@@ -288,6 +313,18 @@ public abstract class AnnotatedMethodInvoker {
         return model;
     }
 
+    /**
+     * Resolves the given value by converting it to the target type using a registered {@link TypeConverter}.
+     * <p>This method handles both single values and arrays of values, applying type conversion
+     * for each element as needed.</p>
+     * @param value the value to resolve (can be a String or String[])
+     * @param targetType the target type to convert to
+     * @param annotations annotations on the target parameter, which can influence conversion (e.g., @Format)
+     * @param activity the current activity
+     * @return the converted value, or {@code null} if the input value is null,
+     *         or {@link Void#TYPE} if no suitable converter is found
+     * @throws TypeConversionException if the type conversion fails
+     */
     @Nullable
     private static Object resolveValue(Object value, @NonNull Class<?> targetType, Annotation[] annotations,
                                        @NonNull Activity activity)
@@ -307,8 +344,10 @@ public abstract class AnnotatedMethodInvoker {
             for (int i = 0; i < values.length; i++) {
                 try {
                     Array.set(array, i, converter.convert(values[i], annotations, activity));
+                } catch (TypeConversionException e) {
+                    throw e;
                 } catch (Exception e) {
-                    throw new TypeConversionException(value, targetType, e);
+                    throw new TypeConversionException(values[i], componentType, e);
                 }
             }
             return array;
@@ -324,8 +363,10 @@ public abstract class AnnotatedMethodInvoker {
                     return TypeUtils.getPrimitiveDefaultValue(targetType);
                 }
                 return result;
+            } catch (TypeConversionException e) {
+                throw e;
             } catch (Exception e) {
-                throw new TypeConversionException(value, targetType, e);
+                throw new TypeConversionException(stringValue, targetType, e);
             }
         }
     }

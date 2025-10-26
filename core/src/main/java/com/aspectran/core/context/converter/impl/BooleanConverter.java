@@ -22,6 +22,9 @@ import java.lang.annotation.Annotation;
 
 /**
  * Converts a String to a {@link Boolean}.
+ * <p>If the input string is {@code null}, it returns {@code null}. Otherwise, it delegates
+ * to {@link Boolean#valueOf(String)}, which returns {@code true} if the string is,
+ * ignoring case, "true", and {@code false} otherwise.</p>
  *
  * <p>Created: 2025. 10. 26.</p>
  */
