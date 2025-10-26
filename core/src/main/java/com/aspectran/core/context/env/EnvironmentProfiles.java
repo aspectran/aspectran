@@ -28,6 +28,7 @@ import java.util.Set;
 
 /**
  * Manages the profiles for the application environment.
+ *
  * <p>Profiles are logical groups of bean definitions and configuration that are
  * only active in specific environments (e.g., 'development', 'test', 'production').
  * This class provides mechanisms to set, get, and validate these profiles.
@@ -309,7 +310,7 @@ public class EnvironmentProfiles {
      * active or default profiles.
      * <p>Subclasses may override to impose further restrictions on profile syntax.</p>
      * @param profile the given profile
-     * @throws IllegalArgumentException if the profile is null, empty, whitespace-only or
+     * @throws IllegalArgumentException if the profile is null, empty, whitespace-only, or
      *      begins with the profile NOT operator (!)
      * @see #acceptsProfiles
      * @see #setDefaultProfiles

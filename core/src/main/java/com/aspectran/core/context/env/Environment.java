@@ -20,30 +20,24 @@ import com.aspectran.core.activity.Activity;
 import java.util.Iterator;
 
 /**
- * Interface representing the environment in which the current application is running.
- * Models two key aspects of the application environment: <em>profiles</em> and
- * <em>properties</em>.
+ * Interface representing the environment in which the application is running.
+ * It models two key aspects: <em>profiles</em> and <em>properties</em>.
  *
- * <p>A profile is a named, logical group of bean definitions to be registered
- * with the container only if the given profile is active. Beans may be assigned
- * to a profile whether defined in XML or via annotations; see the
- * {@code @Profile} annotation for details. The role of the {@code Environment}
- * object with relation to profiles is in determining which profiles (if any) are
- * currently {@linkplain #getActiveProfiles() active}, and which profiles (if any)
- * should be {@linkplain #getDefaultProfiles() active by default}.
+ * <p>A <b>profile</b> is a named, logical group of bean definitions to be
+ * registered with the container only if the profile is active. The role of the
+ * {@code Environment} is to determine which profiles are currently
+ * {@linkplain #getActiveProfiles() active}, and which should be active by
+ * {@linkplain #getDefaultProfiles() default}.
  *
- * <p>Properties play an important role in almost all applications, and may
- * originate from a variety of sources: properties files, JVM system properties,
- * system environment variables, JNDI, servlet context parameters, ad-hoc
- * Properties objects, Maps, and so on. The role of the environment object is to
- * provide the user with a convenient service interface for configuring property
- * sources and resolving properties from them.
+ * <p><b>Properties</b> play an important role in almost all applications. The role of
+ * the environment is to provide a convenient interface for resolving property values
+ * from various sources.
  */
 public interface Environment {
 
     /**
      * Returns the set of profiles that are essential for this environment.
-     * These are always active internally, but are not exposed as active profiles.
+     * These are always active internally but are not exposed as active profiles.
      * @return the set of essential profiles for this environment
      * @see #getActiveProfiles
      * @see EnvironmentProfiles#setBaseProfiles
@@ -63,16 +57,14 @@ public interface Environment {
 
     /**
      * Returns the set of profiles explicitly made active for this environment.
-     * <p>Profiles are used for creating logical groupings of bean definitions to be
-     * registered conditionally, for example based on deployment environment.
-     * Profiles can be activated by setting the
+     * <p>Profiles can be activated by setting the
      * {@link EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME "aspectran.profiles.active"}
-     * as a system property or by calling {@link EnvironmentProfiles#setActiveProfiles(String...)}.
-     * <p>If no profiles have explicitly been specified as active, then any
-     * {@linkplain #getDefaultProfiles() default profiles} will automatically be activated.
+     * system property or by calling {@link #addActiveProfile(String)}.
+     * <p>If no profiles are explicitly active, the {@linkplain #getDefaultProfiles() default
+     * profiles} will be used.
      * @return the set of active profiles
      * @see #getDefaultProfiles
-     * @see EnvironmentProfiles#setActiveProfiles
+     * @see #addActiveProfile(String)
      * @see EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME
      */
     String[] getActiveProfiles();
@@ -120,15 +112,13 @@ public interface Environment {
     boolean acceptsProfiles(Profiles profiles);
 
     /**
-     * Returns whether one or more of the given profiles are active or, in the case of
-     * no explicit active profiles, whether one or more of the given profiles are
-     * included in the set of default profiles.
-     * <p>If a profile begins with '!' the logic is inverted, i.e. the method will
-     * return {@code true} if the given profile is <em>not</em> active. For example,
+     * Checks if any of the given profile conditions are met against the active
+     * or default profiles.
+     * <p>If a profile name is prefixed with '!', the logic is inverted. For example,
      * {@code env.acceptsProfiles("p1", "!p2")} will return {@code true} if profile
-     * 'p1' is active or 'p2' is not active.
+     * 'p1' is active OR if profile 'p2' is NOT active.
      * @param profiles the profiles to check
-     * @return {@code true} if one of the given profiles is active, {@code false} otherwise
+     * @return {@code true} if any of the profile conditions are met, {@code false} otherwise
      * @throws IllegalArgumentException if called with zero arguments or if any
      *      profile is {@code null}, empty, or whitespace-only
      * @see #getActiveProfiles

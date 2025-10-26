@@ -15,22 +15,20 @@
  */
 /**
  * Provides classes for managing the application's runtime environment.
+ *
  * <p>The core of this package is the {@link com.aspectran.core.context.env.Environment}
- * interface, which represents the environment in which the current application is running.
- * Environments model two key aspects of the application environment:
+ * interface, which models two key aspects of the application environment:
  * <ul>
- *     <li><b>Profiles:</b> Logical groupings of bean definitions and configuration
- *     to be registered conditionally, for example, based on deployment environment
- *     (e.g., 'development', 'production', 'test'). The {@link com.aspectran.core.context.env.Profiles}
- *     and {@link com.aspectran.core.context.env.ProfilesParser} classes provide
- *     powerful and flexible profile expression parsing.</li>
- *     <li><b>Properties:</b> A way to manage environment-specific configuration properties.
- *     In Aspectran, these properties can be defined as
- *     {@link com.aspectran.core.context.rule.ItemRule}s, allowing their values to be
- *     dynamically evaluated at runtime within the context of an
- *     {@link com.aspectran.core.activity.Activity}.</li>
+ *     <li><b>Profiles:</b> Logical groupings of bean definitions that can be
+ *     conditionally registered based on the active environment (e.g., 'development',
+ *     'production'). The {@link com.aspectran.core.context.env.Profiles} class
+ *     provides a powerful expression language for complex profile logic.</li>
+ *     <li><b>Properties:</b> A mechanism for managing configuration. In Aspectran,
+ *     properties are defined as {@link com.aspectran.core.context.rule.ItemRule}s,
+ *     allowing their values to be dynamically evaluated at runtime within the
+ *     context of an {@link com.aspectran.core.activity.Activity}.</li>
  * </ul>
- * <p>This package allows for the separation of configuration from application logic,
- * enabling applications to be easily adapted for different deployment scenarios.
+ * <p>This package enables the separation of configuration from application logic,
+ * allowing applications to be easily adapted to different deployment scenarios.
  */
 package com.aspectran.core.context.env;

@@ -21,11 +21,11 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.Assert;
 
 /**
- * A builder class for creating {@link ActivityEnvironment} instances.
+ * A builder for creating {@link ActivityEnvironment} instances.
  *
- * <p>This class provides a fluent API for setting the necessary components,
+ * <p>This class provides a fluent API for assembling the necessary components,
  * such as {@link EnvironmentProfiles} and property {@link ItemRule}s,
- * before constructing the final {@link ActivityEnvironment} object.
+ * to construct a new {@link ActivityEnvironment}.
  *
  * @since 7.5.0
  */

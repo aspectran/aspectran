@@ -27,21 +27,24 @@ import java.util.function.Predicate;
  * It allows for sophisticated profile matching logic using a flexible
  * expression language.
  *
- * <p>Profile expressions support the following operators:
+ * <p>Profile expressions support logical operators and grouping:
  * <ul>
- *     <li>{@code !}: Logical NOT</li>
- *     <li>{@code ,}: Delimiter for separating profiles</li>
- *     <li>{@code ()}: Logical AND for grouping profiles</li>
- *     <li>{@code []}: Logical OR for grouping profiles (can be omitted for a single OR set)</li>
+ *   <li>{@code !}: The logical "NOT" operator. Negates a profile or a group.</li>
+ *   <li>{@code ,}: A separator for profiles within a group.</li>
+ *   <li>{@code (...)}: A logical "AND" group. All profiles/groups inside must match.</li>
+ *   <li>{@code [...]}: A logical "OR" group. At least one profile/group inside must match.</li>
+ *   <li>A top-level expression without grouping (e.g., "p1, p2") is treated as an "OR" group.</li>
  * </ul>
  *
  * <p>Examples:
  * <ul>
- *     <li>{@code "production"}: Matches if the "production" profile is active.</li>
- *     <li>{@code "!production"}: Matches if the "production" profile is not active.</li>
- *     <li>{@code "(p1, p2)"}: Matches if both "p1" and "p2" profiles are active.</li>
- *     <li>{@code "[p1, p2]"}: Matches if either "p1" or "p2" profile is active.</li>
- *     <li>{@code "(!p1, p2)"}: Matches if "p1" is not active and "p2" is active.</li>
+ *   <li>{@code "production"}: Matches if the 'production' profile is active.</li>
+ *   <li>{@code "!production"}: Matches if the 'production' profile is NOT active.</li>
+ *   <li>{@code "p1, p2"}: Same as {@code "[p1, p2]"}. Matches if 'p1' OR 'p2' is active.</li>
+ *   <li>{@code "(p1, p2)"}: Matches if 'p1' AND 'p2' are both active.</li>
+ *   <li>{@code "(!p1, p2)"}: Matches if 'p1' is NOT active AND 'p2' is active.</li>
+ *   <li>{@code "[!p1, p2]"}: Matches if 'p1' is NOT active OR 'p2' is active.</li>
+ *   <li>{@code "([p1, p2], !p3)"}: Matches if ('p1' OR 'p2' is active) AND 'p3' is NOT active.</li>
  * </ul>
  *
  * @since 7.5.0

@@ -29,9 +29,9 @@ import java.util.function.Predicate;
  * Internal parser for profile expressions, used by {@link Profiles#of(String)}.
  *
  * <p>This parser transforms a profile expression string into a {@link Profiles}
- * predicate that can be evaluated against the active environment. It supports
- * logical operators for AND, OR, and NOT, as well as grouping for complex
- * expressions.
+ * predicate. It supports the logical expression syntax defined in the
+ * {@link Profiles} interface, including AND, OR, and NOT operators, as well
+ * as grouping.
  *
  * @since 7.5.0
  * @see Profiles
