@@ -45,8 +45,8 @@ public class ValueTypeMismatchException extends InvalidParameterValueException {
                                       @NonNull Class<?> requiredType,
                                       @NonNull Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +
-            "to required type [" + requiredType.getName() + "]; Cause: " +
-            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
+                "to required type [" + requiredType.getName() + "]; Cause: " +
+                ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }
 
 }
