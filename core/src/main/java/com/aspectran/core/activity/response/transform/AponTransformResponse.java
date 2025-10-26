@@ -30,13 +30,12 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * {@code AponTransformResponse} converts the activity's processing results into
- * APON (Aspectran Plain Object Notation) format and outputs it.
+ * A {@link TransformResponse} that converts the activity's results into APON format.
  *
- * <p>This response type is responsible for taking the structured data from the
- * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
- * into a human-readable and machine-parsable APON string. It supports configuration
- * for content type, encoding, and pretty-printing.</p>
+ * <p>This class serializes the structured data from a {@link ProcessResult} into a
+ * human-readable and machine-parsable APON string. It supports configuration for
+ * content type, encoding, and pretty-printing, as defined in the associated
+ * {@link TransformRule}.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -97,8 +96,8 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     /**
-     * Transforms the given {@link Parameters} object into an APON formatted string
-     * and writes it to the provided writer.
+     * A static utility method to transform a {@link Parameters} object into an APON
+     * formatted string and write it to the provided writer.
      * @param parameters the parameters to transform
      * @param writer the writer to output the APON string to
      * @param stringifyContext the context for custom string conversion
@@ -111,11 +110,13 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     /**
-     * Transforms the given {@link Parameters} object into an APON formatted string.
+     * A static utility method to transform a {@link Parameters} object into an APON
+     * formatted string, with an option to override pretty-printing.
      * @param parameters the parameters to transform
      * @param writer the writer to output the APON string to
      * @param stringifyContext the context for custom string conversion
-     * @param prettyForce whether to force pretty printing
+     * @param prettyForce whether to force pretty printing; if null, the context's
+     *      default is used
      * @throws IOException if an I/O error occurs
      */
     private static void transform(

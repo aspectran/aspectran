@@ -30,12 +30,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ListIterator;
 
 /**
- * A {@link Response} implementation that delegates the transformation of activity results
+ * A {@link Response} that delegates the transformation of activity results
  * to a user-implemented {@link CustomTransformer}.
  *
- * <p>This class provides a flexible way to integrate custom data transformation logic
- * into Aspectran's response generation pipeline. It can either use a pre-configured
- * {@code CustomTransformer} or dynamically discover one from the activity's process results.</p>
+ * <p>This class provides a flexible way to integrate custom data transformation
+ * logic. It can either use a pre-configured {@code CustomTransformer} or
+ * dynamically discover one from the activity's process results by calling
+ * {@link #findTransformer}.</p>
  *
  * <p>Created: 2019. 06. 15</p>
  */
@@ -103,6 +104,13 @@ public class CustomTransformResponse implements Response {
         return customTransformRule.toString();
     }
 
+    /**
+     * Finds a {@link CustomTransformer} instance from the process results.
+     * This method iterates backwards through the action results, returning the
+     * first action result value that is an instance of {@code CustomTransformer}.
+     * @param processResult the process result to search
+     * @return a {@code CustomTransformer} instance, or {@code null} if not found
+     */
     private CustomTransformer findTransformer(ProcessResult processResult) {
         if (processResult != null) {
             for (ListIterator<ContentResult> iter1 = processResult.listIterator(processResult.size());

@@ -20,11 +20,10 @@ import com.aspectran.core.activity.Activity;
 /**
  * Defines the contract for custom transformation of activity results.
  *
- * <p>Implementations of this interface provide a flexible mechanism to define
- * custom logic for converting the data produced by an {@link Activity}
- * into any desired output format. This allows developers to integrate
- * proprietary or specialized transformation processes into Aspectran's
- * response generation pipeline.</p>
+ * <p>Implementations of this interface provide a flexible extension point for
+ * converting the data produced by an {@link Activity} into any desired output
+ * format. This allows developers to integrate proprietary or specialized
+ * transformation processes into Aspectran's response generation pipeline.</p>
  *
  * <p>Created: 2019. 06. 15</p>
  */
@@ -33,7 +32,7 @@ public interface CustomTransformer {
     /**
      * Executes the transformation logic.
      * <p>Implementations should use the provided {@link Activity} to access the
-     * process results and write the transformed output to the response.</p>
+     * process results and write the transformed output to the response.
      * @param activity the current activity, providing access to process results
      *      and the response adapter
      * @throws Exception if the transformation fails

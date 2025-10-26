@@ -47,13 +47,13 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * {@code XslTransformResponse} converts the activity's processing results into XML format
- * and then applies an XSLT transformation to it.
+ * A {@link TransformResponse} that applies an XSLT transformation to the activity's results.
  *
- * <p>This response type is used for scenarios where the activity produces structured data
- * that needs to be transformed into a different XML structure, HTML, or plain text
- * using an XSLT stylesheet. It dynamically loads and caches XSLT templates based on
- * the configured {@link TemplateRule}.</p>
+ * <p>This class first converts the {@link ProcessResult} into an intermediate XML
+ * format using {@link ContentsXMLReader}, and then applies an XSLT stylesheet to
+ * transform it into the final output format (e.g., XML, HTML, or text). It supports
+ * dynamic loading and caching of XSLT templates based on the configured
+ * {@link TemplateRule}.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -118,6 +118,16 @@ public class XslTransformResponse extends TransformResponse {
         return new XslTransformResponse(getTransformRule().replicate());
     }
 
+    /**
+     * Loads the XSLT {@link Templates} based on the configured {@link TemplateRule}.
+     * <p>This method handles template caching. If {@code noCache} is enabled, the
+     * template is reloaded on every request. For file-based templates, it reloads
+     * if the file has been modified. For resource or URL-based templates, it loads
+     * once and caches the result unless {@code noCache} is true.</p>
+     * @param activity the current activity
+     * @throws TransformerConfigurationException if the template cannot be configured
+     * @throws IOException if the template file cannot be read
+     */
     private void loadTemplate(Activity activity) throws TransformerConfigurationException, IOException {
         String templateFile = templateRule.getFile();
         String templateResource = templateRule.getResource();
@@ -177,6 +187,10 @@ public class XslTransformResponse extends TransformResponse {
         }
     }
 
+    /**
+     * Determines the content type and encoding from the loaded XSLT template's
+     * output properties.
+     */
     private void determineOutputStyle() {
         contentType = getTransformRule().getContentType();
         if (contentType == null) {
@@ -208,6 +222,11 @@ public class XslTransformResponse extends TransformResponse {
         return transFactory.newTemplates(source);
     }
 
+    /**
+     * Determines the content type based on the XSLT's {@code <xsl:output method=...>}.
+     * @param templates the compiled templates
+     * @return the inferred content type, or {@code null} if not determinable
+     */
     private String getContentType(@NonNull Templates templates) {
         Properties outputProperties = templates.getOutputProperties();
         String outputMethod = outputProperties.getProperty(OutputKeys.METHOD);
@@ -224,6 +243,11 @@ public class XslTransformResponse extends TransformResponse {
         return contentType;
     }
 
+    /**
+     * Retrieves the encoding from the XSLT's {@code <xsl:output encoding=...>}.
+     * @param templates the compiled templates
+     * @return the specified output encoding, or {@code null} if not present
+     */
     private String getOutputEncoding(@NonNull Templates templates) {
         Properties outputProperties = templates.getOutputProperties();
         return outputProperties.getProperty(OutputKeys.ENCODING);

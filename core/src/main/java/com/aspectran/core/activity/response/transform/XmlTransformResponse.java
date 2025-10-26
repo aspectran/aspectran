@@ -35,12 +35,12 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 
 /**
- * {@code XmlTransformResponse} converts the activity's processing results into XML format and outputs it.
+ * A {@link TransformResponse} that converts the activity's results into XML format.
  *
- * <p>This response type is responsible for taking the structured data from the
- * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
- * into an XML string. It leverages JAXP (Java API for XML Processing) to perform
- * the transformation, supporting configuration for content type, encoding, and pretty-printing.</p>
+ * <p>This class serializes the structured data from a {@link ProcessResult} into an
+ * XML string. It uses JAXP (Java API for XML Processing) and a custom
+ * {@link ContentsXMLReader} to perform the transformation, supporting configuration
+ * for content type, encoding, and pretty-printing.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

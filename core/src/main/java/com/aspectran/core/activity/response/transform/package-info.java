@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 /**
- * Provides classes related to transforming the activity's processing results into various output formats.
+ * Provides classes for transforming activity results into various output formats.
  *
  * <p>This package defines the core mechanism for converting the structured data
- * produced by an {@link com.aspectran.core.activity.Activity} (i.e., {@link com.aspectran.core.activity.process.result.ProcessResult})
- * into a client-consumable format such as JSON, XML, APON, or plain text.
- * It includes the base {@link com.aspectran.core.activity.response.transform.TransformResponse} interface
- * and various concrete implementations for different transformation types.</p>
+ * from an {@link com.aspectran.core.activity.Activity} (i.e., a
+ * {@link com.aspectran.core.activity.process.result.ProcessResult}) into a
+ * client-consumable format like JSON, XML, or plain text. It includes the base
+ * {@link com.aspectran.core.activity.response.transform.TransformResponse} class
+ * and concrete implementations for different transformation types.</p>
  */
 package com.aspectran.core.activity.response.transform;

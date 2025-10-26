@@ -27,12 +27,13 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 
 /**
- * {@code JsonTransformResponse} converts the activity's processing results into JSON format and outputs it.
+ * A {@link TransformResponse} that converts the activity's results into JSON format.
  *
- * <p>This response type is responsible for taking the structured data from the
- * {@link com.aspectran.core.activity.process.result.ProcessResult} and serializing it
- * into a JSON string. It supports configuration for content type, encoding, pretty-printing,
- * and JSONP (JSON with Padding) for cross-domain communication.</p>
+ * <p>This class serializes the structured data from a {@link ProcessResult} into a
+ * JSON string. It supports configuration for content type, encoding, and
+ * pretty-printing. It also handles JSONP (JSON with Padding) requests by wrapping
+ * the JSON output in a function call if a "callback" parameter is present in the
+ * request.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

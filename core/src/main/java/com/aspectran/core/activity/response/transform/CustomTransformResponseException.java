@@ -25,9 +25,9 @@ import java.io.Serial;
  * Exception thrown when an error occurs during the execution of a {@link CustomTransformer}.
  *
  * <p>This exception wraps the underlying cause of the transformation failure and provides
- * context about the {@code CustomTransformer} that was being used. It extends
- * {@link ResponseException} to indicate that the error occurred during the response
- * transformation phase.</p>
+ * context about the {@code CustomTransformer} that was being used, which is useful
+ * for debugging. It extends {@link ResponseException} to indicate that the error
+ * occurred during the response transformation phase.</p>
  *
  * <p>Created: 2019. 06. 16</p>
  */

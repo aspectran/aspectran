@@ -28,12 +28,16 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.io.Writer;
 
 /**
- * {@code TextTransformResponse} converts the activity's processing results into plain text format and outputs it.
+ * A {@link TransformResponse} that renders the activity's results as plain text.
  *
- * <p>This response type is responsible for taking the structured data from the
- * {@link com.aspectran.core.activity.process.result.ProcessResult} and rendering it
- * as plain text. It can also integrate with a template engine if a {@link TemplateRule}
- * is specified, or directly write the string representation of action results to the response output.</p>
+ * <p>This class handles two primary scenarios:
+ * <ol>
+ *   <li>If a {@link TemplateRule} is specified in the transform rule, it delegates
+ *       rendering to the configured template engine.</li>
+ *   <li>Otherwise, it iterates through the {@link ProcessResult} and writes the
+ *       string representation of each action result directly to the response output,
+ *       separated by newlines.</li>
+ * </ol>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

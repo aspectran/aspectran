@@ -21,12 +21,13 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
- * A {@link TransformResponse} implementation that performs no actual data transformation.
+ * A {@link TransformResponse} that performs no actual data transformation.
  *
- * <p>This response type is used when the activity's processing results do not need to be
- * converted into a specific format, but rather the response simply needs to set the
- * content type or other response headers without writing any body content based on
- * the {@link com.aspectran.core.activity.process.result.ProcessResult}.</p>
+ * <p>This response type is used when the activity's results do not need to be
+ * converted, but the response requires setting headers like Content-Type without
+ * writing a body based on the
+ * {@link com.aspectran.core.activity.process.result.ProcessResult}.
+ * It effectively acts as a null-object for transformations.</p>
  *
  * <p>Created: 2018. 09. 11 PM 10:54:58</p>
  */
