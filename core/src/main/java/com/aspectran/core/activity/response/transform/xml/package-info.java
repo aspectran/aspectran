@@ -16,10 +16,10 @@
 /**
  * Provides classes for transforming activity results into XML format.
  *
- * <p>This package contains utilities and components specifically designed to convert
- * the structured data produced by an {@link com.aspectran.core.activity.Activity}
- * into XML (Extensible Markup Language). It supports the serialization of
- * {@link com.aspectran.core.activity.process.result.ProcessResult} into XML strings,
- * and facilitates integration with XML transformation technologies like XSLT.</p>
+ * <p>This package contains utilities to convert the structured data from an
+ * {@link com.aspectran.core.activity.Activity} into XML (Extensible Markup
+- * Language). It supports the serialization of
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} and facilitates
+ * integration with XML transformation technologies like XSLT.</p>
  */
 package com.aspectran.core.activity.response.transform.xml;

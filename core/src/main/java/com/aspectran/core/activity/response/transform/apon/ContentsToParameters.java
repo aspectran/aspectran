@@ -26,12 +26,15 @@ import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 
 /**
- * Converts a {@link ProcessResult} object into an APON (Aspectran Plain Object Notation) {@link Parameters} object.
+ * Specializes {@link ObjectToParameters} to convert a {@link ProcessResult} object
+ * into an APON {@link Parameters} object.
  *
- * <p>This utility class extends {@link ObjectToParameters} to specifically handle the hierarchical
- * structure of {@code ProcessResult}, {@link ContentResult}, and {@link ActionResult},
- * mapping them into a corresponding APON structure. It provides static factory methods
- * for convenient conversion.</p>
+ * <p>This class understands the hierarchical structure of {@code ProcessResult},
+ * {@link ContentResult}, and {@link ActionResult}, mapping them into a corresponding
+ * APON structure. Note that this implementation is designed for a one-way conversion
+ * from a {@code ProcessResult} and does not support the general-purpose
+ * `read(String, Object)` methods, which will throw {@link UnsupportedOperationException}.
+ * </p>
  *
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
@@ -51,6 +54,16 @@ public class ContentsToParameters extends ObjectToParameters {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Creates a container {@link Parameters} object to hold the converted results.
+     * <p>As an optimization, if the {@code ProcessResult} contains a single, unnamed
+     * {@link ContentResult} which in turn contains a single, unnamed {@link ActionResult}
+     * whose value is already a {@link Parameters} object, that object is returned
+     * directly. Otherwise, a new {@link VariableParameters} instance is created
+     * and populated.</p>
+     * @param object the object to be converted, expected to be a {@link ProcessResult}
+     * @return a {@link Parameters} object representing the converted data
+     */
     @NonNull
     @SuppressWarnings("unchecked")
     protected <T extends Parameters> T createContainer(Object object) {
@@ -81,6 +94,13 @@ public class ContentsToParameters extends ObjectToParameters {
         }
     }
 
+    /**
+     * Populates the given container with the action results from a {@link ContentResult}.
+     * If the {@code ContentResult} has a name, a nested {@link Parameters} object is
+     * created for it.
+     * @param container the parent {@link Parameters} container
+     * @param contentResult the {@link ContentResult} to process
+     */
     private void putValue(Parameters container, @NonNull ContentResult contentResult) {
         if (contentResult.getName() != null) {
             Parameters ps = new VariableParameters();
@@ -101,11 +121,23 @@ public class ContentsToParameters extends ObjectToParameters {
         }
     }
 
+    /**
+     * Converts the given {@link ProcessResult} into an APON {@link Parameters} object.
+     * @param processResult the process result to convert
+     * @return the converted {@link Parameters} object
+     */
     @NonNull
     public static Parameters from(ProcessResult processResult) {
         return new ContentsToParameters().read(processResult);
     }
 
+    /**
+     * Converts the given {@link ProcessResult} into an APON {@link Parameters} object
+     * using the specified stringify context.
+     * @param processResult the process result to convert
+     * @param stringifyContext the context for custom string conversion
+     * @return the converted {@link Parameters} object
+     */
     @NonNull
     public static Parameters from(ProcessResult processResult, StringifyContext stringifyContext) {
         return new ContentsToParameters().apply(stringifyContext).read(processResult);

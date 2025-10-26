@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 /**
- * Provides classes for transforming activity results into APON (Aspectran Plain Object Notation) format.
+ * Provides classes for transforming activity results into APON format.
  *
- * <p>This package contains utilities and components specifically designed to convert
- * the structured data produced by an {@link com.aspectran.core.activity.Activity}
- * into APON, a human-readable and machine-parsable data format. It supports the
- * serialization of {@link com.aspectran.core.activity.process.result.ProcessResult}
+ * <p>This package contains utilities to convert the structured data from an
+ * {@link com.aspectran.core.activity.Activity} into APON (Aspectran Plain
+ * Object Notation), a human-readable and machine-parsable data format.
+ * It supports the serialization of
+ * {@link com.aspectran.core.activity.process.result.ProcessResult}
  * into APON {@link com.aspectran.utils.apon.Parameters} objects.</p>
  */
 package com.aspectran.core.activity.response.transform.apon;

@@ -30,8 +30,8 @@ import java.io.Writer;
  *
  * <p>This class extends the basic JSON writing capabilities to specifically handle
  * the hierarchical structure of Aspectran's activity results ({@code ProcessResult},
- * {@link ContentResult}, and {@link ActionResult}), mapping them into a corresponding
- * JSON object or array structure. It supports pretty-printing and null value handling
+ * {@link ContentResult}, and {@link ActionResult}). It maps them into a corresponding
+ * JSON object or array structure, supporting pretty-printing and null value handling
  * through its {@link com.aspectran.utils.StringifyContext}.</p>
  *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
@@ -56,9 +56,12 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     /**
-     * Write a {@code ProcessResult} object to the character-output stream.
-     * @param processResult the {@code ProcessResult} object to write to the writer
-     * @throws IOException if an I/O error has occurred
+     * Writes a {@code ProcessResult} to the output stream.
+     * <p>If the result has a name, it is written as a JSON object with that name as the key.
+     * If it contains a single {@link ContentResult}, that result is written as the value.
+     * If it contains multiple results, they are written as a JSON array.</p>
+     * @param processResult the {@code ProcessResult} to write
+     * @throws IOException if an I/O error occurs
      */
     private void writeValue(ProcessResult processResult) throws IOException {
         Assert.notNull(processResult, "processResult must not be null");
@@ -83,9 +86,13 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     /**
-     * Write a {@code ContentResult} object to the character-output stream.
-     * @param contentResult the {@code ContentResult} object to write to the writer
-     * @throws IOException if an I/O error has occurred
+     * Writes a {@code ContentResult} to the output stream.
+     * <p>If the result has a name, it is written as a JSON object with that name as the key.
+     * If it contains a single {@link ActionResult} with no action ID, the result value is
+     * written directly. Otherwise, the action results are written as a JSON object, mapping
+     * action IDs to their result values.</p>
+     * @param contentResult the {@code ContentResult} to write
+     * @throws IOException if an I/O error occurs
      */
     private void writeValue(ContentResult contentResult) throws IOException {
         Assert.notNull(contentResult, "contentResult must not be null");

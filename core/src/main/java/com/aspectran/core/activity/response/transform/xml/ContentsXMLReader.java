@@ -48,12 +48,13 @@ import java.util.Map;
 
 /**
  * A specialized {@link XMLReader} that converts an arbitrary Java object (typically a
- * {@link com.aspectran.core.activity.process.result.ProcessResult}) into a stream of SAX events.
+ * {@link com.aspectran.core.activity.process.result.ProcessResult}) into a stream
+ * of SAX events.
  *
- * <p>This class enables Aspectran's structured activity results to be processed as if they
- * were an XML document, allowing for integration with XML transformation technologies
- * like XSLT. It traverses the object graph and generates corresponding XML elements
- * and character data.</p>
+ * <p>This class enables Aspectran's structured activity results to be processed as
+ * if they were an XML document, allowing for integration with XML transformation
+ * technologies like XSLT. It traverses the object graph and generates corresponding
+ * XML elements and character data.</p>
  *
  * <p>Created: 2008. 05. 26 PM 2:03:15</p>
  */
@@ -162,6 +163,13 @@ public class ContentsXMLReader implements XMLReader {
         handler.endDocument();
     }
 
+    /**
+     * Parses a {@link ProcessResult} and generates corresponding SAX events.
+     * It creates wrapper elements based on the names of the results and their
+     * explicit rendering flags.
+     * @param processResult the process result to parse
+     * @throws SAXException if a SAX error occurs
+     */
     private void parseProcessResult(@NonNull ProcessResult processResult) throws SAXException {
         String contentsName = processResult.getName();
         if (processResult.isExplicit()) {
@@ -208,6 +216,18 @@ public class ContentsXMLReader implements XMLReader {
         }
     }
 
+    /**
+     * Recursively parses a Java object and generates SAX events based on its type.
+     * <ul>
+     *   <li>Primitives (String, Number, Boolean): written as character data.</li>
+     *   <li>Parameters/Map: each entry becomes an element with the key as the tag name.</li>
+     *   <li>Collection/Array/Iterator/Enumeration: wrapped in a {@code <rows>} element,
+     *       with each item in a {@code <row>} element.</li>
+     *   <li>JavaBean: each readable property becomes an element.</li>
+     * </ul>
+     * @param object the object to parse
+     * @throws SAXException if a SAX error occurs
+     */
     private void parseObject(Object object) throws SAXException {
         if (object == null) {
             return;

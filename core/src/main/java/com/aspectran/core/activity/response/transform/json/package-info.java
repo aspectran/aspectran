@@ -16,10 +16,10 @@
 /**
  * Provides classes for transforming activity results into JSON format.
  *
- * <p>This package contains utilities and components specifically designed to convert
- * the structured data produced by an {@link com.aspectran.core.activity.Activity}
- * into JSON (JavaScript Object Notation). It supports the serialization of
- * {@link com.aspectran.core.activity.process.result.ProcessResult} into JSON strings,
- * including features like pretty-printing and JSONP support.</p>
+ * <p>This package contains utilities to convert the structured data from an
+ * {@link com.aspectran.core.activity.Activity} into JSON (JavaScript Object
+ * Notation). It supports the serialization of
+ * {@link com.aspectran.core.activity.process.result.ProcessResult} into JSON
+ * strings, including features like pretty-printing.</p>
  */
 package com.aspectran.core.activity.response.transform.json;

@@ -20,9 +20,10 @@ import org.xml.sax.InputSource;
 /**
  * A specialized {@link InputSource} that wraps an arbitrary Java object as its data source.
  *
- * <p>This class is used in conjunction with {@link ContentsXMLReader} to allow Aspectran's
- * structured activity results (e.g., {@link com.aspectran.core.activity.process.result.ProcessResult})
- * to be treated as an XML source for transformation processes (e.g., XSLT).</p>
+ * <p>This class is used with {@link ContentsXMLReader} to allow Aspectran's
+ * structured activity results (e.g.,
+ * {@link com.aspectran.core.activity.process.result.ProcessResult})
+ * to be treated as an XML source for transformation processes like XSLT.</p>
  *
  * <p>Created: 2008. 05. 26 PM 2:03:25</p>
  */
