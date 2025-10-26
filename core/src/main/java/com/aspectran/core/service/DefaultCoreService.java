@@ -70,8 +70,12 @@ public class DefaultCoreService extends AbstractCoreService {
     }
 
     /**
-     * Configures the service with the given {@link AspectranConfig}.
-     * @param aspectranConfig the Aspectran configuration
+     * Configures the service using the provided {@link AspectranConfig}.
+     * <p>This method sets up the service's internal state based on the
+     * configuration, including system properties, context parameters, and
+     * the activity context builder. It also handles singleton instance locking
+     * if configured.</p>
+     * @param aspectranConfig the Aspectran configuration to apply
      */
     protected void configure(@NonNull AspectranConfig aspectranConfig) {
         Assert.state(!isDerived(), "Must not be called for derived services");

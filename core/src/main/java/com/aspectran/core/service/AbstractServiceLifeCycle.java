@@ -86,14 +86,18 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
 
     @Override
     public void addService(ServiceLifeCycle serviceLifeCycle) {
-        subServices.add(serviceLifeCycle);
+        synchronized (lock) {
+            subServices.add(serviceLifeCycle);
+        }
     }
 
     @Override
     public void removeService(@NonNull ServiceLifeCycle serviceLifeCycle) {
         Assert.state(!serviceLifeCycle.isRootService(), "Root service cannot be withdrawn");
         Assert.state(!serviceLifeCycle.isActive(), "Not yet stopped service: " + serviceLifeCycle);
-        subServices.remove(serviceLifeCycle);
+        synchronized (lock) {
+            subServices.remove(serviceLifeCycle);
+        }
     }
 
     @Override
@@ -321,16 +325,38 @@ public abstract class AbstractServiceLifeCycle implements ServiceLifeCycle {
         return ObjectUtils.simpleIdentityToString(this);
     }
 
+    /**
+     * Returns the name of the context associated with this service.
+     * <p>This implementation returns {@code null}. Subclasses may override this
+     * to provide a specific context name, which can be used for purposes
+     * like thread naming during service lifecycle operations.
+     * @return the context name, or {@code null} if not applicable
+     */
     public String getContextName() {
         return null;
     }
 
+    /**
+     * Returns the synchronization lock object for this service.
+     * All lifecycle state transitions are synchronized on this lock.
+     * @return the lock object
+     */
     protected Object getLock() {
         return lock;
     }
 
+    /**
+     * Subclasses must implement this method to perform the actual startup logic.
+     * This method is called by {@link #start()} within a synchronized block.
+     * @throws Exception if an error occurs during startup
+     */
     protected abstract void doStart() throws Exception;
 
+    /**
+     * Subclasses must implement this method to perform the actual shutdown logic.
+     * This method is called by {@link #stop()} within a synchronized block.
+     * @throws Exception if an error occurs during shutdown
+     */
     protected abstract void doStop() throws Exception;
 
     private String changeThreadName() {
