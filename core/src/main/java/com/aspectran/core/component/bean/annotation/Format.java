@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Format {
 
     /** The formatting pattern or style. */
