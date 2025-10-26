@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Represents a pointcut that determines if advice should be applied to a given join point.
+ *
  * <p>A pointcut is composed of one or more patterns that match against join point
  * characteristics such as translet name, bean ID, class name, and method name.
  * </p>
@@ -40,14 +41,14 @@ public interface Pointcut {
     boolean hasMethodNamePattern();
 
     /**
-     * Checks if this pointcut matches the given translet name.
+     * Performs a full match, including exclusions, against the given translet name.
      * @param transletName the name of the translet to match
      * @return true if it matches, false otherwise
      */
     boolean matches(String transletName);
 
     /**
-     * Checks if this pointcut matches the given translet name, bean ID, and class name.
+     * Performs a full match, including exclusions, against the given join point attributes.
      * @param transletName the name of the translet to match
      * @param beanId the ID of the bean to match
      * @param className the name of the class to match
@@ -56,7 +57,7 @@ public interface Pointcut {
     boolean matches(String transletName, String beanId, String className);
 
     /**
-     * Checks if this pointcut matches the given translet name, bean ID, class name, and method name.
+     * Performs a full match, including exclusions, against the given join point attributes.
      * @param transletName the name of the translet to match
      * @param beanId the ID of the bean to match
      * @param className the name of the class to match
@@ -66,21 +67,23 @@ public interface Pointcut {
     boolean matches(String transletName, String beanId, String className, String methodName);
 
     /**
-     * Checks if this pointcut matches the given pointcut pattern.
+     * Performs a full match, including exclusions, against the given pointcut pattern.
      * @param pointcutPattern the pointcut pattern to match
      * @return true if it matches, false otherwise
      */
     boolean matches(PointcutPattern pointcutPattern);
 
     /**
-     * Checks if any pattern in this pointcut could potentially match the given translet name.
+     * Checks if any inclusion pattern in this pointcut could potentially match the
+     * given translet name. This check does not consider exclusion patterns.
      * @param transletName the name of the translet
      * @return true if a potential match exists, false otherwise
      */
     boolean exists(String transletName);
 
     /**
-     * Checks if any pattern in this pointcut could potentially match the given join point attributes.
+     * Checks if any inclusion pattern in this pointcut could potentially match the
+     * given join point attributes. This check does not consider exclusion patterns.
      * @param transletName the name of the translet
      * @param beanId the ID of the bean
      * @param className the name of the class
@@ -89,7 +92,8 @@ public interface Pointcut {
     boolean exists(String transletName, String beanId, String className);
 
     /**
-     * Checks if any pattern in this pointcut could potentially match the given join point attributes.
+     * Checks if any inclusion pattern in this pointcut could potentially match the
+     * given join point attributes. This check does not consider exclusion patterns.
      * @param transletName the name of the translet
      * @param beanId the ID of the bean
      * @param className the name of the class
@@ -99,7 +103,8 @@ public interface Pointcut {
     boolean exists(String transletName, String beanId, String className, String methodName);
 
     /**
-     * Checks if any pattern in this pointcut could potentially match the given pointcut pattern.
+     * Checks if any inclusion pattern in this pointcut could potentially match the
+     * given pointcut pattern. This check does not consider exclusion patterns.
      * @param pointcutPattern the pointcut pattern to check
      * @return true if a potential match exists, false otherwise
      */

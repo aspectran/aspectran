@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.AspectRule;
  * A helper class that facilitates the registration of aspect rules into an
  * {@link AdviceRuleRegistry}. The registry is created lazily on the first
  * registration attempt.
+ *
  * <p>This is useful for collecting all relevant aspect rules before constructing
  * the final advice execution chain.
  * </p>

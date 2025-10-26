@@ -24,10 +24,11 @@ import java.util.List;
 
 /**
  * A holder for aspect rules that are relevant to a specific join point.
- * <p>This object is typically cached by the {@link AspectRuleRegistry} to improve
+ *
+ * <p>This object is cached by the {@link AspectRuleRegistry} to improve
  * performance. It separates statically-defined advice (pre-organized in an
  * {@link AdviceRuleRegistry}) from dynamic aspect rules that may need further
- * evaluation.
+ * evaluation at the join point.
  * </p>
  */
 public class RelevantAspectRuleHolder {

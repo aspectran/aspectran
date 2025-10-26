@@ -24,10 +24,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A concrete {@link Pointcut} implementation that uses regular expressions
- * for pattern matching to identify join points.
- * <p>This class extends {@link AbstractPointcut} and utilizes a cache for
- * compiled regular expression {@link Pattern} objects to optimize performance.
+ * A {@link Pointcut} implementation that uses regular expressions for pattern matching.
+ *
+ * <p>This class extends {@link AbstractPointcut} and uses a cache for compiled
+ * regular expression {@link Pattern} objects to optimize performance.
  * </p>
  */
 public class RegexpPointcut extends AbstractPointcut {

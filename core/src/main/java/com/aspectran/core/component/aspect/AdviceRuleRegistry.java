@@ -31,8 +31,10 @@ import java.util.List;
 /**
  * A registry that collects and organizes advice rules based on their type
  * (e.g., before, after, finally) and exception handling rules.
- * <p>This class is typically used to aggregate all the rules from aspects
- * that match a specific join point.
+ *
+ * <p>This class is used to aggregate all rules from aspects that match a
+ * specific join point. It correctly handles the order of execution for advice
+ * based on the aspect's order of precedence.
  * </p>
  */
 public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
@@ -167,7 +169,8 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     /**
      * Adds an advice rule, dispatching it to the appropriate list based on its type.
-     * 'AROUND' advice is added to both the 'before' and 'after' lists.
+     * 'AROUND' advice is added to both the 'before' and 'after' lists to wrap the
+     * join point execution.
      * @param adviceRule the advice rule to add
      */
     public void addAdviceRule(@NonNull AdviceRule adviceRule) {
@@ -201,7 +204,8 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     /**
      * Adds an 'after' advice rule, inserting it into the list according to the
-     * aspect's order of precedence (ascending).
+     * aspect's order of precedence (descending for 'after' advice to create a
+     * nested "onion-like" execution chain).
      * @param adviceRule the advice rule to add
      */
     private void addAfterAdviceRule(AdviceRule adviceRule) {
@@ -217,7 +221,7 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
 
     /**
      * Adds a 'finally' advice rule, inserting it into the list according to the
-     * aspect's order of precedence (ascending).
+     * aspect's order of precedence (descending).
      * @param adviceRule the advice rule to add
      */
     private void addFinallyAdviceRule(AdviceRule adviceRule) {

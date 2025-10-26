@@ -21,7 +21,10 @@ import java.io.Serial;
 
 /**
  * Exception thrown when a pointcut pattern is invalid.
- * <p>This occurs if a pattern is malformed during parsing or compilation.</p>
+ *
+ * <p>This may occur if a pattern is malformed during parsing or if a regular
+ * expression pattern fails to compile.
+ * </p>
  */
 public class InvalidPointcutPatternException extends AspectException {
 

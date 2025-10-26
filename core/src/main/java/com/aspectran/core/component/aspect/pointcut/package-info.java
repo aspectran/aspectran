@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 /**
- * Provides classes for defining and managing pointcuts within Aspectran's AOP framework.
+ * Provides classes for defining and matching pointcuts in Aspectran's AOP framework.
  *
- * <p>This package contains the core components that enable the specification of join points
- * where aspects should be applied. It includes interfaces and implementations for defining
- * pointcut expressions, allowing developers to precisely target methods or execution flows
- * for aspect weaving.</p>
+ * <p>This package contains the core components for specifying join points where
+ * aspects should be applied. It includes the {@link com.aspectran.core.component.aspect.pointcut.Pointcut}
+ * interface and implementations for pattern matching using wildcards or regular expressions.
+ * </p>
  */
 package com.aspectran.core.component.aspect.pointcut;

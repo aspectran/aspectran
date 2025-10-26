@@ -23,9 +23,9 @@ import java.util.Objects;
 /**
  * Represents a single pattern within a pointcut, defining criteria for matching
  * translet names, bean IDs, class names, and method names.
+ *
  * <p>This class is used to specify a precise target for aspect advice.
- * The pointcut pattern string has the following format, where each part is optional
- * but the separators determine how the pattern is interpreted:
+ * The pointcut pattern string has the following format, where each part is optional:
  * {@code transletNamePattern[@beanOrClassPattern][^methodNamePattern]}
  * </p>
  */

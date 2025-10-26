@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * A concrete {@link Pointcut} implementation that uses wildcard matching
- * for pattern matching to identify join points.
+ * A {@link Pointcut} implementation that uses wildcard matching.
+ *
  * <p>This class supports wildcard characters (`*`, `?`) and OR-matching (`|`)
- * within patterns. It utilizes a cache for compiled wildcard patterns to
- * optimize performance.
+ * within patterns. It uses a cache for compiled wildcard patterns to optimize
+ * performance.
  * </p>
  */
 public class WildcardPointcut extends AbstractPointcut {

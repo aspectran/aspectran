@@ -40,9 +40,12 @@ import static com.aspectran.utils.ConcurrentReferenceHashMap.ReferenceType;
 
 /**
  * A central registry for all {@link AspectRule}s in the application context.
- * <p>This class manages the lifecycle of aspect rules and provides a caching mechanism
- * to quickly find aspects that are relevant to a specific join point (represented by a
- * {@link PointcutPattern}). This caching is a key performance optimization.
+ *
+ * <p>This class manages the lifecycle of aspect rules and provides a caching
+ * mechanism to quickly find aspects that are relevant to a specific join point
+ * (represented by a {@link PointcutPattern}). This caching is a key performance
+ * optimization. It uses both soft and weak reference caches to manage memory
+ * effectively.
  * </p>
  */
 public class AspectRuleRegistry extends AbstractComponent {
@@ -100,6 +103,8 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     /**
      * Adds a new aspect rule to the registry.
+     * If the registry is already initialized, the new rule is marked as dynamic,
+     * and the caches are cleared to ensure they are rebuilt with the new rule.
      * @param aspectRule the aspect rule to add
      * @throws IllegalRuleException if an aspect rule with the same ID already exists
      */

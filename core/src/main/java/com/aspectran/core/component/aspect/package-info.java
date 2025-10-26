@@ -15,9 +15,10 @@
  */
 /**
  * Contains the core components for aspect-oriented programming (AOP).
+ *
  * <p>This package provides the runtime infrastructure for managing aspects,
- * advice, and pointcuts. It includes the primary executor for applying
- * advice to join points and classes that represent the parsed aspect rules.
+ * advice, and pointcuts. It includes registries for aspect rules and the
+ * primary logic for matching aspects to join points.
  * </p>
  */
 package com.aspectran.core.component.aspect;

@@ -23,9 +23,10 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.util.List;
 
 /**
- * A factory class for creating concrete {@link Pointcut} implementations.
- * <p>This factory is responsible for instantiating the correct type of pointcut
- * (e.g., {@link RegexpPointcut} or {@link WildcardPointcut}) based on the
+ * A factory for creating concrete {@link Pointcut} implementations.
+ *
+ * <p>This factory instantiates the correct type of pointcut (e.g.,
+ * {@link RegexpPointcut} or {@link WildcardPointcut}) based on the
  * {@link PointcutType} specified in a {@link PointcutRule}.
  * </p>
  */

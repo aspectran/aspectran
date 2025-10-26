@@ -23,9 +23,11 @@ import java.util.List;
 
 /**
  * Abstract base class for {@link Pointcut} implementations.
+ *
  * <p>This class manages a list of {@link PointcutPatternRule}s and implements
- * the core matching logic, including support for exclusion patterns.
- * Subclasses must provide the specific pattern matching implementation.
+ * the core matching logic. It supports both inclusion and exclusion patterns.
+ * Subclasses must provide the specific pattern matching implementation by
+ * overriding the {@code patternMatches} methods.
  * </p>
  */
 public abstract class AbstractPointcut implements Pointcut {
@@ -79,7 +81,7 @@ public abstract class AbstractPointcut implements Pointcut {
     /**
      * {@inheritDoc}
      * <p>This implementation iterates through all pattern rules. A match is found if
-     * a rule's inclusion patterns match and none of its exclusion patterns match.
+     * an inclusion pattern matches and none of its corresponding exclusion patterns match.
      */
     @Override
     public boolean matches(String transletName, String beanId, String className, String methodName) {
