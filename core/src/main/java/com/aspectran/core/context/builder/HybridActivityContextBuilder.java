@@ -41,12 +41,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * The primary, concrete implementation of {@link ActivityContextBuilder}.
  *
- * <p>This builder orchestrates the entire process of parsing configuration, creating component
- * registries, and initializing a fully-functional {@link com.aspectran.core.context.ActivityContext}.
- * It is designed to be thread-safe with respect to its build and destroy operations.
+ * <p>This builder orchestrates the entire process of parsing configuration,
+ * creating component registries, and initializing a fully-functional
+ * {@link ActivityContext}. It is designed to be thread-safe with respect to its
+ * build and destroy operations.
  *
- * <p>For standalone applications not managed by a {@link CoreService}, it automatically
- * registers a shutdown hook to ensure graceful destruction of the context.
+ * <p>For standalone applications not managed by a {@link CoreService}, it
+ * automatically registers a shutdown hook to ensure graceful destruction of the
+ * context.
  */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 

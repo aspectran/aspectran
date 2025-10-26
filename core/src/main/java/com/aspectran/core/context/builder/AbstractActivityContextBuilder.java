@@ -78,11 +78,11 @@ import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 /**
  * Abstract base class for {@link ActivityContextBuilder} implementations.
  *
- * <p>This class provides the common functionality for building an {@link com.aspectran.core.context.ActivityContext},
+ * <p>This class provides the common functionality for building an {@link ActivityContext},
  * including:
  * <ul>
  *   <li>Managing configuration properties (e.g., base path, context rules, profiles).</li>
- *   <li>Handling the creation of a {@link com.aspectran.core.context.resource.SiblingClassLoader}.</li>
+ *   <li>Handling the creation of a {@link SiblingClassLoader}.</li>
  *   <li>Setting up the application's directory structure (base, work, temp).</li>
  *   <li>Orchestrating the creation of the context and its internal components.</li>
  *   <li>Managing the context reloading timer.</li>

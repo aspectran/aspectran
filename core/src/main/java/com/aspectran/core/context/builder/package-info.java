@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 /**
- * Contains the core classes for building an {@link com.aspectran.core.context.ActivityContext}.
+ * Provides the core strategy for building an {@link com.aspectran.core.context.ActivityContext}.
  *
- * <p>This package provides the strategy for parsing Aspectran's configuration
- * (from XML, APON, or annotated classes) and constructing a fully initialized
- * {@code ActivityContext}. The main entry point is the {@link com.aspectran.core.context.builder.ActivityContextBuilder}
- * interface, with {@link com.aspectran.core.context.builder.HybridActivityContextBuilder}
+ * <p>This package contains the classes responsible for parsing Aspectran's
+ * configuration (from XML, APON, or annotated classes) and constructing a
+ * fully initialized {@code ActivityContext}. The main entry point is the
+ * {@link com.aspectran.core.context.builder.ActivityContextBuilder} interface,
+ * with {@link com.aspectran.core.context.builder.HybridActivityContextBuilder}
  * being the primary implementation.
  *
  * <p>The building process involves several key steps:

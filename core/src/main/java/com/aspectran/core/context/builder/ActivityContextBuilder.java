@@ -26,11 +26,13 @@ import com.aspectran.core.service.CoreService;
 import java.io.IOException;
 
 /**
- * Defines the strategy for building and managing the lifecycle of an {@link com.aspectran.core.context.ActivityContext}.
+ * Defines the strategy for building and managing the lifecycle of an
+ * {@link com.aspectran.core.context.ActivityContext}.
  *
- * <p>This interface provides a blueprint for implementations that can parse configuration,
- * construct an {@code ActivityContext}, and handle its destruction. It supports various
- * configuration sources, including explicit rule files and {@link AspectranParameters}.
+ * <p>This interface provides a blueprint for implementations that can parse
+ * configuration, construct an {@code ActivityContext}, and handle its destruction.
+ * It supports various configuration sources, including explicit rule files and
+ * {@link AspectranParameters}.
  *
  * @since 2.0.0
  */

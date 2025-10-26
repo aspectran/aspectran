@@ -18,7 +18,8 @@ package com.aspectran.core.context.builder;
 import java.io.Serial;
 
 /**
- * Exception thrown when an {@link com.aspectran.core.context.ActivityContext} fails to build.
+ * The top-level exception thrown when an {@link com.aspectran.core.context.ActivityContext}
+ * fails to build.
  *
  * @since 2017. 4. 8.
  */
