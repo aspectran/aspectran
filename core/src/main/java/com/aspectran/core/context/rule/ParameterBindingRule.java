@@ -17,6 +17,8 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.ToStringBuilder;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Defines how a single parameter should be bound to a method argument.
  * This rule holds metadata about the parameter, such as its name, type, and whether it is required.
@@ -34,6 +36,8 @@ public class ParameterBindingRule {
     private String format;
 
     private boolean required;
+
+    private Annotation[] annotations;
 
     /**
      * Gets the name of the parameter.
@@ -99,6 +103,22 @@ public class ParameterBindingRule {
         this.required = required;
     }
 
+    /**
+     * Gets the annotations on the parameter.
+     * @return the annotations
+     */
+    public Annotation[] getAnnotations() {
+        return annotations;
+    }
+
+    /**
+     * Sets the annotations on the parameter.
+     * @param annotations the annotations
+     */
+    public void setAnnotations(Annotation[] annotations) {
+        this.annotations = annotations;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -106,6 +126,13 @@ public class ParameterBindingRule {
         tsb.append("type", type);
         tsb.append("format", format);
         tsb.append("required", required);
+        if (annotations != null && annotations.length > 0) {
+            String[] simpleNames = new String[annotations.length];
+            for (int i = 0; i < annotations.length; i++) {
+                simpleNames[i] = "@" + annotations[i].annotationType().getSimpleName();
+            }
+            tsb.append("annotations", simpleNames);
+        }
         return tsb.toString();
     }
 

@@ -18,36 +18,32 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Qualifier;
-import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.context.converter.TypeConversionException;
+import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.context.converter.TypeConverterRegistry;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.BeanDescriptor;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
-import com.aspectran.utils.StringifyContext;
+import com.aspectran.utils.TypeUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,99 +75,82 @@ public abstract class AnnotatedMethodInvoker {
             @Nullable Object bean,
             @NonNull Method method,
             @Nullable ParameterBindingRule[] parameterBindingRules) throws Exception {
-        ParameterBindingRule parameterBindingRule = null;
+        ParameterBindingRule pbr = null;
         try {
             if (parameterBindingRules == null) {
                 return method.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }
-            Translet translet = activity.getTranslet();
+
             Object[] args = new Object[parameterBindingRules.length];
             for (int i = 0; i < parameterBindingRules.length; i++) {
-                parameterBindingRule = parameterBindingRules[i];
-                Class<?> type = parameterBindingRule.getType();
-                String name = parameterBindingRule.getName();
-                String format = parameterBindingRule.getFormat();
-                boolean required = parameterBindingRule.isRequired();
+                pbr = parameterBindingRules[i];
                 Exception thrown = null;
                 try {
-                    if (translet != null) {
-                        StringifyContext stringifyContext = activity.getStringifyContext();
-                        args[i] = resolveArgumentWithTranslet(translet, type, name, stringifyContext, format);
+                    if (activity.hasTranslet()) {
+                        args[i] = resolveArgumentWithTranslet(activity, pbr);
                     } else {
-                        args[i] = resolveArgument(activity, type, name);
+                        args[i] = resolveArgument(activity, pbr);
+                    }
+                } catch (TypeConversionException e) {
+                    thrown = e;
+                    if (e.getCause() instanceof NumberFormatException &&
+                            pbr.getType().isPrimitive()) {
+                        args[i] = TypeUtils.getPrimitiveDefaultValue(pbr.getType());
                     }
                 } catch (IllegalArgumentException e) {
                     throw e;
-                } catch (MethodArgumentTypeMismatchException e) {
-                    thrown = e;
-                    if (e.getCause() instanceof NumberFormatException) {
-                        if (type.isPrimitive()) {
-                            args[i] = 0;
-                        }
-                    }
                 } catch (Exception e) {
                     thrown = e;
                 }
-                if (required && (args[i] == null || thrown != null)) {
+
+                if (pbr.isRequired() && (args[i] == null || thrown != null)) {
                     if (thrown != null) {
-                        throw new IllegalArgumentException("Missing required parameter '" + name + "'; Cause: " +
-                                thrown.getMessage(), thrown);
+                        throw new IllegalArgumentException("Missing required parameter '" + pbr.getName() +
+                                "'; Cause: " + thrown.getMessage(), thrown);
                     } else {
-                        throw new IllegalArgumentException("Missing required parameter '" + name + "'");
+                        throw new IllegalArgumentException("Missing required parameter '" + pbr.getName() + "'");
                     }
                 }
+
                 if (thrown != null) {
                     if (logger.isDebugEnabled()) {
                         Throwable rootCause = ExceptionUtils.getRootCause(thrown);
                         logger.debug("Failed to bind parameter '{}' (required type: {}). Reason: {}",
-                                parameterBindingRule.getName(),
-                                parameterBindingRule.getType().getSimpleName(),
+                                pbr.getName(),
+                                pbr.getType().getSimpleName(),
                                 (rootCause != null ? rootCause.getMessage() : thrown.getMessage()));
                     }
                 }
             }
-            parameterBindingRule = null;
+
+            pbr = null;
             return method.invoke(bean, args);
         } catch (InvocationTargetException e) {
             throw ExceptionUtils.getCause(e);
         } catch (Exception e) {
-            if (parameterBindingRule != null) {
-                throw new ParameterBindingException(parameterBindingRule, e);
+            if (pbr != null) {
+                throw new ParameterBindingException(pbr, e);
             } else {
                 throw e;
             }
         }
     }
 
-    /**
-     * Resolves a method argument from the given {@link Translet}.
-     * <p>This method handles various special argument types, such as {@link Translet},
-     * {@link ParameterMap}, {@link Map}, {@link Collection}, and {@link Parameters}.
-     * It also handles arrays of values and delegates to {@link #bindModel} for
-     * complex object binding.</p>
-     * @param translet the current translet
-     * @param type the target type of the method parameter
-     * @param name the name of the parameter
-     * @param stringifyContext the context for string-to-object conversion
-     * @param format the format for date/time conversion
-     * @return the resolved argument value
-     * @throws MethodArgumentTypeMismatchException if type conversion fails
-     * @throws RequestParseException if parsing the request body fails
-     * @throws NoSuchMethodException if a suitable constructor or method is not found
-     */
-    private static Object resolveArgumentWithTranslet(
-            Translet translet, Class<?> type, String name, StringifyContext stringifyContext, String format)
-            throws MethodArgumentTypeMismatchException, RequestParseException, NoSuchMethodException {
+    private static Object resolveArgumentWithTranslet(@NonNull Activity activity, @NonNull ParameterBindingRule pbr)
+            throws Exception {
+        Translet translet = activity.getTranslet();
+        Class<?> type = pbr.getType();
+        String name = pbr.getName();
+
         Object result;
         if (type == Translet.class) {
             result = translet;
         } else if (type.isArray()) {
-            type = type.getComponentType();
-            if (type == Translet.class) {
+            if (type.getComponentType() == Translet.class) {
                 result = new Translet[] { translet };
             } else {
-                String[] values = translet.getParameterValues(name);
-                result = resolveValue(type, values, stringifyContext, format);
+                Object value = translet.getParameterValues(name);
+                result = resolveValue(value, type, pbr.getAnnotations(), activity);
                 if (result == Void.TYPE) {
                     result = null;
                 }
@@ -185,7 +164,7 @@ public abstract class AnnotatedMethodInvoker {
         } else if (Map.class.isAssignableFrom(type)) {
             if (!type.isInterface()) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> map = (Map<String, Object>) ClassUtils.createInstance(type);
+                Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
                 map.putAll(translet.getAllParameters());
                 result = map;
             } else {
@@ -224,8 +203,8 @@ public abstract class AnnotatedMethodInvoker {
             }
             return parameters;
         } else {
-            String value = translet.getParameter(name);
-            result = resolveValue(type, value, stringifyContext, format);
+            Object value = translet.getParameter(name);
+            result = resolveValue(value, type, pbr.getAnnotations(), activity);
             if (result == Void.TYPE) {
                 if (type.isAnnotationPresent(Component.class)) {
                     try {
@@ -234,26 +213,17 @@ public abstract class AnnotatedMethodInvoker {
                         result = translet.getBean(type, name);
                     }
                 } else {
-                    result = bindModel(translet, type, stringifyContext);
+                    result = bindModel(activity, type);
                 }
             }
         }
         return result;
     }
 
-    /**
-     * Resolves a method argument from the {@link Activity}'s bean container.
-     * <p>This is used in non-translet environments (e.g., daemon) where arguments
-     * are resolved as beans.</p>
-     * @param activity the current activity
-     * @param type the target type of the method parameter
-     * @param name the name of the parameter, used for disambiguation in case of
-     *      multiple beans of the same type
-     * @return the resolved bean instance
-     * @throws MethodArgumentTypeMismatchException if the bean cannot be resolved
-     */
-    private static Object resolveArgument(Activity activity, Class<?> type, String name)
-            throws MethodArgumentTypeMismatchException {
+    private static Object resolveArgument(@NonNull Activity activity, @NonNull ParameterBindingRule pbr) {
+        Class<?> type = pbr.getType();
+        String name = pbr.getName();
+
         Object result;
         if (type == Translet.class) {
             result = null;
@@ -269,44 +239,44 @@ public abstract class AnnotatedMethodInvoker {
         return result;
     }
 
-    /**
-     * Creates an instance of the target model class and populates its properties from
-     * the translet's parameters.
-     * <p>This method respects {@link Required} annotations on setter methods and will
-     * throw an exception if a required property is not present in the request.</p>
-     * @param translet the current translet
-     * @param type the type of the model object to create and bind
-     * @param stringifyContext the context for string-to-object conversion
-     * @return the populated model object
-     * @throws NoSuchMethodException if a setter method is not found
-     */
     @NonNull
-    private static Object bindModel(Translet translet, Class<?> type, StringifyContext stringifyContext)
-            throws NoSuchMethodException {
+    private static Object bindModel(@NonNull Activity activity, Class<?> type) throws Exception {
+        Translet translet = activity.getTranslet();
         Object model = ClassUtils.createInstance(type);
         BeanDescriptor bd = BeanDescriptor.getInstance(type);
         for (String name : bd.getWritablePropertyNames()) {
             Method method = bd.getSetter(name);
             Class<?> setterType = bd.getSetterType(name);
-            Qualifier qualifierAnno = bd.getSetterAnnotation(method, Qualifier.class);
-            String paramName = (qualifierAnno != null ? qualifierAnno.value() : name);
-            Format formatAnno = bd.getSetterAnnotation(method, Format.class);
-            String format = (formatAnno != null ? formatAnno.value() : null);
-            Object value = null;
-            try {
-                Object result;
-                if (setterType.isArray()) {
-                    setterType = setterType.getComponentType();
-                    value = translet.getParameterValues(paramName);
-                    result = resolveValue(setterType, (String[])value, stringifyContext, format);
-                } else {
-                    value = translet.getParameter(paramName);
-                    result = resolveValue(setterType, (String)value, stringifyContext, format);
+            Annotation[] methodAnnos = method.getAnnotations();
+            Annotation[] paramAnnos = method.getParameterAnnotations()[0];
+            Annotation[] annotations = new Annotation[methodAnnos.length + paramAnnos.length];
+            System.arraycopy(methodAnnos, 0, annotations, 0, methodAnnos.length);
+            System.arraycopy(paramAnnos, 0, annotations, methodAnnos.length, paramAnnos.length);
+
+            String paramName = name;
+            for (Annotation anno : annotations) {
+                if (anno.annotationType() == Qualifier.class) {
+                    Qualifier qualifier = (Qualifier)anno;
+                    if (qualifier.value() != null && !qualifier.value().isEmpty()) {
+                        paramName = qualifier.value();
+                    }
+                    break;
                 }
+            }
+
+            Object value;
+            if (setterType.isArray()) {
+                value = translet.getParameterValues(paramName);
+            } else {
+                value = translet.getParameter(paramName);
+            }
+
+            try {
+                Object result = resolveValue(value, setterType, annotations, activity);
                 if (result != null && result != Void.TYPE) {
                     BeanUtils.setProperty(model, name, result);
                 }
-            } catch (Exception e) {
+            } catch (TypeConversionException e) {
                 if (logger.isDebugEnabled()) {
                     Throwable rootCause = ExceptionUtils.getRootCause(e);
                     logger.debug("Failed to bind property '{}' (required type: {}) for bean '{}'. Value: '{}'. Reason: {}",
@@ -318,354 +288,45 @@ public abstract class AnnotatedMethodInvoker {
         return model;
     }
 
-    /**
-     * Converts a single string value to the specified target type.
-     * <p>Handles primitives, their wrapper types, and common Java types like
-     * {@link String}, {@link BigDecimal}, and date/time types.</p>
-     * @param type the target type
-     * @param value the string value to convert
-     * @param stringifyContext the context for date/time conversion
-     * @param format the format for date/time conversion
-     * @return the converted object, or {@link Void#TYPE} if the type is not supported
-     * @throws MethodArgumentTypeMismatchException if the conversion fails
-     */
-    private static Object resolveValue(Class<?> type, String value, StringifyContext stringifyContext, String format)
-            throws MethodArgumentTypeMismatchException {
-        try {
-            Object result = null;
-            if (type == String.class) {
-                result = value;
-            } else if (type == char.class) {
-                if (value != null && !value.isEmpty()) {
-                    result = value.charAt(0);
-                } else {
-                    result = Character.MIN_VALUE;
-                }
-            } else if (type == Character.class) {
-                if (value != null && !value.isEmpty()) {
-                    result = value.charAt(0);
-                }
-            } else if (type == boolean.class) {
-                result = Boolean.valueOf(value);
-            } else if (type == Boolean.class) {
-                if (value != null) {
-                    result = Boolean.valueOf(value);
-                }
-            } else if (type == byte.class) {
-                if (value != null) {
-                    result = Byte.valueOf(value);
-                } else {
-                    result = 0;
-                }
-            } else if (type == Byte.class) {
-                if (value != null) {
-                    result = Byte.valueOf(value);
-                }
-            } else if (type == short.class) {
-                if (value != null) {
-                    result = Short.valueOf(value);
-                } else {
-                    result = 0;
-                }
-            } else if (type == Short.class) {
-                if (value != null) {
-                    result = Short.valueOf(value);
-                }
-            } else if (type == int.class) {
-                if (value != null) {
-                    result = Integer.valueOf(value);
-                } else {
-                    result = 0;
-                }
-            } else if (type == Integer.class) {
-                if (value != null) {
-                    result = Integer.valueOf(value);
-                }
-            } else if (type == long.class) {
-                if (value != null) {
-                    result = Long.valueOf(value);
-                } else {
-                    result = 0L;
-                }
-            } else if (type == Long.class) {
-                if (value != null) {
-                    result = Long.valueOf(value);
-                }
-            } else if (type == float.class) {
-                if (value != null) {
-                    result = Float.valueOf(value);
-                } else {
-                    result = 0f;
-                }
-            } else if (type == Float.class) {
-                if (value != null) {
-                    result = Float.valueOf(value);
-                }
-            } else if (type == double.class) {
-                if (value != null) {
-                    result = Double.valueOf(value);
-                } else {
-                    result = 0d;
-                }
-            } else if (type == Double.class) {
-                if (value != null) {
-                    result = Double.valueOf(value);
-                }
-            } else if (type == BigInteger.class) {
-                if (value != null) {
-                    result = new BigInteger(value);
-                }
-            } else if (type == BigDecimal.class) {
-                if (value != null) {
-                    result = new BigDecimal(value);
-                }
-            } else if (type == LocalDateTime.class) {
-                if (value != null) {
-                    result = stringifyContext.toLocalDateTime(value, format);
-                }
-            } else if (type == LocalDate.class) {
-                if (value != null) {
-                    result = stringifyContext.toLocalDate(value, format);
-                }
-            } else if (type == LocalTime.class) {
-                if (value != null) {
-                    result = stringifyContext.toLocalTime(value, format);
-                }
-            } else if (type == Date.class) {
-                if (value != null) {
-                    result = stringifyContext.toDate(value, format);
-                }
-            } else {
-                result = Void.TYPE;
+    @Nullable
+    private static Object resolveValue(Object value, @NonNull Class<?> targetType, Annotation[] annotations,
+                                       @NonNull Activity activity)
+            throws TypeConversionException {
+        TypeConverterRegistry registry = TypeConverterRegistry.getInstance();
+        if (targetType.isArray()) {
+            Class<?> componentType = targetType.getComponentType();
+            TypeConverter<?> converter = registry.getConverter(componentType);
+            if (converter == null) {
+                return Void.TYPE;
             }
-            return result;
-        } catch (Exception e) {
-            throw new MethodArgumentTypeMismatchException(String.class, type, e);
-        }
-    }
-
-    /**
-     * Converts an array of string values to an array of the specified target type.
-     * @param type the target component type
-     * @param values the array of string values to convert
-     * @param stringifyContext the context for date/time conversion
-     * @param format the format for date/time conversion
-     * @return an array of converted objects, or {@link Void#TYPE} if the type is not supported
-     * @throws MethodArgumentTypeMismatchException if the conversion fails
-     */
-    private static Object resolveValue(
-            Class<?> type, String[] values, StringifyContext stringifyContext, String format)
-            throws MethodArgumentTypeMismatchException {
-        try {
-            Object result = null;
-            if (type == String.class) {
-                result = values;
-            } else if (type == char.class) {
-                if (values != null) {
-                    char[] arr = new char[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        if (!values[i].isEmpty()) {
-                            arr[i] = values[i].charAt(0);
-                        } else {
-                            arr[i] = Character.MIN_VALUE;
-                        }
-                    }
-                    result = arr;
-                } else {
-                    result = new char[0];
-                }
-            } else if (type == Character.class) {
-                if (values != null) {
-                    Character[] arr = new Character[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        if (!values[i].isEmpty()) {
-                            arr[i] = values[i].charAt(0);
-                        } else {
-                            arr[i] = null;
-                        }
-                    }
-                    result = arr;
-                }
-            } else if (type == boolean.class) {
-                if (values != null) {
-                    boolean[] arr = new boolean[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Boolean.parseBoolean(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new boolean[0];
-                }
-            } else if (type == Boolean.class) {
-                if (values != null) {
-                    Boolean[] arr = new Boolean[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Boolean.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == byte.class) {
-                if (values != null) {
-                    byte[] arr = new byte[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Byte.parseByte(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new byte[0];
-                }
-            } else if (type == Byte.class) {
-                if (values != null) {
-                    Byte[] arr = new Byte[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Byte.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == short.class) {
-                if (values != null) {
-                    short[] arr = new short[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Short.parseShort(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new short[0];
-                }
-            } else if (type == Short.class) {
-                if (values != null) {
-                    Short[] arr = new Short[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Short.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == int.class) {
-                if (values != null) {
-                    int[] arr = new int[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Integer.parseInt(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new int[0];
-                }
-            } else if (type == Integer.class) {
-                if (values != null) {
-                    Integer[] arr = new Integer[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Integer.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == long.class) {
-                if (values != null) {
-                    long[] arr = new long[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Long.parseLong(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new long[0];
-                }
-            } else if (type == Long.class) {
-                if (values != null) {
-                    Long[] arr = new Long[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Long.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == float.class) {
-                if (values != null) {
-                    float[] arr = new float[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Float.parseFloat(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new float[0];
-                }
-            } else if (type == Float.class) {
-                if (values != null) {
-                    Float[] arr = new Float[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Float.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == double.class) {
-                if (values != null) {
-                    double[] arr = new double[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Double.parseDouble(values[i]);
-                    }
-                    result = arr;
-                } else {
-                    result = new double[0];
-                }
-            } else if (type == Double.class) {
-                if (values != null) {
-                    Double[] arr = new Double[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = Double.valueOf(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == BigInteger.class) {
-                if (values != null) {
-                    BigInteger[] arr = new BigInteger[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = new BigInteger(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == BigDecimal.class) {
-                if (values != null) {
-                    BigDecimal[] arr = new BigDecimal[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = new BigDecimal(values[i]);
-                    }
-                    result = arr;
-                }
-            } else if (type == LocalDateTime.class) {
-                if (values != null) {
-                    LocalDateTime[] arr = new LocalDateTime[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = stringifyContext.toLocalDateTime(values[i], format);
-                    }
-                    result = arr;
-                }
-            } else if (type == LocalDate.class) {
-                if (values != null) {
-                    LocalDate[] arr = new LocalDate[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = stringifyContext.toLocalDate(values[i], format);
-                    }
-                    result = arr;
-                }
-            } else if (type == LocalTime.class) {
-                if (values != null) {
-                    LocalTime[] arr = new LocalTime[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = stringifyContext.toLocalTime(values[i], format);
-                    }
-                    result = arr;
-                }
-            } else if (type == Date.class) {
-                if (values != null) {
-                    Date[] arr = new Date[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        arr[i] = stringifyContext.toDate(values[i], format);
-                    }
-                    result = arr;
-                }
-            } else {
-                result = Void.TYPE;
+            if (value == null) {
+                return null;
             }
-            return result;
-        } catch (Exception e) {
-            throw new MethodArgumentTypeMismatchException(String[].class, type, e);
+            String[] values = (value instanceof String[] ? (String[])value : new String[] { value.toString() });
+            Object array = Array.newInstance(componentType, values.length);
+            for (int i = 0; i < values.length; i++) {
+                try {
+                    Array.set(array, i, converter.convert(values[i], annotations, activity));
+                } catch (Exception e) {
+                    throw new TypeConversionException(value, targetType, e);
+                }
+            }
+            return array;
+        } else {
+            TypeConverter<?> converter = registry.getConverter(targetType);
+            if (converter == null) {
+                return Void.TYPE;
+            }
+            String stringValue = (value instanceof String[] ? ((String[])value)[0] : (value != null ? value.toString() : null));
+            try {
+                Object result = converter.convert(stringValue, annotations, activity);
+                if (result == null && targetType.isPrimitive()) {
+                    return TypeUtils.getPrimitiveDefaultValue(targetType);
+                }
+                return result;
+            } catch (Exception e) {
+                throw new TypeConversionException(value, targetType, e);
+            }
         }
     }
 

@@ -1061,6 +1061,7 @@ public class AnnotatedConfigParser {
             bindingRule.setName(qualifier);
             bindingRule.setFormat(format);
             bindingRule.setRequired(required);
+            bindingRule.setAnnotations(param.getAnnotations());
             bindingRules[cnt++] = bindingRule;
         }
         return bindingRules;

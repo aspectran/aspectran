@@ -16,6 +16,7 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -198,6 +199,34 @@ public abstract class TypeUtils {
             convertedClasses[i] = wrapperToPrimitive(classes[i]);
         }
         return convertedClasses;
+    }
+
+    /**
+     * Returns the default value for a given primitive type.
+     * @param type the primitive type class
+     * @return the default value, or {@code null} if the type is not a primitive
+     */
+    @Nullable
+    public static Object getPrimitiveDefaultValue(@NonNull Class<?> type) {
+        if (boolean.class == type) {
+            return false;
+        } else if (char.class == type) {
+            return '\u0000';
+        } else if (byte.class == type) {
+            return (byte)0;
+        } else if (short.class == type) {
+            return (short)0;
+        } else if (int.class == type) {
+            return 0;
+        } else if (long.class == type) {
+            return 0L;
+        } else if (float.class == type) {
+            return 0.0f;
+        } else if (double.class == type) {
+            return 0.0d;
+        } else {
+            return null;
+        }
     }
 
 }
