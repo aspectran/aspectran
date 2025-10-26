@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A simple, concrete implementation of {@link ApplicationAdapter} that stores
  * application-scoped attributes in a thread-safe {@link ConcurrentHashMap}.
+ *
  * <p>This adapter is useful for non-web environments, such as command-line
  * applications or tests, where a basic application context is required.
  * It extends {@link AbstractApplicationAdapter} to inherit base path resolution

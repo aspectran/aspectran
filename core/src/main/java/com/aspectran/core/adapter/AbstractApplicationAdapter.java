@@ -23,10 +23,11 @@ import java.nio.file.Path;
 import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
 
 /**
- * Abstract base implementation of {@link ApplicationAdapter}.
+ * Abstract base implementation of the {@link ApplicationAdapter} interface.
+ *
  * <p>This adapter provides common facilities for resolving file system paths
  * relative to a specified application base path. It also supports fully
- * qualified file URLs. Subclasses should handle attribute management.
+ * qualified file URLs. Subclasses are responsible for attribute management.
  * </p>
  *
  * @author Juho Jeong
@@ -61,9 +62,11 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
      * Resolves the given path to an absolute, real file system path.
      * <p>The resolution logic is as follows:
      * <ul>
-     *   <li>If the path starts with "file:", it is treated as a fully qualified URL.
+     *   <li>If the path starts with "file:", it is treated as a fully qualified URL.</li>
+     *   <li>If the path is absolute, it is used as is.</li>
      *   <li>Otherwise, the path is resolved relative to the application base path.
-     *   If no base path is configured, it is resolved relative to the current working directory.</li>
+     *   If no base path is configured, it is resolved relative to the current
+     *   working directory.</li>
      * </ul>
      * @param path the path to resolve (must not be {@code null})
      * @return the resolved absolute {@link Path}

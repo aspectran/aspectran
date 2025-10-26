@@ -38,8 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>This class resolves a {@link ViewDispatcher} bean and delegates the dispatching
  * task to it. It acts as the bridge between the response phase of an activity and the
  * underlying view layer (e.g., JSP). This response type is responsible for preparing
- * the necessary data (e.g., activity results as request attributes) for the view
- * and then invoking the appropriate dispatcher.</p>
+ * the necessary data by calling {@link #saveAttributes} to expose action results as
+ * request attributes, and then invoking the appropriate dispatcher. Singleton
+ * {@code ViewDispatcher} instances are cached to improve performance.</p>
  *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
@@ -118,6 +119,16 @@ public class DispatchResponse implements Response {
 
     /**
      * Determines and returns the appropriate {@link ViewDispatcher} for this response.
+     * <p>The resolution process is as follows:
+     * <ol>
+     *   <li>If a dispatcher is already configured in the {@code DispatchRule}, it is returned.</li>
+     *   <li>Otherwise, the dispatcher name is retrieved from the rule or from the activity's
+     *       settings ({@link ViewDispatcher#VIEW_DISPATCHER_SETTING_NAME}).</li>
+     *   <li>The internal cache is checked for a singleton instance of the dispatcher.</li>
+     *   <li>If not found, the dispatcher bean is resolved from the activity context by its name
+     *       or class.</li>
+     *   <li>If the resolved dispatcher is a singleton, it is stored in the cache for future use.</li>
+     * </ol>
      * @param activity the current Activity
      * @return the resolved view dispatcher
      * @throws ViewDispatcherException if the ViewDispatcher cannot be determined
@@ -171,6 +182,13 @@ public class DispatchResponse implements Response {
     /**
      * A static helper method to save the results of an activity as request attributes,
      * making them accessible to the dispatched view.
+     * <p>This method recursively traverses the {@link ProcessResult}. For each
+     * {@link ActionResult}:
+     * <ul>
+     *   <li>If the result has an action ID, it is set as an attribute with the ID as the name.</li>
+     *   <li>If the result is a {@link Map}, each entry is set as an attribute.</li>
+     *   <li>If the result is another {@link ProcessResult}, the method recurses.</li>
+     * </ul>
      * @param requestAdapter the request adapter to which attributes will be saved
      * @param processResult the process result containing the data to be saved
      */

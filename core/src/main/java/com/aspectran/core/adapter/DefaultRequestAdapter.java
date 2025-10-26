@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * A generic, concrete implementation of {@link AbstractRequestAdapter}.
+ *
  * <p>This adapter serves as a default, mutable {@link RequestAdapter}
  * suitable for internal use, testing, or for environments that do not have a
  * specific request-response model. It provides constructors to set the request

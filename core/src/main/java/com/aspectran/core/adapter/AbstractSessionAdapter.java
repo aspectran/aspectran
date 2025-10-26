@@ -21,10 +21,11 @@ import com.aspectran.utils.ToStringBuilder;
 import static com.aspectran.core.component.bean.scope.SessionScope.SESSION_SCOPE_ATTR_NAME;
 
 /**
- * Abstract base implementation of {@link SessionAdapter}.
+ * Abstract base implementation of the {@link SessionAdapter} interface.
+ *
  * <p>This class holds a reference to the underlying native session object (the "adaptee")
  * and provides lazy management of a {@link SessionScope} instance. The session scope is
- * stored as an attribute in the native session.
+ * stored as an attribute in the native session to persist it across requests.
  * </p>
  *
  * @author Juho Jeong
@@ -59,8 +60,10 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation lazily loads the {@link SessionScope} from a session
-     * attribute. If the scope does not exist and {@code create} is true, it uses
-     * the {@link #createSessionScope()} factory method to instantiate a new one.
+     * attribute. If the scope is not found in the adapter's cache, it attempts to
+     * retrieve it from the underlying session. If it still does not exist and
+     * {@code create} is true, it uses the {@link #createSessionScope()} factory
+     * method to instantiate a new one, which is then stored as a session attribute.
      * </p>
      */
     @Override

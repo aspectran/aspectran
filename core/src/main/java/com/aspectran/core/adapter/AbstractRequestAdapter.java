@@ -23,7 +23,8 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import java.security.Principal;
 
 /**
- * Abstract base implementation of {@link RequestAdapter}.
+ * Abstract base implementation of the {@link RequestAdapter} interface.
+ *
  * <p>This class extends {@link AbstractRequest} and holds a reference to the
  * underlying native request object (the "adaptee"). It also provides lazy
  * creation and management of a {@link RequestScope} for request-scoped beans.

@@ -25,8 +25,8 @@ import java.util.Collection;
 
 /**
  * Provides an abstraction for an outgoing response within a specific runtime environment.
- * <p>
- * Implementations of this interface encapsulate a container-specific response object
+ *
+ * <p>Implementations of this interface encapsulate a container-specific response object
  * (e.g., {@code HttpServletResponse} in a web environment), exposing a consistent API
  * for managing headers, status codes, content type, and the response body via an
  * {@link OutputStream} or {@link Writer}. This allows response generation logic to
@@ -62,7 +62,7 @@ public interface ResponseAdapter {
 
     /**
      * Returns a collection of all header names set in this response.
-     * @return a collection of header names
+     * @return a collection of header names, which may be empty
      */
     Collection<String> getHeaderNames();
 

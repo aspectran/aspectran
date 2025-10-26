@@ -28,6 +28,7 @@ import java.util.Set;
 
 /**
  * A default, in-memory implementation of {@link ResponseAdapter}.
+ *
  * <p>This class captures response data such as headers, status, and content type
  * in memory. It can be configured with an {@link OutputStream} or {@link Writer}
  * to capture the response body. It is suitable for testing or for non-HTTP

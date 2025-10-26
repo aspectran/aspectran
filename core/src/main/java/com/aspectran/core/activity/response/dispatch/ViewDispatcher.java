@@ -21,30 +21,37 @@ import com.aspectran.core.context.rule.DispatchRule;
 /**
  * Defines a contract for dispatching a request to a specific view technology for rendering.
  *
- * <p>Implementations of this interface are responsible for integrating with various view layers
- * (e.g., JSP, Thymeleaf, FreeMarker) by forwarding the request and response to the
- * appropriate view resource. This allows Aspectran to remain decoupled from specific
- * view technologies while providing a flexible rendering mechanism.</p>
+ * <p>Implementations of this interface are responsible for integrating with various
+ * view layers (e.g., JSP, Thymeleaf, FreeMarker) by forwarding the request and
+ * response to the appropriate view resource. This allows Aspectran to remain
+ * decoupled from specific view technologies while providing a flexible rendering
+ * mechanism.</p>
  */
 public interface ViewDispatcher {
 
     /**
-     * The default name of the view dispatcher bean.
+     * The name of the setting that specifies the default view dispatcher bean.
      */
     String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 
+    /**
+     * Returns the content type of the view.
+     * @return the content type
+     */
     String getContentType();
 
     /**
-     * Dispatches the request to the specified view.
+     * Dispatches the request to the view specified in the given {@code DispatchRule}.
      * @param activity the current activity
+     * @param dispatchRule the rule that defines the view to dispatch to
      * @throws ViewDispatcherException if an error occurs during dispatch
      */
     void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException;
 
     /**
-     * Return whether this view dispatcher corresponds to a singleton instance.
-     * @return whether this view dispatcher corresponds to a singleton instance
+     * Returns whether this view dispatcher is a singleton.
+     * <p>Singleton dispatchers are cached by {@link DispatchResponse} for performance.</p>
+     * @return true if the dispatcher is a singleton, false otherwise
      */
     boolean isSingleton();
 

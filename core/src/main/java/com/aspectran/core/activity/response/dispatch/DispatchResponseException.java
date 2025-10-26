@@ -24,9 +24,9 @@ import java.io.Serial;
 /**
  * Exception thrown when an error occurs during the dispatching phase of a response.
  *
- * <p>This is a specific type of {@link ResponseException} that indicates a failure
- * in the {@link DispatchResponse} or its associated {@link ViewDispatcher}. It holds a
- * reference to the {@link DispatchRule} that was being processed when the error occurred.</p>
+ * <p>This exception indicates a failure within the {@link DispatchResponse} or its
+ * associated {@link ViewDispatcher}. It captures the {@link DispatchRule} that was
+ * being processed at the time of the error, which is useful for debugging.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

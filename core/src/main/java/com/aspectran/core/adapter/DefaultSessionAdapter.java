@@ -21,6 +21,7 @@ import java.util.Enumeration;
 
 /**
  * A concrete {@link SessionAdapter} that wraps and delegates to a {@link SessionAgent}.
+ *
  * <p>This adapter provides a thin wrapper that maps the {@link SessionAdapter}
  * interface to the {@link SessionAgent}, which handles the underlying session
  * management.

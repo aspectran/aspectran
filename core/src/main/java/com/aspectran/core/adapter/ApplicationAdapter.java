@@ -20,12 +20,12 @@ import java.util.Set;
 
 /**
  * Provides an abstraction for the application or container environment.
- * <p>
- * This interface is implemented to adapt to a specific runtime container
- * (e.g., Servlet container, command-line shell, etc.). It exposes a consistent API
- * for resolving application base paths and managing application-scoped attributes.
- * This allows the core framework to operate uniformly across different execution
- * environments.
+ *
+ * <p>This interface is implemented to adapt to a specific runtime container
+ * (e.g., a Servlet container or a command-line shell). It exposes a consistent
+ * API for resolving application base paths and managing application-scoped
+ * attributes. This allows the core framework to operate uniformly across
+ * different execution environments.
  * </p>
  *
  * @author Juho Jeong
@@ -35,21 +35,21 @@ public interface ApplicationAdapter {
 
     /**
      * Returns the base path of the application as a {@link Path} object.
-     * @return the application's base path
+     * @return the application's base path, or {@code null} if not applicable
      */
     Path getBasePath();
 
     /**
      * Returns the base path of the application as a string.
-     * @return the application's base path as a string
+     * @return the application's base path as a string, or {@code null} if not applicable
      * @see #getBasePath()
      */
     String getBasePathString();
 
     /**
-     * Returns the real file system path for a given virtual path.
+     * Returns the real file system path for a given virtual or relative path.
      * The path is resolved relative to the application's base path.
-     * @param path the virtual path to translate to a real path
+     * @param path the path to translate to a real path
      * @return the resolved, absolute file system path
      */
     Path getRealPath(String path);
@@ -71,13 +71,14 @@ public interface ApplicationAdapter {
     void setAttribute(String name, Object value);
 
     /**
-     * Returns an {@link Set} of all application-scoped attribute names.
-     * @return a set of attribute names
+     * Returns a {@link Set} of all application-scoped attribute names.
+     * @return a set of attribute names, which may be empty
      */
     Set<String> getAttributeNames();
 
     /**
      * Removes the application-scoped attribute with the given name.
+     * If the attribute does not exist, this method has no effect.
      * @param name the name of the attribute to remove
      */
     void removeAttribute(String name);

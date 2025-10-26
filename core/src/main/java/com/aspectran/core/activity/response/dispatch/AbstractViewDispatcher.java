@@ -23,10 +23,11 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 /**
  * Abstract base class for {@link ViewDispatcher} implementations.
  *
- * <p>Provides common functionality for view dispatchers, such as managing content type,
- * prefixes, and suffixes for view names. It also includes a utility method to resolve
- * the final view name based on the {@link DispatchRule} and the current {@link Activity}.
- * Implementations typically extend this class to integrate with specific view technologies.</p>
+ * <p>This class provides common functionality for view dispatchers, such as managing
+ * the content type, prefix, and suffix for view names. Subclasses are expected to
+ * implement the {@link #dispatch(Activity, DispatchRule)} method to integrate with a
+ * specific view technology. The {@link #resolveViewName} method is provided as a
+ * utility to construct the final view name from a {@link DispatchRule}.</p>
  */
 public abstract class AbstractViewDispatcher implements ViewDispatcher {
 
@@ -37,7 +38,7 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     private String suffix;
 
     /**
-     * Returns the content type of the view being dispatched.
+     * Returns the content type to be set in the response.
      * @return the content type
      */
     @Override
@@ -46,15 +47,15 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Sets the content type for the view being dispatched.
-     * @param contentType the content type to set
+     * Sets the content type to be set in the response.
+     * @param contentType the content type
      */
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
     /**
-     * Returns the prefix that is prepended to view names when building a URL.
+     * Returns the prefix that is prepended to view names.
      * @return the prefix for view names
      */
     protected String getPrefix() {
@@ -62,7 +63,7 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Sets the prefix that is prepended to view names when building a URL.
+     * Sets the prefix that is prepended to view names.
      * @param prefix the prefix for view names
      */
     public void setPrefix(String prefix) {
@@ -70,7 +71,7 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Gets the suffix that is appended to view names when building a URL.
+     * Returns the suffix that is appended to view names.
      * @return the suffix for view names
      */
     public String getSuffix() {
@@ -78,7 +79,7 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Sets the suffix that is appended to view names when building a URL.
+     * Sets the suffix that is appended to view names.
      * @param suffix the suffix for view names
      */
     public void setSuffix(String suffix) {
@@ -91,12 +92,16 @@ public abstract class AbstractViewDispatcher implements ViewDispatcher {
     }
 
     /**
-     * Resolves the final view name by applying configured prefixes and suffixes to the
-     * name specified in the {@code DispatchRule}.
+     * Resolves the final view name by applying the configured prefix and suffix to the
+     * name specified in the {@code DispatchRule}. For example, if the prefix is
+     * "/WEB-INF/views/", the suffix is ".jsp", and the view name from the rule is "home",
+     * the resolved name will be "/WEB-INF/views/home.jsp".
      * @param dispatchRule the rule that defines the view name
-     * @param activity the current activity, used for dynamic name resolution
+     * @param activity the current activity, used for dynamic name resolution if the
+     *      name contains parameter tokens
      * @return the resolved view name, ready for dispatching
-     * @throws IllegalArgumentException if the dispatch rule does not have a name or the view name cannot be resolved
+     * @throws IllegalArgumentException if the dispatch rule does not have a name or
+     *      the view name cannot be resolved
      */
     @NonNull
     protected String resolveViewName(@NonNull DispatchRule dispatchRule, Activity activity) {

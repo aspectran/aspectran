@@ -22,9 +22,10 @@ import java.io.Serial;
 /**
  * Exception thrown when a {@link ViewDispatcher} fails to dispatch a request.
  *
- * <p>This may be caused by an inability to resolve the view resource or an internal
- * error within the view technology itself. It extends {@link ResponseException}
- * to indicate that the error occurred during the view dispatching phase.</p>
+ * <p>This exception may be caused by an inability to resolve the view resource or an
+ * internal error within the underlying view technology. It extends
+ * {@link ResponseException} to indicate that the error occurred during the view
+ * dispatching phase of the activity.</p>
  *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

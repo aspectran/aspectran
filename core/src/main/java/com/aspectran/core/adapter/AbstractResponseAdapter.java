@@ -16,7 +16,8 @@
 package com.aspectran.core.adapter;
 
 /**
- * Abstract base implementation of {@link ResponseAdapter}.
+ * Abstract base implementation of the {@link ResponseAdapter} interface.
+ *
  * <p>This class holds a reference to the underlying native response object
  * (the "adaptee") and provides a type-safe accessor for it. Subclasses must
  * implement all other methods from the {@link ResponseAdapter} interface.

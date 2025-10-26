@@ -22,8 +22,8 @@ import java.util.Enumeration;
 
 /**
  * Provides an abstraction for a user session within a specific runtime environment.
- * <p>
- * Implementations of this interface encapsulate a container-specific session object
+ *
+ * <p>Implementations of this interface encapsulate a container-specific session object
  * (e.g., {@code HttpSession} in a web environment), exposing a consistent API for
  * managing session identity, lifecycle, attributes, and a lazily created
  * {@link SessionScope}. This allows session handling logic to remain uniform

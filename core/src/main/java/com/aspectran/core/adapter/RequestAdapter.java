@@ -36,8 +36,8 @@ import java.util.TimeZone;
 
 /**
  * Provides an abstraction for an incoming request within a specific runtime environment.
- * <p>
- * Implementations of this interface encapsulate a container-specific request object
+ *
+ * <p>Implementations of this interface encapsulate a container-specific request object
  * (e.g., {@code HttpServletRequest} in a web environment), exposing a consistent API
  * for accessing request data such as headers, parameters, attributes, and uploaded files.
  * This allows request handling logic to remain uniform across different execution contexts.
@@ -85,7 +85,7 @@ public interface RequestAdapter {
 
     /**
      * Returns a set of all header names in this request.
-     * @return a set of header names
+     * @return a set of header names, which may be empty
      */
     Set<String> getHeaderNames();
 
@@ -140,7 +140,7 @@ public interface RequestAdapter {
 
     /**
      * Returns a set of all attribute names in this request.
-     * @return a set of attribute names
+     * @return a set of attribute names, which may be empty
      */
     Set<String> getAttributeNames();
 
@@ -200,7 +200,7 @@ public interface RequestAdapter {
 
     /**
      * Returns a collection of all parameter names in this request.
-     * @return a collection of parameter names
+     * @return a collection of parameter names, which may be empty
      */
     Collection<String> getParameterNames();
 
@@ -286,7 +286,7 @@ public interface RequestAdapter {
 
     /**
      * Returns a set of all file parameter names in this request.
-     * @return a set of file parameter names
+     * @return a set of file parameter names, which may be empty
      */
     Set<String> getFileParameterNames();
 

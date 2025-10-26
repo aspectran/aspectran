@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 /**
- * Adapter interfaces and base implementations that encapsulate application, request,
- * response, and session details for different runtime environments.
- * <p>
- * This package defines the SPI used by the core activity/Translet layer to interact with
- * the hosting container without depending on container-specific APIs. The primary
- * contracts are:
- * </p>
+ * Provides adapter interfaces and implementations for different runtime environments.
+ *
+ * <p>This package defines the SPI that allows the core framework to interact with a
+ * hosting container (e.g., web server, shell) without depending on container-specific
+ * APIs. The primary contracts are:
  * <ul>
- *   <li>{@link com.aspectran.core.adapter.ApplicationAdapter} – application-level context
- *       such as base-path resolution and application-scoped attributes</li>
- *   <li>{@link com.aspectran.core.adapter.RequestAdapter} – access to request headers,
- *       parameters, files, attributes, locales, etc.</li>
- *   <li>{@link com.aspectran.core.adapter.ResponseAdapter} – response headers, status,
- *       content type/encoding, and output handling</li>
- *   <li>{@link com.aspectran.core.adapter.SessionAdapter} – session identity, lifecycle,
- *       attributes, and session-scoped storage</li>
+ *   <li>{@link com.aspectran.core.adapter.ApplicationAdapter}: Manages application-level
+ *       context, such as base path resolution and application-scoped attributes.</li>
+ *   <li>{@link com.aspectran.core.adapter.RequestAdapter}: Provides access to request
+ *       headers, parameters, attributes, and other request data.</li>
+ *   <li>{@link com.aspectran.core.adapter.ResponseAdapter}: Handles response headers,
+ *       status, content type, and the response body.</li>
+ *   <li>{@link com.aspectran.core.adapter.SessionAdapter}: Manages session identity,
+ *       lifecycle, attributes, and session-scoped storage.</li>
  * </ul>
  */
 package com.aspectran.core.adapter;
