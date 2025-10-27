@@ -13,24 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.bean.annotation.Format;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
-import java.math.BigInteger;
 
 /**
- * Converts a String to a {@link BigInteger}.
+ * Abstract base class for date/time converters that handles the @Format annotation.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class BigIntegerConverter implements TypeConverter<BigInteger> {
+abstract class AbstractDateTimeConverter<T> implements TypeConverter<T> {
 
-    @Override
-    public BigInteger convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? new BigInteger(value) : null);
+    protected String findFormat(Annotation[] annotations) {
+        if (annotations != null) {
+            for (Annotation annotation : annotations) {
+                if (annotation.annotationType() == Format.class) {
+                    return ((Format)annotation).value();
+                }
+            }
+        }
+        return null;
     }
 
 }

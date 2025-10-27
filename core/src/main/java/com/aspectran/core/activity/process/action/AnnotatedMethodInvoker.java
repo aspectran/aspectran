@@ -21,9 +21,9 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Qualifier;
-import com.aspectran.core.context.converter.TypeConversionException;
-import com.aspectran.core.context.converter.TypeConverter;
-import com.aspectran.core.context.converter.TypeConverterRegistry;
+import com.aspectran.core.component.converter.TypeConversionException;
+import com.aspectran.core.component.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverterRegistry;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.utils.BeanDescriptor;
 import com.aspectran.utils.BeanUtils;
@@ -94,8 +94,7 @@ public abstract class AnnotatedMethodInvoker {
                     }
                 } catch (TypeConversionException e) {
                     thrown = e;
-                    if (e.getCause() instanceof NumberFormatException &&
-                            pbr.getType().isPrimitive()) {
+                    if (e.getCause() instanceof NumberFormatException && pbr.getType().isPrimitive()) {
                         args[i] = TypeUtils.getPrimitiveDefaultValue(pbr.getType());
                     }
                 } catch (IllegalArgumentException e) {
@@ -329,7 +328,7 @@ public abstract class AnnotatedMethodInvoker {
     private static Object resolveValue(Object value, @NonNull Class<?> targetType, Annotation[] annotations,
                                        @NonNull Activity activity)
             throws TypeConversionException {
-        TypeConverterRegistry registry = TypeConverterRegistry.getInstance();
+        TypeConverterRegistry registry = activity.getActivityContext().getTypeConverterRegistry();
         if (targetType.isArray()) {
             Class<?> componentType = targetType.getComponentType();
             TypeConverter<?> converter = registry.getConverter(componentType);

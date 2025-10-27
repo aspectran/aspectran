@@ -18,14 +18,17 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.embed.sample.anno.ThirdResult;
 import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.utils.ExceptionUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test cases for Annotated Configuration.
@@ -193,6 +196,12 @@ class AnnotatedConfigurationTest {
     @Test
     void forward() {
         aspectran.translate("/forward");
+    }
+
+    @Test
+    void requiredParam() {
+        Exception e = assertThrows(CoreServiceException.class, () -> aspectran.translate("/requiredParam"));
+        assertEquals("Missing required parameter 'param1'", ExceptionUtils.getRootCauseSimpleMessage(e));
     }
 
 }

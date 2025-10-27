@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.utils.StringifyContext;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
-import java.time.LocalTime;
 
 /**
- * Converts a String to a {@link java.time.LocalTime}.
+ * Converts a String to a {@link Short}.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class LocalTimeConverter extends AbstractDateTimeConverter<LocalTime> {
+public class ShortConverter implements TypeConverter<Short> {
 
     @Override
-    public LocalTime convert(String value, Annotation[] annotations, Activity activity) throws Exception {
-        if (value == null) {
-            return null;
-        }
-        String format = findFormat(annotations);
-        StringifyContext stringifyContext = activity.getStringifyContext();
-        return stringifyContext.toLocalTime(value, format);
+    public Short convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? Short.valueOf(value) : null);
     }
 
 }

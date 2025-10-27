@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.core.component.converter.impl;
+
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.converter.TypeConverter;
+
+import java.lang.annotation.Annotation;
+
 /**
- * Provides built-in implementations of the TypeConverter interface.
+ * Converts a String to a {@link Double}.
+ *
+ * <p>Created: 2025. 10. 26.</p>
  */
-package com.aspectran.core.context.converter.impl;
+public class DoubleConverter implements TypeConverter<Double> {
+
+    @Override
+    public Double convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? Double.valueOf(value) : null);
+    }
+
+}

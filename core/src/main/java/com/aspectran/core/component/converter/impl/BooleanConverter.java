@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
-import com.aspectran.core.component.bean.annotation.Format;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Abstract base class for date/time converters that handles the @Format annotation.
+ * Converts a String to a {@link Boolean}.
+ * <p>If the input string is {@code null}, it returns {@code null}. Otherwise, it delegates
+ * to {@link Boolean#valueOf(String)}, which returns {@code true} if the string is,
+ * ignoring case, "true", and {@code false} otherwise.</p>
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-abstract class AbstractDateTimeConverter<T> implements TypeConverter<T> {
+public class BooleanConverter implements TypeConverter<Boolean> {
 
-    protected String findFormat(Annotation[] annotations) {
-        if (annotations != null) {
-            for (Annotation annotation : annotations) {
-                if (annotation.annotationType() == Format.class) {
-                    return ((Format)annotation).value();
-                }
-            }
+    @Override
+    public Boolean convert(String value, Annotation[] annotations, Activity activity) {
+        if (value == null) {
+            return null;
         }
-        return null;
+        return Boolean.valueOf(value);
     }
 
 }

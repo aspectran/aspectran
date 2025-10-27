@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.core.component.converter.impl;
+
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.converter.TypeConverter;
+
+import java.lang.annotation.Annotation;
+
 /**
- * Provides a mechanism for converting data between different types.
+ * Converts a String to a {@link Long}.
+ *
+ * <p>Created: 2025. 10. 26.</p>
  */
-package com.aspectran.core.context.converter;
+public class LongConverter implements TypeConverter<Long> {
+
+    @Override
+    public Long convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? Long.valueOf(value) : null);
+    }
+
+}

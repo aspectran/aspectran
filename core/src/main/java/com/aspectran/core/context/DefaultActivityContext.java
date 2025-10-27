@@ -26,6 +26,7 @@ import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.component.bean.event.DefaultEventPublisher;
 import com.aspectran.core.component.bean.event.EventPublisher;
+import com.aspectran.core.component.converter.TypeConverterRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRenderer;
@@ -74,15 +75,17 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private ActivityEnvironment activityEnvironment;
 
-    private DefaultBeanRegistry beanRegistry;
+    private TypeConverterRegistry typeConverterRegistry;
 
-    private DefaultTemplateRenderer templateRenderer;
+    private DefaultBeanRegistry beanRegistry;
 
     private AspectRuleRegistry aspectRuleRegistry;
 
     private ScheduleRuleRegistry scheduleRuleRegistry;
 
     private TransletRuleRegistry transletRuleRegistry;
+
+    private DefaultTemplateRenderer templateRenderer;
 
     private MessageSource messageSource;
 
@@ -168,6 +171,11 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
+    public TypeConverterRegistry getTypeConverterRegistry() {
+        return typeConverterRegistry;
+    }
+
+    @Override
     public BeanRegistry getBeanRegistry() {
         checkNotDestroyed();
         return beanRegistry;
@@ -180,21 +188,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     public void setBeanRegistry(DefaultBeanRegistry beanRegistry) {
         checkInitializable();
         this.beanRegistry = beanRegistry;
-    }
-
-    @Override
-    public TemplateRenderer getTemplateRenderer() {
-        checkNotDestroyed();
-        return templateRenderer;
-    }
-
-    /**
-     * Sets the template renderer.
-     * @param templateRenderer the new template renderer
-     */
-    public void setTemplateRenderer(DefaultTemplateRenderer templateRenderer) {
-        checkInitializable();
-        this.templateRenderer = templateRenderer;
     }
 
     @Override
@@ -240,6 +233,21 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
         checkInitializable();
         this.transletRuleRegistry = transletRuleRegistry;
+    }
+
+    @Override
+    public TemplateRenderer getTemplateRenderer() {
+        checkNotDestroyed();
+        return templateRenderer;
+    }
+
+    /**
+     * Sets the template renderer.
+     * @param templateRenderer the new template renderer
+     */
+    public void setTemplateRenderer(DefaultTemplateRenderer templateRenderer) {
+        checkInitializable();
+        this.templateRenderer = templateRenderer;
     }
 
     @Override
@@ -351,6 +359,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         Assert.state(transletRuleRegistry != null, "TransletRuleRegistry is not set");
         Assert.state(templateRenderer != null, "TemplateRenderer is not set");
         ThreadContextHelper.runThrowable(getClassLoader(), () -> {
+            typeConverterRegistry = new TypeConverterRegistry();
+            typeConverterRegistry.initialize();
             beanRegistry.initialize();
             aspectRuleRegistry.initialize();
             scheduleRuleRegistry.initialize();
@@ -393,6 +403,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
                 aspectRuleRegistry.destroy();
                 aspectRuleRegistry = null;
             }
+            typeConverterRegistry.destroy();
         });
     }
 

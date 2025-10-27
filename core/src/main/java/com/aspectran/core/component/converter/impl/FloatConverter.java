@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.sample;
+package com.aspectran.core.component.converter.impl;
 
-public class RequiredSetterModel {
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.converter.TypeConverter;
 
-    private String name = "default";
+import java.lang.annotation.Annotation;
 
-    public String getName() {
-        return name;
-    }
+/**
+ * Converts a String to a {@link Float}.
+ *
+ * <p>Created: 2025. 10. 26.</p>
+ */
+public class FloatConverter implements TypeConverter<Float> {
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public Float convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? Float.valueOf(value) : null);
     }
 
 }

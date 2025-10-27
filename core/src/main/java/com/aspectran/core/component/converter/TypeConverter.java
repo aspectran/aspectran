@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Converts a String to a {@link Short}.
+ * An interface for converting a value to a specific type.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class ShortConverter implements TypeConverter<Short> {
+public interface TypeConverter<T> {
 
-    @Override
-    public Short convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? Short.valueOf(value) : null);
-    }
+    /**
+     * Converts the given value to the specified type.
+     * @param value the value to convert, typically a String or String[]
+     * @param annotations the annotations on the target parameter or property,
+     *                    which can be used to influence the conversion
+     * @param activity the current activity
+     * @return the converted object
+     * @throws Exception if the conversion fails
+     */
+    T convert(String value, Annotation[] annotations, Activity activity) throws Exception;
 
 }

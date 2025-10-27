@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.utils.StringifyContext;

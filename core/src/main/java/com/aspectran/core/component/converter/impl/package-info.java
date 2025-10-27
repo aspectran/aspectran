@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
-
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
-
-import java.lang.annotation.Annotation;
-
 /**
- * A simple pass-through converter that returns the input string without any change.
- *
- * <p>Created: 2025. 10. 26.</p>
+ * Provides built-in implementations of the TypeConverter interface.
  */
-public class StringConverter implements TypeConverter<String> {
-
-    @Override
-    public String convert(String value, Annotation[] annotations, Activity activity) {
-        return value;
-    }
-
-}
+package com.aspectran.core.component.converter.impl;

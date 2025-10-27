@@ -21,6 +21,7 @@ import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.component.bean.event.EventPublisher;
+import com.aspectran.core.component.converter.TypeConverterRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
@@ -99,6 +100,12 @@ public interface ActivityContext {
      * @return the environment
      */
     Environment getEnvironment();
+
+    /**
+     * Returns the type converter registry.
+     * @return the type converter registry
+     */
+    TypeConverterRegistry getTypeConverterRegistry();
 
     /**
      * Returns the aspect rule registry.

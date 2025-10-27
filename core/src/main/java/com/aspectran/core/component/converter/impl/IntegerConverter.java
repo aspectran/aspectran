@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Converts a String to a {@link Boolean}.
- * <p>If the input string is {@code null}, it returns {@code null}. Otherwise, it delegates
- * to {@link Boolean#valueOf(String)}, which returns {@code true} if the string is,
- * ignoring case, "true", and {@code false} otherwise.</p>
+ * Converts a String to an {@link Integer}.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class BooleanConverter implements TypeConverter<Boolean> {
+public class IntegerConverter implements TypeConverter<Integer> {
 
     @Override
-    public Boolean convert(String value, Annotation[] annotations, Activity activity) {
-        if (value == null) {
-            return null;
-        }
-        return Boolean.valueOf(value);
+    public Integer convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? Integer.valueOf(value) : null);
     }
 
 }

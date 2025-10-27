@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.utils.StringifyContext;
 
 import java.lang.annotation.Annotation;
+import java.time.LocalTime;
 
 /**
- * Converts a String to a {@link Character}.
- * <p>This converter returns the first character of the string. If the string is
- * {@code null} or empty, it returns {@code null}.</p>
+ * Converts a String to a {@link java.time.LocalTime}.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class CharacterConverter implements TypeConverter<Character> {
+public class LocalTimeConverter extends AbstractDateTimeConverter<LocalTime> {
 
     @Override
-    public Character convert(String value, Annotation[] annotations, Activity activity) {
-        if (value != null && !value.isEmpty()) {
-            return value.charAt(0);
-        } else {
+    public LocalTime convert(String value, Annotation[] annotations, Activity activity) throws Exception {
+        if (value == null) {
             return null;
         }
+        String format = findFormat(annotations);
+        StringifyContext stringifyContext = activity.getStringifyContext();
+        return stringifyContext.toLocalTime(value, format);
     }
 
 }

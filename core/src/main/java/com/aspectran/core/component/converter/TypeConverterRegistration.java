@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
-
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
-
-import java.lang.annotation.Annotation;
+package com.aspectran.core.component.converter;
 
 /**
- * Converts a String to an {@link Integer}.
+ * An interface for beans that wish to register {@link TypeConverter}s.
+ * This provides a way to register converters without a direct dependency on the
+ * {@link com.aspectran.core.context.ActivityContext}.
  *
- * <p>Created: 2025. 10. 26.</p>
+ * <p>Created: 2025-10-27</p>
+ *
+ * @see TypeConverterRegistrationBean
  */
-public class IntegerConverter implements TypeConverter<Integer> {
+public interface TypeConverterRegistration {
 
-    @Override
-    public Integer convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? Integer.valueOf(value) : null);
-    }
+    /**
+     * Registers a custom {@link TypeConverter} for a specific type.
+     * @param type the type to register the converter for
+     * @param converter the converter instance
+     */
+    void register(Class<?> type, TypeConverter<?> converter);
 
 }

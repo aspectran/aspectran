@@ -298,4 +298,8 @@ public class AnnotatedActivity {
         assertEquals("Grape", attr2);
     }
 
+    @Request("/requiredParam")
+    public void requiredParam(@Required String param1) {
+    }
+
 }

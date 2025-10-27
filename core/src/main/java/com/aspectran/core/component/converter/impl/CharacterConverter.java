@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Converts a String to a {@link Byte}.
+ * Converts a String to a {@link Character}.
+ * <p>This converter returns the first character of the string. If the string is
+ * {@code null} or empty, it returns {@code null}.</p>
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class ByteConverter implements TypeConverter<Byte> {
+public class CharacterConverter implements TypeConverter<Character> {
 
     @Override
-    public Byte convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? Byte.valueOf(value) : null);
+    public Character convert(String value, Annotation[] annotations, Activity activity) {
+        if (value != null && !value.isEmpty()) {
+            return value.charAt(0);
+        } else {
+            return null;
+        }
     }
 
 }

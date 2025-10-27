@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Converts a String to a {@link Double}.
+ * A simple pass-through converter that returns the input string without any change.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class DoubleConverter implements TypeConverter<Double> {
+public class StringConverter implements TypeConverter<String> {
 
     @Override
-    public Double convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? Double.valueOf(value) : null);
+    public String convert(String value, Annotation[] annotations, Activity activity) {
+        return value;
     }
 
 }

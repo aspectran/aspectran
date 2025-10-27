@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.converter.impl;
+package com.aspectran.core.component.converter.impl;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
 import java.lang.annotation.Annotation;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
- * Converts a String to a {@link BigDecimal}.
+ * Converts a String to a {@link BigInteger}.
  *
  * <p>Created: 2025. 10. 26.</p>
  */
-public class BigDecimalConverter implements TypeConverter<BigDecimal> {
+public class BigIntegerConverter implements TypeConverter<BigInteger> {
 
     @Override
-    public BigDecimal convert(String value, Annotation[] annotations, Activity activity) {
-        return (value != null ? new BigDecimal(value) : null);
+    public BigInteger convert(String value, Annotation[] annotations, Activity activity) {
+        return (value != null ? new BigInteger(value) : null);
     }
 
 }
