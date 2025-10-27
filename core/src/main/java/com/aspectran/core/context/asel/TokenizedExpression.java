@@ -40,7 +40,7 @@ import java.util.Set;
  * <p>This class orchestrates the two-stage evaluation of an AsEL expression. First, it
  * parses a raw expression string, separating Aspectran's token expressions from plain
  * text. It then substitutes each token expression with a temporary variable reference
- * (e.g., "#{&#064;user^name } " becomes "#__var1__"). The resulting string is then parsed
+ * (e.g., "#{&#064;user^name}" becomes "#__var1__"). The resulting string is then parsed
  * into a compiled OGNL expression tree.
  * <p>During evaluation, it resolves the value of each token and places it into the
  * OGNL context using the temporary variable name. Finally, it invokes the OGNL

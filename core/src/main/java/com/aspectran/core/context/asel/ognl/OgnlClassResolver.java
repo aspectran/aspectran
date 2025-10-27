@@ -33,13 +33,6 @@ public class OgnlClassResolver implements ClassResolver {
     private final ConcurrentHashMap<String, Class<?>> classes = new ConcurrentHashMap<>(101);
 
     /**
-     * Instantiates a new OGNL class resolver.
-     */
-    public OgnlClassResolver() {
-        super();
-    }
-
-    /**
      * Resolves a class by its name from the cache or by loading it.
      * <p>This implementation first checks a local cache for the class. If not found,
      * it attempts to load the class using the default class loader. For class names
