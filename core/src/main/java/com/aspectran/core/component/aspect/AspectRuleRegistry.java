@@ -70,12 +70,6 @@ public class AspectRuleRegistry extends AbstractComponent {
     private final List<String> newAspectRules = new CopyOnWriteArrayList<>();
 
     /**
-     * Instantiates a new AspectRuleRegistry.
-     */
-    public AspectRuleRegistry() {
-    }
-
-    /**
      * Returns all registered aspect rules.
      * @return a collection of {@link AspectRule}s
      */

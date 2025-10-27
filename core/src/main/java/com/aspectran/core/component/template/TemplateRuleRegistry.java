@@ -43,12 +43,6 @@ public class TemplateRuleRegistry extends AbstractComponent {
     private RuleParsingScope ruleParsingScope;
 
     /**
-     * Instantiates a new TemplateRuleRegistry.
-     */
-    public TemplateRuleRegistry() {
-    }
-
-    /**
      * Sets the rule-parsing scope.
      * @param ruleParsingScope the rule-parsing scope
      */

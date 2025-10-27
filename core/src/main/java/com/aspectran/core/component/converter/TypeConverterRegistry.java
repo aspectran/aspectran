@@ -53,13 +53,6 @@ public class TypeConverterRegistry extends AbstractComponent {
     private final Map<Class<?>, TypeConverter<?>> converters = new ConcurrentHashMap<>();
 
     /**
-     * Instantiates a new TypeConverterRegistry.
-     */
-    public TypeConverterRegistry() {
-        super();
-    }
-
-    /**
      * Retrieves the map of registered {@link TypeConverter}s associated with their target types.
      * @return a map where the keys are {@link Class} objects representing the target types,
      *         and the values are {@link TypeConverter} instances capable of converting to those types

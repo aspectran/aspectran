@@ -47,12 +47,6 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     private RuleParsingScope ruleParsingScope;
 
     /**
-     * Constructs a new ScheduleRuleRegistry.
-     */
-    public ScheduleRuleRegistry() {
-    }
-
-    /**
      * Sets the RuleParsingScope that provides access to context-wide helpers and default settings.
      * @param ruleParsingScope the RuleParsingScope instance
      */
