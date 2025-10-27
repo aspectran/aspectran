@@ -69,7 +69,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      * Returns the bean rule registry.
      * @return the bean rule registry
      */
-    protected BeanRuleRegistry getBeanRuleRegistry() {
+    public BeanRuleRegistry getBeanRuleRegistry() {
         return beanRuleRegistry;
     }
 

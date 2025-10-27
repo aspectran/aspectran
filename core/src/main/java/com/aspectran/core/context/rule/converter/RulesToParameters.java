@@ -594,8 +594,9 @@ public class RulesToParameters {
                     Response response = responseRule.getResponse();
                     if (response != null) {
                         if (response.getResponseType() == ResponseType.TRANSFORM) {
-                            TransformResponse transformResponse = (TransformResponse)response;
-                            transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                            if (response instanceof TransformResponse transformResponse) {
+                                transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                            }
                         } else if (response.getResponseType() == ResponseType.DISPATCH) {
                             DispatchResponse dispatchResponse = (DispatchResponse)response;
                             transletParameters.putValue(TransletParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));

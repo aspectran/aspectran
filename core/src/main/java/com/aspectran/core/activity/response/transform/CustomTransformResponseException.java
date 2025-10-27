@@ -44,7 +44,7 @@ public class CustomTransformResponseException extends ResponseException {
     public CustomTransformResponseException(
             @NonNull CustomTransformer customTransformer, @NonNull Throwable cause) {
         super("Failed to transform with " + customTransformer + "; Cause: " +
-            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
+                ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }
 
 }

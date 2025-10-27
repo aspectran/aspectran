@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.utils.Assert;
 
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -53,6 +54,10 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
         Assert.notNull(templateRuleRegistry, "templateRuleRegistry must not be null");
         this.context = context;
         this.templateRuleRegistry = templateRuleRegistry;
+    }
+
+    public Collection<TemplateRule> getTemplateRules() {
+        return templateRuleRegistry.getTemplateRules();
     }
 
     @Override
