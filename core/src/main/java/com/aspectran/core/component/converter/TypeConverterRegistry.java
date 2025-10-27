@@ -60,13 +60,21 @@ public class TypeConverterRegistry extends AbstractComponent {
     }
 
     /**
+     * Retrieves the map of registered {@link TypeConverter}s associated with their target types.
+     * @return a map where the keys are {@link Class} objects representing the target types,
+     *         and the values are {@link TypeConverter} instances capable of converting to those types
+     */
+    public Map<Class<?>, TypeConverter<?>> getConverters() {
+        return converters;
+    }
+
+    /**
      * Registers a custom {@link TypeConverter} for a specific type.
      * This method must be called before the component is initialized.
      * @param type the type to register the converter for
      * @param converter the converter instance
      */
     public void register(Class<?> type, TypeConverter<?> converter) {
-        checkInitializable();
         converters.put(type, converter);
     }
 
