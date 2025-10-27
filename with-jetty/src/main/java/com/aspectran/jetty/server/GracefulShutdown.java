@@ -62,15 +62,8 @@ final class GracefulShutdown {
         for (Connector connector : server.getConnectors()) {
             shutdown(connector);
         }
-        this.shuttingDown = true;
-        Thread shutdownThread = new Thread(() -> awaitShutdown(callback), "shutdown");
-        shutdownThread.start();
-        try {
-            shutdownThread.join();
-        } catch (InterruptedException e) {
-            logger.warn("Graceful shutdown thread interrupted", e);
-            Thread.currentThread().interrupt();
-        }
+        shuttingDown = true;
+        awaitShutdown(callback);
     }
 
     /**
@@ -106,10 +99,10 @@ final class GracefulShutdown {
     private void awaitShutdown(GracefulShutdownCallback callback) {
         sleep(300);
         int activeRequests = 0;
-        while (this.shuttingDown && (activeRequests = getActiveRequests()) > 0) {
+        while (shuttingDown && (activeRequests = getActiveRequests()) > 0) {
             sleep(100);
         }
-        this.shuttingDown = false;
+        shuttingDown = false;
         if (activeRequests == 0) {
             logger.info("Graceful shutdown complete");
             callback.shutdownComplete(GracefulShutdownResult.IDLE);
@@ -145,7 +138,7 @@ final class GracefulShutdown {
      * Aborts the graceful shutdown process if it is in progress.
      */
     void abort() {
-        this.shuttingDown = false;
+        shuttingDown = false;
     }
 
 }

@@ -31,6 +31,9 @@ public class TransformParameters extends AbstractParameters {
     public static final ParameterKey pretty;
     public static final ParameterKey template;
 
+    /* Set only via annotated configuration */
+    public static final ParameterKey transformer;
+
     private static final ParameterKey[] parameterKeys;
 
     static {
@@ -40,6 +43,7 @@ public class TransformParameters extends AbstractParameters {
         defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
         pretty = new ParameterKey("pretty", ValueType.BOOLEAN);
         template = new ParameterKey("template", TemplateParameters.class);
+        transformer = new ParameterKey("transformer", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
                 format,
@@ -47,7 +51,8 @@ public class TransformParameters extends AbstractParameters {
                 encoding,
                 defaultResponse,
                 pretty,
-                template
+                template,
+                transformer
         };
     }
 

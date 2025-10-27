@@ -34,7 +34,8 @@ public class AnatomyActivity {
     public Map<String, String> viewer() {
         return Map.of(
                 "include", "anatomy/viewer",
-                "title", "Framework Anatomy"
+                "style", "plate compact",
+                "headline", "Framework Anatomy"
         );
     }
 

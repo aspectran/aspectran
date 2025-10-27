@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.converter;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.ChooseAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
@@ -28,13 +29,16 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.context.rule.AdviceRule;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
+import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -596,6 +600,8 @@ public class RulesToParameters {
                         if (response.getResponseType() == ResponseType.TRANSFORM) {
                             if (response instanceof TransformResponse transformResponse) {
                                 transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                            } else if (response instanceof CustomTransformResponse transformResponse) { // Set only via annotated configuration
+                                transletParameters.putValue(TransletParameters.transform, toTransformParameters(transformResponse.getCustomTransformRule()));
                             }
                         } else if (response.getResponseType() == ResponseType.DISPATCH) {
                             DispatchResponse dispatchResponse = (DispatchResponse)response;
@@ -652,8 +658,11 @@ public class RulesToParameters {
         if (responseMap != null) {
             for (Response response : responseMap) {
                 if (response.getResponseType() == ResponseType.TRANSFORM) {
-                    TransformResponse transformResponse = (TransformResponse) response;
-                    exceptionThrownParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                    if (response instanceof TransformResponse transformResponse) {
+                        exceptionThrownParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                    } else if (response instanceof CustomTransformResponse transformResponse) { // Set only via annotated configuration
+                        exceptionThrownParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getCustomTransformRule()));
+                    }
                 } else if (response.getResponseType() == ResponseType.DISPATCH) {
                     DispatchResponse dispatchResponse = (DispatchResponse) response;
                     exceptionThrownParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
@@ -728,6 +737,25 @@ public class RulesToParameters {
         if (transformRule.getTemplateRule() != null) {
             transformParameters.putValue(TransformParameters.template, toTemplateParameters(transformRule.getTemplateRule()));
         }
+        return transformParameters;
+    }
+
+    /**
+     * Converts a {@code CustomTransformRule} to {@code TransformParameters}.
+     * <p>Note that {@code CustomTransformRule} cannot be converted back to a Rule object,
+     * as it is only set via annotated configuration.</p>
+     * @param customTransformRule the custom transform rule
+     * @return the custom transform parameters
+     */
+    @NonNull
+    public static TransformParameters toTransformParameters(CustomTransformRule customTransformRule) {
+        if (customTransformRule == null) {
+            throw new IllegalArgumentException("customTransformRule must not be null");
+        }
+
+        TransformParameters transformParameters = new TransformParameters();
+        transformParameters.putValueIfNotNull(TransformParameters.format, customTransformRule.getFormatType());
+        transformParameters.putValue(TransformParameters.transformer, customTransformRule.getTransformer());
         return transformParameters;
     }
 
@@ -858,6 +886,10 @@ public class RulesToParameters {
             } else {
                 parameters.putValue("invoke", toActionParameters(invokeActionRule));
             }
+        } else if (action.getActionType() == ActionType.INVOKE_ANNOTATED ||
+                action.getActionType() == ActionType.INVOKE_ANNOTATED_ADVICE) { // Set only via annotated configuration
+            AnnotatedActionRule annotatedActionRule = ((AnnotatedAction)action).getAnnotatedActionRule();
+            parameters.putValue("action", toActionParameters(annotatedActionRule));
         } else if (action.getActionType() == ActionType.INCLUDE) {
             IncludeActionRule includeActionRule = ((IncludeAction)action).getIncludeActionRule();
             parameters.putValue("include", toActionParameters(includeActionRule));
@@ -946,6 +978,29 @@ public class RulesToParameters {
             toItemHolderParameters(argumentItemRuleMap, actionParameters, ActionParameters.arguments);
         }
 
+        return actionParameters;
+    }
+
+    /**
+     * Converts an {@code AnnotatedActionRule} to {@code ActionParameters}.
+     * <p>Note that {@code AnnotatedActionRule} cannot be converted back to a Rule object,
+     * as it is only set via annotated configuration.</p>
+     * @param annotatedActionRule the annotated action rule
+     * @return the action parameters
+     */
+    @NonNull
+    public static ActionParameters toActionParameters(AnnotatedActionRule annotatedActionRule) {
+        if (annotatedActionRule == null) {
+            throw new IllegalArgumentException("annotatedActionRule must not be null");
+        }
+
+        ActionParameters actionParameters = new ActionParameters();
+        actionParameters.putValueIfNotNull(ActionParameters.id, annotatedActionRule.getActionId());
+        if (annotatedActionRule.getBeanClass() != null) {
+            String className = BeanRule.CLASS_DIRECTIVE_PREFIX + annotatedActionRule.getBeanClass().getName();
+            actionParameters.putValue(ActionParameters.bean, className);
+        }
+        actionParameters.putValueIfNotNull(ActionParameters.method, annotatedActionRule.getMethodName());
         return actionParameters;
     }
 

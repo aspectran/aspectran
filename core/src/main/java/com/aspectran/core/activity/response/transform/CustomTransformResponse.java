@@ -63,6 +63,14 @@ public class CustomTransformResponse implements Response {
         this.customTransformRule = CustomTransformRule.newInstance(transformer);
     }
 
+    /**
+     * Retrieves the custom transformation rule associated with this response.
+     * @return the {@link CustomTransformRule} instance
+     */
+    public CustomTransformRule getCustomTransformRule() {
+        return customTransformRule;
+    }
+
     @Override
     public void respond(@NonNull Activity activity) throws ResponseException {
         CustomTransformer transformer = customTransformRule.getTransformer();
