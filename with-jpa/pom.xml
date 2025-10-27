@@ -83,7 +83,7 @@
         <dependency>
             <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-            <version>7.0</version>
+            <version>7.1</version>
             <classifier>jakarta</classifier>
             <scope>test</scope>
         </dependency>
