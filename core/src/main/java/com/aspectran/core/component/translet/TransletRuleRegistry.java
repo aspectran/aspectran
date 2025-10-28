@@ -107,6 +107,14 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     /**
+     * Returns the map of all registered translet rules, keyed by their unique assembled name.
+     * @return a map of all translet rules
+     */
+    public Map<String, TransletRule> getTransletRuleMap() {
+        return transletRuleMap;
+    }
+
+    /**
      * Returns a collection of all registered {@link TransletRule}s.
      * @return a collection of all translet rules
      */

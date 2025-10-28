@@ -50,14 +50,27 @@ class TransletRuleRegistryTest {
 
     @Test
     void testSimpleGetPost() throws IllegalRuleException {
-        TransletRule getRule = createRule("/test/get", MethodType.GET);
-        TransletRule postRule = createRule("/test/post", MethodType.POST);
+        TransletRule getRule = createRule("/test/resource", MethodType.GET);
+        TransletRule postRule = createRule("/test/resource", MethodType.POST);
         registry.addTransletRule(getRule);
         registry.addTransletRule(postRule);
 
-        assertEquals(getRule, registry.getTransletRule("/test/get", MethodType.GET));
-        assertEquals(postRule, registry.getTransletRule("/test/post", MethodType.POST));
-        assertNull(registry.getTransletRule("/test/get", MethodType.POST));
+        assertEquals(getRule, registry.getTransletRule("/test/resource", MethodType.GET));
+        assertEquals(postRule, registry.getTransletRule("/test/resource", MethodType.POST));
+        assertNull(registry.getTransletRule("/test/resource", MethodType.PUT));
+    }
+
+    @Test
+    void testMultipleRequestMethods() throws IllegalRuleException {
+        TransletRule getRule = createRule("/test/resource", MethodType.GET);
+        TransletRule postRule = createRule("/test/resource", MethodType.POST);
+        TransletRule multipleRule = createRule("/test/resource", MethodType.GET, MethodType.POST);
+        registry.addTransletRule(getRule);
+        registry.addTransletRule(postRule);
+        registry.addTransletRule(multipleRule);
+
+        assertEquals(multipleRule, registry.getTransletRule("/test/resource", MethodType.POST));
+        assertEquals(multipleRule, registry.getTransletRule("/test/resource"));
     }
 
     @Test

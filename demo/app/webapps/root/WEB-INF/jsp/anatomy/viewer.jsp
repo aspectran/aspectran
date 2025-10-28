@@ -53,7 +53,7 @@
 
             $.each(anatomyData, function(componentKey, rules) {
                 console.log('Processing componentKey:', componentKey);
-                const componentId = 'component-' + componentKey;
+                const componentId = 'component-' + componentKey.replace(/\s+/g, '-');
                 const $componentHeader = $('<a/>', {
                     'href': '#' + componentId,
                     'class': 'list-group-item list-group-item-action fw-bold',

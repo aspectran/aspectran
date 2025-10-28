@@ -43,11 +43,11 @@ public class AnatomyService implements ActivityContextAware {
 
         // 1. Translet Rules
         if (context.getTransletRuleRegistry() != null) {
-            Collection<TransletRule> rules = context.getTransletRuleRegistry().getTransletRules();
-            List<Map<String, Object>> ruleData = rules.stream()
-                    .map(this::convertTransletRuleToApon)
+            Map<String, TransletRule> ruleMap = context.getTransletRuleRegistry().getTransletRuleMap();
+            List<Map<String, Object>> ruleData = ruleMap.entrySet().stream()
+                    .map(entry -> convertTransletRuleToApon(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
-            anatomyData.put("transletRules", ruleData);
+            anatomyData.put("Translet Rules", ruleData);
         }
 
         // 2. Bean Rules
@@ -61,7 +61,7 @@ public class AnatomyService implements ActivityContextAware {
             List<Map<String, Object>> ruleData = allBeanRules.stream()
                     .map(this::convertBeanRuleToApon)
                     .collect(Collectors.toList());
-            anatomyData.put("beanRules", ruleData);
+            anatomyData.put("Bean Rules", ruleData);
         }
 
         // 3. Aspect Rules
@@ -70,7 +70,7 @@ public class AnatomyService implements ActivityContextAware {
             List<Map<String, Object>> ruleData = rules.stream()
                     .map(this::convertAspectRuleToApon)
                     .collect(Collectors.toList());
-            anatomyData.put("aspectRules", ruleData);
+            anatomyData.put("Aspect Rules", ruleData);
         }
 
         // 4. Schedule Rules
@@ -79,7 +79,7 @@ public class AnatomyService implements ActivityContextAware {
             List<Map<String, Object>> ruleData = rules.stream()
                     .map(this::convertScheduleRuleToApon)
                     .collect(Collectors.toList());
-            anatomyData.put("scheduleRules", ruleData);
+            anatomyData.put("Schedule Rules", ruleData);
         }
 
         // 5. Template Rules
@@ -88,16 +88,16 @@ public class AnatomyService implements ActivityContextAware {
             List<Map<String, Object>> ruleData = rules.stream()
                     .map(this::convertTemplateRuleToApon)
                     .collect(Collectors.toList());
-            anatomyData.put("templateRules", ruleData);
+            anatomyData.put("Template Rules", ruleData);
         }
 
         return anatomyData;
     }
 
     @NonNull
-    private Map<String, Object> convertTransletRuleToApon(@NonNull TransletRule rule) {
+    private Map<String, Object> convertTransletRuleToApon(String ruleName, @NonNull TransletRule rule) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("name", rule.getName());
+        map.put("name", ruleName);
         map.put("apon", RulesToParameters.toTransletParameters(rule).toString());
         return map;
     }
