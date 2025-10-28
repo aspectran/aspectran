@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,22 +70,16 @@ public class TransletRuleRegistry extends AbstractComponent {
     /** A map of all registered translet rules, keyed by their unique assembled name. */
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 
-    // Optimized maps for exact-match lookups by request method
-    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>();
-    private final Map<String, TransletRule> postTransletRuleMap = new HashMap<>();
-    private final Map<String, TransletRule> putTransletRuleMap = new HashMap<>();
-    private final Map<String, TransletRule> patchTransletRuleMap = new HashMap<>();
-    private final Map<String, TransletRule> deleteTransletRuleMap = new HashMap<>();
-
     /** A comparator to sort wildcard-based rules by their pattern specificity. */
     private final Comparator<TransletRule> comparator = new WeightComparator();
 
-    // Optimized sets for wildcard/path-variable lookups by request method
-    private final Set<TransletRule> wildGetTransletRuleSet = new TreeSet<>(comparator);
-    private final Set<TransletRule> wildPostTransletRuleSet = new TreeSet<>(comparator);
-    private final Set<TransletRule> wildPutTransletRuleSet = new TreeSet<>(comparator);
-    private final Set<TransletRule> wildPatchTransletRuleSet = new TreeSet<>(comparator);
-    private final Set<TransletRule> wildDeleteTransletRuleSet = new TreeSet<>(comparator);
+    /** Optimized maps for exact-match lookups by request method. */
+    private final Map<MethodType, Map<String, TransletRule>> exactMatchRules = new EnumMap<>(MethodType.class);
+
+    /** Optimized sets for wildcard/path-variable lookups by request method. */
+    private final Map<MethodType, Set<TransletRule>> wildcardMatchRules = new EnumMap<>(MethodType.class);
+
+    /** A set for rules with other HTTP methods. */
     private final Set<TransletRule> etcTransletRuleSet = new TreeSet<>(comparator);
 
     private final String basePath;
@@ -145,48 +140,47 @@ public class TransletRuleRegistry extends AbstractComponent {
             throw new IllegalArgumentException("requestMethod must not be null");
         }
 
-        TransletRule transletRule;
-        switch (requestMethod) {
-            case GET:
-                transletRule = getTransletRuleMap.get(requestName);
-                if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, requestName);
-                }
-                break;
-            case POST:
-                transletRule = postTransletRuleMap.get(requestName);
-                if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPostTransletRuleSet, requestName);
-                }
-                break;
-            case PUT:
-                transletRule = putTransletRuleMap.get(requestName);
-                if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPutTransletRuleSet, requestName);
-                }
-                break;
-            case PATCH:
-                transletRule = patchTransletRuleMap.get(requestName);
-                if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildPatchTransletRuleSet, requestName);
-                }
-                break;
-            case DELETE:
-                transletRule = deleteTransletRuleMap.get(requestName);
-                if (transletRule == null) {
-                    transletRule = retrieveWildTransletRule(wildDeleteTransletRuleSet, requestName);
-                }
-                break;
-            default:
-                transletRule = retrieveEtcTransletRule(requestName, requestMethod);
-        }
+        TransletRule transletRule = findTransletRule(requestName, requestMethod);
+
+        // Fallback to GET rules if no specific rule is found for non-GET methods
         if (transletRule == null && requestMethod != MethodType.GET) {
             transletRule = transletRuleMap.get(requestName);
             if (transletRule == null) {
-                transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, requestName);
+                Set<TransletRule> getWildcardRules = wildcardMatchRules.get(MethodType.GET);
+                if (getWildcardRules != null) {
+                    transletRule = retrieveWildTransletRule(getWildcardRules, requestName);
+                }
             }
         }
+
         return transletRule;
+    }
+
+    @Nullable
+    private TransletRule findTransletRule(String requestName, @NonNull MethodType requestMethod) {
+        switch (requestMethod) {
+            case GET:
+            case POST:
+            case PUT:
+            case PATCH:
+            case DELETE:
+                // 1. Exact match lookup
+                Map<String, TransletRule> exactRules = exactMatchRules.get(requestMethod);
+                if (exactRules != null) {
+                    TransletRule rule = exactRules.get(requestName);
+                    if (rule != null) {
+                        return rule;
+                    }
+                }
+                // 2. Wildcard match lookup
+                Set<TransletRule> wildcardRules = wildcardMatchRules.get(requestMethod);
+                if (wildcardRules != null) {
+                    return retrieveWildTransletRule(wildcardRules, requestName);
+                }
+                return null;
+            default:
+                return retrieveEtcTransletRule(requestName, requestMethod);
+        }
     }
 
     /**
@@ -381,73 +375,55 @@ public class TransletRuleRegistry extends AbstractComponent {
     private void saveTransletRule(@NonNull TransletRule transletRule) {
         transletRule.determineResponseRule();
 
-        String transletName = Namespace.applyTransletNamePattern(
-            ruleParsingScope.getDefaultSettings(), transletRule.getName());
-        transletRule.setName(transletName);
+        String transletName = transletRule.getName();
+        if (ruleParsingScope != null) {
+            transletName = Namespace.applyTransletNamePattern(ruleParsingScope.getDefaultSettings(), transletName);
+            transletRule.setName(transletName);
+        }
 
-        MethodType[] allowedMethods = transletRule.getAllowedMethods();
-        if (hasPathVariables(transletName)) {
+        boolean hasPathVariables = hasPathVariables(transletName);
+        if (hasPathVariables) {
             savePathVariables(transletRule);
-            if (allowedMethods != null) {
-                String restfulTransletName = assembleTransletName(transletName, allowedMethods);
-                transletRuleMap.put(restfulTransletName, transletRule);
-                for (MethodType methodType : allowedMethods) {
-                    switch (methodType) {
-                        case GET:
-                            wildGetTransletRuleSet.add(transletRule);
-                            break;
-                        case POST:
-                            wildPostTransletRuleSet.add(transletRule);
-                            break;
-                        case PUT:
-                            wildPutTransletRuleSet.add(transletRule);
-                            break;
-                        case PATCH:
-                            wildPatchTransletRuleSet.add(transletRule);
-                            break;
-                        case DELETE:
-                            wildDeleteTransletRuleSet.add(transletRule);
-                            break;
-                        default:
-                            etcTransletRuleSet.add(transletRule);
-                    }
-                }
-            } else {
-                transletRuleMap.put(transletName, transletRule);
-                wildGetTransletRuleSet.add(transletRule);
-            }
         } else {
             if (WildcardPattern.hasWildcards(transletRule.getName())) {
                 WildcardPattern namePattern = WildcardPattern.compile(transletRule.getName(), NAME_SEPARATOR_CHAR);
                 transletRule.setNamePattern(namePattern);
             }
-            if (allowedMethods != null) {
-                String restfulTransletName = assembleTransletName(transletName, allowedMethods);
-                transletRuleMap.put(restfulTransletName, transletRule);
-                for (MethodType methodType : allowedMethods) {
-                    switch (methodType) {
-                        case GET:
-                            getTransletRuleMap.put(transletName, transletRule);
-                            break;
-                        case POST:
-                            postTransletRuleMap.put(transletName, transletRule);
-                            break;
-                        case PUT:
-                            putTransletRuleMap.put(transletName, transletRule);
-                            break;
-                        case PATCH:
-                            patchTransletRuleMap.put(transletName, transletRule);
-                            break;
-                        case DELETE:
-                            deleteTransletRuleMap.put(transletName, transletRule);
-                            break;
-                        default:
-                            etcTransletRuleSet.add(transletRule);
-                    }
+        }
+
+        boolean isWildcardMatch = (hasPathVariables || transletRule.getNamePattern() != null);
+        MethodType[] allowedMethods = transletRule.getAllowedMethods();
+
+        if (allowedMethods != null) {
+            String restfulTransletName = assembleTransletName(transletName, allowedMethods);
+            transletRuleMap.put(restfulTransletName, transletRule);
+            for (MethodType methodType : allowedMethods) {
+                switch (methodType) {
+                    case GET:
+                    case POST:
+                    case PUT:
+                    case PATCH:
+                    case DELETE:
+                        if (isWildcardMatch) {
+                            wildcardMatchRules.computeIfAbsent(methodType, k -> new TreeSet<>(comparator))
+                                    .add(transletRule);
+                        } else {
+                            exactMatchRules.computeIfAbsent(methodType, k -> new HashMap<>())
+                                    .put(transletName, transletRule);
+                        }
+                        break;
+                    default:
+                        etcTransletRuleSet.add(transletRule);
                 }
+            }
+        } else {
+            transletRuleMap.put(transletName, transletRule);
+            if (isWildcardMatch) {
+                wildcardMatchRules.computeIfAbsent(MethodType.GET, k -> new TreeSet<>(comparator))
+                        .add(transletRule);
             } else {
-                transletRuleMap.put(transletName, transletRule);
-                getTransletRuleMap.put(transletName, transletRule);
+                exactMatchRules.computeIfAbsent(MethodType.GET, k -> new HashMap<>())
+                        .put(transletName, transletRule);
             }
         }
 
@@ -534,16 +510,8 @@ public class TransletRuleRegistry extends AbstractComponent {
     @Override
     protected void doDestroy() {
         transletRuleMap.clear();
-        getTransletRuleMap.clear();
-        postTransletRuleMap.clear();
-        putTransletRuleMap.clear();
-        patchTransletRuleMap.clear();
-        deleteTransletRuleMap.clear();
-        wildGetTransletRuleSet.clear();
-        wildPostTransletRuleSet.clear();
-        wildPutTransletRuleSet.clear();
-        wildPatchTransletRuleSet.clear();
-        wildDeleteTransletRuleSet.clear();
+        exactMatchRules.clear();
+        wildcardMatchRules.clear();
         etcTransletRuleSet.clear();
     }
 
