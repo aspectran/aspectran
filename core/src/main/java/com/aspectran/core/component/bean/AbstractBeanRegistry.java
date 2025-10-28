@@ -61,13 +61,22 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         this.beanRuleRegistry = beanRuleRegistry;
     }
 
+    /**
+     * Retrieves the {@link EventListenerRegistry} instance associated with this bean registry.
+     * The {@code EventListenerRegistry} is responsible for managing the registration of
+     * event listener methods and enabling efficient event dispatching.
+     * @return the {@link EventListenerRegistry} instance
+     */
     public EventListenerRegistry getEventListenerRegistry() {
         return eventListenerRegistry;
     }
 
     /**
-     * Returns the bean rule registry.
-     * @return the bean rule registry
+     * Retrieves the {@link BeanRuleRegistry} instance associated with this bean registry.
+     * The {@code BeanRuleRegistry} contains and manages the definitions of bean rules
+     * and their associated metadata, enabling the framework to create and manage beans
+     * in accordance with these rules.
+     * @return the {@link BeanRuleRegistry} instance
      */
     public BeanRuleRegistry getBeanRuleRegistry() {
         return beanRuleRegistry;

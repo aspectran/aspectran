@@ -41,6 +41,27 @@ public class EventListenerRegistry {
     private final Map<Class<?>, List<ListenerMethod>> listenerMap = new ConcurrentHashMap<>();
 
     /**
+     * Retrieves the internal map that holds registered event listener methods.
+     * The map keys are event types (represented by {@link Class}), and the values
+     * are lists of {@link ListenerMethod} objects that correspond to the methods
+     * listening to that event type.
+     * @return a map where the key is the event type and the value is a list of
+     *         listener methods for that event type
+     */
+    public Map<Class<?>, List<ListenerMethod>> getListenerMap() {
+        return listenerMap;
+    }
+
+    /**
+     * Gets the list of listeners for a given event type.
+     * @param eventType the event type
+     * @return a list of listener methods, or {@code null} if no listeners are found
+     */
+    public List<ListenerMethod> getListeners(Class<?> eventType) {
+        return listenerMap.get(eventType);
+    }
+
+    /**
      * Registers all {@code @EventListener} annotated methods on the given bean.
      * @param bean the bean instance to scan for listener methods
      */
@@ -63,15 +84,6 @@ public class EventListenerRegistry {
         if (logger.isDebugEnabled()) {
             logger.debug("Registered @EventListener method '{}' for event type [{}]", method, eventType.getName());
         }
-    }
-
-    /**
-     * Gets the list of listeners for a given event type.
-     * @param eventType the event type
-     * @return a list of listener methods, or {@code null} if no listeners are found
-     */
-    public List<ListenerMethod> getListeners(Class<?> eventType) {
-        return listenerMap.get(eventType);
     }
 
     /**

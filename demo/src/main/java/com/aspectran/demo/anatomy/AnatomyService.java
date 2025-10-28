@@ -5,6 +5,9 @@ import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.component.bean.event.EventListenerRegistry;
+import com.aspectran.core.component.bean.event.ListenerMethod;
+import com.aspectran.core.component.converter.TypeConverter;
 import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectRule;
@@ -14,6 +17,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.apon.AponLines;
 import com.aspectran.utils.apon.Parameters;
 
 import java.util.Collection;
@@ -62,6 +66,16 @@ public class AnatomyService implements ActivityContextAware {
                     .map(this::convertBeanRuleToApon)
                     .collect(Collectors.toList());
             anatomyData.put("Bean Rules", ruleData);
+
+            // Event Listeners
+            EventListenerRegistry eventListenerRegistry = registry.getEventListenerRegistry();
+            if (eventListenerRegistry != null) {
+                Map<Class<?>, List<ListenerMethod>> listenerMap = eventListenerRegistry.getListenerMap();
+                List<Map<String, Object>> listenerData = listenerMap.entrySet().stream()
+                        .map(entry -> convertEventListenerToApon(entry.getKey(), entry.getValue()))
+                        .collect(Collectors.toList());
+                anatomyData.put("Event Listeners", listenerData);
+            }
         }
 
         // 3. Aspect Rules
@@ -89,6 +103,15 @@ public class AnatomyService implements ActivityContextAware {
                     .map(this::convertTemplateRuleToApon)
                     .collect(Collectors.toList());
             anatomyData.put("Template Rules", ruleData);
+        }
+
+        // 6. Type Converters
+        if (context.getTypeConverterRegistry() != null) {
+            Map<Class<?>, TypeConverter<?>> converters = context.getTypeConverterRegistry().getConverters();
+            List<Map<String, Object>> ruleData = converters.entrySet().stream()
+                    .map(entry -> convertTypeConverterToApon(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
+            anatomyData.put("Type Converters", ruleData);
         }
 
         return anatomyData;
@@ -134,6 +157,31 @@ public class AnatomyService implements ActivityContextAware {
         map.put("id", rule.getId());
         Parameters params = RulesToParameters.toTemplateParameters(rule);
         map.put("apon", params.toString());
+        return map;
+    }
+
+    @NonNull
+    private Map<String, Object> convertTypeConverterToApon(@NonNull Class<?> type, @NonNull TypeConverter<?> converter) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", type.getName());
+        AponLines apon = new AponLines();
+        apon.line("type", type.getName());
+        apon.line("converter", converter.getClass().getName());
+        map.put("apon", apon.toString());
+        return map;
+    }
+
+    @NonNull
+    private Map<String, Object> convertEventListenerToApon(@NonNull Class<?> eventType, @NonNull List<ListenerMethod> listenerMethods) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", eventType.getName());
+        AponLines apon = new AponLines();
+        apon.array(eventType.getName());
+        for (ListenerMethod listenerMethod : listenerMethods) {
+            apon.line(listenerMethod.toString());
+        }
+        apon.end();
+        map.put("apon", apon.toString());
         return map;
     }
 
