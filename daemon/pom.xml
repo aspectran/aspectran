@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>9.2.2-SNAPSHOT</version>
+        <version>9.2.2</version>
     </parent>
 
     <artifactId>aspectran-daemon</artifactId>
-    <version>9.2.2-SNAPSHOT</version>
+    <version>9.2.2</version>
     <packaging>jar</packaging>
 
     <name>Aspectran Daemon</name>
