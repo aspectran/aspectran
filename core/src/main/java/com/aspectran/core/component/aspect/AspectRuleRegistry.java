@@ -209,13 +209,8 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
 
         AdviceRuleRegistry adviceRuleRegistry = postRegister.getAdviceRuleRegistry();
-        if (!dynamicAspectRuleList.isEmpty() || adviceRuleRegistry != null) {
-            RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-            holder.setAdviceRuleRegistry(adviceRuleRegistry);
-            if (!dynamicAspectRuleList.isEmpty()) {
-                holder.setDynamicAspectRuleList(dynamicAspectRuleList);
-            }
-            return holder;
+        if (adviceRuleRegistry != null || !dynamicAspectRuleList.isEmpty()) {
+            return new RelevantAspectRuleHolder(adviceRuleRegistry, dynamicAspectRuleList);
         } else {
             return EMPTY_HOLDER;
         }

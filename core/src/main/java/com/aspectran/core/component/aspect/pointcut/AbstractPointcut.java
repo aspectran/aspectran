@@ -20,14 +20,21 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Abstract base class for {@link Pointcut} implementations.
  *
- * <p>This class manages a list of {@link PointcutPatternRule}s and implements
- * the core matching logic. It supports both inclusion and exclusion patterns.
- * Subclasses must provide the specific pattern matching implementation by
- * overriding the {@code patternMatches} methods.
+ * <p>This class manages a list of {@link PointcutPatternRule}s and provides a
+ * skeletal implementation of the {@link Pointcut} interface. It implements the
+ * core matching logic that supports both inclusion and exclusion patterns. A
+ * join point is considered to match if it matches at least one inclusion
+ * pattern and does not match any of the corresponding exclusion patterns.
+ *
+ * <p>Subclasses must provide a concrete implementation for the
+ * {@code patternMatches} methods, which define how a single pattern string
+ * (e.g., a wildcard or regular expression) is matched against a join point
+ * attribute.
  * </p>
  */
 public abstract class AbstractPointcut implements Pointcut {
@@ -44,15 +51,10 @@ public abstract class AbstractPointcut implements Pointcut {
         this.pointcutPatternRuleList = pointcutPatternRuleList;
 
         if (pointcutPatternRuleList != null) {
-            boolean existsMethodNamePattern = false;
-            for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                PointcutPattern pp = ppr.getPointcutPattern();
-                if (pp != null && pp.getMethodNamePattern() != null) {
-                    existsMethodNamePattern = true;
-                    break;
-                }
-            }
-            this.existsMethodNamePattern = existsMethodNamePattern;
+            this.existsMethodNamePattern = pointcutPatternRuleList.stream()
+                    .map(PointcutPatternRule::getPointcutPattern)
+                    .filter(Objects::nonNull)
+                    .anyMatch(p -> p.getMethodNamePattern() != null);
         } else {
             this.existsMethodNamePattern = false;
         }
@@ -160,21 +162,27 @@ public abstract class AbstractPointcut implements Pointcut {
         if (pointcutPatternRule == null) {
             throw new IllegalArgumentException("pointcutPatternRule must not be null");
         }
-        boolean matched = true;
         PointcutPattern pp = pointcutPatternRule.getPointcutPattern();
-        if (pp != null && pp.getTransletNamePattern() != null) {
-            matched = patternMatches(pp.getTransletNamePattern(), transletName, ActivityContext.NAME_SEPARATOR_CHAR);
+        if (pp == null) {
+            return true;
         }
-        if (matched && pp != null && pp.getBeanIdPattern() != null) {
-            matched = patternMatches(pp.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);
+        if (pp.getTransletNamePattern() != null &&
+                !patternMatches(pp.getTransletNamePattern(), transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+            return false;
         }
-        if (matched && pp != null && pp.getClassNamePattern() != null) {
-            matched = patternMatches(pp.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR);
+        if (pp.getBeanIdPattern() != null &&
+                !patternMatches(pp.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR)) {
+            return false;
         }
-        if (matched && pp != null && pp.getMethodNamePattern() != null) {
-            matched = patternMatches(pp.getMethodNamePattern(), methodName);
+        if (pp.getClassNamePattern() != null &&
+                !patternMatches(pp.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR)) {
+            return false;
         }
-        return matched;
+        if (pp.getMethodNamePattern() != null &&
+                !patternMatches(pp.getMethodNamePattern(), methodName)) {
+            return false;
+        }
+        return true;
     }
 
 }

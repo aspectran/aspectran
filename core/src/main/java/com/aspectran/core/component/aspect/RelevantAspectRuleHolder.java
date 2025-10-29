@@ -25,50 +25,59 @@ import java.util.List;
 /**
  * A holder for aspect rules that are relevant to a specific join point.
  *
- * <p>This object is cached by the {@link AspectRuleRegistry} to improve
- * performance. It separates statically-defined advice (pre-organized in an
+ * <p>This is an immutable object that is cached by the {@link AspectRuleRegistry}
+ * to improve performance. It separates statically-defined advice (pre-organized in an
  * {@link AdviceRuleRegistry}) from dynamic aspect rules that may need further
  * evaluation at the join point.
  * </p>
  */
 public class RelevantAspectRuleHolder {
 
-    private AdviceRuleRegistry adviceRuleRegistry;
+    private final AdviceRuleRegistry adviceRuleRegistry;
 
-    private List<AspectRule> dynamicAspectRuleList;
+    private final List<AspectRule> dynamicAspectRuleList;
+
+    /**
+     * Instantiates a new RelevantAspectRuleHolder.
+     * @param adviceRuleRegistry the advice rule registry for statically relevant advice
+     * @param dynamicAspectRuleList the list of dynamically relevant aspect rules
+     */
+    public RelevantAspectRuleHolder(@Nullable AdviceRuleRegistry adviceRuleRegistry,
+                                    @Nullable List<AspectRule> dynamicAspectRuleList) {
+        this.adviceRuleRegistry = adviceRuleRegistry;
+        if (dynamicAspectRuleList != null && !dynamicAspectRuleList.isEmpty()) {
+            this.dynamicAspectRuleList = List.copyOf(dynamicAspectRuleList);
+        } else {
+            this.dynamicAspectRuleList = null;
+        }
+    }
+
+    /**
+     * Instantiates a new empty RelevantAspectRuleHolder.
+     */
+    public RelevantAspectRuleHolder() {
+        this.adviceRuleRegistry = null;
+        this.dynamicAspectRuleList = null;
+    }
 
     /**
      * Returns the registry containing advice rules that are statically determined
      * to be relevant.
-     * @return the advice rule registry
+     * @return the advice rule registry, or {@code null} if none
      */
+    @Nullable
     public AdviceRuleRegistry getAdviceRuleRegistry() {
         return adviceRuleRegistry;
     }
 
     /**
-     * Sets the registry for statically relevant advice rules.
-     * @param adviceRuleRegistry the new advice rule registry
-     */
-    public void setAdviceRuleRegistry(AdviceRuleRegistry adviceRuleRegistry) {
-        this.adviceRuleRegistry = adviceRuleRegistry;
-    }
-
-    /**
      * Returns the list of aspect rules that require dynamic evaluation to determine
      * if they apply to the join point.
-     * @return the dynamic aspect rule list
+     * @return an unmodifiable list of dynamic aspect rules, or {@code null} if none
      */
+    @Nullable
     public List<AspectRule> getDynamicAspectRuleList() {
         return dynamicAspectRuleList;
-    }
-
-    /**
-     * Sets the list of dynamically relevant aspect rules.
-     * @param dynamicAspectRuleList the new dynamic aspect rule list
-     */
-    public void setDynamicAspectRuleList(List<AspectRule> dynamicAspectRuleList) {
-        this.dynamicAspectRuleList = dynamicAspectRuleList;
     }
 
     @Nullable

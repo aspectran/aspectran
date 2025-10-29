@@ -20,7 +20,6 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.AdviceType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -128,6 +127,10 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         return adviceRuleRegistry;
     }
 
+    /**
+     * Retrieves the list of settings advice rules.
+     * @return a list of {@link SettingsAdviceRule} objects representing the settings advice rules
+     */
     public List<SettingsAdviceRule> getSettingsAdviceRuleList() {
         return settingsAdviceRuleList;
     }
@@ -136,6 +139,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         this.settingsAdviceRuleList = settingsAdviceRuleList;
     }
 
+    /**
+     * Retrieves the list of 'before' advice rules.
+     * This list contains advice rules that are executed before the target join point.
+     * @return a list of {@link AdviceRule} objects representing the 'before' advice rules
+     */
     public List<AdviceRule> getBeforeAdviceRuleList() {
         return beforeAdviceRuleList;
     }
@@ -144,6 +152,11 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         this.beforeAdviceRuleList = beforeAdviceRuleList;
     }
 
+    /**
+     * Retrieves the list of 'after' advice rules.
+     * This list contains advice rules that are executed after the target join point.
+     * @return a list of {@link AdviceRule} objects representing the 'after' advice rules
+     */
     public List<AdviceRule> getAfterAdviceRuleList() {
         return afterAdviceRuleList;
     }
@@ -152,6 +165,12 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         this.afterAdviceRuleList = afterAdviceRuleList;
     }
 
+    /**
+     * Retrieves the list of 'finally' advice rules.
+     * This list contains advice rules that are always executed after the target join point,
+     * regardless of whether an exception is thrown or not.
+     * @return a list of {@link AdviceRule} objects representing the 'finally' advice rules
+     */
     public List<AdviceRule> getFinallyAdviceRuleList() {
         return finallyAdviceRuleList;
     }
@@ -160,9 +179,15 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         this.finallyAdviceRuleList = finallyAdviceRuleList;
     }
 
+    /**
+     * Adds the specified {@link SettingsAdviceRule} to the list of settings advice rules.
+     * If the list is not already initialized, it will be created as a linked list.
+     * The newly added rule will be inserted at the beginning of the list.
+     * @param settingsAdviceRule the {@link SettingsAdviceRule} to be added to the settings advice rule list
+     */
     public void addAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         if (settingsAdviceRuleList == null) {
-            settingsAdviceRuleList = new ArrayList<>();
+            settingsAdviceRuleList = new LinkedList<>();
         }
         settingsAdviceRuleList.addFirst(settingsAdviceRule);
     }
@@ -174,15 +199,14 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
      * @param adviceRule the advice rule to add
      */
     public void addAdviceRule(@NonNull AdviceRule adviceRule) {
-        if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
-            addBeforeAdviceRule(adviceRule);
-        } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
-            addAfterAdviceRule(adviceRule);
-        } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
-            addBeforeAdviceRule(adviceRule);
-            addAfterAdviceRule(adviceRule);
-        } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
-            addFinallyAdviceRule(adviceRule);
+        switch (adviceRule.getAdviceType()) {
+            case BEFORE -> addBeforeAdviceRule(adviceRule);
+            case AFTER -> addAfterAdviceRule(adviceRule);
+            case AROUND -> {
+                addBeforeAdviceRule(adviceRule);
+                addAfterAdviceRule(adviceRule);
+            }
+            case FINALLY -> addFinallyAdviceRule(adviceRule);
         }
     }
 
@@ -235,6 +259,10 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
         }
     }
 
+    /**
+     * Retrieves the list of exception handling rules.
+     * @return a list of {@link ExceptionRule} objects representing the exception handling rules
+     */
     public List<ExceptionRule> getExceptionRuleList() {
         return exceptionRuleList;
     }
@@ -251,23 +279,27 @@ public class AdviceRuleRegistry implements Replicable<AdviceRuleRegistry> {
     }
 
     private int findLessThanIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {
-        for (int i = 0; i < adviceRuleList.size(); i++) {
-            int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
+        int index = 0;
+        for (AdviceRule rule : adviceRuleList) {
+            int rightInt = rule.getAspectRule().getOrder();
             if (leftInt < rightInt) {
-                return i;
+                return index;
             }
+            index++;
         }
-        return adviceRuleList.size();
+        return index;
     }
 
     private int findGreaterThanOrEqualIndex(@NonNull List<AdviceRule> adviceRuleList, int leftInt) {
-        for (int i = 0; i < adviceRuleList.size(); i++) {
-            int rightInt = adviceRuleList.get(i).getAspectRule().getOrder();
+        int index = 0;
+        for (AdviceRule rule : adviceRuleList) {
+            int rightInt = rule.getAspectRule().getOrder();
             if (leftInt >= rightInt) {
-                return i;
+                return index;
             }
+            index++;
         }
-        return adviceRuleList.size();
+        return index;
     }
 
     @Override

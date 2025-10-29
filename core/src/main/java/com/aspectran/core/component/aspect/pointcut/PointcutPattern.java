@@ -124,14 +124,9 @@ public class PointcutPattern {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = hashCode;
         if (result == 0) {
-            result = 11;
-            result = prime * result + (transletNamePattern != null ? transletNamePattern.hashCode() : 0);
-            result = prime * result + (beanIdPattern != null ? beanIdPattern.hashCode() : 0);
-            result = prime * result + (classNamePattern != null ? classNamePattern.hashCode() : 0);
-            result = prime * result + (methodNamePattern != null ? methodNamePattern.hashCode() : 0);
+            result = Objects.hash(transletNamePattern, beanIdPattern, classNamePattern, methodNamePattern);
             hashCode = result;
         }
         return result;
