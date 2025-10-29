@@ -126,7 +126,9 @@ public class AdviceRule implements HasActionRules {
     public Executable putActionRule(InvokeActionRule invokeActionRule) {
         if (adviceBeanId == null && adviceBeanClass == null &&
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
-            throw new IllegalStateException("Cannot resolve advice bean for " + invokeActionRule + " in " + this);
+            throw new IllegalStateException("No bean specified for an invoke action. An invoke action " +
+                    "within an advice rule requires a target bean to be defined either on the invoke rule " +
+                    "itself or on the parent aspect rule. Rule: " + invokeActionRule);
         }
         adviceAction = new AdviceAction(this, invokeActionRule);
         return adviceAction;
@@ -149,7 +151,9 @@ public class AdviceRule implements HasActionRules {
 
     @Override
     public void putActionRule(Executable action) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(
+                "Adding a pre-constructed Executable action is not supported in AdviceRule. " +
+                "Define actions using their specific rule types (e.g., InvokeActionRule).");
     }
 
     /**

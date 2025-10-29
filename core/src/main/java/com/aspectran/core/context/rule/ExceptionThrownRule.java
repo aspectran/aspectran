@@ -171,12 +171,15 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
         if (adviceRule != null) {
             if (adviceRule.getAdviceBeanId() == null && adviceRule.getAdviceBeanClass() == null &&
                 invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
-                throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
+                throw new IllegalStateException("No bean specified for an invoke action. An invoke action " +
+                        "within an exception handling rule requires a target bean to be defined either on the " +
+                        "invoke rule itself or on the parent advice rule. Rule: " + invokeActionRule);
             }
             action = new AdviceAction(adviceRule, invokeActionRule);
         } else {
             if (invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
-                throw new IllegalStateException("Unknown action bean for " + invokeActionRule);
+                throw new IllegalStateException("No bean specified for an invoke action. The invoke action " +
+                        "rule must specify a 'bean' or 'class' to invoke. Rule: " + invokeActionRule);
             }
             action = new InvokeAction(invokeActionRule);
         }
@@ -186,22 +189,23 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
 
     @Override
     public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("No support applying AnnotatedActionRule to AdviceRule");
+        throw new UnsupportedOperationException("AnnotatedActionRule is not supported in an exception handling rule");
     }
 
     @Override
     public Executable putActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("No support applying IncludeActionRule to AdviceRule");
+        throw new UnsupportedOperationException("IncludeActionRule is not supported in an exception handling rule");
     }
 
     @Override
     public Executable putActionRule(ChooseRule chooseRule) {
-        throw new UnsupportedOperationException("No support applying ChooseRule to AdviceRule");
+        throw new UnsupportedOperationException("ChooseRule is not supported in an exception handling rule");
     }
 
     @Override
     public void putActionRule(Executable action) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(
+                "Adding a pre-constructed Executable action is not supported in ExceptionThrownRule");
     }
 
     @Override
@@ -233,7 +237,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     @Override
     public Response putResponseRule(ForwardRule forwardRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the forward response rule to the exception thrown rule");
+                "The forward response rule is not applicable to an exception handling rule");
     }
 
     @Override
@@ -261,7 +265,7 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
         if (types != null && types.length > 0) {
             String[] exceptionTypes = new String[types.length];
             for (int i = 0; i < types.length; i++) {
-                exceptionTypes[i] = types[0].getName();
+                exceptionTypes[i] = types[i].getName();
             }
             exceptionThrownRule.setExceptionTypes(exceptionTypes);
         }

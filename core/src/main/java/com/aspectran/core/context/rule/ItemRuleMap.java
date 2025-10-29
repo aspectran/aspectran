@@ -19,8 +19,8 @@ import com.aspectran.core.context.env.Profiles;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -118,7 +118,7 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
      */
     public boolean addCandidate(ItemRuleMap itemRuleMap) {
         if (candidates == null) {
-            candidates = new ArrayList<>();
+            candidates = new LinkedList<>();
         }
         return candidates.add(itemRuleMap);
     }

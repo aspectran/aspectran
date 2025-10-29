@@ -129,16 +129,19 @@ public abstract class ItemRuleUtils {
                 it = map.values().iterator();
             }
         } else {
-            return new Iterator<Token[]>() {
+            return new Iterator<>() {
                 private int count = 0;
+
                 @Override
                 public boolean hasNext() {
                     return (count++ < 1);
                 }
+
                 @Override
                 public Token[] next() {
                     return itemRule.getTokens();
                 }
+
                 @Override
                 public void remove() {
                     throw new UnsupportedOperationException("Cannot remove an element of an array");

@@ -25,7 +25,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -169,7 +169,7 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
      */
     public boolean addCandidate(DescriptionRule candidate) {
         if (candidates == null) {
-            candidates = new ArrayList<>();
+            candidates = new LinkedList<>();
         }
         return candidates.add(candidate);
     }

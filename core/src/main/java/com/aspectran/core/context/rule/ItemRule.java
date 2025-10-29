@@ -275,15 +275,15 @@ public class ItemRule {
         tokensMap = new LinkedHashMap<>();
         for (String key : properties.stringPropertyNames()) {
             Object o = properties.get(key);
-            if (o instanceof Token[]) {
-                tokensMap.put(key, (Token[])o);
-            } else if (o instanceof Token) {
-                Token[] tokens = new Token[] { (Token)o };
-                tokensMap.put(key, tokens);
+            Token[] tokens;
+            if (o instanceof Token[] t) {
+                tokens = t;
+            } else if (o instanceof Token t) {
+                tokens = new Token[] { t };
             } else {
-                Token[] tokens = TokenParser.makeTokens(o.toString(), isTokenize());
-                putValue(name, tokens);
+                tokens = TokenParser.makeTokens(o.toString(), isTokenize());
             }
+            tokensMap.put(key, tokens);
         }
     }
 
@@ -625,19 +625,22 @@ public class ItemRule {
 
     private void checkSingleType() {
         if (type != ItemType.SINGLE) {
-            throw new IllegalStateException("The type of this item must be 'single'");
+            throw new IllegalStateException("The type of this item must be 'single', " +
+                    "but it is '" + type + "'");
         }
     }
 
     private void checkListType() {
         if (!isListableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'array', 'list' or 'set'");
+            throw new IllegalStateException("The type of this item must be 'array', 'list' or 'set', " +
+                    "but it is '" + type + "'");
         }
     }
 
     private void checkMappableType() {
         if (!isMappableType()) {
-            throw new IllegalStateException("The type of this item must be 'map' or 'properties'");
+            throw new IllegalStateException("The type of this item must be 'map' or 'properties', " +
+                    "but it is '" + type + "'");
         }
     }
 
