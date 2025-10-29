@@ -18,11 +18,15 @@ package com.aspectran.core.service;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -34,17 +38,23 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @since 2019-01-10
  */
-public abstract class CoreServiceHolder {
+public final class CoreServiceHolder {
 
     private static final Set<ServiceHoldingListener> serviceHoldingListeners = new CopyOnWriteArraySet<>();
 
     private static final Set<CoreService> allServices = new CopyOnWriteArraySet<>();
 
-    private static final Map<ClassLoader, CoreService> servicesByLoader = new HashMap<>();
+    // Use ConcurrentHashMap for thread safety
+    private static final Map<ClassLoader, CoreService> servicesByLoader = new ConcurrentHashMap<>();
 
-    private static final Map<Class<?>, CoreService> servicesByClass = new HashMap<>();
+    private static final Map<Class<?>, CoreService> servicesByClass = new ConcurrentHashMap<>();
 
     private static volatile CoreService currentService;
+
+    // Private constructor to prevent instantiation
+    private CoreServiceHolder() {
+        // not to be instantiated
+    }
 
     /**
      * Adds a {@link ServiceHoldingListener} to be notified when services are held or released.
@@ -140,6 +150,15 @@ public abstract class CoreServiceHolder {
 
     /**
      * Acquires the most appropriate {@link CoreService} for the current thread's context.
+     * <p>The lookup strategy is as follows:
+     * <ol>
+     *   <li>Try to find a service using the current thread's context class loader.</li>
+     *   <li>If not found, and the current class loader is not an instance of {@code SiblingClassLoader},
+     *       try to find a service using the parent class loader. This handles hierarchical class loader
+     *       environments where a container's class loader (e.g., WebAppClassLoader) wraps
+     *       the one associated with the service.</li>
+     *   <li>If still not found, return the system-wide current service.</li>
+     * </ol>
      * @return the acquired {@link CoreService}, or {@code null} if none is found
      */
     public static CoreService acquire() {
@@ -205,6 +224,50 @@ public abstract class CoreServiceHolder {
             }
         }
         return null;
+    }
+
+    /**
+     * Retrieves the names of all contexts from the currently held services,
+     * preserving the order in which the services were added.
+     * @return a {@link List} of all non-null context names in insertion order
+     */
+    @NonNull
+    public static List<String> getAllContextNames() {
+        List<String> contextNames = new ArrayList<>();
+        for (CoreService service : allServices) {
+            String contextName = service.getContextName();
+            if (contextName != null) {
+                contextNames.add(contextName);
+            }
+        }
+        return contextNames;
+    }
+
+    /**
+     * Finds the {@link CoreService} with the specified context name.
+     * @param contextName the name of the context to find
+     * @return the found {@link CoreService}, or {@code null} if none is found
+     */
+    @Nullable
+    public static CoreService getCoreService(String contextName) {
+        Assert.notNull(contextName, "contextName must not be null");
+        for (CoreService service : allServices) {
+            if (contextName.equals(service.getContextName())) {
+                return service;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves all the {@link CoreService} instances currently held by the system.
+     * <p>The returned set provides an unmodifiable view of the held services,
+     * ensuring that the caller cannot alter the existing collection of services.
+     * @return an unmodifiable {@link Set} containing all the held {@link CoreService} instances
+     */
+    @NonNull
+    public static Set<CoreService> getAllServices() {
+        return Collections.unmodifiableSet(allServices);
     }
 
 }
