@@ -15,11 +15,11 @@
  */
 package com.aspectran.shell.service;
 
+import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.context.asel.token.Token;
-import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
 import com.aspectran.core.context.config.AcceptableConfig;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -115,12 +115,17 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     @Override
     public void printGreetings() {
         if (greetingsTokens != null) {
-            TokenEvaluator evaluator = getDefaultActivity().getTokenEvaluator();
-            String message = evaluator.evaluateAsString(greetingsTokens);
-            if (console.isReading()) {
-                console.clearLine();
+            try {
+                InstantActivity activity = new InstantActivity(getActivityContext());
+                String message = activity.perform(() ->
+                        activity.getTokenEvaluator().evaluateAsString(greetingsTokens));
+                if (console.isReading()) {
+                    console.clearLine();
+                }
+                console.writeLine(message);
+            } catch (Exception e) {
+                logger.error("Failed to print greetings", e);
             }
-            console.writeLine(message);
         } else if (greetings != null) {
             if (console.isReading()) {
                 console.clearLine();
@@ -132,16 +137,6 @@ public abstract class AbstractShellService extends DefaultCoreService implements
     private void parseGreetings() {
         if (StringUtils.hasText(greetings)) {
             greetingsTokens = TokenParser.makeTokens(greetings, true);
-            if (greetingsTokens != null) {
-                try {
-                    for (Token token : greetingsTokens) {
-                        Token.resolveValueProvider(token, getServiceClassLoader());
-                    }
-                } catch (Exception e) {
-                    greetingsTokens = null;
-                    logger.error("Failed to parse greetings", e);
-                }
-            }
         }
     }
 

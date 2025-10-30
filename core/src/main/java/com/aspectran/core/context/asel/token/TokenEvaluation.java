@@ -18,14 +18,10 @@ package com.aspectran.core.context.asel.token;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.component.bean.NoSuchBeanException;
-import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.utils.BeanTypeUtils;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.PropertiesLoaderUtils;
-import com.aspectran.utils.ReflectionUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.jasypt.exceptions.EncryptionInitializationException;
@@ -35,10 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -247,57 +240,15 @@ public class TokenEvaluation implements TokenEvaluator {
      */
     protected Object getBean(@NonNull Token token) {
         Object value;
+        if (token.getValueProvider() == null && token.getDirectiveType() != null) {
+            Token.resolveValueProvider(token, activity.getClassLoader());
+        }
+
         if (token.getValueProvider() != null) {
-            if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
-                Field field = (Field)token.getValueProvider();
-                if (Modifier.isStatic(field.getModifiers())) {
-                    value = ReflectionUtils.getField(field, null);
-                } else {
-                    Class<?> beanClass = field.getDeclaringClass();
-                    Object target = activity.getBean(beanClass);
-                    value = ReflectionUtils.getField(field, target);
-                }
-            } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
-                Method method = (Method)token.getValueProvider();
-                if (Modifier.isStatic(method.getModifiers())) {
-                    value = ReflectionUtils.invokeMethod(method, null);
-                } else {
-                    Class<?> beanClass = method.getDeclaringClass();
-                    Object target = activity.getBean(beanClass);
-                    value = ReflectionUtils.invokeMethod(method, target);
-                }
-            } else {
-                Class<?> beanClass = (Class<?>)token.getValueProvider();
-                String getterName = token.getGetterName();
-                if (getterName != null && beanClass.isEnum()) {
-                    Object[] enums = beanClass.getEnumConstants();
-                    if (enums != null) {
-                        for (Object en : enums) {
-                            if (getterName.equals(en.toString())) {
-                                return en;
-                            }
-                        }
-                    }
-                }
-                try {
-                    value = activity.getBean(beanClass);
-                } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                    if (getterName != null) {
-                        try {
-                            value = BeanTypeUtils.getProperty(beanClass, getterName);
-                            if (value == null) {
-                                value = token.getDefaultValue();
-                            }
-                            return value;
-                        } catch (InvocationTargetException e2) {
-                            // ignore
-                        }
-                    }
-                    throw e;
-                }
-                if (value != null && getterName != null) {
-                    value = getBeanProperty(value, getterName);
-                }
+            try {
+                value = token.getValueProvider().evaluate(activity);
+            } catch (Exception e) {
+                throw new TokenEvaluationException(token, e);
             }
         } else {
             value = activity.getBean(token.getName());
@@ -305,6 +256,7 @@ public class TokenEvaluation implements TokenEvaluator {
                 value = getBeanProperty(value, token.getGetterName());
             }
         }
+
         if (value == null) {
             value = token.getDefaultValue();
         }

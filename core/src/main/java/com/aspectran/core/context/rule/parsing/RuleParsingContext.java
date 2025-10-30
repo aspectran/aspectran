@@ -21,6 +21,7 @@ import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
+import com.aspectran.core.context.asel.bean.ValueProvider;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.core.context.env.EnvironmentProfiles;
@@ -43,7 +44,6 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
 import com.aspectran.core.context.rule.util.TextStyler;
@@ -496,39 +496,19 @@ public class RuleParsingContext {
     private void resolveBeanClass(@Nullable Token token, @Nullable BeanReferenceable referenceable)
             throws IllegalRuleException {
         if (token != null && token.getType() == TokenType.BEAN) {
-            if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
-                if (token.getGetterName() == null) {
-                    throw new IllegalRuleException("Token with no target field name specified: " + token);
+            try {
+                Token.resolveValueProvider(token, getClassLoader());
+            } catch (RuntimeException e) {
+                throw new IllegalRuleException("Failed to resolve value provider for token: " + token, e);
+            }
+
+            ValueProvider provider = token.getValueProvider();
+            if (provider != null) {
+                if (provider.isRequiresBeanInstance()) {
+                    reserveBeanReference(provider.getDependentBeanType(), referenceable);
                 }
-                Class<?> beanClass = loadClass(token.getValue(), token);
-                try {
-                    Field field = beanClass.getField(token.getGetterName());
-                    token.setValueProvider(field);
-                    if (!Modifier.isStatic(field.getModifiers())) {
-                        reserveBeanReference(beanClass, referenceable);
-                    }
-                } catch (NoSuchFieldException e) {
-                    throw new IllegalRuleException("Could not access field " + token.getGetterName() + " for " + token, e);
-                }
-            } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
-                if (token.getGetterName() == null) {
-                    throw new IllegalRuleException("Token with no target method name specified: " + token);
-                }
-                Class<?> beanClass = loadClass(token.getValue(), token);
-                try {
-                    Method method = beanClass.getMethod(token.getGetterName());
-                    token.setValueProvider(method);
-                    if (!Modifier.isStatic(method.getModifiers())) {
-                        reserveBeanReference(beanClass, referenceable);
-                    }
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalRuleException("Could not access method " + token.getGetterName() + " for " + token, e);
-                }
-            } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                Class<?> beanClass = loadClass(token.getValue(), token);
-                token.setValueProvider(beanClass);
-                reserveBeanReference(beanClass, referenceable);
-            } else {
+            } else if (token.getDirectiveType() == null) {
+                // This is for simple #{beanId} tokens that don't have a provider
                 reserveBeanReference(token.getName(), referenceable);
             }
         }

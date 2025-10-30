@@ -19,6 +19,10 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
+import com.aspectran.core.context.asel.bean.ClassValueProvider;
+import com.aspectran.core.context.asel.bean.FieldValueProvider;
+import com.aspectran.core.context.asel.bean.MethodValueProvider;
+import com.aspectran.core.context.asel.bean.ValueProvider;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
@@ -34,7 +38,9 @@ import com.aspectran.utils.nodelet.NodeTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -161,20 +167,31 @@ public class BeanReferenceInspector {
     private boolean isStaticReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token token = (Token)refererInfo.getReferenceable();
-            Class<?> beanClass = (Class<?>)token.getValueProvider();
-            String getterName = token.getGetterName();
-            if (beanClass != null && getterName != null) {
-                if (beanClass.isEnum()) {
-                    Object[] enums = beanClass.getEnumConstants();
-                    if (enums != null) {
-                        for (Object en : enums) {
-                            if (getterName.equals(en.toString())) {
-                                return true;
+            ValueProvider provider = token.getValueProvider();
+            if (provider instanceof FieldValueProvider) {
+                Field field = ((FieldValueProvider)provider).getField();
+                return Modifier.isStatic(field.getModifiers());
+            }
+            if (provider instanceof MethodValueProvider) {
+                Method method = ((MethodValueProvider)provider).getMethod();
+                return Modifier.isStatic(method.getModifiers());
+            }
+            if (provider instanceof ClassValueProvider) {
+                Class<?> beanClass = ((ClassValueProvider)provider).getBeanClass();
+                String getterName = token.getGetterName();
+                if (getterName != null) {
+                    if (beanClass.isEnum()) {
+                        Object[] enums = beanClass.getEnumConstants();
+                        if (enums != null) {
+                            for (Object en : enums) {
+                                if (getterName.equals(en.toString())) {
+                                    return true;
+                                }
                             }
                         }
                     }
+                    return BeanTypeUtils.hasReadableProperty(beanClass, getterName);
                 }
-                return BeanTypeUtils.hasReadableProperty(beanClass, getterName);
             }
         }
         return false;

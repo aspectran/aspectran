@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.context.asel.token;
 
+import com.aspectran.core.context.asel.bean.ClassValueProvider;
+import com.aspectran.core.context.asel.bean.FieldValueProvider;
+import com.aspectran.core.context.asel.bean.MethodValueProvider;
+import com.aspectran.core.context.asel.bean.ValueProvider;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -127,7 +131,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     private String value;
 
-    private Object valueProvider;
+    private ValueProvider valueProvider;
 
     private String getterName;
 
@@ -244,17 +248,16 @@ public class Token implements BeanReferenceable, Replicable<Token> {
      * to avoid repeated lookups.
      * @return the value provider, or {@code null} if not resolved
      */
-    public Object getValueProvider() {
+    public ValueProvider getValueProvider() {
         return valueProvider;
     }
 
     /**
-     * Sets a pre-resolved object that can provide the token's value, such as a
-     * {@link Method}, {@link Field}, or {@link Class}. This is used for optimization
-     * to avoid repeated reflection lookups.
+     * Sets a pre-resolved object that can provide the token's value.
+     * This is used for optimization to avoid repeated reflection lookups.
      * @param valueProvider the pre-resolved value provider object
      */
-    public void setValueProvider(Object valueProvider) {
+    public void setValueProvider(ValueProvider valueProvider) {
         this.valueProvider = valueProvider;
     }
 
@@ -552,7 +555,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
                     Field field = cls.getField(token.getGetterName());
-                    token.setValueProvider(field);
+                    token.setValueProvider(new FieldValueProvider(field));
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 } catch (NoSuchFieldException e) {
@@ -565,7 +568,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
                     Method method = cls.getMethod(token.getGetterName());
-                    token.setValueProvider(method);
+                    token.setValueProvider(new MethodValueProvider(method));
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 } catch (NoSuchMethodException e) {
@@ -574,7 +577,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
-                    token.setValueProvider(cls);
+                    token.setValueProvider(new ClassValueProvider(cls, token.getGetterName()));
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
                 }

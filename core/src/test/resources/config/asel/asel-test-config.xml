@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "aspectran-9-test.dtd">
+<aspectran>
+
+    <description>
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <environment>
+        <property name="my-prop" value="My Property"/>
+    </environment>
+
+
+    <bean id="sampleBean" class="com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean"/>
+    <bean id="anotherBean" class="com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean">
+        <property name="name" value="Another Bean"/>
+    </bean>
+
+</aspectran>

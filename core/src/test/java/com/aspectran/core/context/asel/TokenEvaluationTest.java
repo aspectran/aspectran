@@ -41,7 +41,7 @@ class TokenEvaluationTest {
     @BeforeAll
     void setUp() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
-        context = builder.build();
+        context = builder.build("classpath:config/asel/asel-test-config.xml");
     }
 
     @Test
@@ -84,6 +84,78 @@ class TokenEvaluationTest {
 
             return null;
         });
+    }
+
+    @Test
+    void testPropertyTokens() throws ActivityPerformException {
+        InstantActivity activity = new InstantActivity(context);
+        activity.perform(() -> {
+            TokenEvaluator evaluator = activity.getTokenEvaluator();
+
+            // Test environment property
+            assertEquals("My Property", evaluator.evaluateAsString(TokenParser.parse("%{my-prop}")));
+
+            // Test environment property with default value
+            assertEquals("My Property", evaluator.evaluateAsString(TokenParser.parse("%{my-prop:Default}")));
+            assertEquals("Default", evaluator.evaluateAsString(TokenParser.parse("%{non-existent-prop:Default}")));
+
+            // Test system property
+            String javaVersion = System.getProperty("java.version");
+            assertEquals(javaVersion, evaluator.evaluateAsString(TokenParser.parse("%{system:java.version}")));
+
+            return null;
+        });
+    }
+
+    @Test
+    void testBeanTokens() throws ActivityPerformException {
+        InstantActivity activity = new InstantActivity(context);
+        activity.perform(() -> {
+            TokenEvaluator evaluator = activity.getTokenEvaluator();
+
+            assertEquals("I am a bean", evaluator.evaluateAsString(TokenParser.parse("#{sampleBean^name}")));
+            assertEquals("Another Bean", evaluator.evaluateAsString(TokenParser.parse("#{anotherBean^name}")));
+
+            // The primary bean of SampleBean type is 'sampleBean'
+            assertEquals("I am a bean", evaluator.evaluateAsString(TokenParser.parse(
+                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^name}")));
+
+            // Static field/property access
+            assertEquals("a static field", evaluator.evaluateAsString(TokenParser.parse(
+                    "#{field:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^staticField}")));
+            assertEquals("a static field", evaluator.evaluateAsString(TokenParser.parse(
+                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^staticField}")));
+
+            // Test enum access
+            Object result = evaluator.evaluate(TokenParser.parse(
+                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleEnum^TWO}"));
+            assertEquals(SampleEnum.TWO, result);
+            return null;
+        });
+    }
+
+    public enum SampleEnum {
+        ONE, TWO, THREE
+    }
+
+    public static class SampleBean {
+
+        private String name = "I am a bean";
+
+        public static String staticField = "a static field";
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public static String getStaticField() {
+            return staticField;
+        }
+
     }
 
 }
