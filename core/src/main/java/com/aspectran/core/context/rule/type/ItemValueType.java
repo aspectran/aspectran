@@ -63,9 +63,11 @@ public enum ItemValueType {
      */
     @Nullable
     public static ItemValueType resolve(String alias) {
-        for (ItemValueType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ItemValueType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

@@ -50,9 +50,11 @@ public enum TokenType {
      */
     @Nullable
     public static TokenType resolve(String alias) {
-        for (TokenType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (TokenType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

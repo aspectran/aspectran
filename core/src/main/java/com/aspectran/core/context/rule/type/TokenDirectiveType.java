@@ -49,9 +49,11 @@ public enum TokenDirectiveType {
      */
     @Nullable
     public static TokenDirectiveType resolve(String alias) {
-        for (TokenDirectiveType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (TokenDirectiveType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

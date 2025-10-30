@@ -53,9 +53,11 @@ public enum FormatType {
      */
     @Nullable
     public static FormatType resolve(String alias) {
-        for (FormatType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (FormatType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

@@ -53,9 +53,11 @@ public enum AdviceType {
      */
     @Nullable
     public static AdviceType resolve(String alias) {
-        for (AdviceType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (AdviceType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

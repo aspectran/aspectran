@@ -74,9 +74,11 @@ public enum DefaultSettingType {
      */
     @Nullable
     public static DefaultSettingType resolve(String alias) {
-        for (DefaultSettingType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (DefaultSettingType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

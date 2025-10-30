@@ -50,9 +50,11 @@ public enum AutowireTargetType {
      */
     @Nullable
     public static AutowireTargetType resolve(String alias) {
-        for (AutowireTargetType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (AutowireTargetType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

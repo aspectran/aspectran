@@ -59,9 +59,11 @@ public enum JoinpointTargetType {
      */
     @Nullable
     public static JoinpointTargetType resolve(String alias) {
-        for (JoinpointTargetType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (JoinpointTargetType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

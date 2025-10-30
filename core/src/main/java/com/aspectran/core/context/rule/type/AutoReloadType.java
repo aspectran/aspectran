@@ -46,9 +46,11 @@ public enum AutoReloadType {
      */
     @Nullable
     public static AutoReloadType resolve(String alias) {
-        for (AutoReloadType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (AutoReloadType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

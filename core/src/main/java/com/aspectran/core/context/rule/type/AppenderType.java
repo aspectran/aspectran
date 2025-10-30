@@ -49,9 +49,11 @@ public enum AppenderType {
      */
     @Nullable
     public static AppenderType resolve(String alias) {
-        for (AppenderType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (AppenderType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

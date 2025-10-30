@@ -51,9 +51,11 @@ public enum ActionType {
      */
     @Nullable
     public static ActionType resolve(String alias) {
-        for (ActionType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ActionType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

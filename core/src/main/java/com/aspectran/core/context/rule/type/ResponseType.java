@@ -49,9 +49,11 @@ public enum ResponseType {
      */
     @Nullable
     public static ResponseType resolve(String alias) {
-        for (ResponseType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ResponseType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

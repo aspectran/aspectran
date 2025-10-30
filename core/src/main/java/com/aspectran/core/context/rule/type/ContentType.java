@@ -49,9 +49,11 @@ public enum ContentType {
      */
     @Nullable
     public static ContentType resolve(String alias) {
-        for (ContentType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ContentType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;
