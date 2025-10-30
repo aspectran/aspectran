@@ -244,8 +244,8 @@ public class ScheduleRule implements BeanReferenceable, Describable {
         if (type != null) {
             triggerType = TriggerType.resolve(type);
             if (triggerType == null) {
-                throw new IllegalArgumentException("Unknown trigger type '" + type +
-                        "'; Trigger type for Scheduler must be 'cron' or 'simple'");
+                throw new IllegalArgumentException("Invalid trigger type '" + type + "'. The 'type' " +
+                        "attribute in the <trigger> element must be either 'cron' or 'simple'");
             }
         } else {
             triggerType = TriggerType.CRON;

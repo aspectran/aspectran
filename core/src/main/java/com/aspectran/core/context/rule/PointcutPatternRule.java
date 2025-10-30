@@ -39,12 +39,6 @@ public class PointcutPatternRule {
     private List<PointcutPatternRule> excludePatternRuleList;
 
     /**
-     * Instantiates a new PointcutPatternRule.
-     */
-    public PointcutPatternRule() {
-    }
-
-    /**
      * Gets the pointcut type (e.g., wildcard, regexp).
      * @return the pointcut type
      */

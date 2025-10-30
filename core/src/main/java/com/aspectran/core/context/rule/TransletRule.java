@@ -82,12 +82,6 @@ public class TransletRule
     private DescriptionRule descriptionRule;
 
     /**
-     * Instantiates a new TransletRule.
-     */
-    public TransletRule() {
-    }
-
-    /**
      * Gets the translet name.
      * @return the translet name
      */

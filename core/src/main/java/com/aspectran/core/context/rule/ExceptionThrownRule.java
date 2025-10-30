@@ -189,17 +189,20 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
 
     @Override
     public Executable putActionRule(AnnotatedActionRule annotatedActionRule) {
-        throw new UnsupportedOperationException("AnnotatedActionRule is not supported in an exception handling rule");
+        throw new UnsupportedOperationException("An exception handling rule can only contain a single, direct action (e.g., echo, header, or invoke). " +
+                "Rules like 'annotated' that imply complex logic are not supported");
     }
 
     @Override
     public Executable putActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException("IncludeActionRule is not supported in an exception handling rule");
+        throw new UnsupportedOperationException("An exception handling rule can only contain a single, direct action (e.g., echo, header, or invoke). " +
+                "Rules like 'include' that imply complex logic are not supported");
     }
 
     @Override
     public Executable putActionRule(ChooseRule chooseRule) {
-        throw new UnsupportedOperationException("ChooseRule is not supported in an exception handling rule");
+        throw new UnsupportedOperationException("An exception handling rule can only contain a single, direct action (e.g., echo, header, or invoke). " +
+                "Rules like 'choose' that imply conditional logic are not supported");
     }
 
     @Override
@@ -237,7 +240,9 @@ public class ExceptionThrownRule implements HasActionRules, HasResponseRules {
     @Override
     public Response putResponseRule(ForwardRule forwardRule) {
         throw new UnsupportedOperationException(
-                "The forward response rule is not applicable to an exception handling rule");
+                "The forward response rule is not applicable to an exception handling rule " +
+                        "because forwarding could trigger a new exception, potentially causing an infinite loop. " +
+                        "Use 'dispatch' or 'redirect' instead");
     }
 
     @Override
