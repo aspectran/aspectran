@@ -103,8 +103,7 @@ public class DefaultSettings {
             setTransletNameSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX));
         }
         if (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null) {
-            pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null
-                    || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+            pointcutPatternVerifiable = Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE));
         }
         if (settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN) != null) {
             defaultTemplateEngineBean = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN);

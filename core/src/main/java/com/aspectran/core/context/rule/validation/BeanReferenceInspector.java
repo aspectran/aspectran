@@ -19,7 +19,6 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.BeanRuleAnalyzer;
 import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
-import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
@@ -79,6 +78,7 @@ public class BeanReferenceInspector {
     public void inspect(BeanRuleRegistry beanRuleRegistry, BeanRegistry parentBeanRegistry)
             throws BeanReferenceException, BeanRuleException {
         Map<RefererInfo, RefererKey> brokenReferences = new LinkedHashMap<>();
+        Map<RefererKey, BeanRule[]> nonUniqueBeans = new LinkedHashMap<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
             RefererKey refererKey = entry.getKey();
@@ -130,17 +130,8 @@ public class BeanReferenceInspector {
             if (!existsInParents) {
                 if (beanRule == null) {
                     if (beanRules != null && beanRules.length > 1) {
+                        nonUniqueBeans.put(refererKey, beanRules);
                         for (RefererInfo refererInfo : refererInfoSet) {
-                            if (beanId != null) {
-                                logger.error("Cannot resolve reference to bean {}; Referer: {}",
-                                        refererKey, refererInfo);
-                            } else {
-                                logger.error("No unique bean of type [{}] is defined: " +
-                                        "expected single matching bean but found {}: [{}]; Referer: {}",
-                                        beanClass, beanRules.length,
-                                        NoUniqueBeanException.getBeanDescriptions(beanRules),
-                                        refererInfo);
-                            }
                             brokenReferences.put(refererInfo, refererKey);
                         }
                     } else {
@@ -163,7 +154,7 @@ public class BeanReferenceInspector {
         }
 
         if (!brokenReferences.isEmpty()) {
-            throw new BeanReferenceException(brokenReferences);
+            throw new BeanReferenceException(brokenReferences, nonUniqueBeans);
         }
     }
 
@@ -189,7 +180,8 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(@NonNull InvokeActionRule invokeActionRule, BeanRule beanRule, RefererInfo refererInfo)
+    private void checkTransletActionParameter(
+            @NonNull InvokeActionRule invokeActionRule, BeanRule beanRule, RefererInfo refererInfo)
             throws BeanRuleException {
         if (invokeActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();

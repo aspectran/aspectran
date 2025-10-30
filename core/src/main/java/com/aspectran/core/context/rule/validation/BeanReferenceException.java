@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.validation;
 
+import com.aspectran.core.component.bean.NoUniqueBeanException;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.parser.ActivityContextRuleParserException;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererInfo;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererKey;
@@ -37,8 +39,8 @@ public class BeanReferenceException extends ActivityContextRuleParserException {
      * Constructor to create exception with a message.
      * @param brokenReferences the map of beans that can not find
      */
-    BeanReferenceException(Map<RefererInfo, RefererKey> brokenReferences) {
-        super(getMessage(brokenReferences));
+    BeanReferenceException(Map<RefererInfo, RefererKey> brokenReferences, Map<RefererKey, BeanRule[]> nonUniqueBeans) {
+        super(getMessage(brokenReferences, nonUniqueBeans));
     }
 
     /**
@@ -47,22 +49,37 @@ public class BeanReferenceException extends ActivityContextRuleParserException {
      * @return the message
      */
     @NonNull
-    private static String getMessage(@NonNull Map<RefererInfo, RefererKey> brokenReferences) {
-        Map.Entry<RefererInfo, RefererKey> first = brokenReferences.entrySet().iterator().next();
-        return getDetailMessage(first.getValue(), first.getKey()) +
-                (brokenReferences.size() > 1 ? " (and " + (brokenReferences.size() - 1) + " more)" : "");
+    private static String getMessage(@NonNull Map<RefererInfo, RefererKey> brokenReferences,
+                                     Map<RefererKey, BeanRule[]> nonUniqueBeans) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Found ").append(brokenReferences.size()).append(" broken bean reference(s):\n");
+        int count = 0;
+        for (Map.Entry<RefererInfo, RefererKey> entry : brokenReferences.entrySet()) {
+            RefererKey refererKey = entry.getValue();
+            BeanRule[] beanRules = (refererKey != null ? nonUniqueBeans.get(refererKey) : null);
+            sb.append(++count).append(". ").append(getDetailMessage(refererKey, entry.getKey(), beanRules));
+            if (count < brokenReferences.size()) {
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     @NonNull
-    private static String getDetailMessage(RefererKey refererKey, RefererInfo refererInfo) {
+    private static String getDetailMessage(RefererKey refererKey, RefererInfo refererInfo, BeanRule[] beanRules) {
         if (refererKey != null) {
             String beanId = refererKey.getQualifier();
             Class<?> beanClass = refererKey.getType();
             if (beanId != null) {
-                return "Cannot resolve reference to bean " + refererKey +
-                        "; Referer: " + refererInfo;
+                return "Cannot resolve reference to bean " + refererKey + "; Referer: " + refererInfo;
             } else {
-                return "No unique bean of type [" + beanClass + "] is defined; Referer: " + refererInfo;
+                if (beanRules != null && beanRules.length > 1) {
+                    return "No unique bean of type [" + beanClass.getName() + "] is defined: " +
+                            "expected single matching bean but found " + beanRules.length + ": [" +
+                            NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo;
+                } else {
+                    return "No unique bean of type [" + beanClass.getName() + "] is defined; Referer: " + refererInfo;
+                }
             }
         } else {
             return "Cannot resolve reference: " + refererInfo;

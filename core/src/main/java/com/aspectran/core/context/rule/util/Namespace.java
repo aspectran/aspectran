@@ -139,8 +139,8 @@ public class Namespace {
      * @param absolutely whether to allow absolutely name for translet
      * @return the new translet name
      */
-    public static String applyTransletNamePattern(DefaultSettings defaultSettings, String transletName,
-                                                  boolean absolutely) {
+    public static String applyTransletNamePattern(
+            DefaultSettings defaultSettings, String transletName, boolean absolutely) {
         String prefix = null;
         String suffix = null;
         if (defaultSettings != null) {
@@ -158,8 +158,8 @@ public class Namespace {
      * @param absolutely whether to allow an absolute name for the translet
      * @return the new translet name
      */
-    public static String applyTransletNamePattern(String prefix, String transletName, String suffix,
-                                                  boolean absolutely) {
+    public static String applyTransletNamePattern(
+            String prefix, String transletName, String suffix, boolean absolutely) {
         if (prefix == null && suffix == null) {
             return transletName;
         }
