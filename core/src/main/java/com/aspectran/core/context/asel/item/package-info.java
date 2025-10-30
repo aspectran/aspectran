@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 /**
- * Contains classes for evaluating item rules defined in Aspectran.
- * <p>This package provides the mechanism for interpreting and resolving the values
- * of {@link com.aspectran.core.context.rule.ItemRule} instances. This corresponds to
- * the simple evaluation context of AsEL, where token expressions are used for direct
- * value retrieval or default value assignment, without involving complex OGNL
- * expressions.</p>
+ * Provides the mechanism for evaluating {@link com.aspectran.core.context.rule.ItemRule} instances.
+ * <p>This package acts as a higher-level evaluation layer on top of the AsEL token engine.
+ * It takes parsed {@link com.aspectran.core.context.rule.ItemRule}s, orchestrates the
+ * evaluation of any tokens within them using a {@link com.aspectran.core.context.asel.token.TokenEvaluator},
+ * and then transforms the results into strongly-typed Java collections and objects (e.g., List, Map, Properties).
+ * This corresponds to the simple evaluation context of AsEL, where token expressions are used for direct
+ * value retrieval, not for complex OGNL expressions.</p>
  */
 package com.aspectran.core.context.asel.item;

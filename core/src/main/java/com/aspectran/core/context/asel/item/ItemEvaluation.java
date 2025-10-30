@@ -45,13 +45,16 @@ import java.util.Set;
 
 /**
  * The default, concrete implementation of the {@link ItemEvaluator}.
- * <p>This class orchestrates the evaluation process for {@link ItemRule} instances.
- * It uses a {@link TokenEvaluator} to handle the low-level resolution of AsEL token
- * expressions, and then assembles the results into the final, typed data structures
- * (e.g., {@link java.util.List}, {@link java.util.Map}, {@link java.util.Properties})
- * as specified by the item rule.</p>
+ * <p>This class orchestrates the evaluation of {@link ItemRule} instances. It uses a
+ * {@link TokenEvaluator} to resolve the values of any AsEL tokens, and then assembles
+ * the results into the final, typed data structures (e.g., {@link java.util.List},
+ * {@link java.util.Map}, {@link java.util.Properties}) as specified by the item rule.
+ * It is also responsible for type conversion of the evaluated values.</p>
  *
  * @since 2008. 06. 19
+ * @see ItemEvaluator
+ * @see ItemRule
+ * @see TokenEvaluator
  */
 public class ItemEvaluation implements ItemEvaluator {
 
@@ -83,6 +86,13 @@ public class ItemEvaluation implements ItemEvaluator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation evaluates the given {@link ItemRule} based on its
+     * {@link ItemType} (e.g., SINGLE, ARRAY, LIST) and {@link ItemValueType}
+     * (e.g., TOKEN, BEAN).
+     * @throws ItemEvaluationException if an error occurs during evaluation
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T evaluate(ItemRule itemRule) {
@@ -165,89 +175,40 @@ public class ItemEvaluation implements ItemEvaluator {
 
     @Override
     public String[] evaluateAsStringArray(ItemRule itemRule) {
-        try {
-            ItemType itemType = itemRule.getType();
-            ItemValueType valueType = itemRule.getValueType();
-            String[] values = null;
-            if (itemType == ItemType.SINGLE) {
-                Object value;
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBean(itemRule.getBeanRule());
-                } else {
-                    Token[] tokens = itemRule.getTokens();
-                    value = evaluate(tokens, valueType);
-                }
-                if (value != null) {
-                    if (value instanceof String[]) {
-                        values = (String[])value;
-                    } else {
-                        values = new String[] { value.toString() };
-                    }
-                }
-            } else if (itemType == ItemType.ARRAY) {
-                Object[] arr;
-                if (valueType == ItemValueType.BEAN) {
-                    arr = evaluateBeanAsArray(itemRule.getBeanRuleList());
-                } else {
-                    arr = evaluateAsArray(itemRule.getTokensList(), valueType);
-                }
-                if (arr != null) {
-                    if (arr instanceof String[]) {
-                        values = (String[])arr;
-                    } else {
-                        values = Arrays.stream(arr).map(Object::toString).toArray(String[]::new);
-                    }
-                }
-            } else if (itemType == ItemType.LIST) {
-                List<Object> list;
-                if (valueType == ItemValueType.BEAN) {
-                    list = evaluateBeanAsList(itemRule.getBeanRuleList());
-                } else {
-                    list = evaluateAsList(itemRule.getTokensList(), valueType);
-                }
-                if (list != null) {
-                    values = Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
-                }
-            } else if (itemType == ItemType.SET) {
-                Set<Object> set;
-                if (valueType == ItemValueType.BEAN) {
-                    set = evaluateBeanAsSet(itemRule.getBeanRuleList());
-                } else {
-                    set = evaluateAsSet(itemRule.getTokensList(), valueType);
-                }
-                if (set != null) {
-                    values = Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
-                }
-            } else if (itemType == ItemType.MAP) {
-                Map<String, Object> map;
-                if (valueType == ItemValueType.BEAN) {
-                    map = evaluateBeanAsMap(itemRule.getBeanRuleMap());
-                } else {
-                    map = evaluateAsMap(itemRule.getTokensMap(), valueType);
-                }
-                if (map != null) {
-                    values = new String[] { map.toString() };
-                }
-            } else if (itemType == ItemType.PROPERTIES) {
-                Properties props;
-                if (valueType == ItemValueType.BEAN) {
-                    props = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
-                } else {
-                    props = evaluateAsProperties(itemRule.getTokensMap(), valueType);
-                }
-                if (props != null) {
-                    values = new String[] { props.toString() };
-                }
-            }
-            return values;
-        } catch (Exception e) {
-            throw new ItemEvaluationException(itemRule, e);
+        Object value = evaluate(itemRule);
+        return convertToStringArray(value);
+    }
+
+    /**
+     * Converts an evaluated object into a string array.
+     * <p>This method handles various types of input, including collections, arrays,
+     * and single objects, converting them into a unified {@code String[]} format.</p>
+     * @param value the object to convert
+     * @return a string array, or {@code null} if the input is null
+     */
+    private String[] convertToStringArray(Object value) {
+        if (value == null) {
+            return null;
         }
+        if (value instanceof String[] arr) {
+            return arr;
+        }
+        if (value instanceof Collection) {
+            return ((Collection<?>)value).stream()
+                    .map(o -> (o != null ? o.toString() : null))
+                    .toArray(String[]::new);
+        }
+        if (value.getClass().isArray()) {
+            return Arrays.stream((Object[])value)
+                    .map(o -> (o != null ? o.toString() : null))
+                    .toArray(String[]::new);
+        }
+        return new String[] { value.toString() };
     }
 
     private Object evaluate(Token[] tokens, ItemValueType valueType) throws Exception {
         Object value = tokenEvaluator.evaluate(tokens);
-        return (value == null || valueType == null ? value : valuelize(value, valueType));
+        return (value == null || valueType == null ? value : coerceValue(value, valueType));
     }
 
     @SuppressWarnings("all")
@@ -290,7 +251,7 @@ public class ItemEvaluation implements ItemEvaluator {
         for (Token[] tokens : tokensList) {
             Object value = tokenEvaluator.evaluate(tokens);
             if (value != null && valueType != null) {
-                value = valuelize(value, valueType);
+                value = coerceValue(value, valueType);
             }
             valueList.add(value);
         }
@@ -306,7 +267,7 @@ public class ItemEvaluation implements ItemEvaluator {
         for (Token[] tokens : tokensList) {
             Object value = tokenEvaluator.evaluate(tokens);
             if (value != null && valueType != null) {
-                value = valuelize(value, valueType);
+                value = coerceValue(value, valueType);
             }
             valueSet.add(value);
         }
@@ -322,7 +283,7 @@ public class ItemEvaluation implements ItemEvaluator {
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = tokenEvaluator.evaluate(entry.getValue());
             if (value != null && valueType != null) {
-                value = valuelize(value, valueType);
+                value = coerceValue(value, valueType);
             }
             valueMap.put(entry.getKey(), value);
         }
@@ -338,7 +299,7 @@ public class ItemEvaluation implements ItemEvaluator {
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
             Object value = tokenEvaluator.evaluate(entry.getValue());
             if (value != null && valueType != null) {
-                value = valuelize(value, valueType);
+                value = coerceValue(value, valueType);
             }
             if (value != null) {
                 props.put(entry.getKey(), value);
@@ -347,34 +308,18 @@ public class ItemEvaluation implements ItemEvaluator {
         return props;
     }
 
-    private Object valuelize(Object value, ItemValueType valueType) throws Exception {
-        if (valueType == ItemValueType.STRING) {
-            return value.toString();
-        } else if (valueType == ItemValueType.INT) {
-            return (value instanceof Integer ? value : Integer.valueOf(value.toString()));
-        } else if (valueType == ItemValueType.LONG) {
-            return (value instanceof Long ? value : Long.valueOf(value.toString()));
-        } else if (valueType == ItemValueType.FLOAT) {
-            return (value instanceof Float ? value : Float.valueOf(value.toString()));
-        } else if (valueType == ItemValueType.DOUBLE) {
-            return (value instanceof Double ? value : Double.valueOf(value.toString()));
-        } else if (valueType == ItemValueType.BOOLEAN) {
-            return (value instanceof Boolean ? value : Boolean.valueOf(value.toString()));
-        } else if (valueType == ItemValueType.PARAMETERS) {
-            return new VariableParameters(value.toString());
-        } else if (valueType == ItemValueType.FILE) {
-            return (value instanceof File ? value : new File(value.toString()));
-        } else if (valueType == ItemValueType.MULTIPART_FILE) {
-            return (value instanceof FileParameter ? value : new FileParameter(new File(value.toString())));
-        } else {
-            return value;
-        }
-    }
-
     private Object evaluateBean(BeanRule beanRule) {
         return tokenEvaluator.getActivity().getPrototypeScopeBean(beanRule);
     }
 
+    /**
+     * Evaluates a list of bean rules into an array.
+     * <p>If all resolved bean instances share the exact same class, a strongly-typed
+     * array (e.g., {@code MyBean[]}) is created. Otherwise, a standard {@code Object[]}
+     * is returned. This provides a degree of type safety where possible.</p>
+     * @param beanRuleList the list of bean rules to evaluate
+     * @return an array of bean instances, or {@code null} if the input is null or empty
+     */
     @Nullable
     private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
         List<Object> valueList = evaluateBeanAsList(beanRuleList);
@@ -450,6 +395,39 @@ public class ItemEvaluation implements ItemEvaluator {
             }
         }
         return props;
+    }
+
+    /**
+     * Converts the given raw value to the specified {@link ItemValueType}.
+     * For example, it converts a string "true" to a {@code Boolean} `true`, or a
+     * string "123" to an {@code Integer} `123`.
+     * @param value the raw value to convert
+     * @param valueType the target value type
+     * @return the converted object
+     * @throws Exception if a conversion error occurs
+     */
+    private Object coerceValue(Object value, ItemValueType valueType) throws Exception {
+        if (valueType == ItemValueType.STRING) {
+            return value.toString();
+        } else if (valueType == ItemValueType.INT) {
+            return (value instanceof Integer ? value : Integer.valueOf(value.toString()));
+        } else if (valueType == ItemValueType.LONG) {
+            return (value instanceof Long ? value : Long.valueOf(value.toString()));
+        } else if (valueType == ItemValueType.FLOAT) {
+            return (value instanceof Float ? value : Float.valueOf(value.toString()));
+        } else if (valueType == ItemValueType.DOUBLE) {
+            return (value instanceof Double ? value : Double.valueOf(value.toString()));
+        } else if (valueType == ItemValueType.BOOLEAN) {
+            return (value instanceof Boolean ? value : Boolean.valueOf(value.toString()));
+        } else if (valueType == ItemValueType.PARAMETERS) {
+            return new VariableParameters(value.toString());
+        } else if (valueType == ItemValueType.FILE) {
+            return (value instanceof File ? value : new File(value.toString()));
+        } else if (valueType == ItemValueType.MULTIPART_FILE) {
+            return (value instanceof FileParameter ? value : new FileParameter(new File(value.toString())));
+        } else {
+            return value;
+        }
     }
 
 }

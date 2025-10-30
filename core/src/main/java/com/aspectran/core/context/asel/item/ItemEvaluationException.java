@@ -20,7 +20,13 @@ import com.aspectran.core.context.rule.ItemRule;
 import java.io.Serial;
 
 /**
- * Thrown when an error occurs during the evaluation of an {@link ItemRule}.
+ * Thrown when an error occurs during the evaluation of an {@link com.aspectran.core.context.rule.ItemRule}.
+ * <p>This exception is a wrapper around any underlying exception that occurs when the
+ * {@link ItemEvaluator} attempts to resolve the final value of an item, such as a
+ * type conversion failure or an error during token evaluation.</p>
+ *
+ * @see ItemEvaluator
+ * @see com.aspectran.core.context.rule.ItemRule
  */
 public class ItemEvaluationException extends RuntimeException {
 

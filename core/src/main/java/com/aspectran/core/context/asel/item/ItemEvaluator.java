@@ -24,16 +24,16 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Defines the contract for an evaluator that resolves the values of {@link ItemRule} instances.
- * <p>This evaluator is the bridge between the static rules defined in the configuration
- * (e.g., in <code>&lt;parameters&gt;</code> or <code>&lt;attributes&gt;</code> tags) and the
- * dynamic objects used during an activity's execution. It processes {@link ItemRule}
- * instances, resolves any embedded AsEL token expressions, and constructs the final
- * data structures (like Maps, Lists, or simple objects).
- * <p>This corresponds to the simple evaluation context of AsEL and does not support
- * complex OGNL expressions.</p>
+ * Defines the contract for an evaluator that resolves the values of {@link com.aspectran.core.context.rule.ItemRule}s.
+ * <p>This interface acts as a bridge between static configuration rules (e.g., {@code <parameters>},
+ * {@code <attributes>}) and the dynamic, typed objects used during an activity's execution.
+ * An implementation processes {@link com.aspectran.core.context.rule.ItemRule} instances,
+ * resolves any embedded AsEL tokens, and constructs the final data structures such as
+ * Maps, Lists, or other objects as defined by the rule.</p>
  *
  * @since 2010. 5. 6.
+ * @see com.aspectran.core.context.rule.ItemRule
+ * @see ItemEvaluation
  */
 public interface ItemEvaluator {
 
