@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 /**
- * Contains classes for parsing, representing, and evaluating AsEL tokens.
- * <p>This package provides the foundational components for handling Aspectran
- * Expression Language (AsEL) tokens. It includes the {@link com.aspectran.core.context.asel.token.Token}
- * class, which represents a parsed segment of an expression, and utilities for
- * tokenizing, parsing, and evaluating these tokens at runtime.</p>
+ * Provides the core components for parsing, representing, and evaluating Aspectran Expression Language (AsEL) tokens.
+ *
+ * <p>This package is the foundation of AsEL, a simple yet powerful expression language used within the Aspectran
+ * framework to dynamically resolve values at runtime. It includes:
+ * <ul>
+ *   <li>{@link com.aspectran.core.context.asel.token.Token}: Represents a parsed unit, which can be either a literal
+ *       text segment or a special expression (e.g., {@code #{beanId}}, {@code ${paramName}}).</li>
+ *   <li>{@link com.aspectran.core.context.asel.token.Tokenizer}: A low-level scanner that breaks down a raw string
+ *       into a sequence of {@link com.aspectran.core.context.asel.token.Token}s.</li>
+ *   <li>{@link com.aspectran.core.context.asel.token.TokenParser}: A high-level parser that orchestrates the
+ *       tokenization process and provides utility methods for handling common expression patterns.</li>
+ *   <li>{@link com.aspectran.core.context.asel.token.TokenEvaluator}: An interface that defines the contract for
+ *       resolving tokens into their actual values within a given
+ *       {@link com.aspectran.core.activity.Activity} context.</li>
+ *   <li>{@link com.aspectran.core.context.asel.token.TokenEvaluation}: The default implementation of the
+ *       {@code TokenEvaluator}, containing the logic to fetch values from beans, parameters, attributes, etc.</li>
+ * </ul>
+ *
+ * <p>Together, these components enable flexible and dynamic configuration and data access throughout the application.
  */
 package com.aspectran.core.context.asel.token;

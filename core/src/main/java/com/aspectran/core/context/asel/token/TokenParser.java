@@ -25,11 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A utility class for parsing strings containing Aspectran Expression Language (AsEL) tokens.
- * <p>This class acts as a high-level parser that uses a {@link Tokenizer} to split an
- * expression string into a series of {@link Token} objects. It provides methods to
- * handle different parsing scenarios, such as simple tokenization, optimization
- * (trimming whitespace), and parsing into specific collection types like lists or maps.</p>
+ * A high-level utility for parsing strings containing Aspectran Expression Language (AsEL) tokens.
+ * <p>This class serves as the main entry point for parsing AsEL expressions. It uses the
+ * low-level {@link Tokenizer} to break an expression string into a series of {@link Token}
+ * objects and provides convenient methods for common use cases, such as:
+ * <ul>
+ *   <li>Simple tokenization of an expression string.</li>
+ *   <li>Parsing value-list or key-value pair expressions into collections.</li>
+ *   <li>Optimizing tokens by trimming extraneous whitespace.</li>
+ * </ul>
  *
  * @see Token
  * @see Tokenizer
@@ -74,15 +78,15 @@ public class TokenParser {
     }
 
     /**
-     * Parses the given expression into a list of token arrays.
-     * <p>This method is useful for handling expressions that represent a list of values,
-     * where each value can itself be a token. It tokenizes the entire expression and then
-     * splits the result into a list, where each element is a single-token array.
-     * Empty text tokens are excluded.</p>
-     * <p>For example, the expression "<code>value1 @{attr1} value3</code>" would be parsed into a
-     * list of three token arrays.</p>
+     * Parses a space-separated expression into a list of token arrays.
+     * <p>This method is designed for expressions that represent a list of values, where each
+     * value can be either a literal or a token. The expression is tokenized, and each
+     * resulting token (or text segment) is treated as an element in the list. Empty text
+     * segments are discarded.</p>
+     * <p>For example, the expression {@code "value1 @{attr1} value3"} would be parsed into a
+     * list containing three token arrays, one for each element.</p>
      * @param expression the expression string to parse
-     * @return a list of token arrays, or {@code null} if the expression is null or empty
+     * @return a list of token arrays, or {@code null} if the expression is null or results in an empty list
      */
     public static List<Token[]> parseAsList(String expression) {
         if (expression == null) {
@@ -107,13 +111,14 @@ public class TokenParser {
     }
 
     /**
-     * Parses the given expression into a map of token arrays.
-     * <p>This method is designed to parse expressions that represent key-value pairs.
-     * It tokenizes the expression and looks for tokens that have both a name and a
-     * default value (e.g., <code>key1:value1 key2:@{attr2}</code>). The token's name is used
-     * as the map key, and the token itself (as a single-element array) becomes the value.</p>
+     * Parses a space-separated expression into a map of token arrays.
+     * <p>This method is designed for expressions representing key-value pairs. It tokenizes the
+     * expression and identifies tokens that have both a name and a default value (e.g.,
+     * {@code key1:value1}, {@code key2:@{attr2}}). The token's name is used as the map key,
+     * and the token itself (as a single-element array) becomes the value. Tokens without a
+     * key-value structure are ignored.</p>
      * @param expression the expression string to parse
-     * @return a map of token arrays, or {@code null} if the expression is null or empty
+     * @return a map of token arrays, or {@code null} if the expression is null or results in an empty map
      */
     public static Map<String, Token[]> parseAsMap(String expression) {
         if (expression == null) {
@@ -176,12 +181,13 @@ public class TokenParser {
     }
 
     /**
-     * Parses a path string in a "safe" mode, where only parameter (<code>${...}</code>)
-     * and attribute (<code>@{...}</code>) tokens are treated as dynamic.
-     * <p>All other token types are converted back into plain text. This is useful for
-     * performance-sensitive operations like URL routing, where only a subset of tokens
-     * should be evaluated.</p>
-     * <p>If the path contains no dynamic tokens, this method returns {@code null}.</p>
+     * Parses a path string in a "safe" mode, where only parameter ({@code ${...}})
+     * and attribute ({@code @{...}}) tokens are treated as dynamic.
+     * <p>All other token types (e.g., beans, properties) are converted back into plain text.
+     * This method is intended for performance-sensitive operations like URL routing, where
+     * only a limited, safe subset of tokens should be evaluated dynamically.
+     * If the path contains no dynamic parameter or attribute tokens, this method returns
+     * {@code null} to indicate that the path can be treated as a static string.</p>
      * @param path the path string to parse
      * @return an array of tokens if dynamic tokens are found; otherwise, {@code null}
      */

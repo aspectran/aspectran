@@ -26,10 +26,15 @@ import java.util.Set;
 /**
  * Defines the contract for evaluating parsed AsEL tokens.
  * <p>This interface provides methods to resolve {@link Token} objects into their actual
- * values against the current activity context. It handles the logic for retrieving
- * values from various sources like beans, parameters, attributes, and properties.</p>
+ * values against the current {@link Activity} context. Implementations are responsible
+ * for the logic of retrieving values from various sources, such as beans, parameters,
+ * attributes, and properties.</p>
  *
  * <p>Created: 2010. 5. 6. AM 1:35:16</p>
+ *
+ * @see Token
+ * @see TokenEvaluation
+ * @see Activity
  */
 public interface TokenEvaluator {
 
@@ -93,8 +98,11 @@ public interface TokenEvaluator {
     Map<String, Object> evaluateAsMap(Map<String, Token[]> tokensMap);
 
     /**
-     * A static helper method that parses and evaluates an expression string.
-     * If the expression contains no tokens, it is returned as is.
+     * A static helper method that parses and evaluates an expression string within the context of an activity.
+     * <p>This method provides a convenient one-stop-shop for evaluation. It first performs a quick
+     * check for token-like patterns using {@link Token#hasToken(String)}. If no tokens are found,
+     * the expression is returned as-is, avoiding unnecessary parsing overhead. Otherwise, it
+     * parses the expression and evaluates the resulting tokens.</p>
      * @param expression the expression string to evaluate
      * @param activity the current activity context
      * @return the evaluated result

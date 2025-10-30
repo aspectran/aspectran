@@ -41,8 +41,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -53,9 +53,13 @@ import java.util.Set;
  * <p>This class provides the concrete logic for resolving {@link Token} values from
  * various sources within an {@link Activity}, such as parameters, attributes, beans,
  * properties, and templates. It interprets the token's type, name, and directives
- * to fetch the appropriate data.</p>
+ * to fetch the appropriate data at runtime.</p>
  *
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
+ *
+ * @see TokenEvaluator
+ * @see Token
+ * @see Activity
  */
 public class TokenEvaluation implements TokenEvaluator {
 
@@ -120,8 +124,8 @@ public class TokenEvaluation implements TokenEvaluator {
             for (Token t : tokens) {
                 Object value = evaluate(t);
                 if (value != null) {
-                    if (value instanceof Object[]) {
-                        sb.append(Arrays.toString((Object[])value));
+                    if (value instanceof Object[] arr) {
+                        sb.append(Arrays.toString(arr));
                     } else {
                         sb.append(value);
                     }
@@ -150,8 +154,8 @@ public class TokenEvaluation implements TokenEvaluator {
     @Override
     public String evaluateAsString(Token[] tokens) {
         Object value = evaluate(tokens);
-        if (value instanceof Object[]) {
-            return Arrays.toString((Object[])value);
+        if (value instanceof Object[] arr) {
+            return Arrays.toString(arr);
         } else if (value != null) {
             return value.toString();
         } else {
@@ -177,7 +181,7 @@ public class TokenEvaluation implements TokenEvaluator {
         if (tokensSet == null || tokensSet.isEmpty()) {
             return null;
         }
-        Set<Object> valueSet = new HashSet<>();
+        Set<Object> valueSet = new LinkedHashSet<>();
         for (Token[] tokens : tokensSet) {
             Object value = evaluate(tokens);
             valueSet.add(value);
@@ -325,16 +329,16 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Retrieves a property from the environment.
-     * <p>Example usage:
-     * <pre>
-     *   %{classpath:com/aspectran/sample.properties}
-     *   %{classpath:com/aspectran/sample.properties^propertyName:defaultValue}
-     *   %{system:test.url}
-     *   %{property.name^getterName:defaultValue}
-     * </pre>
-     * @param token the token
-     * @return an environment variable
-     * @throws Exception if an error has occurred
+     * <p>This method supports several property sources based on the token's directive:
+     * <ul>
+     *   <li><b>classpath:</b> Loads a {@link java.util.Properties} file from the classpath.
+     *       (e.g., {@code %{classpath:com/aspectran/sample.properties^propName}})</li>
+     *   <li><b>system:</b> Retrieves a Java system property. (e.g., {@code %{system:java.version}})</li>
+     *   <li>(none): Retrieves a property from the Aspectran environment. (e.g., {@code %{app.name}})</li>
+     * </ul>
+     * @param token the property token to evaluate
+     * @return the resolved property value, or the token's default value if not found
+     * @throws Exception if an error occurs during property loading or retrieval
      */
     protected Object getProperty(@NonNull Token token) throws Exception {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
@@ -364,10 +368,13 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Renders a template specified by the token and returns the generated output.
-     * <p>This is done by creating a new {@link InstantActivity} to isolate the
-     * template rendering process.</p>
-     * @param token the token
-     * @return the rendered template content as a string
+     * <p>To ensure that the template rendering process is isolated and does not interfere
+     * with the main activity's response, a new {@link InstantActivity} is created to
+     * handle the rendering. The output is captured from the instant activity's response
+     * and returned as a string.</p>
+     * @param token the template token to evaluate
+     * @return the rendered template content as a string, or the token's default value if rendering produces no output
+     * @throws ActivityPerformException if an error occurs during template rendering
      */
     protected String getTemplate(@NonNull Token token) throws ActivityPerformException {
         InstantActivity instantActivity = new InstantActivity(activity, false);

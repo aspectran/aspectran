@@ -24,12 +24,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A low-level utility class that tokenizes strings containing AsEL token expressions.
- * <p>This class scans a character sequence and splits it into a list of {@link Token}
- * objects. It recognizes the syntax for different token expression types (e.g., <code>${...}</code>,
- * <code>@{...}</code>), including their names, default values, directives, and property
- * accessors (getters). The maximum length for a token name is 256 characters; longer
- * names will be treated as plain text.</p>
+ * A low-level utility that tokenizes strings containing AsEL expressions.
+ * <p>This class implements a state-machine-based scanner that iterates through a character
+ * sequence and splits it into a list of {@link Token} objects. It recognizes the syntax for
+ * different token types (e.g., {@code ${...}}, {@code @{...}}), including their names, default
+ * values, directives, and property accessors (getters).
+ *
+ * <p>This is a foundational utility used by {@link TokenParser} and is generally not
+ * intended for direct use by application code. To prevent excessive memory usage with
+ * malformed input, the maximum length for a token name is limited to 256 characters;
+ * longer names will cause the parser to revert to treating the segment as plain text.</p>
  *
  * @see Token
  * @see TokenParser
@@ -52,9 +56,11 @@ public class Tokenizer {
 
     /**
      * Tokenizes a character sequence into a list of {@link Token} objects.
-     * <p>This is the core tokenizing method that drives the parsing process.</p>
+     * <p>This is the core tokenizing method that drives the parsing process. It uses a state
+     * machine to differentiate between plain text and special token expressions.</p>
      * @param chars the character sequence to tokenize
-     * @param textTrim whether to trim whitespace from the start and end of plain text tokens
+     * @param textTrim if {@code true}, applies special trimming logic to plain text tokens
+     *      (see {@link #extract(CharSequence, int, int, boolean)})
      * @return a list of parsed tokens
      * @throws IllegalArgumentException if the input character sequence is null
      */
@@ -157,10 +163,13 @@ public class Tokenizer {
 
     /**
      * Creates a special token (e.g., parameter, attribute) from its constituent parts.
-     * This method also handles parsing of getter names and default values from the token's name and value buffers.
+     * <p>This method is responsible for the complex logic of parsing the token's internal
+     * structure, including directives, getters, and default values, from the raw name and
+     * value buffers.</p>
      * @param symbol the special character that identifies the token type (e.g., '$', '@')
-     * @param nameBuf the buffer containing the token's name and optional getter
-     * @param valueBuf the buffer containing the token's default value, or null if not present
+     * @param nameBuf the buffer containing the token's name part (which may include a getter)
+     * @param valueBuf the buffer containing the token's value part (which may include a default value),
+     *      or {@code null} if not present
      * @return a new {@link Token} instance representing the special token
      */
     @NonNull
@@ -253,16 +262,21 @@ public class Tokenizer {
     }
 
     /**
-     * Extracts text from a sequence of char values.
+     * Extracts and trims text from a subsequence of characters.
+     * <p>This method implements a special trimming logic. Unlike {@link String#trim()}, it preserves
+     * a single newline character ({@code \n}) if the trimmed whitespace contained any newlines.
+     * This is intended to retain significant line breaks in formatted text blocks while removing
+     * extraneous indentation and spacing.</p>
+     * <p>For example:
      * <pre>
-     * "   \r\n   aaa  \r\n  bbb  "   ==&gt;   "\naaa  \n  bbb"
-     * "  aaa    \r\n   bbb   \r\n  "   ==&gt;   "aaa\nbbb\n"
+     * "   \r\n   aaa  \r\n  bbb  "   -&gt;   "\naaa  \n  bbb"
+     * "  aaa    \r\n   bbb   \r\n  "   -&gt;   "aaa\nbbb\n"
      * </pre>
      * @param chars the original character sequence
      * @param start the start index of the text segment
      * @param end the end index of a text segment
-     * @param trim whether to apply special trimming logic to the text
-     * @return the extracted string
+     * @param trim whether to apply this special trimming logic
+     * @return the extracted and potentially trimmed string
      */
     private static String extract(CharSequence chars, int start, int end, boolean trim) {
         if (!trim) {

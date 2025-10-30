@@ -19,6 +19,13 @@ import java.io.Serial;
 
 /**
  * Thrown when an error occurs during the evaluation of an AsEL token.
+ * <p>This exception is a wrapper around any underlying exception that occurs when the
+ * {@link TokenEvaluator} attempts to resolve a token's value. For example, it could
+ * be thrown if a specified bean is not found, a method invocation fails, or a property
+ * cannot be accessed.</p>
+ *
+ * @see TokenEvaluator
+ * @see Token
  */
 public class TokenEvaluationException extends RuntimeException {
 

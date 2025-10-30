@@ -18,8 +18,13 @@ package com.aspectran.core.context.asel.token;
 import java.io.Serial;
 
 /**
- * Thrown to indicate that a token is malformed or used in an invalid context
- * during parsing or evaluation.
+ * Thrown to indicate that a token is malformed or used in an invalid context during parsing.
+ * This exception is typically raised by the {@link Tokenizer} or {@link TokenParser} when
+ * an expression violates the expected syntax, such as having an unclosed bracket or an
+ * invalid directive.
+ *
+ * @see Token
+ * @see TokenParser
  */
 public class InvalidTokenException extends RuntimeException {
 
