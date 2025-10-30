@@ -86,50 +86,44 @@ public class ExceptionRule implements Describable {
     /**
      * Finds the best matching {@link ExceptionThrownRule} for a given exception.
      * It traverses the exception cause chain to find the most specific match.
+     * If a rule is found for a wrapper exception, it is returned; otherwise,
+     * the cause is traversed to find a matching rule.
      * @param ex the exception to find a handler for
      * @return the matching exception thrown rule, or the default rule if no specific match is found
      */
     public ExceptionThrownRule getExceptionThrownRule(Throwable ex) {
-        ExceptionThrownRule exceptionThrownRule = null;
-        int deepest = Integer.MAX_VALUE;
-        for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
-            int depth = getMatchedDepth(entry.getKey(), ex);
-            if (depth >= 0 && depth < deepest) {
-                deepest = depth;
-                exceptionThrownRule = entry.getValue();
+        Throwable currentEx = ex;
+        while (currentEx != null) {
+            ExceptionThrownRule bestMatch = null;
+            int deepest = Integer.MAX_VALUE;
+            for (Map.Entry<String, ExceptionThrownRule> entry : exceptionThrownRuleMap.entrySet()) {
+                int depth = getMatchedDepth(entry.getKey(), currentEx.getClass(), 0);
+                if (depth >= 0 && depth < deepest) {
+                    deepest = depth;
+                    bestMatch = entry.getValue();
+                }
             }
+            if (bestMatch != null) {
+                return bestMatch;
+            }
+            currentEx = currentEx.getCause();
         }
-        return (exceptionThrownRule != null ? exceptionThrownRule : defaultExceptionThrownRule);
+        return defaultExceptionThrownRule;
     }
 
     /**
-     * Returns the matched depth.
-     * @param exceptionType the exception type
-     * @param ex the throwable exception
-     * @return the matched depth
+     * Returns the matched depth in the class hierarchy.
+     * @param exceptionType the exception type name to match
+     * @param exceptionClass the class of the exception to check
+     * @param depth the current depth in the hierarchy
+     * @return the matched depth, or -1 if not matched
      */
-    private int getMatchedDepth(String exceptionType, @NonNull Throwable ex) {
-        Throwable t = ex.getCause();
-        if (t != null) {
-            return getMatchedDepth(exceptionType, t);
-        } else {
-            return getMatchedDepth(exceptionType, ex.getClass(), 0);
+    private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
+        if (exceptionClass == null) {
+            return -1;
         }
-    }
-
-    /**
-     * Returns the matched depth.
-     * @param exceptionType the exception type
-     * @param exceptionClass the exception class
-     * @param depth the depth
-     * @return the matched depth
-     */
-    private int getMatchedDepth(String exceptionType, @NonNull Class<?> exceptionClass, int depth) {
         if (exceptionClass.getName().equals(exceptionType)) {
             return depth;
-        }
-        if (exceptionClass.equals(Throwable.class)) {
-            return -1;
         }
         return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
     }
