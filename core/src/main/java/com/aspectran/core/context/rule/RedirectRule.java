@@ -161,7 +161,7 @@ public class RedirectRule implements Replicable<RedirectRule>, HasParameters {
      * @return whether to exclude parameters with empty values
      */
     public Boolean getExcludeEmptyParameters() {
-        return excludeNullParameters;
+        return excludeEmptyParameters;
     }
 
     /**
@@ -284,9 +284,10 @@ public class RedirectRule implements Replicable<RedirectRule>, HasParameters {
      * @return a new RedirectRule instance
      */
     @NonNull
-    public static RedirectRule newInstance(String contentType, String path, String encoding,
-                                           Boolean excludeNullParameters, Boolean excludeEmptyParameters,
-                                           Boolean defaultResponse) {
+    public static RedirectRule newInstance(
+            String contentType, String path, String encoding,
+            Boolean excludeNullParameters, Boolean excludeEmptyParameters,
+            Boolean defaultResponse) {
         RedirectRule rr = new RedirectRule();
         rr.setContentType(contentType);
         if (StringUtils.hasLength(path)) {
