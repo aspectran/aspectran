@@ -23,7 +23,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
- * Defines a rule for a custom transformation that is implemented by a {@link com.aspectran.core.activity.response.transform.CustomTransformer}.
+ * Defines a rule for a custom transformation that is implemented by a {@link CustomTransformer}.
  *
  * <p>Created: 2019. 06. 16</p>
  */
