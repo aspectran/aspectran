@@ -44,9 +44,11 @@ import java.io.OutputStream;
  */
 public class FileParameter {
 
-    private static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private final File file;
+
+    private final String contentType;
 
     private boolean refused;
 
@@ -57,14 +59,17 @@ public class FileParameter {
      */
     protected FileParameter() {
         this.file = null;
+        this.contentType = null;
     }
 
     /**
      * Instantiates a new FileParameter.
      * @param file the file
+     * @param contentType the content type of the file
      */
-    public FileParameter(File file) {
+    public FileParameter(File file, String contentType) {
         this.file = file;
+        this.contentType = contentType;
     }
 
     public File getFile() {
@@ -92,7 +97,7 @@ public class FileParameter {
      * @return the content type of the file
      */
     public String getContentType() {
-        return null;
+        return contentType;
     }
 
     /**
@@ -110,35 +115,21 @@ public class FileParameter {
 
     /**
      * Returns the contents of the file in a byte array.
-     * Cannot use a larger array of memory than the JVM Heap deal.
-     * @return a byte array
+     * <p>This method loads the entire file into memory. For large files,
+     * this can cause an {@link OutOfMemoryError}.</p>
+     * @return a byte array containing the contents of the file
      * @throws IOException if an I/O error has occurred
      */
     public byte[] getBytes() throws IOException {
-        InputStream input = getInputStream();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int len;
-
-        try {
+        try (InputStream input = getInputStream();
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int len;
             while ((len = input.read(buffer)) != -1) {
                 output.write(buffer, 0, len);
             }
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-                // ignore
-            }
-            try {
-                input.close();
-            } catch (IOException e) {
-                // ignore
-            }
+            return output.toByteArray();
         }
-
-        return output.toByteArray();
     }
 
     /**

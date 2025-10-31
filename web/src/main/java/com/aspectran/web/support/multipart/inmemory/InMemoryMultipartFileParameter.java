@@ -39,26 +39,9 @@ public class InMemoryMultipartFileParameter extends FileParameter {
      * Create an instance wrapping the given FileItem.
      * @param fileItem the FileItem to wrap
      */
-    public InMemoryMultipartFileParameter(FileItem fileItem) {
+    public InMemoryMultipartFileParameter(@NonNull FileItem fileItem) {
+        super(null, fileItem.getContentType());
         this.fileItem = fileItem;
-    }
-
-    /**
-     * Always returns {@code null} because the file is stored in memory.
-     * @return always {@code null}
-     */
-    @Override
-    public File getFile() {
-        return null;
-    }
-
-    /**
-     * Returns the content type of the uploaded file.
-     * @return the content type of the file
-     */
-    @Override
-    public String getContentType() {
-        return fileItem.getContentType();
     }
 
     /**

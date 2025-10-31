@@ -42,7 +42,7 @@ public abstract class FileCopyUtils {
     /**
      * The default buffer size ({@value}) to use in copy methods.
      */
-    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
 
     /**
      * Copies a file to a directory preserving the file date.

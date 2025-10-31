@@ -45,33 +45,16 @@ public class CommonsMultipartFileParameter extends FileParameter {
      * @param fileItem the FileItem to wrap
      */
     public CommonsMultipartFileParameter(@NonNull FileItem fileItem) {
+        super(determineFile(fileItem), fileItem.getContentType());
         this.fileItem = fileItem;
         this.fileSize = fileItem.getSize();
     }
 
-    /**
-     * Returns the {@link File} object for the uploaded file.
-     * <p>If the uploaded file is stored on disk (as a {@link DiskFileItem}), this
-     * method returns a {@code File} object pointing to that temporary file. Otherwise,
-     * if the file is held in memory, this method returns {@code null}.
-     * @return the file object, or {@code null} if the file is in memory
-     */
-    @Override
-    public File getFile() {
+    private static File determineFile(FileItem fileItem) {
         if (fileItem instanceof DiskFileItem diskFileItem) {
             return diskFileItem.getStoreLocation();
-        } else {
-            return null;
         }
-    }
-
-    /**
-     * Returns the content type of the uploaded file.
-     * @return the content type of the file
-     */
-    @Override
-    public String getContentType() {
-        return fileItem.getContentType();
+        return null;
     }
 
     /**

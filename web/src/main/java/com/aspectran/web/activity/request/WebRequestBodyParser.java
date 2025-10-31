@@ -29,6 +29,8 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.JsonToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.XmlToParameters;
+import com.aspectran.utils.io.CountingInputStream;
+import com.aspectran.utils.io.StreamReadLimitExceededException;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
@@ -52,9 +54,9 @@ public abstract class WebRequestBodyParser {
 
     public static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
-    private static final Charset DEFAULT_ENCODING = StandardCharsets.ISO_8859_1;
+    private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
-    private static final int BUFFER_SIZE = 1024;
+    private static final int BUFFER_SIZE = 8192;
 
     /**
      * Parses a multipart form data request using the configured {@link MultipartFormDataParser}.
@@ -92,21 +94,18 @@ public abstract class WebRequestBodyParser {
         Charset encoding = determineEncoding(requestAdapter);
         InputStream inputStream = requestAdapter.getInputStream();
         long maxSize = requestAdapter.getMaxRequestSize();
+
+        InputStream in = (maxSize > 0L ? new CountingInputStream(inputStream, maxSize) : inputStream);
+        InputStreamReader reader = new InputStreamReader(in, encoding);
         StringBuilder sb = new StringBuilder();
-        InputStreamReader reader = new InputStreamReader(inputStream, encoding);
         char[] buffer = new char[BUFFER_SIZE];
-        int bytesRead;
-        long bytesTotal = 0L;
-        while ((bytesRead = reader.read(buffer)) != -1) {
-            if (maxSize > 0L) {
-                bytesTotal += bytesRead;
-                if (bytesTotal > maxSize) {
-                    throw new SizeLimitExceededException("Maximum request size exceeded; actual: " +
-                            bytesTotal + "; permitted: " + maxSize,
-                            bytesTotal, maxSize);
-                }
+        int charsRead;
+        try {
+            while ((charsRead = reader.read(buffer)) != -1) {
+                sb.append(buffer, 0, charsRead);
             }
-            sb.append(buffer, 0, bytesRead);
+        } catch (StreamReadLimitExceededException e) {
+            throw new SizeLimitExceededException(e.getMessage(), e.getCount(), e.getLimit());
         }
         return sb.toString();
     }
