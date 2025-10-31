@@ -111,14 +111,21 @@ public class TokenParser {
     }
 
     /**
-     * Parses a space-separated expression into a map of token arrays.
-     * <p>This method is designed for expressions representing key-value pairs. It tokenizes the
-     * expression and identifies tokens that have both a name and a default value (e.g.,
-     * {@code key1:value1}, {@code key2:@{attr2}}). The token's name is used as the map key,
-     * and the token itself (as a single-element array) becomes the value. Tokens without a
-     * key-value structure are ignored.</p>
+     * Parses an expression and extracts tokens that have both a name and a value,
+     * returning them as a map.
+     * <p>This method is specifically designed to extract tokens where the token's
+     * internal structure defines both a name and a value (which is parsed as the
+     * token's {@code defaultValue}). The token's name becomes the key in the map,
+     * and the token itself (as a single-element array) becomes the value.</p>
+     * <p>A token is considered to have a valid name/value pair only if both its
+     * {@code name} and {@code defaultValue} properties are non-empty.
+     * For example, a token like {@code ${param:defaultValue}} is valid because
+     * 'param' is the name and 'defaultValue' is the value. In contrast, tokens
+     * like {@code @{attribute}} (no value) or {@code %{system:java.version}}
+     * (no default value, only a directive value) will be ignored by this method.</p>
+     * <p>Non-token text like "key:value" is also ignored.</p>
      * @param expression the expression string to parse
-     * @return a map of token arrays, or {@code null} if the expression is null or results in an empty map
+     * @return a map of token arrays, or {@code null} if no valid tokens are found
      */
     public static Map<String, Token[]> parseAsMap(String expression) {
         if (expression == null) {
