@@ -29,6 +29,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * Represents a parsed token from an Aspectran Expression Language (AsEL) string.
@@ -131,11 +132,11 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     private String value;
 
-    private ValueProvider valueProvider;
-
     private String getterName;
 
     private String defaultValue;
+
+    private ValueProvider valueProvider;
 
     /**
      * Constructs a new text token.
@@ -155,7 +156,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
      */
     public Token(TokenType type, String name) {
         if (type == TokenType.TEXT) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Cannot create a text token with this constructor");
         }
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
@@ -185,6 +186,20 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         this.directiveType = directiveType;
         this.name = directiveType.toString();
         this.value = value;
+    }
+
+    /**
+     * Constructs a new token by copying another token.
+     * @param other the token to copy
+     */
+    private Token(@NonNull Token other) {
+        this.type = other.type;
+        this.directiveType = other.directiveType;
+        this.name = other.name;
+        this.value = other.value;
+        this.getterName = other.getterName;
+        this.defaultValue = other.defaultValue;
+        this.valueProvider = other.valueProvider;
     }
 
     /**
@@ -243,25 +258,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
-     * Returns a pre-resolved object that can provide the token's value, such as a
-     * {@link Method}, {@link Field}, or {@link Class}. This is used for optimization
-     * to avoid repeated lookups.
-     * @return the value provider, or {@code null} if not resolved
-     */
-    public ValueProvider getValueProvider() {
-        return valueProvider;
-    }
-
-    /**
-     * Sets a pre-resolved object that can provide the token's value.
-     * This is used for optimization to avoid repeated reflection lookups.
-     * @param valueProvider the pre-resolved value provider object
-     */
-    public void setValueProvider(ValueProvider valueProvider) {
-        this.valueProvider = valueProvider;
-    }
-
-    /**
      * Sets the name of a getter method or property to be invoked on the resolved token value.
      * @param getterName the name of the getter method or property to invoke
      */
@@ -287,6 +283,25 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     /**
+     * Returns a pre-resolved object that can provide the token's value, such as a
+     * {@link Method}, {@link Field}, or {@link Class}. This is used for optimization
+     * to avoid repeated lookups.
+     * @return the value provider, or {@code null} if not resolved
+     */
+    public ValueProvider getValueProvider() {
+        return valueProvider;
+    }
+
+    /**
+     * Sets a pre-resolved object that can provide the token's value.
+     * This is used for optimization to avoid repeated reflection lookups.
+     * @param valueProvider the pre-resolved value provider object
+     */
+    public void setValueProvider(ValueProvider valueProvider) {
+        this.valueProvider = valueProvider;
+    }
+
+    /**
      * Returns the type of the bean referer, which is always {@link BeanRefererType#TOKEN}
      * for this class.
      * @return the bean referer type
@@ -309,58 +324,64 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             return defaultValue;
         }
         StringBuilder sb = new StringBuilder();
-        if (type == TokenType.BEAN) {
-            sb.append(BEAN_SYMBOL);
-            sb.append(BRACKET_OPEN);
-            if (name != null) {
-                sb.append(name);
-            }
-            if (value != null) {
-                sb.append(VALUE_DELIMITER);
-                sb.append(value);
-            }
-            if (getterName != null) {
-                sb.append(GETTER_DELIMITER);
-                sb.append(getterName);
-            }
-        } else if (type == TokenType.TEMPLATE) {
-            sb.append(TEMPLATE_SYMBOL);
-            sb.append(BRACKET_OPEN);
-            if (name != null) {
-                sb.append(name);
-            }
-        } else if (type == TokenType.PARAMETER) {
-            sb.append(PARAMETER_SYMBOL);
-            sb.append(BRACKET_OPEN);
-            if (name != null) {
-                sb.append(name);
-            }
-        } else if (type == TokenType.ATTRIBUTE) {
-            sb.append(ATTRIBUTE_SYMBOL);
-            sb.append(BRACKET_OPEN);
-            if (name != null) {
-                sb.append(name);
-            }
-            if (getterName != null) {
-                sb.append(GETTER_DELIMITER);
-                sb.append(getterName);
-            }
-        } else if (type == TokenType.PROPERTY) {
-            sb.append(PROPERTY_SYMBOL);
-            sb.append(BRACKET_OPEN);
-            if (name != null) {
-                sb.append(name);
-            }
-            if (value != null) {
-                sb.append(VALUE_DELIMITER);
-                sb.append(value);
-            }
-            if (getterName != null) {
-                sb.append(GETTER_DELIMITER);
-                sb.append(getterName);
-            }
-        } else {
-            throw new InvalidTokenException("Unknown token type: " + type, this);
+        switch (type) {
+            case BEAN:
+                sb.append(BEAN_SYMBOL);
+                sb.append(BRACKET_OPEN);
+                if (name != null) {
+                    sb.append(name);
+                }
+                if (value != null) {
+                    sb.append(VALUE_DELIMITER);
+                    sb.append(value);
+                }
+                if (getterName != null) {
+                    sb.append(GETTER_DELIMITER);
+                    sb.append(getterName);
+                }
+                break;
+            case TEMPLATE:
+                sb.append(TEMPLATE_SYMBOL);
+                sb.append(BRACKET_OPEN);
+                if (name != null) {
+                    sb.append(name);
+                }
+                break;
+            case PARAMETER:
+                sb.append(PARAMETER_SYMBOL);
+                sb.append(BRACKET_OPEN);
+                if (name != null) {
+                    sb.append(name);
+                }
+                break;
+            case ATTRIBUTE:
+                sb.append(ATTRIBUTE_SYMBOL);
+                sb.append(BRACKET_OPEN);
+                if (name != null) {
+                    sb.append(name);
+                }
+                if (getterName != null) {
+                    sb.append(GETTER_DELIMITER);
+                    sb.append(getterName);
+                }
+                break;
+            case PROPERTY:
+                sb.append(PROPERTY_SYMBOL);
+                sb.append(BRACKET_OPEN);
+                if (name != null) {
+                    sb.append(name);
+                }
+                if (value != null) {
+                    sb.append(VALUE_DELIMITER);
+                    sb.append(value);
+                }
+                if (getterName != null) {
+                    sb.append(GETTER_DELIMITER);
+                    sb.append(getterName);
+                }
+                break;
+            default:
+                throw new InvalidTokenException("Unknown token type: " + type, this);
         }
         if (defaultValue != null) {
             sb.append(VALUE_DELIMITER);
@@ -371,46 +392,32 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     }
 
     @Override
-    public boolean equals(Object token) {
-        return (this == token || (token instanceof Token that && deepEquals(that)));
-    }
-
-    private boolean deepEquals(@NonNull Token token) {
-        if (type != token.getType()) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Token that)) {
             return false;
         }
-        if (name != null) {
-            if (!name.equals(token.getName())) {
-                return false;
-            }
-        } else if (token.getName() != null) {
+        if (type != that.type) {
             return false;
         }
-        if (value != null) {
-            if (!value.equals(token.getValue())) {
-                return false;
-            }
-        } else if (token.getValue() != null) {
+        if (!Objects.equals(name, that.name)) {
             return false;
         }
-        if (getterName != null) {
-            if (!getterName.equals(token.getGetterName())) {
-                return false;
-            }
-        } else if (token.getGetterName() != null) {
+        if (!Objects.equals(value, that.value)) {
             return false;
         }
-        if (defaultValue == null) {
-            return (token.getDefaultValue() == null);
-        } else {
-            return defaultValue.equals(token.getDefaultValue());
+        if (!Objects.equals(getterName, that.getterName)) {
+            return false;
         }
+        return (Objects.equals(defaultValue, that.defaultValue));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 7;
+        int result = 1;
         result = prime * result + type.hashCode();
         result = prime * result + (name != null ? name.hashCode() : 0);
         result = prime * result + (value != null ? value.hashCode() : 0);
@@ -423,26 +430,12 @@ public class Token implements BeanReferenceable, Replicable<Token> {
      * Creates and returns a deep copy of this token.
      * This method is used to create a new instance of the token with the same properties,
      * which is essential when reusing parsed rule definitions in a multi-threaded environment.
+     * The value provider is not deeply copied, but this is safe as it is immutable.
      * @return a new, replicated {@code Token} instance
      */
     @Override
     public Token replicate() {
-        Token token;
-        if (directiveType != null) {
-            token = new Token(type, directiveType, value);
-            token.setValueProvider(valueProvider);
-            token.setGetterName(getterName);
-            token.setDefaultValue(defaultValue);
-        } else {
-            if (type == TokenType.TEXT) {
-                token = new Token(defaultValue);
-            } else {
-                token = new Token(type, name);
-                token.setGetterName(getterName);
-                token.setDefaultValue(defaultValue);
-            }
-        }
-        return token;
+        return new Token(this);
     }
 
     /**

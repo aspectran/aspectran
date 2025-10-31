@@ -11,9 +11,9 @@
         <property name="my-prop" value="My Property"/>
     </environment>
 
+    <bean id="sampleBean" class="com.aspectran.core.context.asel.SampleBean"/>
 
-    <bean id="sampleBean" class="com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean"/>
-    <bean id="anotherBean" class="com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean">
+    <bean id="anotherBean" class="com.aspectran.core.context.asel.SampleBean">
         <property name="name" value="Another Bean"/>
     </bean>
 

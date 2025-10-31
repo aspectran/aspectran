@@ -118,44 +118,20 @@ class TokenEvaluationTest {
 
             // The primary bean of SampleBean type is 'sampleBean'
             assertEquals("I am a bean", evaluator.evaluateAsString(TokenParser.parse(
-                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^name}")));
+                    "#{class:com.aspectran.core.context.asel.SampleBean^name}")));
 
             // Static field/property access
             assertEquals("a static field", evaluator.evaluateAsString(TokenParser.parse(
-                    "#{field:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^staticField}")));
+                    "#{field:com.aspectran.core.context.asel.SampleBean^staticField}")));
             assertEquals("a static field", evaluator.evaluateAsString(TokenParser.parse(
-                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleBean^staticField}")));
+                    "#{class:com.aspectran.core.context.asel.SampleBean^staticField}")));
 
             // Test enum access
             Object result = evaluator.evaluate(TokenParser.parse(
-                    "#{class:com.aspectran.core.context.asel.TokenEvaluationTest$SampleEnum^TWO}"));
+                    "#{class:com.aspectran.core.context.asel.SampleEnum^TWO}"));
             assertEquals(SampleEnum.TWO, result);
             return null;
         });
-    }
-
-    public enum SampleEnum {
-        ONE, TWO, THREE
-    }
-
-    public static class SampleBean {
-
-        private String name = "I am a bean";
-
-        public static String staticField = "a static field";
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public static String getStaticField() {
-            return staticField;
-        }
-
     }
 
 }

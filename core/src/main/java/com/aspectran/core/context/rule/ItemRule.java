@@ -26,6 +26,7 @@ import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -113,16 +114,13 @@ public class ItemRule {
     public void setName(String name) {
         Assert.hasText(name, "name must not be empty");
         if (name.endsWith(ARRAY_SUFFIX)) {
-            this.name = name.substring(0, name.length() - 2);
+            this.name = name.substring(0, name.length() - ARRAY_SUFFIX.length());
             type = ItemType.ARRAY;
         } else if (name.endsWith(MAP_SUFFIX)) {
-            this.name = name.substring(0, name.length() - 2);
+            this.name = name.substring(0, name.length() - MAP_SUFFIX.length());
             type = ItemType.MAP;
         } else {
             this.name = name;
-            if (type == null) {
-                type = ItemType.SINGLE;
-            }
         }
     }
 
@@ -242,10 +240,7 @@ public class ItemRule {
             type = ItemType.MAP;
         }
         checkMappableType();
-        if (tokensMap == null) {
-            tokensMap = new LinkedHashMap<>();
-        }
-        tokensMap.put(name, tokens);
+        touchTokensMap().put(name, tokens);
     }
 
     /**
@@ -272,7 +267,7 @@ public class ItemRule {
             type = ItemType.PROPERTIES;
         }
         checkMappableType();
-        tokensMap = new LinkedHashMap<>();
+        tokensMap = newTokensMap();
         for (String key : properties.stringPropertyNames()) {
             Object o = properties.get(key);
             Token[] tokens;
@@ -306,10 +301,7 @@ public class ItemRule {
             type = ItemType.LIST;
         }
         checkListType();
-        if (tokensList == null) {
-            tokensList = new ArrayList<>();
-        }
-        tokensList.add(tokens);
+        touchTokensList().add(tokens);
     }
 
     /**
@@ -336,7 +328,7 @@ public class ItemRule {
             type = ItemType.SET;
         }
         checkListType();
-        tokensList = new ArrayList<>(tokensSet);
+        tokensList = newTokensList(tokensSet);
     }
 
     /**
@@ -377,14 +369,14 @@ public class ItemRule {
      * @param beanRule the bean rule to add
      */
     public void addBeanRule(BeanRule beanRule) {
+        if (type == null) {
+            type = ItemType.LIST;
+        }
         checkListType();
         if (valueType == null) {
             valueType = ItemValueType.BEAN;
         }
-        if (beanRuleList == null) {
-            beanRuleList = new ArrayList<>();
-        }
-        beanRuleList.add(beanRule);
+        touchBeanRuleList().add(beanRule);
     }
 
     /**
@@ -412,10 +404,7 @@ public class ItemRule {
         if (valueType == null) {
             valueType = ItemValueType.BEAN;
         }
-        if (beanRuleMap == null) {
-            beanRuleMap = new LinkedHashMap<>();
-        }
-        beanRuleMap.put(name, beanRule);
+        touchBeanRuleMap().put(name, beanRule);
     }
 
     /**
@@ -540,9 +529,18 @@ public class ItemRule {
 
     /**
      * Gets all tokens from the item, regardless of its type (single, list, or map).
-     * @return an array of all tokens
+     * <p>If the item is a list or map with multiple entries, the tokens from all
+     * entries are concatenated into a single array. If there is only one entry,
+     * the tokens from that single entry are returned directly.</p>
+     * @return an array of all tokens, or {@code null} if the item has no token-based value
+     * @throws IllegalArgumentException if no value has been set on this item rule yet,
+     *      meaning the item type has not been determined
      */
     public Token[] getAllTokens() {
+        if (type == null) {
+            throw new IllegalArgumentException("Item type was not determined because no value has been set. " +
+                    "Call a value-setting method (e.g., setValue(), addValue()) before evaluating the ItemRule.");
+        }
         if (type == ItemType.SINGLE) {
             return tokens;
         } else if (isListableType()) {
@@ -621,6 +619,59 @@ public class ItemRule {
         } else {
             return false;
         }
+    }
+
+    @NonNull
+    private List<Token[]> newTokensList() {
+        return new ArrayList<>();
+    }
+
+    @NonNull
+    private List<Token[]> newTokensList(Collection<Token[]> tokens) {
+        return new ArrayList<>(tokens);
+    }
+
+    @NonNull
+    private Map<String, Token[]> newTokensMap() {
+        return new LinkedHashMap<>();
+    }
+
+    @NonNull
+    private List<BeanRule> newBeanRuleList() {
+        return new ArrayList<>();
+    }
+
+    @NonNull
+    private Map<String, BeanRule> newBeanRuleMap() {
+        return new LinkedHashMap<>();
+    }
+
+    private List<Token[]> touchTokensList() {
+        if (tokensList == null) {
+            tokensList = newTokensList();
+        }
+        return tokensList;
+    }
+
+    private Map<String, Token[]> touchTokensMap() {
+        if (tokensMap == null) {
+            tokensMap = newTokensMap();
+        }
+        return tokensMap;
+    }
+
+    private List<BeanRule> touchBeanRuleList() {
+        if (beanRuleList == null) {
+            beanRuleList = newBeanRuleList();
+        }
+        return beanRuleList;
+    }
+
+    private Map<String, BeanRule> touchBeanRuleMap() {
+        if (beanRuleMap == null) {
+            beanRuleMap = newBeanRuleMap();
+        }
+        return beanRuleMap;
     }
 
     private void checkSingleType() {

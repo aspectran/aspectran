@@ -99,43 +99,52 @@ public class ItemEvaluation implements ItemEvaluator {
         try {
             ItemType itemType = itemRule.getType();
             ItemValueType valueType = itemRule.getValueType();
-            Object value = null;
-            if (itemType == ItemType.SINGLE) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBean(itemRule.getBeanRule());
-                } else {
-                    value = evaluate(itemRule.getTokens(), valueType);
+            Object value;
+            switch (itemType) {
+                case SINGLE -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBean(itemRule.getBeanRule());
+                    } else {
+                        value = evaluate(itemRule.getTokens(), valueType);
+                    }
                 }
-            } else if (itemType == ItemType.ARRAY) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsArray(itemRule.getBeanRuleList());
-                } else {
-                    value = evaluateAsArray(itemRule.getTokensList(), valueType);
+                case ARRAY -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBeanAsArray(itemRule.getBeanRuleList());
+                    } else {
+                        value = evaluateAsArray(itemRule.getTokensList(), valueType);
+                    }
                 }
-            } else if (itemType == ItemType.LIST) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsList(itemRule.getBeanRuleList());
-                } else {
-                    value = evaluateAsList(itemRule.getTokensList(), valueType);
+                case LIST -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBeanAsList(itemRule.getBeanRuleList());
+                    } else {
+                        value = evaluateAsList(itemRule.getTokensList(), valueType);
+                    }
                 }
-            } else if (itemType == ItemType.SET) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsSet(itemRule.getBeanRuleList());
-                } else {
-                    value = evaluateAsSet(itemRule.getTokensList(), valueType);
+                case SET -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBeanAsSet(itemRule.getBeanRuleList());
+                    } else {
+                        value = evaluateAsSet(itemRule.getTokensList(), valueType);
+                    }
                 }
-            } else if (itemType == ItemType.MAP) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsMap(itemRule.getBeanRuleMap());
-                } else {
-                    value = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                case MAP -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBeanAsMap(itemRule.getBeanRuleMap());
+                    } else {
+                        value = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                    }
                 }
-            } else if (itemType == ItemType.PROPERTIES) {
-                if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
-                } else {
-                    value = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                case PROPERTIES -> {
+                    if (valueType == ItemValueType.BEAN) {
+                        value = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
+                    } else {
+                        value = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                    }
                 }
+                case null -> throw new IllegalArgumentException("Item type is not set");
+                default -> throw new IllegalArgumentException("Unknown item type: " + itemType);
             }
             return (T)value;
         } catch (Exception e) {
