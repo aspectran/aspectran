@@ -84,11 +84,8 @@ public class InMemoryMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Saves the in-memory file data to the specified destination file.
-     * @param destFile the destination file
-     * @param overwrite {@code true} to overwrite the destination file if it exists; {@code false} otherwise
-     * @return the saved file
-     * @throws IOException if an I/O error occurs
+     * {@inheritDoc}
+     * <p>This implementation writes the in-memory data to the specified file.</p>
      */
     @Override
     public File saveAs(File destFile, boolean overwrite) throws IOException {
@@ -111,16 +108,19 @@ public class InMemoryMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * This operation is not supported for in-memory file items.
-     * @throws IllegalStateException always, as this operation is not supported
+     * {@inheritDoc}
+     * <p>This operation is not supported for in-memory file items and will always
+     * throw an {@link IllegalStateException}. Use {@link #saveAs(File, boolean)} instead.</p>
      */
     @Override
-    public File renameTo(File destFile, boolean overwrite) {
-        throw new IllegalStateException("Can not rename because it is a file stored in memory");
+    public File moveTo(File destFile, boolean overwrite) {
+        throw new IllegalStateException("Cannot move an in-memory file. Use saveAs() instead.");
     }
 
     /**
-     * Does nothing, as the data is stored in memory and will be garbage collected.
+     * {@inheritDoc}
+     * <p>For an in-memory file, this method releases the internal byte buffer to be
+     * garbage collected by delegating to {@link FileItem#delete()}.</p>
      */
     @Override
     public void delete() {

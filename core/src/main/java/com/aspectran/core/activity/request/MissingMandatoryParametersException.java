@@ -39,8 +39,8 @@ public class MissingMandatoryParametersException extends RequestParseException {
 
     /**
      * Creates a new MissingMandatoryParametersException referencing
-     * the specified parameter.
-     * @param itemRules an item rule list that represents missing parameters
+     * the specified missing parameters.
+     * @param itemRules a collection of item rules that represents missing parameters
      */
     public MissingMandatoryParametersException(@NonNull Collection<ItemRule> itemRules) {
         super("Missing mandatory parameters: " + StringUtils.joinWithCommas(itemRules));

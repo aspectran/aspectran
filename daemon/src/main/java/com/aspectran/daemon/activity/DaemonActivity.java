@@ -26,9 +26,9 @@ import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.io.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;

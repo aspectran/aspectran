@@ -278,7 +278,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
             String indent = contentType.getParameter("indent");
             if (indent != null) {
                 int depth = Integer.parseInt(indent);
-                return (Math.min(depth, MAX_INDENT));
+                return Math.min(depth, MAX_INDENT);
             }
         } catch (NumberFormatException e) {
             // ignored

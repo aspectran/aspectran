@@ -95,19 +95,36 @@ public class ProcessRunner {
         Assert.state(!running.get(), "There is already a running process");
         running.set(true);
         terminated.set(false);
+
+        Thread stdOutReader = null;
+        Thread stdErrReader = null;
+
         try {
             ProcessBuilder builder = new ProcessBuilder(command);
             if (workingDir != null) {
                 builder.directory(new File(workingDir));
             }
             process = builder.start();
+
             if (processLogger != null || logger.isDebugEnabled()) {
-                readNormalOutput(process);
+                stdOutReader = new Thread(() -> readNormalOutput(process));
+                stdOutReader.start();
             }
             if (errOut != null || processLogger != null || logger.isDebugEnabled()) {
-                readErrorOutput(process, errOut);
+                stdErrReader = new Thread(() -> readErrorOutput(process, errOut));
+                stdErrReader.start();
             }
-            return process.waitFor();
+
+            int exitCode = process.waitFor();
+
+            if (stdOutReader != null) {
+                stdOutReader.join();
+            }
+            if (stdErrReader != null) {
+                stdErrReader.join();
+            }
+
+            return exitCode;
         } finally {
             process = null;
             running.set(false);
@@ -173,7 +190,9 @@ public class ProcessRunner {
                 }
             }
         } catch (IOException e) {
-            // ignore
+            if (!isTerminated()) {
+                logger.warn("Error reading process standard output", e);
+            }
         }
     }
 
@@ -193,7 +212,9 @@ public class ProcessRunner {
                 }
             }
         } catch (IOException e) {
-            // ignore
+            if (!isTerminated()) {
+                logger.warn("Error reading process error output", e);
+            }
         }
     }
 

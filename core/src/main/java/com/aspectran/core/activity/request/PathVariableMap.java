@@ -90,25 +90,35 @@ public class PathVariableMap extends HashMap<Token, String> {
         for (Token token : nameTokens) {
             TokenType type = token.getType();
             if (type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
+                // This is a variable token (e.g., ${id}), so save it for the next iteration
+                // which will look for the text token that follows it.
                 lastToken = token;
             } else {
+                // This is a text token (a literal part of the path).
                 String term = token.stringify();
                 endIndex = requestName.indexOf(term, beginIndex);
                 if (endIndex == -1) {
+                    // The literal part of the template was not found in the request path, so it's a mismatch.
                     return null;
                 }
+
+                // Check if there is a string between the previous literal and this one.
                 if (endIndex > beginIndex) {
+                    // This substring is the value for the previous variable token.
                     String value = requestName.substring(beginIndex, endIndex);
                     if (prevToken != null) {
                         if (!value.isEmpty()) {
                             pathVariables.put(prevToken, value);
                         }
                     } else if (!term.equals(value)) {
+                        // This case handles a mismatch at the beginning of the path.
+                        // If the template starts with a literal, the request path must also start with it.
                         return null;
                     }
                     beginIndex += value.length();
                 } else if (prevToken != null && prevToken.getDefaultValue() != null) {
-                    // If the last token ends with a "/" can be given a default value.
+                    // The substring for the variable is empty (e.g., two consecutive slashes "//" for "/${var}/").
+                    // If the variable token has a default value, use it.
                     pathVariables.put(prevToken, prevToken.getDefaultValue());
                 }
                 beginIndex += term.length();
@@ -116,12 +126,14 @@ public class PathVariableMap extends HashMap<Token, String> {
             prevToken = (token.getType() != TokenType.TEXT ? token : null);
         }
 
+        // This handles the case where the path ends with a variable token.
         if (lastToken != null && prevToken == lastToken) {
+            // The rest of the request string from the last matched position is the variable's value.
             String value = requestName.substring(beginIndex);
             if (!value.isEmpty()) {
                 pathVariables.put(lastToken, value);
             } else if (lastToken.getDefaultValue() != null) {
-                // If the last token ends with a "/" can be given a default value.
+                // The variable part is empty, but if it has a default value, use it.
                 pathVariables.put(lastToken, lastToken.getDefaultValue());
             }
         }

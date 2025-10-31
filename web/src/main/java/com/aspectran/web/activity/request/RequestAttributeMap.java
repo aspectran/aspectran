@@ -42,6 +42,20 @@ public final class RequestAttributeMap implements Map<String, Object> {
     private ServletRequest request;
 
     /**
+     * Instantiates a new RequestAttributeMap.
+     */
+    public RequestAttributeMap() {
+    }
+
+    /**
+     * Instantiates a new RequestAttributeMap.
+     * @param request the servlet request
+     */
+    public RequestAttributeMap(@NonNull ServletRequest request) {
+        this.request = request;
+    }
+
+    /**
      * Returns the underlying {@link ServletRequest} that this map wraps.
      * @return the servlet request
      */
@@ -97,7 +111,9 @@ public final class RequestAttributeMap implements Map<String, Object> {
         if (request == null) {
             return false;
         }
-        return (request.getAttribute((String)key) != null);
+        // This is the correct implementation, the previous one was buggy
+        // because it could not distinguish between a non-existent key and a key with a null value.
+        return Collections.list(request.getAttributeNames()).contains(key);
     }
 
     /**
@@ -124,8 +140,9 @@ public final class RequestAttributeMap implements Map<String, Object> {
      * <p>This implementation retrieves the attribute from the underlying {@link ServletRequest}.
      */
     @Override
+    @Nullable
     public Object get(Object key) {
-        if (request == null) {
+        if (request == null || !(key instanceof String)) {
             return null;
         }
         return request.getAttribute((String)key);
@@ -150,11 +167,15 @@ public final class RequestAttributeMap implements Map<String, Object> {
      * @throws IllegalStateException if the underlying request has not been specified
      */
     @Override
+    @Nullable
     public Object remove(@NonNull Object key) {
         checkState();
-        Object old = request.getAttribute((String)key);
-        request.removeAttribute((String)key);
-        return old;
+        if (key instanceof String stringKey) {
+            Object old = request.getAttribute(stringKey);
+            request.removeAttribute(stringKey);
+            return old;
+        }
+        return null;
     }
 
     /**

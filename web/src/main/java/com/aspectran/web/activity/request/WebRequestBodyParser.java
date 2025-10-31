@@ -48,15 +48,28 @@ import java.util.Map;
  *
  * @since 6.2.0
  */
-public abstract class WebRequestBodyParser {
+public final class WebRequestBodyParser {
 
+    /**
+     * The name of the setting that specifies the bean name of the multipart form data parser.
+     */
     public static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
+    /**
+     * The name of the setting that specifies the maximum request size in bytes.
+     * A value of -1 indicates no limit.
+     */
     public static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
     private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     private static final int BUFFER_SIZE = 8192;
+
+    /**
+     * Prevents instantiation of this utility class.
+     */
+    private WebRequestBodyParser() {
+    }
 
     /**
      * Parses a multipart form data request using the configured {@link MultipartFormDataParser}.
@@ -152,7 +165,8 @@ public abstract class WebRequestBodyParser {
     }
 
     /**
-     * Parse the URL-encoded Form Data to get the request parameters.
+     * Parses a URL-encoded request body, adds the parsed parameters to the
+     * request adapter, and then clears the body from the adapter.
      */
     public static void parseURLEncodedFormData(WebRequestAdapter requestAdapter) throws RequestParseException {
         try {
@@ -167,8 +181,8 @@ public abstract class WebRequestBodyParser {
                 requestAdapter.setBody(null);
             }
         } catch (Exception e) {
-            throw new RequestParseException("Could not parse HTTP " + requestAdapter.getRequestMethod() +
-                    " request body", e);
+            throw new RequestParseException("Could not parse URL-encoded form body for HTTP " +
+                    requestAdapter.getRequestMethod() + " request", e);
         }
     }
 

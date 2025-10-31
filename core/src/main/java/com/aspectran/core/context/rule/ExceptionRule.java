@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.Describable;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

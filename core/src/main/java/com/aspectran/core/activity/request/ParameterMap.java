@@ -108,20 +108,16 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     /**
-     * Returns a {@code Collection} of {@code String} objects containing
-     * the names of the parameters.
-     * If no parameters, the method returns an empty {@code Collection}.
-     * @return a {@code Collection} of {@code String} objects, each {@code String}
-     *             containing the name of a parameter;
-     *             or an empty {@code Collection} if no parameters
+     * Returns a {@code Set} of the names of the parameters contained in this map.
+     * @return a set of the names of the parameters; an empty set if the map is empty
      */
     public Set<String> getParameterNames() {
         return keySet();
     }
 
     /**
-     * Set the given parameters under.
-     * @param params the other parameter map
+     * Adds all entries from the given single-valued map to this multi-valued parameter map.
+     * @param params the map containing the parameters to add
      */
     public void setAll(Map<String, String> params) {
         Assert.notNull(params, "params must not be null");
@@ -132,10 +128,8 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Extracts the parameters into a new map structure.
-     * <p>
-     * The resulting map may flatten multi-value arrays into single objects
-     * depending on the implementation strategy.
-     * </p>
+     * <p>The resulting map may flatten multi-value arrays into single objects
+     * depending on the implementation strategy.</p>
      * @return a new map containing parameter names and values
      */
     public Map<String, Object> extractAsMap() {
@@ -145,10 +139,8 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Extracts the parameters and populates the specified target map.
-     * <p>
-     * This method is useful when merging parameters into an existing data model
-     * (e.g., for use in templates or translets).
-     * </p>
+     * <p>This method is useful when merging parameters into an existing data model
+     * (e.g., for use in templates or translets).</p>
      * @param targetMap the map into which parameters should be inserted
      * @return the updated {@code targetMap} containing parameters
      */

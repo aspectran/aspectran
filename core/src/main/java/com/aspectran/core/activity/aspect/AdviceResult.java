@@ -153,16 +153,12 @@ public class AdviceResult {
      * @throws UnsupportedOperationException if the advice type is not supported
      */
     public void putAdviceResult(@NonNull AdviceRule adviceRule, Object adviceResult) {
-        if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
-            putBeforeAdviceResult(adviceRule.getAspectId(), adviceResult);
-        } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
-            putAfterAdviceResult(adviceRule.getAspectId(), adviceResult);
-        } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
-            putAroundAdviceResult(adviceRule.getAspectId(), adviceResult);
-        } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
-            putFinallyAdviceResult(adviceRule.getAspectId(), adviceResult);
-        } else {
-            throw new UnsupportedOperationException("Unrecognized advice type: " +
+        switch (adviceRule.getAdviceType()) {
+            case BEFORE -> putBeforeAdviceResult(adviceRule.getAspectId(), adviceResult);
+            case AFTER -> putAfterAdviceResult(adviceRule.getAspectId(), adviceResult);
+            case AROUND -> putAroundAdviceResult(adviceRule.getAspectId(), adviceResult);
+            case FINALLY -> putFinallyAdviceResult(adviceRule.getAspectId(), adviceResult);
+            case null, default -> throw new UnsupportedOperationException("Unrecognized advice type: " +
                     adviceRule.getAdviceType());
         }
     }

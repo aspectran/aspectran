@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.request;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
@@ -88,42 +89,42 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Returns the value of the response header with the given name.
-     * <p>If a response header with the given name exists and contains
+     * Returns the value of the request header with the given name.
+     * <p>If a request header with the given name exists and contains
      * multiple values, the value that was added first will be returned.</p>
-     * @param name the name of the response header whose value to return
-     * @return the value of the response header with the given name,
+     * @param name the name of the request header whose value to return
+     * @return the value of the request header with the given name,
      *         or {@code null} if no header with the given name has been set
-     *         on this response
+     *         on this request
      */
     public String getHeader(String name) {
         return getHeaderMap().getFirst(name);
     }
 
     /**
-     * Returns the values of the response header with the given name.
-     * @param name the name of the response header whose values to return
-     * @return a (possibly empty) {@code Collection} of the values
-     *         of the response header with the given name
+     * Returns the values of the request header with the given name.
+     * @param name the name of the request header whose values to return
+     * @return a (possibly empty) {@code List} of the values
+     *         of the request header with the given name
      */
     public List<String> getHeaderValues(String name) {
         return getHeaderMap().get(name);
     }
 
     /**
-     * Returns the names of the headers of this response.
-     * @return a (possibly empty) {@code Collection} of the names
-     *         of the headers of this response
+     * Returns the names of the headers of this request.
+     * @return a (possibly empty) {@code Set} of the names
+     *         of the headers of this request
      */
     public Set<String> getHeaderNames() {
         return getHeaderMap().keySet();
     }
 
     /**
-     * Returns a boolean indicating whether the named response header
+     * Returns a boolean indicating whether the named request header
      * has already been set.
      * @param name the header name
-     * @return {@code true} if the named response header
+     * @return {@code true} if the named request header
      *         has already been set; {@code false} otherwise
      */
     public boolean containsHeader(String name) {
@@ -186,6 +187,8 @@ public abstract class AbstractRequest {
 
     /**
      * Sets an attribute by name.
+     * <p>If the value is {@code null}, it has the same effect as calling
+     * {@link #removeAttribute(String)}.</p>
      */
     public void setAttribute(String name, Object value) {
         if (value == null) {
@@ -512,7 +515,12 @@ public abstract class AbstractRequest {
      */
     public InputStream getInputStream() throws IOException {
         if (getBody() != null) {
-            return new ByteArrayInputStream(getBody().getBytes());
+            try {
+                String enc = (getEncoding() != null ? getEncoding() : ActivityContext.DEFAULT_ENCODING);
+                return new ByteArrayInputStream(getBody().getBytes(enc));
+            } catch (UnsupportedEncodingException e) {
+                throw new IOException("Unsupported encoding: " + e.getMessage(), e);
+            }
         } else {
             return null;
         }

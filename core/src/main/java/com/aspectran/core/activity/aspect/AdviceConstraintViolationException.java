@@ -18,9 +18,11 @@ package com.aspectran.core.activity.aspect;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +64,7 @@ public class AdviceConstraintViolationException extends ActivityException {
      * @return the formatted message including a reference to the rule,
      * or {@code null} if the rule was already recorded
      */
+    @Nullable
     public String addViolation(AspectRule aspectRule, String msg) {
         if (!relevantAspectRules.contains(aspectRule)) {
             relevantAspectRules.add(aspectRule);
@@ -79,7 +82,7 @@ public class AdviceConstraintViolationException extends ActivityException {
      * instances that were recorded during construction of this exception
      */
     public Set<AspectRule> getRelevantAspectRules() {
-        return relevantAspectRules;
+        return Collections.unmodifiableSet(relevantAspectRules);
     }
 
     /**
@@ -89,6 +92,9 @@ public class AdviceConstraintViolationException extends ActivityException {
      */
     @Override
     public String getMessage() {
+        if (violations.isEmpty()) {
+            return super.getMessage();
+        }
         return StringUtils.joinWithLines(violations);
     }
 

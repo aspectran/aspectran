@@ -31,23 +31,22 @@ public class SizeLimitExceededException extends RequestParseException {
 
     private final long actual;
 
-    private final long permitted;
+    private final long limit;
 
     /**
-     * Constructs a <code>SizeExceededException</code> with
-     * the specified detail message, and actual and permitted sizes.
+     * Constructs a <code>SizeLimitExceededException</code>.
      * @param msg the detail message
-     * @param actual the actual request size
-     * @param permitted the maximum permitted request size
+     * @param actual the actual size of the request
+     * @param limit the maximum permitted size of the request
      */
-    public SizeLimitExceededException(String msg, long actual, long permitted) {
+    public SizeLimitExceededException(String msg, long actual, long limit) {
         super(msg);
         this.actual = actual;
-        this.permitted = permitted;
+        this.limit = limit;
     }
 
     /**
-     * Returns the actual size of the request.
+     * Returns the actual size of the request, in bytes.
      * @return the actual size
      */
     public long getActual() {
@@ -55,11 +54,11 @@ public class SizeLimitExceededException extends RequestParseException {
     }
 
     /**
-     * Returns the maximum permitted size of the request.
-     * @return the permitted size
+     * Returns the maximum permitted size of the request, in bytes.
+     * @return the size limit
      */
-    public long getPermitted() {
-        return permitted;
+    public long getLimit() {
+        return limit;
     }
 
 }

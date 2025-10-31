@@ -17,6 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,26 +26,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 /**
- * Represents a file submitted as part of a request, typically through multipart form data.
+ * Represents a file item that was received in a multipart/form-data request.
  * <p>
- * Encapsulates the file's metadata (such as name, size, and content type) along with
- * access to the file's content stream. Used when requests include file uploads.
+ * This class provides a common abstraction for handling uploaded files, regardless of
+ * whether they are stored in memory or on disk. It offers methods to access the file's
+ * content and metadata, and to save it to a persistent location.
  * </p>
- *
- * <p>Typical usage:</p>
- * <ul>
- *   <li>Inspect file attributes (original filename, content type, size)</li>
- *   <li>Read or stream the file's binary contents</li>
- *   <li>Store or process the uploaded file within an activity</li>
- * </ul>
+ * <p>Implementations of this class, such as those for specific multipart parsing libraries,
+ * will handle the details of accessing the file data.</p>
  *
  * <p>Created: 2008. 04. 11 PM 4:19:40</p>
  */
 public class FileParameter {
 
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    private static final int BUFFER_SIZE = 8192;
 
     private final File file;
 
@@ -56,10 +54,10 @@ public class FileParameter {
 
     /**
      * Instantiates a new FileParameter.
+     * @param file the file
      */
-    protected FileParameter() {
-        this.file = null;
-        this.contentType = null;
+    public FileParameter(File file) {
+        this(file, null);
     }
 
     /**
@@ -72,6 +70,10 @@ public class FileParameter {
         this.contentType = contentType;
     }
 
+    /**
+     * Retrieves the file associated with this file parameter.
+     * @return the file associated with this parameter, or {@code null} if no file has been set
+     */
     public File getFile() {
         return file;
     }
@@ -96,15 +98,15 @@ public class FileParameter {
      * Gets the content type of the file.
      * @return the content type of the file
      */
+    @Nullable
     public String getContentType() {
         return contentType;
     }
 
     /**
-     * Returns an {@code InputStream} object of the file.
-     * @return an {@link java.io.OutputStream OutputStream} that can be used
-     *         for storing the contents of the file.
-     * @throws IOException if an I/O error has occurred
+     * Returns an {@link InputStream} to read the contents of the file.
+     * @return an {@link InputStream} for the file's contents
+     * @throws IOException if an I/O error occurs
      */
     public InputStream getInputStream() throws IOException {
         if (file == null) {
@@ -123,7 +125,7 @@ public class FileParameter {
     public byte[] getBytes() throws IOException {
         try (InputStream input = getInputStream();
              ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            final byte[] buffer = new byte[BUFFER_SIZE];
             int len;
             while ((len = input.read(buffer)) != -1) {
                 output.write(buffer, 0, len);
@@ -149,18 +151,18 @@ public class FileParameter {
     }
 
     /**
-     * Save an uploaded file as a given destination file.
-     * If the file already exists in the directory, they save with a different name.
+     * Saves the uploaded file to the specified destination by copying its contents.
+     * If the destination file already exists, a new unique filename is generated.
      * @param destFile the destination file
-     * @return a saved file
-     * @throws IOException if an I/O error has occurred
+     * @return the saved file, which may have a different name if the original name was taken
+     * @throws IOException if an I/O error occurs
      */
     public File saveAs(File destFile) throws IOException {
         return saveAs(destFile, false);
     }
 
     /**
-     * Save a file as a given destination file.
+     * Saves the uploaded file to the specified destination by copying its contents.
      * @param destFile the destination file
      * @param overwrite whether to overwrite if it already exists
      * @return a saved file
@@ -174,7 +176,7 @@ public class FileParameter {
         try {
             destFile = determineDestinationFile(destFile, overwrite);
 
-            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            final byte[] buffer = new byte[BUFFER_SIZE];
             int len;
             try (InputStream input = getInputStream();
                  OutputStream output = new FileOutputStream(destFile)) {
@@ -191,24 +193,29 @@ public class FileParameter {
     }
 
     /**
-     * Renames the uploaded file to the specified destination.
+     * Moves the uploaded file to the specified destination.
      * @param destFile the destination file
-     * @return the renamed file reference
-     * @throws IOException if the file cannot be moved or renamed
+     * @return the moved file reference
+     * @throws IOException if the file cannot be moved
+     * @see #moveTo(File, boolean)
      */
-    public File renameTo(File destFile) throws IOException {
-        return renameTo(destFile, false);
+    public File moveTo(File destFile) throws IOException {
+        return moveTo(destFile, false);
     }
 
     /**
-     * Renames the uploaded file to the specified destination, with an option
-     * to overwrite existing files.
+     * Moves the uploaded file to the specified destination.
+     * <p>This method uses {@link java.nio.file.Files#move} for a more reliable move
+     * operation compared to {@link File#renameTo}, as it can better handle
+     * cross-filesystem moves and provides more informative exceptions on failure.</p>
+     * <p>This operation may not be supported by all implementations (e.g., for
+     * in-memory files).</p>
      * @param destFile the destination file
      * @param overwrite whether to overwrite the destination file if it exists
-     * @return the renamed file reference
-     * @throws IOException if the file cannot be moved or renamed
+     * @return the moved file reference
+     * @throws IOException if the file cannot be moved
      */
-    public File renameTo(File destFile, boolean overwrite) throws IOException {
+    public File moveTo(File destFile, boolean overwrite) throws IOException {
         File srcFile = getFile();
         if (srcFile == null) {
             throw new IllegalStateException("The specified file does not exist");
@@ -219,11 +226,11 @@ public class FileParameter {
 
         try {
             destFile = determineDestinationFile(destFile, overwrite);
-            if (!srcFile.renameTo(destFile)) {
-                throw new IOException("Could not rename file " + srcFile + " to " + destFile);
-            }
+            // Use java.nio.Files.move for a more reliable move operation,
+            // which can handle cross-filesystem moves and provides better error messages.
+            Files.move(srcFile.toPath(), destFile.toPath());
         } catch (IOException e) {
-            throw e;
+            throw new IOException("Could not move file " + srcFile + " to " + destFile, e);
         } catch (Exception e) {
             throw new IOException("Could not rename file", e);
         }
@@ -269,18 +276,8 @@ public class FileParameter {
     }
 
     /**
-     * Releases the reference to the saved file without deleting it.
-     * Typically used for cleanup after processing.
-     */
-    protected void releaseSavedFile() {
-        if (savedFile != null) {
-            savedFile.setWritable(true);
-            savedFile = null;
-        }
-    }
-
-    /**
-     * Deletes the saved file associated with this parameter, if it exists.
+     * Deletes the underlying storage for the uploaded file, typically a temporary
+     * file on disk. This method should be called to clean up resources.
      */
     public void delete() {
         if (file != null) {
@@ -289,9 +286,10 @@ public class FileParameter {
     }
 
     /**
-     * If the saved file exists, delete it.
+     * Deletes the file that was saved using {@link #saveAs} or {@link #moveTo}.
+     * This can be used to undo the save operation.
      */
-    public void rollback() {
+    public void deleteSavedFile() {
         if (savedFile != null) {
             savedFile.delete();
         }
@@ -307,6 +305,17 @@ public class FileParameter {
         }
         if (savedFile != null) {
             savedFile.setWritable(true);
+        }
+    }
+
+    /**
+     * Releases the reference to the saved file without deleting it.
+     * Typically used for cleanup after processing.
+     */
+    protected void releaseSavedFile() {
+        if (savedFile != null) {
+            savedFile.setWritable(true);
+            savedFile = null;
         }
     }
 

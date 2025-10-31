@@ -18,7 +18,7 @@ package com.aspectran.core.scheduler.adapter;
 import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.io.OutputStringWriter;
 
 /**
  * A {@link ResponseAdapter} implementation for a scheduled job environment.

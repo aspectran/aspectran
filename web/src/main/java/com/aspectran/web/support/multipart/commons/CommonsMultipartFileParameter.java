@@ -97,11 +97,9 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Saves the uploaded file to the specified destination file.
-     * @param destFile the destination file
-     * @param overwrite {@code true} to overwrite the destination file if it exists; {@code false} otherwise
-     * @return the saved file
-     * @throws IOException if an I/O error occurs
+     * {@inheritDoc}
+     * <p>This implementation uses the {@link FileItem#write(File)} method, which may be
+     * more efficient than a manual stream copy.</p>
      */
     @Override
     public File saveAs(File destFile, boolean overwrite) throws IOException {
@@ -125,16 +123,13 @@ public class CommonsMultipartFileParameter extends FileParameter {
     }
 
     /**
-     * Renames the temporary file to the specified destination file.
-     * <p>This method is only applicable if the uploaded file is stored on disk.
-     * @param destFile the destination file
-     * @param overwrite {@code true} to overwrite the destination file if it exists; {@code false} otherwise
-     * @return the renamed file
-     * @throws IOException if an I/O error occurs
-     * @throws IllegalStateException if the uploaded file is not stored on disk
+     * {@inheritDoc}
+     * <p>This operation is only available if the uploaded file is stored on disk
+     * (i.e., it is a {@link DiskFileItem}).</p>
+     * @throws IllegalStateException if the file is not stored on disk
      */
     @Override
-    public File renameTo(File destFile, boolean overwrite) throws IOException {
+    public File moveTo(File destFile, boolean overwrite) throws IOException {
         File file = getFile();
         if (file == null) {
             throw new IllegalStateException("The uploaded temporary file does not exist");
@@ -144,12 +139,12 @@ public class CommonsMultipartFileParameter extends FileParameter {
         }
 
         validateFile();
-        return super.renameTo(destFile, overwrite);
+        return super.moveTo(destFile, overwrite);
     }
 
     /**
-     * Deletes the underlying storage for the uploaded file, including any
-     * temporary files on disk.
+     * {@inheritDoc}
+     * <p>This delegates to {@link FileItem#delete()}.</p>
      */
     @Override
     public void delete() {

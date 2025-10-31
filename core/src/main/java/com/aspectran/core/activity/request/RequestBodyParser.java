@@ -21,16 +21,18 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 
 /**
- * Utility class for parsing a request body into a {@link Parameters} object.
- * <p>
- * Provides static helper methods to interpret raw request content (typically
- * text or form-encoded data) and populate a parameters map that can be used
- * by an activity.
- * </p>
+ * A utility class for parsing an APON-formatted string from a request body
+ * into a {@link Parameters} object.
  *
  * @since 6.2.0
  */
-public abstract class RequestBodyParser {
+public final class RequestBodyParser {
+
+    /**
+     * Prevents instantiation of this utility class.
+     */
+    private RequestBodyParser() {
+    }
 
     /**
      * Parses the request body into a {@link Parameters}-compatible map.

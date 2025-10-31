@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @since 6.2.0
  */
-public abstract class RequestHeaderParser {
+public final class RequestHeaderParser {
 
     /**
      * A singleton list with {@link MediaType#ALL} that is returned from
@@ -40,6 +40,20 @@ public abstract class RequestHeaderParser {
      */
     public static final List<MediaType> MEDIA_TYPE_ALL_LIST = Collections.singletonList(MediaType.ALL);
 
+    /**
+     * Prevents instantiation of this utility class.
+     */
+    private RequestHeaderParser() {
+    }
+
+    /**
+     * Parses the 'Accept' header from the request and returns a list of {@link MediaType}s
+     * sorted by specificity and quality.
+     * @param requestAdapter the request adapter providing access to request headers
+     * @return a list of sorted {@link MediaType}s. Returns a singleton list containing
+     *         {@link MediaType#ALL} if the 'Accept' header is not present.
+     * @throws HttpMediaTypeNotAcceptableException if the 'Accept' header contains an invalid media type
+     */
     @NonNull
     public static List<MediaType> resolveAcceptContentTypes(@NonNull RequestAdapter requestAdapter)
             throws HttpMediaTypeNotAcceptableException {

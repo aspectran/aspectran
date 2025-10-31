@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils;
+package com.aspectran.utils.io;
 
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
@@ -96,7 +97,7 @@ public class OutputStringWriter extends Writer {
 
     @Override
     public String toString() {
-        return (buffer != null ? touchBuffer().toString() : StringUtils.EMPTY);
+        return (buffer != null ? buffer.toString() : StringUtils.EMPTY);
     }
 
     @Override
@@ -109,6 +110,10 @@ public class OutputStringWriter extends Writer {
         // Nothing to do
     }
 
+    /**
+     * Returns whether this writer has been written to.
+     * @return true if any write operation has occurred, false otherwise
+     */
     public boolean isDirty() {
         return (buffer != null);
     }

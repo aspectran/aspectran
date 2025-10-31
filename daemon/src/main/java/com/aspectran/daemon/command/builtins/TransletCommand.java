@@ -22,8 +22,8 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
-import com.aspectran.utils.OutputStringWriter;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.io.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;

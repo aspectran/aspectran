@@ -170,7 +170,9 @@ public abstract class AdviceActivity extends AbstractActivity {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at an UNKNOWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
-            logger.error(msg);
+            if (msg != null) {
+                logger.error(msg);
+            }
             throw ex;
         }
 
@@ -178,7 +180,9 @@ public abstract class AdviceActivity extends AbstractActivity {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at the THROWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
-            logger.error(msg);
+            if (msg != null) {
+                logger.error(msg);
+            }
             throw ex;
         }
 

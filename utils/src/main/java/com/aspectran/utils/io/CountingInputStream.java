@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An input stream that counts the number of bytes read.
+ * An input stream that counts the number of bytes read and enforces a size limit.
  *
  * @since 9.2.3
  */
@@ -34,6 +34,11 @@ public class CountingInputStream extends FilterInputStream {
 
     private long mark = -1;
 
+    /**
+     * Constructs a new CountingInputStream.
+     * @param in the input stream to wrap
+     * @param limit the maximum number of bytes to allow, or -1 for no limit
+     */
     public CountingInputStream(InputStream in, long limit) {
         super(in);
         this.limit = limit;
@@ -85,6 +90,14 @@ public class CountingInputStream extends FilterInputStream {
         }
         super.reset();
         count = mark;
+    }
+
+    /**
+     * Returns the number of bytes read from this stream so far.
+     * @return the number of bytes read
+     */
+    public long getCount() {
+        return count;
     }
 
     private void checkLimit() throws StreamReadLimitExceededException {

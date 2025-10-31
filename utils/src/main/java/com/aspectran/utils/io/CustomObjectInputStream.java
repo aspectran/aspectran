@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.utils;
+package com.aspectran.utils.io;
 
+import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.IOException;

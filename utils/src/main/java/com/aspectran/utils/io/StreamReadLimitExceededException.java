@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.io.Serial;
 
 /**
- * Exception thrown when a stream's read limit is exceeded.
+ * Exception thrown by a {@link CountingInputStream} when the stream's read limit is exceeded.
+ * This exception provides access to the actual number of bytes read and the configured limit.
  *
  * @since 9.2.3
  */
@@ -32,16 +33,30 @@ public class StreamReadLimitExceededException extends IOException {
 
     private final long limit;
 
+    /**
+     * Constructs a new StreamReadLimitExceededException.
+     * @param message the detail message
+     * @param count the actual number of bytes read
+     * @param limit the configured limit
+     */
     public StreamReadLimitExceededException(String message, long count, long limit) {
         super(message);
         this.count = count;
         this.limit = limit;
     }
 
+    /**
+     * Returns the actual number of bytes read from the stream when the limit was exceeded.
+     * @return the actual byte count
+     */
     public long getCount() {
         return count;
     }
 
+    /**
+     * Returns the configured read limit, in bytes.
+     * @return the read limit
+     */
     public long getLimit() {
         return limit;
     }
