@@ -100,7 +100,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         Activity activity = context.getAvailableActivity();
         Object bean;
         if (beanRule.isFactoryOffered()) {
-            bean = createOfferedFactoryBean(beanRule, scope, activity);
+            bean = createBeanFromFactoryMethod(beanRule, scope, activity);
         } else {
             bean = createNormalBean(beanRule, scope, activity);
         }
@@ -161,7 +161,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 }
                             }
                             if (ctorAutowireRule.isRequired() && args[i] == null) {
-                                throw new BeanCreationException("Could not autowire constructor: " +
+                                throw new BeanCreationException("Could not autowire constructor " +
                                         ctorAutowireRule, beanRule);
                             }
                         } else {
@@ -221,30 +221,24 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     @NonNull
-    private Object createOfferedFactoryBean(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
+    private Object createBeanFromFactoryMethod(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
         try {
-            Object factoryBean = null;
+            Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
+            if (factoryBeanClass == null) {
+                throw new BeanCreationException("Unresolved factory bean class", beanRule);
+            }
             Method factoryMethod = beanRule.getFactoryMethod();
             if (factoryMethod == null) {
-                throw new IllegalArgumentException("Bean rule must have a factory method");
+                throw new BeanCreationException("Unresolved factory method", beanRule);
             }
+
+            Object factoryBean = null;
             if (!Modifier.isStatic(factoryMethod.getModifiers())) {
                 String factoryBeanId = beanRule.getFactoryBeanId();
-                Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
                 if (factoryBeanId != null && factoryBeanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                    if (factoryBeanClass == null) {
-                        throw new BeanCreationException("Unresolved factory bean class for bean rule", beanRule);
-                    }
-                    factoryBeanId = factoryBeanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                    factoryBeanId = null;
                 }
-                if (factoryBeanClass != null) {
-                    factoryBean = activity.getBean(factoryBeanClass, factoryBeanId);
-                } else if (factoryBeanId != null) {
-                    factoryBean = activity.getBean(factoryBeanId);
-                } else {
-                    throw new BeanCreationException("No factory bean specified for non-static factory " +
-                            "method in bean rule", beanRule);
-                }
+                factoryBean = activity.getBean(factoryBeanClass, factoryBeanId);
             }
 
             Object bean = invokeFactoryMethod(beanRule, factoryBean, activity);
@@ -262,9 +256,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         } catch (BeanCreationException e) {
             throw e;
         } catch (Exception e) {
-            throw new BeanCreationException(
-                    "An exception occurred while creating a bean from an offered factory bean",
-                    beanRule, e);
+            throw new BeanCreationException("Failed to create bean from factory method", beanRule, e);
         }
     }
 
@@ -356,7 +348,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 if (valueEvaluator != null) {
                                     args[i] = valueEvaluator.evaluate(activity, null);
                                     if (autowireRule.isRequired() && args[i] == null) {
-                                        throw new BeanCreationException("Autowiring failed for method: " +
+                                        throw new BeanCreationException("Autowiring failed for method " +
                                                 autowireRule, beanRule);
                                     }
                                 } else {
@@ -417,17 +409,19 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 MethodUtils.invokeSetter(bean, entry.getKey(), value);
             }
         }
+
         if (beanRule.getInitMethod() != null) {
             invokeInitMethod(beanRule, bean, activity);
         }
-        if (bean instanceof InitializableBean) {
-            initializeBean(beanRule, bean);
+
+        if (bean instanceof InitializableBean initializableBean) {
+            initializeBean(beanRule, initializableBean);
         }
     }
 
-    private void initializeBean(BeanRule beanRule, Object bean) {
+    private void initializeBean(BeanRule beanRule, InitializableBean bean) {
         try {
-            ((InitializableBean)bean).initialize();
+            bean.initialize();
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while initialization of bean", beanRule, e);
         }

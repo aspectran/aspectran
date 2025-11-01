@@ -51,7 +51,7 @@ public class BeanRuleAnalyzer {
             new ConcurrentReferenceCache<>(BeanRuleAnalyzer::resolveAdvisableMethods);
 
     @Nullable
-    static Class<?> determineBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
+    static Class<?> resolveBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass;
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
@@ -59,7 +59,7 @@ public class BeanRuleAnalyzer {
                 // (will be post-processing)
                 return null;
             }
-            targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+            targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass);
         } else {
             targetBeanClass = beanRule.getBeanClass();
         }
@@ -67,23 +67,23 @@ public class BeanRuleAnalyzer {
             throw new BeanRuleException(beanRule);
         }
         if (beanRule.getInitMethodName() != null) {
-            determineInitMethod(targetBeanClass, beanRule);
+            resolveInitMethod(beanRule, targetBeanClass);
         }
         if (beanRule.getDestroyMethodName() != null) {
-            determineDestroyMethod(targetBeanClass, beanRule);
+            resolveDestroyMethod(beanRule, targetBeanClass);
         }
         if (!beanRule.isFactoryOffered()) {
             if (beanRule.isFactoryBean()) {
-                targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
+                targetBeanClass = resolveTargetBeanClassForFactoryBean(beanRule, targetBeanClass);
             } else if (beanRule.getFactoryMethodName() != null) {
-                targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+                targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass);
             }
         }
         return targetBeanClass;
     }
 
     @NonNull
-    private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule)
+    private static Class<?> resolveTargetBeanClassForFactoryBean(BeanRule beanRule, Class<?> beanClass)
             throws BeanRuleException {
         try {
             Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
@@ -96,7 +96,7 @@ public class BeanRuleAnalyzer {
     }
 
     @NonNull
-    static Class<?> determineFactoryMethodTargetBeanClass(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
+    static Class<?> resolveFactoryMethodTargetBeanClass(@NonNull BeanRule beanRule, @NonNull Class<?> factoryBeanClass)
             throws BeanRuleException {
         Class<?> targetBeanClass;
         String factoryMethodName;
@@ -106,16 +106,16 @@ public class BeanRuleAnalyzer {
             factoryMethodName = factoryMethod.getName();
         } else {
             factoryMethodName = beanRule.getFactoryMethodName();
-            Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+            Method m1 = MethodUtils.getAccessibleMethod(factoryBeanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
                 beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m1));
                 targetBeanClass = m1.getReturnType();
             } else {
-                Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
+                Method m2 = MethodUtils.getAccessibleMethod(factoryBeanClass, factoryMethodName);
                 if (m2 == null) {
                     throw new BeanRuleException("No such factory method " + factoryMethodName +
-                            "() on bean class: " + beanClass.getName(), beanRule);
+                            "() on bean class: " + factoryBeanClass.getName(), beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
                 beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
@@ -124,13 +124,13 @@ public class BeanRuleAnalyzer {
         }
         if (targetBeanClass == void.class || targetBeanClass == Void.class) {
             throw new BeanRuleException("Factory method '" + factoryMethodName + "' on bean class [" +
-                    beanClass.getName() + "] must not have a void return type", beanRule);
+                    factoryBeanClass.getName() + "] must not have a void return type", beanRule);
         }
         beanRule.setTargetBeanClass(targetBeanClass);
         return targetBeanClass;
     }
 
-    static void determineInitMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
+    public static void resolveInitMethod(@NonNull BeanRule beanRule, @NonNull Class<?> beanClass) throws BeanRuleException {
         if (beanRule.isInitializableBean()) {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
@@ -155,7 +155,7 @@ public class BeanRuleAnalyzer {
         beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(initMethod));
     }
 
-    static void determineDestroyMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
+    public static void resolveDestroyMethod(@NonNull BeanRule beanRule, @NonNull Class<?> beanClass)
             throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
@@ -163,18 +163,18 @@ public class BeanRuleAnalyzer {
         }
 
         String destroyMethodName = beanRule.getDestroyMethodName();
-        Method destroyMethod = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
-        if (destroyMethod == null) {
+        Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
+        if (m == null) {
             throw new BeanRuleException("No such destroy method " +
                     destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
         }
 
-        if (Modifier.isStatic(destroyMethod.getModifiers())) {
+        if (Modifier.isStatic(m.getModifiers())) {
             throw new BeanRuleException("Destroy method '" + destroyMethodName + "' on bean class [" +
                     beanClass.getName() + "] must not be static", beanRule);
         }
 
-        beanRule.setDestroyMethod(destroyMethod);
+        beanRule.setDestroyMethod(m);
     }
 
     static void checkRequiredProperty(@NonNull BeanRule beanRule, @NonNull Method method) throws BeanRuleException {

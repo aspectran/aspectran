@@ -406,7 +406,7 @@ public class ParametersToRules {
 
         BeanRule beanRule;
         if (className == null && scan == null && factoryBean != null) {
-            beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
+            beanRule = BeanRule.newByFactoryMethod(id, factoryBean, factoryMethod,
                     initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
         } else {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
@@ -459,9 +459,9 @@ public class ParametersToRules {
 
         BeanRule beanRule;
         if (className == null && factoryBean != null) {
-            beanRule = BeanRule.newInnerOfferedFactoryBeanRule(factoryBean, factoryMethod, initMethod, destroyMethod);
+            beanRule = BeanRule.newInnerByFactoryMethod(factoryBean, factoryMethod, initMethod, destroyMethod);
         } else {
-            beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
+            beanRule = BeanRule.newInnerInstance(className, initMethod, destroyMethod, factoryMethod);
         }
 
         List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);

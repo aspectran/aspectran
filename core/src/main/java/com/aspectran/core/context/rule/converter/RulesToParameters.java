@@ -418,7 +418,11 @@ public class RulesToParameters {
         } else if (beanRule.getScopeType() != null) {
             beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
         }
-        beanParameters.putValueIfNotNull(BeanParameters.factoryBean, beanRule.getFactoryBeanId());
+        if (beanRule.getFactoryBeanId() != null) {
+            beanParameters.putValue(BeanParameters.factoryBean, beanRule.getFactoryBeanId());
+        } else if (beanRule.getFactoryBeanClass() != null) {
+            beanParameters.putValue(BeanParameters.factoryBean, BeanRule.CLASS_DIRECTIVE_PREFIX + beanRule.getFactoryBeanClass().getName());
+        }
         beanParameters.putValueIfNotNull(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
         beanParameters.putValueIfNotNull(BeanParameters.initMethod, beanRule.getInitMethodName());
         beanParameters.putValueIfNotNull(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());

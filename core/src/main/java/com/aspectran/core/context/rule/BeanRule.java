@@ -795,7 +795,11 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
             }
         } else {
             tsb.append("scope", scopeType);
-            tsb.append("factoryBean", factoryBeanId);
+            if (factoryBeanId != null) {
+                tsb.append("factoryBean", factoryBeanId);
+            } else if (factoryBeanClass != null) {
+                tsb.append("factoryBean", CLASS_DIRECTIVE_PREFIX + factoryBeanClass.getName());
+            }
             tsb.append("factoryMethod", factoryMethodName);
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
@@ -886,7 +890,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * @throws IllegalRuleException if the configuration is invalid
      */
     @NonNull
-    public static BeanRule newOfferedFactoryBeanInstance(
+    public static BeanRule newByFactoryMethod(
             String id,
             String factoryBeanId,
             String factoryMethodName,
@@ -934,7 +938,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * @throws IllegalRuleException if the configuration is invalid
      */
     @NonNull
-    public static BeanRule newInnerBeanRule(
+    public static BeanRule newInnerInstance(
             String className,
             String initMethodName,
             String destroyMethodName,
@@ -959,7 +963,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
      * @throws IllegalRuleException if the configuration is invalid
      */
     @NonNull
-    public static BeanRule newInnerOfferedFactoryBeanRule(
+    public static BeanRule newInnerByFactoryMethod(
             String factoryBeanId,
             String factoryMethodName,
             String initMethodName,
@@ -967,7 +971,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable, Descri
         if (StringUtils.hasText(destroyMethodName)) {
             throw new IllegalRuleException("Inner beans does not support destroy methods");
         }
-        BeanRule beanRule = newOfferedFactoryBeanInstance(null, factoryBeanId, factoryMethodName,
+        BeanRule beanRule = newByFactoryMethod(null, factoryBeanId, factoryMethodName,
                 initMethodName, destroyMethodName, null, false, null, null,null);
         beanRule.setInnerBean(true);
         return beanRule;

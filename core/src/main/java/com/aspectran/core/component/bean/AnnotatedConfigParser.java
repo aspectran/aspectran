@@ -236,7 +236,7 @@ public class AnnotatedConfigParser {
                     }
                 }
                 if (method.isAnnotationPresent(Bean.class)) {
-                    parseFactoryBeanRule(beanClass, method, nameArray);
+                    parseFactoryBeanRule(beanRule.getId(), beanClass, method, nameArray);
                 } else if (method.isAnnotationPresent(Request.class) ||
                         method.isAnnotationPresent(RequestToGet.class) ||
                         method.isAnnotationPresent(RequestToPost.class) ||
@@ -507,12 +507,13 @@ public class AnnotatedConfigParser {
             beanRule.setDescriptionRule(descriptionRule);
         }
 
-        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        Class<?> targetBeanClass = BeanRuleAnalyzer.resolveBeanClass(beanRule);
         relater.relate(targetBeanClass, beanRule);
     }
 
-    private void parseFactoryBeanRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
-            throws IllegalRuleException {
+    private void parseFactoryBeanRule(
+            @Nullable String factoryBeanId, @NonNull Class<?> factoryBeanClass,
+            @NonNull Method method, String[] nameArray) throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
         assert beanAnno != null;
         String beanId = StringUtils.emptyToNull(beanAnno.value());
@@ -531,14 +532,14 @@ public class AnnotatedConfigParser {
         boolean lazyDestroy = beanAnno.lazyDestroy();
         boolean important = beanAnno.important();
 
-        Scope scopeAnno = beanClass.getAnnotation(Scope.class);
+        Scope scopeAnno = factoryBeanClass.getAnnotation(Scope.class);
         ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);
 
         BeanRule beanRule = new BeanRule();
         beanRule.setId(beanId);
         beanRule.setScopeType(scopeType);
-        beanRule.setFactoryBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
-        beanRule.setFactoryBeanClass(beanClass);
+        beanRule.setFactoryBeanId(factoryBeanId);
+        beanRule.setFactoryBeanClass(factoryBeanClass);
         beanRule.setFactoryMethodName(method.getName());
         beanRule.setFactoryMethod(method);
         beanRule.setFactoryMethodParameterBindingRules(createParameterBindingRules(method));
@@ -555,13 +556,13 @@ public class AnnotatedConfigParser {
             beanRule.setImportant(Boolean.TRUE);
         }
 
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        Description descriptionAnno = factoryBeanClass.getAnnotation(Description.class);
         DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
         if (descriptionRule != null) {
             beanRule.setDescriptionRule(descriptionRule);
         }
 
-        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        Class<?> targetBeanClass = BeanRuleAnalyzer.resolveBeanClass(beanRule);
         relater.relate(targetBeanClass, beanRule);
     }
 

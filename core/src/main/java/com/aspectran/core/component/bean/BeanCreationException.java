@@ -37,7 +37,7 @@ public class BeanCreationException extends BeanException {
      * @param beanRule the bean rule that failed to create an instance
      */
     public BeanCreationException(BeanRule beanRule) {
-        super("Cannot create a bean " + beanRule);
+        super("Failed to create bean for bean rule " + beanRule);
         this.beanRule = beanRule;
     }
 
@@ -47,7 +47,7 @@ public class BeanCreationException extends BeanException {
      * @param beanRule the bean rule that failed to create an instance
      */
     public BeanCreationException(String msg, BeanRule beanRule) {
-        super(msg + " " + beanRule);
+        super(msg + " for bean rule " + beanRule);
         this.beanRule = beanRule;
     }
 
@@ -57,7 +57,7 @@ public class BeanCreationException extends BeanException {
      * @param cause the root cause
      */
     public BeanCreationException(BeanRule beanRule, Throwable cause) {
-        super("Cannot create a bean " + beanRule, ExceptionUtils.unwrapThrowable(cause));
+        super("Failed to create bean for bean rule " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 
@@ -68,7 +68,7 @@ public class BeanCreationException extends BeanException {
      * @param cause the root cause
      */
     public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
-        super(msg + " " + beanRule, ExceptionUtils.unwrapThrowable(cause));
+        super(msg + " for bean rule " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }
 

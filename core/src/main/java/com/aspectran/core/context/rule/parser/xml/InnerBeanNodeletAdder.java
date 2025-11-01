@@ -56,9 +56,9 @@ class InnerBeanNodeletAdder implements NodeletAdder {
 
                 BeanRule beanRule;
                 if (className == null && factoryBean != null) {
-                    beanRule = BeanRule.newInnerOfferedFactoryBeanRule(factoryBean, factoryMethod, initMethod, destroyMethod);
+                    beanRule = BeanRule.newInnerByFactoryMethod(factoryBean, factoryMethod, initMethod, destroyMethod);
                 } else {
-                    beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
+                    beanRule = BeanRule.newInnerInstance(className, initMethod, destroyMethod, factoryMethod);
                 }
 
                 AspectranNodeParsingContext.pushObject(beanRule);

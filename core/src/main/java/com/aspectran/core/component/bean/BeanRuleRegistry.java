@@ -412,7 +412,7 @@ public class BeanRuleRegistry {
     }
 
     private void registerBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
-        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        Class<?> targetBeanClass = BeanRuleAnalyzer.resolveBeanClass(beanRule);
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
         } else {
@@ -523,7 +523,7 @@ public class BeanRuleRegistry {
         if (!beanRule.isInnerBean()) {
             throw new BeanRuleException("Not inner bean", beanRule);
         }
-        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        Class<?> targetBeanClass = BeanRuleAnalyzer.resolveBeanClass(beanRule);
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
         }
@@ -546,14 +546,14 @@ public class BeanRuleRegistry {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
                 if (beanRule.isFactoryOffered()) {
-                    Class<?> offeredFactoryBeanClass = resolveOfferedFactoryBeanClass(beanRule);
-                    Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(
-                            offeredFactoryBeanClass, beanRule);
+                    Class<?> factoryBeanClass = resolveFactoryBeanClass(beanRule);
+                    Class<?> targetBeanClass = BeanRuleAnalyzer.resolveFactoryMethodTargetBeanClass(
+                            beanRule, factoryBeanClass);
                     if (beanRule.getInitMethodName() != null) {
-                        BeanRuleAnalyzer.determineInitMethod(targetBeanClass, beanRule);
+                        BeanRuleAnalyzer.resolveInitMethod(beanRule, targetBeanClass);
                     }
                     if (beanRule.getDestroyMethodName() != null) {
-                        BeanRuleAnalyzer.determineDestroyMethod(targetBeanClass, beanRule);
+                        BeanRuleAnalyzer.resolveDestroyMethod(beanRule, targetBeanClass);
                     }
                     if (!beanRule.isInnerBean()) {
                         saveBeanRule(targetBeanClass, beanRule);
@@ -625,35 +625,67 @@ public class BeanRuleRegistry {
         }
     }
 
-    private Class<?> resolveOfferedFactoryBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
-        BeanRule offeredFactoryBeanRule;
-        if (beanRule.getFactoryBeanClass() == null) {
-            offeredFactoryBeanRule = getBeanRule(beanRule.getFactoryBeanId());
-            if (offeredFactoryBeanRule == null) {
-                throw new BeanRuleException("No factory bean named '" + beanRule.getFactoryBeanId() +
-                        "' is defined; Caller bean ", beanRule);
+    private Class<?> resolveFactoryBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
+        String factoryBeanId = beanRule.getFactoryBeanId();
+        Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
+        if (factoryBeanId != null && factoryBeanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+            if (factoryBeanClass == null) {
+                String className = factoryBeanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                try {
+                    factoryBeanClass = classLoader.loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    throw new BeanRuleException(beanRule, e);
+                }
+                beanRule.setFactoryBeanClass(factoryBeanClass);
             }
+            factoryBeanId = null;
+        }
+
+        if (factoryBeanId == null && factoryBeanClass == null) {
+            throw new BeanRuleException("No factory bean specified for bean rule", beanRule);
+        }
+
+        BeanRule factoryBeanRule = null;
+        if (factoryBeanClass == null) {
+            factoryBeanRule = getBeanRule(factoryBeanId);
+            if (factoryBeanRule == null) {
+                throw new BeanRuleException("No factory bean named '" + factoryBeanId +
+                        "' is defined; Caller bean", beanRule);
+            }
+            beanRule.setFactoryBeanClass(factoryBeanRule.getTargetBeanClass());
         } else {
-            BeanRule[] beanRules = getBeanRules(beanRule.getFactoryBeanClass());
+            BeanRule[] beanRules = getBeanRules(factoryBeanClass);
             if (beanRules == null || beanRules.length == 0) {
                 throw new BeanRuleException("No matching factory bean of type '" +
-                        beanRule.getFactoryBeanClass().getName() + "' found", beanRule);
+                        factoryBeanClass + "' found; Caller bean", beanRule);
             }
-            if (beanRules.length > 1) {
+            if (factoryBeanId != null) {
+                for (BeanRule br : beanRules) {
+                    if (factoryBeanId.equals(br.getId())) {
+                        if (factoryBeanRule != null) {
+                            factoryBeanRule = null;
+                            break;
+                        }
+                        factoryBeanRule = br;
+                    }
+                }
+            }
+            if (factoryBeanRule == null) {
                 throw new BeanRuleException("No unique factory bean of type '" +
                         beanRule.getFactoryBeanClass().getName() +
                         "' is defined: expected single matching bean but found " +
                         beanRules.length + ": (" +
-                        NoUniqueBeanException.getBeanDescriptions(beanRules) + "); Caller bean ",
+                        NoUniqueBeanException.getBeanDescriptions(beanRules) + "); Caller bean",
                         beanRule);
             }
-            offeredFactoryBeanRule = beanRules[0];
         }
-        if (offeredFactoryBeanRule.isFactoryOffered()) {
+
+        if (factoryBeanRule.isFactoryOffered()) {
             throw new BeanRuleException("An offered factory bean can not call " +
-                    "another offered factory bean; Caller bean ", beanRule);
+                    "another offered factory bean; Caller bean", beanRule);
         }
-        return offeredFactoryBeanRule.getTargetBeanClass();
+
+        return factoryBeanRule.getTargetBeanClass();
     }
 
 }
