@@ -79,4 +79,9 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
         return activity.getActivityData();
     }
 
+    @Override
+    public boolean isSingleton() {
+        return false;
+    }
+
 }

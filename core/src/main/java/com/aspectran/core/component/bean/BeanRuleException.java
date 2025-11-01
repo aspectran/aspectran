@@ -60,7 +60,7 @@ public class BeanRuleException extends IllegalRuleException {
      * @param beanRule the bean rule
      */
     public BeanRuleException(String msg, BeanRule beanRule) {
-        super(msg + " " + beanRule);
+        super(msg + " for bean rule " + beanRule);
         this.beanRule = beanRule;
     }
 
@@ -71,7 +71,7 @@ public class BeanRuleException extends IllegalRuleException {
      * @param cause the root cause
      */
     public BeanRuleException(String msg, BeanRule beanRule, Throwable cause) {
-        super(msg + " " + beanRule, cause);
+        super(msg + " for bean rule " + beanRule, cause);
         this.beanRule = beanRule;
     }
 

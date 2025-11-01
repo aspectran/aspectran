@@ -84,15 +84,6 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     /**
      * Create a bean instance for the given bean rule.
      * @param beanRule the bean rule to create an instance for
-     * @return the new bean instance
-     */
-    protected Object createBean(BeanRule beanRule) {
-        return createBean(beanRule, null);
-    }
-
-    /**
-     * Create a bean instance for the given bean rule.
-     * @param beanRule the bean rule to create an instance for
      * @param scope the scope to create the bean in
      * @return the new bean instance
      */
@@ -110,18 +101,28 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     /**
      * Returns the object produced by the factory bean.
      * @param beanRule the bean rule
-     * @param bean the bean instance
+     * @param factory the factory bean instance
+     * @param scope the scope to create the bean in
      * @return the object produced by the factory bean
      */
-    protected Object getFactoryProducedObject(@NonNull BeanRule beanRule, Object bean) {
+    protected Object getFactoryProducedObject(@NonNull BeanRule beanRule, Object factory, Scope scope) {
+        Object bean;
+        boolean singleton = true;
         if (beanRule.isFactoryBean()) {
-            return invokeMethodOfFactoryBean(beanRule, bean);
+            FactoryBean<?> factoryBean = (FactoryBean<?>)factory;
+            singleton = factoryBean.isSingleton();
+            bean = invokeMethodOfFactoryBean(beanRule, factoryBean);
         } else if (beanRule.getFactoryMethodName() != null) {
             Activity activity = context.getAvailableActivity();
-            return invokeFactoryMethod(beanRule, bean, activity);
+            bean = invokeFactoryMethod(beanRule, factory, activity);
         } else {
-            return null;
+            return factory;
         }
+        if (scope != null && singleton) {
+            BeanInstance instance = BeanInstance.of(bean, factory);
+            scope.putBeanInstance(beanRule, instance);
+        }
+        return bean;
     }
 
     private Object createNormalBean(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
@@ -205,7 +206,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             Object bean = instantiateBean(beanRule, args, argTypes);
 
             if (scope != null) {
-                scope.putBeanInstance(beanRule, new BeanInstance(bean));
+                scope.putBeanInstance(beanRule, BeanInstance.forProduct(bean));
             }
 
             invokeAwareMethods(bean);
@@ -248,7 +249,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             }
 
             if (scope != null) {
-                scope.putBeanInstance(beanRule, new BeanInstance(bean));
+                scope.putBeanInstance(beanRule, BeanInstance.forProduct(bean));
             }
 
             applyBeanPostProcessing(beanRule, bean, activity);
@@ -450,10 +451,10 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     @NonNull
-    private Object invokeMethodOfFactoryBean(BeanRule beanRule, Object bean) {
+    private Object invokeMethodOfFactoryBean(BeanRule beanRule, FactoryBean<?> factoryBean) {
         Object resultBean;
         try {
-            resultBean = ((FactoryBean<?>)bean).getObject();
+            resultBean = factoryBean.getObject();
         } catch (Exception e) {
             throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
         }

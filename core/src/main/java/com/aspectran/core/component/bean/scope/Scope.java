@@ -65,6 +65,13 @@ public interface Scope extends NonPersistent {
     BeanRule getBeanRuleByInstance(Object bean);
 
     /**
+     * Checks if the specified bean instance exists within the scope.
+     * @param bean the bean instance to check
+     * @return {@code true} if the bean instance exists in the scope, {@code false} otherwise
+     */
+    boolean hasInstance(Object bean);
+
+    /**
      * Checks if a bean defined by the given rule is present in this scope.
      * @param beanRule the bean rule to check for
      * @return {@code true} if a bean with the given rule exists, {@code false} otherwise

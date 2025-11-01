@@ -34,4 +34,15 @@ public interface FactoryBean<T> {
      */
     T getObject() throws Exception;
 
+    /**
+     * Is the object managed by this factory a singleton?
+     * <p>That is, will {@link #getObject()} always return the same object
+     * (a reference that can be cached)?</p>
+     * <p>The default implementation returns {@code true}.</p>
+     * @return whether the exposed object is a singleton
+     */
+    default boolean isSingleton() {
+        return true;
+    }
+
 }

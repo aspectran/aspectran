@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,11 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
+    public boolean hasInstance(Object bean) {
+        return (getBeanRuleByInstance(bean) != null);
+    }
+
+    @Override
     public boolean containsBeanRule(BeanRule beanRule) {
         return scopedBeanInstances.containsKey(beanRule);
     }
@@ -82,8 +88,11 @@ public abstract class AbstractScope implements Scope {
     public void destroy(Object bean) throws Exception {
         BeanRule beanRule = getBeanRuleByInstance(bean);
         if (beanRule != null) {
-            doDestroy(beanRule, bean);
-            scopedBeanInstances.remove(beanRule);
+            BeanInstance instance = scopedBeanInstances.get(beanRule);
+            if (instance != null) {
+                doDestroy(beanRule, instance);
+                scopedBeanInstances.remove(beanRule);
+            }
         }
     }
 
@@ -110,13 +119,12 @@ public abstract class AbstractScope implements Scope {
         for (ListIterator<BeanRule> iter = beanRulesToDestroy.listIterator(beanRulesToDestroy.size()); iter.hasPrevious();) {
             BeanRule beanRule = iter.previous();
             BeanInstance instance = scopedBeanInstances.get(beanRule);
-            Object bean = instance.getBean();
-            if (bean != null) {
+            if (instance.getBean() != null) {
                 if (beanRule.isLazyDestroy()) {
                     lazyDestroyBeans.add(beanRule);
                 } else {
                     try {
-                        doDestroy(beanRule, bean);
+                        doDestroy(beanRule, instance);
                     } catch (Exception e) {
                         logger.error("Could not destroy {} scoped bean {}", getScopeType(), beanRule, e);
                     }
@@ -127,10 +135,9 @@ public abstract class AbstractScope implements Scope {
         // Step 2: Destroy the lazy-destroy beans.
         for (BeanRule beanRule : lazyDestroyBeans) {
             BeanInstance instance = scopedBeanInstances.get(beanRule);
-            Object bean = instance.getBean();
-            if (bean != null) {
+            if (instance.getBean() != null) {
                 try {
-                    doDestroy(beanRule, bean);
+                    doDestroy(beanRule, instance);
                 } catch (Exception e) {
                     logger.error("Could not destroy {} scoped bean {}", getScopeType(), beanRule, e);
                 }
@@ -145,23 +152,40 @@ public abstract class AbstractScope implements Scope {
      * <p>Invokes the custom destroy method and/or the {@link DisposableBean}
      * interface method.</p>
      * @param beanRule the rule for the bean to be destroyed
-     * @param bean the bean instance to be destroyed
      * @throws Exception if the destruction process fails
      */
-    private void doDestroy(BeanRule beanRule, Object bean) throws Exception {
-        if (bean != null) {
-            Method destroyMethod = beanRule.getDestroyMethod();
+    private void doDestroy(@NonNull BeanRule beanRule, @NonNull BeanInstance beanInstance) throws Exception {
+        Object factory = beanInstance.getFactory();
+        Object product = beanInstance.getBean();
+        Method destroyMethod = beanRule.getDestroyMethod();
+
+        // Case 1: A factory exists (implies class+factoryMethod style)
+        if (factory != null) {
+            // The destroyMethod in the rule belongs to the factory.
             if (destroyMethod != null) {
                 try {
-                    destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
+                    destroyMethod.invoke(factory, MethodUtils.EMPTY_OBJECT_ARRAY);
                 } catch (InvocationTargetException e) {
                     throw ExceptionUtils.getCause(e);
                 }
             }
-
-            if (beanRule.isDisposableBean() && bean instanceof DisposableBean disposableBean) {
+            // Also check if the factory itself is disposable.
+            if (factory instanceof DisposableBean disposableBean) {
                 disposableBean.destroy();
             }
+        }
+        // Case 2: No factory exists. The destroyMethod belongs to the product.
+        else if (product != null && destroyMethod != null) {
+            try {
+                destroyMethod.invoke(product, MethodUtils.EMPTY_OBJECT_ARRAY);
+            } catch (InvocationTargetException e) {
+                throw ExceptionUtils.getCause(e);
+            }
+        }
+
+        // In all cases, we must check if the final product bean is disposable.
+        if (product instanceof DisposableBean disposableBean) {
+            disposableBean.destroy();
         }
     }
 

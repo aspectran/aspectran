@@ -52,33 +52,41 @@ public class BeanRuleAnalyzer {
 
     @Nullable
     static Class<?> resolveBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
-        Class<?> targetBeanClass;
-        if (beanRule.isFactoryOffered()) {
-            targetBeanClass = beanRule.getFactoryBeanClass();
-            if (targetBeanClass == null) {
-                // (will be post-processing)
-                return null;
+        Class<?> initialBeanClass = beanRule.getBeanClass();
+        Class<?> targetBeanClass; // This will eventually hold the product class
+
+        // Determine the class against which init/destroy methods should be resolved
+        Class<?> lifecycleTargetClass;
+
+        if (beanRule.isFactoryOffered()) { // Style A: factoryBean="..."
+            lifecycleTargetClass = beanRule.getFactoryBeanClass(); // This is the factory class
+            if (lifecycleTargetClass == null) {
+                return null; // Will be post-processed
             }
-            targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass);
-        } else {
-            targetBeanClass = beanRule.getBeanClass();
-        }
-        if (targetBeanClass == null) {
-            throw new BeanRuleException(beanRule);
-        }
-        if (beanRule.getInitMethodName() != null) {
-            resolveInitMethod(beanRule, targetBeanClass);
-        }
-        if (beanRule.getDestroyMethodName() != null) {
-            resolveDestroyMethod(beanRule, targetBeanClass);
-        }
-        if (!beanRule.isFactoryOffered()) {
-            if (beanRule.isFactoryBean()) {
-                targetBeanClass = resolveTargetBeanClassForFactoryBean(beanRule, targetBeanClass);
-            } else if (beanRule.getFactoryMethodName() != null) {
-                targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass);
+            targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, lifecycleTargetClass); // targetBeanClass is product
+            lifecycleTargetClass = targetBeanClass; // For Style A, init/destroy apply to product
+        } else { // Style B: class="..." factoryMethod="..." OR Style C: class="..." implements FactoryBean
+            lifecycleTargetClass = initialBeanClass; // init/destroy apply to factory
+            if (lifecycleTargetClass == null) {
+                throw new BeanRuleException(beanRule);
+            }
+            targetBeanClass = initialBeanClass; // Start with initial bean class for product determination
+
+            if (beanRule.isFactoryBean()) { // Style C
+                targetBeanClass = resolveTargetBeanClassForFactoryBean(beanRule, targetBeanClass); // targetBeanClass is product
+            } else if (beanRule.getFactoryMethodName() != null) { // Style B
+                targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass); // targetBeanClass is product
             }
         }
+
+        // Resolve init/destroy methods against the determined lifecycleTargetClass
+        if (beanRule.getInitMethodName() != null && beanRule.getInitMethod() == null) {
+            resolveInitMethod(beanRule, lifecycleTargetClass);
+        }
+        if (beanRule.getDestroyMethodName() != null && beanRule.getDestroyMethod() == null) {
+            resolveDestroyMethod(beanRule, lifecycleTargetClass);
+        }
+
         return targetBeanClass;
     }
 
@@ -115,7 +123,7 @@ public class BeanRuleAnalyzer {
                 Method m2 = MethodUtils.getAccessibleMethod(factoryBeanClass, factoryMethodName);
                 if (m2 == null) {
                     throw new BeanRuleException("No such factory method " + factoryMethodName +
-                            "() on bean class: " + factoryBeanClass.getName(), beanRule);
+                            "() on bean class [" + factoryBeanClass.getName() + "]", beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
                 beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
@@ -143,7 +151,7 @@ public class BeanRuleAnalyzer {
         }
         if (initMethod == null) {
             throw new BeanRuleException("No such initialization method " +
-                    initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+                    initMethodName + "() on bean class [" + beanClass.getName() + "]", beanRule);
         }
 
         if (Modifier.isStatic(initMethod.getModifiers())) {
@@ -166,7 +174,7 @@ public class BeanRuleAnalyzer {
         Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
         if (m == null) {
             throw new BeanRuleException("No such destroy method " +
-                    destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+                    destroyMethodName + "() on bean class [" + beanClass.getName() + "]", beanRule);
         }
 
         if (Modifier.isStatic(m.getModifiers())) {
@@ -185,7 +193,7 @@ public class BeanRuleAnalyzer {
                 return;
             }
         }
-        throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
+        throw new BeanRuleException("Property '" + propertyName + "' is required", beanRule);
     }
 
     @NonNull

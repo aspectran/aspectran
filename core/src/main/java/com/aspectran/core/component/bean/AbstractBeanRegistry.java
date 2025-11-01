@@ -113,7 +113,12 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
         }
-        return getScopedBean(singletonScope, beanRule);
+        BeanInstance instance = getScopedBean(singletonScope, beanRule);
+        if (beanRule.isFactoryProductionRequired()) {
+            return resolveFactoryProducedBean(beanRule, instance, singletonScope);
+        } else {
+            return instance.getBean();
+        }
     }
 
     @Override
@@ -122,9 +127,9 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
         }
-        Object bean = createBean(beanRule);
+        Object bean = createBean(beanRule, null);
         if (bean != null && beanRule.isFactoryProductionRequired()) {
-            bean = getFactoryProducedObject(beanRule, bean);
+            bean = getFactoryProducedObject(beanRule, bean, null);
         }
         return (V)bean;
     }
@@ -137,7 +142,12 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (scope == null) {
             throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
         }
-        return getScopedBean(scope, beanRule);
+        BeanInstance instance = getScopedBean(scope, beanRule);
+        if (beanRule.isFactoryProductionRequired()) {
+            return resolveFactoryProducedBean(beanRule, instance, scope);
+        } else {
+            return instance.getBean();
+        }
     }
 
     private Object getSessionScopeBean(BeanRule beanRule) {
@@ -148,29 +158,54 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (scope == null) {
             throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
         }
-        return getScopedBean(scope, beanRule);
+        BeanInstance instance = getScopedBean(scope, beanRule);
+        if (beanRule.isFactoryProductionRequired()) {
+            return resolveFactoryProducedBean(beanRule, instance, scope);
+        } else {
+            return instance.getBean();
+        }
     }
 
-    private Object getScopedBean(@NonNull Scope scope, BeanRule beanRule) {
+    private Object resolveFactoryProducedBean(@NonNull BeanRule beanRule, @NonNull BeanInstance instance, @Nullable Scope scope) {
+        Object beanToReturn;
+        if (instance.getFactory() != null) {
+            // Factory exists, check if product is cached
+            if (instance.getBean() != null) {
+                // Product is cached, return it
+                beanToReturn = instance.getBean();
+            } else {
+                // Product not cached (isSingleton()=false), create new product
+                beanToReturn = getFactoryProducedObject(beanRule, instance.getFactory(), scope);
+            }
+        } else {
+            // No factory, instance.getBean() is the candidate
+            beanToReturn = getFactoryProducedObject(beanRule, instance.getBean(), scope);
+        }
+        return beanToReturn;
+    }
+
+    private BeanInstance getScopedBean(@NonNull Scope scope, BeanRule beanRule) {
         ReadWriteLock scopeLock = scope.getScopeLock();
         if (scopeLock == null) {
-            Object bean;
             BeanInstance instance = scope.getBeanInstance(beanRule);
             if (instance == null) {
-                bean = createBean(beanRule, scope);
-            } else {
-                bean = instance.getBean();
+                Object bean = createBean(beanRule, scope);
+                if (bean != null && beanRule.isFactoryProductionRequired()) {
+                    // If it's a factory bean, getFactoryProducedObject will put the BeanInstance(product, factory) into scope
+                    getFactoryProducedObject(beanRule, bean, scope);
+                    instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
+                } else {
+                    instance = BeanInstance.forProduct(bean);
+                    scope.putBeanInstance(beanRule, instance);
+                }
             }
-            if (bean != null && beanRule.isFactoryProductionRequired()) {
-                bean = getFactoryProducedObject(beanRule, bean);
-            }
-            return bean;
+            return instance;
         } else {
             boolean readLocked = true;
             scopeLock.readLock().lock();
-            Object bean;
+            BeanInstance instance;
             try {
-                BeanInstance instance = scope.getBeanInstance(beanRule);
+                instance = scope.getBeanInstance(beanRule);
                 if (instance == null) {
                     readLocked = false;
                     scopeLock.readLock().unlock();
@@ -179,20 +214,20 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                         // Double-check inside the write lock
                         instance = scope.getBeanInstance(beanRule);
                         if (instance == null) {
-                            bean = createBean(beanRule, scope);
-                        } else {
-                            bean = instance.getBean();
+                            Object bean = createBean(beanRule, scope);
+                            if (bean != null && beanRule.isFactoryProductionRequired()) {
+                                // Synchronize on the factory bean instance to ensure thread-safe object production.
+                                synchronized (bean) {
+                                    getFactoryProducedObject(beanRule, bean, scope);
+                                    instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
+                                }
+                            } else {
+                                instance = BeanInstance.forProduct(bean);
+                                scope.putBeanInstance(beanRule, instance);
+                            }
                         }
                     } finally {
                         scopeLock.writeLock().unlock();
-                    }
-                } else {
-                    bean = instance.getBean();
-                }
-                if (bean != null && beanRule.isFactoryProductionRequired()) {
-                    // Synchronize on the factory bean instance to ensure thread-safe object production.
-                    synchronized (bean) {
-                        bean = getFactoryProducedObject(beanRule, bean);
                     }
                 }
             } finally {
@@ -200,7 +235,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                     scopeLock.readLock().unlock();
                 }
             }
-            return bean;
+            return instance;
         }
     }
 
@@ -238,7 +273,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
         scopeLock.readLock().lock();
         try {
-            return (singletonScope.getBeanRuleByInstance(bean) != null);
+            return singletonScope.hasInstance(bean);
         } finally {
             scopeLock.readLock().unlock();
         }
@@ -300,8 +335,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         boolean readLocked = true;
         scopeLock.readLock().lock();
         try {
-            BeanRule beanRule = singletonScope.getBeanRuleByInstance(bean);
-            if (beanRule != null) {
+            if (singletonScope.hasInstance(bean)) {
                 readLocked = false;
                 scopeLock.readLock().unlock();
                 scopeLock.writeLock().lock();

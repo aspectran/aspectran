@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <bean id="sampleFactory" class="com.aspectran.core.sample.bean.SampleFactory"/>
+
+    <bean id="product1" factoryBean="sampleFactory" factoryMethod="createProduct" scope="prototype"/>
+
+    <bean id="product2" class="com.aspectran.core.sample.bean.SampleFactory" factoryMethod="createStaticProduct" scope="prototype"/>
+
+    <bean id="product3"
+          factoryBean="sampleFactory"
+          factoryMethod="createProductWithInitMethod">
+        <properties>
+            <item name="name">product-initialized</item>
+        </properties>
+    </bean>
+
+    <bean id="product4" factoryBean="class:com.aspectran.core.sample.bean.SampleFactory" factoryMethod="createProductWithInitMethod" initMethod="init" scope="prototype"/>
+
+</aspectran>
