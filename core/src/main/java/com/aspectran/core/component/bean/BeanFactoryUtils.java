@@ -36,8 +36,10 @@ import java.util.Arrays;
 public abstract class BeanFactoryUtils {
 
     /**
-     * Convenience method to instantiate a class using its no-arg constructor.
+     * Instantiate a class using its constructor that matches the given arguments.
      * @param beanClass the class to instantiate
+     * @param args the arguments to pass to the constructor
+     * @param argTypes the argument types to use for constructor resolution
      * @return the new instance
      * @throws BeanInstantiationException if the bean cannot be instantiated
      */
@@ -53,7 +55,7 @@ public abstract class BeanFactoryUtils {
                 constructorToUse = ClassUtils.findConstructor(beanClass, argTypes);
             }
         } catch (NoSuchMethodException e) {
-            throw new BeanInstantiationException(beanClass, "No default constructor found", e);
+            throw new BeanInstantiationException(beanClass, "No matching constructor found", e);
         }
         return newInstance(constructorToUse, args);
     }
@@ -72,34 +74,8 @@ public abstract class BeanFactoryUtils {
     @NonNull
     private static Object newInstance(@NonNull Constructor<?> ctor, Object[] args) {
         try {
-            if (ObjectUtils.isEmpty(args)) {
-                return ctor.newInstance(args);
-            } else {
-                Class<?>[] parameterTypes = ctor.getParameterTypes();
-                boolean casting = false;
-                for (Class<?> paramType : parameterTypes) {
-                    if (paramType.isArray()) {
-                        casting = true;
-                        break;
-                    }
-                }
-                if (casting) {
-                    Object[] newArgs = Arrays.copyOf(args, args.length);
-                    for (int i = 0; i < parameterTypes.length; i++) {
-                        if (newArgs[i] instanceof Object[] arr) {
-                            Class<?> paramType = parameterTypes[i];
-                            Class<?> componentType = paramType.getComponentType();
-                            int len = arr.length;
-                            Object[] newArr = (Object[])Array.newInstance(componentType, len);
-                            System.arraycopy(arr, 0, newArr, 0, len);
-                            newArgs[i] = newArr;
-                        }
-                    }
-                    return ctor.newInstance(newArgs);
-                } else {
-                    return ctor.newInstance(args);
-                }
-            }
+            Object[] adaptedArgs = adaptArgumentsForInstantiation(ctor, args);
+            return ctor.newInstance(adaptedArgs);
         } catch (InstantiationException e) {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
                     "Is it an abstract class?", e);
@@ -116,6 +92,45 @@ public abstract class BeanFactoryUtils {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
                     "Constructor threw exception", e);
         }
+    }
+
+    /**
+     * Adapts the given arguments to the constructor's parameter types, primarily for handling array type mismatches.
+     * For example, converts an {@code Object[]} to a {@code String[]} if the constructor expects the latter.
+     * @param ctor the constructor
+     * @param args the original arguments
+     * @return the adapted arguments, or the original arguments if no adaptation is needed
+     */
+    private static Object[] adaptArgumentsForInstantiation(@NonNull Constructor<?> ctor, Object[] args) {
+        if (ObjectUtils.isEmpty(args)) {
+            return args;
+        }
+        Class<?>[] parameterTypes = ctor.getParameterTypes();
+        if (args.length != parameterTypes.length) {
+            // Let the reflective newInstance call handle the argument mismatch error
+            return args;
+        }
+
+        Object[] adaptedArgs = null; // Lazily create
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Object arg = args[i];
+            Class<?> paramType = parameterTypes[i];
+
+            // If parameter is an array and argument is an Object[], we may need to convert
+            if (paramType.isArray() && arg instanceof Object[] arr) {
+                // If the argument's array type is not assignable to the parameter's array type
+                if (!paramType.isAssignableFrom(arr.getClass())) {
+                    if (adaptedArgs == null) {
+                        adaptedArgs = Arrays.copyOf(args, args.length);
+                    }
+                    Class<?> componentType = paramType.getComponentType();
+                    Object[] newArr = (Object[])Array.newInstance(componentType, arr.length);
+                    System.arraycopy(arr, 0, newArr, 0, arr.length);
+                    adaptedArgs[i] = newArr;
+                }
+            }
+        }
+        return (adaptedArgs != null ? adaptedArgs : args);
     }
 
     private static Constructor<?> getMatchConstructor(@NonNull Class<?> beanClass, Object[] args) {

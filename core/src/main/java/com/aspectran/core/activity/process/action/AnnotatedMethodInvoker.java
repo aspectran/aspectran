@@ -72,9 +72,7 @@ public abstract class AnnotatedMethodInvoker {
      * @throws Exception if the underlying method invocation throws an exception
      */
     public static Object invoke(
-            @NonNull Activity activity,
-            @Nullable Object bean,
-            @NonNull Method method,
+            @NonNull Activity activity, @Nullable Object bean, @NonNull Method method,
             @Nullable ParameterBindingRule[] parameterBindingRules) throws Exception {
         ParameterBindingRule pbr = null;
         try {
@@ -325,8 +323,8 @@ public abstract class AnnotatedMethodInvoker {
      * @throws TypeConversionException if the type conversion fails
      */
     @Nullable
-    private static Object resolveValue(Object value, @NonNull Class<?> targetType, Annotation[] annotations,
-                                       @NonNull Activity activity)
+    private static Object resolveValue(
+            Object value, @NonNull Class<?> targetType, Annotation[] annotations, @NonNull Activity activity)
             throws TypeConversionException {
         TypeConverterRegistry registry = activity.getActivityContext().getTypeConverterRegistry();
         if (targetType.isArray()) {

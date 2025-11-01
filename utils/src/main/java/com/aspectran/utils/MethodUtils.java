@@ -362,8 +362,8 @@ public abstract class MethodUtils {
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException if the requested method is not accessible via reflection
      */
-    public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args,
-                                                 Class<?>[] paramTypes)
+    public static Object invokeExactStaticMethod(
+            Class<?> objectClass, String methodName, Object[] args, Class<?>[] paramTypes)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         if (args == null) {
             args = EMPTY_OBJECT_ARRAY;
@@ -470,8 +470,8 @@ public abstract class MethodUtils {
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException if the requested method is not accessible via reflection
      */
-    public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args,
-                                            Class<?>[] paramTypes)
+    public static Object invokeStaticMethod(
+            Class<?> objectClass, String methodName, Object[] args, Class<?>[] paramTypes)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         if (args == null) {
             args = EMPTY_OBJECT_ARRAY;
@@ -552,8 +552,9 @@ public abstract class MethodUtils {
         return invokeMethod(object, method, methodsParams, args, paramTypes);
     }
 
-    private static Object invokeMethod(@Nullable Object object, @NonNull Method method,
-                                       Class<?>[] methodsParams, Object[] args, Class<?>[] paramTypes)
+    private static Object invokeMethod(
+            @Nullable Object object, @NonNull Method method,
+            Class<?>[] methodsParams, Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (methodsParams != null && methodsParams.length > 0) {
             Object[] args2 = new Object[methodsParams.length];
@@ -699,8 +700,8 @@ public abstract class MethodUtils {
      * @param paramTypes The parameter type signatures
      */
     @Nullable
-    private static Method getAccessibleMethodFromSuperclass(@NonNull Class<?> clazz, String methodName,
-                                                            Class<?>[] paramTypes) {
+    private static Method getAccessibleMethodFromSuperclass(
+            @NonNull Class<?> clazz, String methodName, Class<?>[] paramTypes) {
         Class<?> parentClazz = clazz.getSuperclass();
         while (parentClazz != null) {
             if (Modifier.isPublic(parentClazz.getModifiers())) {
@@ -728,8 +729,8 @@ public abstract class MethodUtils {
      * @param paramTypes The parameter type signatures
      */
     @Nullable
-    private static Method getAccessibleMethodFromInterfaceNest(Class<?> clazz, String methodName,
-                                                               Class<?>[] paramTypes) {
+    private static Method getAccessibleMethodFromInterfaceNest(
+            Class<?> clazz, String methodName, Class<?>[] paramTypes) {
         Method method = null;
 
         // Search up the superclass chain
@@ -787,8 +788,8 @@ public abstract class MethodUtils {
      * @return the accessible method
      */
     @Nullable
-    public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Object[] args,
-                                                     Class<?>[] paramTypes) {
+    public static Method getMatchingAccessibleMethod(
+            Class<?> clazz, String methodName, Object[] args, Class<?>[] paramTypes) {
         MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, false);
 
         // Check the cache first

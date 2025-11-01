@@ -210,21 +210,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
             invokeAwareMethods(bean);
             autowiring(beanRule, bean, activity);
-
-            ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-            if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
-                    Object value = activity.getItemEvaluator().evaluate(entry.getValue());
-                    MethodUtils.invokeSetter(bean, entry.getKey(), value);
-                }
-            }
-
-            if (beanRule.getInitMethod() != null) {
-                invokeInitMethod(beanRule, bean, activity);
-            }
-            if (beanRule.isInitializableBean()) {
-                initializeBean(beanRule, bean);
-            }
+            applyBeanPostProcessing(beanRule, bean, activity);
 
             return bean;
         } catch (BeanCreationException e) {
@@ -234,54 +220,51 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
+    @NonNull
     private Object createOfferedFactoryBean(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
-        String factoryBeanId = beanRule.getFactoryBeanId();
-        Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
-        Object bean;
-
         try {
-            if (factoryBeanClass != null) {
-                if (Modifier.isInterface(factoryBeanClass.getModifiers())) {
-                    bean = null;
-                } else {
-                    bean = activity.getBean(factoryBeanClass);
-                }
-            } else {
-                bean = activity.getBean(factoryBeanId);
+            Object factoryBean = null;
+            Method factoryMethod = beanRule.getFactoryMethod();
+            if (factoryMethod == null) {
+                throw new IllegalArgumentException("Bean rule must have a factory method");
             }
-            bean = invokeFactoryMethod(beanRule, bean, activity);
+            if (!Modifier.isStatic(factoryMethod.getModifiers())) {
+                String factoryBeanId = beanRule.getFactoryBeanId();
+                Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
+                if (factoryBeanId != null && factoryBeanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+                    if (factoryBeanClass == null) {
+                        throw new BeanCreationException("Unresolved factory bean class for bean rule", beanRule);
+                    }
+                    factoryBeanId = factoryBeanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+                }
+                if (factoryBeanClass != null) {
+                    factoryBean = activity.getBean(factoryBeanClass, factoryBeanId);
+                } else if (factoryBeanId != null) {
+                    factoryBean = activity.getBean(factoryBeanId);
+                } else {
+                    throw new BeanCreationException("No factory bean specified for non-static factory " +
+                            "method in bean rule", beanRule);
+                }
+            }
+
+            Object bean = invokeFactoryMethod(beanRule, factoryBean, activity);
             if (bean == null) {
                 throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() +
                         "] has returned null");
             }
-        } catch (BeanCreationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BeanCreationException(
-                    "An exception occurred while invoking a factory method from the offered factory bean",
-                    beanRule, e);
-        }
 
-        if (scope != null) {
-            scope.putBeanInstance(beanRule, new BeanInstance(bean));
-        }
+            if (scope != null) {
+                scope.putBeanInstance(beanRule, new BeanInstance(bean));
+            }
 
-        try {
-            ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-            if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
-                    Object value = activity.getItemEvaluator().evaluate(entry.getValue());
-                    MethodUtils.invokeSetter(bean, entry.getKey(), value);
-                }
-            }
-            if (beanRule.getInitMethod() != null) {
-                invokeInitMethod(beanRule, bean, activity);
-            }
+            applyBeanPostProcessing(beanRule, bean, activity);
             return bean;
         } catch (BeanCreationException e) {
             throw e;
         } catch (Exception e) {
-            throw new BeanCreationException(beanRule, e);
+            throw new BeanCreationException(
+                    "An exception occurred while creating a bean from an offered factory bean",
+                    beanRule, e);
         }
     }
 
@@ -423,6 +406,22 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             if (bean instanceof EnvironmentAware environmentAware) {
                 environmentAware.setEnvironment(context.getEnvironment());
             }
+        }
+    }
+
+    private void applyBeanPostProcessing(@NonNull BeanRule beanRule, Object bean, Activity activity) throws Exception {
+        ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
+            for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
+                Object value = activity.getItemEvaluator().evaluate(entry.getValue());
+                MethodUtils.invokeSetter(bean, entry.getKey(), value);
+            }
+        }
+        if (beanRule.getInitMethod() != null) {
+            invokeInitMethod(beanRule, bean, activity);
+        }
+        if (bean instanceof InitializableBean) {
+            initializeBean(beanRule, bean);
         }
     }
 

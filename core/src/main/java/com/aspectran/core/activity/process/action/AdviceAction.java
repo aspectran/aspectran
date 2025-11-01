@@ -27,8 +27,9 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
  *
  * <p>This action is used internally by the framework to run advice logic (e.g., @Before, @After)
  * defined in an {@link com.aspectran.core.context.rule.AspectRule}.
- * It overrides the bean resolution logic to first look for the bean within the
- * current AOP advice context.</p>
+ * It overrides the bean resolution logic. If the action specifies an explicit bean to invoke,
+ * it uses the standard bean resolution. Otherwise, it resolves the bean from the current
+ * AOP advice context.</p>
  *
  * <p>Created: 2019. 07. 18</p>
  */
@@ -55,15 +56,16 @@ public class AdviceAction extends InvokeAction {
     }
 
     /**
-     * Resolves the target bean instance. This implementation first attempts to retrieve
-     * the bean from the AOP advice context. If not found, it falls back to the
-     * default bean resolution mechanism of the superclass.
+     * Resolves the target bean instance. If an explicit bean ID or class is defined in the
+     * underlying invoke rule, this method delegates to the superclass's resolution logic.
+     * Otherwise, it retrieves the appropriate advice bean from the current activity's
+     * advice context.
      * @param activity the current activity
      * @return the resolved advice bean instance
-     * @throws Exception if the bean cannot be found
+     * @throws ActionExecutionException if a required bean instance cannot be resolved
      */
     @Override
-    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+    protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
         if (getInvokeActionRule().getBeanId() != null || getInvokeActionRule().getBeanClass() != null) {
             return super.resolveBean(activity);
         }
@@ -84,10 +86,11 @@ public class AdviceAction extends InvokeAction {
             if (getInvokeActionRule().getMethod() != null) {
                 tsb.append("method", getInvokeActionRule().getMethod());
             } else {
-                tsb.append("bean", adviceRule.getAdviceBeanId());
-                if (adviceRule.getAdviceBeanId() == null) {
-                    tsb.append("bean", adviceRule.getAdviceBeanClass());
+                Object beanIdentifier = adviceRule.getAdviceBeanId();
+                if (beanIdentifier == null) {
+                    beanIdentifier = adviceRule.getAdviceBeanClass();
                 }
+                tsb.append("bean", beanIdentifier);
                 tsb.append("method", getInvokeActionRule().getMethodName());
             }
         }

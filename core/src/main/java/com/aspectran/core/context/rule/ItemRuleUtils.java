@@ -21,7 +21,6 @@ import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
-import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
@@ -29,6 +28,7 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,57 +55,46 @@ public abstract class ItemRuleUtils {
      */
     public static Class<?> getPrototypeClass(@NonNull ItemRule itemRule, Object value) {
         ItemValueType valueType = itemRule.getValueType();
-        if (itemRule.getType() == ItemType.ARRAY) {
-            if (valueType == ItemValueType.STRING) {
-                return String[].class;
-            } else if (valueType == ItemValueType.INT) {
-                return Integer[].class;
-            } else if (valueType == ItemValueType.LONG) {
-                return Long[].class;
-            } else if (valueType == ItemValueType.FLOAT) {
-                return Float[].class;
-            } else if (valueType == ItemValueType.DOUBLE) {
-                return Double[].class;
-            } else if (valueType == ItemValueType.BOOLEAN) {
-                return Boolean[].class;
-            } else if (valueType == ItemValueType.PARAMETERS) {
-                return Parameters[].class;
-            } else if (valueType == ItemValueType.FILE) {
-                return File[].class;
-            } else if (valueType == ItemValueType.MULTIPART_FILE) {
-                return FileParameter[].class;
-            } else {
-                return (value != null ? value.getClass() : Object[].class);
+        switch (itemRule.getType()) {
+            case ARRAY -> {
+                return switch (valueType) {
+                    case STRING -> String[].class;
+                    case INT -> Integer[].class;
+                    case LONG -> Long[].class;
+                    case FLOAT -> Float[].class;
+                    case DOUBLE -> Double[].class;
+                    case BOOLEAN -> Boolean[].class;
+                    case PARAMETERS -> Parameters[].class;
+                    case FILE -> File[].class;
+                    case MULTIPART_FILE -> FileParameter[].class;
+                    case null, default -> (value != null ? value.getClass() : Object[].class);
+                };
             }
-        } else if (itemRule.getType() == ItemType.LIST) {
-            return (value != null ? value.getClass() : List.class);
-        } else if (itemRule.getType() == ItemType.MAP) {
-            return (value != null ? value.getClass() : Map.class);
-        } else if (itemRule.getType() == ItemType.SET) {
-            return (value != null ? value.getClass() : Set.class);
-        } else if (itemRule.getType() == ItemType.PROPERTIES) {
-            return (value != null ? value.getClass() : Properties.class);
-        } else {
-            if (valueType == ItemValueType.STRING) {
-                return String.class;
-            } else if (valueType == ItemValueType.INT) {
-                return Integer.class;
-            } else if (valueType == ItemValueType.LONG) {
-                return Long.class;
-            } else if (valueType == ItemValueType.FLOAT) {
-                return Float.class;
-            } else if (valueType == ItemValueType.DOUBLE) {
-                return Double.class;
-            } else if (valueType == ItemValueType.BOOLEAN) {
-                return Boolean.class;
-            } else if (valueType == ItemValueType.PARAMETERS) {
-                return Parameters.class;
-            } else if (valueType == ItemValueType.FILE) {
-                return File.class;
-            } else if (valueType == ItemValueType.MULTIPART_FILE) {
-                return FileParameter.class;
-            } else {
-                return (value != null ? value.getClass() : Object.class);
+            case LIST -> {
+                return (value != null ? value.getClass() : List.class);
+            }
+            case MAP -> {
+                return (value != null ? value.getClass() : Map.class);
+            }
+            case SET -> {
+                return (value != null ? value.getClass() : Set.class);
+            }
+            case PROPERTIES -> {
+                return (value != null ? value.getClass() : Properties.class);
+            }
+            case null, default -> {
+                return switch (valueType) {
+                    case STRING -> String.class;
+                    case INT -> Integer.class;
+                    case LONG -> Long.class;
+                    case FLOAT -> Float.class;
+                    case DOUBLE -> Double.class;
+                    case BOOLEAN -> Boolean.class;
+                    case PARAMETERS -> Parameters.class;
+                    case FILE -> File.class;
+                    case MULTIPART_FILE -> FileParameter.class;
+                    case null, default -> (value != null ? value.getClass() : Object.class);
+                };
             }
         }
     }
@@ -128,25 +117,10 @@ public abstract class ItemRuleUtils {
             if (map != null) {
                 it = map.values().iterator();
             }
+        } else  if (itemRule.getTokens() != null) {
+            it = Collections.singleton(itemRule.getTokens()).iterator();
         } else {
-            return new Iterator<>() {
-                private int count = 0;
-
-                @Override
-                public boolean hasNext() {
-                    return (count++ < 1);
-                }
-
-                @Override
-                public Token[] next() {
-                    return itemRule.getTokens();
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException("Cannot remove an element of an array");
-                }
-            };
+            it = Collections.emptyIterator();
         }
         return it;
     }
@@ -250,8 +224,7 @@ public abstract class ItemRuleUtils {
         boolean mandatory = paramItem.mandatory();
         boolean secret = paramItem.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(
-                null, name, null, tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }
@@ -271,8 +244,7 @@ public abstract class ItemRuleUtils {
         boolean mandatory = attrItem.mandatory();
         boolean secret = attrItem.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(
-                null, name, null, tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }

@@ -28,6 +28,7 @@ import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentReferenceCache;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,14 +98,15 @@ public class BeanRuleAnalyzer {
     @NonNull
     static Class<?> determineFactoryMethodTargetBeanClass(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
             throws BeanRuleException {
+        Class<?> targetBeanClass;
+        String factoryMethodName;
         if (beanRule.getFactoryMethod() != null) {
-            Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
-            beanRule.setTargetBeanClass(targetBeanClass);
-            return targetBeanClass;
+            Method factoryMethod = beanRule.getFactoryMethod();
+            targetBeanClass = factoryMethod.getReturnType();
+            factoryMethodName = factoryMethod.getName();
         } else {
-            String factoryMethodName = beanRule.getFactoryMethodName();
+            factoryMethodName = beanRule.getFactoryMethodName();
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-            Class<?> targetBeanClass;
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
                 beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m1));
@@ -119,9 +121,13 @@ public class BeanRuleAnalyzer {
                 beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
                 targetBeanClass = m2.getReturnType();
             }
-            beanRule.setTargetBeanClass(targetBeanClass);
-            return targetBeanClass;
         }
+        if (targetBeanClass == void.class || targetBeanClass == Void.class) {
+            throw new BeanRuleException("Factory method '" + factoryMethodName + "' on bean class [" +
+                    beanClass.getName() + "] must not have a void return type", beanRule);
+        }
+        beanRule.setTargetBeanClass(targetBeanClass);
+        return targetBeanClass;
     }
 
     static void determineInitMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
@@ -131,35 +137,44 @@ public class BeanRuleAnalyzer {
         }
 
         String initMethodName = beanRule.getInitMethodName();
-        Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-        if (m1 != null) {
-            beanRule.setInitMethod(m1);
-            beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m1));
-        } else {
-            Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
-            if (m2 == null) {
-                throw new BeanRuleException("No such initialization method " +
-                        initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-            }
-            beanRule.setInitMethod(m2);
-            beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
+        Method initMethod = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+        if (initMethod == null) {
+            initMethod = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
         }
+        if (initMethod == null) {
+            throw new BeanRuleException("No such initialization method " +
+                    initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+        }
+
+        if (Modifier.isStatic(initMethod.getModifiers())) {
+            throw new BeanRuleException("Initialization method '" + initMethodName + "' on bean class [" +
+                    beanClass.getName() + "] must not be static", beanRule);
+        }
+
+        beanRule.setInitMethod(initMethod);
+        beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(initMethod));
     }
 
     static void determineDestroyMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
-        throws BeanRuleException {
+            throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);
         }
 
         String destroyMethodName = beanRule.getDestroyMethodName();
-        Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
-        if (m == null) {
+        Method destroyMethod = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
+        if (destroyMethod == null) {
             throw new BeanRuleException("No such destroy method " +
                     destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
         }
-        beanRule.setDestroyMethod(m);
+
+        if (Modifier.isStatic(destroyMethod.getModifiers())) {
+            throw new BeanRuleException("Destroy method '" + destroyMethodName + "' on bean class [" +
+                    beanClass.getName() + "] must not be static", beanRule);
+        }
+
+        beanRule.setDestroyMethod(destroyMethod);
     }
 
     static void checkRequiredProperty(@NonNull BeanRule beanRule, @NonNull Method method) throws BeanRuleException {

@@ -38,9 +38,17 @@ import java.util.Map;
  * An action that invokes a specified method on a managed bean.
  *
  * <p>This is a core action used to execute business logic by calling methods on
- * beans defined in the application context. It supports setting properties on the
- * bean before invocation and dynamically resolving method arguments from the current
- * {@link com.aspectran.core.activity.Translet}.
+ * beans defined in the application context. It operates in two modes:
+ * <ol>
+ *   <li><b>Pre-resolved Method:</b> If the {@link Method} object is provided in the
+ *   {@link InvokeActionRule}, it is invoked directly. This is the most efficient mode.</li>
+ *   <li><b>Dynamic Method Resolution:</b> If only a method name is provided, the action
+ *   dynamically finds a matching method at runtime based on the method name and
+ *   arguments. It intelligently determines whether to pass the current {@link Translet}
+ *   as the first argument and caches this decision for subsequent invocations to
+ *   optimize performance.</li>
+ * </ol>
+ * It also supports setting properties on the bean before the method invocation.
  */
 public class InvokeAction implements Executable {
 
@@ -58,13 +66,6 @@ public class InvokeAction implements Executable {
         this.invokeActionRule = invokeActionRule;
     }
 
-    /**
-     * Executes the invoke action. This method resolves the target bean and then
-     * proceeds with the method invocation.
-     * @param activity the current activity
-     * @return the result of the method invocation
-     * @throws Exception if an error occurs during action execution
-     */
     @Override
     public Object execute(@NonNull Activity activity) throws Exception {
         Object bean = resolveBean(activity);
@@ -76,9 +77,9 @@ public class InvokeAction implements Executable {
      * or class specified in the rule.
      * @param activity the current activity
      * @return the resolved bean instance
-     * @throws Exception if the bean cannot be found
+     * @throws ActionExecutionException if the bean cannot be found
      */
-    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+    protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
         Object bean = null;
         if (invokeActionRule.getBeanClass() != null) {
             bean = activity.getBean(invokeActionRule.getBeanClass());
@@ -92,7 +93,7 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Executes the method invocation on the specified bean instance.
+     * Prepares the bean by setting properties and then executes the method invocation.
      * @param activity the current activity
      * @param bean the target bean instance
      * @return the result of the method execution
@@ -101,7 +102,6 @@ public class InvokeAction implements Executable {
     private Object execute(Activity activity, Object bean) throws Exception {
         try {
             ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
-            ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(propertyItemRuleMap);
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -111,6 +111,8 @@ public class InvokeAction implements Executable {
 
             Method method = invokeActionRule.getMethod();
             if (method != null) {
+                // Pre-resolved method for efficiency
+                ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
                 if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
                     Object[] args = createArguments(activity, argumentItemRuleMap, invokeActionRule.isRequiresTranslet());
                     return invokeMethod(bean, method, args);
@@ -118,39 +120,50 @@ public class InvokeAction implements Executable {
                     return invokeMethod(activity, bean, method, invokeActionRule.isRequiresTranslet());
                 }
             } else {
-                String methodName = invokeActionRule.getMethodName();
-                Object result;
-                if (activity.hasTranslet()) {
-                    if (requiresTranslet == null) {
-                        try {
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, true);
-                            requiresTranslet = Boolean.TRUE;
-                        } catch (NoSuchMethodException e) {
-                            if (logger.isTraceEnabled()) {
-                                logger.trace("No such accessible method to invoke action {}", invokeActionRule);
-                            }
-                            requiresTranslet = Boolean.FALSE;
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, false);
-                        }
-                    } else {
-                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, requiresTranslet);
-                    }
-                } else {
-                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, false);
-                }
-                return result;
+                // Dynamically resolve method by name
+                return invokeMethodByName(activity, bean);
             }
         } catch (ActionExecutionException e) {
             throw e;
         } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw new ActionExecutionException(this, ExceptionUtils.getCause(e));
-            } else {
-                throw new ActionExecutionException(this, e);
-            }
+            throw new ActionExecutionException(this, ExceptionUtils.getCause(e));
         } catch (Exception e) {
             throw new ActionExecutionException(this, e);
         }
+    }
+
+    /**
+     * Dynamically resolves and invokes a method by its name.
+     * This method handles the logic of determining whether to include the Translet
+     * as an argument and caches the result for future calls.
+     * @param activity the current activity
+     * @param bean the target bean
+     * @return the result of the method invocation
+     * @throws Exception if invocation fails
+     */
+    private Object invokeMethodByName(Activity activity, Object bean) throws Exception {
+        String methodName = invokeActionRule.getMethodName();
+        ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
+
+        // First-time invocation: determine if the translet is a required argument.
+        if (activity.hasTranslet() && this.requiresTranslet == null) {
+            try {
+                Object result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, true);
+                this.requiresTranslet = Boolean.TRUE;
+                return result;
+            } catch (NoSuchMethodException e) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("No such accessible method to invoke action " + invokeActionRule +
+                            " with Translet. Trying without it.");
+                }
+                this.requiresTranslet = Boolean.FALSE;
+                // Fall through to invoke without the translet
+            }
+        }
+
+        // Subsequent invocations use the cached 'requiresTranslet' value.
+        boolean transletRequired = (activity.hasTranslet() && this.requiresTranslet == Boolean.TRUE);
+        return invokeMethod(activity, bean, methodName, argumentItemRuleMap, transletRequired);
     }
 
     /**
@@ -184,7 +197,7 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Invokes a method with or without the current translet as an argument.
+     * Invokes a pre-resolved method, determining whether to pass the translet as an argument.
      * @param activity the current activity
      * @param bean the target bean
      * @param method the method to invoke
@@ -221,7 +234,7 @@ public class InvokeAction implements Executable {
     }
 
     /**
-     * Dynamically resolves and invokes a method based on its name and argument rules.
+     * Prepares arguments and invokes a method dynamically by its name.
      * @param activity the current activity
      * @param bean the target bean
      * @param methodName the name of the method to invoke
@@ -233,37 +246,8 @@ public class InvokeAction implements Executable {
     private static Object invokeMethod(
             Activity activity, Object bean, String methodName,
             ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) throws Exception {
-        Class<?>[] argsTypes = null;
-        Object[] argsObjects = null;
-
-        if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
-            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
-            int argSize = argumentItemRuleMap.size();
-            int argIndex;
-            if (requiresTranslet) {
-                argIndex = 1;
-                argsTypes = new Class<?>[argSize + argIndex];
-                argsObjects = new Object[argsTypes.length];
-                argsTypes[0] = Translet.class;
-                argsObjects[0] = activity.getTranslet();
-            } else {
-                argIndex = 0;
-                argsTypes = new Class<?>[argSize];
-                argsObjects = new Object[argsTypes.length];
-            }
-
-            for (ItemRule ir : argumentItemRuleMap.values()) {
-                Object o = valueMap.get(ir.getName());
-                argsTypes[argIndex] = ItemRuleUtils.getPrototypeClass(ir, o);
-                argsObjects[argIndex] = o;
-                argIndex++;
-            }
-        } else if (requiresTranslet) {
-            argsTypes = new Class<?>[] { Translet.class };
-            argsObjects = new Object[] { activity.getTranslet() };
-        }
-
-        return invokeMethod(bean, methodName, argsObjects, argsTypes);
+        MethodArguments methodArgs = resolveMethodArguments(activity, argumentItemRuleMap, requiresTranslet);
+        return invokeMethod(bean, methodName, methodArgs.args, methodArgs.paramTypes);
     }
 
     /**
@@ -285,16 +269,16 @@ public class InvokeAction implements Executable {
             throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: " +
                     object.getClass().getName());
         }
+        Object result = MethodUtils.invokeMethod(object, method, args, paramTypes);
         if (method.getReturnType() == Void.TYPE) {
-            MethodUtils.invokeMethod(object, method, args, paramTypes);
             return Void.TYPE;
         } else {
-            return MethodUtils.invokeMethod(object, method, args, paramTypes);
+            return result;
         }
     }
 
     /**
-     * Creates an array of arguments for a method invocation.
+     * Creates an array of arguments for a pre-resolved method invocation.
      * @param activity the current activity
      * @param argumentItemRuleMap the rules for the arguments
      * @param requiresTranslet whether to include the translet as the first argument
@@ -303,8 +287,9 @@ public class InvokeAction implements Executable {
     @NonNull
     private static Object[] createArguments(
             @NonNull Activity activity, @NonNull ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) {
-        Object[] args;
+        Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
         int size = argumentItemRuleMap.size();
+        Object[] args;
         int index;
         if (requiresTranslet) {
             index = 1;
@@ -314,13 +299,67 @@ public class InvokeAction implements Executable {
             index = 0;
             args = new Object[size];
         }
-        Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
         for (String name : argumentItemRuleMap.keySet()) {
-            Object o = valueMap.get(name);
-            args[index] = o;
-            index++;
+            args[index++] = valueMap.get(name);
         }
         return args;
+    }
+
+    /**
+     * Resolves method arguments and their types based on the provided rules.
+     * @param activity the current activity
+     * @param argumentItemRuleMap the map of item rules for arguments
+     * @param requiresTranslet whether to prepend the translet to the arguments
+     * @return a {@link MethodArguments} object containing the resolved arguments and their types
+     */
+    @NonNull
+    private static MethodArguments resolveMethodArguments(@NonNull Activity activity,
+            ItemRuleMap argumentItemRuleMap, boolean requiresTranslet) {
+        if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
+            Map<String, Object> valueMap = activity.getItemEvaluator().evaluate(argumentItemRuleMap);
+            int argSize = argumentItemRuleMap.size();
+            int offset = (requiresTranslet ? 1 : 0);
+            Class<?>[] paramTypes = new Class<?>[argSize + offset];
+            Object[] args = new Object[argSize + offset];
+
+            if (requiresTranslet) {
+                paramTypes[0] = Translet.class;
+                args[0] = activity.getTranslet();
+            }
+
+            int i = offset;
+            for (ItemRule ir : argumentItemRuleMap.values()) {
+                Object val = valueMap.get(ir.getName());
+                paramTypes[i] = ItemRuleUtils.getPrototypeClass(ir, val);
+                args[i] = val;
+                i++;
+            }
+            return new MethodArguments(paramTypes, args);
+        } else if (requiresTranslet) {
+            Class<?>[] paramTypes = new Class<?>[]{Translet.class};
+            Object[] args = new Object[]{activity.getTranslet()};
+            return new MethodArguments(paramTypes, args);
+        } else {
+            return MethodArguments.EMPTY;
+        }
+    }
+
+    /**
+     * A simple holder for method arguments and their corresponding parameter types.
+     */
+    private static class MethodArguments {
+
+        static final MethodArguments EMPTY = new MethodArguments(null, null);
+
+        final Class<?>[] paramTypes;
+
+        final Object[] args;
+
+        MethodArguments(Class<?>[] paramTypes, Object[] args) {
+            this.paramTypes = paramTypes;
+            this.args = args;
+        }
+
     }
 
 }

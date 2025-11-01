@@ -22,6 +22,9 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 /**
  * A specialized action for executing an advice method that is identified by annotations.
  *
@@ -56,12 +59,18 @@ public class AnnotatedAdviceAction extends AnnotatedAction {
 
     /**
      * Resolves the advice bean instance from the AOP context.
+     * If the advice method is static, no bean is required and this method will return {@code null}.
      * @param activity the current activity
      * @return the resolved advice bean instance
-     * @throws Exception if the advice bean cannot be found
+     * @throws ActionExecutionException if the advice bean cannot be found
      */
     @Override
-    protected Object resolveBean(@NonNull Activity activity) throws Exception {
+    protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
+        // A static advice method does not require a bean instance.
+        Method method = getAnnotatedActionRule().getMethod();
+        if (Modifier.isStatic(method.getModifiers())) {
+            return null;
+        }
         Object bean = activity.getAdviceBean(adviceRule.getAspectId());
         if (bean == null) {
             throw new ActionExecutionException("No advice bean found for " + adviceRule);

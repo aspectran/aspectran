@@ -51,19 +51,19 @@ public class AnnotatedAction implements Executable {
      * Executes the annotated action method.
      * @param activity the current activity
      * @return the result of the method invocation
-     * @throws Exception if an error occurs during method invocation
+     * @throws ActionExecutionException if an error occurs during method invocation
      */
     @Override
-    public Object execute(@NonNull Activity activity) throws Exception {
+    public Object execute(@NonNull Activity activity) throws ActionExecutionException {
         try {
             Object bean = resolveBean(activity);
             Method method = annotatedActionRule.getMethod();
             ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
+            Object result = AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
             if (method.getReturnType() == Void.TYPE) {
-                AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
                 return Void.TYPE;
             } else {
-                return AnnotatedMethodInvoker.invoke(activity, bean, method, parameterBindingRules);
+                return result;
             }
         } catch (Exception e) {
             throw new ActionExecutionException(this, e);
@@ -72,16 +72,19 @@ public class AnnotatedAction implements Executable {
 
     /**
      * Resolves the bean instance on which the annotated method will be invoked.
+     * If the method is static, no bean is needed and this method returns {@code null}.
+     * Otherwise, it retrieves a bean instance corresponding to the method's declaring class.
      * @param activity the current activity
-     * @return the resolved bean instance
-     * @throws Exception if the bean cannot be resolved
+     * @return the resolved bean instance, or {@code null} if the method is static
+     * @throws ActionExecutionException if a required bean instance cannot be resolved
      */
-    protected Object resolveBean(@NonNull Activity activity) throws Exception {
-        Object bean = null;
-        if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
-            bean = activity.getBean(annotatedActionRule.getBeanClass());
+    protected Object resolveBean(@NonNull Activity activity) throws ActionExecutionException {
+        // A static advice method does not require a bean instance.
+        Method method = annotatedActionRule.getMethod();
+        if (Modifier.isStatic(method.getModifiers())) {
+            return null;
         }
-        return bean;
+        return activity.getBean(annotatedActionRule.getBeanClass());
     }
 
     /**
