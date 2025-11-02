@@ -59,6 +59,13 @@ public class CommandCompleter implements Completer {
 
     private boolean limited;
 
+    /**
+     * Creates a new {@code CommandCompleter} instance that provides
+     * command completion functionality for a shell console.
+     * @param console the {@link ShellConsole} instance to be used for
+     *        command completion; must not be {@code null}
+     * @throws IllegalArgumentException if {@code console} is {@code null}
+     */
     public CommandCompleter(ShellConsole console) {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");

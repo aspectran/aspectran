@@ -324,6 +324,7 @@ public abstract class FilenameUtils {
      * @param uniqueFilename a unique filename, potentially with a custom separator
      * @return file name with the standard extension separator
      */
+    @NonNull
     public static String recoverExtension(String uniqueFilename) {
         return StringUtils.replaceLast(uniqueFilename, NAME_SEPARATOR, EXTENSION_SEPARATOR);
     }

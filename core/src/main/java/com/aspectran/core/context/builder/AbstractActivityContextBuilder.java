@@ -134,6 +134,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private boolean debugMode;
 
+    /**
+     * Constructs a new instance of {@code AbstractActivityContextBuilder}.
+     * Initializes the builder with the provided {@code CoreService}, setting the base path if available,
+     * and configuring the behavior of the builder based on system properties.
+     * @param masterService the core service to associate with this builder; provides base configurations
+     */
     public AbstractActivityContextBuilder(CoreService masterService) {
         this.masterService = masterService;
         if (masterService != null) {
@@ -162,6 +168,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return ownBasePath;
     }
 
+    /**
+     * Sets whether this builder has its own base path.
+     * This flag is used to determine if the base path is independently configured
+     * for the current context.
+     * @param ownBasePath a boolean indicating if this builder has its own base path
+     */
     protected void setOwnBasePath(boolean ownBasePath) {
         this.ownBasePath = ownBasePath;
     }
@@ -230,10 +242,21 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
+    /**
+     * Retrieves the base profiles associated with the current context.
+     * @return an array of strings representing the base profile names
+     */
     public String[] getBaseProfiles() {
         return baseProfiles;
     }
 
+    /**
+     * Sets the base profiles to be associated with the context.
+     * Base profiles are used to define the foundation or default configurations
+     * that influence the initialization and behavior of the context.
+     * @param baseProfiles the array of base profile names to set; each profile represents
+     *                     a specific configuration or behavior customization for the context
+     */
     public void setBaseProfiles(String... baseProfiles) {
         this.baseProfiles = baseProfiles;
     }
@@ -364,10 +387,26 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return siblingClassLoader;
     }
 
+    /**
+     * Creates and returns an instance of {@link ApplicationAdapter}. This method is protected
+     * and is intended to provide a default implementation of {@link ApplicationAdapter} using
+     * the current base path. The returned adapter is typically used to facilitate the interaction
+     * with the application context, providing necessary configurations and utilities.
+     * @return an instance of {@link ApplicationAdapter}, specifically {@link DefaultApplicationAdapter},
+     * initialized with the base path.
+     */
     protected ApplicationAdapter createApplicationAdapter() {
         return new DefaultApplicationAdapter(basePath);
     }
 
+    /**
+     * Creates and initializes an {@code EnvironmentProfiles} instance for the given context name.
+     * The method allows setting base, default, and active profiles if they are provided. Logs profile
+     * information based on their state.
+     * @param contextName the name of the context for which the environment profiles are created
+     * @return an initialized {@code EnvironmentProfiles} instance containing the specified
+     *         base, default, and active profiles
+     */
     protected EnvironmentProfiles createEnvironmentProfiles(String contextName) {
         EnvironmentProfiles environmentProfiles = new EnvironmentProfiles(contextName);
         if (getBaseProfiles() != null) {
@@ -554,6 +593,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
+    /**
+     * Stops and nullifies the context reloading timer if it is currently active.
+     * <p>This method checks if the context reloading timer is not null, then
+     * stops its operation and sets the timer reference to null to release
+     * resources and prevent further use.</p>
+     */
     protected void stopContextReloadingTimer() {
         if (contextReloadingTimer != null) {
             contextReloadingTimer.stop();

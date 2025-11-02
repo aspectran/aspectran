@@ -34,38 +34,79 @@ public class MountStatus {
     MountStatus() {
     }
 
+    /**
+     * Returns the index in the path where this group was mounted.
+     * @return the mount index
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Sets the index in the path where this group was mounted.
+     * @param index the mount index
+     */
     public void setIndex(int index) {
         this.index = index;
     }
 
+    /**
+     * Returns the full path that triggered the mount.
+     * @return the mount path
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Sets the full path that triggered the mount.
+     * @param path the mount path
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the mounted nodelet group.
+     * @return the nodelet group
+     */
     public NodeletGroup getGroup() {
         return group;
     }
 
+    /**
+     * Sets the mounted nodelet group.
+     * @param group the nodelet group
+     */
     public void setGroup(NodeletGroup group) {
         this.group = group;
     }
 
+    /**
+     * Retrieves a start nodelet from the mounted group for the given XPath.
+     * @param xpath the XPath to look up
+     * @return the found {@link Nodelet}, or {@code null} if not found
+     */
     public Nodelet getNodelet(String xpath) {
         return group.getNodelet(xpath);
     }
 
+    /**
+     * Retrieves an end nodelet from the mounted group for the given XPath.
+     * @param xpath the XPath to look up
+     * @return the found {@link EndNodelet}, or {@code null} if not found
+     */
     public EndNodelet getEndNodelet(String xpath) {
         return group.getEndNodelet(xpath);
     }
 
+    /**
+     * Creates a new {@code MountStatus} instance.
+     * @param index the index in the path where this group was mounted
+     * @param path the full path that triggered the mount
+     * @param group the mounted nodelet group
+     * @return a new {@code MountStatus} instance
+     */
     @NonNull
     static MountStatus of(int index, String path, NodeletGroup group) {
         MountStatus mountedGroup = new MountStatus();

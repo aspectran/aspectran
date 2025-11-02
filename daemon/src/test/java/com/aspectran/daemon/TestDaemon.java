@@ -20,6 +20,15 @@ import com.aspectran.core.context.config.AspectranConfig;
 import java.io.File;
 
 /**
+ * A concrete implementation of the {@link AbstractDaemon} class, designed
+ * to manage the lifecycle of a daemon application. This class provides
+ * functionalities to initialize, start, and release the daemon with specified
+ * configuration parameters.
+ *
+ * <p>The {@code TestDaemon} class ensures proper startup and cleanup using
+ * the base path and configuration file provided as input arguments. It performs
+ * necessary preparations and starts the daemon in a controlled manner.</p>
+ *
  * <p>Created: 2017. 12. 12.</p>
  */
 public class TestDaemon extends AbstractDaemon {

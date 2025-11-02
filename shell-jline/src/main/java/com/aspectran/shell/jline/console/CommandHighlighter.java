@@ -58,6 +58,11 @@ public class CommandHighlighter implements Highlighter {
 
     private boolean limited;
 
+    /**
+     * Constructs a CommandHighlighter with the specified shell console.
+     * @param console the ShellConsole instance to be used by this highlighter. Must not be null.
+     * @throws IllegalArgumentException if the provided console is null.
+     */
     public CommandHighlighter(ShellConsole console) {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");

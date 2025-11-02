@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
  * <pre class="code">
  * &#064;Component
  * public class MyEventListener {
- *
  *     &#064;EventListener
  *     public void handleOrderCompleted(OrderCompletedEvent event) {
  *         // ... logic to handle the event

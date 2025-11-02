@@ -137,6 +137,7 @@ public class BeanClassScanner extends ClassScanner {
                 logger.trace("Scanned bean {id={}, class={}}", beanId, className);
             }
         }
+
     }
 
 }

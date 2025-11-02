@@ -40,12 +40,19 @@ public class NodeletPath {
     NodeletPath() {
     }
 
+    /**
+     * Adds a node name to the end of the path.
+     * @param node the node name to add
+     */
     public void add(String node) {
         nameList.add(node);
         xpath = null;
         mountXpath = null;
     }
 
+    /**
+     * Removes the last node name from the path.
+     */
     public void remove() {
         int index = nameList.size() - 1;
         nameList.remove(index);
@@ -53,22 +60,37 @@ public class NodeletPath {
         mountXpath = null;
     }
 
+    /**
+     * Marks the current path position as a mount point.
+     * @return the index of the mount point
+     */
     public int mount() {
         mountIndex = nameList.size() - 1;
         mountXpath = null;
         return mountIndex;
     }
 
+    /**
+     * Changes the mount point to a new index.
+     * @param index the new mount index
+     */
     public void remount(int index) {
         mountIndex = index;
         mountXpath = null;
     }
 
+    /**
+     * Resets the mount point, effectively unmounting the current group.
+     */
     public void unmount() {
         mountIndex = 0;
         mountXpath = null;
     }
 
+    /**
+     * Returns the XPath relative to the current mount point.
+     * @return the relative XPath from the mount point
+     */
     @Nullable
     public String getMountXpath() {
         if (mountXpath == null) {
@@ -88,6 +110,11 @@ public class NodeletPath {
         return mountXpath;
     }
 
+    /**
+     * Returns the name of the node that could trigger a mount,
+     * which is the second to last node in the path.
+     * @return the name of the trigger node, or {@code null} if not applicable
+     */
     @Nullable
     public String findTriggerName() {
         return (nameList.size() > 2 ? nameList.get(nameList.size() - 2) : null);

@@ -33,18 +33,34 @@ public class NodeTracker implements Cloneable {
 
     private int columnNumber;
 
+    /**
+     * Returns the resource identifier (e.g., file path or URL) of the document being parsed.
+     * @return the resource identifier
+     */
     public String getResource() {
         return resource;
     }
 
+    /**
+     * Sets the resource identifier of the document being parsed.
+     * @param resource the resource identifier
+     */
     public void setResource(String resource) {
         this.resource = resource;
     }
 
+    /**
+     * Returns the XPath of the currently tracked node.
+     * @return the XPath of the node
+     */
     public String getXpath() {
         return xpath;
     }
 
+    /**
+     * Sets the XPath of the currently tracked node.
+     * @param xpath the XPath of the node
+     */
     public void setXpath(String xpath) {
         this.xpath = xpath;
     }

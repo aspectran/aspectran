@@ -21,6 +21,13 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * This is a test class for bootstrapping the JLineAspectranShell
+ * with a specific Aspectran configuration file.
+ * <p>
+ * The class initializes the shell using the Aspectran configuration
+ * defined in the specified file path. It demonstrates how to load
+ * the configuration and start the shell.
+ *
  * <p>Created: 2019. 1. 23.</p>
  */
 class JLineAspectranShellOnlyTest {
