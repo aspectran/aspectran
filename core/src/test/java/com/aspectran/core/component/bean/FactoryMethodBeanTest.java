@@ -24,6 +24,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -88,6 +95,73 @@ class FactoryMethodBeanTest {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ProductBean annotatedProduct = beanRegistry.getBean("product4");
         assertEquals("product1-init", annotatedProduct.getName());
+    }
+
+    @Test
+    void testSingletonCreationConcurrency() throws InterruptedException {
+        int numThreads = 100;
+        BeanRegistry beanRegistry = context.getBeanRegistry();
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch endLatch = new CountDownLatch(numThreads);
+        Set<ProductBean> instances = ConcurrentHashMap.newKeySet();
+
+        // Reset counter before test
+        ConcurrentTestFactory.reset();
+
+        for (int i = 0; i < numThreads; i++) {
+            executor.submit(() -> {
+                try {
+                    startLatch.await(); // Wait for the signal to start
+                    ProductBean bean = beanRegistry.getBean("concurrentTestProduct");
+                    instances.add(bean);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown(); // Signal all threads to start at once
+        endLatch.await(); // Wait for all threads to finish
+        executor.shutdown();
+
+        // Verification
+        assertEquals(1, ConcurrentTestFactory.getInvocationCount(),
+                "Factory method should be called exactly once for a singleton bean under concurrency.");
+        assertEquals(1, instances.size(),
+                "All threads should receive the same singleton instance.");
+    }
+
+    /**
+     * A factory class for concurrency testing.
+     */
+    public static class ConcurrentTestFactory {
+
+        private static final AtomicInteger invocationCount = new AtomicInteger(0);
+
+        public static ProductBean createSingletonProduct() {
+            invocationCount.incrementAndGet();
+            // Simulate some work to increase the chance of race conditions
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            ProductBean product = new ProductBean();
+            product.setName("concurrent-singleton");
+            return product;
+        }
+
+        public static int getInvocationCount() {
+            return invocationCount.get();
+        }
+
+        public static void reset() {
+            invocationCount.set(0);
+        }
+
     }
 
 }

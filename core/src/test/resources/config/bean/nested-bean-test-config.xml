@@ -94,28 +94,20 @@
         </arguments>
     </bean>
 
-    <bean id="overNestedStringBean" class="java.lang.String" scope="prototype">
-        <arguments>
-            <item>
-                <bean class="java.lang.String">
-                    <arguments>
-                        <item>
+    <bean id="deepNestedStringBean" class="java.lang.String" scope="prototype">
+        <argument>
+            <bean class="java.lang.String">
+                <argument>
+                    <bean class="java.lang.String">
+                        <argument>
                             <bean class="java.lang.String">
-                                <arguments>
-                                    <item>
-                                        <bean class="java.lang.String">
-                                            <arguments>
-                                                <item>Nested String Bean</item>
-                                            </arguments>
-                                        </bean>
-                                    </item>
-                                </arguments>
+                                <argument>Nested String Bean</argument>
                             </bean>
-                        </item>
-                    </arguments>
-                </bean>
-            </item>
-        </arguments>
+                        </argument>
+                    </bean>
+                </argument>
+            </bean>
+        </argument>
     </bean>
 
 </aspectran>

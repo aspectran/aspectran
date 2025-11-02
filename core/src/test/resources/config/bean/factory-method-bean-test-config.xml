@@ -19,4 +19,6 @@
 
     <bean id="product4" factoryBean="class:com.aspectran.core.sample.bean.SampleFactory" factoryMethod="createProductWithInitMethod" initMethod="init" scope="prototype"/>
 
+    <bean id="concurrentTestProduct" class="com.aspectran.core.component.bean.FactoryMethodBeanTest$ConcurrentTestFactory" factoryMethod="createSingletonProduct" scope="singleton" lazyInit="true"/>
+
 </aspectran>
