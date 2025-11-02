@@ -108,7 +108,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                 getPrototypeScopeBean(beanRule);
             case REQUEST -> (V)getRequestScopeBean(beanRule);
             case SESSION -> (V)getSessionScopeBean(beanRule);
-            default -> throw new BeanCreationException(beanRule);
+            case null -> throw new BeanCreationException("Scope type is not set", beanRule);
         };
     }
 
