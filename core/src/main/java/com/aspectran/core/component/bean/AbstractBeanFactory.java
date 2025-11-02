@@ -99,13 +99,14 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     /**
-     * Returns the object produced by the factory bean.
+     * Produces an object from the given factory, handling FactoryBean logic or factory methods.
+     * If the produced object is a singleton and a scope is provided, it will be cached in the scope.
      * @param beanRule the bean rule
-     * @param factory the factory bean instance
-     * @param scope the scope to create the bean in
-     * @return the object produced by the factory bean
+     * @param factory the factory instance (either a FactoryBean or an object with a factory method)
+     * @param scope the scope to potentially cache the produced bean in
+     * @return the object produced by the factory
      */
-    protected Object getFactoryProducedObject(@NonNull BeanRule beanRule, Object factory, Scope scope) {
+    protected Object produceObjectFromFactory(@NonNull BeanRule beanRule, Object factory, Scope scope) {
         Object bean;
         boolean singleton = true;
         if (beanRule.isFactoryBean()) {
@@ -410,11 +411,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 MethodUtils.invokeSetter(bean, entry.getKey(), value);
             }
         }
-
         if (beanRule.getInitMethod() != null) {
             invokeInitMethod(beanRule, bean, activity);
         }
-
         if (bean instanceof InitializableBean initializableBean) {
             initializeBean(beanRule, initializableBean);
         }

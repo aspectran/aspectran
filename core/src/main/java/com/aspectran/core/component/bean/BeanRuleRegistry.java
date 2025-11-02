@@ -547,7 +547,7 @@ public class BeanRuleRegistry {
                 }
                 if (beanRule.isFactoryOffered()) {
                     Class<?> factoryBeanClass = resolveFactoryBeanClass(beanRule);
-                    Class<?> targetBeanClass = BeanRuleAnalyzer.resolveFactoryMethodTargetBeanClass(
+                    Class<?> targetBeanClass = BeanRuleAnalyzer.resolveTargetBeanClassForFactoryMethod(
                             beanRule, factoryBeanClass);
                     if (beanRule.getInitMethodName() != null) {
                         BeanRuleAnalyzer.resolveInitMethod(beanRule, targetBeanClass);

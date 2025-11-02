@@ -23,7 +23,6 @@ import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.component.bean.scope.SingletonScope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.slf4j.Logger;
@@ -82,45 +81,40 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return beanRuleRegistry;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> getBasePackages() {
         return beanRuleRegistry.getBasePackages();
     }
 
     /**
-     * Returns the bean instance for the given bean rule.
+     * Returns the bean instance for the given bean rule, dispatching to the
+     * appropriate scope handler.
      * @param beanRule the bean rule
      * @param <V> the type of the bean
      * @return the bean instance
+     * @throws BeanCreationException if the bean could not be created
+     * @throws UnsupportedBeanScopeException if the specified scope is not supported
      */
     @SuppressWarnings("unchecked")
     protected <V> V getBean(@NonNull BeanRule beanRule) {
-        if (beanRule.getScopeType() == ScopeType.SINGLETON) {
-            return (V)getSingletonScopeBean(beanRule);
-        } else if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-            // Does not manage the complete lifecycle of a prototype bean.
-            // In particular, Aspectran does not manage destruction phase of prototype-scoped beans.
-            return getPrototypeScopeBean(beanRule);
-        } else if (beanRule.getScopeType() == ScopeType.REQUEST) {
-            return (V)getRequestScopeBean(beanRule);
-        } else if (beanRule.getScopeType() == ScopeType.SESSION) {
-            return (V)getSessionScopeBean(beanRule);
-        }
-        throw new BeanCreationException(beanRule);
+        return switch (beanRule.getScopeType()) {
+            case SINGLETON -> (V)getSingletonScopeBean(beanRule);
+            case PROTOTYPE ->
+                // Does not manage the complete lifecycle of a prototype bean.
+                // In particular, Aspectran does not manage destruction phase of prototype-scoped beans.
+                getPrototypeScopeBean(beanRule);
+            case REQUEST -> (V)getRequestScopeBean(beanRule);
+            case SESSION -> (V)getSessionScopeBean(beanRule);
+            default -> throw new BeanCreationException(beanRule);
+        };
     }
 
-    private Object getSingletonScopeBean(BeanRule beanRule) {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
-        BeanInstance instance = getScopedBean(singletonScope, beanRule);
-        if (beanRule.isFactoryProductionRequired()) {
-            return resolveFactoryProducedBean(beanRule, instance, singletonScope);
-        } else {
-            return instance.getBean();
-        }
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <V> V getPrototypeScopeBean(BeanRule beanRule) {
@@ -129,36 +123,51 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
         Object bean = createBean(beanRule, null);
         if (bean != null && beanRule.isFactoryProductionRequired()) {
-            bean = getFactoryProducedObject(beanRule, bean, null);
+            bean = produceObjectFromFactory(beanRule, bean, null);
         }
         return (V)bean;
     }
 
+    /**
+     * Gets a singleton-scoped bean instance.
+     * @param beanRule the bean rule
+     * @return the singleton bean instance
+     */
+    private Object getSingletonScopeBean(BeanRule beanRule) {
+        return getScopedBean(beanRule, singletonScope);
+    }
+
+    /**
+     * Gets a request-scoped bean instance.
+     * @param beanRule the bean rule
+     * @return the request-scoped bean instance
+     */
     private Object getRequestScopeBean(BeanRule beanRule) {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
-        Scope scope = getRequestScope();
-        if (scope == null) {
-            throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
-        }
-        BeanInstance instance = getScopedBean(scope, beanRule);
-        if (beanRule.isFactoryProductionRequired()) {
-            return resolveFactoryProducedBean(beanRule, instance, scope);
-        } else {
-            return instance.getBean();
-        }
+        return getScopedBean(beanRule, getRequestScope());
     }
 
+    /**
+     * Gets a session-scoped bean instance.
+     * @param beanRule the bean rule
+     * @return the session-scoped bean instance
+     */
     private Object getSessionScopeBean(BeanRule beanRule) {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
-        Scope scope = getSessionScope();
+        return getScopedBean(beanRule, getSessionScope());
+    }
+
+    /**
+     * Retrieves a bean from the specified scope, creating it if it does not exist.
+     * Also handles FactoryBean resolution.
+     * @param beanRule the rule for the bean to retrieve
+     * @param scope the scope from which to retrieve the bean
+     * @return the bean instance
+     * @throws UnsupportedBeanScopeException if the scope is not available
+     */
+    private Object getScopedBean(@NonNull BeanRule beanRule, @Nullable Scope scope) {
         if (scope == null) {
-            throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
+            throw new UnsupportedBeanScopeException(beanRule.getScopeType(), beanRule);
         }
-        BeanInstance instance = getScopedBean(scope, beanRule);
+        BeanInstance instance = getScopedBeanFromScope(scope, beanRule);
         if (beanRule.isFactoryProductionRequired()) {
             return resolveFactoryProducedBean(beanRule, instance, scope);
         } else {
@@ -166,7 +175,15 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
-    private Object resolveFactoryProducedBean(@NonNull BeanRule beanRule, @NonNull BeanInstance instance, @Nullable Scope scope) {
+    /**
+     * Resolves a bean produced by a FactoryBean, handling caching for singleton products.
+     * @param beanRule the bean rule for the factory
+     * @param instance the bean instance, which may contain the factory and/or a cached product
+     * @param scope the scope in which the bean resides
+     * @return the final bean product
+     */
+    private Object resolveFactoryProducedBean(
+            @NonNull BeanRule beanRule, @NonNull BeanInstance instance, @Nullable Scope scope) {
         Object beanToReturn;
         if (instance.getFactory() != null) {
             // Factory exists, check if product is cached
@@ -175,70 +192,84 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                 beanToReturn = instance.getBean();
             } else {
                 // Product not cached (isSingleton()=false), create new product
-                beanToReturn = getFactoryProducedObject(beanRule, instance.getFactory(), scope);
+                beanToReturn = produceObjectFromFactory(beanRule, instance.getFactory(), scope);
             }
         } else {
             // No factory, instance.getBean() is the candidate
-            beanToReturn = getFactoryProducedObject(beanRule, instance.getBean(), scope);
+            beanToReturn = produceObjectFromFactory(beanRule, instance.getBean(), scope);
         }
         return beanToReturn;
     }
 
-    private BeanInstance getScopedBean(@NonNull Scope scope, BeanRule beanRule) {
+    /**
+     * Retrieves a bean instance from the given scope, creating and registering it if not found.
+     * This method implements double-checked locking for thread-safe scopes.
+     * @param scope the scope to search in
+     * @param beanRule the rule for the bean to create
+     * @return the existing or newly created bean instance
+     */
+    private BeanInstance getScopedBeanFromScope(@NonNull Scope scope, BeanRule beanRule) {
         ReadWriteLock scopeLock = scope.getScopeLock();
         if (scopeLock == null) {
+            // Not a thread-safe scope (e.g., request scope)
             BeanInstance instance = scope.getBeanInstance(beanRule);
             if (instance == null) {
-                Object bean = createBean(beanRule, scope);
-                if (bean != null && beanRule.isFactoryProductionRequired()) {
-                    // If it's a factory bean, getFactoryProducedObject will put the BeanInstance(product, factory) into scope
-                    getFactoryProducedObject(beanRule, bean, scope);
-                    instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
-                } else {
-                    instance = BeanInstance.forProduct(bean);
-                    scope.putBeanInstance(beanRule, instance);
-                }
+                instance = createAndRegisterBean(scope, beanRule);
             }
             return instance;
         } else {
-            boolean readLocked = true;
+            // Thread-safe scope (e.g., singleton, session)
             scopeLock.readLock().lock();
-            BeanInstance instance;
             try {
-                instance = scope.getBeanInstance(beanRule);
-                if (instance == null) {
-                    readLocked = false;
-                    scopeLock.readLock().unlock();
-                    scopeLock.writeLock().lock();
-                    try {
-                        // Double-check inside the write lock
-                        instance = scope.getBeanInstance(beanRule);
-                        if (instance == null) {
-                            Object bean = createBean(beanRule, scope);
-                            if (bean != null && beanRule.isFactoryProductionRequired()) {
-                                // Synchronize on the factory bean instance to ensure thread-safe object production.
-                                synchronized (bean) {
-                                    getFactoryProducedObject(beanRule, bean, scope);
-                                    instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
-                                }
-                            } else {
-                                instance = BeanInstance.forProduct(bean);
-                                scope.putBeanInstance(beanRule, instance);
-                            }
-                        }
-                    } finally {
-                        scopeLock.writeLock().unlock();
-                    }
+                BeanInstance instance = scope.getBeanInstance(beanRule);
+                if (instance != null) {
+                    return instance;
                 }
             } finally {
-                if (readLocked) {
-                    scopeLock.readLock().unlock();
-                }
+                scopeLock.readLock().unlock();
             }
-            return instance;
+
+            scopeLock.writeLock().lock();
+            try {
+                // Double-check inside the write lock
+                BeanInstance instance = scope.getBeanInstance(beanRule);
+                if (instance == null) {
+                    instance = createAndRegisterBean(scope, beanRule);
+                }
+                return instance;
+            } finally {
+                scopeLock.writeLock().unlock();
+            }
         }
     }
 
+    /**
+     * Creates a bean instance and registers it with the given scope.
+     * @param scope the scope to register the bean with
+     * @param beanRule the rule for the bean to create
+     * @return the newly created bean instance
+     */
+    private BeanInstance createAndRegisterBean(@NonNull Scope scope, @NonNull BeanRule beanRule) {
+        Object bean = createBean(beanRule, scope);
+        BeanInstance instance;
+        if (bean != null && beanRule.isFactoryProductionRequired()) {
+            // For FactoryBeans, getFactoryProducedObject handles registration.
+            // Synchronize on the factory bean instance to ensure thread-safe object production.
+            synchronized (bean) {
+                produceObjectFromFactory(beanRule, bean, scope);
+                instance = scope.getBeanInstance(beanRule); // Retrieve the updated BeanInstance
+            }
+        } else {
+            instance = BeanInstance.forProduct(bean);
+            scope.putBeanInstance(beanRule, instance);
+        }
+        return instance;
+    }
+
+    /**
+     * Gets the current request scope, if available.
+     * @return the request scope, or {@code null} if not in a request context
+     */
     @Nullable
     private RequestScope getRequestScope() {
         Activity activity = getActivityContext().getAvailableActivity();
@@ -249,6 +280,10 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
+    /**
+     * Gets the current session scope, creating one if it doesn't exist.
+     * @return the session scope, or {@code null} if not in a session context
+     */
     @Nullable
     private SessionScope getSessionScope() {
         Activity activity = getActivityContext().getAvailableActivity();
@@ -268,8 +303,11 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return bean;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean hasSingleton(Object bean) {
+    public boolean hasSingleton(@NonNull Object bean) {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
         scopeLock.readLock().lock();
         try {
@@ -279,11 +317,17 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasSingleton(@NonNull Class<?> type) {
         return hasSingleton(type, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasSingleton(@NonNull Class<?> type, @Nullable String id) {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
@@ -329,31 +373,24 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void destroySingleton(Object bean) throws Exception {
+    public void destroySingleton(@NonNull Object bean) throws Exception {
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
-        boolean readLocked = true;
-        scopeLock.readLock().lock();
+        scopeLock.writeLock().lock();
         try {
             if (singletonScope.hasInstance(bean)) {
-                readLocked = false;
-                scopeLock.readLock().unlock();
-                scopeLock.writeLock().lock();
-                try {
-                    singletonScope.destroy(bean);
-                } finally {
-                    scopeLock.writeLock().unlock();
-                }
+                singletonScope.destroy(bean);
             }
         } finally {
-            if (readLocked) {
-                scopeLock.readLock().unlock();
-            }
+            scopeLock.writeLock().unlock();
         }
     }
 
     /**
-     * Instantiate all singletons(non-lazy-init).
+     * Instantiates all non-lazy-init singleton beans.
      */
     private void instantiateSingletons() {
         if (logger.isDebugEnabled()) {
@@ -372,15 +409,20 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
+    /**
+     * Instantiates a single bean if it is a non-lazy singleton and has not been
+     * instantiated yet.
+     * @param beanRule the bean rule to process
+     */
     private void instantiateSingleton(@NonNull BeanRule beanRule) {
         if (beanRule.isSingleton() && !beanRule.isLazyInit()
                 && !singletonScope.containsBeanRule(beanRule)) {
-            createBean(beanRule, singletonScope);
+            getSingletonScopeBean(beanRule);
         }
     }
 
     /**
-     * Destroy all cached singletons.
+     * Destroys all cached singleton beans.
      */
     private void destroySingletons() {
         if (logger.isDebugEnabled()) {

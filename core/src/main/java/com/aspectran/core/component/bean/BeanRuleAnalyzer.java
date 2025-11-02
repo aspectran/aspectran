@@ -63,7 +63,7 @@ public class BeanRuleAnalyzer {
             if (lifecycleTargetClass == null) {
                 return null; // Will be post-processed
             }
-            targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, lifecycleTargetClass); // targetBeanClass is product
+            targetBeanClass = resolveTargetBeanClassForFactoryMethod(beanRule, lifecycleTargetClass); // targetBeanClass is product
             lifecycleTargetClass = targetBeanClass; // For Style A, init/destroy apply to product
         } else { // Style B: class="..." factoryMethod="..." OR Style C: class="..." implements FactoryBean
             lifecycleTargetClass = initialBeanClass; // init/destroy apply to factory
@@ -75,7 +75,7 @@ public class BeanRuleAnalyzer {
             if (beanRule.isFactoryBean()) { // Style C
                 targetBeanClass = resolveTargetBeanClassForFactoryBean(beanRule, targetBeanClass); // targetBeanClass is product
             } else if (beanRule.getFactoryMethodName() != null) { // Style B
-                targetBeanClass = resolveFactoryMethodTargetBeanClass(beanRule, targetBeanClass); // targetBeanClass is product
+                targetBeanClass = resolveTargetBeanClassForFactoryMethod(beanRule, targetBeanClass); // targetBeanClass is product
             }
         }
 
@@ -104,7 +104,7 @@ public class BeanRuleAnalyzer {
     }
 
     @NonNull
-    static Class<?> resolveFactoryMethodTargetBeanClass(@NonNull BeanRule beanRule, @NonNull Class<?> factoryBeanClass)
+    static Class<?> resolveTargetBeanClassForFactoryMethod(@NonNull BeanRule beanRule, @NonNull Class<?> factoryBeanClass)
             throws BeanRuleException {
         Class<?> targetBeanClass;
         String factoryMethodName;

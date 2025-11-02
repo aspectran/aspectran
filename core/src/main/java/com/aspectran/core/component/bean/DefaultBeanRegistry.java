@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.annotation.Annotation;
@@ -38,6 +39,11 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         super(context, beanRuleRegistry);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>If a bean with the given ID is not found in this registry,
+     * it will be looked up in the parent registry.</p>
+     */
     @Override
     public <V> V getBean(String id) {
         BeanRule beanRule = getBeanRuleRegistry().getBeanRule(id);
@@ -51,13 +57,23 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         return getBean(beanRule);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This is a convenience method that delegates to {@link #getBean(Class, String)} with a null ID.</p>
+     */
     @Override
     public <V> V getBean(Class<V> type) {
         return getBean(type, null);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation first attempts to find a matching bean in the current registry.
+     * If no definitive match is found (e.g., no beans of the type, or the ID does not match),
+     * it delegates the request to the parent registry.</p>
+     */
     @Override
-    public <V> V getBean(Class<V> type, @Nullable String id) {
+    public <V> V getBean(@NonNull Class<V> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
             BeanRule beanRule = getBeanRuleRegistry().getBeanRuleForConfig(type);
@@ -111,6 +127,11 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Returns all beans of the given type from this registry. If no beans are found,
+     * it queries the parent registry. Returns {@code null} if no beans are found in either.</p>
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <V> V[] getBeansOfType(Class<V> type) {
@@ -131,6 +152,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Checks both this registry and its parent registry for a bean with the given ID.</p>
+     */
     @Override
     public boolean containsBean(String id) {
         if (getBeanRuleRegistry().containsBeanRule(id)) {
@@ -143,6 +168,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Checks both this registry and its parent registry for any bean of the given type.</p>
+     */
     @Override
     public boolean containsBean(Class<?> type) {
         if (getBeanRuleRegistry().containsBeanRule(type)) {
@@ -155,8 +184,12 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Checks both this registry and its parent registry for a bean of the given type and ID.</p>
+     */
     @Override
-    public boolean containsBean(Class<?> type, @Nullable String id) {
+    public boolean containsBean(@NonNull Class<?> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
             BeanRegistry parent = getParentBeanRegistry();
@@ -196,6 +229,11 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation checks if exactly one bean of the given type is present in this registry.
+     * If not, it delegates the check to the parent registry.</p>
+     */
     @Override
     public boolean containsSingleBean(Class<?> type) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
@@ -209,6 +247,10 @@ public class DefaultBeanRegistry extends AbstractBeanRegistry {
         return (beanRules.length == 1);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This search is confined to the current bean registry and does not consult the parent registry.</p>
+     */
     @Override
     public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
         return getBeanRuleRegistry().findConfigBeanClassesWithAnnotation(annotationType);
