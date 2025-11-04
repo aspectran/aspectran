@@ -46,7 +46,7 @@ public abstract class AboutMe {
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
         } else {
-            VERSION = System.getProperty("aspectran.version", "9.2.x");
+            VERSION = System.getProperty("aspectran.version", "9.3.x");
         }
 
         POWERED_BY = "Powered by Aspectran " + VERSION;
