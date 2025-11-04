@@ -21,9 +21,8 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -227,20 +226,31 @@ public final class CoreServiceHolder {
     }
 
     /**
-     * Retrieves the names of all contexts from the currently held services,
-     * preserving the order in which the services were added.
-     * @return a {@link List} of all non-null context names in insertion order
+     * Retrieves all the {@link CoreService} instances currently held by the system.
+     * <p>The returned set provides an unmodifiable view of the held services,
+     * ensuring that the caller cannot alter the existing collection of services.
+     * @return an unmodifiable {@link Set} containing all the held {@link CoreService} instances
      */
     @NonNull
-    public static List<String> getAllContextNames() {
-        List<String> contextNames = new ArrayList<>();
+    public static Set<CoreService> getAllServices() {
+        return Collections.unmodifiableSet(allServices);
+    }
+
+    /**
+     * Retrieves the names of all contexts from the currently held services,
+     * preserving the order in which the services were added.
+     * @return a {@link Set} of all non-null context names in insertion order
+     */
+    @NonNull
+    public static Set<String> getAllContextNames() {
+        Set<String> contextNames = new LinkedHashSet<>();
         for (CoreService service : allServices) {
             String contextName = service.getContextName();
             if (contextName != null) {
                 contextNames.add(contextName);
             }
         }
-        return contextNames;
+        return Collections.unmodifiableSet(contextNames);
     }
 
     /**
@@ -257,17 +267,6 @@ public final class CoreServiceHolder {
             }
         }
         return null;
-    }
-
-    /**
-     * Retrieves all the {@link CoreService} instances currently held by the system.
-     * <p>The returned set provides an unmodifiable view of the held services,
-     * ensuring that the caller cannot alter the existing collection of services.
-     * @return an unmodifiable {@link Set} containing all the held {@link CoreService} instances
-     */
-    @NonNull
-    public static Set<CoreService> getAllServices() {
-        return Collections.unmodifiableSet(allServices);
     }
 
 }
