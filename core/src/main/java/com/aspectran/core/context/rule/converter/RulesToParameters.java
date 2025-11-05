@@ -906,7 +906,35 @@ public class RulesToParameters {
         } else if (action.getActionType() == ActionType.CHOOSE) {
             ChooseRule chooseRule = ((ChooseAction)action).getChooseRule();
             parameters.putValue("choose", toActionParameters(chooseRule));
+        } else {
+            // If the action type is not explicitly defined or recognized,
+            // convert it to ActionParameters based on its class information.
+            parameters.putValue("action", toActionParameters(action));
         }
+    }
+
+    /**
+     * Converts an {@code Executable} action to {@code ActionParameters} based on its class information.
+     * This method is typically used for programmatically created actions that do not have a predefined {@link ActionType}.
+     * The action's class name is used to identify the bean.
+     * @param action the executable action
+     * @return the action parameters
+     * @throws IllegalArgumentException if the action is null
+     */
+    @NonNull
+    public static ActionParameters toActionParameters(Executable action) {
+        if (action == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+
+        ActionParameters actionParameters = new ActionParameters();
+        actionParameters.putValueIfNotNull(ActionParameters.id, action.getActionId());
+        String className = BeanRule.CLASS_DIRECTIVE_PREFIX + action.getClass().getName();
+        actionParameters.putValue(ActionParameters.bean, className);
+        if (action.isHidden()) {
+            actionParameters.putValue(ActionParameters.hidden, action.isHidden());
+        }
+        return actionParameters;
     }
 
     /**
