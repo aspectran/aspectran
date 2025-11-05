@@ -141,7 +141,7 @@ public class InvokeAction implements Executable {
      * @return the result of the method invocation
      * @throws Exception if invocation fails
      */
-    private Object invokeMethodByName(Activity activity, Object bean) throws Exception {
+    private Object invokeMethodByName(@NonNull Activity activity, Object bean) throws Exception {
         String methodName = invokeActionRule.getMethodName();
         ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
 
