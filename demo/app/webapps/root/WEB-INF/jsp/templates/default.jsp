@@ -212,7 +212,7 @@
     <div id="footer">
         <div class="container">
             <div class="row">
-                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-5 d-flex flex-row">
+                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-5 d-flex">
                     <div class="d-none d-sm-block mt-1"><a class="logo float-start me-3 me-lg-4" href="https://aspectran.com/aspectran/" title="Aspectran"></a></div>
                     <div>
                         <a href="https://aspectran.com/aspectran/"><h5>About Aspectran</h5></a>
