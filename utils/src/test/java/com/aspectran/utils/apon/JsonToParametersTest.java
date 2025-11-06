@@ -29,22 +29,32 @@ class JsonToParametersTest {
 
     @Test
     void testConvertJsonToApon() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
-        sb.append("{\n");
-        sb.append("  \"param1\": 111,\n");
-        sb.append("  \"param2\": 222\n");
-        sb.append("}\n");
-        sb.append(",\n");
-        sb.append("{\n");
-        sb.append("  \"param3\": 333,\n");
-        sb.append("  \"param4\": 444\n");
-        sb.append("}\n, null");
-        sb.append("]\n");
+        String sb = """
+                [
+                {
+                  "param1": 111,
+                  "param2": 222
+                }
+                ,
+                {
+                  "param3": 333,
+                  "param4": 444
+                }
+                , null\
+                ]
+                """;
 
-        String apon = "{\n" + "  param1: 111\n" + "  param2: 222\n" + "}\n" + "{\n" + "  param3: 333\n" + "  param4: 444\n" + "}";
+        String apon = """
+                {
+                  param1: 111
+                  param2: 222
+                }
+                {
+                  param3: 333
+                  param4: 444
+                }""";
 
-        Parameters ps = JsonToParameters.from(sb.toString(), ArrayParameters.class);
+        Parameters ps = JsonToParameters.from(sb, ArrayParameters.class);
 
         String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
@@ -54,8 +64,53 @@ class JsonToParametersTest {
 
     @Test
     void testConvertJsonToApon2() throws IOException {
-        String json = "{\n" + "    \"glossary\": {\n" + "        \"title\": \"example glossary\",\n" + "\t\t\"GlossDiv\": {\n" + "            \"title\": \"S\",\n" + "\t\t\t\"GlossList\": {\n" + "                \"GlossEntry\": {\n" + "                    \"ID\": \"SGML\",\n" + "\t\t\t\t\t\"SortAs\": \"SGML\",\n" + "\t\t\t\t\t\"GlossTerm\": \"Standard Generalized Markup Language\",\n" + "\t\t\t\t\t\"Acronym\": \"SGML\",\n" + "\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n" + "\t\t\t\t\t\"GlossDef\": {\n" + "                        \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\",\n" + "\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n" + "                    },\n" + "\t\t\t\t\t\"GlossSee\": \"markup\"\n" + "                }\n" + "            }\n" + "        }\n" + "    }\n" + "}";
-        String apon = "glossary: {\n" + "  title: example glossary\n" + "  GlossDiv: {\n" + "    title: S\n" + "    GlossList: {\n" + "      GlossEntry: {\n" + "        ID: SGML\n" + "        SortAs: SGML\n" + "        GlossTerm: Standard Generalized Markup Language\n" + "        Acronym: SGML\n" + "        Abbrev: ISO 8879:1986\n" + "        GlossDef: {\n" + "          para: A meta-markup language, used to create markup languages such as DocBook.\n" + "          GlossSeeAlso: [\n" + "            GML\n" + "            XML\n" + "          ]\n" + "        }\n" + "        GlossSee: markup\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+        String json = """
+                {
+                    "glossary": {
+                        "title": "example glossary",
+                \t\t"GlossDiv": {
+                            "title": "S",
+                \t\t\t"GlossList": {
+                                "GlossEntry": {
+                                    "ID": "SGML",
+                \t\t\t\t\t"SortAs": "SGML",
+                \t\t\t\t\t"GlossTerm": "Standard Generalized Markup Language",
+                \t\t\t\t\t"Acronym": "SGML",
+                \t\t\t\t\t"Abbrev": "ISO 8879:1986",
+                \t\t\t\t\t"GlossDef": {
+                                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                \t\t\t\t\t\t"GlossSeeAlso": ["GML", "XML"]
+                                    },
+                \t\t\t\t\t"GlossSee": "markup"
+                                }
+                            }
+                        }
+                    }
+                }""";
+        String apon = """
+                glossary: {
+                  title: example glossary
+                  GlossDiv: {
+                    title: S
+                    GlossList: {
+                      GlossEntry: {
+                        ID: SGML
+                        SortAs: SGML
+                        GlossTerm: Standard Generalized Markup Language
+                        Acronym: SGML
+                        Abbrev: ISO 8879:1986
+                        GlossDef: {
+                          para: A meta-markup language, used to create markup languages such as DocBook.
+                          GlossSeeAlso: [
+                            GML
+                            XML
+                          ]
+                        }
+                        GlossSee: markup
+                      }
+                    }
+                  }
+                }""";
 
         Parameters ps = JsonToParameters.from(json);
 
@@ -80,7 +135,7 @@ class JsonToParametersTest {
         assertEquals(result1, result2);
     }
 
-    static class MessagePayload extends AbstractParameters {
+    public static class MessagePayload extends AbstractParameters {
 
         private static final ParameterKey message;
 
@@ -107,29 +162,21 @@ class JsonToParametersTest {
 
     @Test
     void testConvertJsonToArrayOfObjects() throws IOException {
-        String json = "{\n" +
-                "  \"noncovered_detail\": [\n" +
-                "    {\n" +
-                "      \"business_no\": \"2108206683\",\n" +
-                "      \"hospital_name\": \"한일병원\",\n" +
-                "      \"receipt_date\": \"20250802\",\n" +
-                "      \"deduction_name\": \"얼음주머니\",\n" +
-                "      \"deduction_amount\": 9000,\n" +
-                "      \"noncovered_reason\": \"치료재료대 비급여 항목으로 지원 불가\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+        String json = """
+                {
+                  "arrayObject": [
+                    {
+                      "key1": "value1"
+                    }
+                  ]
+                }""";
 
-        String expectedApon = "noncovered_detail: [\n" +
-                "  {\n" +
-                "    business_no: 2108206683\n" +
-                "    hospital_name: 한일병원\n" +
-                "    receipt_date: 20250802\n" +
-                "    deduction_name: 얼음주머니\n" +
-                "    deduction_amount: 9000\n" +
-                "    noncovered_reason: 치료재료대 비급여 항목으로 지원 불가\n" +
-                "  }\n" +
-                "]";
+        String expectedApon = """
+                arrayObject: [
+                  {
+                    key1: value1
+                  }
+                ]""";
 
         Parameters parameters = JsonToParameters.from(json);
 
@@ -140,16 +187,11 @@ class JsonToParametersTest {
         assertEquals(normalizedExpectedApon, actualApon);
 
         // Further assertions to ensure correct structure
-        List<Parameters> noncoveredDetails = parameters.getParametersList("noncovered_detail");
+        List<Parameters> noncoveredDetails = parameters.getParametersList("arrayObject");
         assertEquals(1, noncoveredDetails.size());
 
         Parameters detail = noncoveredDetails.get(0);
-        assertEquals("2108206683", detail.getString("business_no"));
-        assertEquals("한일병원", detail.getString("hospital_name"));
-        assertEquals("20250802", detail.getString("receipt_date"));
-        assertEquals("얼음주머니", detail.getString("deduction_name"));
-        assertEquals(9000, detail.getInt("deduction_amount"));
-        assertEquals("치료재료대 비급여 항목으로 지원 불가", detail.getString("noncovered_reason"));
+        assertEquals("value1", detail.getString("key1"));
     }
 
 }

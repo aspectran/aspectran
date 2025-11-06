@@ -110,7 +110,7 @@ public class JsonToParameters {
         Assert.notNull(container, "container must not be null");
         String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
         try (JsonReaderCloseable jsonReader = new JsonReaderCloseable(reader)) {
-            read(jsonReader, container, name);
+            read(jsonReader, container, name, false);
         } catch (Exception e) {
             throw new IOException("Failed to convert JSON to APON", e);
         }
@@ -129,24 +129,29 @@ public class JsonToParameters {
         return (T)container;
     }
 
-    private void read(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
+    private void read(@NonNull JsonReader reader, Parameters container, String name, boolean arraylize) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
                 if (name != null) {
                     Parameters parameters = container.newParameters(name);
-                    container.getParameter(name).arraylize();
+                    if (arraylize) {
+                        Parameter parameter = container.getParameter(name);
+                        if (!parameter.isArray() && !parameter.isValueTypeFixed()) {
+                            parameter.arraylize();
+                        }
+                    }
                     container = parameters;
                 }
                 while (reader.hasNext()) {
-                    read(reader, container, reader.nextName());
+                    read(reader, container, reader.nextName(), false);
                 }
                 reader.endObject();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
                 while (reader.hasNext()) {
-                    read(reader, container, name);
+                    read(reader, container, name, true);
                 }
                 reader.endArray();
                 return;

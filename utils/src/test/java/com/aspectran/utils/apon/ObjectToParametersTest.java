@@ -39,28 +39,11 @@ class ObjectToParametersTest {
 
     @Test
     void testConvert1() throws IOException {
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add(null);
-        list.add("3");
-
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("array", list.toArray(new String[0]));
-        map.put("list", list);
-        map.put("enum", Collections.enumeration(list));
-
-        StringifyContext stringifyContext = new StringifyContext();
-        stringifyContext.setDateFormat("yyyy-MM-dd");
-        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
-        stringifyContext.setNullWritable(true);
-
-        Parameters parameters = new ObjectToParameters()
-            .apply(stringifyContext)
-            .read(map);
-
         String expected = """
-            array: [
+            array1: [
+              1
+            ]
+            array2: [
               1
               2
               null
@@ -79,6 +62,30 @@ class ObjectToParametersTest {
               3
             ]
             """;
+
+        List<String> list1 = new ArrayList<>();
+        list1.add("1");
+
+        List<String> list2 = new ArrayList<>();
+        list2.add("1");
+        list2.add("2");
+        list2.add(null);
+        list2.add("3");
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("array1", list1.toArray(new String[0]));
+        map.put("array2", list2.toArray(new String[0]));
+        map.put("list", list2);
+        map.put("enum", Collections.enumeration(list2));
+
+        StringifyContext stringifyContext = new StringifyContext();
+        stringifyContext.setDateFormat("yyyy-MM-dd");
+        stringifyContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+        stringifyContext.setNullWritable(true);
+
+        Parameters parameters = new ObjectToParameters()
+            .apply(stringifyContext)
+            .read(map);
 
         expected = expected.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String converted = new AponWriter()

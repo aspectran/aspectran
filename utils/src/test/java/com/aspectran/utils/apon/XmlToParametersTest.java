@@ -28,49 +28,94 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class XmlToParametersTest {
 
     @Test
-    void test() throws IOException, ParseException {
-        String converted = convert();
-        String expected = "container: {\n" + "  id: 12\n" + "  item1: {\n" + "    container: [\n" + "      {\n" + "        id: 34\n" + "        item: [\n" + "          {\n" + "            id: 56\n" + "            item: (\n" + "              |a\n" + "              |a\n" + "              |a\n" + "            )\n" + "          }\n" + "          {\n" + "            id: 78\n" + "            item: bbb\n" + "          }\n" + "        ]\n" + "      }\n" + "      {\n" + "        item: [\n" + "          aaa\n" + "          bbb\n" + "          ccc\n" + "        ]\n" + "      }\n" + "    ]\n" + "  }\n" + "  item2: (\n" + "    |\n" + "    |    xyz\n" + "    |  \n" + "  )\n" + "  item3: {\n" + "    id: 90\n" + "    item3: (\n" + "      |\n" + "      |    xyz\n" + "      |  \n" + "    )\n" + "  }\n" + "  item4: {\n" + "    item5: {\n" + "      id: 91\n" + "      item5: (\n" + "        |\n" + "        |      xyz\n" + "        |    \n" + "      )\n" + "    }\n" + "  }\n" + "}\n";
-        assertEquals(converted, expected.replace("\n", AponFormat.SYSTEM_NEW_LINE));
-    }
+    void convert() throws IOException {
+        String xml = """
+                <container id="12">
+                  <item1>
+                    <container id="34">
+                      <item id="56">a
+                a
+                a</item>
+                      <item id="78">bbb</item>
+                    </container>
+                    <container>
+                      <item>aaa</item>
+                      <item>bbb</item>
+                      <item>ccc</item>
+                    </container>
+                  </item1>
+                  <item2>
+                    xyz
+                </item2>
+                  <item3 id="90">
+                    xyz
+                </item3>
+                  <item4>
+                    <item5 id="91">
+                      xyz
+                </item5>
+                  </item4>
+                </container>""";
 
-    static String convert() throws IOException {
-        String xml = "<container id=\"12\">\n" +
-                "  <item1>\n" +
-                "    <container id=\"34\">\n" +
-                "      <item id=\"56\">a\na\na</item>\n" +
-                "      <item id=\"78\">bbb</item>\n" +
-                "    </container>\n" +
-                "    <container>\n" +
-                "      <item>aaa</item>\n" +
-                "      <item>bbb</item>\n" +
-                "      <item>ccc</item>\n" +
-                "    </container>\n" +
-                "  </item1>\n" +
-                "  <item2>\n" +
-                "    xyz\n" +
-                "  </item2>\n" +
-                "  <item3 id=\"90\">\n" +
-                "    xyz\n" +
-                "  </item3>\n" +
-                "  <item4>\n" +
-                "    <item5 id=\"91\">\n" +
-                "      xyz\n" +
-                "    </item5>\n" +
-                "  </item4>\n" +
-                "</container>";
+        String actual = """
+                container: {
+                  id: 12
+                  item1: {
+                    container: [
+                      {
+                        id: 34
+                        item: [
+                          {
+                            id: 56
+                            item: (
+                              |a
+                              |a
+                              |a
+                            )
+                          }
+                          {
+                            id: 78
+                            item: bbb
+                          }
+                        ]
+                      }
+                      {
+                        item: [
+                          aaa
+                          bbb
+                          ccc
+                        ]
+                      }
+                    ]
+                  }
+                  item2: (
+                    |
+                    |    xyz
+                    |
+                  )
+                  item3: {
+                    id: 90
+                    item3: (
+                      |
+                      |    xyz
+                      |
+                    )
+                  }
+                  item4: {
+                    item5: {
+                      id: 91
+                      item5: (
+                        |
+                        |      xyz
+                        |
+                      )
+                    }
+                  }
+                }
+                """;
 
         Parameters ps = XmlToParameters.from(xml);
-        return ps.toString();
-    }
-
-    public static void main(String[] args) {
-        try {
-            String result = convert();
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        assertEquals(actual, ps.toString());
     }
 
 }
