@@ -82,44 +82,56 @@ public interface Parameters {
     String getQualifiedName();
 
     /**
-         * Returns the qualified name built from this container's actual name and the given local name.
-         * @param name the local parameter name
-         * @return a qualified name for display/logging
-         */
-        String getQualifiedName(String name);
+     * Returns the qualified name built from this container's actual name and the given local name.
+     * @param name the local parameter name
+     * @return a qualified name for display/logging
+     */
+    String getQualifiedName(String name);
 
     /**
-         * Returns the qualified name for the given predefined key in this container.
-         * @param key the parameter definition
-         * @return a qualified name for display/logging
-         */
-        String getQualifiedName(ParameterKey key);
+     * Returns the qualified name for the given predefined key in this container.
+     * @param key the parameter definition
+     * @return a qualified name for display/logging
+     */
+    String getQualifiedName(ParameterKey key);
 
     /**
-         * Return the internal {@link ParameterValue} holder by name, or {@code null} if absent.
-         * @param name the parameter name
-         * @return the holder or {@code null}
-         */
-        ParameterValue getParameterValue(String name);
+     * Return the internal {@link ParameterValue} holder by name, or {@code null} if absent.
+     * @param name the parameter name
+     * @return the holder or {@code null}
+     */
+    ParameterValue getParameterValue(String name);
 
     /**
-         * Return the internal {@link ParameterValue} holder by predefined key, or {@code null}.
-         * @param key the parameter definition
-         * @return the holder or {@code null}
-         */
-        ParameterValue getParameterValue(ParameterKey key);
+     * Return the internal {@link ParameterValue} holder by predefined key, or {@code null}.
+     * @param key the parameter definition
+     * @return the holder or {@code null}
+     */
+    ParameterValue getParameterValue(ParameterKey key);
 
     /**
-         * Return a read-only view of all {@link ParameterValue} holders in declaration order.
-         * @return a collection of holders
-         */
-        Collection<ParameterValue> getParameterValues();
+     * Return a read-only view of all {@link ParameterValue} holders in declaration order.
+     * @return a collection of holders
+     */
+    Collection<ParameterValue> getParameterValues();
 
     /**
      * Returns all parameter names associated with this {@code Parameters}.
      * @return an array of all parameter names associated with this {@code Parameters}
      */
     String[] getParameterNames();
+
+    /**
+     * Returns the number of parameters in this collection.
+     * @return the number of parameters in this collection
+     */
+    int size();
+
+    /**
+     * Returns {@code true} if this collection contains no parameters.
+     * @return {@code true} if this collection contains no parameters
+     */
+    boolean isEmpty();
 
     /**
      * Returns whether this parameter exists.

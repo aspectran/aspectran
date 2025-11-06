@@ -17,7 +17,9 @@ package com.aspectran.utils.apon;
 
 import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.io.StringWriter;
 import java.util.Arrays;
 
 /**
@@ -42,7 +44,7 @@ public class AponLines extends AponFormat {
     /**
      * Buffer accumulating APON lines as they are appended via the fluent API.
      */
-    private final StringBuilder lines = new StringBuilder();
+    private final StringWriter lines = new StringWriter();
 
     /**
      * Stack tracking nested writer states to validate operations and emit closing brackets.
@@ -70,7 +72,8 @@ public class AponLines extends AponFormat {
             if (stateStack.peek() == State.TEXT) {
                 lines.append(TEXT_LINE_START);
             }
-            lines.append(line).append(NEW_LINE);
+            escape(line);
+            lines.append(NEW_LINE);
         }
         return this;
     }
@@ -87,7 +90,9 @@ public class AponLines extends AponFormat {
         checkName(name);
         checkState(State.BLOCK);
         if (value != null) {
-            lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE).append(value).append(NEW_LINE);
+            lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE);
+            escape(value);
+            lines.append(NEW_LINE);
         }
         return this;
     }
@@ -206,6 +211,21 @@ public class AponLines extends AponFormat {
                 throw new IllegalStateException("Must be one of these states: " + Arrays.toString(State.values()));
         }
         return this;
+    }
+
+    private void escape(@NonNull Object object) {
+        if (object instanceof String str && (
+                str.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
+                str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
+                str.startsWith(SPACE) ||
+                str.endsWith(SPACE) ||
+                str.contains(NEW_LINE))) {
+            lines.append(DOUBLE_QUOTE_CHAR);
+            lines.append(AponWriter.escape(str));
+            lines.append(DOUBLE_QUOTE_CHAR);
+        } else {
+            lines.append(String.valueOf(object));
+        }
     }
 
     @Override

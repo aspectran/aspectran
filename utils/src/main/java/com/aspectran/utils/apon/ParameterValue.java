@@ -304,13 +304,10 @@ public class ParameterValue implements Parameter {
      * conversion from a scalar to an array on-the-fly.
      * After conversion, subsequent values added via {@link #putValue(Object)}
      * will be appended to this array.
-     * @throws IllegalStateException if the parameter's value type is fixed or
-     *      if it is already an array type.
+     * @throws IllegalStateException if it is already an array type
      */
     @Override
     public void arraylize() {
-        Assert.state(!valueTypeFixed, "This parameter cannot be converted to " +
-                "an array type because it is a fixed type");
         Assert.state(!array, "This parameter cannot be converted to " +
                 "an array type because it is already an array type");
         array = true;

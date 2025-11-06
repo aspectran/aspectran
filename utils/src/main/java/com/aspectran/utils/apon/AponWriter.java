@@ -250,15 +250,19 @@ public class AponWriter implements Flushable {
     public <T extends AponWriter> T write(Parameters parameters) throws IOException {
         Assert.notNull(parameters, "parameters must not be null");
         if (parameters instanceof ArrayParameters arrayParameters) {
-            for (Parameters ps : arrayParameters.getParametersList()) {
-                beginBlock();
-                for (Parameter pv : ps.getParameterValues()) {
-                    if (nullWritable || pv.isAssigned()) {
-                        write(pv);
+            beginArray();
+            if (arrayParameters.getParametersList() != null) {
+                for (Parameters ps : arrayParameters.getParametersList()) {
+                    beginBlock();
+                    for (Parameter pv : ps.getParameterValues()) {
+                        if (nullWritable || pv.isAssigned()) {
+                            write(pv);
+                        }
                     }
+                    endBlock();
                 }
-                endBlock();
             }
+            endArray();
         } else {
             for (Parameter pv : parameters.getParameterValues()) {
                 if (nullWritable || pv.isAssigned()) {
@@ -711,7 +715,7 @@ public class AponWriter implements Flushable {
             return str;
         }
 
-        StringBuilder sb = new StringBuilder(len);
+        StringBuilder sb = new StringBuilder();
         char c;
         String t;
         for (int pos = 0; pos < len; pos++) {

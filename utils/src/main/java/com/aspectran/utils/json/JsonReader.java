@@ -322,38 +322,19 @@ public class JsonReader {
         if (p == PEEKED_NONE) {
             p = doPeek();
         }
-
-        switch (p) {
-            case PEEKED_BEGIN_OBJECT:
-                return JsonToken.BEGIN_OBJECT;
-            case PEEKED_END_OBJECT:
-                return JsonToken.END_OBJECT;
-            case PEEKED_BEGIN_ARRAY:
-                return JsonToken.BEGIN_ARRAY;
-            case PEEKED_END_ARRAY:
-                return JsonToken.END_ARRAY;
-            case PEEKED_SINGLE_QUOTED_NAME:
-            case PEEKED_DOUBLE_QUOTED_NAME:
-            case PEEKED_UNQUOTED_NAME:
-                return JsonToken.NAME;
-            case PEEKED_TRUE:
-            case PEEKED_FALSE:
-                return JsonToken.BOOLEAN;
-            case PEEKED_NULL:
-                return JsonToken.NULL;
-            case PEEKED_SINGLE_QUOTED:
-            case PEEKED_DOUBLE_QUOTED:
-            case PEEKED_UNQUOTED:
-            case PEEKED_BUFFERED:
-                return JsonToken.STRING;
-            case PEEKED_LONG:
-            case PEEKED_NUMBER:
-                return JsonToken.NUMBER;
-            case PEEKED_EOF:
-                return JsonToken.END_DOCUMENT;
-            default:
-                throw new AssertionError();
-        }
+        return switch (p) {
+            case PEEKED_BEGIN_OBJECT -> JsonToken.BEGIN_OBJECT;
+            case PEEKED_END_OBJECT -> JsonToken.END_OBJECT;
+            case PEEKED_BEGIN_ARRAY -> JsonToken.BEGIN_ARRAY;
+            case PEEKED_END_ARRAY -> JsonToken.END_ARRAY;
+            case PEEKED_SINGLE_QUOTED_NAME, PEEKED_DOUBLE_QUOTED_NAME, PEEKED_UNQUOTED_NAME -> JsonToken.NAME;
+            case PEEKED_TRUE, PEEKED_FALSE -> JsonToken.BOOLEAN;
+            case PEEKED_NULL -> JsonToken.NULL;
+            case PEEKED_SINGLE_QUOTED, PEEKED_DOUBLE_QUOTED, PEEKED_UNQUOTED, PEEKED_BUFFERED -> JsonToken.STRING;
+            case PEEKED_LONG, PEEKED_NUMBER -> JsonToken.NUMBER;
+            case PEEKED_EOF -> JsonToken.END_DOCUMENT;
+            default -> throw new AssertionError();
+        };
     }
 
     private int doPeek() throws IOException {

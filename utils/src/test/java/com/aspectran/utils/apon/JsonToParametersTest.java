@@ -18,133 +18,95 @@ package com.aspectran.utils.apon;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * Test cases for converting JSON to APON Parameters.
+ *
  * <p>Created: 2019-06-29</p>
  */
 class JsonToParametersTest {
 
+    /**
+     * Tests converting a JSON array to an ArrayParameters object.
+     */
     @Test
-    void testConvertJsonToApon() throws IOException {
-        String sb = """
+    void testConvertJsonArrayToArrayParameters() throws IOException {
+        String json = """
                 [
-                {
-                  "param1": 111,
-                  "param2": 222
-                }
-                ,
-                {
-                  "param3": 333,
-                  "param4": 444
-                }
-                , null\
+                  { "param1": 111, "param2": 222 },
+                  { "param3": 333, "param4": 444 },
+                  null
                 ]
                 """;
 
-        String apon = """
-                {
-                  param1: 111
-                  param2: 222
-                }
-                {
-                  param3: 333
-                  param4: 444
-                }""";
-
-        Parameters ps = JsonToParameters.from(sb, ArrayParameters.class);
-
-        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
-        String s2 = ps.toString().trim();
-
-        assertEquals(s1, s2);
+        ArrayParameters params = JsonToParameters.from(json, ArrayParameters.class);
+        assertEquals(3, params.getParametersList().size());
+        assertEquals(111, params.getParametersList().get(0).getInt("param1"));
+        assertEquals(222, params.getParametersList().get(0).getInt("param2"));
+        assertEquals(333, params.getParametersList().get(1).getInt("param3"));
+        assertEquals(444, params.getParametersList().get(1).getInt("param4"));
     }
 
+    /**
+     * Tests converting a complex, nested JSON object.
+     */
     @Test
-    void testConvertJsonToApon2() throws IOException {
+    void testConvertComplexJsonObject() throws IOException {
         String json = """
                 {
                     "glossary": {
                         "title": "example glossary",
-                \t\t"GlossDiv": {
+                        "GlossDiv": {
                             "title": "S",
-                \t\t\t"GlossList": {
+                            "GlossList": {
                                 "GlossEntry": {
                                     "ID": "SGML",
-                \t\t\t\t\t"SortAs": "SGML",
-                \t\t\t\t\t"GlossTerm": "Standard Generalized Markup Language",
-                \t\t\t\t\t"Acronym": "SGML",
-                \t\t\t\t\t"Abbrev": "ISO 8879:1986",
-                \t\t\t\t\t"GlossDef": {
-                                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
-                \t\t\t\t\t\t"GlossSeeAlso": ["GML", "XML"]
-                                    },
-                \t\t\t\t\t"GlossSee": "markup"
+                                    "GlossSeeAlso": ["GML", "XML"]
                                 }
                             }
                         }
                     }
-                }""";
-        String apon = """
-                glossary: {
-                  title: example glossary
-                  GlossDiv: {
-                    title: S
-                    GlossList: {
-                      GlossEntry: {
-                        ID: SGML
-                        SortAs: SGML
-                        GlossTerm: Standard Generalized Markup Language
-                        Acronym: SGML
-                        Abbrev: ISO 8879:1986
-                        GlossDef: {
-                          para: A meta-markup language, used to create markup languages such as DocBook.
-                          GlossSeeAlso: [
-                            GML
-                            XML
-                          ]
-                        }
-                        GlossSee: markup
-                      }
-                    }
-                  }
-                }""";
+                }
+                """;
 
-        Parameters ps = JsonToParameters.from(json);
+        Parameters params = JsonToParameters.from(json);
+        Parameters glossary = params.getParameters("glossary");
+        assertNotNull(glossary);
+        assertEquals("example glossary", glossary.getString("title"));
 
-        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
-        String s2 = ps.toString().trim();
-
-        assertEquals(s1, s2);
+        Parameters glossEntry = glossary.getParameters("GlossDiv").getParameters("GlossList").getParameters("GlossEntry");
+        assertNotNull(glossEntry);
+        assertEquals("SGML", glossEntry.getString("ID"));
+        assertEquals(Arrays.asList("GML", "XML"), glossEntry.getStringList("GlossSeeAlso"));
     }
 
+    /**
+     * Tests converting JSON to a specific, typed Parameters subclass.
+     */
     @Test
-    void testConvertJsonToApon3() throws IOException {
-        String json = "{\"message\": \"11\\n22\"}";
+    void testConvertJsonToTypedParameters() throws IOException {
+        String json = "{\"message\": \"line1\\nline2\"}";
 
-        Parameters messagePayload = JsonToParameters.from(json, MessagePayload.class);
-        String result1 = messagePayload.toString();
+        MessagePayload messagePayload = JsonToParameters.from(json, MessagePayload.class);
+        assertEquals("line1\nline2", messagePayload.getContent());
 
-        MessagePayload messagePayload2 = new MessagePayload();
-        AponReader reader = new AponReader(messagePayload.toString());
-        reader.read(messagePayload2);
-        String result2 = messagePayload.toString();
-
-        assertEquals(result1, result2);
+        // Verify that the converted object can be read back by AponReader
+        String apon = messagePayload.toString();
+        MessagePayload rereadPayload = new AponReader(apon).read(new MessagePayload());
+        assertEquals(messagePayload.getContent(), rereadPayload.getContent());
     }
 
     public static class MessagePayload extends AbstractParameters {
-
-        private static final ParameterKey message;
-
-        private static final ParameterKey[] parameterKeys;
-
-        static {
-            message = new ParameterKey("message", ValueType.STRING);
-            parameterKeys = new ParameterKey[] { message };
-        }
+        private static final ParameterKey message = new ParameterKey("message", ValueType.STRING);
+        private static final ParameterKey[] parameterKeys = { message };
 
         public MessagePayload() {
             super(parameterKeys);
@@ -153,45 +115,127 @@ class JsonToParametersTest {
         public String getContent() {
             return getString(message);
         }
-
-        public void setContent(String content) {
-            putValue(MessagePayload.message, content);
-        }
-
     }
 
+    /**
+     * Tests converting a JSON object that contains an array of objects.
+     */
     @Test
-    void testConvertJsonToArrayOfObjects() throws IOException {
+    void testConvertJsonObjectWithArray() throws IOException {
         String json = """
                 {
-                  "arrayObject": [
-                    {
-                      "key1": "value1"
-                    }
+                  "arrayObject1": [
+                    { "key1": "value1" }
+                  ],
+                  "arrayObject2": [
+                    { "key2-1": "value2-1" },
+                    { "key2-2": "value2-2" }
+                  ],
+                  "arrayString1": [
+                    "str1"
+                  ],
+                  "arrayString2": [
+                    "str1", "str2"
+                  ],
+                  "arrayStringWithNull": [
+                    "str1", null
+                  ],
+                  "arrayNullWithString": [
+                    null, "str2"
+                  ],
+                  "arrayInt1": [
+                    1
+                  ],
+                  "arrayInt2": [
+                    1, 2
                   ]
-                }""";
-
-        String expectedApon = """
-                arrayObject: [
-                  {
-                    key1: value1
-                  }
-                ]""";
+                }
+                """;
 
         Parameters parameters = JsonToParameters.from(json);
+        List<Parameters> arrayObject1 = parameters.getParametersList("arrayObject1");
+        assertEquals(1, arrayObject1.size());
+        assertEquals("value1", arrayObject1.getFirst().getString("key1"));
 
-        // Normalize line endings for comparison
-        String actualApon = parameters.toString().trim().replace("\r\n", "\n");
-        String normalizedExpectedApon = expectedApon.replace("\r\n", "\n");
+        List<Parameters> arrayObject2 = parameters.getParametersList("arrayObject2");
+        assertNotNull(arrayObject2);
+        assertEquals(2, arrayObject2.size());
+        assertEquals("value2-1", arrayObject2.get(0).getString("key2-1"));
+        assertEquals("value2-2", arrayObject2.get(1).getString("key2-2"));
 
-        assertEquals(normalizedExpectedApon, actualApon);
+        List<String> arrayString1 = parameters.getStringList("arrayString1");
+        assertEquals(1, arrayString1.size());
+        assertEquals("str1", arrayString1.getFirst());
 
-        // Further assertions to ensure correct structure
-        List<Parameters> noncoveredDetails = parameters.getParametersList("arrayObject");
-        assertEquals(1, noncoveredDetails.size());
+        List<String> arrayString2 = parameters.getStringList("arrayString2");
+        assertEquals(2, arrayString2.size());
+        assertEquals("str1", arrayString2.get(0));
+        assertEquals("str2", arrayString2.get(1));
 
-        Parameters detail = noncoveredDetails.get(0);
-        assertEquals("value1", detail.getString("key1"));
+        List<String> arrayStringWithNull = parameters.getStringList("arrayStringWithNull");
+        assertEquals(2, arrayStringWithNull.size());
+        assertEquals("str1", arrayStringWithNull.get(0));
+        assertNull(arrayStringWithNull.get(1));
+
+        List<String> arrayNullWithString = parameters.getStringList("arrayNullWithString");
+        assertEquals(2, arrayNullWithString.size());
+        assertNull(arrayNullWithString.getFirst());
+        assertEquals("str2", arrayNullWithString.get(1));
+
+        List<Integer> arrayInt1 = parameters.getIntList("arrayInt1");
+        assertEquals(1, arrayInt1.size());
+        assertEquals(1, arrayInt1.getFirst());
+
+        List<Integer> arrayInt2 = parameters.getIntList("arrayInt2");
+        assertEquals(2, arrayInt2.size());
+        assertEquals(1, arrayInt2.get(0));
+        assertEquals(2, arrayInt2.get(1));
+    }
+
+    /**
+     * Tests conversion of all JSON primitive types.
+     */
+    @Test
+    void testJsonPrimitiveTypes() throws IOException {
+        String json = """
+                {
+                  "string": "hello",
+                  "integer": 123,
+                  "number": 45.67,
+                  "boolean": true,
+                  "nullValue": null
+                }
+                """;
+        Parameters params = JsonToParameters.from(json);
+        assertEquals("hello", params.getString("string"));
+        assertEquals(123, params.getInt("integer"));
+        assertEquals(45.67, params.getDouble("number"));
+        assertTrue(params.getBoolean("boolean"));
+        assertNull(params.getString("nullValue"));
+    }
+
+    /**
+     * Tests conversion of empty JSON structures.
+     */
+    @Test
+    void testEmptyJsonStructures() throws IOException {
+        // Empty object
+        Parameters p1 = JsonToParameters.from("{}");
+        assertTrue(p1.isEmpty());
+
+        // Empty array
+        Parameters p2 = JsonToParameters.from("{\"emptyArray\":[]}");
+        assertNull(p2.getValue("emptyArray"));
+    }
+
+    /**
+     * Tests that invalid JSON input throws an exception.
+     */
+    @Test
+    void testInvalidJsonInput() {
+        assertThrows(IOException.class, () -> JsonToParameters.from("{ key: 'value' }")); // Invalid JSON (single quotes)
+        assertThrows(IOException.class, () -> JsonToParameters.from("{ \"key\": value, }")); // Trailing comma
+        assertThrows(IOException.class, () -> JsonToParameters.from("not json"));
     }
 
 }

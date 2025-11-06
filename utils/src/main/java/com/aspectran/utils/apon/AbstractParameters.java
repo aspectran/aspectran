@@ -177,6 +177,16 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public int size() {
+        return parameterValueMap.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return parameterValueMap.isEmpty();
+    }
+
+    @Override
     public boolean hasParameter(String name) {
         return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
     }

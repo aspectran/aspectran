@@ -18,28 +18,144 @@ package com.aspectran.utils.apon;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * Test cases for AponReader.
+ *
  * <p>Created: 2020/05/30</p>
  */
 class AponReaderTest {
 
+    /**
+     * Tests reading a value containing an escaped unicode character.
+     */
     @Test
-    void singleQuoteEscapeTest() throws AponParseException {
+    void testReadWithEscapedUnicodeCharacter() throws AponParseException {
         String input = "name: \"she\\u2019s \"";
         AponReader reader = new AponReader(input);
         Parameters parameters = reader.read();
-        //System.out.println(parameters.getString("name"));
         assertEquals("she’s ", parameters.getString("name"));
     }
 
+    /**
+     * Tests reading a value containing a raw (unescaped) unicode character.
+     */
     @Test
-    void noEscapeTest() throws AponParseException {
+    void testReadWithUnescapedUnicodeCharacter() throws AponParseException {
         String input = "name: she\u2019s";
         AponReader reader = new AponReader(input);
         Parameters parameters = reader.read();
-        //System.out.println(parameters.getString("name"));
         assertEquals("she\u2019s", parameters.getString("name"));
+    }
+
+    /**
+     * Tests parsing of various primitive data types and null.
+     */
+    @Test
+    void testParseValueTypes() throws AponParseException {
+        String input = """
+            string: Hello World
+            integer: 123
+            long: 456L
+            double: 78.9
+            boolean: true
+            nullValue: null
+            """;
+        Parameters params = AponReader.read(input);
+        assertEquals("Hello World", params.getString("string"));
+        assertEquals(123, params.getInt("integer"));
+        assertEquals(456L, params.getLong("long"));
+        assertEquals(78.9, params.getDouble("double"));
+        assertTrue(params.getBoolean("boolean"));
+        assertNull(params.getString("nullValue"));
+    }
+
+    /**
+     * Tests parsing of a multi-line text block.
+     */
+    @Test
+    void testParseTextBlock() throws AponParseException {
+        String input = """
+            message: (
+              |Line 1
+              |Line 2
+              |  Indented Line 3
+            )
+            """;
+        String expected = "Line 1\nLine 2\n  Indented Line 3";
+        Parameters params = AponReader.read(input);
+        assertEquals(expected, params.getString("message"));
+    }
+
+    /**
+     * Tests parsing of a nested structure with blocks and arrays.
+     */
+    @Test
+    void testParseNestedStructure() throws AponParseException {
+        String input = """
+            config: {
+              name: App1
+              settings: {
+                enabled: true
+                retries: 3
+              }
+              users: [
+                {
+                    name: Alice
+                    role: admin
+                }
+                {
+                    name: Bob
+                    role: user
+                }
+              ]
+            }
+            """;
+        Parameters config = AponReader.read(input).getParameters("config");
+        assertEquals("App1", config.getString("name"));
+        assertEquals(true, config.getParameters("settings").getBoolean("enabled"));
+        assertEquals(2, config.getParametersList("users").size());
+        assertEquals("Alice", config.getParametersList("users").get(0).getString("name"));
+    }
+
+    /**
+     * Tests that comments are properly ignored by the parser.
+     */
+    @Test
+    void testParseWithComments() throws AponParseException {
+        String input = """
+            # This is a full-line comment
+            key: value
+            # Another comment
+            anotherKey: anotherValue
+            """;
+        Parameters params = AponReader.read(input);
+        assertEquals("value", params.getString("key"));
+        assertEquals("anotherValue", params.getString("anotherKey"));
+        assertEquals(2, params.size());
+    }
+
+    /**
+     * Tests that invalid syntax correctly throws AponParseException.
+     */
+    @Test
+    void testInvalidSyntaxThrowsException() {
+        assertThrows(AponParseException.class, () -> AponReader.read("key value"));    // missing colon
+    }
+
+    /**
+     * Tests parsing of empty and whitespace-only input.
+     */
+    @Test
+    void testEmptyAndWhitespaceInput() throws AponParseException {
+        Parameters p1 = AponReader.read("");
+        assertTrue(p1.isEmpty());
+
+        Parameters p2 = AponReader.read("   \n\t\r\n   ");
+        assertTrue(p2.isEmpty());
     }
 
 }

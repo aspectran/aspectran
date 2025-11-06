@@ -21,10 +21,18 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test cases for AponLines.
+ *
+ * <p>Created: 2019. 12. 7.</p>
+ */
 class AponLinesTest {
 
+    /**
+     * Tests that two different ways of building APON lines produce the same raw string output.
+     */
     @Test
-    void test1() {
+    void testEquivalenceOfBuilderStylesForToString() {
         AponLines aponLines1 = new AponLines()
                 .line("name", "value")
                 .line("number", 9999)
@@ -50,7 +58,6 @@ class AponLinesTest {
                 .line("]")
                 ;
         String apon1 = aponLines1.toString();
-        //System.out.println(apon1);
 
         AponLines aponLines2 = new AponLines()
                 .line("name", "value")
@@ -77,13 +84,15 @@ class AponLinesTest {
                 .end()
                 ;
         String apon2 = aponLines2.toString();
-        //System.out.println(apon2);
 
         assertEquals(apon1, apon2);
     }
 
+    /**
+     * Tests that two different ways of building APON lines produce the same formatted string output.
+     */
     @Test
-    void test2() throws IOException {
+    void testEquivalenceOfBuilderStylesForFormat() throws IOException {
         AponLines aponLines1 = new AponLines()
                 .line("name", "value")
                 .line("number", 9999)
@@ -109,7 +118,6 @@ class AponLinesTest {
                 .line("]")
                 ;
         String apon1 = aponLines1.format();
-        //System.out.println(apon1);
 
         AponLines aponLines2 = new AponLines()
                 .line("name", "value")
@@ -136,9 +144,88 @@ class AponLinesTest {
                 .end()
                 ;
         String apon2 = aponLines2.format();
-        //System.out.println(apon2);
 
         assertEquals(apon1, apon2);
+    }
+
+    /**
+     * Tests the behavior of an empty AponLines object.
+     */
+    @Test
+    void testEmptyApon() throws IOException {
+        AponLines aponLines = new AponLines();
+        assertEquals("", aponLines.toString());
+        assertEquals("", aponLines.format());
+    }
+
+    /**
+     * Tests building APON with simple key-value pairs.
+     */
+    @Test
+    void testSimpleKeyValuePairs() throws IOException {
+        AponLines aponLines = new AponLines()
+                .line("name", "John Doe")
+                .line("age", 30)
+                .line("isStudent", false);
+
+        String expectedString = "name: John Doe\n" +
+                "age: 30\n" +
+                "isStudent: false\n";
+        String expectedFormat = "name: John Doe\n" +
+                "age: 30\n" +
+                "isStudent: false\n";
+
+        assertEquals(expectedString, aponLines.toString());
+        assertEquals(expectedFormat, aponLines.format());
+    }
+
+    /**
+     * Tests nested blocks and arrays.
+     */
+    @Test
+    void testNestedBlocksAndArrays() throws IOException {
+        AponLines aponLines = new AponLines()
+                .block("user")
+                .line("username", "tester")
+                .block("profile")
+                .line("email", "tester@example.com")
+                .end()
+                .array("roles")
+                .line("admin")
+                .line("editor")
+                .end()
+                .end();
+
+        String expected = "user: {\n" +
+                "  username: tester\n" +
+                "  profile: {\n" +
+                "    email: tester@example.com\n" +
+                "  }\n" +
+                "  roles: [\n" +
+                "    admin\n" +
+                "    editor\n" +
+                "  ]\n" +
+                "}\n";
+
+        assertEquals(expected, aponLines.format());
+    }
+
+    /**
+     * Tests values with special characters that might require escaping or special handling.
+     */
+    @Test
+    void testSpecialCharacters() throws IOException {
+        AponLines aponLines = new AponLines()
+                .line("specialChars", "value with { } [ ] : ( ) ' \"")
+                .line("multiline", "line1\nline2");
+
+        String expectedFormat = "specialChars: \"value with { } [ ] : ( ) ' \\\"\"\n" +
+                "multiline: (\n" +
+                "  |line1\n" +
+                "  |line2\n" +
+                ")\n";
+
+        assertEquals(expectedFormat, aponLines.format());
     }
 
 }

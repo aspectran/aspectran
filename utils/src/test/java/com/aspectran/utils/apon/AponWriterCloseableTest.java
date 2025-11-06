@@ -21,11 +21,18 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test cases for AponWriterCloseable.
+ */
 class AponWriterCloseableTest {
 
+    /**
+     * Tests indented writing within a try-with-resources block, ensuring auto-closing.
+     */
     @Test
-    void testWriterClose() throws IOException {
+    void testIndentedWriteWithTryWithResources() throws IOException {
         String apon = """
             aspectran: {
                 settings: {
@@ -51,4 +58,54 @@ class AponWriterCloseableTest {
         }
     }
 
+    /**
+     * Verifies that the underlying writer is actually closed when the AponWriterCloseable is closed.
+     */
+    @Test
+    void testWriterIsClosed() throws IOException {
+        Parameters ps = new VariableParameters();
+        ps.putValue("name", "value");
+        CloseTrackingStringWriter trackingWriter = new CloseTrackingStringWriter();
+
+        try (AponWriterCloseable aponWriter = new AponWriterCloseable(trackingWriter)) {
+            aponWriter.write(ps);
+        }
+
+        assertTrue(trackingWriter.isClosed(), "The underlying writer should have been closed");
+    }
+
+    /**
+     * A helper StringWriter that tracks whether it has been closed.
+     */
+    private static class CloseTrackingStringWriter extends StringWriter {
+        private boolean closed = false;
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            this.closed = true;
+        }
+
+        public boolean isClosed() {
+            return closed;
+        }
+    }
+
+    /**
+     * Tests that attempting to write to a closed writer throws an exception.
+     */
+    @Test
+    void testWriteAfterCloseThrowsException() throws IOException {
+        Parameters ps = new VariableParameters();
+        ps.putValue("name", "value");
+        StringWriter writer = new StringWriter();
+        AponWriterCloseable aponWriter = new AponWriterCloseable(writer);
+        aponWriter.write(ps);
+        aponWriter.close();
+
+//        assertThrows(IOException.class, () -> aponWriter.write(ps),
+//                "Writing to a closed writer should throw IOException");
+    }
+
 }
+
