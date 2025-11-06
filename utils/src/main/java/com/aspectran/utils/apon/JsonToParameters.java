@@ -134,7 +134,9 @@ public class JsonToParameters {
             case BEGIN_OBJECT:
                 reader.beginObject();
                 if (name != null) {
-                    container = container.newParameters(name);
+                    Parameters parameters = container.newParameters(name);
+                    container.getParameter(name).arraylize();
+                    container = parameters;
                 }
                 while (reader.hasNext()) {
                     read(reader, container, reader.nextName());

@@ -298,15 +298,27 @@ public class ParameterValue implements Parameter {
     }
 
     /**
-     * Convert this parameter to an array-accepting parameter (fails if already assigned).
-     * @throws IllegalStateException if a value is already assigned
+     * Converts this parameter into an array-type parameter.
+     * <p>If a single value has already been assigned, it is preserved by
+     * becoming the first element of the new array. This allows for dynamic
+     * conversion from a scalar to an array on-the-fly.
+     * After conversion, subsequent values added via {@link #putValue(Object)}
+     * will be appended to this array.
+     * @throws IllegalStateException if the parameter's value type is fixed or
+     *      if it is already an array type.
      */
     @Override
     public void arraylize() {
-        Assert.state(!assigned, "This parameter cannot be converted to " +
-                "an array type because it already has a value assigned to it");
+        Assert.state(!valueTypeFixed, "This parameter cannot be converted to " +
+                "an array type because it is a fixed type");
+        Assert.state(!array, "This parameter cannot be converted to " +
+                "an array type because it is already an array type");
         array = true;
         bracketed = true;
+        if (assigned) {
+            addValue(value);
+            value = null;
+        }
     }
 
     /**

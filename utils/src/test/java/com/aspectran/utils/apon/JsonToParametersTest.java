@@ -18,6 +18,7 @@ package com.aspectran.utils.apon;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -79,7 +80,7 @@ class JsonToParametersTest {
         assertEquals(result1, result2);
     }
 
-    public static class MessagePayload extends AbstractParameters {
+    static class MessagePayload extends AbstractParameters {
 
         private static final ParameterKey message;
 
@@ -102,6 +103,53 @@ class JsonToParametersTest {
             putValue(MessagePayload.message, content);
         }
 
+    }
+
+    @Test
+    void testConvertJsonToArrayOfObjects() throws IOException {
+        String json = "{\n" +
+                "  \"noncovered_detail\": [\n" +
+                "    {\n" +
+                "      \"business_no\": \"2108206683\",\n" +
+                "      \"hospital_name\": \"한일병원\",\n" +
+                "      \"receipt_date\": \"20250802\",\n" +
+                "      \"deduction_name\": \"얼음주머니\",\n" +
+                "      \"deduction_amount\": 9000,\n" +
+                "      \"noncovered_reason\": \"치료재료대 비급여 항목으로 지원 불가\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        String expectedApon = "noncovered_detail: [\n" +
+                "  {\n" +
+                "    business_no: 2108206683\n" +
+                "    hospital_name: 한일병원\n" +
+                "    receipt_date: 20250802\n" +
+                "    deduction_name: 얼음주머니\n" +
+                "    deduction_amount: 9000\n" +
+                "    noncovered_reason: 치료재료대 비급여 항목으로 지원 불가\n" +
+                "  }\n" +
+                "]";
+
+        Parameters parameters = JsonToParameters.from(json);
+
+        // Normalize line endings for comparison
+        String actualApon = parameters.toString().trim().replace("\r\n", "\n");
+        String normalizedExpectedApon = expectedApon.replace("\r\n", "\n");
+
+        assertEquals(normalizedExpectedApon, actualApon);
+
+        // Further assertions to ensure correct structure
+        List<Parameters> noncoveredDetails = parameters.getParametersList("noncovered_detail");
+        assertEquals(1, noncoveredDetails.size());
+
+        Parameters detail = noncoveredDetails.get(0);
+        assertEquals("2108206683", detail.getString("business_no"));
+        assertEquals("한일병원", detail.getString("hospital_name"));
+        assertEquals("20250802", detail.getString("receipt_date"));
+        assertEquals("얼음주머니", detail.getString("deduction_name"));
+        assertEquals(9000, detail.getInt("deduction_amount"));
+        assertEquals("치료재료대 비급여 항목으로 지원 불가", detail.getString("noncovered_reason"));
     }
 
 }
