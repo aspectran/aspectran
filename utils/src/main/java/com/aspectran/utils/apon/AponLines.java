@@ -216,10 +216,10 @@ public class AponLines extends AponFormat {
     private void escape(@NonNull Object object) {
         if (object instanceof String str && (
                 str.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
-                str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
-                str.startsWith(SPACE) ||
-                str.endsWith(SPACE) ||
-                str.contains(NEW_LINE))) {
+                        str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
+                        str.startsWith(SPACE) ||
+                        str.endsWith(SPACE) ||
+                        str.contains(NEW_LINE))) {
             lines.append(DOUBLE_QUOTE_CHAR);
             lines.append(AponWriter.escape(str));
             lines.append(DOUBLE_QUOTE_CHAR);

@@ -46,6 +46,18 @@ class JsonToParametersTest {
                   null
                 ]
                 """;
+        String apon = """
+                [
+                  {
+                    param1: 111
+                    param2: 222
+                  }
+                  {
+                    param3: 333
+                    param4: 444
+                  }
+                ]
+                """;
 
         ArrayParameters params = JsonToParameters.from(json, ArrayParameters.class);
         assertEquals(3, params.getParametersList().size());
@@ -53,6 +65,7 @@ class JsonToParametersTest {
         assertEquals(222, params.getParametersList().get(0).getInt("param2"));
         assertEquals(333, params.getParametersList().get(1).getInt("param3"));
         assertEquals(444, params.getParametersList().get(1).getInt("param4"));
+        assertEquals(apon.replace("\r\n", "\n"), params.toString().replace("\r\n", "\n"));
     }
 
     /**

@@ -22,7 +22,7 @@ import java.io.Serial;
  * Exception thrown by a {@link CountingInputStream} when the stream's read limit is exceeded.
  * This exception provides access to the actual number of bytes read and the configured limit.
  *
- * @since 9.2.3
+ * @since 9.3.0
  */
 public class StreamReadLimitExceededException extends IOException {
 

@@ -24,7 +24,7 @@ import java.io.InputStream;
 /**
  * An input stream that counts the number of bytes read and enforces a size limit.
  *
- * @since 9.2.3
+ * @since 9.3.0
  */
 public class CountingInputStream extends FilterInputStream {
 

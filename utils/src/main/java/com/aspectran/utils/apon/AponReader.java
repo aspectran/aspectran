@@ -20,7 +20,6 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 
 import java.io.BufferedReader;
-import java.math.BigDecimal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 
 import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_CLOSE;
