@@ -124,6 +124,56 @@ class JsonParserTest {
         assertEquals(123.45, map.get("double"));
     }
 
+    void testWhitespaceHandling() throws IOException {
+        String json = "  { \n \"key\" \t : \r \"value\" \n }  ";
+        Object result = JsonParser.parse(json);
+        assertInstanceOf(Map.class, result);
+        Map<?, ?> map = (Map<?, ?>)result;
+        assertEquals("value", map.get("key"));
+        assertEquals(1, map.size());
+    }
+
+    @Test
+    void testComplexStructure() throws IOException {
+        String json = """
+            {
+              "id": "001",
+              "type": "donut",
+              "name": "Cake",
+              "ppu": 0.55,
+              "batters": {
+                "batter": [
+                  { "id": "1001", "type": "Regular" },
+                  { "id": "1002", "type": "Chocolate" },
+                  { "id": "1003", "type": "Blueberry" },
+                  { "id": "1004", "type": "Devil's Food" }
+                ]
+              },
+              "topping": [
+                { "id": "5001", "type": "None" },
+                { "id": "5002", "type": "Glazed" },
+                { "id": "5005", "type": "Sugar" },
+                { "id": "5007", "type": "Powdered Sugar" },
+                { "id" : "5006", "type": "Chocolate with Sprinkles" },
+                { "id": "5003", "type": "Chocolate" },
+                { "id": "5004", "type": "Maple" }
+              ]
+            }""";
+        Object result = JsonParser.parse(json);
+        assertInstanceOf(Map.class, result);
+        Map<?, ?> map = (Map<?, ?>) result;
+        assertEquals("001", map.get("id"));
+        assertEquals("donut", map.get("type"));
+        assertInstanceOf(Map.class, map.get("batters"));
+        Map<?, ?> batters = (Map<?, ?>) map.get("batters");
+        assertInstanceOf(List.class, batters.get("batter"));
+        List<?> batterList = (List<?>) batters.get("batter");
+        assertEquals(4, batterList.size());
+        assertInstanceOf(List.class, map.get("topping"));
+        List<?> toppingList = (List<?>) map.get("topping");
+        assertEquals(7, toppingList.size());
+    }
+
     @Test
     void testMalformedJson() {
         String json = "{\"name\":\"John Doe\",,}";

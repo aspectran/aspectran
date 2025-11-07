@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class JsonParser {
     }
 
     @Nullable
-    private static Object readObject(JsonReader reader) throws IOException {
+    private static Object readObject(@NonNull JsonReader reader) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 Map<String, Object> map = new LinkedHashMap<>();

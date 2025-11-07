@@ -15,18 +15,12 @@
  */
 package com.aspectran.utils.json;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.AponFormat;
-import com.aspectran.utils.apon.AponWriter;
-import com.aspectran.utils.apon.Parameter;
-import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.ValueType;
-import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test cases for JsonReader.
@@ -36,131 +30,71 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JsonReaderTest {
 
     @Test
-    void test1() throws IOException {
-        JsonReader reader = new JsonReader("{\"name\":\"she's\"}");
-        Parameters parameters = new VariableParameters();
-        convertToParameters(reader, parameters, null);
-        String expected = "name: \"she's\"";
-        String actual = parameters.toString().trim();
-        assertEquals(expected, actual);
+    void testReadSimpleObject() throws IOException {
+        String json = "{\"name\":\"John Doe\",\"age\":30,\"isStudent\":false}";
+        JsonReader reader = new JsonReader(json);
+        assertEquals(JsonToken.BEGIN_OBJECT, reader.peek());
+        reader.beginObject();
+        assertEquals("name", reader.nextName());
+        assertEquals("John Doe", reader.nextString());
+        assertEquals("age", reader.nextName());
+        assertEquals(30, reader.nextInt());
+        assertEquals("isStudent", reader.nextName());
+        assertEquals(false, reader.nextBoolean());
+        reader.endObject();
+        assertEquals(JsonToken.END_DOCUMENT, reader.peek());
     }
 
     @Test
-    void test2() throws IOException {
-        String json = """
-            {
-              "intro": "Start Testing Now!",
-              "one": 1,
-              "two": 2,
-              "three": 3,
-              "nullArray": [
-                null,
-                null
-              ],
-              "customers": [
-                {
-                  "id": "guest-1",
-                  "name": "Guest1",
-                  "age": 21,
-                  "approved": true
-                },
-                {
-                  "id": "guest-2",
-                  "name": "Guest2",
-                  "age": 22,
-                  "approved": true
-                }
-              ],
-              "emptyMap": {
-              }
-            }
-            """;
-
-        String expected = """
-            intro: Start Testing Now!
-            one: 1
-            two: 2
-            three: 3
-            nullArray: [
-              null
-              null
-            ]
-            customers: [
-              {
-                id: guest-1
-                name: Guest1
-                age: 21
-                approved: true
-              }
-              {
-                id: guest-2
-                name: Guest2
-                age: 22
-                approved: true
-              }
-            ]
-            emptyMap: {
-            }
-            """.replace("\n", AponFormat.SYSTEM_NEW_LINE);
-
+    void testReadSimpleArray() throws IOException {
+        String json = "[1, \"hello\", true, null]";
         JsonReader reader = new JsonReader(json);
-        Parameters parameters = new VariableParameters();
-        convertToParameters(reader, parameters, null);
-
-        String actual = new AponWriter()
-            .nullWritable(true)
-            .write(parameters)
-            .toString();
-
-        assertEquals(expected, actual);
+        assertEquals(JsonToken.BEGIN_ARRAY, reader.peek());
+        reader.beginArray();
+        assertEquals(1, reader.nextInt());
+        assertEquals("hello", reader.nextString());
+        assertEquals(true, reader.nextBoolean());
+        reader.nextNull();
+        reader.endArray();
+        assertEquals(JsonToken.END_DOCUMENT, reader.peek());
     }
 
-    static void convertToParameters(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
-        switch (reader.peek()) {
-            case BEGIN_OBJECT:
-                reader.beginObject();
-                if (name != null) {
-                    container = container.newParameters(name);
-                }
-                while (reader.hasNext()) {
-                    convertToParameters(reader, container, reader.nextName());
-                }
-                reader.endObject();
-                return;
-            case BEGIN_ARRAY:
-                reader.beginArray();
-                while (reader.hasNext()) {
-                    convertToParameters(reader, container, name);
-                }
-                reader.endArray();
-                return;
-            case STRING:
-                container.putValue(name, reader.nextString());
-                return;
-            case BOOLEAN:
-                container.putValue(name, reader.nextBoolean());
-                return;
-            case NUMBER:
-                try {
-                    container.putValue(name, reader.nextInt());
-                } catch (NumberFormatException e0) {
-                    try {
-                        container.putValue(name, reader.nextLong());
-                    } catch (NumberFormatException e1) {
-                        container.putValue(name, reader.nextDouble());
-                    }
-                }
-                return;
-            case NULL:
-                reader.nextNull();
-                Parameter parameter = container.getParameter(name);
-                if (parameter == null || parameter.getValueType() != ValueType.PARAMETERS) {
-                    container.putValue(name, null);
-                }
-                return;
-            default:
-                throw new IllegalStateException();
-        }
+    @Test
+    void testReadNested() throws IOException {
+        String json = "{\"data\":[{\"id\":1}]}";
+        JsonReader reader = new JsonReader(json);
+        reader.beginObject();
+        assertEquals("data", reader.nextName());
+        reader.beginArray();
+        reader.beginObject();
+        assertEquals("id", reader.nextName());
+        assertEquals(1, reader.nextInt());
+        reader.endObject();
+        reader.endArray();
+        reader.endObject();
+        assertEquals(JsonToken.END_DOCUMENT, reader.peek());
+    }
+
+    @Test
+    void testUnclosedObject() {
+        String json = "{\"name\":\"John Doe\"";
+        JsonReader reader = new JsonReader(json);
+        assertThrows(IOException.class, () -> {
+            reader.beginObject();
+            reader.nextName();
+            reader.nextString();
+            reader.endObject();
+        });
+    }
+
+    @Test
+    void testMalformedJson() {
+        String json = "{key: 'value'}"; // Unquoted key
+        JsonReader reader = new JsonReader(json);
+        assertThrows(MalformedJsonException.class, () -> {
+            reader.beginObject();
+            reader.nextName(); // This should fail
+        });
     }
 
 }

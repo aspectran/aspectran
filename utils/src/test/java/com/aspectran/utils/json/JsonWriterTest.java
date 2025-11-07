@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JsonWriterTest {
 
     @Test
-    void test1() throws IOException {
+    void testWriteComplexMap() throws IOException {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("intro", "Start Testing Now!");
         map.put("null0", null);
@@ -114,7 +114,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test2() throws IOException {
+    void testWriteAponParameters() throws IOException {
         Parameters parameters = new VariableParameters();
         parameters.putValue("item1", 1);
         parameters.putValue("item2", 2);
@@ -149,7 +149,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test3() throws IOException {
+    void testWriteDateTimeTypes() throws IOException {
         LocalDate date = LocalDate.parse("2019-11-19", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         LocalDate dateTime = LocalDate.parse("2019-11-19 11:15:30", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -174,7 +174,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test4() throws IOException {
+    void testWriteRawJson() throws IOException {
         JsonWriter writer2 = new JsonWriter(new StringWriter());
         writer2.beginObject();
         writer2.writeName("key1");
@@ -205,7 +205,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test5() {
+    void testCircularReferenceInMap() {
         Map<String, Object> map1 = new HashMap<>();
         Map<String, Object> map2 = new HashMap<>();
 
@@ -222,7 +222,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test6() {
+    void testCircularReferenceInList() {
         Map<String, Object> map1 = new HashMap<>();
         List<Object> list1 = new ArrayList<>();
 
@@ -235,6 +235,120 @@ class JsonWriterTest {
         } catch (IOException e) {
             assertEquals("JSON Serialization Failure: Circular reference was detected while converting a member", e.getMessage());
         }
+    }
+
+    @Test
+    void testCompactOutput() throws IOException {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", "John Doe");
+        map.put("age", 30);
+        StringWriter stringWriter = new StringWriter();
+        String result = new JsonWriter(stringWriter).prettyPrint(false).value(map).toString();
+        assertEquals("{\"name\":\"John Doe\",\"age\":30}", result);
+    }
+
+    @Test
+    void testWriteSimpleValue() throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        String result = new JsonWriter(stringWriter).value("hello").toString();
+        assertEquals("\"hello\"", result);
+
+        stringWriter = new StringWriter();
+        result = new JsonWriter(stringWriter).value(123).toString();
+        assertEquals("123", result);
+
+        stringWriter = new StringWriter();
+        result = new JsonWriter(stringWriter).value(true).toString();
+        assertEquals("true", result);
+
+        stringWriter = new StringWriter();
+        result = new JsonWriter(stringWriter).nullWritable(true).value(null).toString();
+        assertEquals("null", result);
+    }
+
+    @Test
+    void testCustomIndent() throws IOException {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("key", "value");
+        StringWriter stringWriter = new StringWriter();
+        String result = new JsonWriter(stringWriter).indentString("    ").value(map).toString();
+        String expected = "{\n    \"key\": \"value\"\n}";
+        assertEquals(expected.replace("\n", System.lineSeparator()), result);
+    }
+
+    @Test
+    void testWriteEmptyJsonString() throws IOException {
+        JsonString emptyJsonString = new JsonString("");
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = new JsonWriter(stringWriter);
+        writer.beginObject();
+        writer.name("empty");
+        writer.value(emptyJsonString);
+        writer.endObject();
+        assertEquals("{\n  \"empty\": null\n}", writer.toString().trim());
+    }
+
+    @Test
+    void testCustomSerializerForBigDecimal() throws IOException {
+        class Money {
+            private final java.math.BigDecimal amount;
+            public Money(String amount) {
+                this.amount = new java.math.BigDecimal(amount);
+            }
+            public java.math.BigDecimal getAmount() {
+                return amount;
+            }
+        }
+
+        Money money = new Money("123.456");
+
+        JsonSerializer<java.math.BigDecimal> bigDecimalSerializer = (value, writer) -> {
+            writer.value(value.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString());
+        };
+
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = new JsonWriter(stringWriter);
+        writer.registerSerializer(java.math.BigDecimal.class, bigDecimalSerializer);
+        writer.beginObject();
+        writer.name("amount");
+        writer.value(money.getAmount());
+        writer.endObject();
+
+        assertEquals("{\n  \"amount\": \"123.46\"\n}", writer.toString().trim());
+    }
+
+    @Test
+    void testCustomSerializerForUserObject() throws IOException {
+        class User {
+            private final int id;
+            private final String name;
+            public User(int id, String name) {
+                this.id = id;
+                this.name = name;
+            }
+            public int getId() {
+                return id;
+            }
+            public String getName() {
+                return name;
+            }
+        }
+
+        User user = new User(1, "John Doe");
+
+        JsonSerializer<User> userSerializer = (value, writer) -> {
+            writer.beginObject();
+            writer.name("id").value(value.getId());
+            writer.name("name").value(value.getName());
+            writer.endObject();
+        };
+
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = new JsonWriter(stringWriter);
+        writer.registerSerializer(User.class, userSerializer);
+        writer.value(user);
+
+        assertEquals("{\n  \"id\": 1,\n  \"name\": \"John Doe\"\n}", writer.toString().trim());
     }
 
 }
