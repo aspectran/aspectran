@@ -72,14 +72,16 @@ class ArrayParametersTest {
         arrayParameters.addParameters(p2);
 
         String expected = """
-                {
-                  param1: 111
-                  param2: 222
-                }
-                {
-                  param3: 333
-                  param4: 444
-                }
+                [
+                  {
+                    param1: 111
+                    param2: 222
+                  }
+                  {
+                    param3: 333
+                    param4: 444
+                  }
+                ]
                 """;
         // Normalize line endings for comparison
         String actual = arrayParameters.toString().trim().replace("\r\n", "\n");

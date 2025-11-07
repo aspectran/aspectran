@@ -253,6 +253,7 @@ public class AponWriter implements Flushable {
             beginArray();
             if (arrayParameters.getParametersList() != null) {
                 for (Parameters ps : arrayParameters.getParametersList()) {
+                    indent();
                     beginBlock();
                     for (Parameter pv : ps.getParameterValues()) {
                         if (nullWritable || pv.isAssigned()) {
