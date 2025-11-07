@@ -41,11 +41,13 @@ public class JsonToParameters {
 
     private final Class<? extends Parameters> requiredType;
 
+    private final boolean lenient;
+
     /**
      * Create a converter that produces a default {@link VariableParameters} container.
      */
     public JsonToParameters() {
-        this.requiredType = null;
+        this(null, false);
     }
 
     /**
@@ -55,8 +57,18 @@ public class JsonToParameters {
      * @throws IllegalArgumentException if {@code requiredType} is null
      */
     public JsonToParameters(final Class<? extends Parameters> requiredType) {
-        Assert.notNull(requiredType, "requiredType must not be null");
+        this(requiredType, false);
+    }
+
+    /**
+     * Create a converter that will instantiate the given {@code requiredType}
+     * for the target {@link Parameters} container.
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     */
+    public JsonToParameters(final Class<? extends Parameters> requiredType, boolean lenient) {
         this.requiredType = requiredType;
+        this.lenient = lenient;
     }
 
     /**
@@ -110,6 +122,9 @@ public class JsonToParameters {
         Assert.notNull(container, "container must not be null");
         String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
         try (JsonReaderCloseable jsonReader = new JsonReaderCloseable(reader)) {
+            if (lenient) {
+                jsonReader.setLenient(true);
+            }
             read(jsonReader, container, name, false);
         } catch (Exception e) {
             throw new IOException("Failed to convert JSON to APON", e);
@@ -170,6 +185,25 @@ public class JsonToParameters {
                 touchParameter(container, name, ValueType.BOOLEAN, array).putValue(reader.nextBoolean());
                 return;
             case NUMBER:
+                Parameter param = container.getParameter(name);
+                if (param != null && param.getValueType() != ValueType.VARIABLE) {
+                    ValueType valueType = param.getValueType();
+                    if (valueType == ValueType.FLOAT) {
+                        param.putValue(Float.parseFloat(reader.nextString()));
+                        return;
+                    } else if (valueType == ValueType.INT) {
+                        param.putValue(reader.nextInt());
+                        return;
+                    } else if (valueType == ValueType.LONG) {
+                        param.putValue(reader.nextLong());
+                        return;
+                    } else if (valueType == ValueType.DOUBLE) {
+                        param.putValue(reader.nextDouble());
+                        return;
+                    }
+                }
+                
+                // Fallback for VariableParameters or if type is not specified
                 ValueType valueType;
                 Object number;
                 try {
@@ -217,6 +251,18 @@ public class JsonToParameters {
     }
 
     /**
+     * Convenience factory to parse JSON text into a new {@link VariableParameters} container.
+     * @param json the JSON content
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
+    @NonNull
+    public static Parameters from(String json, boolean lenient) throws IOException {
+        return new JsonToParameters(null, lenient).read(json);
+    }
+
+    /**
      * Convenience factory to parse JSON text into a new container of the given type.
      * @param <T> the container type
      * @param json the JSON content
@@ -231,6 +277,21 @@ public class JsonToParameters {
     }
 
     /**
+     * Convenience factory to parse JSON text into a new container of the given type.
+     * @param <T> the container type
+     * @param json the JSON content
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
+    @NonNull
+    public static <T extends Parameters> T from(String json, Class<? extends Parameters> requiredType, boolean lenient)
+            throws IOException {
+        return new JsonToParameters(requiredType, lenient).read(json);
+    }
+
+    /**
      * Convenience factory to parse JSON content from a reader into a new {@link VariableParameters} container.
      * @param reader the JSON reader
      * @return a populated Parameters instance
@@ -239,6 +300,18 @@ public class JsonToParameters {
     @NonNull
     public static Parameters from(Reader reader) throws IOException {
         return new JsonToParameters().read(reader);
+    }
+
+    /**
+     * Convenience factory to parse JSON content from a reader into a new {@link VariableParameters} container.
+     * @param reader the JSON reader
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     * @return a populated Parameters instance
+     * @throws IOException if reading or conversion fails
+     */
+    @NonNull
+    public static Parameters from(Reader reader, boolean lenient) throws IOException {
+        return new JsonToParameters(null, lenient).read(reader);
     }
 
     /**
@@ -253,6 +326,21 @@ public class JsonToParameters {
     public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType)
             throws IOException {
         return new JsonToParameters(requiredType).read(reader);
+    }
+
+    /**
+     * Convenience factory to parse JSON content from a reader into a new container of the given type.
+     * @param <T> the container type
+     * @param reader the JSON reader
+     * @param requiredType the concrete Parameters implementation to instantiate
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     * @return a populated container instance
+     * @throws IOException if reading or conversion fails
+     */
+    @NonNull
+    public static <T extends Parameters> T from(Reader reader, Class<? extends Parameters> requiredType, boolean lenient)
+            throws IOException {
+        return new JsonToParameters(requiredType, lenient).read(reader);
     }
 
 }

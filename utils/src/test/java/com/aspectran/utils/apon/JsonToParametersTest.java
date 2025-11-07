@@ -214,7 +214,9 @@ class JsonToParametersTest {
                 {
                   "string": "hello",
                   "integer": 123,
-                  "number": 45.67,
+                  "long": 1234567890123,
+                  "float": 45.67,
+                  "double": 98.76,
                   "boolean": true,
                   "nullValue": null
                 }
@@ -222,7 +224,9 @@ class JsonToParametersTest {
         Parameters params = JsonToParameters.from(json);
         assertEquals("hello", params.getString("string"));
         assertEquals(123, params.getInt("integer"));
-        assertEquals(45.67, params.getDouble("number"));
+        assertEquals(1234567890123L, params.getLong("long"));
+        assertEquals(45.67, params.getDouble("float"), 0.0001); // Assert as double, with a delta for float comparison
+        assertEquals(98.76, params.getDouble("double"), 0.0001);
         assertTrue(params.getBoolean("boolean"));
         assertNull(params.getString("nullValue"));
     }
@@ -245,10 +249,116 @@ class JsonToParametersTest {
      * Tests that invalid JSON input throws an exception.
      */
     @Test
-    void testInvalidJsonInput() {
-        assertThrows(IOException.class, () -> JsonToParameters.from("{ key: 'value' }")); // Invalid JSON (single quotes)
-        assertThrows(IOException.class, () -> JsonToParameters.from("{ \"key\": value, }")); // Trailing comma
+    void testLenientParsing() throws IOException {
+        // Lenient mode should parse non-standard JSON
+        Parameters p1 = JsonToParameters.from("{ key: 'value' }", true);
+        assertEquals("value", p1.getString("key"));
+
+        Parameters p2 = JsonToParameters.from("{ \"key\": \"value\", }", true);
+        assertEquals("value", p2.getString("key"));
+
+        // Strict mode (default) should fail
+        assertThrows(IOException.class, () -> JsonToParameters.from("{ key: 'value' }"));
+        assertThrows(IOException.class, () -> JsonToParameters.from("{ \"key\": \"value\", }"));
         assertThrows(IOException.class, () -> JsonToParameters.from("not json"));
+    }
+
+    @Test
+    void testFloatConversionWithTypedParameters() throws IOException {
+        String json = "{\"floatValue\": 45.67}";
+
+        TypedPayload payload = JsonToParameters.from(json, TypedPayload.class);
+        assertEquals(45.67f, payload.getFloatValue(), 0.001f);
+    }
+
+    public static class TypedPayload extends AbstractParameters {
+        private static final ParameterKey floatValue = new ParameterKey("floatValue", ValueType.FLOAT);
+        private static final ParameterKey[] parameterKeys = { floatValue };
+
+        public TypedPayload() {
+            super(parameterKeys);
+        }
+
+        public float getFloatValue() {
+            return getFloat(floatValue);
+        }
+    }
+
+    @Test
+    void testStringWithQuote() throws IOException {
+        String json = "{\"name\":\"she's\"}";
+        Parameters parameters = JsonToParameters.from(json);
+        String expected = "name: \"she's\"";
+        String actual = parameters.toString().trim();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testMixedJsonObject() throws IOException {
+        String json = """
+            {
+              "intro": "Start Testing Now!",
+              "one": 1,
+              "two": 2,
+              "three": 3,
+              "nullArray": [
+                null,
+                null
+              ],
+              "customers": [
+                {
+                  "id": "guest-1",
+                  "name": "Guest1",
+                  "age": 21,
+                  "approved": true
+                },
+                {
+                  "id": "guest-2",
+                  "name": "Guest2",
+                  "age": 22,
+                  "approved": true
+                }
+              ],
+              "emptyMap": {
+              }
+            }
+            """;
+
+        String expected = """
+            intro: Start Testing Now!
+            one: 1
+            two: 2
+            three: 3
+            nullArray: [
+              null
+              null
+            ]
+            customers: [
+              {
+                id: guest-1
+                name: Guest1
+                age: 21
+                approved: true
+              }
+              {
+                id: guest-2
+                name: Guest2
+                age: 22
+                approved: true
+              }
+            ]
+            emptyMap: {
+            }
+            """.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+
+        Parameters parameters = JsonToParameters.from(json);
+
+        String actual = new AponWriter()
+                .nullWritable(true)
+                .write(parameters)
+                .toString();
+
+        assertEquals(expected, actual);
     }
 
 }
