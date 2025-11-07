@@ -77,8 +77,6 @@ class JsonWriterTest {
                 .value(map)
                 .toString();
 
-        // System.out.println(result);
-
         String expected = """
             {
               "intro": "Start Testing Now!",
@@ -108,9 +106,7 @@ class JsonWriterTest {
             }
             """;
 
-        expected = expected.trim();
-
-        assertEquals(expected, result);
+        assertEquals(expected.trim(), result);
     }
 
     @Test
@@ -143,9 +139,9 @@ class JsonWriterTest {
                 "item22": 22
               }
             }
-            """.trim();
+            """;
 
-        assertEquals(expected, result);
+        assertEquals(expected.trim(), result);
     }
 
     @Test
@@ -165,12 +161,14 @@ class JsonWriterTest {
                 .value(map)
                 .toString();
 
-        // System.out.println(result);
+        String expected = """
+                {
+                  "localDate": "2019-11-19",
+                  "localDateTime": "2019-11-19"
+                }
+                """;
 
-        String expected = "{\n" + "  \"localDate\": \"2019-11-19\",\n" + "  \"localDateTime\": \"2019-11-19\"\n" + "}"
-                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
-
-        assertEquals(expected, result.trim());
+        assertEquals(expected.trim().replace("\r\n", "\n"), result);
     }
 
     @Test
@@ -197,11 +195,18 @@ class JsonWriterTest {
 
         // System.out.println(writer.toString());
 
-        String expected = "{\n" + "  \"key1\": \"value\",\n" + "  \"key2\": \"1234\",\n" + "  \"json\": {\n" +
-                "    \"key1\": \"value\",\n" + "    \"key2\": \"1234\"\n" + "  },\n" + "  \"array\": [1, 2, 3]\n" + "}"
-                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String expected = """
+                {
+                  "key1": "value",
+                  "key2": "1234",
+                  "json": {
+                    "key1": "value",
+                    "key2": "1234"
+                  },
+                  "array": [1, 2, 3]
+                }""";
 
-        assertEquals(expected, writer.toString().trim());
+        assertEquals(expected.replace("\r\n", "\n"), writer.toString().trim());
     }
 
     @Test
@@ -273,7 +278,7 @@ class JsonWriterTest {
         StringWriter stringWriter = new StringWriter();
         String result = new JsonWriter(stringWriter).indentString("    ").value(map).toString();
         String expected = "{\n    \"key\": \"value\"\n}";
-        assertEquals(expected.replace("\n", System.lineSeparator()), result);
+        assertEquals(expected, result);
     }
 
     @Test
