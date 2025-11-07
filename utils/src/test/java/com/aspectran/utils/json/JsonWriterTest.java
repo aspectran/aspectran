@@ -16,7 +16,6 @@
 package com.aspectran.utils.json;
 
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.apon.AponFormat;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 import com.aspectran.utils.apon.test.Customer;
