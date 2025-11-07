@@ -168,15 +168,19 @@ class AponLinesTest {
                 .line("age", 30)
                 .line("isStudent", false);
 
-        String expectedString = "name: John Doe\n" +
-                "age: 30\n" +
-                "isStudent: false\n";
-        String expectedFormat = "name: John Doe\n" +
-                "age: 30\n" +
-                "isStudent: false\n";
+        String expectedString = """
+                name: John Doe
+                age: 30
+                isStudent: false
+                """;
+        String expectedFormat = """
+                name: John Doe
+                age: 30
+                isStudent: false
+                """;
 
-        assertEquals(expectedString, aponLines.toString());
-        assertEquals(expectedFormat, aponLines.format());
+        assertEquals(expectedString, aponLines.toString().replace("\r\n", "\n"));
+        assertEquals(expectedFormat, aponLines.format().replace("\r\n", "\n"));
     }
 
     /**
@@ -196,18 +200,20 @@ class AponLinesTest {
                 .end()
                 .end();
 
-        String expected = "user: {\n" +
-                "  username: tester\n" +
-                "  profile: {\n" +
-                "    email: tester@example.com\n" +
-                "  }\n" +
-                "  roles: [\n" +
-                "    admin\n" +
-                "    editor\n" +
-                "  ]\n" +
-                "}\n";
+        String expected = """
+                user: {
+                  username: tester
+                  profile: {
+                    email: tester@example.com
+                  }
+                  roles: [
+                    admin
+                    editor
+                  ]
+                }
+                """;
 
-        assertEquals(expected, aponLines.format());
+        assertEquals(expected.replace("\r\n", "\n"), aponLines.format().replace("\r\n", "\n"));
     }
 
     /**
@@ -219,13 +225,15 @@ class AponLinesTest {
                 .line("specialChars", "value with { } [ ] : ( ) ' \"")
                 .line("multiline", "line1\nline2");
 
-        String expectedFormat = "specialChars: \"value with { } [ ] : ( ) ' \\\"\"\n" +
-                "multiline: (\n" +
-                "  |line1\n" +
-                "  |line2\n" +
-                ")\n";
+        String expectedFormat = """
+                specialChars: "value with { } [ ] : ( ) ' \\""
+                multiline: (
+                  |line1
+                  |line2
+                )
+                """;
 
-        assertEquals(expectedFormat, aponLines.format());
+        assertEquals(expectedFormat.replace("\r\n", "\n"), aponLines.format().replace("\r\n", "\n"));
     }
 
 }

@@ -70,8 +70,8 @@ class AponWriterTest {
         StringWriter stringWriter = new StringWriter();
         new AponWriter(stringWriter).write(parameters);
         String apon = stringWriter.toString();
-        assertTrue(apon.contains("(\n"));
-        assertTrue(apon.contains("|1\n"));
+        assertTrue(apon.contains("(\n".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+        assertTrue(apon.contains("|1\n".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
 
         Parameters output = new AponReader(apon).read();
         assertEquals(input, output.getString("textParam"));
@@ -152,10 +152,12 @@ class AponWriterTest {
         AponWriter writer = new AponWriter().indentString("  "); // 2 spaces
         String apon = writer.write(params).toString();
 
-        String expected = "nested: {\n" +
-                "  key: value\n" +
-                "}\n";
-        assertEquals(expected, apon);
+        String expected = """
+                nested: {
+                  key: value
+                }
+                """;
+        assertEquals(expected.replace("\r\n", "\n"), apon.replace("\r\n", "\n"));
     }
 
 }

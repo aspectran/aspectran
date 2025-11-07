@@ -20,6 +20,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 
 import java.io.BufferedReader;
+import java.math.BigDecimal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -313,25 +314,34 @@ public class AponReader {
                         }
                         valueType = ValueType.STRING;
                     } else {
-                        try {
-                            Integer.parseInt(value);
-                            valueType = ValueType.INT;
-                        } catch (NumberFormatException e1) {
+                        if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
                             try {
-                                Long.parseLong(value);
-                                valueType = ValueType.LONG;
-                            } catch (NumberFormatException e2) {
-                                try {
-                                    Float.parseFloat(value);
+                                BigDecimal bd = new BigDecimal(value);
+                                float f = bd.floatValue();
+                                if (!Float.isInfinite(f) && new BigDecimal(Float.toString(f)).compareTo(bd) == 0) {
                                     valueType = ValueType.FLOAT;
-                                } catch (NumberFormatException e3) {
-                                    try {
-                                        Double.parseDouble(value);
-                                        valueType = ValueType.DOUBLE;
-                                    } catch (NumberFormatException e4) {
-                                        valueType = ValueType.STRING;
-                                    }
+                                } else {
+                                    valueType = ValueType.DOUBLE;
                                 }
+                            } catch (NumberFormatException e) {
+                                valueType = ValueType.STRING;
+                            }
+                        } else {
+                            try {
+                                String numStr = value;
+                                boolean hasLongSuffix = false;
+                                if (numStr.endsWith("L") || numStr.endsWith("l")) {
+                                    numStr = numStr.substring(0, numStr.length() - 1);
+                                    hasLongSuffix = true;
+                                }
+                                long l = Long.parseLong(numStr);
+                                if (!hasLongSuffix && l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+                                    valueType = ValueType.INT;
+                                } else {
+                                    valueType = ValueType.LONG;
+                                }
+                            } catch (NumberFormatException e) {
+                                valueType = ValueType.STRING;
                             }
                         }
                     }
@@ -363,7 +373,11 @@ public class AponReader {
                     } else if (valueType == ValueType.INT) {
                         parameterValue.putValue(Integer.valueOf(value));
                     } else if (valueType == ValueType.LONG) {
-                        parameterValue.putValue(Long.valueOf(value));
+                        String longStr = value;
+                        if (longStr.endsWith("L") || longStr.endsWith("l")) {
+                            longStr = longStr.substring(0, longStr.length() - 1);
+                        }
+                        parameterValue.putValue(Long.valueOf(longStr));
                     } else if (valueType == ValueType.FLOAT) {
                         parameterValue.putValue(Float.valueOf(value));
                     } else if (valueType == ValueType.DOUBLE) {

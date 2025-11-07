@@ -46,7 +46,7 @@ class ObjectToParametersTest {
      * Tests the conversion of various collection types like Array, List, and Enumeration.
      */
     @Test
-    void testConvertVariousCollectionTypes() throws IOException {
+    void testConvertVariousCollectionTypes() {
         List<String> list = Arrays.asList("1", "2", null, "3");
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("array", list.toArray(new String[0]));
@@ -135,7 +135,7 @@ class ObjectToParametersTest {
      * Tests the conversion of a nested Map structure.
      */
     @Test
-    void testNestedMapConversion() throws IOException {
+    void testNestedMapConversion() {
         Map<String, Object> root = new LinkedHashMap<>();
         Map<String, Object> nested = new LinkedHashMap<>();
         nested.put("key", "value");

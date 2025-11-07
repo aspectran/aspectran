@@ -59,16 +59,18 @@ class AponReaderTest {
         String input = """
             string: Hello World
             integer: 123
-            long: 456L
-            double: 78.9
+            long: 2147483648L
+            float: 78.9
+            double: 0.1000000000000000055511151231257827021181583404541015625
             boolean: true
             nullValue: null
             """;
         Parameters params = AponReader.read(input);
         assertEquals("Hello World", params.getString("string"));
         assertEquals(123, params.getInt("integer"));
-        assertEquals(456L, params.getLong("long"));
-        assertEquals(78.9, params.getDouble("double"));
+        assertEquals(2147483648L, params.getLong("long"));
+        assertEquals(78.9f, params.getFloat("float"));
+        assertEquals(0.1000000000000000055511151231257827021181583404541015625d, params.getDouble("double"));
         assertTrue(params.getBoolean("boolean"));
         assertNull(params.getString("nullValue"));
     }
@@ -85,9 +87,12 @@ class AponReaderTest {
               |  Indented Line 3
             )
             """;
-        String expected = "Line 1\nLine 2\n  Indented Line 3";
+        String expected = """
+                Line 1
+                Line 2
+                  Indented Line 3""";
         Parameters params = AponReader.read(input);
-        assertEquals(expected, params.getString("message"));
+        assertEquals(expected.replace("\r\n", "\n"), params.getString("message").replace("\r\n", "\n"));
     }
 
     /**

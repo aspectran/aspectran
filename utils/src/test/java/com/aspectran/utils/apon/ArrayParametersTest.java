@@ -126,7 +126,7 @@ class ArrayParametersTest {
 
         ArrayParameters programmatically = new ArrayParameters();
         assertNull(programmatically.getParametersList());
-        assertEquals("[\n]", programmatically.toString().trim());
+        assertEquals("[\n]", programmatically.toString().trim().replace("\r\n", "\n"));
     }
 
 }
