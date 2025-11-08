@@ -77,7 +77,7 @@ public final class OptionUtils {
      * @param c the character to validate
      * @return true if {@code c} is a letter
      */
-    private static boolean isValidChar(final char c) {
+    private static boolean isValidChar(char c) {
         return Character.isJavaIdentifierPart(c);
     }
 

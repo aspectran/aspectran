@@ -205,7 +205,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
         }
     }
 
-    private void executeQueuedCommand(final CommandParameters parameters, final String fileName) {
+    private void executeQueuedCommand(CommandParameters parameters, String fileName) {
         if (logger.isDebugEnabled()) {
             logger.debug("Execute Command: {}{}{}", fileName, System.lineSeparator(), parameters);
         }

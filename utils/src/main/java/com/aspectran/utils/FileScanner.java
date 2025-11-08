@@ -58,7 +58,7 @@ public class FileScanner {
      * @return a map of found files, with their relative paths as keys
      */
     public Map<String, File> scan(String filePathPattern) {
-        final Map<String, File> scannedFiles = new LinkedHashMap<>();
+        Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(filePathPattern, scannedFiles);
         return scannedFiles;
     }
@@ -68,7 +68,7 @@ public class FileScanner {
      * @param filePathPattern the wildcard pattern for file paths to match
      * @param scannedFiles the map to store the found files in
      */
-    public void scan(String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
+    public void scan(String filePathPattern, @NonNull Map<String, File> scannedFiles) {
         scan(filePathPattern, scannedFiles::put);
     }
 
@@ -114,7 +114,7 @@ public class FileScanner {
      * @return a map of found files, with their relative paths as keys
      */
     public Map<String, File> scan(String basePath, String filePathPattern) {
-        final Map<String, File> scannedFiles = new LinkedHashMap<>();
+        Map<String, File> scannedFiles = new LinkedHashMap<>();
         scan(basePath, filePathPattern, scannedFiles);
         return scannedFiles;
     }
@@ -126,7 +126,7 @@ public class FileScanner {
      * @param filePathPattern the wildcard pattern to match against files
      * @param scannedFiles the map to store the found files in
      */
-    public void scan(String basePath, String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
+    public void scan(String basePath, String filePathPattern, @NonNull Map<String, File> scannedFiles) {
         scan(basePath, filePathPattern, scannedFiles::put);
     }
 
@@ -152,8 +152,8 @@ public class FileScanner {
      * @param matcher the wildcard matcher to test against file paths
      * @param saveHandler the handler to process found files
      */
-    protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
-        final File target;
+    protected void scan(String targetPath, WildcardMatcher matcher, SaveHandler saveHandler) {
+        File target;
         if (StringUtils.hasText(basePath)) {
             target = new File(basePath, targetPath);
         } else {

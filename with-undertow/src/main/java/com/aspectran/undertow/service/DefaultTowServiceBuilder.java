@@ -86,7 +86,7 @@ public class DefaultTowServiceBuilder {
      * Attaches a {@link ServiceStateListener} to the service to manage its pause/resume state.
      * @param towService the service to attach the listener to
      */
-    private static void setServiceStateListener(@NonNull final DefaultTowService towService) {
+    private static void setServiceStateListener(@NonNull DefaultTowService towService) {
         towService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

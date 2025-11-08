@@ -56,7 +56,7 @@ public class JsonToParameters {
      * @param requiredType the concrete Parameters implementation to instantiate (not null)
      * @throws IllegalArgumentException if {@code requiredType} is null
      */
-    public JsonToParameters(final Class<? extends Parameters> requiredType) {
+    public JsonToParameters(Class<? extends Parameters> requiredType) {
         this(requiredType, false);
     }
 
@@ -66,7 +66,7 @@ public class JsonToParameters {
      * @param requiredType the concrete Parameters implementation to instantiate
      * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
      */
-    public JsonToParameters(final Class<? extends Parameters> requiredType, boolean lenient) {
+    public JsonToParameters(Class<? extends Parameters> requiredType, boolean lenient) {
         this.requiredType = requiredType;
         this.lenient = lenient;
     }
@@ -206,7 +206,7 @@ public class JsonToParameters {
                         return;
                     }
                 }
-                
+
                 // Fallback for VariableParameters or if type is not specified
                 ValueType valueType;
                 Object number;

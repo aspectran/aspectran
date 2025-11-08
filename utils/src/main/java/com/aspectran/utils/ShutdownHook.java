@@ -49,7 +49,7 @@ public class ShutdownHook {
      * @param task the task to add
      * @return the added task
      */
-    public static synchronized <T extends Task> T addTask(final T task) {
+    public static synchronized <T extends Task> T addTask(T task) {
         Assert.notNull(task, "task must not be null");
 
         if (hook == null) {
@@ -79,7 +79,7 @@ public class ShutdownHook {
      * <p>If no tasks remain after removal, the JVM shutdown hook is deregistered.</p>
      * @param task the task to remove
      */
-    public static synchronized void removeTask(final Task task) {
+    public static synchronized void removeTask(Task task) {
         Assert.notNull(task, "task must not be null");
 
         // ignore if hook never installed
@@ -101,7 +101,7 @@ public class ShutdownHook {
         }
     }
 
-    private static void registerHook(final Thread thread) {
+    private static void registerHook(Thread thread) {
         if (logger.isDebugEnabled()) {
             logger.debug("Registering shutdown-hook: {}", thread);
         }
@@ -116,7 +116,7 @@ public class ShutdownHook {
         }
     }
 
-    private static void releaseHook(final Thread thread) {
+    private static void releaseHook(Thread thread) {
         if (logger.isDebugEnabled()) {
             logger.debug("Removing shutdown-hook: {}", thread);
         }

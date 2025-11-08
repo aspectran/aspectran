@@ -50,7 +50,7 @@ public class DefaultSchedulerServiceBuilder {
         return schedulerService;
     }
 
-    private static void setServiceStateListener(@NonNull final DefaultSchedulerService schedulerService) {
+    private static void setServiceStateListener(@NonNull DefaultSchedulerService schedulerService) {
         schedulerService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

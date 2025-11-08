@@ -135,7 +135,8 @@ public abstract class ClassUtils {
         // must be public
         if (!Modifier.isPublic(ctor.getModifiers())) {
             throw new IllegalArgumentException("Constructor for " + clazz.getName() +
-                    " is not accessible (non-public?): not allowed to try modify access via Reflection: can not instantiate type");
+                    " is not accessible (non-public?): not allowed to try modify access via Reflection: " +
+                    "can not instantiate type");
         }
         return ctor;
     }

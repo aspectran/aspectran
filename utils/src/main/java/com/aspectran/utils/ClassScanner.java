@@ -144,9 +144,9 @@ public class ClassScanner {
      * @param matcher the wildcard matcher to test against class names
      * @param saveHandler the handler to process found classes
      */
-    private void scan(final String targetPath, final String basePackageName, final String relativePackageName,
-                      final WildcardMatcher matcher, final SaveHandler saveHandler) {
-        final File target = new File(targetPath);
+    private void scan(String targetPath, String basePackageName, String relativePackageName,
+                      WildcardMatcher matcher, SaveHandler saveHandler) {
+        File target = new File(targetPath);
         if (!target.exists()) {
             return;
         }

@@ -51,7 +51,7 @@ public class DefaultShellServiceBuilder {
         return shellService;
     }
 
-    private static void setServiceStateListener(@NonNull final DefaultShellService shellService) {
+    private static void setServiceStateListener(@NonNull DefaultShellService shellService) {
         shellService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

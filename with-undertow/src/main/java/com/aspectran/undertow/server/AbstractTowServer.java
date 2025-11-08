@@ -178,7 +178,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * Sets whether to use direct buffers.
      * @param directBuffers true to use direct buffers
      */
-    public void setDirectBuffers(final boolean directBuffers) {
+    public void setDirectBuffers(boolean directBuffers) {
         builder.setDirectBuffers(directBuffers);
     }
 
@@ -188,7 +188,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * @param value the option value
      * @param <T> the type of the option value
      */
-    public <T> void setServerOption(final Option<T> option, final T value) {
+    public <T> void setServerOption(Option<T> option, T value) {
         builder.setServerOption(option, value);
     }
 
@@ -198,7 +198,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * @param value the option value
      * @param <T> the type of the option value
      */
-    public <T> void setSocketOption(final Option<T> option, final T value) {
+    public <T> void setSocketOption(Option<T> option, T value) {
         builder.setSocketOption(option, value);
     }
 
@@ -208,7 +208,7 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
      * @param value the option value
      * @param <T> the type of the option value
      */
-    public <T> void setWorkerOption(final Option<T> option, final T value) {
+    public <T> void setWorkerOption(Option<T> option, T value) {
         builder.setWorkerOption(option, value);
     }
 

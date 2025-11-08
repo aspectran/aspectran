@@ -153,7 +153,7 @@ public class MultiException extends Exception {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(MultiException.class.getSimpleName());
-        if (nested == null || nested.size() <= 0) {
+        if (nested == null || nested.isEmpty()) {
             sb.append("[]");
         } else {
             sb.append(nested);

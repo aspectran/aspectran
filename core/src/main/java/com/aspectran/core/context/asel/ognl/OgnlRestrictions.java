@@ -169,7 +169,7 @@ public class OgnlRestrictions {
             map(className -> {
                 try {
                     return Optional.of(Class.forName(className));
-                } catch (final ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     return Optional.ofNullable((Class<?>)null);
                 }
             }).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
@@ -288,7 +288,7 @@ public class OgnlRestrictions {
             return null;
         }
         StringBuilder sb = null;
-        final int expLen = expression.length();
+        int expLen = expression.length();
         char c;
         for (int i = 0; i < expLen; i++) {
             c = expression.charAt(i);

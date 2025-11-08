@@ -123,7 +123,7 @@ public class ResourceManager {
      * @return an enumeration of {@link URL} objects for the resources
      */
     @NonNull
-    public static Enumeration<URL> findResources(final Iterator<SiblingClassLoader> siblings) {
+    public static Enumeration<URL> findResources(Iterator<SiblingClassLoader> siblings) {
         return new Enumeration<>() {
             private Iterator<URL> iter;
             private URL next;
@@ -170,7 +170,7 @@ public class ResourceManager {
      * @return an enumeration of {@link URL} objects for the resource
      */
     @NonNull
-    public static Enumeration<URL> findResources(String name, final Iterator<SiblingClassLoader> siblings) {
+    public static Enumeration<URL> findResources(String name, Iterator<SiblingClassLoader> siblings) {
         return findResources(name, siblings, null);
     }
 
@@ -183,7 +183,7 @@ public class ResourceManager {
      */
     @NonNull
     public static Enumeration<URL> findResources(
-            String name, final Iterator<SiblingClassLoader> siblings, final Enumeration<URL> parentResources) {
+            String name, Iterator<SiblingClassLoader> siblings, Enumeration<URL> parentResources) {
         if (name == null || siblings == null) {
             return Collections.emptyEnumeration();
         }
@@ -192,7 +192,7 @@ public class ResourceManager {
             name = name.substring(0, name.length() - 1);
         }
 
-        final String nameToSearch = name;
+        String nameToSearch = name;
 
         return new Enumeration<>() {
             private URL next;

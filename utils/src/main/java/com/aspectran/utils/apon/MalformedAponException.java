@@ -45,25 +45,25 @@ public class MalformedAponException extends AponParseException {
      * Constructor to create exception with a message.
      * @param lineNumber the line number
      * @param line the character line
-     * @param tline the trimmed character line
+     * @param trimmedLine the trimmed character line
      * @param msg a message to associate with the exception
      */
-    public MalformedAponException(int lineNumber, String line, String tline, String msg) {
-        super(makeMessage(lineNumber, line, tline, msg));
+    public MalformedAponException(int lineNumber, String line, String trimmedLine, String msg) {
+        super(makeMessage(lineNumber, line, trimmedLine, msg));
     }
 
     /**
      * Constructor to create exception with a message.
      * @param lineNumber the line number
      * @param line the character line
-     * @param tline the trimmed character line
+     * @param trimmedLine the trimmed character line
      * @param parameterValue the actual value type
      * @param expectedValueType the expected value type
      */
     public MalformedAponException(
-            int lineNumber, String line, String tline, ParameterValue parameterValue,
+            int lineNumber, String line, String trimmedLine, ParameterValue parameterValue,
             ValueType expectedValueType) {
-        super(makeMessage(lineNumber, line, tline, parameterValue, expectedValueType));
+        super(makeMessage(lineNumber, line, trimmedLine, parameterValue, expectedValueType));
     }
 
     /**
@@ -79,13 +79,13 @@ public class MalformedAponException extends AponParseException {
      * Create a detail message.
      * @param lineNumber the line number
      * @param line the character line
-     * @param tline the trimmed character line
+     * @param trimmedLine the trimmed character line
      * @param msg the message
      * @return the detail message
      */
     @NonNull
-    private static String makeMessage(int lineNumber, String line, String tline, String msg) {
-        int columnNumber = (tline != null ? line.indexOf(tline) : 0);
+    private static String makeMessage(int lineNumber, String line, String trimmedLine, String msg) {
+        int columnNumber = (trimmedLine != null ? line.indexOf(trimmedLine) : 0);
         StringBuilder sb = new StringBuilder();
         if (msg != null) {
             sb.append(msg);
@@ -94,8 +94,8 @@ public class MalformedAponException extends AponParseException {
         if (columnNumber != -1) {
             String lspace = line.substring(0, columnNumber);
             int tabCnt = StringUtils.search(lspace, "\t");
-            if (tline != null && tline.length() > 33) {
-                tline = tline.substring(0, 30) + "...";
+            if (trimmedLine != null && trimmedLine.length() > 33) {
+                trimmedLine = trimmedLine.substring(0, 30) + "...";
             }
             sb.append(", columnNumber: ").append(columnNumber + 1);
             if (tabCnt != 0) {
@@ -104,14 +104,14 @@ public class MalformedAponException extends AponParseException {
                 sb.append(", Spaces ").append(columnNumber - tabCnt);
                 sb.append(")");
             }
-            sb.append("] ").append(tline);
+            sb.append("] ").append(trimmedLine);
         }
         return sb.toString();
     }
 
     @NonNull
     private static String makeMessage(
-            int lineNumber, String line, String tline, ParameterValue parameterValue,
+            int lineNumber, String line, String trimmedLine, ParameterValue parameterValue,
             ValueType expectedValueType) {
         StringBuilder sb = new StringBuilder();
         sb.append("Incompatible value type with expected value type '");
@@ -120,7 +120,7 @@ public class MalformedAponException extends AponParseException {
             sb.append(" for the specified parameter ").append(parameterValue);
         }
 
-        return makeMessage(lineNumber, line, tline, sb.toString());
+        return makeMessage(lineNumber, line, trimmedLine, sb.toString());
     }
 
 }

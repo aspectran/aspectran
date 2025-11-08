@@ -313,7 +313,7 @@ public class BeanRuleRegistry {
         for (String basePackage : basePackages) {
             this.basePackages.add(basePackage);
 
-            final Set<Class<?>> componentClasses = new HashSet<>();
+            Set<Class<?>> componentClasses = new HashSet<>();
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
                 if (targetClass.isAnnotationPresent(Component.class)) {
@@ -340,7 +340,7 @@ public class BeanRuleRegistry {
      * @param beanRule the bean rule to add
      * @throws IllegalRuleException if the bean rule is invalid
      */
-    public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
+    public void addBeanRule(BeanRule beanRule) throws IllegalRuleException {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
         }
@@ -352,7 +352,7 @@ public class BeanRuleRegistry {
             } catch (IllegalArgumentException e) {
                 throw new IllegalRuleException("Invalid bean ID pattern \"" + beanRule.getId() + "\"", e);
             }
-            final Map<Class<?>, String> beanClasses = new HashMap<>();
+            Map<Class<?>, String> beanClasses = new HashMap<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
                 if (!targetClass.isInterface() && !Modifier.isAbstract(targetClass.getModifiers())) {
@@ -570,7 +570,7 @@ public class BeanRuleRegistry {
     }
 
     private void parseAnnotatedConfig(@NonNull RuleParsingContext ruleParsingContext) throws IllegalRuleException {
-        final Set<BeanRule> rulesToRemove = new HashSet<>();
+        Set<BeanRule> rulesToRemove = new HashSet<>();
 
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override

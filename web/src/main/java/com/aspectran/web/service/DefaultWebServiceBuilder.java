@@ -201,7 +201,7 @@ public class DefaultWebServiceBuilder {
         return aspectranConfig;
     }
 
-    private static void setServiceStateListener(@NonNull final DefaultWebService webService) {
+    private static void setServiceStateListener(@NonNull DefaultWebService webService) {
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

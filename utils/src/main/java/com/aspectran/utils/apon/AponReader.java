@@ -523,14 +523,14 @@ public class AponReader {
     }
 
     private AponParseException syntaxError(
-            String line, String tline, String message) throws AponParseException {
-        throw new MalformedAponException(lineNumber, line, tline, message);
+            String line, String trimmedLine, String message) throws AponParseException {
+        throw new MalformedAponException(lineNumber, line, trimmedLine, message);
     }
 
     private AponParseException syntaxError(
-            String line, String tline, ParameterValue parameterValue,
+            String line, String trimmedLine, ParameterValue parameterValue,
             ValueType expectedValueType) throws AponParseException {
-        throw new MalformedAponException(lineNumber, line, tline, parameterValue, expectedValueType);
+        throw new MalformedAponException(lineNumber, line, trimmedLine, parameterValue, expectedValueType);
     }
 
     /**

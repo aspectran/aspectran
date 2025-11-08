@@ -114,14 +114,14 @@ public class JLineTextStyler {
      * @param defaultStyle the default style to apply to the entire string
      * @return an {@code AttributedCharSequence} with styles applied, or an empty sequence if input is null
      */
-    public static AttributedCharSequence parse(final String input, final AttributedStyle defaultStyle) {
+    public static AttributedCharSequence parse(String input, AttributedStyle defaultStyle) {
         if (input == null) {
             return AttributedString.EMPTY;
         }
         if (!input.contains("{{") || !input.contains("}}")) {
             return new AttributedString(input, defaultStyle);
         }
-        final AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
+        AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
         if (defaultStyle != null) {
             asb.style(defaultStyle);
         }

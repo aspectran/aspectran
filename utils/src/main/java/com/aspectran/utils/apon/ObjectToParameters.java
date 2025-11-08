@@ -60,7 +60,7 @@ public class ObjectToParameters {
      * @param requiredType the concrete Parameters implementation to instantiate (not null)
      * @throws IllegalArgumentException if {@code requiredType} is null
      */
-    public ObjectToParameters(final Class<? extends Parameters> requiredType) {
+    public ObjectToParameters(Class<? extends Parameters> requiredType) {
         Assert.notNull(requiredType, "requiredType must not be null");
         this.requiredType = requiredType;
     }

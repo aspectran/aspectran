@@ -183,7 +183,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @return the contents of the file as a string
      * @throws UnsupportedEncodingException if the requested character encoding is not available
      */
-    public String getString(final String charset) throws UnsupportedEncodingException {
+    public String getString(String charset) throws UnsupportedEncodingException {
         return new String(get(), charset);
     }
 

@@ -636,7 +636,7 @@ public final class SiblingClassLoader extends ClassLoader {
      * @return an iterator for the sibling hierarchy
      */
     @NonNull
-    private static Iterator<SiblingClassLoader> getSiblings(@NonNull final SiblingClassLoader root) {
+    private static Iterator<SiblingClassLoader> getSiblings(@NonNull SiblingClassLoader root) {
         return new Iterator<>() {
             private SiblingClassLoader next = root;
             private Iterator<SiblingClassLoader> iter = root.getSiblings().iterator();

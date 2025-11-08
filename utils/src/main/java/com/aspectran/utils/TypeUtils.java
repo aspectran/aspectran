@@ -58,7 +58,7 @@ public abstract class TypeUtils {
         primitiveWrapperTypeMap.put(Double[].class, double[].class);
         primitiveWrapperTypeMap.put(Void.TYPE, void.class);
 
-        for (final Map.Entry<Class<?>, Class<?>> e : primitiveWrapperTypeMap.entrySet()) {
+        for (Map.Entry<Class<?>, Class<?>> e : primitiveWrapperTypeMap.entrySet()) {
             primitiveTypeToWrapperMap.put(e.getValue(), e.getKey());
         }
     }

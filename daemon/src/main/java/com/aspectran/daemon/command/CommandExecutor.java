@@ -100,7 +100,7 @@ public class CommandExecutor {
      * @return {@code true} if the command was accepted for execution, {@code false} otherwise
      * @see #execute(CommandParameters, Callback)
      */
-    public boolean execute(final CommandParameters parameters) {
+    public boolean execute(CommandParameters parameters) {
         return execute(parameters, null);
     }
 
@@ -118,8 +118,8 @@ public class CommandExecutor {
      * @param callback the callback to be invoked on completion
      * @return {@code true} if the command was accepted for execution, {@code false} otherwise
      */
-    public boolean execute(@NonNull final CommandParameters parameters, final Callback callback) {
-        final String commandName = parameters.getCommandName();
+    public boolean execute(@NonNull CommandParameters parameters, Callback callback) {
+        String commandName = parameters.getCommandName();
 
         if (isolated.get()) {
             if (logger.isDebugEnabled()) {

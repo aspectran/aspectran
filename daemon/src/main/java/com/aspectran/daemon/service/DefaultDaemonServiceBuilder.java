@@ -53,7 +53,7 @@ public abstract class DefaultDaemonServiceBuilder {
      * Sets up a {@link ServiceStateListener} to manage the daemon service's lifecycle events.
      * @param daemonService the daemon service to configure
      */
-    private static void setServiceStateListener(@NonNull final DefaultDaemonService daemonService) {
+    private static void setServiceStateListener(@NonNull DefaultDaemonService daemonService) {
         daemonService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

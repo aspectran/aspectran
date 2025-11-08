@@ -270,7 +270,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Nullable
-    private V put(@Nullable final K key, @Nullable final V value, final boolean overwriteExisting) {
+    private V put(@Nullable K key, @Nullable V value, boolean overwriteExisting) {
         return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.RESIZE) {
             @Override
             @Nullable
@@ -308,7 +308,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
-    public boolean remove(@NonNull Object key, final Object value) {
+    public boolean remove(@NonNull Object key, Object value) {
         Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY) {
             @Override
             protected Boolean execute(@Nullable Reference<K, V> ref, @Nullable Entry<K, V> entry) {
@@ -325,7 +325,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
-    public boolean replace(@NonNull K key, @NonNull final V oldValue, @NonNull final V newValue) {
+    public boolean replace(@NonNull K key, @NonNull V oldValue, @NonNull V newValue) {
         Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
             @Override
             protected Boolean execute(@Nullable Reference<K, V> ref, @Nullable Entry<K, V> entry) {
@@ -341,7 +341,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     @Override
     @Nullable
-    public V replace(@NonNull K key, @NonNull final V value) {
+    public V replace(@NonNull K key, @NonNull V value) {
         return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
             @Override
             @Nullable
@@ -505,7 +505,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * @return the result of the operation
          */
         @Nullable
-        private <T> T doTask(final int hash, @Nullable final Object key, @NonNull final Task<T> task) {
+        private <T> T doTask(int hash, @Nullable Object key, @NonNull Task<T> task) {
             boolean resize = task.hasOption(TaskOption.RESIZE);
             if (task.hasOption(TaskOption.RESTRUCTURE_BEFORE)) {
                 restructureIfNecessary(resize);
@@ -515,8 +515,8 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
             }
             lock();
             try {
-                final int index = getIndex(hash, this.references);
-                final Reference<K, V> head = this.references[index];
+                int index = getIndex(hash, this.references);
+                Reference<K, V> head = this.references[index];
                 Reference<K, V> ref = findInChain(head, key, hash);
                 Entry<K, V> entry = (ref != null ? ref.get() : null);
                 Entries<V> entries = value -> {
@@ -657,7 +657,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * Returns the size of the current references array.
          * @return the size of the references array
          */
-        public final int getSize() {
+        public int getSize() {
             return this.references.length;
         }
 
@@ -665,7 +665,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * Returns the total number of references in this segment.
          * @return the total number of references
          */
-        public final int getCount() {
+        public int getCount() {
             return this.count.get();
         }
 

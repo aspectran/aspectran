@@ -228,7 +228,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return false;
     }
 
-    private static void setServiceStateListener(@NonNull final DefaultEmbeddedAspectran aspectran) {
+    private static void setServiceStateListener(@NonNull DefaultEmbeddedAspectran aspectran) {
         aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
