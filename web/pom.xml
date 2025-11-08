@@ -63,6 +63,11 @@
             <version>1.14.0</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet.api.version}</version>
@@ -85,11 +90,6 @@
             <artifactId>jakarta.websocket-client-api</artifactId>
             <version>${jakarta.websocket.api.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <optional>true</optional>
         </dependency>
         <!-- Additional testing dependencies -->
         <dependency>
