@@ -18,6 +18,7 @@ package com.aspectran.utils.json;
 import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
@@ -565,8 +566,8 @@ public class JsonWriter {
             } else {
                 what = "a member";
             }
-            throw new IOException("JSON Serialization Failure: " +
-                    "Circular reference was detected while converting " + what);
+            throw new IOException("JSON Serialization Failure: Circular reference detected for " +
+                    what + " in object " + ObjectUtils.identityToString(object));
         }
     }
 
@@ -589,7 +590,7 @@ public class JsonWriter {
         char c = 0;
         String t;
 
-        StringBuilder sb = new StringBuilder(len + 4);
+        StringBuilder sb = new StringBuilder(Math.min(len * 2, len + 16));
         sb.append('"');
         for (int i = 0; i < len; i++) {
             b = c;

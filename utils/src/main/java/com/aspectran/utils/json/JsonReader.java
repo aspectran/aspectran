@@ -1276,7 +1276,7 @@ public class JsonReader {
 
     private void checkLenient() throws IOException {
         if (!lenient) {
-            throw syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON");
+            throw syntaxError("Malformed JSON: Use JsonReader.setLenient(true) to accept malformed JSON");
         }
     }
 

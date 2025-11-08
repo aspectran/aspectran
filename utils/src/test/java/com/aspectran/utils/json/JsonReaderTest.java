@@ -20,7 +20,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for JsonReader.
@@ -40,7 +42,7 @@ class JsonReaderTest {
         assertEquals("age", reader.nextName());
         assertEquals(30, reader.nextInt());
         assertEquals("isStudent", reader.nextName());
-        assertEquals(false, reader.nextBoolean());
+        assertFalse(reader.nextBoolean());
         reader.endObject();
         assertEquals(JsonToken.END_DOCUMENT, reader.peek());
     }
@@ -53,7 +55,7 @@ class JsonReaderTest {
         reader.beginArray();
         assertEquals(1, reader.nextInt());
         assertEquals("hello", reader.nextString());
-        assertEquals(true, reader.nextBoolean());
+        assertTrue(reader.nextBoolean());
         reader.nextNull();
         reader.endArray();
         assertEquals(JsonToken.END_DOCUMENT, reader.peek());

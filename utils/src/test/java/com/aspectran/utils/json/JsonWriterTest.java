@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for JsonWriter.
@@ -221,7 +222,7 @@ class JsonWriterTest {
             JsonWriter writer = new JsonWriter(new StringWriter());
             writer.writeValue(map1);
         } catch (IOException e) {
-            assertEquals("JSON Serialization Failure: Circular reference was detected while converting member 'map2-1'", e.getMessage());
+            assertTrue(e.getMessage().startsWith("JSON Serialization Failure: Circular reference detected for member 'map2-1'"));
         }
     }
 
@@ -237,7 +238,7 @@ class JsonWriterTest {
             JsonWriter writer = new JsonWriter(new StringWriter());
             writer.writeValue(map1);
         } catch (IOException e) {
-            assertEquals("JSON Serialization Failure: Circular reference was detected while converting a member", e.getMessage());
+            assertTrue(e.getMessage().startsWith("JSON Serialization Failure: Circular reference detected for a member"));
         }
     }
 

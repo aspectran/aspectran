@@ -722,7 +722,7 @@ public class AponWriter implements Flushable {
             return str;
         }
 
-        StringBuilder sb = new StringBuilder(len + 16);
+        StringBuilder sb = new StringBuilder(Math.min(len * 2, len + 16));
         char c;
         String t;
         for (int pos = 0; pos < len; pos++) {
