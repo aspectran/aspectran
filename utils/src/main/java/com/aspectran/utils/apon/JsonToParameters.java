@@ -126,8 +126,12 @@ public class JsonToParameters {
                 jsonReader.setLenient(true);
             }
             read(jsonReader, container, name, false);
+        } catch (MalformedJsonException e) {
+            throw new MalformedAponException("Failed to convert JSON to APON", e);
+        } catch (IOException e) {
+            throw e;
         } catch (Exception e) {
-            throw new IOException("Failed to convert JSON to APON", e);
+            throw new AponParseException("Failed to convert JSON to APON", e);
         }
         return container;
     }

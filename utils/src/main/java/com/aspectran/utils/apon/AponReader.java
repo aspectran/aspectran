@@ -111,8 +111,7 @@ public class AponReader {
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Failed to read APON document with specified parameters object " +
-                    parameters.getClass().getName(), e);
+            throw new AponParseException("Failed to read APON document into " + parameters.getClass().getName(), e);
         }
         return parameters;
     }
@@ -138,8 +137,8 @@ public class AponReader {
             vlen = value.length();
             cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
             if (cchar != CURLY_BRACKET_OPEN) {
-                throw syntaxError(line, tline, "Expected to open curly brackets, " +
-                        "but encounter string: " + value);
+                throw syntaxError(line, tline,
+                        "An item in an array must be a parameter set enclosed in curly brackets");
             }
             Parameters ps = container.newParameters(ArrayParameters.NONAME);
             read(ps, CURLY_BRACKET_OPEN, null, null, null, false);
@@ -201,10 +200,12 @@ public class AponReader {
 
                 int index = tline.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw syntaxError(line, tline, "Failed to break up string of name/value pairs");
+                    throw syntaxError(line, tline,
+                            "Invalid line format; a parameter must be in the 'name: value' format");
                 }
                 if (index == 0) {
-                    throw syntaxError(line, tline, "Unrecognized parameter name");
+                    throw syntaxError(line, tline,
+                            "Missing parameter name; a parameter must be in the 'name: value' format");
                 }
 
                 name = tline.substring(0, index).trim();
@@ -236,7 +237,7 @@ public class AponReader {
                 if (valueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
                         throw syntaxError(line, tline,
-                                "Parameter value is not an array type");
+                                "The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
                     }
                     if (valueType != ValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
                         throw syntaxError(line, tline, parameterValue, valueType);
@@ -303,14 +304,12 @@ public class AponReader {
                         valueType = ValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
-                            throw syntaxError(line, tline,
-                                    "Unclosed quotation mark after the character string " + value);
+                            throw syntaxError(line, tline, "Unclosed quotation mark");
                         }
                         valueType = ValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
-                            throw syntaxError(line, tline,
-                                    "Unclosed quotation mark after the character string " + value);
+                            throw syntaxError(line, tline, "Unclosed quotation mark");
                         }
                         valueType = ValueType.STRING;
                     } else {
@@ -430,13 +429,11 @@ public class AponReader {
                     sb.append(str);
                 }
             } else if (tlen > 0) {
-                throw syntaxError(line, tline,
-                        "The closing round bracket was missing or Each text line is must start with a '|'");
+                throw syntaxError(line, tline, "Text block lines must start with a '|' character");
             }
         }
 
-        throw syntaxError("", tline,
-                "The end of lines of text was reached  with no closing round bracket ')'");
+        throw syntaxError("", tline, "Missing closing round bracket ')' for the text block");
     }
 
     private String unescape(String str, String line, String ltrim) throws AponParseException {
@@ -526,12 +523,12 @@ public class AponReader {
     }
 
     private AponParseException syntaxError(
-            String line,  String tline, String message) throws AponParseException {
+            String line, String tline, String message) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, message);
     }
 
     private AponParseException syntaxError(
-            String line,  String tline, ParameterValue parameterValue,
+            String line, String tline, ParameterValue parameterValue,
             ValueType expectedValueType) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, parameterValue, expectedValueType);
     }
@@ -582,7 +579,7 @@ public class AponReader {
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Failed to parse string with APON format", e);
+            throw new AponParseException("Failed to parse the APON-formatted string", e);
         }
     }
 
@@ -645,7 +642,7 @@ public class AponReader {
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Failed to read APON Object from file " + file, e);
+            throw new AponParseException("Failed to read APON from file: " + file, e);
         } finally {
             if (aponReader != null) {
                 aponReader.close();

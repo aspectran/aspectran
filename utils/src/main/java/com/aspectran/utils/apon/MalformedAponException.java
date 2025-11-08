@@ -67,6 +67,15 @@ public class MalformedAponException extends AponParseException {
     }
 
     /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public MalformedAponException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
+    /**
      * Create a detail message.
      * @param lineNumber the line number
      * @param line the character line

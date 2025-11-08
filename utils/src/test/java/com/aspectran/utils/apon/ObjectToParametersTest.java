@@ -18,7 +18,6 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.StringifyContext;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;

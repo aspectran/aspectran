@@ -66,7 +66,8 @@ public class AponLines extends AponFormat {
      */
     public AponLines line(String line) {
         if (stateStack.isEmpty()) {
-            checkState(State.BLOCK);
+            // This path should not be taken given the constructor initializes the state.
+            throw new IllegalStateException("Cannot add a line to an empty structure.");
         }
         if (line != null) {
             if (stateStack.peek() == State.TEXT) {
@@ -88,7 +89,10 @@ public class AponLines extends AponFormat {
      */
     public AponLines line(String name, Object value) {
         checkName(name);
-        checkState(State.BLOCK);
+        if (stateStack.peek() != State.BLOCK) {
+            throw new IllegalStateException("Named parameters can only be added inside a block, " +
+                    "not an array or text block");
+        }
         if (value != null) {
             lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE);
             escape(value);
@@ -106,7 +110,10 @@ public class AponLines extends AponFormat {
      */
     public AponLines block(String name) {
         checkName(name);
-        checkState(State.BLOCK);
+        if (stateStack.peek() != State.BLOCK) {
+            throw new IllegalStateException("Named blocks can only be added inside another block, " +
+                    "not an array or text block");
+        }
         stateStack.push(State.BLOCK);
         lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE).append(CURLY_BRACKET_OPEN).append(NEW_LINE);
         return this;
@@ -122,7 +129,10 @@ public class AponLines extends AponFormat {
         if (stateStack.isEmpty()) {
             stateStack.push(State.BLOCK);
         } else {
-            checkState(State.ARRAY);
+            if (stateStack.peek() != State.ARRAY) {
+                throw new IllegalStateException("Anonymous blocks can only be added inside an array. " +
+                        "To add a named block, use block(\"name\").");
+            }
             stateStack.push(State.BLOCK);
             lines.append(CURLY_BRACKET_OPEN).append(NEW_LINE);
         }
@@ -138,7 +148,10 @@ public class AponLines extends AponFormat {
      */
     public AponLines array(String name) {
         checkName(name);
-        checkState(State.BLOCK);
+        if (stateStack.peek() != State.BLOCK) {
+            throw new IllegalStateException("Named arrays can only be added inside a block, " +
+                    "not an array or text block");
+        }
         stateStack.push(State.ARRAY);
         lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE).append(SQUARE_BRACKET_OPEN).append(NEW_LINE);
         return this;
@@ -150,7 +163,10 @@ public class AponLines extends AponFormat {
      * @throws IllegalStateException if not currently in an array context
      */
     public AponLines array() {
-        checkState(State.ARRAY);
+        if (stateStack.peek() != State.ARRAY) {
+            throw new IllegalStateException("Anonymous arrays can only be added inside another array. " +
+                    "To add a named array, use array(\"name\").");
+        }
         stateStack.push(State.ARRAY);
         lines.append(SQUARE_BRACKET_OPEN).append(NEW_LINE);
         return this;
@@ -166,7 +182,10 @@ public class AponLines extends AponFormat {
      */
     public AponLines text(String name) {
         checkName(name);
-        checkState(State.BLOCK);
+        if (stateStack.peek() != State.BLOCK) {
+            throw new IllegalStateException("Named text blocks can only be added inside a block, " +
+                    "not an array or another text block");
+        }
         stateStack.push(State.TEXT);
         lines.append(name).append(NAME_VALUE_SEPARATOR).append(SPACE).append(ROUND_BRACKET_OPEN).append(NEW_LINE);
         return this;
@@ -178,7 +197,10 @@ public class AponLines extends AponFormat {
      * @throws IllegalStateException if not currently in an array context
      */
     public AponLines text() {
-        checkState(State.ARRAY);
+        if (stateStack.peek() != State.ARRAY) {
+            throw new IllegalStateException("Anonymous text blocks can only be added inside an array. " +
+                    "To add a named text block, use text(\"name\").");
+        }
         stateStack.push(State.TEXT);
         lines.append(ROUND_BRACKET_OPEN).append(NEW_LINE);
         return this;
@@ -191,8 +213,8 @@ public class AponLines extends AponFormat {
      * @throws IllegalStateException if there is no open structure to end
      */
     public AponLines end() {
-        if (stateStack.isEmpty()) {
-            checkState(State.BLOCK);
+        if (stateStack.size() <= 1) {
+            throw new IllegalStateException("Mismatched end() call; no open block, array, or text to close");
         }
         State state = stateStack.pop();
         switch (state) {
@@ -245,13 +267,7 @@ public class AponLines extends AponFormat {
 
     private void checkName(String name) {
         if (!StringUtils.hasText(name)) {
-            throw new IllegalArgumentException("Invalid name: " + name);
-        }
-    }
-
-    private void checkState(State required) {
-        if (stateStack.isEmpty() || stateStack.peek() != required) {
-            throw new IllegalStateException("Required state: " + required);
+            throw new IllegalArgumentException("Parameter name must not be null or empty");
         }
     }
 
