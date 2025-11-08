@@ -215,21 +215,21 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     @Override
     public void setLocale(@NonNull Translet translet, Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
-        HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
+        HttpServletResponse response = translet.getResponseAdaptee();
         getLocaleCookieGenerator().addCookie(response, (locale != null ? toLocaleValue(locale) : ""));
     }
 
     @Override
     public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
-        HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
+        HttpServletResponse response = translet.getResponseAdaptee();
         getTimeZoneCookieGenerator().addCookie(response, (timeZone != null ? timeZone.getID() : ""));
     }
 
     private Locale parseLocaleCookie(@NonNull Translet translet) {
         Locale locale = null;
         String cookieName = getLocaleCookieGenerator().getCookieName();
-        HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
+        HttpServletRequest request = translet.getRequestAdaptee();
         Cookie cookie = WebUtils.getCookie(request, cookieName);
         if (cookie != null) {
             String value = cookie.getValue();
@@ -258,7 +258,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     private TimeZone parseTimeZoneCookie(@NonNull Translet translet) {
         TimeZone timeZone = null;
         String cookieName = getTimeZoneCookieGenerator().getCookieName();
-        HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
+        HttpServletRequest request = translet.getRequestAdaptee();
         Cookie cookie = WebUtils.getCookie(request, cookieName);
         if (cookie != null) {
             String value = cookie.getValue();

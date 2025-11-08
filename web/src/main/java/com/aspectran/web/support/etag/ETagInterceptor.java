@@ -84,7 +84,7 @@ public class ETagInterceptor {
      * @param translet the current translet
      */
     public void intercept(@NonNull Translet translet) {
-        HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
+        HttpServletResponse response = translet.getResponseAdaptee();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
             String token = response.getHeader(HttpHeaders.ETAG);

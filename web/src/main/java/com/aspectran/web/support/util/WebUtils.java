@@ -89,7 +89,7 @@ public abstract class WebUtils {
     @Nullable
     public static Cookie getCookie(Translet translet, String name) {
         Assert.notNull(translet, "Translet must not be null");
-        HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
+        HttpServletRequest request = translet.getRequestAdaptee();
         return getCookie(request, name);
     }
 
