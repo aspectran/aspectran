@@ -270,7 +270,6 @@ public abstract class UriUtils {
         return encode(fragment, charset, UriComponentsType.FRAGMENT);
     }
 
-
     /**
      * Variant of {@link #encode(String, Charset)} with a String charset.
      * @param source the String to be encoded
@@ -303,7 +302,7 @@ public abstract class UriUtils {
      */
     @NonNull
     public static Map<String, String> encodeUriVariables(@NonNull Map<String, ?> uriVariables) {
-        Map<String, String> result = new LinkedHashMap<>((int) Math.ceil(uriVariables.size() / (double)0.75f));
+        Map<String, String> result = new LinkedHashMap<>((int)Math.ceil(uriVariables.size() / (double)0.75f));
         uriVariables.forEach((key, value) -> {
             String stringValue = (value != null ? value.toString() : "");
             result.put(key, encode(stringValue, StandardCharsets.UTF_8));
@@ -623,6 +622,7 @@ public abstract class UriUtils {
         protected boolean isPchar(int c) {
             return (isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c);
         }
+
     }
 
 }

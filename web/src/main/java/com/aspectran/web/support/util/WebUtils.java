@@ -33,14 +33,14 @@ import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Miscellaneous utilities for web applications.
+ * Miscellaneous utility methods for web applications.
+ * <p>Provides functionality for cookie handling, header parsing, path manipulation,
+ * and building redirect URLs.</p>
  */
 public abstract class WebUtils {
 
@@ -62,16 +62,17 @@ public abstract class WebUtils {
      * Retrieve the first cookie with the given name. Note that multiple
      * cookies can have the same name but different paths or domains.
      * @param request current servlet request
-     * @param name cookie name
+     * @param cookieName cookie name
      * @return the first cookie with the given name, or {@code null} if none is found
      */
     @Nullable
-    public static Cookie getCookie(HttpServletRequest request, String name) {
+    public static Cookie getCookie(HttpServletRequest request, String cookieName) {
         Assert.notNull(request, "Request must not be null");
+        Assert.hasLength(cookieName, "Cookie name must not be null or empty");
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (name.equals(cookie.getName())) {
+                if (cookieName.equals(cookie.getName())) {
                     return cookie;
                 }
             }
@@ -83,21 +84,24 @@ public abstract class WebUtils {
      * Retrieve the first cookie with the given name. Note that multiple
      * cookies can have the same name but different paths or domains.
      * @param translet current translet
-     * @param name cookie name
+     * @param cookieName cookie name
      * @return the first cookie with the given name, or {@code null} if none is found
      */
     @Nullable
-    public static Cookie getCookie(Translet translet, String name) {
+    public static Cookie getCookie(Translet translet, String cookieName) {
         Assert.notNull(translet, "Translet must not be null");
+        Assert.hasLength(cookieName, "Cookie name must not be null or empty");
         HttpServletRequest request = translet.getRequestAdaptee();
-        return getCookie(request, name);
+        return getCookie(request, cookieName);
     }
 
     /**
-     * Returns whether the specified content types are present in the Accept header declared by user agents.
-     * @param translet current translet
-     * @param contentTypes content types to look for in the Accept header
-     * @return true if present in the Accept header, false otherwise
+     * Checks if any of the specified content types is acceptable according to
+     * the {@code Accept} header sent by the client.
+     * @param translet the current translet, which provides access to the request
+     * @param contentTypes an array of media types to check
+     * @return {@code true} if one of the specified media types is acceptable,
+     *      {@code false} otherwise
      */
     public static boolean isAcceptContentTypes(Translet translet, MediaType... contentTypes) {
         Assert.notNull(translet, "Translet must not be null");
@@ -115,15 +119,30 @@ public abstract class WebUtils {
         return false;
     }
 
+    /**
+     * Returns the path within the application for the given request URI.
+     * <p>Detects and strips the context path from the beginning of the request URI.</p>
+     * @param contextPath the context path of the application
+     * @param requestUri the full request URI
+     * @return the request URI relative to the context path
+     */
     public static String getRelativePath(String contextPath, @NonNull String requestUri) {
         if (StringUtils.hasLength(contextPath)) {
             return requestUri.substring(contextPath.length());
         } else {
             return requestUri;
         }
-
     }
 
+    /**
+     * Determines the context path to be used for reverse-proxy scenarios.
+     * <p>This method inspects the {@code X-Forwarded-Path} header. If the header
+     * is present, it is returned (with any trailing slash removed). This is useful
+     * when an application is running behind a reverse proxy that alters the context path.
+     * @param request the current servlet request
+     * @return the reverse context path from the header, or {@code null} if the header is not found
+     * @see HttpHeaders#X_FORWARDED_PATH
+     */
     @Nullable
     public static String getReverseContextPath(@NonNull HttpServletRequest request) {
         String forwardedPath = request.getHeader(HttpHeaders.X_FORWARDED_PATH);
@@ -140,6 +159,15 @@ public abstract class WebUtils {
         }
     }
 
+    /**
+     * Determines the context path to be used for reverse-proxy scenarios,
+     * falling back to a default context path.
+     * @param request the current servlet request
+     * @param defaultContextPath the default context path to return if the
+     *      {@code X-Forwarded-Path} header is not present
+     * @return the reverse context path from the header, or the default context path
+     * @see #getReverseContextPath(HttpServletRequest)
+     */
     @Nullable
     public static String getReverseContextPath(@NonNull HttpServletRequest request, String defaultContextPath) {
         String reverseContextPath = getReverseContextPath(request);
@@ -150,11 +178,19 @@ public abstract class WebUtils {
         }
     }
 
+    /**
+     * Builds a {@link RedirectTarget} object from a {@link RedirectRule}.
+     * <p>This method constructs the final redirect URL by combining the path from the rule,
+     * prepending the reverse context path if necessary, and appending any parameters
+     * defined in the rule. Parameters are evaluated and URL-encoded (using UTF-8
+     * by default).</p>
+     * @param redirectRule the rule that defines the redirect path and parameters
+     * @param activity the current activity, used to evaluate parameters and get context
+     * @return a {@link RedirectTarget} containing the final redirect URL
+     */
     @NonNull
-    public static RedirectTarget getRedirectTarget(RedirectRule redirectRule, Activity activity) throws IOException {
-        if (redirectRule == null) {
-            throw new IllegalArgumentException("redirectRule must not be null");
-        }
+    public static RedirectTarget getRedirectTarget(RedirectRule redirectRule, Activity activity) {
+        Assert.notNull(redirectRule, "redirectRule must not be null");
         String path = redirectRule.getPath(activity);
         int questionPos = -1;
         StringBuilder sb = new StringBuilder(256);
@@ -196,9 +232,9 @@ public abstract class WebUtils {
                     if (stringValue != null) {
                         String encoding = redirectRule.getEncoding();
                         if (encoding == null) {
-                            encoding = StandardCharsets.ISO_8859_1.name();
+                            encoding = StandardCharsets.UTF_8.name();
                         }
-                        stringValue = URLEncoder.encode(stringValue, encoding);
+                        stringValue = UriUtils.encodeQueryParam(stringValue, encoding);
                         sb.append(stringValue);
                     }
                 }

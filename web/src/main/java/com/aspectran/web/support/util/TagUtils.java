@@ -113,8 +113,8 @@ public abstract class TagUtils {
      *      type-assignable to the {@link Tag} class
      * @see #hasAncestorOfType(jakarta.servlet.jsp.tagext.Tag, Class)
      */
-    public static void assertHasAncestorOfType(Tag tag, Class<?> ancestorTagClass, String tagName,
-                                               String ancestorTagName) {
+    public static void assertHasAncestorOfType(
+            Tag tag, Class<?> ancestorTagClass, String tagName, String ancestorTagName) {
         Assert.hasText(tagName, "'tagName' must not be empty");
         Assert.hasText(ancestorTagName, "'ancestorTagName' must not be empty");
         if (!TagUtils.hasAncestorOfType(tag, ancestorTagClass)) {

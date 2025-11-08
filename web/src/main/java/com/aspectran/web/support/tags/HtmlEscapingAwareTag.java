@@ -15,9 +15,8 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.web.support.util.HtmlUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Serial;
 
@@ -42,7 +41,6 @@ public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
     /**
      * Set HTML escaping for this tag, as boolean value.
      * Overrides the default HTML escaping setting for the current activity.
-     *
      * @see HtmlEscapeTag#setDefaultHtmlEscape
      */
     public void setHtmlEscape(boolean htmlEscape) {
@@ -52,7 +50,6 @@ public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
     /**
      * Return the HTML escaping setting for this tag,
      * or the default setting if not overridden.
-     *
      * @see #isDefaultHtmlEscape()
      */
     protected boolean isHtmlEscape() {
@@ -90,23 +87,9 @@ public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
     protected String htmlEscape(String content) {
         String out = content;
         if (isHtmlEscape()) {
-            String encoding = getCharacterEncoding();
-            if (encoding != null) {
-                out = HtmlUtils.htmlEscape(content, encoding);
-            } else {
-                out = HtmlUtils.htmlEscape(content);
-            }
+            out = StringEscapeUtils.escapeHtml4(content);
         }
         return out;
-    }
-
-    private String getCharacterEncoding() {
-        String encoding = null;
-        ResponseAdapter responseAdapter = getCurrentActivity().getResponseAdapter();
-        if (responseAdapter.getEncoding() == null) {
-            encoding = getCurrentActivity().getTranslet().getDefinitiveResponseEncoding();
-        }
-        return encoding;
     }
 
 }

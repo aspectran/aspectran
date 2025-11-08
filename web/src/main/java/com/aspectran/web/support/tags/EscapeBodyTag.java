@@ -17,10 +17,10 @@ package com.aspectran.web.support.tags;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.web.support.util.JavaScriptUtils;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -106,7 +106,7 @@ public class EscapeBodyTag extends HtmlEscapingAwareTag implements BodyTag {
             // HTML and/or JavaScript escape, if demanded
             content = htmlEscape(content);
             if (this.javaScriptEscape) {
-                content = JavaScriptUtils.javaScriptEscape(content);
+                content = StringEscapeUtils.escapeEcmaScript(content);
             }
             writeBodyContent(content);
         } catch (IOException ex) {

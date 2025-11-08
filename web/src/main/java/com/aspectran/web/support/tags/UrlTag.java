@@ -19,12 +19,12 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 import com.aspectran.web.support.util.UriUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.PageContext;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -279,7 +279,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
 
         // HTML and/or JavaScript escape, if demanded.
         urlStr = htmlEscape(urlStr);
-        urlStr = (this.javaScriptEscape ? JavaScriptUtils.javaScriptEscape(urlStr) : urlStr);
+        urlStr = (this.javaScriptEscape ? StringEscapeUtils.escapeEcmaScript(urlStr) : urlStr);
 
         return urlStr;
     }
@@ -296,8 +296,9 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
      * @return the query string
      */
     @NonNull
-    private String createQueryString(@NonNull List<Param> params, Set<String> usedParams,
-                                     boolean includeQueryStringDelimiter) throws JspException {
+    private String createQueryString(
+            @NonNull List<Param> params, Set<String> usedParams, boolean includeQueryStringDelimiter)
+            throws JspException {
         String encoding = this.pageContext.getResponse().getCharacterEncoding();
         StringBuilder qs = new StringBuilder();
         for (Param param : params) {

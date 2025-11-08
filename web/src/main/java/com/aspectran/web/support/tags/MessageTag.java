@@ -20,10 +20,10 @@ import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -228,8 +228,7 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
      * and writes it to the page (or exposes it as variable).
      *
      * @see #resolveMessage()
-     * @see com.aspectran.web.support.util.HtmlUtils#htmlEscape(String)
-     * @see JavaScriptUtils#javaScriptEscape(String)
+     * @see org.apache.commons.text.StringEscapeUtils#escapeEcmaScript(String)
      * @see #writeMessage(String)
      */
     @Override
@@ -239,7 +238,7 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
             String msg = resolveMessage();
             // HTML and/or JavaScript escape, if demanded.
             msg = htmlEscape(msg);
-            msg = this.javaScriptEscape ? JavaScriptUtils.javaScriptEscape(msg) : msg;
+            msg = (this.javaScriptEscape ? StringEscapeUtils.escapeEcmaScript(msg) : msg);
             // Expose as variable, if demanded, else write to the page.
             if (this.var != null) {
                 this.pageContext.setAttribute(this.var, msg, TagUtils.getScope(this.scope));

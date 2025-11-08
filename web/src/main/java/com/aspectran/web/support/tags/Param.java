@@ -66,7 +66,7 @@ public class Param {
 
     @Override
     public String toString() {
-        return "JSP Tag Param: name '" + this.name + "', value '" + this.value + "'";
+        return ("JSP Tag Param: name '" + this.name + "', value '" + this.value + "'");
     }
 
 }

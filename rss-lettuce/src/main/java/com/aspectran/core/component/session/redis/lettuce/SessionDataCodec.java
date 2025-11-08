@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
@@ -33,8 +32,6 @@ import java.util.Set;
  * <p>Created: 2019/12/08</p>
  */
 public class SessionDataCodec implements RedisCodec<String, SessionData> {
-
-    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private final Set<String> nonPersistentAttributes;
 
@@ -51,7 +48,7 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
      */
     @Override
     public String decodeKey(ByteBuffer bytes) {
-        return UTF8.decode(bytes).toString();
+        return StandardCharsets.UTF_8.decode(bytes).toString();
     }
 
     /**
@@ -76,7 +73,7 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
      */
     @Override
     public ByteBuffer encodeKey(String key) {
-        return UTF8.encode(key);
+        return StandardCharsets.UTF_8.encode(key);
     }
 
     /**

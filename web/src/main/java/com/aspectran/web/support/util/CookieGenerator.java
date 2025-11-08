@@ -16,18 +16,17 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>This class is a clone of org.springframework.web.util.CookieGenerator</p>
- *
  * Helper class for cookie generation, carrying cookie descriptor settings
- * as bean properties and being able to add and remove cookie to/from a
- * given response.
+ * as bean properties and being able to add and remove cookies to/from a
+ * given response by directly manipulating the "Set-Cookie" header.
  */
 public class CookieGenerator {
 
@@ -53,6 +52,9 @@ public class CookieGenerator {
 
     private boolean cookieHttpOnly = false;
 
+    @Nullable
+    private String sameSite;
+
     public CookieGenerator() {
     }
 
@@ -62,7 +64,6 @@ public class CookieGenerator {
 
     /**
      * Use the given name for cookies created by this generator.
-     *
      * @see jakarta.servlet.http.Cookie#getName()
      */
     public void setCookieName(@Nullable String cookieName) {
@@ -74,13 +75,12 @@ public class CookieGenerator {
      */
     @Nullable
     public String getCookieName() {
-        return this.cookieName;
+        return cookieName;
     }
 
     /**
      * Use the given domain for cookies created by this generator.
      * The cookie is only visible to servers in this domain.
-     *
      * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(@Nullable String cookieDomain) {
@@ -92,13 +92,12 @@ public class CookieGenerator {
      */
     @Nullable
     public String getCookieDomain() {
-        return this.cookieDomain;
+        return cookieDomain;
     }
 
     /**
      * Use the given path for cookies created by this generator.
      * The cookie is only visible to URLs in this path and below.
-     *
      * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
@@ -109,15 +108,13 @@ public class CookieGenerator {
      * Return the path for cookies created by this generator.
      */
     public String getCookiePath() {
-        return this.cookiePath;
+        return cookiePath;
     }
 
     /**
      * Use the given maximum age (in seconds) for cookies created by this generator.
      * Useful special value: -1 ... not persistent, deleted when client shuts down.
-     * <p>Default is no specific maximum age at all, using the Servlet container's
-     * default.</p>
-     *
+     * <p>Default is no specific maximum age at all, using the Servlet container's default.</p>
      * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(@Nullable Integer cookieMaxAge) {
@@ -129,7 +126,7 @@ public class CookieGenerator {
      */
     @Nullable
     public Integer getCookieMaxAge() {
-        return this.cookieMaxAge;
+        return cookieMaxAge;
     }
 
     /**
@@ -137,7 +134,6 @@ public class CookieGenerator {
      * such as HTTPS (SSL). This is an indication to the receiving browser,
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
-     *
      * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
@@ -149,13 +145,12 @@ public class CookieGenerator {
      * such as HTTPS (SSL).
      */
     public boolean isCookieSecure() {
-        return this.cookieSecure;
+        return cookieSecure;
     }
 
     /**
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
-     *
      * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
@@ -166,34 +161,42 @@ public class CookieGenerator {
      * Return whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      */
     public boolean isCookieHttpOnly() {
-        return this.cookieHttpOnly;
+        return cookieHttpOnly;
+    }
+
+    /**
+     * Sets the `SameSite` attribute to prevent the browser from sending this cookie along with cross-site requests.
+     * @param sameSite `Strict`, `Lax`, `None`
+     */
+    public void setSameSite(@Nullable String sameSite) {
+        this.sameSite = sameSite;
+    }
+
+    /**
+     * Return the `SameSite` attribute.
+     */
+    @Nullable
+    public String getSameSite() {
+        return sameSite;
     }
 
     /**
      * Add a cookie with the given value to the response,
      * using the cookie descriptor settings of this generator.
-     * <p>Delegates to {@link #createCookie} for cookie creation.</p>
+     * This method constructs and adds the "Set-Cookie" header directly to the response.
      * @param response the HTTP response to add the cookie to
      * @param cookieValue the value of the cookie to add
      * @see #setCookieName
      * @see #setCookieDomain
      * @see #setCookiePath
      * @see #setCookieMaxAge
+     * @see #setSameSite
      */
     public void addCookie(HttpServletResponse response, String cookieValue) {
         Assert.notNull(response, "HttpServletResponse must not be null");
-        Cookie cookie = createCookie(cookieValue);
-        Integer maxAge = getCookieMaxAge();
-        if (maxAge != null) {
-            cookie.setMaxAge(maxAge);
-        }
-        if (isCookieSecure()) {
-            cookie.setSecure(true);
-        }
-        if (isCookieHttpOnly()) {
-            cookie.setHttpOnly(true);
-        }
-        response.addCookie(cookie);
+        Assert.state(StringUtils.hasText(getCookieName()), "Cookie name must not be null or empty");
+        String header = buildCookieHeader(cookieValue, getCookieMaxAge());
+        response.addHeader("Set-Cookie", header);
         if (logger.isTraceEnabled()) {
             logger.trace("Added cookie [{}={}]", getCookieName(), cookieValue);
         }
@@ -202,44 +205,52 @@ public class CookieGenerator {
     /**
      * Remove the cookie that this generator describes from the response.
      * Will generate a cookie with empty value and max age 0.
-     * <p>Delegates to {@link #createCookie} for cookie creation.</p>
+     * This method constructs and adds the "Set-Cookie" header directly to the response.
      * @param response the HTTP response to remove the cookie from
      * @see #setCookieName
      * @see #setCookieDomain
      * @see #setCookiePath
+     * @see #setSameSite
      */
     public void removeCookie(HttpServletResponse response) {
         Assert.notNull(response, "HttpServletResponse must not be null");
-        Cookie cookie = createCookie("");
-        cookie.setMaxAge(0);
-        if (isCookieSecure()) {
-            cookie.setSecure(true);
-        }
-        if (isCookieHttpOnly()) {
-            cookie.setHttpOnly(true);
-        }
-        response.addCookie(cookie);
+        Assert.state(StringUtils.hasText(getCookieName()), "Cookie name must not be null or empty");
+        String header = buildCookieHeader("", 0);
+        response.addHeader("Set-Cookie", header);
         if (logger.isTraceEnabled()) {
             logger.trace("Removed cookie '{}'", getCookieName());
         }
     }
 
     /**
-     * Create a cookie with the given value, using the cookie descriptor
-     * settings of this generator (except for "cookieMaxAge").
-     * @param cookieValue the value of the cookie to crate
-     * @return the cookie
-     * @see #setCookieName
-     * @see #setCookieDomain
-     * @see #setCookiePath
+     * Builds the "Set-Cookie" header string based on the current cookie generator settings.
+     * @param cookieValue the value of the cookie
+     * @param maxAge the maximum age of the cookie in seconds
+     * @return the formatted "Set-Cookie" header string
      */
-    protected Cookie createCookie(String cookieValue) {
-        Cookie cookie = new Cookie(getCookieName(), cookieValue);
+    @NonNull
+    private String buildCookieHeader(String cookieValue, @Nullable Integer maxAge) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getCookieName()).append('=').append(cookieValue);
         if (getCookieDomain() != null) {
-            cookie.setDomain(getCookieDomain());
+            sb.append("; Domain=").append(getCookieDomain());
         }
-        cookie.setPath(getCookiePath());
-        return cookie;
+        if (StringUtils.hasText(getCookiePath())) {
+            sb.append("; Path=").append(getCookiePath());
+        }
+        if (maxAge != null) {
+            sb.append("; Max-Age=").append(maxAge);
+        }
+        if (isCookieSecure()) {
+            sb.append("; Secure");
+        }
+        if (isCookieHttpOnly()) {
+            sb.append("; HttpOnly");
+        }
+        if (getSameSite() != null) {
+            sb.append("; SameSite=").append(getSameSite());
+        }
+        return sb.toString();
     }
 
 }
