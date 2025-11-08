@@ -42,8 +42,8 @@ class TimeLimitedPBTokenIssuerTest {
         params.putValue("p1", "v1");
         params.putValue("p2", "v2");
         params.putValue("p3", "v3");
-        String token = TimeLimitedPBTokenIssuer.getToken(params);
-        Parameters params2 = TimeLimitedPBTokenIssuer.getPayload(token);
+        String token = TimeLimitedPBTokenIssuer.createToken(params);
+        Parameters params2 = TimeLimitedPBTokenIssuer.parseToken(token);
         assertEquals(params.toString(), params2.toString());
     }
 

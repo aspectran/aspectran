@@ -42,8 +42,8 @@ class PBTokenIssuerTest {
         params.putValue("p1", "v1");
         params.putValue("p2", "v2");
         params.putValue("p3", "v3");
-        String token = PBTokenIssuer.getToken(params);
-        Parameters params2 = PBTokenIssuer.getPayload(token);
+        String token = PBTokenIssuer.createToken(params);
+        Parameters params2 = PBTokenIssuer.parseToken(token);
         assertEquals(params.toString(), params2.toString());
     }
 

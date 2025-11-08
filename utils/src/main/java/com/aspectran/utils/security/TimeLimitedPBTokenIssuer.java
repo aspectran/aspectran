@@ -30,52 +30,65 @@ import com.aspectran.utils.apon.VariableParameters;
  * The payload is an APON (Aspectran Parameter Object Notation) string derived from a
  * {@link Parameters} object.</p>
  */
-public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
+public final class TimeLimitedPBTokenIssuer {
 
     private static final String TOKEN_SEPARATOR = "_";
 
-    private static final Parameters EMPTY_PAYLOAD = new VariableParameters();
-
     private static final int DIGIT_RADIX = 36;
 
-    private static final long DEFAULT_EXPIRATION_TIME = 1000 * 30;
+    private static final long DEFAULT_EXPIRATION_TIME = 1000L * 30;
 
-    private static final TimeLimitedPBTokenIssuer defaultIssuer = new TimeLimitedPBTokenIssuer();
+    private static final Parameters EMPTY_PAYLOAD = new VariableParameters();
 
-    private final long expirationTime;
-
-    /**
-     * Creates a new token issuer with the default expiration time (30 seconds).
-     */
-    public TimeLimitedPBTokenIssuer() {
-        this(DEFAULT_EXPIRATION_TIME);
+    private TimeLimitedPBTokenIssuer() {
     }
 
     /**
-     * Creates a new token issuer with the specified expiration time.
-     * @param expirationTime the expiration time in milliseconds
+     * Returns a new time-limited token with an empty payload and the default expiration time (30 seconds).
+     * This method is an alias for {@link #createToken()} and is typically used when calling as a static bean getter.
+     * @return the encrypted token string
      */
-    public TimeLimitedPBTokenIssuer(long expirationTime) {
-        this.expirationTime = expirationTime;
+    public static String getToken() {
+        return createToken();
+    }
+
+    /**
+     * Creates a new time-limited token with an empty payload and the default expiration time (30 seconds).
+     * @return the encrypted token string
+     */
+    public static String createToken() {
+        return createToken(EMPTY_PAYLOAD, DEFAULT_EXPIRATION_TIME);
     }
 
     /**
      * Creates a new time-limited token with an empty payload.
+     * @param expirationTime the expiration time in milliseconds
      * @return the encrypted token string
      */
-    public String createToken() {
-        return createToken(EMPTY_PAYLOAD);
+    public static String createToken(long expirationTime) {
+        return createToken(EMPTY_PAYLOAD, expirationTime);
+    }
+
+    /**
+     * Creates a new time-limited token with the given payload and the default expiration time (30 seconds).
+     * The payload is converted to an APON string and embedded in the token.
+     * @param payload the parameters to be included in the token (must not be null)
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the payload is null
+     */
+    public static String createToken(Parameters payload) {
+        return createToken(payload, DEFAULT_EXPIRATION_TIME);
     }
 
     /**
      * Creates a new time-limited token with the given payload.
      * The payload is converted to an APON string and embedded in the token.
      * @param payload the parameters to be included in the token (must not be null)
+     * @param expirationTime the expiration time in milliseconds
      * @return the encrypted token string
      * @throws IllegalArgumentException if the payload is null
      */
-    @Override
-    public String createToken(Parameters payload) {
+    public static String createToken(Parameters payload, long expirationTime) {
         if (payload == null) {
             throw new IllegalArgumentException("payload must not be null");
         }
@@ -92,8 +105,7 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
      * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
      * @throws IllegalArgumentException if the token is null or empty
      */
-    @Override
-    public <T extends Parameters> T parseToken(String token) throws InvalidPBTokenException {
+    public static <T extends Parameters> T parseToken(String token) throws InvalidPBTokenException {
         return parseToken(token, null);
     }
 
@@ -106,9 +118,8 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
      * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
      * @throws IllegalArgumentException if the token is null or empty
      */
-    @Override
     @SuppressWarnings("unchecked")
-    public <T extends Parameters> T parseToken(String token, @Nullable Class<T> payloadType)
+    public static <T extends Parameters> T parseToken(String token, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
         if (StringUtils.isEmpty(token)) {
             throw new IllegalArgumentException("token must not be null or empty");
@@ -141,76 +152,13 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
     }
 
     /**
-     * A static helper method to get a new token with the default expiration time and an empty payload.
-     * @return the encrypted token string
-     */
-    public static String getToken() {
-        return defaultIssuer.createToken();
-    }
-
-    /**
-     * A static helper method to get a new token with the specified expiration time and an empty payload.
-     * @param expirationTime the expiration time in milliseconds
-     * @return the encrypted token string
-     */
-    public static String getToken(long expirationTime) {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(expirationTime);
-        return tokenIssuer.createToken();
-    }
-
-    /**
-     * A static helper method to get a new token with the given payload and the default expiration time.
-     * @param payload the parameters to be included in the token
-     * @return the encrypted token string
-     */
-    public static String getToken(Parameters payload) {
-        return defaultIssuer.createToken(payload);
-    }
-
-    /**
-     * A static helper method to get a new token with the given payload and the specified expiration time.
-     * @param payload the parameters to be included in the token
-     * @param expirationTime the expiration time in milliseconds
-     * @return the encrypted token string
-     */
-    public static String getToken(Parameters payload, long expirationTime) {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(expirationTime);
-        return tokenIssuer.createToken(payload);
-    }
-
-    /**
-     * A static helper method to parse a token and get its payload.
-     * @param token the token string to parse
-     * @return the payload as a {@link VariableParameters} instance
-     * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
-     */
-    public static <T extends Parameters> T getPayload(String token)
-            throws InvalidPBTokenException {
-        return getPayload(token, null);
-    }
-
-    /**
-     * A static helper method to parse a token and get its payload as the specified type.
-     * @param token the token string to parse
-     * @param payloadType the class of the payload, a subclass of {@link Parameters}
-     * @return a new instance of the specified payload type
-     * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
-     */
-    public static <T extends Parameters> T getPayload(String token, Class<T> payloadType)
-            throws InvalidPBTokenException {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(0L);
-        return tokenIssuer.parseToken(token, payloadType);
-    }
-
-    /**
-     * A static helper method to validate a token.
-     * It checks the token's integrity and expiration time without returning the payload.
-     * @param token the token string to validate
-     * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
+     * Validates the given token by attempting to parse it.
+     * If the token is invalid, expired, or malformed, an exception is thrown.
+     * @param token the token to validate
+     * @throws InvalidPBTokenException if the token is invalid or has expired
      */
     public static void validate(String token) throws InvalidPBTokenException {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(0L);
-        tokenIssuer.parseToken(token, null);
+        parseToken(token, null);
     }
 
 }
