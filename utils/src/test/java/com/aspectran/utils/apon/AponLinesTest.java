@@ -37,25 +37,25 @@ class AponLinesTest {
                 .line("name", "value")
                 .line("number", 9999)
                 .line("text", "(")
-                .line("|text-line-1")
-                .line("|text-line-2")
-                .line(")")
+                .raw("|text-line-1")
+                .raw("|text-line-2")
+                .raw(")")
                 .line("block", "{")
                 .line("nested", "block")
-                .line("}")
-                .line("count: [")
-                .line("1")
-                .line("2")
-                .line("3")
-                .line("]")
-                .line("array: [")
-                .line("{")
+                .raw("}")
+                .raw("count: [")
+                .raw("1")
+                .raw("2")
+                .raw("3")
+                .raw("]")
+                .raw("array: [")
+                .raw("{")
                 .line("block1-in-array", 1)
-                .line("}")
-                .line("{")
+                .raw("}")
+                .raw("{")
                 .line("block2-in-array", 2)
-                .line("}")
-                .line("]")
+                .raw("}")
+                .raw("]")
                 ;
         String apon1 = aponLines1.toString();
 
@@ -97,25 +97,25 @@ class AponLinesTest {
                 .line("name", "value")
                 .line("number", 9999)
                 .line("text", "(")
-                .line("|text-line-1")
-                .line("|text-line-2")
-                .line(")")
+                .raw("|text-line-1")
+                .raw("|text-line-2")
+                .raw(")")
                 .line("block", "{")
                 .line("nested", "block")
-                .line("}")
-                .line("count: [")
-                .line("1")
-                .line("2")
-                .line("3")
-                .line("]")
-                .line("array: [")
-                .line("{")
-                .line("block1-in-array", 1)
-                .line("}")
-                .line("{")
-                .line("block2-in-array", 2)
-                .line("}")
-                .line("]")
+                .raw("}")
+                .raw("count: [")
+                .raw("1")
+                .raw("2")
+                .raw("3")
+                .raw("]")
+                .raw("array: [")
+                .raw("{")
+                .raw("block1-in-array: 1")
+                .raw("}")
+                .raw("{")
+                .raw("block2-in-array: 2")
+                .raw("}")
+                .raw("]")
                 ;
         String apon1 = aponLines1.format();
 
@@ -198,6 +198,16 @@ class AponLinesTest {
                 .line("admin")
                 .line("editor")
                 .end()
+                .array("groups")
+                .block()
+                .line("user1", "tester1")
+                .line("user2", "tester2")
+                .end()
+                .block()
+                .line("user3", "tester3")
+                .line("user4",  "tester4")
+                .end()
+                .end()
                 .end();
 
         String expected = """
@@ -209,6 +219,16 @@ class AponLinesTest {
                   roles: [
                     admin
                     editor
+                  ]
+                  groups: [
+                    {
+                      user1: tester1
+                      user2: tester2
+                    }
+                    {
+                      user3: tester3
+                      user4: tester4
+                    }
                   ]
                 }
                 """;
