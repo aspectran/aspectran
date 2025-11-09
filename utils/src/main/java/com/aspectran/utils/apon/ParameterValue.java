@@ -105,8 +105,11 @@ public class ParameterValue implements Parameter {
         this.originValueType = valueType;
         this.array = array;
         this.valueTypeFixed = (valueTypeFixed && valueType != ValueType.VARIABLE);
-        if (this.array && !noBracket) {
-            this.bracketed = true;
+        if (this.array) {
+            this.list = new ArrayList<>();
+            if (!noBracket) {
+                this.bracketed = true;
+            }
         }
     }
 
@@ -279,7 +282,7 @@ public class ParameterValue implements Parameter {
     public boolean hasValue() {
         if (assigned) {
             if (array) {
-                return (list != null);
+                return (list != null && !list.isEmpty());
             } else {
                 return (value != null);
             }
@@ -351,9 +354,9 @@ public class ParameterValue implements Parameter {
     private void addValue(Object value) {
         if (list == null) {
             list = new ArrayList<>();
-            assigned = true;
         }
         list.add(value);
+        assigned = true;
     }
 
     /**

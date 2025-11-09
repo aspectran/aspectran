@@ -242,7 +242,7 @@ class JsonToParametersTest {
 
         // Empty array
         Parameters p2 = JsonToParameters.from("{\"emptyArray\":[]}");
-        assertNull(p2.getValue("emptyArray"));
+        assertTrue(p2.getValueList("emptyArray").isEmpty());
     }
 
     /**

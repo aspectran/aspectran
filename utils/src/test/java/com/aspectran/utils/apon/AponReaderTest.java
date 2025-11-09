@@ -17,7 +17,10 @@ package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -161,6 +164,28 @@ class AponReaderTest {
 
         Parameters p2 = AponReader.read("   \n\t\r\n   ");
         assertTrue(p2.isEmpty());
+    }
+
+    @Test
+    void testParseSingleLineEmptyStructures() throws AponParseException {
+        String input = """
+            emptyBlock: {}
+            arrayWithEmpty: [
+                []
+                []
+            ]
+            """;
+        Parameters params = AponReader.read(input);
+
+        Parameters emptyBlock = params.getParameters("emptyBlock");
+        assertNotNull(emptyBlock);
+        assertTrue(emptyBlock.isEmpty());
+
+        List<Parameters> list = params.getParametersList("arrayWithEmpty");
+        assertNotNull(list);
+        assertEquals(2, list.size());
+        assertTrue(list.get(0).isEmpty());
+        assertTrue(list.get(1).isEmpty());
     }
 
 }

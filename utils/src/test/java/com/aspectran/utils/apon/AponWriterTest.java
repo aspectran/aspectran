@@ -160,4 +160,25 @@ class AponWriterTest {
         assertEquals(expected.replace("\r\n", "\n"), apon.replace("\r\n", "\n"));
     }
 
+    @Test
+    void testCompactWritingOfEmptyStructures() throws IOException {
+        Parameters params = new VariableParameters();
+        params.putValue("emptyBlock", new VariableParameters());
+        params.putValue("emptyArray", new java.util.ArrayList<String>());
+
+        // Test with prettyPrint = false
+        AponWriter compactWriter = new AponWriter().prettyPrint(false);
+        String compactApon = compactWriter.write(params).toString();
+        String expectedCompact = "emptyBlock:{}\nemptyArray:[]\n";
+        assertEquals(expectedCompact.replace("\n", AponFormat.SYSTEM_NEW_LINE), compactApon);
+
+        // Test with prettyPrint = true (default)
+        AponWriter prettyWriter = new AponWriter();
+        String prettyApon = prettyWriter.write(params).toString();
+        assertFalse(prettyApon.contains("emptyBlock:{}"));
+        assertFalse(prettyApon.contains("emptyArray:[]"));
+        assertTrue(prettyApon.contains("emptyBlock: {\n}".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+        assertTrue(prettyApon.contains("emptyArray: [\n]".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+    }
+
 }

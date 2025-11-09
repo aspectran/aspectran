@@ -30,19 +30,21 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 
 import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
-import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.BLOCK_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
+import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
 import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.FALSE;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NO_CONTROL_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NULL;
-import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.TEXT_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.TEXT_OPEN;
 import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
-import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_OPEN;
+import static com.aspectran.utils.apon.AponFormat.ARRAY_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.TRUE;
@@ -136,12 +138,12 @@ public class AponReader {
             value = tline;
             vlen = value.length();
             cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
-            if (cchar != CURLY_BRACKET_OPEN) {
+            if (cchar != BLOCK_OPEN) {
                 throw syntaxError(line, tline,
                         "An item in an array must be a parameter set enclosed in curly brackets");
             }
             Parameters ps = container.newParameters(ArrayParameters.NONAME);
-            read(ps, CURLY_BRACKET_OPEN, null, null, null, false);
+            read(ps, BLOCK_OPEN, null, null, null, false);
         }
     }
 
@@ -175,25 +177,49 @@ public class AponReader {
                 continue;
             }
 
-            if (openedBracket == SQUARE_BRACKET_OPEN) {
+            if (openedBracket == ARRAY_OPEN) {
                 value = tline;
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
-                if (SQUARE_BRACKET_CLOSE == cchar) {
+                if (ARRAY_CLOSE == cchar) {
                     return;
+                }
+                if (BLOCK_OPEN == cchar) {
+                    if (parameterValue == null) {
+                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue.setValueTypeHinted(valueTypeHinted);
+                    }
+                    Parameters ps = parameterValue.newParameters(parameterValue);
+                    read(ps, BLOCK_OPEN, null, null, null, false);
+                    continue;
+                } else if (ARRAY_OPEN == cchar) {
+                    if (parameterValue == null) {
+                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue.setValueTypeHinted(valueTypeHinted);
+                    }
+                    Parameters ps = parameterValue.newParameters(parameterValue);
+                    read(ps, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+                    continue;
+                } else if (EMPTY_ARRAY.equals(tline) || EMPTY_BLOCK.equals(tline)) {
+                    if (parameterValue == null) {
+                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue.setValueTypeHinted(valueTypeHinted);
+                    }
+                    parameterValue.newParameters(parameterValue);
+                    continue;
                 }
             } else {
                 if (tlen == 1) {
                     cchar = tline.charAt(0);
-                    if (openedBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == cchar) {
+                    if (openedBracket == BLOCK_OPEN && BLOCK_CLOSE == cchar) {
                         return;
                     }
-                    if (CURLY_BRACKET_OPEN == cchar) {
+                    if (BLOCK_OPEN == cchar) {
                         if (!container.hasParameter(ArrayParameters.NONAME)) {
                             container.newParameterValue(ArrayParameters.NONAME, ValueType.PARAMETERS, true);
                         }
                         Parameters ps = container.newParameters(ArrayParameters.NONAME);
-                        read(ps, CURLY_BRACKET_OPEN, null, null, null, false);
+                        read(ps, BLOCK_OPEN, null, null, null, false);
                         continue;
                     }
                 }
@@ -212,6 +238,12 @@ public class AponReader {
                 value = tline.substring(index + 1).trim();
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
+
+                if (EMPTY_BLOCK.equals(value)) {
+                    parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, false);
+                    parameterValue.putValue(new VariableParameters());
+                    continue;
+                }
 
                 parameterValue = container.getParameterValue(name);
 
@@ -235,55 +267,55 @@ public class AponReader {
                     valueType = null;
                 }
                 if (valueType != null) {
-                    if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
+                    if (parameterValue != null && !parameterValue.isArray() && ARRAY_OPEN == cchar) {
                         throw syntaxError(line, tline,
                                 "The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
                     }
-                    if (valueType != ValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
+                    if (valueType != ValueType.PARAMETERS && BLOCK_OPEN == cchar) {
                         throw syntaxError(line, tline, parameterValue, valueType);
                     }
-                    if (valueType != ValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
+                    if (valueType != ValueType.TEXT && TEXT_OPEN == cchar) {
                         throw syntaxError(line, tline, parameterValue, valueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
-                if (valueType == ValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
+                if (valueType == ValueType.PARAMETERS && BLOCK_OPEN != cchar) {
                     throw syntaxError(line, tline, parameterValue, valueType);
                 }
-                if (valueType == ValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
+                if (valueType == ValueType.TEXT && !NULL.equals(value) && TEXT_OPEN != cchar) {
                     throw syntaxError(line, tline, parameterValue, valueType);
                 }
             }
 
             if (parameterValue == null || parameterValue.isArray() || valueType == null) {
-                if (SQUARE_BRACKET_OPEN == cchar) {
-                    read(container, SQUARE_BRACKET_OPEN, name, parameterValue, valueType, valueTypeHinted);
+                if (ARRAY_OPEN == cchar) {
+                    read(container, ARRAY_OPEN, name, parameterValue, valueType, valueTypeHinted);
                     continue;
                 }
             }
             if (valueType == null) {
-                if (CURLY_BRACKET_OPEN == cchar) {
+                if (BLOCK_OPEN == cchar) {
                     valueType = ValueType.PARAMETERS;
-                } else if (ROUND_BRACKET_OPEN == cchar) {
+                } else if (TEXT_OPEN == cchar) {
                     valueType = ValueType.TEXT;
                 }
             }
 
             if (valueType == ValueType.PARAMETERS) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 Parameters ps = container.newParameters(name);
-                read(ps, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
+                read(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
             } else if (valueType == ValueType.TEXT) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
-                if (ROUND_BRACKET_OPEN == cchar) {
+                if (TEXT_OPEN == cchar) {
                     parameterValue.putValue(readText());
                 } else if (NULL.equals(value)) {
                     parameterValue.putValue(null);
@@ -349,7 +381,7 @@ public class AponReader {
                 }
 
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
                     if (parameterValue.getValueType() == ValueType.VARIABLE) {
@@ -386,19 +418,18 @@ public class AponReader {
             }
 
             if (parameterValue.isArray() && parameterValue.isBracketed()) {
-                if (openedBracket != SQUARE_BRACKET_OPEN) {
+                if (openedBracket != ARRAY_OPEN) {
                     parameterValue.setBracketed(false);
                 }
             }
         }
 
-        if (openedBracket == CURLY_BRACKET_OPEN) {
+        if (openedBracket == BLOCK_OPEN) {
             throw new MissingClosingBracketException("curly", name, parameterValue);
-        } else if (openedBracket == SQUARE_BRACKET_OPEN) {
+        } else if (openedBracket == ARRAY_OPEN) {
             throw new MissingClosingBracketException("square", name, parameterValue);
         }
     }
-
     private String readText() throws IOException {
         String line;
         String tline = null;
@@ -414,7 +445,7 @@ public class AponReader {
             tlen = tline.length();
             tchar = (tlen > 0 ? tline.charAt(0) : NO_CONTROL_CHAR);
 
-            if (tlen == 1 && ROUND_BRACKET_CLOSE == tchar) {
+            if (tlen == 1 && TEXT_CLOSE == tchar) {
                 return (sb != null ? sb.toString() : StringUtils.EMPTY);
             }
 

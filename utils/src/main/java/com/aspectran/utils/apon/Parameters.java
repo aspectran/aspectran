@@ -134,20 +134,6 @@ public interface Parameters {
     boolean isEmpty();
 
     /**
-     * Returns whether this parameter exists.
-     * @param name the name of the parameter to check
-     * @return {@code true} if the specified parameter exists; {@code false} otherwise
-     */
-    boolean hasParameter(String name);
-
-    /**
-     * Returns whether the specified parameter exists.
-     * @param key the parameter definition
-     * @return {@code true} if the specified parameter exists; {@code false} otherwise
-     */
-    boolean hasParameter(ParameterKey key);
-
-    /**
      * Returns whether a value is assigned to the specified parameter.
      * Even if a null is assigned, it is valid.
      * @param name the name of the parameter to check
@@ -164,18 +150,18 @@ public interface Parameters {
     boolean isAssigned(ParameterKey key);
 
     /**
-     * Returns whether a non-null value is assigned to the specified parameter.
+     * Returns whether this parameter exists.
      * @param name the name of the parameter to check
-     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
-    boolean hasValue(String name);
+    boolean hasParameter(String name);
 
     /**
-     * Returns whether a non-null value is assigned to the specified parameter.
+     * Returns whether the specified parameter exists.
      * @param key the parameter definition
-     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
-    boolean hasValue(ParameterKey key);
+    boolean hasParameter(ParameterKey key);
 
     /**
      * Returns the Parameter with the specified name.
@@ -191,22 +177,6 @@ public interface Parameters {
      *      or {@code null} if it does not exist
      */
     Parameter getParameter(ParameterKey key);
-
-    /**
-     * Return the value for the specified parameter,
-     * or {@code null} if the parameter does not exist.
-     * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
-     */
-    Object getValue(String name);
-
-    /**
-     * Return the value for the specified parameter,
-     * or {@code null} if the parameter does not exist.
-     * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
-     */
-    Object getValue(ParameterKey key);
 
     /**
      * Copy all values from the given container into this one, overwriting existing values.
@@ -256,6 +226,51 @@ public interface Parameters {
      * @param key the parameter key
      */
     void removeValue(ParameterKey key);
+
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     * @param name the name of the parameter to check
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(String name);
+
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     * @param key the parameter definition
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(ParameterKey key);
+
+    /**
+     * Return the value for the specified parameter,
+     * or {@code null} if the parameter does not exist.
+     * @param name the parameter name
+     * @return the value for the specified parameter, or {@code null}
+     */
+    Object getValue(String name);
+
+    /**
+     * Return the value for the specified parameter,
+     * or {@code null} if the parameter does not exist.
+     * @param key the parameter definition
+     * @return the value for the specified parameter, or {@code null}
+     */
+    Object getValue(ParameterKey key);
+
+    /**
+     * Retrieves a list of values associated with the provided name.
+     * @param name the parameter name
+     * @return the value for the specified parameter, or {@code null}
+     */
+    List<?> getValueList(String name);
+
+    /**
+     * Retrieves a list of values associated with the specified parameter,
+     * or {@code null} if the parameter does not exist.
+     * @param key the parameter definition
+     * @return the value for the specified parameter, or {@code null}
+     */
+    List<?> getValueList(ParameterKey key);
 
     /**
      * Return the value for the specified parameter,

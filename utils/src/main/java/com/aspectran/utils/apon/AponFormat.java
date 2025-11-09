@@ -28,22 +28,28 @@ package com.aspectran.utils.apon;
 public abstract class AponFormat {
 
     /** Opening curly bracket used to start a parameters block: '{'. */
-    protected static final char CURLY_BRACKET_OPEN = '{';
+    protected static final char BLOCK_OPEN = '{';
 
     /** Closing curly bracket used to end a parameters block: '}'. */
-    protected static final char CURLY_BRACKET_CLOSE = '}';
+    protected static final char BLOCK_CLOSE = '}';
+
+    /** String representation of an empty parameters block: "{}". */
+    protected static final String EMPTY_BLOCK = "{}";
 
     /** Opening square bracket used to start an array value: '['. */
-    protected static final char SQUARE_BRACKET_OPEN = '[';
+    protected static final char ARRAY_OPEN = '[';
 
     /** Closing square bracket used to end an array value: ']'. */
-    protected static final char SQUARE_BRACKET_CLOSE = ']';
+    protected static final char ARRAY_CLOSE = ']';
+
+    /** String representation of an empty array: "[]". */
+    protected static final String EMPTY_ARRAY = "[]";
 
     /** Opening round bracket used to start a multi-line text value: '('. */
-    protected static final char ROUND_BRACKET_OPEN = '(';
+    protected static final char TEXT_OPEN = '(';
 
     /** Closing round bracket used to end a multi-line text value: ')'. */
-    protected static final char ROUND_BRACKET_CLOSE = ')';
+    protected static final char TEXT_CLOSE = ')';
 
     /** Prefix character for each line within a multi-line text value. */
     public static final char TEXT_LINE_START = '|';

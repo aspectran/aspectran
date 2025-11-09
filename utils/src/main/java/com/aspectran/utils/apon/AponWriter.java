@@ -29,25 +29,27 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
+import static com.aspectran.utils.apon.AponFormat.ARRAY_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
+import static com.aspectran.utils.apon.AponFormat.BLOCK_CLOSE;
+import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
 import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
-import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.CURLY_BRACKET_OPEN;
 import static com.aspectran.utils.apon.AponFormat.DEFAULT_INDENT_STRING;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
+import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
 import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NULL;
-import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.ROUND_BRACKET_OPEN;
 import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.SPACE;
 import static com.aspectran.utils.apon.AponFormat.SPACE_CHAR;
-import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_CLOSE;
-import static com.aspectran.utils.apon.AponFormat.SQUARE_BRACKET_OPEN;
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
+import static com.aspectran.utils.apon.AponFormat.TEXT_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
+import static com.aspectran.utils.apon.AponFormat.TEXT_OPEN;
 
 /**
  * A streaming writer that serializes {@link Parameters} into APON (Aspectran Parameters
@@ -293,18 +295,26 @@ public class AponWriter implements Flushable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        beginArray();
-                        for (Parameters ps : list) {
-                            if (nullWritable || ps != null) {
-                                indent();
-                                beginBlock();
-                                if (ps != null) {
-                                    write(ps);
+                        if (list.isEmpty()) {
+                            writeEmptyArray();
+                        } else {
+                            beginArray();
+                            for (Parameters ps : list) {
+                                if (nullWritable || ps != null) {
+                                    indent();
+                                    if (ps != null && ps.isEmpty()) {
+                                        writeEmptyBlock();
+                                    } else {
+                                        beginBlock();
+                                        if (ps != null) {
+                                            write(ps);
+                                        }
+                                        endBlock();
+                                    }
                                 }
-                                endBlock();
                             }
+                            endArray();
                         }
-                        endArray();
                     } else {
                         for (Parameters ps : list) {
                             if (ps != null) {
@@ -320,11 +330,15 @@ public class AponWriter implements Flushable {
                 Parameters ps = parameter.getValueAsParameters();
                 if (nullWritable || ps != null) {
                     writeName(parameter, (ps != null ? ps.getActualName() : null));
-                    beginBlock();
-                    if (ps != null) {
-                        write(ps);
+                    if (ps != null && ps.isEmpty()) {
+                        writeEmptyBlock();
+                    } else {
+                        beginBlock();
+                        if (ps != null) {
+                            write(ps);
+                        }
+                        endBlock();
                     }
-                    endBlock();
                 }
             }
         } else if (parameter.getValueType() == ValueType.VARIABLE) {
@@ -333,18 +347,26 @@ public class AponWriter implements Flushable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        beginArray();
-                        for (Object value : list) {
-                            indent();
-                            if (value instanceof Parameters) {
-                                write((Parameters)value);
-                            } else if (value != null) {
-                                writeString(value.toString());
-                            } else {
-                                writeNull();
+                        if (list.isEmpty()) {
+                            writeEmptyArray();
+                        } else {
+                            beginArray();
+                            for (Object value : list) {
+                                indent();
+                                if (value instanceof Parameters ps) {
+                                    if (ps.isEmpty()) {
+                                        writeEmptyBlock();
+                                    } else {
+                                        write(ps);
+                                    }
+                                } else if (value != null) {
+                                    writeString(value.toString());
+                                } else {
+                                    writeNull();
+                                }
                             }
+                            endArray();
                         }
-                        endArray();
                     } else {
                         for (Object value : list) {
                             writeName(parameter);
@@ -363,7 +385,14 @@ public class AponWriter implements Flushable {
                 if (nullWritable || value != null) {
                     writeName(parameter);
                     if (value instanceof Parameters) {
-                        write((Parameters)value);
+                        Parameters ps = (Parameters)value;
+                        if (ps.isEmpty()) {
+                            writeEmptyBlock();
+                        } else {
+                            beginBlock();
+                            write(ps);
+                            endBlock();
+                        }
                     } else if (value != null) {
                         writeString(value.toString());
                     } else {
@@ -377,12 +406,16 @@ public class AponWriter implements Flushable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        beginArray();
-                        for (String value : list) {
-                            indent();
-                            writeString(value);
+                        if (list.isEmpty()) {
+                            writeEmptyArray();
+                        } else {
+                            beginArray();
+                            for (String value : list) {
+                                indent();
+                                writeString(value);
+                            }
+                            endArray();
                         }
-                        endArray();
                     } else {
                         for (String value : list) {
                             if (nullWritable || value != null) {
@@ -405,14 +438,18 @@ public class AponWriter implements Flushable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        beginArray();
-                        for (String text : list) {
-                            indent();
-                            beginText();
-                            writeText(text);
-                            endText();
+                        if (list.isEmpty()) {
+                            writeEmptyArray();
+                        } else {
+                            beginArray();
+                            for (String text : list) {
+                                indent();
+                                beginText();
+                                writeText(text);
+                                endText();
+                            }
+                            endArray();
                         }
-                        endArray();
                     } else {
                         for (String text : list) {
                             if (nullWritable || text != null) {
@@ -442,12 +479,16 @@ public class AponWriter implements Flushable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        beginArray();
-                        for (Object value : list) {
-                            indent();
-                            write(value);
+                        if (list.isEmpty()) {
+                            writeEmptyArray();
+                        } else {
+                            beginArray();
+                            for (Object value : list) {
+                                indent();
+                                write(value);
+                            }
+                            endArray();
                         }
-                        endArray();
                     } else {
                         for (Object value : list) {
                             if (nullWritable || value != null) {
@@ -507,6 +548,26 @@ public class AponWriter implements Flushable {
         return (T)this;
     }
 
+    private void writeEmptyArray() throws IOException {
+        if (prettyPrint) {
+            beginArray();
+            endArray();
+        } else {
+            writer.write(EMPTY_ARRAY);
+            newLine();
+        }
+    }
+
+    private void writeEmptyBlock() throws IOException {
+        if (prettyPrint) {
+            beginBlock();
+            endBlock();
+        } else {
+            writer.write(EMPTY_BLOCK);
+            newLine();
+        }
+    }
+
     private void writeName(Parameter parameter) throws IOException {
         writeName(parameter, null);
     }
@@ -515,9 +576,9 @@ public class AponWriter implements Flushable {
         indent();
         writer.write(actualName != null ? actualName : parameter.getName());
         if (valueTypeHintEnabled || parameter.isValueTypeHinted()) {
-            writer.write(ROUND_BRACKET_OPEN);
+            writer.write(TEXT_OPEN);
             writer.write(parameter.getValueType().toString());
-            writer.write(ROUND_BRACKET_CLOSE);
+            writer.write(TEXT_CLOSE);
         }
         writer.write(NAME_VALUE_SEPARATOR);
         if (prettyPrint) {
@@ -587,7 +648,7 @@ public class AponWriter implements Flushable {
     }
 
     private void beginBlock() throws IOException {
-        writer.write(CURLY_BRACKET_OPEN);
+        writer.write(BLOCK_OPEN);
         newLine();
         increaseIndent();
     }
@@ -595,12 +656,12 @@ public class AponWriter implements Flushable {
     private void endBlock() throws IOException {
         decreaseIndent();
         indent();
-        writer.write(CURLY_BRACKET_CLOSE);
+        writer.write(BLOCK_CLOSE);
         newLine();
     }
 
     private void beginArray() throws IOException {
-        writer.write(SQUARE_BRACKET_OPEN);
+        writer.write(ARRAY_OPEN);
         newLine();
         increaseIndent();
     }
@@ -608,12 +669,12 @@ public class AponWriter implements Flushable {
     private void endArray() throws IOException {
         decreaseIndent();
         indent();
-        writer.write(SQUARE_BRACKET_CLOSE);
+        writer.write(ARRAY_CLOSE);
         newLine();
     }
 
     private void beginText() throws IOException {
-        writer.write(ROUND_BRACKET_OPEN);
+        writer.write(TEXT_OPEN);
         newLine();
         increaseIndent();
     }
@@ -621,7 +682,7 @@ public class AponWriter implements Flushable {
     private void endText() throws IOException {
         decreaseIndent();
         indent();
-        writer.write(ROUND_BRACKET_CLOSE);
+        writer.write(TEXT_CLOSE);
         newLine();
     }
 

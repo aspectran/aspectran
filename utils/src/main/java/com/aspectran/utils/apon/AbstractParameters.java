@@ -187,17 +187,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean hasParameter(String name) {
-        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
-    }
-
-    @Override
-    public boolean hasParameter(ParameterKey key) {
-        checkKey(key);
-        return hasParameter(key.getName());
-    }
-
-    @Override
     public boolean isAssigned(String name) {
         Parameter p = getParameterValue(name);
         return (p != null && p.isAssigned());
@@ -210,15 +199,14 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean hasValue(String name) {
-        Parameter p = getParameterValue(name);
-        return (p != null && p.hasValue());
+    public boolean hasParameter(String name) {
+        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
     }
 
     @Override
-    public boolean hasValue(ParameterKey key) {
+    public boolean hasParameter(ParameterKey key) {
         checkKey(key);
-        return hasValue(key.getName());
+        return hasParameter(key.getName());
     }
 
     @Override
@@ -234,18 +222,6 @@ public abstract class AbstractParameters implements Parameters {
     public Parameter getParameter(ParameterKey key) {
         checkKey(key);
         return getParameter(key.getName());
-    }
-
-    @Override
-    public Object getValue(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValue() : null);
-    }
-
-    @Override
-    public Object getValue(ParameterKey key) {
-        checkKey(key);
-        return getValue(key.getName());
     }
 
     @Override
@@ -297,7 +273,9 @@ public abstract class AbstractParameters implements Parameters {
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                putArrayValue(name, null);
+                if (!hasParameter(name)) {
+                    newParameterValue(name, ValueType.VARIABLE, true);
+                }
             }
         } else if (value instanceof Collection<?> collection) {
             int affected = 0;
@@ -308,7 +286,9 @@ public abstract class AbstractParameters implements Parameters {
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                putArrayValue(name, null);
+                if (!hasParameter(name)) {
+                    newParameterValue(name, ValueType.VARIABLE, true);
+                }
             }
         } else if (value instanceof Iterator<?> iterator) {
             int affected = 0;
@@ -320,7 +300,9 @@ public abstract class AbstractParameters implements Parameters {
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                putArrayValue(name, null);
+                if (!hasParameter(name)) {
+                    newParameterValue(name, ValueType.VARIABLE, true);
+                }
             }
         } else if (value instanceof Enumeration<?> enumeration) {
             int affected = 0;
@@ -332,7 +314,9 @@ public abstract class AbstractParameters implements Parameters {
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                putArrayValue(name, null);
+                if (!hasParameter(name)) {
+                    newParameterValue(name, ValueType.VARIABLE, true);
+                }
             }
         } else if (value instanceof Map<?, ?> map) {
             int affected = 0;
@@ -400,6 +384,42 @@ public abstract class AbstractParameters implements Parameters {
     public void removeValue(ParameterKey key) {
         checkKey(key);
         removeValue(key.getName());
+    }
+
+    @Override
+    public boolean hasValue(String name) {
+        Parameter p = getParameterValue(name);
+        return (p != null && p.hasValue());
+    }
+
+    @Override
+    public boolean hasValue(ParameterKey key) {
+        checkKey(key);
+        return hasValue(key.getName());
+    }
+
+    @Override
+    public Object getValue(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValue() : null);
+    }
+
+    @Override
+    public Object getValue(ParameterKey key) {
+        checkKey(key);
+        return getValue(key.getName());
+    }
+
+    @Override
+    public List<?> getValueList(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueList() : null);
+    }
+
+    @Override
+    public List<?> getValueList(ParameterKey key) {
+        checkKey(key);
+        return getValueList(key.getName());
     }
 
     @Override
