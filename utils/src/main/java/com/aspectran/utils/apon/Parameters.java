@@ -122,6 +122,13 @@ public interface Parameters {
     String[] getParameterNames();
 
     /**
+     * Copy all values from the given container into this one, overwriting existing values.
+     * Structure is not altered; only values are affected.
+     * @param parameters the source of values to copy
+     */
+    void putAll(Parameters parameters);
+
+    /**
      * Returns the number of parameters in this collection.
      * @return the number of parameters in this collection
      */
@@ -178,12 +185,9 @@ public interface Parameters {
      */
     Parameter getParameter(ParameterKey key);
 
-    /**
-     * Copy all values from the given container into this one, overwriting existing values.
-     * Structure is not altered; only values are affected.
-     * @param parameters the source of values to copy
-     */
-    void putAll(Parameters parameters);
+    void removeParameter(String name);
+
+    void removeParameter(ParameterKey key);
 
     /**
      * Put a value into the Parameter with the specified name.

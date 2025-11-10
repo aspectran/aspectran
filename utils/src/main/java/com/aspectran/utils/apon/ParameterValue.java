@@ -54,7 +54,7 @@ public class ParameterValue implements Parameter {
 
     private volatile Object value;
 
-    private List<Object> list;
+    private List<Object> valueList;
 
     private boolean assigned;
 
@@ -82,10 +82,10 @@ public class ParameterValue implements Parameter {
      * @param name the parameter name (not null)
      * @param valueType the declared value type (not null)
      * @param array whether this parameter can hold multiple values (array)
-     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     * @param noBrackets if {@code true}, arrays are not represented with square brackets in APON
      */
-    public ParameterValue(String name, ValueType valueType, boolean array, boolean noBracket) {
-        this(name, valueType, array, noBracket, false);
+    public ParameterValue(String name, ValueType valueType, boolean array, boolean noBrackets) {
+        this(name, valueType, array, noBrackets, false);
     }
 
     /**
@@ -93,76 +93,41 @@ public class ParameterValue implements Parameter {
      * @param name the parameter name (not null)
      * @param valueType the declared value type (not null)
      * @param array whether this parameter can hold multiple values (array)
-     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
+     * @param noBrackets if {@code true}, arrays are not represented with square brackets in APON
      * @param valueTypeFixed whether the value type is fixed (non-adjustable)
      */
-    protected ParameterValue(String name, ValueType valueType, boolean array,
-                             boolean noBracket, boolean valueTypeFixed) {
+    protected ParameterValue(
+            String name, ValueType valueType, boolean array, boolean noBrackets, boolean valueTypeFixed) {
+        this(name, valueType, null, array, noBrackets, valueTypeFixed);
+    }
+
+    /**
+     * Full constructor used internally to optionally fix the value type.
+     * @param name the parameter name (not null)
+     * @param valueType the declared value type (not null)
+     * @param parametersClass the Parameters implementation for nested values
+     * @param array whether this parameter can hold multiple values (array)
+     * @param noBrackets if {@code true}, arrays are not represented with square brackets in APON
+     * @param valueTypeFixed whether the value type is fixed (non-adjustable)
+     */
+    protected ParameterValue(
+            String name, ValueType valueType, Class<? extends AbstractParameters> parametersClass,
+            boolean array, boolean noBrackets, boolean valueTypeFixed) {
         Assert.notNull(name, "Parameter name must not be null");
         Assert.notNull(valueType, "Parameter value type must not be null");
+        if (parametersClass != null && valueType != ValueType.PARAMETERS) {
+            throw new IllegalArgumentException("Parameter value type must be PARAMETERS");
+        }
         this.name = name;
         this.valueType = valueType;
         this.originValueType = valueType;
-        this.array = array;
         this.valueTypeFixed = (valueTypeFixed && valueType != ValueType.VARIABLE);
-        if (this.array) {
-            this.list = new ArrayList<>();
-            if (!noBracket) {
-                this.bracketed = true;
-            }
-        }
-    }
-
-    /**
-     * Create a parameter that holds nested {@link Parameters} of the given class.
-     * @param name the parameter name (not null)
-     * @param parametersClass the concrete Parameters implementation for nested values (not null)
-     */
-    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass) {
-        this(name, parametersClass, false);
-    }
-
-    /**
-     * Create a nested-parameters parameter with an explicit array flag.
-     * @param name the parameter name (not null)
-     * @param parametersClass the Parameters implementation for nested values (not null)
-     * @param array whether multiple nested elements are allowed
-     */
-    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
-                          boolean array) {
-        this(name, parametersClass, array, false);
-    }
-
-    /**
-     * Create a nested-parameters parameter with array and bracket formatting controls.
-     * @param name the parameter name (not null)
-     * @param parametersClass the Parameters implementation for nested values (not null)
-     * @param array whether multiple nested elements are allowed
-     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
-     */
-    public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
-                          boolean array, boolean noBracket) {
-        this(name, parametersClass, array, noBracket, false);
-    }
-
-    /**
-     * Full constructor used internally for nested-parameters parameters.
-     * @param name the parameter name (not null)
-     * @param parametersClass the Parameters implementation for nested values (not null)
-     * @param array whether multiple nested elements are allowed
-     * @param noBracket if {@code true}, arrays are not represented with square brackets in APON
-     * @param valueTypeFixed whether the value type is fixed (non-adjustable)
-     */
-    protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
-                             boolean array, boolean noBracket, boolean valueTypeFixed) {
-        this.name = name;
-        this.valueType = ValueType.PARAMETERS;
-        this.originValueType = valueType;
         this.parametersClass = parametersClass;
-        this.array = array;
-        this.valueTypeFixed = valueTypeFixed;
-        if (this.array && !noBracket) {
-            this.bracketed = true;
+        if (array) {
+            arraylize();
+            if (noBrackets) {
+                setBracketed(false);
+            }
         }
     }
 
@@ -175,9 +140,9 @@ public class ParameterValue implements Parameter {
     }
 
     /**
-         * Set the container that owns this parameter (internal use).
-         */
-        public void setContainer(Parameters container) {
+     * Set the container that owns this parameter (internal use).
+     */
+    public void setContainer(Parameters container) {
         this.container = container;
     }
 
@@ -261,9 +226,9 @@ public class ParameterValue implements Parameter {
     }
 
     /**
-         * Control whether array values are emitted with square brackets.
-         */
-        public void setBracketed(boolean bracketed) {
+     * Control whether array values are emitted with square brackets.
+     */
+    public void setBracketed(boolean bracketed) {
         this.bracketed = bracketed;
     }
 
@@ -273,31 +238,6 @@ public class ParameterValue implements Parameter {
     @Override
     public boolean isAssigned() {
         return assigned;
-    }
-
-    /**
-     * Whether a non-null value is present.
-     */
-    @Override
-    public boolean hasValue() {
-        if (assigned) {
-            if (array) {
-                return (list != null && !list.isEmpty());
-            } else {
-                return (value != null);
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Return the number of elements when this parameter is in array form.
-     */
-    @Override
-    public int getArraySize() {
-        List<?> list = getValueList();
-        return (list != null ? list.size() : 0);
     }
 
     /**
@@ -315,9 +255,26 @@ public class ParameterValue implements Parameter {
                 "an array type because it is already an array type");
         array = true;
         bracketed = true;
+        valueList = new ArrayList<>();
         if (assigned) {
             addValue(value);
             value = null;
+        }
+    }
+
+    /**
+     * Whether a non-null value is present.
+     */
+    @Override
+    public boolean hasValue() {
+        if (assigned) {
+            if (array) {
+                return (valueList != null && !valueList.isEmpty());
+            } else {
+                return (value != null);
+            }
+        } else {
+            return false;
         }
     }
 
@@ -336,11 +293,8 @@ public class ParameterValue implements Parameter {
             }
         }
         if (!valueTypeFixed && !array && assigned) {
-            addValue(this.value);
+            arraylize();
             addValue(value);
-            this.value = null;
-            array = true;
-            bracketed = true;
         } else {
             if (array) {
                 addValue(value);
@@ -352,10 +306,8 @@ public class ParameterValue implements Parameter {
     }
 
     private void addValue(Object value) {
-        if (list == null) {
-            list = new ArrayList<>();
-        }
-        list.add(value);
+        Assert.state(valueList != null, "No list has been set");
+        valueList.add(value);
         assigned = true;
     }
 
@@ -365,13 +317,14 @@ public class ParameterValue implements Parameter {
      */
     @Override
     public void removeValue() {
-        value = null;
-        list = null;
-        assigned = false;
-        if (!valueTypeFixed) {
-            array = false;
-            bracketed = false;
+        if (array) {
+            if (valueList != null) {
+                valueList.clear();
+            }
+        } else {
+            value = null;
         }
+        assigned = false;
     }
 
     /**
@@ -392,11 +345,10 @@ public class ParameterValue implements Parameter {
      */
     @Override
     public List<?> getValueList() {
-        if (!valueTypeFixed && value != null && list == null &&
-                originValueType == ValueType.VARIABLE) {
-            addValue(value);
+        if (!valueTypeFixed && value != null && valueList == null && originValueType == ValueType.VARIABLE) {
+            arraylize();
         }
-        return list;
+        return valueList;
     }
 
     /**
@@ -783,8 +735,8 @@ public class ParameterValue implements Parameter {
         tsb.append("name", name);
         tsb.append("valueType", valueType);
         tsb.append("array", array);
-        if (array) {
-            tsb.append("arraySize", getArraySize());
+        if (array && valueList != null) {
+            tsb.append("arraySize", valueList.size());
         }
         tsb.append("bracketed", bracketed);
         tsb.append("qualifiedName", getQualifiedName());

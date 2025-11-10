@@ -19,7 +19,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for ArrayParameters.
@@ -119,13 +121,15 @@ class ArrayParametersTest {
     @Test
     void testEmptyArray() throws AponParseException {
         ArrayParameters fromEmptyString = new ArrayParameters("");
-        assertNull(fromEmptyString.getParametersList());
+        assertNotNull(fromEmptyString.getParametersList());
+        assertTrue(fromEmptyString.getParametersList().isEmpty());
 
         ArrayParameters fromWhitespace = new ArrayParameters("  \n\t  ");
-        assertNull(fromWhitespace.getParametersList());
+        assertNotNull(fromWhitespace.getParametersList());
+        assertTrue(fromWhitespace.getParametersList().isEmpty());
 
         ArrayParameters programmatically = new ArrayParameters();
-        assertNull(programmatically.getParametersList());
+        assertNotNull(programmatically.getParametersList());
         assertEquals("[\n]", programmatically.toString().trim().replace("\r\n", "\n"));
     }
 

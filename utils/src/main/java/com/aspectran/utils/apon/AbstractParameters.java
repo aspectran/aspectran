@@ -177,6 +177,18 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public void putAll(Parameters parameters) {
+        Assert.notNull(parameters, "parameters must not be null");
+        if (structureFixed) {
+            throw new IllegalStateException("Not allowed in fixed structures");
+        }
+        for (ParameterValue parameterValue : parameters.getParameterValues()) {
+            parameterValue.setContainer(this);
+            parameterValueMap.put(parameterValue.getName(), parameterValue);
+        }
+    }
+
+    @Override
     public int size() {
         return parameterValueMap.size();
     }
@@ -225,15 +237,18 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putAll(Parameters parameters) {
-        Assert.notNull(parameters, "parameters must not be null");
+    public void removeParameter(String name) {
+        Assert.notNull(name, "name must not be null");
         if (structureFixed) {
             throw new IllegalStateException("Not allowed in fixed structures");
         }
-        for (ParameterValue parameterValue : parameters.getParameterValues()) {
-            parameterValue.setContainer(this);
-            parameterValueMap.put(parameterValue.getName(), parameterValue);
-        }
+        parameterValueMap.remove(name);
+    }
+
+    @Override
+    public void removeParameter(ParameterKey key) {
+        checkKey(key);
+        removeParameter(key.getName());
     }
 
     @Override
@@ -370,13 +385,9 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public void removeValue(String name) {
         Assert.notNull(name, "name must not be null");
-        if (structureFixed) {
-            Parameter p = getParameter(name);
-            if (p != null) {
-                p.removeValue();
-            }
-        } else {
-            parameterValueMap.remove(name);
+        Parameter p = getParameter(name);
+        if (p != null) {
+            p.removeValue();
         }
     }
 
