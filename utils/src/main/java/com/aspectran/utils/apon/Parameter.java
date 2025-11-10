@@ -85,24 +85,19 @@ public interface Parameter {
     boolean isAssigned();
 
     /**
+     * Convert the parameter to array form if not already; preserves existing value as first element.
+     */
+    void arraylize();
+
+    /**
      * Whether a non-null value is present.
      */
     boolean hasValue();
 
     /**
-     * Return the number of elements if this parameter is an array; 0 for none.
-     */
-    int getArraySize();
-
-    /**
      * Return the raw value (scalar, array, or nested Parameters) or null.
      */
     Object getValue();
-
-    /**
-     * Convert the parameter to array form if not already; preserves existing value as first element.
-     */
-    void arraylize();
 
     /**
      * Put/append a value to this parameter (converts to array if needed).

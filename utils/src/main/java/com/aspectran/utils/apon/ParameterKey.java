@@ -166,8 +166,8 @@ public class ParameterKey {
      * @param parametersClass concrete {@code Parameters} implementation for nested blocks
      * @param array whether multiple nested blocks are allowed
      */
-    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
-                        boolean array) {
+    public ParameterKey(
+            String name, String[] altNames, Class<? extends AbstractParameters> parametersClass, boolean array) {
         this(name, altNames, parametersClass, array, false);
     }
 
@@ -178,8 +178,8 @@ public class ParameterKey {
      * @param array whether multiple nested blocks are allowed
      * @param noBrackets when {@code true}, omit brackets for array output
      */
-    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array,
-                        boolean noBrackets) {
+    public ParameterKey(
+            String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBrackets) {
         this(name, null, parametersClass, array, noBrackets);
     }
 
@@ -191,8 +191,9 @@ public class ParameterKey {
      * @param array whether multiple nested blocks are allowed
      * @param noBrackets when {@code true}, omit brackets for array output
      */
-    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
-                        boolean array, boolean noBrackets) {
+    public ParameterKey(
+            String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
+            boolean array, boolean noBrackets) {
         Assert.notNull(name, "Parameter name must not be null");
         Assert.notNull(parametersClass, "parametersClass must not be null");
         this.name = name;
@@ -249,13 +250,7 @@ public class ParameterKey {
      * @return a new parameter value holder
      */
     public ParameterValue newParameterValue() {
-        ParameterValue parameterValue;
-        if (valueType == ValueType.PARAMETERS && parametersClass != null) {
-            parameterValue = new ParameterValue(name, parametersClass, array, noBrackets, true);
-        } else {
-            parameterValue = new ParameterValue(name, valueType, array, noBrackets, true);
-        }
-        return parameterValue;
+        return new ParameterValue(name, valueType, parametersClass, array, noBrackets, true);
     }
 
     /**

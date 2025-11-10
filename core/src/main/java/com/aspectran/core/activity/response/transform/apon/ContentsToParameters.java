@@ -112,7 +112,7 @@ public class ContentsToParameters extends ObjectToParameters {
             Object value = actionResult.getResultValue();
             if (name != null) {
                 if (container.hasParameter(name)) {
-                    container.removeValue(name);
+                    container.removeParameter(name);
                 }
                 super.putValue(container, name, value);
             } else {

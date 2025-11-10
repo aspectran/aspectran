@@ -39,10 +39,23 @@ public class JsonParser {
      * @throws IOException if an I/O error occurs during parsing
      */
     public static Object parse(String json) throws IOException {
+        return parse(json, false);
+    }
+
+    /**
+     * Parses a JSON string into a Java object.
+     * @param json the JSON string to parse
+     * @param lenient {@code true} to enable lenient parsing, {@code false} for strict parsing
+     * @return a Java object (Map, List, String, Number, Boolean, or null)
+     * @throws IOException if an I/O error occurs during parsing
+     */
+    public static Object parse(String json, boolean lenient) throws IOException {
         if (json == null) {
             return null;
         }
-        return readObject(new JsonReader(json));
+        JsonReader reader = new JsonReader(json);
+        reader.setLenient(lenient);
+        return readObject(reader);
     }
 
     @Nullable
