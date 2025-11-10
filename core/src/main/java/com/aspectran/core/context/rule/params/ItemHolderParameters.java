@@ -61,7 +61,11 @@ public class ItemHolderParameters extends AbstractParameters {
     }
 
     public List<ItemParameters> getItemParametersList() {
-        return getParametersList(item);
+        if (isAssigned(item)) {
+            return getParametersList(item);
+        } else {
+            return null;
+        }
     }
 
     public ItemHolderParameters addItemParameters(ItemParameters itemParameters) {

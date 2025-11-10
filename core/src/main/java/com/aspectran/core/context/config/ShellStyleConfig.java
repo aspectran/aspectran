@@ -88,7 +88,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the primary style tokens
      */
     public String[] getPrimaryStyle() {
-        return getStringArray(primary);
+        if (isAssigned(primary)) {
+            return getStringArray(primary);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -106,7 +110,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the secondary style tokens
      */
     public String[] getSecondaryStyle() {
-        return getStringArray(secondary);
+        if (isAssigned(secondary)) {
+            return getStringArray(secondary);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -124,7 +132,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the success style tokens
      */
     public String[] getSuccessStyle() {
-        return getStringArray(success);
+        if (isAssigned(success)) {
+            return getStringArray(success);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -142,7 +154,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the danger style tokens
      */
     public String[] getDangerStyle() {
-        return getStringArray(danger);
+        if (isAssigned(danger)) {
+            return getStringArray(danger);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -160,7 +176,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the warning style tokens
      */
     public String[] getWarningStyle() {
-        return getStringArray(warning);
+        if (isAssigned(warning)) {
+            return getStringArray(warning);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -178,7 +198,11 @@ public class ShellStyleConfig extends AbstractParameters {
      * @return the info style tokens
      */
     public String[] getInfoStyle() {
-        return getStringArray(info);
+        if (isAssigned(info)) {
+            return getStringArray(info);
+        } else {
+            return null;
+        }
     }
 
     /**

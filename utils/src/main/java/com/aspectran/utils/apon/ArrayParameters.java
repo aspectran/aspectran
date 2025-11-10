@@ -29,7 +29,7 @@ import java.util.List;
  * Root-level {@link Parameters} implementation representing an array of nameless
  * parameter groups.
  * <p>
- * The synthetic name "<noname>" is used internally to store array elements.
+ * The synthetic name {@code <noname>} is used internally to store array elements.
  * Provides convenient iteration and accessors for array contents.
  * </p>
  *
@@ -40,6 +40,9 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     @Serial
     private static final long serialVersionUID = 2058392199376865356L;
 
+    /**
+     * The synthetic name for the array parameter.
+     */
     public static final String NONAME = "<noname>";
 
     private final Class<? extends AbstractParameters> elementClass;

@@ -164,7 +164,11 @@ public class ContextConfig extends AbstractParameters {
      * @return the context rule files
      */
     public String[] getContextRules() {
-        return getStringArray(rules);
+        if (isAssigned(rules)) {
+            return getStringArray(rules);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -211,7 +215,11 @@ public class ContextConfig extends AbstractParameters {
      * @return the resource locations
      */
     public String[] getResourceLocations() {
-        return getStringArray(resources);
+        if (isAssigned(resources)) {
+            return getStringArray(resources);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -240,7 +248,11 @@ public class ContextConfig extends AbstractParameters {
      * @return the base packages
      */
     public String[] getBasePackages() {
-        return getStringArray(scan);
+        if (isAssigned(scan)) {
+            return getStringArray(scan);
+        } else {
+            return null;
+        }
     }
 
     /**

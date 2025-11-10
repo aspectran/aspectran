@@ -294,10 +294,10 @@ public interface Parameters {
     String getString(String name, String defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a string array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a string array, or {@code null}
      */
     String[] getStringArray(String name);
 
@@ -319,10 +319,10 @@ public interface Parameters {
     String getString(ParameterKey key, String defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a string array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a string array, or {@code null}
      */
     String[] getStringArray(ParameterKey key);
 
@@ -360,10 +360,10 @@ public interface Parameters {
     int getInt(String name, int defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as an integer array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as an integer array, or {@code null}
      */
     Integer[] getIntArray(String name);
 
@@ -385,10 +385,10 @@ public interface Parameters {
     int getInt(ParameterKey key, int defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as an integer array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as an integer array, or {@code null}
      */
     Integer[] getIntArray(ParameterKey key);
 
@@ -426,10 +426,10 @@ public interface Parameters {
     long getLong(String name, long defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a long array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a long array, or {@code null}
      */
     Long[] getLongArray(String name);
 
@@ -451,10 +451,10 @@ public interface Parameters {
     long getLong(ParameterKey key, long defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a long array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a long array, or {@code null}
      */
     Long[] getLongArray(ParameterKey key);
 
@@ -492,10 +492,10 @@ public interface Parameters {
     float getFloat(String name, float defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a float array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a float array, or {@code null}
      */
     Float[] getFloatArray(String name);
 
@@ -517,10 +517,10 @@ public interface Parameters {
     float getFloat(ParameterKey key, float defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a float array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a float array, or {@code null}
      */
     Float[] getFloatArray(ParameterKey key);
 
@@ -558,10 +558,10 @@ public interface Parameters {
     double getDouble(String name, double defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a double array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a double array, or {@code null}
      */
     Double[] getDoubleArray(String name);
 
@@ -583,10 +583,10 @@ public interface Parameters {
     double getDouble(ParameterKey key, double defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a double array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a double array, or {@code null}
      */
     Double[] getDoubleArray(ParameterKey key);
 
@@ -624,10 +624,10 @@ public interface Parameters {
     boolean getBoolean(String name, boolean defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a boolean array,
      * or {@code null} if the parameter does not exist.
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a boolean array, or {@code null}
      */
     Boolean[] getBooleanArray(String name);
 
@@ -649,10 +649,10 @@ public interface Parameters {
     boolean getBoolean(ParameterKey key, boolean defaultValue);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a boolean array,
      * or {@code null} if the parameter does not exist.
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a boolean array, or {@code null}
      */
     Boolean[] getBooleanArray(ParameterKey key);
 
@@ -682,11 +682,11 @@ public interface Parameters {
     <T extends Parameters> T getParameters(String name);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a parameters array,
      * or {@code null} if the parameter does not exist.
      * @param <T> the type parameter
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a parameters array, or {@code null}
      */
     <T extends Parameters> T[] getParametersArray(String name);
 
@@ -700,11 +700,11 @@ public interface Parameters {
     <T extends Parameters> T getParameters(ParameterKey key);
 
     /**
-     * Return the value for the specified parameter,
+     * Return the value for the specified parameter as a parameters array,
      * or {@code null} if the parameter does not exist.
      * @param <T> the type parameter
      * @param key the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the value for the specified parameter as a parameters array, or {@code null}
      */
     <T extends Parameters> T[] getParametersArray(ParameterKey key);
 

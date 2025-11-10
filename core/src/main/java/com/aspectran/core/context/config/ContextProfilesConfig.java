@@ -61,7 +61,11 @@ public class ContextProfilesConfig extends AbstractParameters {
      * @return the base profiles
      */
     public String[] getBaseProfiles() {
-        return getStringArray(baseProfiles);
+        if (isAssigned(baseProfiles)) {
+            return getStringArray(baseProfiles);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -90,7 +94,11 @@ public class ContextProfilesConfig extends AbstractParameters {
      * @return the default profiles
      */
     public String[] getDefaultProfiles() {
-        return getStringArray(defaultProfiles);
+        if (isAssigned(defaultProfiles)) {
+            return getStringArray(defaultProfiles);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -119,7 +127,11 @@ public class ContextProfilesConfig extends AbstractParameters {
      * @return the active profiles
      */
     public String[] getActiveProfiles() {
-        return getStringArray(activeProfiles);
+        if (isAssigned(activeProfiles)) {
+            return getStringArray(activeProfiles);
+        } else {
+            return null;
+        }
     }
 
     /**

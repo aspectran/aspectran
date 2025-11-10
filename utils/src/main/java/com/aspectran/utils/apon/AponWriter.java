@@ -253,8 +253,9 @@ public class AponWriter implements Flushable {
         Assert.notNull(parameters, "parameters must not be null");
         if (parameters instanceof ArrayParameters arrayParameters) {
             beginArray();
-            if (arrayParameters.getParametersList() != null) {
-                for (Parameters ps : arrayParameters.getParametersList()) {
+            List<Parameters> parametersList = arrayParameters.getParametersList();
+            if (parametersList != null) {
+                for (Parameters ps : parametersList) {
                     if (nullWritable || ps != null) {
                         indent();
                         beginBlock();

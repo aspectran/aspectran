@@ -144,7 +144,11 @@ public class ShellConfig extends AbstractParameters {
      * @return the list of commands
      */
     public String[] getCommands() {
-        return getStringArray(commands);
+        if (isAssigned(commands)) {
+            return getStringArray(commands);
+        } else {
+            return null;
+        }
     }
 
     /**

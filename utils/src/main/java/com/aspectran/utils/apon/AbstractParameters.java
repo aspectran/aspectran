@@ -58,6 +58,10 @@ public abstract class AbstractParameters implements Parameters {
 
     private String actualName;
 
+    /**
+     * Instantiates a new abstract parameters.
+     * @param parameterKeys the parameter keys
+     */
     protected AbstractParameters(ParameterKey[] parameterKeys) {
         Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
@@ -74,7 +78,7 @@ public abstract class AbstractParameters implements Parameters {
             }
             this.parameterValueMap = Collections.unmodifiableMap(valueMap);
             this.altParameterValueMap = (altValueMap.isEmpty() ?
-                Collections.emptyMap() : Collections.unmodifiableMap(altValueMap));
+                    Collections.emptyMap() : Collections.unmodifiableMap(altValueMap));
             this.structureFixed = true;
         } else {
             this.parameterValueMap = valueMap;
@@ -83,6 +87,11 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
+    /**
+     * Instantiates a new abstract parameters.
+     * @param topParameterKeys the top parameter keys
+     * @param bottomParameterKeys the bottom parameter keys
+     */
     protected AbstractParameters(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
         this(mergeParameterKeys(topParameterKeys, bottomParameterKeys));
     }

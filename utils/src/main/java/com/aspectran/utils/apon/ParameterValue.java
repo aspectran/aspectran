@@ -345,7 +345,7 @@ public class ParameterValue implements Parameter {
      */
     @Override
     public List<?> getValueList() {
-        if (!valueTypeFixed && value != null && valueList == null && originValueType == ValueType.VARIABLE) {
+        if (!valueTypeFixed && !array && assigned && originValueType == ValueType.VARIABLE) {
             arraylize();
         }
         return valueList;

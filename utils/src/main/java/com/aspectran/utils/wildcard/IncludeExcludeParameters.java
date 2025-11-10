@@ -80,7 +80,11 @@ public class IncludeExcludeParameters extends AbstractParameters {
      * Return the include patterns (values of the "+" key) or {@code null} if none.
      */
     public String[] getIncludePatterns() {
-        return getStringArray(plus);
+        if (isAssigned(plus)) {
+            return getStringArray(plus);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -97,7 +101,11 @@ public class IncludeExcludeParameters extends AbstractParameters {
      * Return the exclude patterns (values of the "-" key) or {@code null} if none.
      */
     public String[] getExcludePatterns() {
-        return getStringArray(minus);
+        if (isAssigned(minus)) {
+            return getStringArray(minus);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -166,7 +166,11 @@ public class SessionFileStoreConfig extends AbstractParameters {
      * @return an array of non-persistent attribute names
      */
     public String[] getNonPersistentAttributes() {
-        return getStringArray(nonPersistentAttributes);
+        if (isAssigned(nonPersistentAttributes)) {
+            return getStringArray(nonPersistentAttributes);
+        } else {
+            return null;
+        }
     }
 
     /**
