@@ -80,14 +80,14 @@ public interface Parameter {
     boolean isBracketed();
 
     /**
-     * Whether any value (including null) has been assigned.
-     */
-    boolean isAssigned();
-
-    /**
      * Convert the parameter to array form if not already; preserves existing value as first element.
      */
     void arraylize();
+
+    /**
+     * Whether any value (including null) has been assigned.
+     */
+    boolean isAssigned();
 
     /**
      * Whether a non-null value is present.

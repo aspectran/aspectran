@@ -208,29 +208,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean isAssigned(String name) {
-        Parameter p = getParameterValue(name);
-        return (p != null && p.isAssigned());
-    }
-
-    @Override
-    public boolean isAssigned(ParameterKey key) {
-        checkKey(key);
-        return isAssigned(key.getName());
-    }
-
-    @Override
-    public boolean hasParameter(String name) {
-        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
-    }
-
-    @Override
-    public boolean hasParameter(ParameterKey key) {
-        checkKey(key);
-        return hasParameter(key.getName());
-    }
-
-    @Override
     public Parameter getParameter(String name) {
         Parameter p = getParameterValue(name);
         if (p == null && structureFixed) {
@@ -258,6 +235,41 @@ public abstract class AbstractParameters implements Parameters {
     public void removeParameter(ParameterKey key) {
         checkKey(key);
         removeParameter(key.getName());
+    }
+
+    @Override
+    public boolean hasParameter(String name) {
+        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
+    }
+
+    @Override
+    public boolean hasParameter(ParameterKey key) {
+        checkKey(key);
+        return hasParameter(key.getName());
+    }
+
+    @Override
+    public boolean isAssigned(String name) {
+        Parameter p = getParameterValue(name);
+        return (p != null && p.isAssigned());
+    }
+
+    @Override
+    public boolean isAssigned(ParameterKey key) {
+        checkKey(key);
+        return isAssigned(key.getName());
+    }
+
+    @Override
+    public boolean hasValue(String name) {
+        Parameter p = getParameterValue(name);
+        return (p != null && p.hasValue());
+    }
+
+    @Override
+    public boolean hasValue(ParameterKey key) {
+        checkKey(key);
+        return hasValue(key.getName());
     }
 
     @Override
@@ -404,18 +416,6 @@ public abstract class AbstractParameters implements Parameters {
     public void removeValue(ParameterKey key) {
         checkKey(key);
         removeValue(key.getName());
-    }
-
-    @Override
-    public boolean hasValue(String name) {
-        Parameter p = getParameterValue(name);
-        return (p != null && p.hasValue());
-    }
-
-    @Override
-    public boolean hasValue(ParameterKey key) {
-        checkKey(key);
-        return hasValue(key.getName());
     }
 
     @Override

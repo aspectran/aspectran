@@ -34,10 +34,9 @@ import java.util.List;
 public interface Parameters {
 
     /**
-     * Returns whether the parameter can be added after the parameters instance
-     * is created.
-     * @return {@code true} if the parameter can be added after the parameters
-     *      instance is created, otherwise {@code false}
+     * Returns whether the parameter structure is fixed. A fixed structure means
+     * that new parameters cannot be added at runtime.
+     * @return {@code true} if the structure is fixed, otherwise {@code false}
      */
     boolean isStructureFixed();
 
@@ -141,20 +140,35 @@ public interface Parameters {
     boolean isEmpty();
 
     /**
-     * Returns whether a value is assigned to the specified parameter.
-     * Even if a null is assigned, it is valid.
-     * @param name the name of the parameter to check
-     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
+     * Returns the Parameter with the specified name.
+     * @param name the parameter name
+     * @return the Parameter with the specified name, or {@code null} if it does not exist
      */
-    boolean isAssigned(String name);
+    Parameter getParameter(String name);
 
     /**
-     * Returns whether a value is assigned to the specified parameter.
-     * Even if a null is assigned, it is valid.
+     * Returns the Parameter corresponding to the specified parameter definition.
      * @param key the parameter definition
-     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
+     * @return the Parameter corresponding to the specified parameter definition,
+     *      or {@code null} if it does not exist
      */
-    boolean isAssigned(ParameterKey key);
+    Parameter getParameter(ParameterKey key);
+
+    /**
+     * Removes the parameter with the specified name.
+     * This operation is only allowed if the parameter structure is not fixed.
+     * @param name the name of the parameter to remove
+     * @throws IllegalStateException if the parameter structure is fixed
+     */
+    void removeParameter(String name);
+
+    /**
+     * Removes the parameter corresponding to the specified parameter definition.
+     * This operation is only allowed if the parameter structure is not fixed.
+     * @param key the parameter definition of the parameter to remove
+     * @throws IllegalStateException if the parameter structure is fixed
+     */
+    void removeParameter(ParameterKey key);
 
     /**
      * Returns whether this parameter exists.
@@ -171,23 +185,34 @@ public interface Parameters {
     boolean hasParameter(ParameterKey key);
 
     /**
-     * Returns the Parameter with the specified name.
-     * @param name the parameter name
-     * @return the Parameter with the specified name, or {@code null} if it does not exist
+     * Returns whether a value is assigned to the specified parameter.
+     * Even if a null is assigned, it is valid.
+     * @param name the name of the parameter to check
+     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
-    Parameter getParameter(String name);
+    boolean isAssigned(String name);
 
     /**
-     * Returns the Parameter corresponding to the specified parameter definition.
+     * Returns whether a value is assigned to the specified parameter.
+     * Even if a null is assigned, it is valid.
      * @param key the parameter definition
-     * @return the Parameter corresponding to the specified parameter definition,
-     *      or {@code null} if it does not exist
+     * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
-    Parameter getParameter(ParameterKey key);
+    boolean isAssigned(ParameterKey key);
 
-    void removeParameter(String name);
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     * @param name the name of the parameter to check
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(String name);
 
-    void removeParameter(ParameterKey key);
+    /**
+     * Returns whether a non-null value is assigned to the specified parameter.
+     * @param key the parameter definition
+     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
+     */
+    boolean hasValue(ParameterKey key);
 
     /**
      * Put a value into the Parameter with the specified name.
@@ -230,20 +255,6 @@ public interface Parameters {
      * @param key the parameter key
      */
     void removeValue(ParameterKey key);
-
-    /**
-     * Returns whether a non-null value is assigned to the specified parameter.
-     * @param name the name of the parameter to check
-     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
-     */
-    boolean hasValue(String name);
-
-    /**
-     * Returns whether a non-null value is assigned to the specified parameter.
-     * @param key the parameter definition
-     * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
-     */
-    boolean hasValue(ParameterKey key);
 
     /**
      * Return the value for the specified parameter,

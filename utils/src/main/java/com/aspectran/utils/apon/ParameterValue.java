@@ -233,14 +233,6 @@ public class ParameterValue implements Parameter {
     }
 
     /**
-     * Whether any value (including null) has been assigned to this parameter.
-     */
-    @Override
-    public boolean isAssigned() {
-        return assigned;
-    }
-
-    /**
      * Converts this parameter into an array-type parameter.
      * <p>If a single value has already been assigned, it is preserved by
      * becoming the first element of the new array. This allows for dynamic
@@ -260,6 +252,14 @@ public class ParameterValue implements Parameter {
             addValue(value);
             value = null;
         }
+    }
+
+    /**
+     * Whether any value (including null) has been assigned to this parameter.
+     */
+    @Override
+    public boolean isAssigned() {
+        return assigned;
     }
 
     /**
