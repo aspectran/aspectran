@@ -179,11 +179,7 @@ public class JsonToParameters {
                 reader.endArray();
                 return;
             case STRING:
-                Parameter parameter = container.getParameter(name);
-                if (parameter == null) {
-                    parameter = container.newParameterValue(name, ValueType.STRING, array);
-                }
-                parameter.putValue(reader.nextString());
+                touchParameter(container, name, ValueType.STRING, array).putValue(reader.nextString());
                 return;
             case BOOLEAN:
                 touchParameter(container, name, ValueType.BOOLEAN, array).putValue(reader.nextBoolean());

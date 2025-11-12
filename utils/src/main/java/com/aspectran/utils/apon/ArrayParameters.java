@@ -55,7 +55,7 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     /**
      * The synthetic name for the array parameter.
      */
-    public static final String NONAME = "<noname>";
+    public static final String NONAME = "";
 
     /**
      * Create an array container whose elements are {@link DefaultParameters} blocks.
@@ -179,17 +179,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public String[] getStringArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public String getString(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
     public String getString(ParameterKey key, String defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String[] getStringArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -219,17 +219,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Integer[] getIntArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Integer getInt(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
     public int getInt(ParameterKey key, int defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Integer[] getIntArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -259,17 +259,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Long[] getLongArray(String name) {
+    public Long getLong(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
-    public Long getLong(ParameterKey key) {
-        return 0L;
+    public long getLong(ParameterKey key, long defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
-    public long getLong(ParameterKey key, long defaultValue) {
+    public Long[] getLongArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -299,17 +299,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Float[] getFloatArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Float getFloat(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
     public float getFloat(ParameterKey key, float defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Float[] getFloatArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -339,17 +339,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Double[] getDoubleArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Double getDouble(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
     public double getDouble(ParameterKey key, double defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Double[] getDoubleArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -379,17 +379,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Boolean[] getBooleanArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Boolean getBoolean(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
     @Override
     public boolean getBoolean(ParameterKey key, boolean defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Boolean[] getBooleanArray(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
