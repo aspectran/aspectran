@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a single setting.
  */
-public class SettingParameters extends AbstractParameters {
+public class SettingParameters extends DefaultParameters {
 
     public static final ParameterKey name;
     public static final ParameterKey value;

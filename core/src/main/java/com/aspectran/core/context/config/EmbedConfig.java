@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
 /**
@@ -23,7 +23,7 @@ import com.aspectran.utils.apon.ParameterKey;
  *
  * @since 6.3.0
  */
-public class EmbedConfig extends AbstractParameters {
+public class EmbedConfig extends DefaultParameters {
 
     /** The configuration for the session manager. */
     private static final ParameterKey session;

@@ -16,8 +16,8 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.component.session.SessionCache;
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.VariableParameters;
@@ -26,7 +26,7 @@ import com.aspectran.utils.apon.VariableParameters;
  * Configuration for the session manager.
  * <p>This class holds settings for session timeout, persistence, clustering, etc.</p>
  */
-public class SessionManagerConfig extends AbstractParameters {
+public class SessionManagerConfig extends DefaultParameters {
 
     /** The name of the session worker. */
     private static final ParameterKey workerName;

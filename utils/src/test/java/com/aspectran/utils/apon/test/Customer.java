@@ -15,11 +15,11 @@
  */
 package com.aspectran.utils.apon.test;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
-public class Customer extends AbstractParameters {
+public class Customer extends DefaultParameters {
 
     public static final ParameterKey id;
     public static final ParameterKey name;

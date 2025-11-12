@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils.wildcard;
 
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -35,7 +35,7 @@ import com.aspectran.utils.apon.ValueType;
  * -: com/example/internal/**
  * </pre>
  */
-public class IncludeExcludeParameters extends AbstractParameters {
+public class IncludeExcludeParameters extends DefaultParameters {
 
     private static final ParameterKey plus;
     private static final ParameterKey minus;
@@ -46,7 +46,7 @@ public class IncludeExcludeParameters extends AbstractParameters {
         plus = new ParameterKey("+", ValueType.STRING, true, true);
         minus = new ParameterKey("-", ValueType.STRING, true, true);
 
-        parameterKeys = new ParameterKey[]{
+        parameterKeys = new ParameterKey[] {
             plus,
             minus
         };

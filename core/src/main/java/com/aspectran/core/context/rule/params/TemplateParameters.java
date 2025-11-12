@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a template rule.
  */
-public class TemplateParameters extends AbstractParameters {
+public class TemplateParameters extends DefaultParameters {
 
     public static final ParameterKey id;
     public static final ParameterKey engine;

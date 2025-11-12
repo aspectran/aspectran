@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a redirect rule.
  */
-public class RedirectParameters extends AbstractParameters {
+public class RedirectParameters extends DefaultParameters {
 
     public static final ParameterKey contentType;
     public static final ParameterKey path;

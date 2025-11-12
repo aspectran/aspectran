@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Configuration for the job scheduler.
  */
-public class SchedulerConfig extends AbstractParameters {
+public class SchedulerConfig extends DefaultParameters {
 
     /** The delay in seconds before the scheduler starts. */
     private static final ParameterKey startDelaySeconds;

@@ -27,7 +27,7 @@ import java.io.Serializable;
  * schema.
  * </p>
  */
-public class VariableParameters extends AbstractParameters implements Serializable {
+public class VariableParameters extends DefaultParameters implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 4492298345259110525L;

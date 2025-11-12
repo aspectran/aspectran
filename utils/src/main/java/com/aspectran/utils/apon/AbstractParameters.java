@@ -16,7 +16,6 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
@@ -38,15 +37,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Base implementation of {@link Parameters} that stores parameter definitions
- * and values and provides convenient, type-safe accessors.
- * <p>
- * Instances may be created with a fixed structure (predefined {@link ParameterKey}s)
- * or with a variable structure where parameters can be added at runtime. This class
- * also supports hierarchical nesting of parameter groups (value type parameters).
- * </p>
- */
-public abstract class AbstractParameters implements Parameters {
+ * Abstract base class for {@link Parameters} implementations.
+ * <p>This class manages the underlying structure of parameters, which can be either
+ * fixed (with predefined {@link ParameterKey}s) or variable (where parameters can be
+ * added at runtime). It handles the storage of parameter values and their hierarchical
+ * relationships (parent/proprietor) but delegates the implementation of type-safe
+ * value accessor methods (e.g., {@code getString}, {@code getInt}) to subclasses.</p>
+ *
+ * @see DefaultParameters
+ * @see VariableParameters
+ */public abstract class AbstractParameters implements Parameters {
 
     private final Map<String, ParameterValue> parameterValueMap;
 
@@ -249,6 +249,67 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public ParameterValue newParameterValue(String name, ValueType valueType) {
+        return newParameterValue(name, valueType, false);
+    }
+
+    @Override
+    public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
+        Assert.state(!structureFixed, "Unknown parameter: " + name);
+        ParameterValue pv = new ParameterValue(name, valueType, array);
+        pv.setContainer(this);
+        parameterValueMap.put(name, pv);
+        return pv;
+    }
+
+    @Override
+    public <T extends Parameters> T newParameters(String name) {
+        Parameter p = getParameter(name);
+        if (structureFixed) {
+            if (p == null) {
+                throw new UnknownParameterException(name, this);
+            }
+        } else {
+            if (p == null) {
+                p = newParameterValue(name, ValueType.PARAMETERS);
+            }
+        }
+        T ps = p.newParameters(p);
+        ps.setActualName(name);
+        return ps;
+    }
+
+    @Override
+    public <T extends Parameters> T newParameters(ParameterKey key) {
+        checkKey(key);
+        return newParameters(key.getName());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> T touchParameters(String name) {
+        Parameters parameters = getParameters(name);
+        if (parameters == null) {
+            parameters = newParameters(name);
+        }
+        return (T)parameters;
+    }
+
+    @Override
+    public <T extends Parameters> T touchParameters(ParameterKey key) {
+        checkKey(key);
+        return touchParameters(key.getName());
+    }
+
+    @Override
+    public void updateContainer(Parameters container) {
+        Assert.notNull(container, "container must not be null");
+        for (ParameterValue parameterValue : container.getParameterValues()) {
+            parameterValue.setContainer(container);
+        }
+    }
+
+        @Override
     public boolean isAssigned(String name) {
         Parameter p = getParameterValue(name);
         return (p != null && p.isAssigned());
@@ -419,433 +480,6 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Object getValue(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValue() : null);
-    }
-
-    @Override
-    public Object getValue(ParameterKey key) {
-        checkKey(key);
-        return getValue(key.getName());
-    }
-
-    @Override
-    public List<?> getValueList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueList() : null);
-    }
-
-    @Override
-    public List<?> getValueList(ParameterKey key) {
-        checkKey(key);
-        return getValueList(key.getName());
-    }
-
-    @Override
-    public String getString(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsString() : null);
-    }
-
-    @Override
-    public String getString(String name, String defaultValue) {
-        String s = getString(name);
-        return (s != null ? s : defaultValue);
-    }
-
-    @Override
-    public String getString(ParameterKey key) {
-        checkKey(key);
-        return getString(key.getName());
-    }
-
-    @Override
-    public String getString(ParameterKey key, String defaultValue) {
-        checkKey(key);
-        return getString(key.getName(), defaultValue);
-    }
-
-    @Override
-    public String[] getStringArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsStringArray() : null);
-    }
-
-    @Override
-    public String[] getStringArray(ParameterKey key) {
-        checkKey(key);
-        return getStringArray(key.getName());
-    }
-
-    @Override
-    public List<String> getStringList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsStringList() : null);
-    }
-
-    @Override
-    public List<String> getStringList(ParameterKey key) {
-        checkKey(key);
-        return getStringList(key.getName());
-    }
-
-    @Override
-    public Integer getInt(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsInt() : null);
-    }
-
-    @Override
-    public int getInt(String name, int defaultValue) {
-        Parameter p = getParameter(name);
-        if (p != null) {
-            Integer val = p.getValueAsInt();
-            return (val != null ? val : defaultValue);
-        }
-        return defaultValue;
-    }
-
-    @Override
-    public Integer[] getIntArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsIntArray() : null);
-    }
-
-    @Override
-    public Integer getInt(ParameterKey key) {
-        checkKey(key);
-        return getInt(key.getName());
-    }
-
-    @Override
-    public int getInt(ParameterKey key, int defaultValue) {
-        checkKey(key);
-        return getInt(key.getName(), defaultValue);
-    }
-
-    @Override
-    public Integer[] getIntArray(ParameterKey key) {
-        checkKey(key);
-        return getIntArray(key.getName());
-    }
-
-    @Override
-    public List<Integer> getIntList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsIntList() : null);
-    }
-
-    @Override
-    public List<Integer> getIntList(ParameterKey key) {
-        checkKey(key);
-        return getIntList(key.getName());
-    }
-
-    @Override
-    public Long getLong(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsLong() : null);
-    }
-
-    @Override
-    public long getLong(String name, long defaultValue) {
-        Parameter p = getParameter(name);
-        if (p != null) {
-            Long val = p.getValueAsLong();
-            return (val != null ? val : defaultValue);
-        }
-        return defaultValue;
-    }
-
-    @Override
-    public Long getLong(ParameterKey key) {
-        checkKey(key);
-        return getLong(key.getName());
-    }
-
-    @Override
-    public long getLong(ParameterKey key, long defaultValue) {
-        checkKey(key);
-        return getLong(key.getName(), defaultValue);
-    }
-
-    @Override
-    public Long[] getLongArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsLongArray() : null);
-    }
-
-    @Override
-    public Long[] getLongArray(ParameterKey key) {
-        checkKey(key);
-        return getLongArray(key.getName());
-    }
-
-    @Override
-    public List<Long> getLongList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsLongList() : null);
-    }
-
-    @Override
-    public List<Long> getLongList(ParameterKey key) {
-        checkKey(key);
-        return getLongList(key.getName());
-    }
-
-    @Override
-    public Float getFloat(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsFloat() : null);
-    }
-
-    @Override
-    public float getFloat(String name, float defaultValue) {
-        Parameter p = getParameter(name);
-        if (p != null) {
-            Float val = p.getValueAsFloat();
-            return (val != null ? val : defaultValue);
-        }
-        return defaultValue;
-    }
-
-    @Override
-    public Float getFloat(ParameterKey key) {
-        checkKey(key);
-        return getFloat(key.getName());
-    }
-
-    @Override
-    public float getFloat(ParameterKey key, float defaultValue) {
-        checkKey(key);
-        return getFloat(key.getName(), defaultValue);
-    }
-
-    @Override
-    public Float[] getFloatArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsFloatArray() : null);
-    }
-
-    @Override
-    public Float[] getFloatArray(ParameterKey key) {
-        checkKey(key);
-        return getFloatArray(key.getName());
-    }
-
-    @Override
-    public List<Float> getFloatList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsFloatList() : null);
-    }
-
-    @Override
-    public List<Float> getFloatList(ParameterKey key) {
-        checkKey(key);
-        return getFloatList(key.getName());
-    }
-
-    @Override
-    public Double getDouble(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsDouble() : null);
-    }
-
-    @Override
-    public double getDouble(String name, double defaultValue) {
-        Parameter p = getParameter(name);
-        if (p != null) {
-            Double val = p.getValueAsDouble();
-            return (val != null ? val : defaultValue);
-        }
-        return defaultValue;
-    }
-
-    @Override
-    public Double getDouble(ParameterKey key) {
-        checkKey(key);
-        return getDouble(key.getName());
-    }
-
-    @Override
-    public double getDouble(ParameterKey key, double defaultValue) {
-        checkKey(key);
-        return getDouble(key.getName(), defaultValue);
-    }
-
-    @Override
-    public Double[] getDoubleArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsDoubleArray() : null);
-    }
-
-    @Override
-    public Double[] getDoubleArray(ParameterKey key) {
-        checkKey(key);
-        return getDoubleArray(key.getName());
-    }
-
-    @Override
-    public List<Double> getDoubleList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsDoubleList() : null);
-    }
-
-    @Override
-    public List<Double> getDoubleList(ParameterKey key) {
-        checkKey(key);
-        return getDoubleList(key.getName());
-    }
-
-    @Override
-    public Boolean getBoolean(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsBoolean() : null);
-    }
-
-    @Override
-    public boolean getBoolean(String name, boolean defaultValue) {
-        Parameter p = getParameter(name);
-        return (p != null ? BooleanUtils.toBoolean(p.getValueAsBoolean(), defaultValue) : defaultValue);
-    }
-
-    @Override
-    public Boolean getBoolean(ParameterKey key) {
-        checkKey(key);
-        return getBoolean(key.getName());
-    }
-
-    @Override
-    public boolean getBoolean(ParameterKey key, boolean defaultValue) {
-        checkKey(key);
-        return getBoolean(key.getName(), defaultValue);
-    }
-
-    @Override
-    public Boolean[] getBooleanArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsBooleanArray() : null);
-    }
-
-    @Override
-    public Boolean[] getBooleanArray(ParameterKey key) {
-        checkKey(key);
-        return getBooleanArray(key.getName());
-    }
-
-    @Override
-    public List<Boolean> getBooleanList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueAsBooleanList() : null);
-    }
-
-    @Override
-    public List<Boolean> getBooleanList(ParameterKey key) {
-        checkKey(key);
-        return getBooleanList(key.getName());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> T getParameters(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? (T)p.getValueAsParameters() : null);
-    }
-
-    @Override
-    public <T extends Parameters> T getParameters(ParameterKey key) {
-        checkKey(key);
-        return getParameters(key.getName());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> T[] getParametersArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? (T[])p.getValueAsParametersArray() : null);
-    }
-
-    @Override
-    public <T extends Parameters> T[] getParametersArray(ParameterKey key) {
-        checkKey(key);
-        return getParametersArray(key.getName());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> List<T> getParametersList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? (List<T>)p.getValueAsParametersList() : null);
-    }
-
-    @Override
-    public <T extends Parameters> List<T> getParametersList(ParameterKey key) {
-        checkKey(key);
-        return getParametersList(key.getName());
-    }
-
-    @Override
-    public ParameterValue newParameterValue(String name, ValueType valueType) {
-        return newParameterValue(name, valueType, false);
-    }
-
-    @Override
-    public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
-        Assert.state(!structureFixed, "Unknown parameter: " + name);
-        ParameterValue pv = new ParameterValue(name, valueType, array);
-        pv.setContainer(this);
-        parameterValueMap.put(name, pv);
-        return pv;
-    }
-
-    @Override
-    public <T extends Parameters> T newParameters(String name) {
-        Parameter p = getParameter(name);
-        if (structureFixed) {
-            if (p == null) {
-                throw new UnknownParameterException(name, this);
-            }
-        } else {
-            if (p == null) {
-                p = newParameterValue(name, ValueType.PARAMETERS);
-            }
-        }
-        T ps = p.newParameters(p);
-        ps.setActualName(name);
-        return ps;
-    }
-
-    @Override
-    public <T extends Parameters> T newParameters(ParameterKey key) {
-        checkKey(key);
-        return newParameters(key.getName());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> T touchParameters(String name) {
-        Parameters parameters = getParameters(name);
-        if (parameters == null) {
-            parameters = newParameters(name);
-        }
-        return (T)parameters;
-    }
-
-    @Override
-    public <T extends Parameters> T touchParameters(ParameterKey key) {
-        checkKey(key);
-        return touchParameters(key.getName());
-    }
-
-    @Override
-    public void updateContainer(@NonNull Parameters container) {
-        for (ParameterValue parameterValue : container.getParameterValues()) {
-            parameterValue.setContainer(container);
-        }
-    }
-
-    @Override
     public void readFrom(String apon) throws AponParseException {
         if (apon != null) {
             AponReader.read(apon, this);
@@ -926,6 +560,16 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
+    protected void checkKey(ParameterKey key) {
+        Assert.notNull(key, "key must not be null");
+    }
+
+    protected void checkArrayType(Parameter parameter) {
+        if (structureFixed && !parameter.isArray()) {
+            throw new IllegalArgumentException("Not an array type parameter: " + parameter);
+        }
+    }
+
     @NonNull
     private static ParameterKey[] mergeParameterKeys(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
         Assert.notEmpty(topParameterKeys, "Top parameter keys must not be empty");
@@ -934,16 +578,6 @@ public abstract class AbstractParameters implements Parameters {
         Collections.addAll(keys, topParameterKeys);
         Collections.addAll(keys, bottomParameterKeys);
         return keys.toArray(new ParameterKey[0]);
-    }
-
-    private void checkKey(ParameterKey key) {
-        Assert.notNull(key, "key must not be null");
-    }
-
-    private void checkArrayType(Parameter parameter) {
-        if (structureFixed && !parameter.isArray()) {
-            throw new IllegalArgumentException("Not an array type parameter: " + parameter);
-        }
     }
 
 }

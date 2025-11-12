@@ -19,8 +19,8 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.VariableParameters;
 
@@ -45,7 +45,7 @@ import java.nio.file.Paths;
  *   <li>{@code embed}: Settings for running in an embedded mode within another application.</li>
  * </ul>
  */
-public class AspectranConfig extends AbstractParameters {
+public class AspectranConfig extends DefaultParameters {
 
     /** The name of the system property that specifies the base path. */
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";

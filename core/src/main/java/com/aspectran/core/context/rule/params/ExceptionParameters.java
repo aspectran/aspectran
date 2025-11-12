@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
 /**
  * Represents the parameters for an exception rule.
  */
-public class ExceptionParameters extends AbstractParameters {
+public class ExceptionParameters extends DefaultParameters {
 
     public static final ParameterKey description;
     public static final ParameterKey thrown;

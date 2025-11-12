@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a transform rule.
  */
-public class TransformParameters extends AbstractParameters {
+public class TransformParameters extends DefaultParameters {
 
     public static final ParameterKey format;
     public static final ParameterKey contentType;

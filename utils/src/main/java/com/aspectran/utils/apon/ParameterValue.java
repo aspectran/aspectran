@@ -209,6 +209,11 @@ public class ParameterValue implements Parameter {
         this.valueTypeHinted = valueTypeHinted;
     }
 
+    @Override
+    public Class<? extends AbstractParameters> getParametersClass() {
+        return parametersClass;
+    }
+
     /**
      * Whether this parameter holds multiple values.
      */
@@ -356,7 +361,7 @@ public class ParameterValue implements Parameter {
      * @return an array of values or {@code null} if no values exist
      */
     @Override
-    public Object[] getValues() {
+    public Object[] getValueArray() {
         List<?> list = getValueList();
         return (list != null ? list.toArray(new Object[0]) : null);
     }

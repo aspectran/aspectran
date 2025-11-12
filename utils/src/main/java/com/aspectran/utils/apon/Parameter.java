@@ -70,6 +70,15 @@ public interface Parameter {
     void setValueTypeHinted(boolean valueTypeHinted);
 
     /**
+     * Returns the concrete {@link AbstractParameters} class type that this parameter
+     * represents when its {@link ValueType} is {@code PARAMETERS}.
+     * This is typically used for fixed-structure parameters to define the expected
+     * type of nested parameter blocks.
+     * @return the class type of the nested parameters, or {@code null} if not applicable
+     */
+    Class<? extends AbstractParameters> getParametersClass();
+
+    /**
      * Whether the parameter accepts multiple values (array semantics).
      */
     boolean isArray();
@@ -111,14 +120,14 @@ public interface Parameter {
     void removeValue();
 
     /**
-     * Return the values as an object array (may contain boxed primitives or Parameters).
-     */
-    Object[] getValues();
-
-    /**
      * Return the values as an untyped list view.
      */
     List<?> getValueList();
+
+    /**
+     * Return the values as an object array (may contain boxed primitives or Parameters).
+     */
+    Object[] getValueArray();
 
     /**
      * Retrieve the value as a String, performing conversion as needed.

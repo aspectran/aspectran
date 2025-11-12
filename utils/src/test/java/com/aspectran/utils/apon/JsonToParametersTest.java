@@ -117,7 +117,7 @@ class JsonToParametersTest {
         assertEquals(messagePayload.getContent(), rereadPayload.getContent());
     }
 
-    public static class MessagePayload extends AbstractParameters {
+    public static class MessagePayload extends DefaultParameters {
         private static final ParameterKey message = new ParameterKey("message", ValueType.STRING);
         private static final ParameterKey[] parameterKeys = { message };
 
@@ -271,7 +271,7 @@ class JsonToParametersTest {
         assertEquals(45.67f, payload.getFloatValue(), 0.001f);
     }
 
-    public static class TypedPayload extends AbstractParameters {
+    public static class TypedPayload extends DefaultParameters {
         private static final ParameterKey floatValue = new ParameterKey("floatValue", ValueType.FLOAT);
         private static final ParameterKey[] parameterKeys = { floatValue };
 
@@ -359,6 +359,86 @@ class JsonToParametersTest {
                 .toString();
 
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Tests converting a JSON double array (array of arrays) to Parameters.
+     */
+    @Test
+    void testConvertJsonDoubleArray() throws IOException {
+        String json = """
+                {
+                  "matrix": [
+                    ["a", "b"],
+                    ["c", "d", "e"]
+                  ],
+                  "numbers": [
+                    [1, 2],
+                    [3, 4, 5]
+                  ]
+                }
+                """;
+
+        String apon = """
+                matrix: [
+                  [
+                    a
+                    b
+                  ]
+                  [
+                    c
+                    d
+                    e
+                  ]
+                ]
+                numbers: [
+                  [
+                    1
+                    2
+                  ]
+                  [
+                    3
+                    4
+                    5
+                  ]
+                ]
+                """.replace("\n", AponFormat.SYSTEM_NEW_LINE);
+
+        Parameters parameters = JsonToParameters.from(json);
+        assertNotNull(parameters);
+
+        // Test matrix (array of string arrays)
+        List<Parameters> matrix = parameters.getParametersList("matrix");
+        assertNotNull(matrix);
+        assertEquals(2, matrix.size());
+
+        List<String> row1 = matrix.get(0).getStringList(ArrayParameters.NONAME);
+        assertNotNull(row1);
+        assertEquals(Arrays.asList("a", "b"), row1);
+
+        List<String> row2 = matrix.get(1).getStringList(ArrayParameters.NONAME);
+        assertNotNull(row2);
+        assertEquals(Arrays.asList("c", "d", "e"), row2);
+
+        // Test numbers (array of integer arrays)
+        List<Parameters> numbers = parameters.getParametersList("numbers");
+        assertNotNull(numbers);
+        assertEquals(2, numbers.size());
+
+        List<Integer> numRow1 = numbers.get(0).getIntList(ArrayParameters.NONAME);
+        assertNotNull(numRow1);
+        assertEquals(Arrays.asList(1, 2), numRow1);
+
+        List<Integer> numRow2 = numbers.get(1).getIntList(ArrayParameters.NONAME);
+        assertNotNull(numRow2);
+        assertEquals(Arrays.asList(3, 4, 5), numRow2);
+
+        String actualApon = new AponWriter()
+                .nullWritable(true)
+                .write(parameters)
+                .toString();
+
+        assertEquals(apon, actualApon);
     }
 
 }

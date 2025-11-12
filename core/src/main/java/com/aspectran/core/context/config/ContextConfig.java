@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -27,7 +27,7 @@ import com.aspectran.utils.apon.ValueType;
  * such as the application's base path, configuration rule files,
  * component scan packages, profiles, and auto-reloading settings.</p>
  */
-public class ContextConfig extends AbstractParameters {
+public class ContextConfig extends DefaultParameters {
 
     /** The name of the context. */
     private static final ParameterKey name;

@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * <p>Created: 2017. 12. 11.</p>
  */
-public class CommandParameters extends AbstractParameters {
+public class CommandParameters extends DefaultParameters {
 
     private static final ParameterKey command;
     private static final ParameterKey translet;

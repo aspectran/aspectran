@@ -15,7 +15,7 @@
  */
 package com.aspectran.demo.chat.model.payload;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -24,7 +24,7 @@ import com.aspectran.utils.apon.ValueType;
  *
  * <p>Created: 2019/10/09</p>
  */
-public class BroadcastDisconnectedUserPayload extends AbstractParameters {
+public class BroadcastDisconnectedUserPayload extends DefaultParameters {
 
     private static final ParameterKey username;
 

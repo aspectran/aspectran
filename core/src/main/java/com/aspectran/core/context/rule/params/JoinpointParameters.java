@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a joinpoint rule.
  */
-public class JoinpointParameters extends AbstractParameters {
+public class JoinpointParameters extends DefaultParameters {
 
     public static final ParameterKey target;
     public static final ParameterKey methods;

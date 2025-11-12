@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -24,7 +24,7 @@ import com.aspectran.utils.apon.ValueType;
  * <p>Allows for the registration of beans and properties to be conditional
  * based on the active, default, or base profiles.</p>
  */
-public class ContextProfilesConfig extends AbstractParameters {
+public class ContextProfilesConfig extends DefaultParameters {
 
     /** The base profiles that are always active. */
     private static final ParameterKey baseProfiles;

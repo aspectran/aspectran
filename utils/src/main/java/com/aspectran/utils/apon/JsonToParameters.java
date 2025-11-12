@@ -236,11 +236,10 @@ public class JsonToParameters {
     @NonNull
     private Parameter touchParameter(@NonNull Parameters container, String name, ValueType valueType, boolean array) {
         Parameter parameter = container.getParameter(name);
-        if (parameter != null) {
-            return parameter;
-        } else {
-            return container.newParameterValue(name, valueType, array);
+        if (parameter == null) {
+            parameter = container.newParameterValue(name, valueType, array);
         }
+        return parameter;
     }
 
     /**

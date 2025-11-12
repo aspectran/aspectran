@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
 import java.io.Reader;
@@ -24,7 +24,7 @@ import java.io.Reader;
 /**
  * Represents the root parameters for the entire Aspectran configuration.
  */
-public class RootParameters extends AbstractParameters {
+public class RootParameters extends DefaultParameters {
 
     public static final ParameterKey aspectran;
 

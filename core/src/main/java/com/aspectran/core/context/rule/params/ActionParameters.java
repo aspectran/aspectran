@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -28,7 +28,7 @@ import com.aspectran.utils.apon.ValueType;
  * @see com.aspectran.core.context.rule.IncludeActionRule
  * @see com.aspectran.core.context.rule.ChooseRule
  */
-public class ActionParameters extends AbstractParameters {
+public class ActionParameters extends DefaultParameters {
 
     public static final ParameterKey id;
 

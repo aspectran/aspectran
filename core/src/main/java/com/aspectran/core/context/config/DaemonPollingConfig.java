@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -27,7 +27,7 @@ import com.aspectran.utils.apon.ValueType;
  *
  * @since 5.1.0
  */
-public class DaemonPollingConfig extends AbstractParameters {
+public class DaemonPollingConfig extends DefaultParameters {
 
     /** Specifies the interval, in milliseconds, at which the daemon polls for new command files. */
     private static final ParameterKey pollingInterval;

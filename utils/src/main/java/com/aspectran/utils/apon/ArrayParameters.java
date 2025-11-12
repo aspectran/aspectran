@@ -15,7 +15,6 @@
  */
 package com.aspectran.utils.apon;
 
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
@@ -26,41 +25,52 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Root-level {@link Parameters} implementation representing an array of nameless
- * parameter groups.
- * <p>
- * The synthetic name {@code <noname>} is used internally to store array elements.
- * Provides convenient iteration and accessors for array contents.
- * </p>
+ * {@link Parameters} implementation designed to represent an ordered collection (array or list)
+ * of parameter groups or values.
+ * <p>This class extends {@link AbstractParameters} and provides functionality to manage
+ * elements in an array-like structure. Internally, it uses the synthetic name
+ * {@code <noname>} to store the individual elements of the array.</p>
+ * <p>Unlike typical {@code Parameters} implementations that retrieve values by a specific name,
+ * {@code ArrayParameters} focuses on providing access to its elements as an ordered list.
+ * Consequently, most {@code get*} methods that attempt to retrieve a single named parameter
+ * (e.g., {@code getString(String name)}) are not supported and will throw an
+ * {@link UnsupportedOperationException}. Access to elements should primarily be done
+ * through iteration or methods like {@link #getParametersArray()} or {@link #getParametersList()}.</p>
+ * <p>This class is {@link Serializable}, allowing its instances to be persisted or
+ * transferred across processes.</p>
  *
  * @since 6.2.0
+ * @see DefaultParameters
+ * @see VariableParameters
  */
 public class ArrayParameters extends AbstractParameters implements Iterable<Parameters>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2058392199376865356L;
 
+    private static final String UNSUPPORTED_OPERATION_MESSAGE =
+            "This method is not supported in ArrayParameters as it is designed for array-like access " +
+            "rather than retrieving single named parameters.";
+
     /**
      * The synthetic name for the array parameter.
      */
     public static final String NONAME = "<noname>";
 
-    private final Class<? extends AbstractParameters> elementClass;
-
     /**
-     * Create an array container whose elements are {@link VariableParameters} blocks.
+     * Create an array container whose elements are {@link DefaultParameters} blocks.
      */
     public ArrayParameters() {
-        this(VariableParameters.class);
+        this(DefaultParameters.class);
     }
 
     /**
-     * Parse APON text into a new array container whose elements are {@link VariableParameters}.
+     * Parse APON text into a new array container whose elements are {@link DefaultParameters}.
      * @param apon APON text representing an array
      * @throws AponParseException if parsing fails
      */
     public ArrayParameters(String apon) throws AponParseException {
-        this(VariableParameters.class, apon);
+        this(DefaultParameters.class, apon);
     }
 
     /**
@@ -69,7 +79,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
      */
     public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
         super(createParameterKeys(elementClass));
-        this.elementClass = elementClass;
     }
 
     /**
@@ -81,6 +90,17 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     public ArrayParameters(Class<? extends AbstractParameters> elementClass, String apon) throws AponParseException {
         this(elementClass);
         readFrom(StringUtils.trimWhitespace(apon));
+    }
+
+    /**
+     * Create the single schema key used by this array container.
+     * @param elementClass the Parameters class used for elements
+     * @return a one-element key array for internal use
+     */
+    @NonNull
+    private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
+        ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
+        return new ParameterKey[] { pk };
     }
 
     /**
@@ -124,39 +144,304 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
         }
     }
 
-    /**
-     * Create and add a new element Parameters instance under the synthetic noname key.
-     * @param <T> the element Parameters type
-     * @param name must be {@link #NONAME}
-     * @return the created element instance
-     * @throws UnknownParameterException if {@code name} is not supported
-     */
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> T newParameters(String name) {
+    public Object getValue(String name) {
         Parameter p = getParameter(name);
-        if (p == null) {
-            throw new UnknownParameterException(name, this);
-        }
-        try {
-            T sub = (T)ClassUtils.createInstance(elementClass);
-            sub.setProprietor(p);
-            p.putValue(sub);
-            return sub;
-        } catch (Exception e) {
-            throw new InvalidParameterValueException("Failed to instantiate " + elementClass, e);
-        }
+        return (p != null ? p.getValue() : null);
     }
 
-    /**
-     * Create the single schema key used by this array container.
-     * @param elementClass the Parameters class used for elements
-     * @return a one-element key array for internal use
-     */
-    @NonNull
-    private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
-        ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
-        return new ParameterKey[] { pk };
+    @Override
+    public Object getValue(ParameterKey key) {
+        checkKey(key);
+        return getValue(key.getName());
+    }
+
+    @Override
+    public List<?> getValueList(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? p.getValueList() : null);
+    }
+
+    @Override
+    public List<?> getValueList(ParameterKey key) {
+        checkKey(key);
+        return getValueList(key.getName());
+    }
+
+    @Override
+    public String getString(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String getString(String name, String defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String[] getStringArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String getString(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String getString(ParameterKey key, String defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public String[] getStringArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<String> getStringList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<String> getStringList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Integer getInt(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public int getInt(String name, int defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Integer[] getIntArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Integer getInt(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public int getInt(ParameterKey key, int defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Integer[] getIntArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Integer> getIntList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Integer> getIntList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Long getLong(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public long getLong(String name, long defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Long[] getLongArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Long getLong(ParameterKey key) {
+        return 0L;
+    }
+
+    @Override
+    public long getLong(ParameterKey key, long defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Long[] getLongArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Long> getLongList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Long> getLongList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Float getFloat(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public float getFloat(String name, float defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Float[] getFloatArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Float getFloat(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public float getFloat(ParameterKey key, float defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Float[] getFloatArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Float> getFloatList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Float> getFloatList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Double getDouble(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public double getDouble(String name, double defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Double[] getDoubleArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Double getDouble(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public double getDouble(ParameterKey key, double defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Double[] getDoubleArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Double> getDoubleList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Double> getDoubleList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Boolean getBoolean(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public boolean getBoolean(String name, boolean defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Boolean[] getBooleanArray(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Boolean getBoolean(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public boolean getBoolean(ParameterKey key, boolean defaultValue) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public Boolean[] getBooleanArray(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Boolean> getBooleanList(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public List<Boolean> getBooleanList(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public <T extends Parameters> T getParameters(String name) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    public <T extends Parameters> T getParameters(ParameterKey key) {
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> T[] getParametersArray(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? (T[])p.getValueAsParametersArray() : null);
+    }
+
+    @Override
+    public <T extends Parameters> T[] getParametersArray(ParameterKey key) {
+        checkKey(key);
+        return getParametersArray(key.getName());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> List<T> getParametersList(String name) {
+        Parameter p = getParameter(name);
+        return (p != null ? (List<T>)p.getValueAsParametersList() : null);
+    }
+
+    @Override
+    public <T extends Parameters> List<T> getParametersList(ParameterKey key) {
+        checkKey(key);
+        return getParametersList(key.getName());
     }
 
 }

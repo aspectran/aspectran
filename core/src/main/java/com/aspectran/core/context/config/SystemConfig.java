@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
@@ -25,7 +25,7 @@ import com.aspectran.utils.apon.VariableParameters;
  *
  * @since 6.6.4
  */
-public class SystemConfig extends AbstractParameters {
+public class SystemConfig extends DefaultParameters {
 
     /** The system properties. */
     private static final ParameterKey properties;

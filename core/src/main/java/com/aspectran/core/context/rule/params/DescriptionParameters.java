@@ -19,14 +19,14 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a description rule.
  */
-public class DescriptionParameters extends AbstractParameters {
+public class DescriptionParameters extends DefaultParameters {
 
     public static final ParameterKey profile;
     public static final ParameterKey style;

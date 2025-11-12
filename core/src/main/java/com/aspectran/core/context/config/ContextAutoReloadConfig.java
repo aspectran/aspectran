@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -26,7 +26,7 @@ import com.aspectran.utils.apon.ValueType;
  * <p>This allows the application context to be automatically reloaded
  * when configuration files are modified.</p>
  */
-public class ContextAutoReloadConfig extends AbstractParameters {
+public class ContextAutoReloadConfig extends DefaultParameters {
 
     /** The reload mode, which can be "hard" or "soft". */
     private static final ParameterKey reloadMode;

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Represents the parameters for an item holder, which can contain multiple item parameters.
  */
-public class ItemHolderParameters extends AbstractParameters {
+public class ItemHolderParameters extends DefaultParameters {
 
     public static final ParameterKey profile;
     public static final ParameterKey item;

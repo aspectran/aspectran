@@ -26,13 +26,13 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 
 /**
  * Represents the root parameters for Aspectran configuration.
  */
-public class AspectranParameters extends AbstractParameters {
+public class AspectranParameters extends DefaultParameters {
 
     public static final ParameterKey description;
     public static final ParameterKey settings;

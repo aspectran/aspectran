@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Contains web-specific configuration settings.
  */
-public class WebConfig extends AbstractParameters {
+public class WebConfig extends DefaultParameters {
 
     /** The character encoding for URI decoding. */
     private static final ParameterKey uriDecoding;

@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Configuration for the interactive shell (CLI).
  */
-public class ShellConfig extends AbstractParameters {
+public class ShellConfig extends DefaultParameters {
 
     /** The style settings for the shell. */
     private static final ParameterKey style;

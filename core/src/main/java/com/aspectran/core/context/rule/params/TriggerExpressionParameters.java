@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -26,7 +26,7 @@ import java.util.Arrays;
 /**
  * Represents the parameters for a trigger expression within a schedule rule.
  */
-public class TriggerExpressionParameters extends AbstractParameters {
+public class TriggerExpressionParameters extends DefaultParameters {
 
     public static final ParameterKey startDelaySeconds;
     public static final ParameterKey intervalInMilliseconds;

@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a pointcut rule.
  */
-public class PointcutParameters extends AbstractParameters {
+public class PointcutParameters extends DefaultParameters {
 
     public static final ParameterKey type;
     public static final ParameterKey plus;

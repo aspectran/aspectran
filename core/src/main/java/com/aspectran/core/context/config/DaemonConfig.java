@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -24,7 +24,7 @@ import com.aspectran.utils.apon.ValueType;
  *
  * @since 5.1.0
  */
-public class DaemonConfig extends AbstractParameters {
+public class DaemonConfig extends DefaultParameters {
 
     /** The configuration for the command executor. */
     private static final ParameterKey executor;

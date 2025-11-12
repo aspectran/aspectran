@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -36,7 +36,7 @@ import com.aspectran.utils.apon.ValueType;
  *   <li>info: Informational messages</li>
  * </ul>
  */
-public class ShellStyleConfig extends AbstractParameters {
+public class ShellStyleConfig extends DefaultParameters {
 
     /** The style for primary text. */
     private static final ParameterKey primary;

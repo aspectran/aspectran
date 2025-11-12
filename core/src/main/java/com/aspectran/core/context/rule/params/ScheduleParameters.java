@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a schedule rule.
  */
-public class ScheduleParameters extends AbstractParameters {
+public class ScheduleParameters extends DefaultParameters {
 
     public static final ParameterKey description;
     public static final ParameterKey id;

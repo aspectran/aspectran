@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for a dispatch rule.
  */
-public class DispatchParameters extends AbstractParameters {
+public class DispatchParameters extends DefaultParameters {
 
     public static final ParameterKey name;
     public static final ParameterKey dispatcher;

@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for an entry in an item rule.
  */
-public class EntryParameters extends AbstractParameters {
+public class EntryParameters extends DefaultParameters {
 
     public static final ParameterKey name;
     public static final ParameterKey value;

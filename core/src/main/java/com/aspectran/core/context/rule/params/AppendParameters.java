@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the parameters for an append rule.
  */
-public class AppendParameters extends AbstractParameters {
+public class AppendParameters extends DefaultParameters {
 
     public static final ParameterKey file;
     public static final ParameterKey resource;

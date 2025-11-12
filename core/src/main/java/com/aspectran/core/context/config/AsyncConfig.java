@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -26,7 +26,7 @@ import com.aspectran.utils.apon.ValueType;
  * <p>Created: 2024. 8. 24.</p>
  * @since 9.0.0
  */
-public class AsyncConfig extends AbstractParameters {
+public class AsyncConfig extends DefaultParameters {
 
     private static final ParameterKey enabled;
 

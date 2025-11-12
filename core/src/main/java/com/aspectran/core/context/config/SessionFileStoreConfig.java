@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
@@ -24,7 +24,7 @@ import com.aspectran.utils.apon.ValueType;
  * <p>This class holds settings for the directory where session data is stored,
  * save intervals, and other persistence-related options.</p>
  */
-public class SessionFileStoreConfig extends AbstractParameters {
+public class SessionFileStoreConfig extends DefaultParameters {
 
     /** The directory where session data is stored. */
     private static final ParameterKey storeDir;
