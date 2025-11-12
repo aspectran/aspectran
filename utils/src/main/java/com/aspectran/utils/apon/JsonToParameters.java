@@ -154,7 +154,7 @@ public class JsonToParameters {
                 reader.beginObject();
                 if (name != null) {
                     Parameters parameters = container.newParameters(name);
-                    if (array) {
+                    if (array && !parameters.isStructureFixed()) {
                         Parameter parameter = container.getParameter(name);
                         if (!parameter.isArray()) {
                             parameter.arraylize();
@@ -170,8 +170,20 @@ public class JsonToParameters {
             case BEGIN_ARRAY:
                 reader.beginArray();
                 if (reader.hasNext()) {
+                    if (array) {
+                        Parameter parameter = container.getParameter(name);
+                        Parameters parameters;
+                        if (parameter != null && parameter.getParametersClass() != null) {
+                            parameters = new ArrayParameters(parameter.getParametersClass());
+                        } else {
+                            parameters = new ArrayParameters();
+                        }
+                        container.putValue(name, parameters);
+                        container = parameters;
+                        name = ArrayParameters.NONAME;
+                    }
                     do {
-                        read(reader, container, name, !container.isStructureFixed());
+                        read(reader, container, name, true);
                     } while (reader.hasNext());
                 } else {
                     container.newParameterValue(name, ValueType.VARIABLE, true);

@@ -105,8 +105,8 @@ public class AponReader {
     public <T extends Parameters> T read(T parameters) throws AponParseException {
         Assert.notNull(parameters, "parameters must not be null");
         try {
-            if (parameters instanceof ArrayParameters) {
-                readArray(parameters);
+            if (parameters instanceof ArrayParameters container) {
+                readArray(container);
             } else {
                 read(parameters, NO_CONTROL_CHAR, null, null, null, false);
             }
@@ -118,7 +118,7 @@ public class AponReader {
         return parameters;
     }
 
-    private void readArray(Parameters container) throws IOException {
+    private void readArray(ArrayParameters container) throws IOException {
         String line;
         String value;
         String tline;

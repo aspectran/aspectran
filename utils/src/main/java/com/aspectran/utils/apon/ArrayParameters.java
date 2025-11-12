@@ -43,7 +43,7 @@ import java.util.List;
  * @see DefaultParameters
  * @see VariableParameters
  */
-public class ArrayParameters extends AbstractParameters implements Iterable<Parameters>, Serializable {
+public class ArrayParameters extends DefaultParameters implements Iterable<Object>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2058392199376865356L;
@@ -61,7 +61,8 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
      * Create an array container whose elements are {@link DefaultParameters} blocks.
      */
     public ArrayParameters() {
-        this(DefaultParameters.class);
+        super(null);
+        newParameterValue(NONAME, ValueType.VARIABLE, true);
     }
 
     /**
@@ -70,7 +71,8 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
      * @throws AponParseException if parsing fails
      */
     public ArrayParameters(String apon) throws AponParseException {
-        this(DefaultParameters.class, apon);
+        this();
+        readFrom(StringUtils.trimWhitespace(apon));
     }
 
     /**
@@ -103,26 +105,16 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
         return new ParameterKey[] { pk };
     }
 
-    /**
-     * Append a Parameters block as the next element of this array.
-     * @param parameters the element to add
-     */
-    public void addParameters(Parameters parameters) {
-        putValue(NONAME, parameters);
+    public void addValue(Object value) {
+        putValue(NONAME, value);
     }
 
-    /**
-     * Return the contents as an array of parameter blocks.
-     * @param <T> the element type
-     * @return the array of elements or {@code null} if none
-     */
-    public <T extends Parameters> T[] getParametersArray() {
-        return getParametersArray(NONAME);
+    public List<Object> getValueList() {
+        return getValueList(NONAME);
     }
 
     /**
      * Return the contents as a list of parameter blocks.
-     * @param <T> the element type
      * @return the list of elements or {@code null} if none
      */
     public <T extends Parameters> List<T> getParametersList() {
@@ -135,37 +127,13 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
      */
     @Override
     @NonNull
-    public Iterator<Parameters> iterator() {
-        List<Parameters> list = getParametersList(NONAME);
+    public Iterator<Object> iterator() {
+        List<Object> list = getValueList(NONAME);
         if (list != null) {
             return list.iterator();
         } else {
             return Collections.emptyIterator();
         }
-    }
-
-    @Override
-    public Object getValue(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValue() : null);
-    }
-
-    @Override
-    public Object getValue(ParameterKey key) {
-        checkKey(key);
-        return getValue(key.getName());
-    }
-
-    @Override
-    public List<?> getValueList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? p.getValueList() : null);
-    }
-
-    @Override
-    public List<?> getValueList(ParameterKey key) {
-        checkKey(key);
-        return getValueList(key.getName());
     }
 
     @Override
@@ -185,26 +153,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
 
     @Override
     public String getString(ParameterKey key, String defaultValue) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public String[] getStringArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public String[] getStringArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<String> getStringList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<String> getStringList(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -229,26 +177,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Integer[] getIntArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Integer[] getIntArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Integer> getIntList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Integer> getIntList(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Long getLong(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
@@ -265,26 +193,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
 
     @Override
     public long getLong(ParameterKey key, long defaultValue) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Long[] getLongArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Long[] getLongArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Long> getLongList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Long> getLongList(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -309,26 +217,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Float[] getFloatArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Float[] getFloatArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Float> getFloatList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Float> getFloatList(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public Double getDouble(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
@@ -345,26 +233,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
 
     @Override
     public double getDouble(ParameterKey key, double defaultValue) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Double[] getDoubleArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Double[] getDoubleArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Double> getDoubleList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Double> getDoubleList(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
@@ -389,26 +257,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     }
 
     @Override
-    public Boolean[] getBooleanArray(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public Boolean[] getBooleanArray(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Boolean> getBooleanList(String name) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    public List<Boolean> getBooleanList(ParameterKey key) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
     public <T extends Parameters> T getParameters(String name) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
@@ -416,32 +264,6 @@ public class ArrayParameters extends AbstractParameters implements Iterable<Para
     @Override
     public <T extends Parameters> T getParameters(ParameterKey key) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> T[] getParametersArray(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? (T[])p.getValueAsParametersArray() : null);
-    }
-
-    @Override
-    public <T extends Parameters> T[] getParametersArray(ParameterKey key) {
-        checkKey(key);
-        return getParametersArray(key.getName());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Parameters> List<T> getParametersList(String name) {
-        Parameter p = getParameter(name);
-        return (p != null ? (List<T>)p.getValueAsParametersList() : null);
-    }
-
-    @Override
-    public <T extends Parameters> List<T> getParametersList(ParameterKey key) {
-        checkKey(key);
-        return getParametersList(key.getName());
     }
 
 }

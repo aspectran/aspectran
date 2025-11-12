@@ -253,21 +253,19 @@ public class AponWriter implements Flushable {
         Assert.notNull(parameters, "parameters must not be null");
         if (parameters instanceof ArrayParameters arrayParameters) {
             beginArray();
-            List<Parameters> parametersList = arrayParameters.getParametersList();
-            if (parametersList != null) {
-                for (Parameters ps : parametersList) {
-                    if (nullWritable || ps != null) {
-                        indent();
-                        beginBlock();
-                        if (ps != null) {
-                            for (Parameter pv : ps.getParameterValues()) {
-                                if (nullWritable || pv.isAssigned()) {
-                                    write(pv);
-                                }
-                            }
+            for (Object value : arrayParameters) {
+                if (value instanceof Parameters ps) {
+                    indent();
+                    beginBlock();
+                    for (Parameter pv : ps.getParameterValues()) {
+                        if (nullWritable || pv.isAssigned()) {
+                            write(pv);
                         }
-                        endBlock();
                     }
+                    endBlock();
+                } else {
+                    indent();
+                    write(value);
                 }
             }
             endArray();
@@ -303,14 +301,18 @@ public class AponWriter implements Flushable {
                             for (Parameters ps : list) {
                                 if (nullWritable || ps != null) {
                                     indent();
-                                    if (ps != null && ps.isEmpty()) {
-                                        writeEmptyBlock();
+                                    if (ps instanceof ArrayParameters) {
+                                        write(ps);
                                     } else {
-                                        beginBlock();
-                                        if (ps != null) {
-                                            write(ps);
+                                        if (ps != null && ps.isEmpty()) {
+                                            writeEmptyBlock();
+                                        } else {
+                                            beginBlock();
+                                            if (ps != null) {
+                                                write(ps);
+                                            }
+                                            endBlock();
                                         }
-                                        endBlock();
                                     }
                                 }
                             }

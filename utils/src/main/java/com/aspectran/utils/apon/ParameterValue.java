@@ -741,7 +741,7 @@ public class ParameterValue implements Parameter {
         tsb.append("valueType", valueType);
         tsb.append("array", array);
         if (array && valueList != null) {
-            tsb.append("arraySize", valueList.size());
+            tsb.append("size", valueList.size());
         }
         tsb.append("bracketed", bracketed);
         tsb.append("qualifiedName", getQualifiedName());

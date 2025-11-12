@@ -69,8 +69,8 @@ class ArrayParametersTest {
         p2.putValue("param4", 444);
 
         ArrayParameters arrayParameters = new ArrayParameters();
-        arrayParameters.addParameters(p1);
-        arrayParameters.addParameters(p2);
+        arrayParameters.addValue(p1);
+        arrayParameters.addValue(p2);
 
         String expected = """
                 [
@@ -101,14 +101,14 @@ class ArrayParametersTest {
 
         Parameters p1 = new VariableParameters();
         p1.putValue("id", 1);
-        arrayParameters.addParameters(p1);
+        arrayParameters.addValue(p1);
 
         assertEquals(1, arrayParameters.getParametersList().size());
         assertEquals(1, arrayParameters.getParametersList().get(0).getInt("id"));
 
         Parameters p2 = new VariableParameters();
         p2.putValue("id", 2);
-        arrayParameters.addParameters(p2);
+        arrayParameters.addValue(p2);
 
         assertEquals(2, arrayParameters.getParametersList().size());
         assertEquals(2, arrayParameters.getParametersList().get(1).getInt("id"));
@@ -120,15 +120,15 @@ class ArrayParametersTest {
     @Test
     void testEmptyArray() throws AponParseException {
         ArrayParameters fromEmptyString = new ArrayParameters("");
-        assertNotNull(fromEmptyString.getParametersList());
-        assertTrue(fromEmptyString.getParametersList().isEmpty());
+        assertNotNull(fromEmptyString.iterator());
+        assertFalse(fromEmptyString.iterator().hasNext());
 
         ArrayParameters fromWhitespace = new ArrayParameters("  \n\t  ");
-        assertNotNull(fromWhitespace.getParametersList());
-        assertTrue(fromWhitespace.getParametersList().isEmpty());
+        assertNotNull(fromWhitespace.iterator());
+        assertFalse(fromWhitespace.iterator().hasNext());
 
         ArrayParameters programmatically = new ArrayParameters();
-        assertNotNull(programmatically.getParametersList());
+        assertNotNull(programmatically.iterator());
         assertEquals("[\n]", programmatically.toString().trim().replace("\r\n", "\n"));
     }
 

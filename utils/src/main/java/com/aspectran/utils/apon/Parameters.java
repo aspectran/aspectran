@@ -341,7 +341,7 @@ public interface Parameters {
      * @param name the parameter name
      * @return the value for the specified parameter as a list, or {@code null}
      */
-    List<?> getValueList(String name);
+    List<Object> getValueList(String name);
 
     /**
      * Return the value for the specified parameter as a list,
@@ -349,7 +349,7 @@ public interface Parameters {
      * @param key the parameter definition
      * @return the value for the specified parameter as a list, or {@code null}
      */
-    List<?> getValueList(ParameterKey key);
+    List<Object> getValueList(ParameterKey key);
 
     /**
      * Returns the value for the specified parameter as a {@code String}.
