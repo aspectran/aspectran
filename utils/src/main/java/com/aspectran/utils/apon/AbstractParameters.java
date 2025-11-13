@@ -239,7 +239,7 @@ import java.util.Map;
 
     @Override
     public boolean hasParameter(String name) {
-        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
+        return (getParameterValue(name) != null);
     }
 
     @Override
@@ -299,6 +299,23 @@ import java.util.Map;
     public <T extends Parameters> T touchParameters(ParameterKey key) {
         checkKey(key);
         return touchParameters(key.getName());
+    }
+
+    @Override
+    public <T extends Parameters> T createParameters(String name) {
+        Parameter p = getParameter(name);
+        if (structureFixed) {
+            if (p == null) {
+                throw new UnknownParameterException(name, this);
+            }
+        } else {
+            if (p == null) {
+                p = newParameterValue(name, ValueType.PARAMETERS);
+            }
+        }
+        T ps = p.createParameters(p);
+        ps.setActualName(name);
+        return ps;
     }
 
     @Override
@@ -370,9 +387,7 @@ import java.util.Map;
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                if (!hasParameter(name)) {
-                    newParameterValue(name, ValueType.VARIABLE, true);
-                }
+                touchEmptyArrayParameter(name);
             }
         } else if (value instanceof Collection<?> collection) {
             int affected = 0;
@@ -383,9 +398,7 @@ import java.util.Map;
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                if (!hasParameter(name)) {
-                    newParameterValue(name, ValueType.VARIABLE, true);
-                }
+                touchEmptyArrayParameter(name);
             }
         } else if (value instanceof Iterator<?> iterator) {
             int affected = 0;
@@ -397,9 +410,7 @@ import java.util.Map;
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                if (!hasParameter(name)) {
-                    newParameterValue(name, ValueType.VARIABLE, true);
-                }
+                touchEmptyArrayParameter(name);
             }
         } else if (value instanceof Enumeration<?> enumeration) {
             int affected = 0;
@@ -411,9 +422,7 @@ import java.util.Map;
                 }
             }
             if (affected == 0 && !notNullOnly) {
-                if (!hasParameter(name)) {
-                    newParameterValue(name, ValueType.VARIABLE, true);
-                }
+                touchEmptyArrayParameter(name);
             }
         } else if (value instanceof Map<?, ?> map) {
             int affected = 0;
@@ -440,6 +449,14 @@ import java.util.Map;
             }
             putValue(p, name, value);
         }
+    }
+
+    private void touchEmptyArrayParameter(String name) {
+        ParameterValue pv = getParameterValue(name);
+        if (pv == null) {
+            pv = newParameterValue(name, ValueType.VARIABLE, true);
+        }
+        pv.touchValue();
     }
 
     private void putArrayValue(String name, Object value) {

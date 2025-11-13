@@ -242,4 +242,6 @@ public interface Parameter {
      */
     <T extends Parameters> T newParameters(Parameter identifier);
 
+    <T extends Parameters> T createParameters(Parameter identifier);
+
 }

@@ -267,6 +267,10 @@ public class ParameterValue implements Parameter {
         return assigned;
     }
 
+    public void touchValue() {
+        assigned = true;
+    }
+
     /**
      * Whether a non-null value is present.
      */
@@ -408,9 +412,9 @@ public class ParameterValue implements Parameter {
         }
         List<?> list1 = getValueList();
         if (list1 != null) {
-            List<String> list2 = new ArrayList<>();
+            List<String> list2 = new ArrayList<>(list1.size());
             for (Object o : list1) {
-                list2.add(o.toString());
+                list2.add(o != null ? o.toString() : null);
             }
             return list2;
         } else {
@@ -634,8 +638,15 @@ public class ParameterValue implements Parameter {
      * @throws InvalidParameterValueException if instantiation of the nested container fails
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(Parameter identifier) {
+        T ps = createParameters(identifier);
+        putValue(ps);
+        return ps;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> T createParameters(Parameter identifier) {
         if (valueType == ValueType.VARIABLE) {
             valueType = ValueType.PARAMETERS;
             parametersClass = VariableParameters.class;
@@ -648,7 +659,6 @@ public class ParameterValue implements Parameter {
         try {
             T ps = (T)ClassUtils.createInstance(parametersClass);
             ps.setProprietor(identifier);
-            putValue(ps);
             return ps;
         } catch (Exception e) {
             throw new InvalidParameterValueException("Failed to instantiate " + parametersClass, e);

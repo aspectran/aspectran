@@ -166,6 +166,14 @@ class AponWriterTest {
         params.putValue("emptyBlock", new VariableParameters());
         params.putValue("emptyArray", new java.util.ArrayList<String>());
 
+        String expected = """
+                emptyBlock: {
+                }
+                emptyArray: [
+                ]
+                """;
+        assertEquals(expected.replace("\r\n", "\n"), params.toString().replace("\r\n", "\n"));
+
         // Test with prettyPrint = false
         AponWriter compactWriter = new AponWriter().prettyPrint(false);
         String compactApon = compactWriter.write(params).toString();

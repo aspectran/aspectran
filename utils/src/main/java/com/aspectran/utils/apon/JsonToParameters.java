@@ -25,6 +25,8 @@ import com.aspectran.utils.json.MalformedJsonException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility that converts JSON into {@link Parameters}.
@@ -125,7 +127,7 @@ public class JsonToParameters {
             if (lenient) {
                 jsonReader.setLenient(true);
             }
-            read(jsonReader, container, name, false);
+            read(jsonReader, container, name, null);
         } catch (MalformedJsonException e) {
             throw new MalformedAponException("Failed to convert JSON to APON", e);
         } catch (IOException e) {
@@ -148,53 +150,65 @@ public class JsonToParameters {
         return (T)container;
     }
 
-    private void read(@NonNull JsonReader reader, Parameters container, String name, boolean array) throws IOException {
+    private void read(@NonNull JsonReader reader, Parameters container, String name, List<Object> valueList)
+            throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
                 if (name != null) {
-                    Parameters parameters = container.newParameters(name);
-                    if (array && !parameters.isStructureFixed()) {
-                        Parameter parameter = container.getParameter(name);
-                        if (!parameter.isArray()) {
-                            parameter.arraylize();
-                        }
+                    if (valueList != null) {
+                        Parameters parameters = container.createParameters(name);
+                        valueList.add(parameters);
+                        container = parameters;
+                    } else {
+                        container = container.newParameters(name);
                     }
-                    container = parameters;
                 }
                 while (reader.hasNext()) {
-                    read(reader, container, reader.nextName(), false);
+                    read(reader, container, reader.nextName(), null);
                 }
                 reader.endObject();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
                 if (reader.hasNext()) {
-                    if (array) {
-                        Parameter parameter = container.getParameter(name);
-                        Parameters parameters;
-                        if (parameter != null && parameter.getParametersClass() != null) {
-                            parameters = new ArrayParameters(parameter.getParametersClass());
-                        } else {
-                            parameters = new ArrayParameters();
-                        }
-                        container.putValue(name, parameters);
-                        container = parameters;
-                        name = ArrayParameters.NONAME;
-                    }
+                    List<Object> newValueList = new ArrayList<>();
                     do {
-                        read(reader, container, name, true);
+                        read(reader, container, name, newValueList);
                     } while (reader.hasNext());
+                    if (valueList != null) {
+                        valueList.add(newValueList);
+                    } else {
+                        container.putValue(name, newValueList);
+                        Parameter parameter = container.getParameter(name);
+                        if (parameter != null) {
+                            if (!parameter.isArray()) {
+                                parameter.arraylize();
+                            }
+                        } else {
+                            touchEmptyArrayParameter(container, name);
+                        }
+                    }
                 } else {
-                    container.newParameterValue(name, ValueType.VARIABLE, true);
+                    if (valueList == null) {
+                        touchEmptyArrayParameter(container, name);
+                    }
                 }
                 reader.endArray();
                 return;
             case STRING:
-                touchParameter(container, name, ValueType.STRING, array).putValue(reader.nextString());
+                if (valueList != null) {
+                    valueList.add(reader.nextString());
+                } else {
+                    touchParameter(container, name, ValueType.STRING).putValue(reader.nextString());
+                }
                 return;
             case BOOLEAN:
-                touchParameter(container, name, ValueType.BOOLEAN, array).putValue(reader.nextBoolean());
+                if (valueList != null) {
+                    valueList.add(reader.nextBoolean());
+                } else {
+                    touchParameter(container, name, ValueType.BOOLEAN).putValue(reader.nextBoolean());
+                }
                 return;
             case NUMBER:
                 Parameter param = container.getParameter(name);
@@ -230,11 +244,19 @@ public class JsonToParameters {
                         valueType = ValueType.DOUBLE;
                     }
                 }
-                touchParameter(container, name, valueType, array).putValue(number);
+                if (valueList != null) {
+                    valueList.add(number);
+                } else {
+                    touchParameter(container, name, valueType).putValue(number);
+                }
                 return;
             case NULL:
                 reader.nextNull();
-                touchParameter(container, name, ValueType.VARIABLE, array).putValue(null);
+                if (valueList != null) {
+                    valueList.add(null);
+                } else {
+                    touchParameter(container, name, ValueType.VARIABLE).putValue(null);
+                }
                 return;
             default:
                 throw new MalformedJsonException("Unexpected token: " + reader.peek());
@@ -242,12 +264,20 @@ public class JsonToParameters {
     }
 
     @NonNull
-    private Parameter touchParameter(@NonNull Parameters container, String name, ValueType valueType, boolean array) {
+    private Parameter touchParameter(@NonNull Parameters container, String name, ValueType valueType) {
         Parameter parameter = container.getParameter(name);
         if (parameter == null) {
-            parameter = container.newParameterValue(name, valueType, array);
+            parameter = container.newParameterValue(name, valueType);
         }
         return parameter;
+    }
+
+    private void touchEmptyArrayParameter(@NonNull Parameters container, String name) {
+        ParameterValue pv = container.getParameterValue(name);
+        if (pv == null) {
+            pv = container.newParameterValue(name, ValueType.VARIABLE, true);
+        }
+        pv.touchValue();
     }
 
     /**

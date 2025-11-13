@@ -387,8 +387,7 @@ public class AponWriter implements Flushable {
                 Object value = parameter.getValue();
                 if (nullWritable || value != null) {
                     writeName(parameter);
-                    if (value instanceof Parameters) {
-                        Parameters ps = (Parameters)value;
+                    if (value instanceof Parameters ps) {
                         if (ps.isEmpty()) {
                             writeEmptyBlock();
                         } else {

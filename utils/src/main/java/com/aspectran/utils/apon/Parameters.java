@@ -311,6 +311,8 @@ public interface Parameters {
      */
     <T extends Parameters> T touchParameters(ParameterKey key);
 
+    <T extends Parameters> T createParameters(String name);
+
     /**
      * Updates the holder of the subparameters belonging to this parameter so that
      * the back-reference of nested parameter holders to point to the given container.
