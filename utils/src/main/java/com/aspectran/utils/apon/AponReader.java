@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.aspectran.utils.apon.AponFormat.ARRAY_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.ARRAY_OPEN;
@@ -193,12 +194,18 @@ public class AponReader {
                     read(ps, BLOCK_OPEN, null, null, null, false);
                     continue;
                 } else if (ARRAY_OPEN == cchar) {
+                    // Create a temporary container to hold the nested array's content
+                    ArrayParameters tempContainer = new ArrayParameters();
+                    // The nested array will be parsed as a parameter named "" (ArrayParameters.NONAME)
+                    read(tempContainer, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+                    // Extract the parsed list from the temporary container
+                    List<?> nestedList = tempContainer.getValueList();
+                    // Now, add this extracted list to the *real* parameterValue
                     if (parameterValue == null) {
-                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue = container.newParameterValue(name, ValueType.VARIABLE, true);
                         parameterValue.setValueTypeHinted(valueTypeHinted);
                     }
-                    Parameters ps = parameterValue.newParameters(parameterValue);
-                    read(ps, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+                    parameterValue.putValue(nestedList);
                     continue;
                 } else if (EMPTY_ARRAY.equals(tline) || EMPTY_BLOCK.equals(tline)) {
                     if (parameterValue == null) {
@@ -430,6 +437,7 @@ public class AponReader {
             throw new MissingClosingBracketException("square", name, parameterValue);
         }
     }
+
     private String readText() throws IOException {
         String line;
         String tline = null;

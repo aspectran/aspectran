@@ -405,11 +405,7 @@ public class ParameterValue implements Parameter {
      * @return the list of strings or {@code null}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<String> getValueAsStringList() {
-        if (valueType == ValueType.STRING) {
-            return (List<String>)getValueList();
-        }
         List<?> list1 = getValueList();
         if (list1 != null) {
             List<String> list2 = new ArrayList<>(list1.size());
@@ -450,10 +446,28 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of INT type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Integer> getValueAsIntList() {
         checkValueType(ValueType.INT);
-        return (List<Integer>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Integer> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Integer) {
+                    list2.add((Integer)o);
+                } else {
+                    try {
+                        list2.add(Integer.valueOf(o.toString()));
+                    } catch (NumberFormatException e) {
+                        throw new ValueTypeMismatchException(o.getClass(), Integer.class, e);
+                    }
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -484,10 +498,28 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of LONG type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Long> getValueAsLongList() {
         checkValueType(ValueType.LONG);
-        return (List<Long>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Long> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Long) {
+                    list2.add((Long)o);
+                } else {
+                    try {
+                        list2.add(Long.valueOf(o.toString()));
+                    } catch (NumberFormatException e) {
+                        throw new ValueTypeMismatchException(o.getClass(), Long.class, e);
+                    }
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -518,10 +550,28 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of FLOAT type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Float> getValueAsFloatList() {
         checkValueType(ValueType.FLOAT);
-        return (List<Float>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Float> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Float) {
+                    list2.add((Float)o);
+                } else {
+                    try {
+                        list2.add(Float.valueOf(o.toString()));
+                    } catch (NumberFormatException e) {
+                        throw new ValueTypeMismatchException(o.getClass(), Float.class, e);
+                    }
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -552,10 +602,28 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of DOUBLE type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Double> getValueAsDoubleList() {
         checkValueType(ValueType.DOUBLE);
-        return (List<Double>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Double> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Double) {
+                    list2.add((Double)o);
+                } else {
+                    try {
+                        list2.add(Double.valueOf(o.toString()));
+                    } catch (NumberFormatException e) {
+                        throw new ValueTypeMismatchException(o.getClass(), Double.class, e);
+                    }
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -586,10 +654,24 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of BOOLEAN type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Boolean> getValueAsBooleanList() {
         checkValueType(ValueType.BOOLEAN);
-        return (List<Boolean>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Boolean> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Boolean) {
+                    list2.add((Boolean)o);
+                } else {
+                    list2.add(Boolean.valueOf(o.toString()));
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -620,10 +702,24 @@ public class ParameterValue implements Parameter {
      * @throws IncompatibleValueTypeException if this parameter is not of PARAMETERS type (and not VARIABLE)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Parameters> getValueAsParametersList() {
         checkValueType(ValueType.PARAMETERS);
-        return (List<Parameters>)getValueList();
+        List<?> list1 = getValueList();
+        if (list1 != null) {
+            List<Parameters> list2 = new ArrayList<>(list1.size());
+            for (Object o : list1) {
+                if (o == null) {
+                    list2.add(null);
+                } else if (o instanceof Parameters) {
+                    list2.add((Parameters)o);
+                } else {
+                    throw new ValueTypeMismatchException(o.getClass(), Parameters.class);
+                }
+            }
+            return list2;
+        } else {
+            return null;
+        }
     }
 
     /**

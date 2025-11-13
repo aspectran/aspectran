@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -442,6 +443,157 @@ class JsonToParametersTest {
                 .toString();
 
         assertEquals(apon, actualApon);
+    }
+
+    /**
+     * Defines a Parameters class with a fixed structure for location data.
+     * This class is used to represent the intended structure of objects
+     * within the complex 3D array test.
+     */
+    public static class LocationParameters extends DefaultParameters {
+
+        private static final ParameterKey id = new ParameterKey("id", ValueType.LONG);
+        private static final ParameterKey name = new ParameterKey("name", ValueType.STRING);
+        private static final ParameterKey type = new ParameterKey("type", ValueType.STRING);
+
+        private static final ParameterKey[] parameterKeys = {id, name, type};
+
+        public LocationParameters() {
+            super(parameterKeys);
+        }
+
+    }
+
+    /**
+     * Tests converting a JSON object with a complex 3D array.
+     * The array contains nested objects (with a fixed structure), strings, and nulls.
+     */
+    @Test
+    void testComplexThreeDimensionalArrayWithFixedParameters() throws IOException {
+        String json = """
+                {
+                  "dataCube": [
+                    [
+                      [
+                        { "id": 101, "name": "Seoul", "type": "City" },
+                        "DataPoint1",
+                        null
+                      ],
+                      [
+                        { "id": 202, "name": "Busan", "type": "City" }
+                      ]
+                    ],
+                    [
+                      [
+                        "DataPoint2",
+                        { "id": 303, "name": "Jeju", "type": "Island" }
+                      ]
+                    ]
+                  ]
+                }
+                """;
+
+        // The parser will create VariableParameters instances for the JSON objects.
+        // The test will verify that their content matches the LocationParameters structure.
+        Parameters parameters = JsonToParameters.from(json);
+        assertNotNull(parameters);
+
+        // Retrieve the 3D list
+        @SuppressWarnings("unchecked")
+        List<List<List<Object>>> dataCube = (List<List<List<Object>>>) parameters.getValueList("dataCube");
+        assertNotNull(dataCube);
+
+        // Assert dimensions
+        assertEquals(2, dataCube.size()); // 1st dimension
+        assertEquals(2, dataCube.get(0).size()); // 2nd dimension in first element
+        assertEquals(1, dataCube.get(1).size()); // 2nd dimension in second element
+        assertEquals(3, dataCube.get(0).get(0).size()); // 3rd dimension (innermost)
+
+        // Assert contents of the first innermost array: [ {location}, "DataPoint1", null ]
+        List<Object> innerArray1 = dataCube.get(0).get(0);
+        assertInstanceOf(Parameters.class, innerArray1.get(0));
+        Parameters location1 = (Parameters) innerArray1.get(0);
+        assertEquals(101, location1.getInt("id"));
+        assertEquals("Seoul", location1.getString("name"));
+        assertEquals("City", location1.getString("type"));
+
+        assertEquals("DataPoint1", innerArray1.get(1));
+        assertNull(innerArray1.get(2));
+
+        // Assert contents of the second innermost array: [ {location} ]
+        List<Object> innerArray2 = dataCube.get(0).get(1);
+        assertEquals(1, innerArray2.size());
+        assertInstanceOf(Parameters.class, innerArray2.get(0));
+        Parameters location2 = (Parameters) innerArray2.get(0);
+        assertEquals(202, location2.getInt("id"));
+        assertEquals("Busan", location2.getString("name"));
+        assertEquals("City", location2.getString("type"));
+
+        // Assert contents of the third innermost array: [ "DataPoint2", {location} ]
+        List<Object> innerArray3 = dataCube.get(1).get(0);
+        assertEquals(2, innerArray3.size());
+        assertEquals("DataPoint2", innerArray3.get(0));
+        assertInstanceOf(Parameters.class, innerArray3.get(1));
+        Parameters location3 = (Parameters) innerArray3.get(1);
+        assertEquals(303, location3.getInt("id"));
+        assertEquals("Jeju", location3.getString("name"));
+        assertEquals("Island", location3.getString("type"));
+    }
+
+    public static class LocationListParameters extends DefaultParameters {
+
+        private static final ParameterKey locations = new ParameterKey("locations", LocationParameters.class, true);
+
+        private static final ParameterKey[] parameterKeys = {locations};
+
+        public LocationListParameters() {
+            super(parameterKeys);
+        }
+
+        public List<LocationParameters> getLocations() {
+            return getParametersList(locations);
+        }
+
+    }
+
+    /**
+     * Tests that the parser uses the provided schema (typed Parameters)
+     * to correctly parse data types, such as forcing a number to be a Long.
+     */
+    @Test
+    void testTypedParametersInArray() throws IOException {
+        String json = """
+                {
+                  "locations": [
+                    { "id": 101, "name": "Seoul", "type": "City" },
+                    { "id": 9999999999, "name": "Big City", "type": "Mega" }
+                  ]
+                }
+                """;
+
+        // Parse the JSON using LocationListParameters as the schema.
+        // The parser will now know that 'id' should be a Long, as defined in LocationParameters.
+        LocationListParameters params = JsonToParameters.from(json, LocationListParameters.class);
+        assertNotNull(params);
+
+        List<LocationParameters> locations = params.getLocations();
+        assertNotNull(locations);
+        assertEquals(2, locations.size());
+
+        // Verify the first location
+        LocationParameters location1 = locations.get(0);
+        assertNotNull(location1);
+        // Now getLong() works without exception, because the parser was guided by the schema.
+        assertEquals(101L, location1.getLong("id"));
+        assertEquals("Seoul", location1.getString("name"));
+        assertEquals("City", location1.getString("type"));
+
+        // Verify the second location with a number that would fit in Long but not Integer
+        LocationParameters location2 = locations.get(1);
+        assertNotNull(location2);
+        assertEquals(9999999999L, location2.getLong("id"));
+        assertEquals("Big City", location2.getString("name"));
+        assertEquals("Mega", location2.getString("type"));
     }
 
 }

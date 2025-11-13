@@ -17,6 +17,7 @@ package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -186,6 +187,43 @@ class AponReaderTest {
         assertEquals(2, list.size());
         assertTrue(list.get(0).isEmpty());
         assertTrue(list.get(1).isEmpty());
+    }
+
+    @Test
+    void testParseMultiDimensionalStringArray() throws AponParseException {
+        String input = """
+            matrix: [
+              [
+                a
+                b
+              ]
+              [
+                 c
+                 d
+                 e
+              ]
+            ]
+            """;
+
+        Parameters params = AponReader.read(input);
+        assertNotNull(params);
+
+        // AponReader does not parse into List<List<String>>.
+        // Instead, it parses into a List of Parameters objects.
+        @SuppressWarnings("unchecked")
+        List<List<String>> matrix = (List<List<String>>)params.getValueList("matrix");
+        assertNotNull(matrix);
+        assertEquals(2, matrix.size());
+
+        // Check the first inner array, which is parsed as a Parameters object
+        List<String> row1 = matrix.get(0);
+        assertNotNull(row1);
+        assertEquals(Arrays.asList("a", "b"), row1);
+
+        // Check the second inner array
+        List<String> row2 = matrix.get(1);
+        assertNotNull(row2);
+        assertEquals(Arrays.asList("c", "d", "e"), row2);
     }
 
 }

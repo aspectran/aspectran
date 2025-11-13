@@ -39,6 +39,17 @@ public class ValueTypeMismatchException extends InvalidParameterValueException {
      * Construct an exception describing a failed conversion due to incompatible value types.
      * @param valueType the actual source type encountered
      * @param requiredType the target type that was expected
+     */
+    public ValueTypeMismatchException(@NonNull Class<?> valueType,
+                                      @NonNull Class<?> requiredType) {
+        super("Failed to convert value of type [" + valueType.getName() + "] " +
+                "to required type [" + requiredType.getName() + "]");
+    }
+
+    /**
+     * Construct an exception describing a failed conversion due to incompatible value types.
+     * @param valueType the actual source type encountered
+     * @param requiredType the target type that was expected
      * @param cause the underlying cause of the failure
      */
     public ValueTypeMismatchException(@NonNull Class<?> valueType,
