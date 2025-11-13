@@ -99,6 +99,12 @@ public interface Parameters {
     String getQualifiedName(ParameterKey key);
 
     /**
+     * Returns all parameter names associated with this {@code Parameters}.
+     * @return an array of all parameter names associated with this {@code Parameters}
+     */
+    String[] getParameterNames();
+
+    /**
      * Return the internal {@link ParameterValue} holder by name, or {@code null} if absent.
      * @param name the parameter name
      * @return the holder or {@code null}
@@ -119,17 +125,11 @@ public interface Parameters {
     Collection<ParameterValue> getParameterValues();
 
     /**
-     * Returns all parameter names associated with this {@code Parameters}.
-     * @return an array of all parameter names associated with this {@code Parameters}
-     */
-    String[] getParameterNames();
-
-    /**
      * Copy all values from the given container into this one, overwriting existing values.
      * Structure is not altered; only values are affected.
      * @param parameters the source of values to copy
      */
-    void putAll(Parameters parameters);
+    void mergeParameterValues(Parameters parameters);
 
     /**
      * Returns the number of parameters in this collection.
@@ -343,7 +343,7 @@ public interface Parameters {
      * @param name the parameter name
      * @return the value for the specified parameter as a list, or {@code null}
      */
-    List<Object> getValueList(String name);
+    List<?> getValueList(String name);
 
     /**
      * Return the value for the specified parameter as a list,
@@ -351,7 +351,7 @@ public interface Parameters {
      * @param key the parameter definition
      * @return the value for the specified parameter as a list, or {@code null}
      */
-    List<Object> getValueList(ParameterKey key);
+    List<?> getValueList(ParameterKey key);
 
     /**
      * Returns the value for the specified parameter as a {@code String}.

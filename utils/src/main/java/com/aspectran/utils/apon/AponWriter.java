@@ -550,6 +550,28 @@ public class AponWriter implements Flushable {
         return (T)this;
     }
 
+    private void write(Object value) throws IOException {
+        if (value != null) {
+            if (value instanceof List<?> list) {
+                if (list.isEmpty()) {
+                    writeEmptyArray();
+                } else {
+                    beginArray();
+                    for (Object obj : list) {
+                        indent();
+                        write(obj);
+                    }
+                    endArray();
+                }
+            } else {
+                writer.write(value.toString());
+                newLine();
+            }
+        } else {
+            writeNull();
+        }
+    }
+
     private void writeEmptyArray() throws IOException {
         if (prettyPrint) {
             beginArray();
@@ -632,15 +654,6 @@ public class AponWriter implements Flushable {
             indent();
             writer.write(TEXT_LINE_START);
             newLine();
-        }
-    }
-
-    private void write(Object value) throws IOException {
-        if (value != null) {
-            writer.write(value.toString());
-            newLine();
-        } else {
-            writeNull();
         }
     }
 

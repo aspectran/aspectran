@@ -35,7 +35,7 @@ import java.util.List;
  * Consequently, most {@code get*} methods that attempt to retrieve a single named parameter
  * (e.g., {@code getString(String name)}) are not supported and will throw an
  * {@link UnsupportedOperationException}. Access to elements should primarily be done
- * through iteration or methods like {@link #getParametersArray()} or {@link #getParametersList()}.</p>
+ * through iteration or methods like {@link #getValueList()} or {@link #getParametersList()}.</p>
  * <p>This class is {@link Serializable}, allowing its instances to be persisted or
  * transferred across processes.</p>
  *
@@ -109,7 +109,7 @@ public class ArrayParameters extends DefaultParameters implements Iterable<Objec
         putValue(NONAME, value);
     }
 
-    public List<Object> getValueList() {
+    public List<?> getValueList() {
         return getValueList(NONAME);
     }
 
@@ -127,8 +127,9 @@ public class ArrayParameters extends DefaultParameters implements Iterable<Objec
      */
     @Override
     @NonNull
+    @SuppressWarnings("unchecked")
     public Iterator<Object> iterator() {
-        List<Object> list = getValueList(NONAME);
+        List<Object> list = (List<Object>)getValueList(NONAME);
         if (list != null) {
             return list.iterator();
         } else {

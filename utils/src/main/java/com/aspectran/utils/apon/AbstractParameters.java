@@ -155,6 +155,12 @@ import java.util.Map;
     }
 
     @Override
+    @NonNull
+    public String[] getParameterNames() {
+        return parameterValueMap.keySet().toArray(new String[0]);
+    }
+
+    @Override
     public ParameterValue getParameterValue(String name) {
         Assert.notNull(name, "name must not be null");
         ParameterValue pv = parameterValueMap.get(name);
@@ -180,13 +186,7 @@ import java.util.Map;
     }
 
     @Override
-    @NonNull
-    public String[] getParameterNames() {
-        return parameterValueMap.keySet().toArray(new String[0]);
-    }
-
-    @Override
-    public void putAll(Parameters parameters) {
+    public void mergeParameterValues(Parameters parameters) {
         Assert.notNull(parameters, "parameters must not be null");
         if (structureFixed) {
             throw new IllegalStateException("Not allowed in fixed structures");

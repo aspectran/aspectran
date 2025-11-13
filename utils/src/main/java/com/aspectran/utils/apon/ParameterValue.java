@@ -622,9 +622,7 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Parameters> getValueAsParametersList() {
-        if (valueType != ValueType.PARAMETERS) {
-            throw new IncompatibleValueTypeException(this, ValueType.PARAMETERS);
-        }
+        checkValueType(ValueType.PARAMETERS);
         return (List<Parameters>)getValueList();
     }
 

@@ -408,31 +408,31 @@ class JsonToParametersTest {
         Parameters parameters = JsonToParameters.from(json);
         assertNotNull(parameters);
 
-        Object matrixList = parameters.getValueList("matrix");
-
         // Test matrix (array of string arrays)
-        List<Object> matrix = parameters.getValueList("matrix");
+        @SuppressWarnings("unchecked")
+        List<List<String>> matrix = (List<List<String>>)parameters.getValueList("matrix");
         assertNotNull(matrix);
         assertEquals(2, matrix.size());
 
-//        List<String> row1 = matrix.get(0).getStringList(ArrayParameters.NONAME);
-//        assertNotNull(row1);
-//        assertEquals(Arrays.asList("a", "b"), row1);
-//
-//        List<String> row2 = matrix.get(1).getStringList(ArrayParameters.NONAME);
-//        assertNotNull(row2);
-//        assertEquals(Arrays.asList("c", "d", "e"), row2);
+        List<String> row1 = matrix.get(0);
+        assertNotNull(row1);
+        assertEquals(Arrays.asList("a", "b"), row1);
+
+        List<String> row2 = matrix.get(1);
+        assertNotNull(row2);
+        assertEquals(Arrays.asList("c", "d", "e"), row2);
 
         // Test numbers (array of integer arrays)
-        List<Parameters> numbers = parameters.getParametersList("numbers");
+        @SuppressWarnings("unchecked")
+        List<List<Integer>> numbers = (List<List<Integer>>)parameters.getValueList("numbers");
         assertNotNull(numbers);
         assertEquals(2, numbers.size());
 
-        List<Integer> numRow1 = numbers.get(0).getIntList(ArrayParameters.NONAME);
+        List<Integer> numRow1 = numbers.get(0);
         assertNotNull(numRow1);
         assertEquals(Arrays.asList(1, 2), numRow1);
 
-        List<Integer> numRow2 = numbers.get(1).getIntList(ArrayParameters.NONAME);
+        List<Integer> numRow2 = numbers.get(1);
         assertNotNull(numRow2);
         assertEquals(Arrays.asList(3, 4, 5), numRow2);
 

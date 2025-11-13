@@ -71,14 +71,13 @@ public class DefaultParameters extends AbstractParameters {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Object> getValueList(String name) {
+    public List<?> getValueList(String name) {
         Parameter p = getParameter(name);
-        return (p != null ? (List<Object>)p.getValueList() : null);
+        return (p != null ? p.getValueList() : null);
     }
 
     @Override
-    public List<Object> getValueList(ParameterKey key) {
+    public List<?> getValueList(ParameterKey key) {
         checkKey(key);
         return getValueList(key.getName());
     }

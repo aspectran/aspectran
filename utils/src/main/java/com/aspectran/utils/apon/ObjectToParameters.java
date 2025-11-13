@@ -192,7 +192,7 @@ public class ObjectToParameters {
     protected void putValue(@NonNull Parameters container, Object value) {
         Object obj = normalize(value);
         if (obj instanceof Parameters parameters) {
-            container.putAll(parameters);
+            container.mergeParameterValues(parameters);
         }
     }
 
