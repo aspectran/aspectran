@@ -99,4 +99,126 @@ public abstract class AponFormat {
     /** Literal token for boolean false textual representation. */
     protected static final String FALSE = "false";
 
+    static boolean wasQuoted(String str) {
+        return (str != null && str.length() > 1 &&
+                ((str.charAt(0) == DOUBLE_QUOTE_CHAR && str.charAt(str.length() - 1) == DOUBLE_QUOTE_CHAR) ||
+                        (str.charAt(0) == SINGLE_QUOTE_CHAR && str.charAt(str.length() - 1) == SINGLE_QUOTE_CHAR)));
+    }
+
+    /**
+     * Escapes characters in a {@code String} to be APON-compliant.
+     * @param str the string to escape, may be null
+     * @return the escaped string, or null if the input was null
+     */
+    static String escape(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        int len = str.length();
+        if (len == 0) {
+            return str;
+        }
+
+        StringBuilder sb = new StringBuilder(Math.min(len * 2, len + 16));
+        char c;
+        String t;
+        for (int pos = 0; pos < len; pos++) {
+            c = str.charAt(pos);
+            switch (c) {
+                case ESCAPE_CHAR:
+                case DOUBLE_QUOTE_CHAR:
+                    sb.append('\\');
+                    sb.append(c);
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                default:
+                    if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                        t = "000" + Integer.toHexString(c);
+                        sb.append("\\u").append(t.substring(t.length() - 4));
+                    } else {
+                        sb.append(c);
+                    }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Unescapes a string that contains APON-style escape sequences.
+     * @param str the string to unescape, may be null
+     * @return a new unescaped string, or the input if null or no escaping is needed
+     * @throws IllegalArgumentException if the string contains an invalid escape sequence
+     */
+    public static String unescape(String str) throws IllegalArgumentException {
+        if (str == null || str.indexOf(ESCAPE_CHAR) == -1) {
+            return str;
+        }
+
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int pos = 0; pos < len;) {
+            char c = str.charAt(pos++);
+            if (c == ESCAPE_CHAR) {
+                if (pos >= len) {
+                    throw new IllegalArgumentException("Unterminated escape sequence");
+                }
+                c = str.charAt(pos++);
+                switch (c) {
+                    case ESCAPE_CHAR:
+                    case DOUBLE_QUOTE_CHAR:
+                    case SINGLE_QUOTE_CHAR:
+                        sb.append(c);
+                        break;
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'f':
+                        sb.append('\f');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    case 'u':
+                        if (pos + 4 > len) {
+                            throw new IllegalArgumentException("Unterminated escape sequence");
+                        }
+                        String hex = str.substring(pos, pos + 4);
+                        try {
+                            sb.append((char)Integer.parseInt(hex, 16));
+                        } catch (NumberFormatException e) {
+                            throw new IllegalArgumentException("Invalid unicode escape sequence: \\u" + hex, e);
+                        }
+                        pos += 4;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid escape sequence: " + c);
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
 }

@@ -85,6 +85,9 @@ public class MalformedAponException extends AponParseException {
      */
     @NonNull
     private static String makeMessage(int lineNumber, String line, String trimmedLine, String msg) {
+        if (line == null) {
+            return msg + " [lineNumber: " + lineNumber + "]";
+        }
         int columnNumber = (trimmedLine != null ? line.indexOf(trimmedLine) : 0);
         StringBuilder sb = new StringBuilder();
         if (msg != null) {

@@ -38,7 +38,6 @@ import static com.aspectran.utils.apon.AponFormat.DEFAULT_INDENT_STRING;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
-import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE_CHAR;
@@ -627,7 +626,7 @@ public class AponWriter implements Flushable {
                 value.endsWith(SPACE) ||
                 value.contains(NEW_LINE)) {
             writer.write(DOUBLE_QUOTE_CHAR);
-            writer.write(escape(value));
+            writer.write(AponFormat.escape(value));
             writer.write(DOUBLE_QUOTE_CHAR);
         } else {
             writer.write(value);
@@ -781,59 +780,6 @@ public class AponWriter implements Flushable {
     @Override
     public String toString() {
         return writer.toString();
-    }
-
-    /**
-     * Escapes characters in a {@code String} to be APON-compliant.
-     * @param str the string to escape, may be null
-     * @return the escaped string, or null if the input was null
-     */
-    public static String escape(String str) {
-        if (str == null) {
-            return null;
-        }
-
-        int len = str.length();
-        if (len == 0) {
-            return str;
-        }
-
-        StringBuilder sb = new StringBuilder(Math.min(len * 2, len + 16));
-        char c;
-        String t;
-        for (int pos = 0; pos < len; pos++) {
-            c = str.charAt(pos);
-            switch (c) {
-                case ESCAPE_CHAR:
-                case DOUBLE_QUOTE_CHAR:
-                    sb.append('\\');
-                    sb.append(c);
-                    break;
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                default:
-                    if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
-                        t = "000" + Integer.toHexString(c);
-                        sb.append("\\u").append(t.substring(t.length() - 4));
-                    } else {
-                        sb.append(c);
-                    }
-            }
-        }
-        return sb.toString();
     }
 
 }

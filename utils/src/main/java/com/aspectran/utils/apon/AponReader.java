@@ -18,6 +18,7 @@ package com.aspectran.utils.apon;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,7 +38,6 @@ import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
-import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.FALSE;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NO_CONTROL_CHAR;
@@ -322,7 +322,7 @@ public class AponReader {
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (TEXT_OPEN == cchar) {
-                    parameterValue.putValue(readText());
+                    parameterValue.putValue(readTextBlock());
                 } else if (NULL.equals(value)) {
                     parameterValue.putValue(null);
                 } else {
@@ -389,9 +389,16 @@ public class AponReader {
                 if (value == null) {
                     parameterValue.putValue(null);
                 } else {
+                    boolean wasQuoted = AponFormat.wasQuoted(value);
+
+                    // Validation: Non-string, non-structural types cannot be quoted.
+                    if (wasQuoted && valueType != ValueType.STRING) {
+                        throw syntaxError(line, tline, "Value for a parameter of type '" + valueType + "' cannot be quoted: '" + value + "'");
+                    }
+
                     if (valueType == ValueType.STRING) {
-                        if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
-                            value = unescape(value.substring(1, vlen - 1), line, tline);
+                        if (wasQuoted) {
+                            value = unescape(value.substring(1, value.length() - 1), line, tline);
                         }
                         parameterValue.putValue(value);
                     } else if (valueType == ValueType.BOOLEAN) {
@@ -422,7 +429,7 @@ public class AponReader {
         }
     }
 
-    private String readText() throws IOException {
+    private String readTextBlock() throws IOException {
         String line;
         String tline = null;
         String str;
@@ -459,81 +466,6 @@ public class AponReader {
         throw syntaxError("", tline, "Missing closing round bracket ')' for the text block");
     }
 
-    private String unescape(String str, String line, String ltrim) throws AponParseException {
-        if (str == null) {
-            return null;
-        }
-
-        int len = str.length();
-        if (len == 0 || str.indexOf(ESCAPE_CHAR) == -1) {
-            return str;
-        }
-
-        StringBuilder sb = new StringBuilder(len);
-        char c;
-        for (int pos = 0; pos < len;) {
-            c = str.charAt(pos++);
-            if (c == ESCAPE_CHAR) {
-                if (pos >= len) {
-                    throw syntaxError(line, ltrim, "Unterminated escape sequence");
-                }
-                c = str.charAt(pos++);
-                switch (c) {
-                    case ESCAPE_CHAR:
-                    case DOUBLE_QUOTE_CHAR:
-                    case SINGLE_QUOTE_CHAR:
-                        sb.append(c);
-                        break;
-                    case 'b':
-                        sb.append('\b');
-                        break;
-                    case 't':
-                        sb.append('\t');
-                        break;
-                    case 'n':
-                        sb.append('\n');
-                        break;
-                    case 'f':
-                        sb.append('\f');
-                        break;
-                    case 'r':
-                        sb.append('\r');
-                        break;
-                    case 'u':
-                        if (pos + 4 > len) {
-                            throw syntaxError(line, ltrim, "Unterminated escape sequence");
-                        }
-                        // Equivalent to Integer.parseInt(stringPool.get(buffer, pos, 4), 16);
-                        char result = 0;
-                        int i = pos, end = i + 4;
-                        for (; i < end; i++) {
-                            c = str.charAt(i);
-                            result <<= 4;
-                            if (c >= '0' && c <= '9') {
-                                result += (char)(c - '0');
-                            } else if (c >= 'a' && c <= 'f') {
-                                result += (char)(c - 'a' + 10);
-                            } else if (c >= 'A' && c <= 'F') {
-                                result += (char)(c - 'A' + 10);
-                            } else {
-                                throw syntaxError(line, ltrim, "Invalid number format: \\u" +
-                                        str.substring(pos, pos + 4));
-                            }
-                        }
-                        pos = end;
-                        sb.append(result);
-                        break;
-                    default:
-                        // throw error when none of the above cases are matched
-                        throw syntaxError(line, ltrim, "Invalid escape sequence");
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     /**
      * Closes the reader.
      */
@@ -545,15 +477,23 @@ public class AponReader {
         }
     }
 
-    private AponParseException syntaxError(
-            String line, String trimmedLine, String message) throws AponParseException {
-        throw new MalformedAponException(lineNumber, line, trimmedLine, message);
+    private String unescape(String str, String line, String ltrim) throws AponParseException {
+        try {
+            return AponFormat.unescape(str);
+        } catch (IllegalArgumentException e) {
+            throw syntaxError(line, ltrim, e.getMessage());
+        }
     }
 
+    @NonNull
+    private AponParseException syntaxError(String line, String trimmedLine, String message) {
+        return new MalformedAponException(lineNumber, line, trimmedLine, message);
+    }
+
+    @NonNull
     private AponParseException syntaxError(
-            String line, String trimmedLine, ParameterValue parameterValue,
-            ValueType expectedValueType) throws AponParseException {
-        throw new MalformedAponException(lineNumber, line, trimmedLine, parameterValue, expectedValueType);
+            String line, String trimmedLine, ParameterValue parameterValue, ValueType expectedValueType) {
+        return new MalformedAponException(lineNumber, line, trimmedLine, parameterValue, expectedValueType);
     }
 
     /**

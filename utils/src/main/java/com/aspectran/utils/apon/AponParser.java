@@ -36,13 +36,15 @@ import static com.aspectran.utils.apon.AponFormat.COMMENT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_ARRAY;
 import static com.aspectran.utils.apon.AponFormat.EMPTY_BLOCK;
-import static com.aspectran.utils.apon.AponFormat.ESCAPE_CHAR;
+import static com.aspectran.utils.apon.AponFormat.FALSE;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
+import static com.aspectran.utils.apon.AponFormat.NULL;
 import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
 import static com.aspectran.utils.apon.AponFormat.TEXT_OPEN;
+import static com.aspectran.utils.apon.AponFormat.TRUE;
 
 /**
  * A modern, structure-based parser for APON (Aspectran Parameters Object Notation).
@@ -60,6 +62,8 @@ public class AponParser {
     private final BufferedReader reader;
 
     private int lineNumber = 0;
+
+    private String originalLine;
 
     private String currentLine;
 
@@ -96,21 +100,36 @@ public class AponParser {
         try {
             while (nextLine() != null) {
                 if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_CLOSE) {
-                    throw new AponParseException("Unexpected closing brace '}' at top level at line " + lineNumber);
+                    throw syntaxError("Unexpected closing brace '}' at top level");
                 }
 
                 int separatorIndex = currentLine.indexOf(NAME_VALUE_SEPARATOR);
                 if (separatorIndex == -1) {
-                    throw new AponParseException("Invalid line format; a parameter must be in 'name: value' format at line " + lineNumber);
+                    throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
                 }
 
                 String name = currentLine.substring(0, separatorIndex).trim();
                 String valueStr = currentLine.substring(separatorIndex + 1).trim();
 
-                Object value = parseValue(valueStr);
+                ValueType valueType = ValueType.resolveByHint(name);
+                if (valueType != null) {
+                    name = ValueType.stripHint(name);
+                    if (valueType == ValueType.VARIABLE || valueType == ValueType.PARAMETERS) {
+                        valueType = null;
+                    }
+                }
+
+                Object value;
+                if (valueType != null) {
+                    value = parseHintedValue(valueStr, valueType);
+                } else {
+                    value = parseValue(valueStr);
+                }
                 parameters.putValue(name, value);
             }
-        } catch (Exception e) {
+        } catch (AponParseException e) {
+            throw e;
+        } catch (IOException e) {
             throw new AponParseException("Failed to parse APON document into " + parameters.getClass().getName(), e);
         }
         return parameters;
@@ -129,16 +148,29 @@ public class AponParser {
 
             int separatorIndex = currentLine.indexOf(NAME_VALUE_SEPARATOR);
             if (separatorIndex == -1) {
-                throw new AponParseException("Invalid line format; a parameter must be in 'name: value' format at line " + lineNumber);
+                throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
             }
 
             String name = currentLine.substring(0, separatorIndex).trim();
             String valueStr = currentLine.substring(separatorIndex + 1).trim();
 
-            Object value = parseValue(valueStr);
+            ValueType valueType = ValueType.resolveByHint(name);
+            if (valueType != null) {
+                name = ValueType.stripHint(name);
+                if (valueType == ValueType.VARIABLE || valueType == ValueType.PARAMETERS) {
+                    valueType = null;
+                }
+            }
+
+            Object value;
+            if (valueType != null) {
+                value = parseHintedValue(valueStr, valueType);
+            } else {
+                value = parseValue(valueStr);
+            }
             container.putValue(name, value);
         }
-        throw new AponParseException("Unclosed object block at line " + lineNumber);
+        throw syntaxError("Unclosed object block");
     }
 
     /**
@@ -155,7 +187,7 @@ public class AponParser {
             Object value = parseValue(currentLine);
             list.add(value);
         }
-        throw new AponParseException("Unclosed array bracket at line " + lineNumber);
+        throw syntaxError("Unclosed array bracket");
     }
 
     /**
@@ -168,7 +200,7 @@ public class AponParser {
     @Nullable
     private Object parseValue(@NonNull String valueStr) throws IOException {
         if (valueStr.isEmpty()) {
-            return "";
+            return null;
         }
 
         if (EMPTY_BLOCK.equals(valueStr)) {
@@ -195,14 +227,16 @@ public class AponParser {
             }
         }
 
-        if ("null".equals(valueStr)) {
-            return null;
-        }
-        if ("true".equals(valueStr)) {
-            return Boolean.TRUE;
-        }
-        if ("false".equals(valueStr)) {
-            return Boolean.FALSE;
+        switch (valueStr) {
+            case NULL -> {
+                return null;
+            }
+            case TRUE -> {
+                return Boolean.TRUE;
+            }
+            case FALSE -> {
+                return Boolean.FALSE;
+            }
         }
 
         if ((firstChar == DOUBLE_QUOTE_CHAR && valueStr.charAt(length - 1) == DOUBLE_QUOTE_CHAR) ||
@@ -229,6 +263,60 @@ public class AponParser {
         return valueStr;
     }
 
+    @Nullable
+    private Object parseHintedValue(@NonNull String valueStr, @NonNull ValueType valueType) throws IOException {
+        if (valueStr.isEmpty() || NULL.equals(valueStr)) {
+            return null;
+        }
+
+        boolean wasQuoted = AponFormat.wasQuoted(valueStr);
+
+        // Validation: Non-string, non-structural types cannot be quoted.
+        if (wasQuoted && valueType != ValueType.STRING) {
+            throw syntaxError("Value for a parameter of type '" + valueType + "' cannot be quoted: '" + valueStr + "'");
+        }
+
+        try {
+            switch (valueType) {
+                case STRING:
+                    if (wasQuoted) {
+                        valueStr = unescape(valueStr.substring(1, valueStr.length() - 1));
+                    }
+                    return valueStr;
+                case INT:
+                    return Integer.parseInt(valueStr);
+                case LONG:
+                    return Long.parseLong(valueStr);
+                case FLOAT:
+                    return Float.parseFloat(valueStr);
+                case DOUBLE:
+                    return Double.parseDouble(valueStr);
+                case BOOLEAN:
+                    return Boolean.parseBoolean(valueStr);
+                case PARAMETERS:
+                    if (EMPTY_BLOCK.equals(valueStr)) {
+                        return new VariableParameters();
+                    }
+                    if (valueStr.charAt(0) == BLOCK_OPEN) {
+                        Parameters nestedParams = new VariableParameters();
+                        parseNestedObject(nestedParams);
+                        return nestedParams;
+                    }
+                    throw syntaxError("Value for a parameter of type 'parameters' must be an object block {}");
+                case TEXT:
+                    if (valueStr.charAt(0) == TEXT_OPEN) {
+                        return parseTextBlock();
+                    }
+                    throw syntaxError("Value for a parameter of type 'text' must be a text block ()");
+                case VARIABLE:
+                    return null; // Should not be reached
+            }
+        } catch (NumberFormatException e) {
+            throw syntaxError("Invalid value '" + valueStr + "' for type '" + valueType + "'", e);
+        }
+        return null; // Should not be reached
+    }
+
     /**
      * Parses a multi-line text block.
      * @return the parsed text block as a single string
@@ -241,22 +329,21 @@ public class AponParser {
             if (currentLine.length() == 1 && currentLine.charAt(0) == TEXT_CLOSE) {
                 return (sb != null ? sb.toString() : "");
             }
-
             if (!currentLine.isEmpty() && currentLine.charAt(0) == TEXT_LINE_START) {
                 if (sb == null) {
                     sb = new StringBuilder();
                 } else {
                     sb.append(SYSTEM_NEW_LINE);
                 }
-                String line = currentLine.substring(1);
+                String line = originalLine.substring(originalLine.indexOf(TEXT_LINE_START) + 1);
                 if (!line.isEmpty()) {
                     sb.append(line);
                 }
             } else {
-                throw new AponParseException("Text block lines must start with a '|' character at line " + lineNumber);
+                throw syntaxError("Text block lines must start with a '|' character");
             }
         }
-        throw new AponParseException("Unclosed text block at line " + lineNumber);
+        throw syntaxError("Unclosed text block");
     }
 
     /**
@@ -266,9 +353,9 @@ public class AponParser {
      */
     @Nullable
     private String nextLine() throws IOException {
-        while ((currentLine = reader.readLine()) != null) {
+        while ((originalLine = reader.readLine()) != null) {
             lineNumber++;
-            currentLine = currentLine.trim();
+            currentLine = originalLine.trim();
             if (!currentLine.isEmpty() && currentLine.charAt(0) != COMMENT_LINE_START) {
                 return currentLine;
             }
@@ -277,60 +364,23 @@ public class AponParser {
     }
 
     private String unescape(String str) throws AponParseException {
-        if (str == null || str.indexOf(ESCAPE_CHAR) == -1) {
-            return str;
+        try {
+            return AponFormat.unescape(str);
+        } catch (IllegalArgumentException e) {
+            throw syntaxError(e.getMessage(), e);
         }
+    }
 
-        int len = str.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int pos = 0; pos < len;) {
-            char c = str.charAt(pos++);
-            if (c == ESCAPE_CHAR) {
-                if (pos >= len) {
-                    throw new AponParseException("Unterminated escape sequence at line " + lineNumber);
-                }
-                c = str.charAt(pos++);
-                switch (c) {
-                    case ESCAPE_CHAR:
-                    case DOUBLE_QUOTE_CHAR:
-                    case SINGLE_QUOTE_CHAR:
-                        sb.append(c);
-                        break;
-                    case 'b':
-                        sb.append('\b');
-                        break;
-                    case 't':
-                        sb.append('\t');
-                        break;
-                    case 'n':
-                        sb.append('\n');
-                        break;
-                    case 'f':
-                        sb.append('\f');
-                        break;
-                    case 'r':
-                        sb.append('\r');
-                        break;
-                    case 'u':
-                        if (pos + 4 > len) {
-                            throw new AponParseException("Unterminated escape sequence at line " + lineNumber);
-                        }
-                        String hex = str.substring(pos, pos + 4);
-                        try {
-                            sb.append((char)Integer.parseInt(hex, 16));
-                        } catch (NumberFormatException e) {
-                            throw new AponParseException("Invalid unicode escape sequence: \\u" + hex + " at line " + lineNumber, e);
-                        }
-                        pos += 4;
-                        break;
-                    default:
-                        throw new AponParseException("Invalid escape sequence: " + c + " at line " + lineNumber);
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
+    @NonNull
+    private MalformedAponException syntaxError(String message) {
+        return new MalformedAponException(lineNumber, originalLine, currentLine, message);
+    }
+
+    @NonNull
+    private MalformedAponException syntaxError(String message, Throwable cause) {
+        MalformedAponException e = new MalformedAponException(lineNumber, originalLine, currentLine, message);
+        e.initCause(cause);
+        return e;
     }
 
     /**
