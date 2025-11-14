@@ -426,7 +426,13 @@ public class ParameterValue implements Parameter {
     @Override
     public Integer getValueAsInt() {
         checkValueType(ValueType.INT);
-        return (Integer)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Integer) {
+            return (Integer)value;
+        } else {
+            return Integer.valueOf(value.toString());
+        }
     }
 
     /**
@@ -478,7 +484,13 @@ public class ParameterValue implements Parameter {
     @Override
     public Long getValueAsLong() {
         checkValueType(ValueType.LONG);
-        return (Long)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Long) {
+            return (Long)value;
+        } else {
+            return Long.valueOf(value.toString());
+        }
     }
 
     /**
@@ -530,7 +542,13 @@ public class ParameterValue implements Parameter {
     @Override
     public Float getValueAsFloat() {
         checkValueType(ValueType.FLOAT);
-        return (Float)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Float) {
+            return (Float)value;
+        } else {
+            return Float.valueOf(value.toString());
+        }
     }
 
     /**
@@ -582,7 +600,13 @@ public class ParameterValue implements Parameter {
     @Override
     public Double getValueAsDouble() {
         checkValueType(ValueType.DOUBLE);
-        return (Double)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Double) {
+            return (Double)value;
+        } else {
+            return Double.valueOf(value.toString());
+        }
     }
 
     /**
@@ -634,7 +658,13 @@ public class ParameterValue implements Parameter {
     @Override
     public Boolean getValueAsBoolean() {
         checkValueType(ValueType.BOOLEAN);
-        return (Boolean)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Boolean) {
+            return (Boolean)value;
+        } else {
+            return Boolean.valueOf(value.toString());
+        }
     }
 
     /**
@@ -682,7 +712,14 @@ public class ParameterValue implements Parameter {
     @Override
     public Parameters getValueAsParameters() {
         checkValueType(ValueType.PARAMETERS);
-        return (Parameters)value;
+        if (value == null) {
+            return null;
+        } else if (value instanceof Parameters) {
+            return (Parameters)value;
+        } else {
+            throw new ValueTypeMismatchException(value.getClass(), Parameters.class);
+        }
+
     }
 
     /**

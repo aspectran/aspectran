@@ -63,8 +63,8 @@ class AponReaderTest {
         String input = """
             string: Hello World
             integer: 123
-            long: 2147483648L
-            float: 78.9
+            long: 2147483648
+            float(float): 78.9
             double: 0.1000000000000000055511151231257827021181583404541015625
             boolean: true
             nullValue: null

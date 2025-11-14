@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static com.aspectran.utils.apon.AponFormat.ARRAY_CLOSE;
@@ -354,26 +353,15 @@ public class AponReader {
                     } else {
                         if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
                             try {
-                                BigDecimal bd = new BigDecimal(value);
-                                float f = bd.floatValue();
-                                if (!Float.isInfinite(f) && new BigDecimal(Float.toString(f)).compareTo(bd) == 0) {
-                                    valueType = ValueType.FLOAT;
-                                } else {
-                                    valueType = ValueType.DOUBLE;
-                                }
+                                Double.parseDouble(value);
+                                valueType = ValueType.DOUBLE;
                             } catch (NumberFormatException e) {
                                 valueType = ValueType.STRING;
                             }
                         } else {
                             try {
-                                String numStr = value;
-                                boolean hasLongSuffix = false;
-                                if (numStr.endsWith("L") || numStr.endsWith("l")) {
-                                    numStr = numStr.substring(0, numStr.length() - 1);
-                                    hasLongSuffix = true;
-                                }
-                                long l = Long.parseLong(numStr);
-                                if (!hasLongSuffix && l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+                                long longValue = Long.parseLong(value);
+                                if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
                                     valueType = ValueType.INT;
                                 } else {
                                     valueType = ValueType.LONG;
@@ -411,11 +399,7 @@ public class AponReader {
                     } else if (valueType == ValueType.INT) {
                         parameterValue.putValue(Integer.valueOf(value));
                     } else if (valueType == ValueType.LONG) {
-                        String longStr = value;
-                        if (longStr.endsWith("L") || longStr.endsWith("l")) {
-                            longStr = longStr.substring(0, longStr.length() - 1);
-                        }
-                        parameterValue.putValue(Long.valueOf(longStr));
+                        parameterValue.putValue(Long.valueOf(value));
                     } else if (valueType == ValueType.FLOAT) {
                         parameterValue.putValue(Float.valueOf(value));
                     } else if (valueType == ValueType.DOUBLE) {
