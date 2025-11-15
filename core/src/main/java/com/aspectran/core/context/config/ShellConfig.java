@@ -88,14 +88,6 @@ public class ShellConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new shell style configuration.
-     * @return the new {@code ShellStyleConfig} instance
-     */
-    public ShellStyleConfig newShellStyleConfig() {
-        return newParameters(style);
-    }
-
-    /**
      * Returns the existing shell style configuration or creates a new one if it does not exist.
      * @return a non-null {@code ShellStyleConfig} instance
      */
@@ -181,14 +173,6 @@ public class ShellConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new session manager configuration.
-     * @return the new {@code SessionManagerConfig} instance
-     */
-    public SessionManagerConfig newSessionManagerConfig() {
-        return newParameters(session);
-    }
-
-    /**
      * Returns the existing session manager configuration or creates a new one if it does not exist.
      * @return a non-null {@code SessionManagerConfig} instance
      */
@@ -238,14 +222,6 @@ public class ShellConfig extends DefaultParameters {
      */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
-    }
-
-    /**
-     * Creates a new configuration for acceptable request patterns.
-     * @return the new {@code AcceptableConfig} instance
-     */
-    public AcceptableConfig newAcceptableConfig() {
-        return newParameters(acceptable);
     }
 
     /**

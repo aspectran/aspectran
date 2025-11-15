@@ -45,8 +45,8 @@ class ViewDispatcherTest {
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         AspectranParameters parameters = aspectranConfig
-                .newContextConfig()
-                .newAspectranParameters();
+                .touchContextConfig()
+                .touchAspectranParameters();
 
         TransletRule transletRule1 = new TransletRule();
         transletRule1.setName("test/appended/echo");

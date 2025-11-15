@@ -99,10 +99,35 @@ public abstract class AponFormat {
     /** Literal token for boolean false textual representation. */
     protected static final String FALSE = "false";
 
+    /**
+     * Checks if the given string is enclosed in either double quotes ({@code "}) or single quotes ({@code '}).
+     * This method considers a string "quoted" if it starts and ends with the same type of quote character
+     * and has a length greater than 1.
+     *
+     * @param str the string to check
+     * @return {@code true} if the string is quoted; {@code false} otherwise
+     */
     static boolean wasQuoted(String str) {
         return (str != null && str.length() > 1 &&
                 ((str.charAt(0) == DOUBLE_QUOTE_CHAR && str.charAt(str.length() - 1) == DOUBLE_QUOTE_CHAR) ||
                         (str.charAt(0) == SINGLE_QUOTE_CHAR && str.charAt(str.length() - 1) == SINGLE_QUOTE_CHAR)));
+    }
+
+    /**
+     * Determines if the given string needs to be enclosed in quotes when written to APON.
+     * A string requires quoting if it contains special characters (double quotes, single quotes, newlines)
+     * or if it starts or ends with a space, as these conditions could lead to parsing ambiguity
+     * or loss of literal value in unquoted APON strings.
+     *
+     * @param str the string to check
+     * @return {@code true} if the string needs quoting; {@code false} otherwise
+     */
+    static boolean needsQuoting(String str) {
+        return (str != null && (str.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
+                str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
+                str.startsWith(SPACE) ||
+                str.endsWith(SPACE) ||
+                str.contains(NEW_LINE)));
     }
 
     /**

@@ -54,7 +54,7 @@ class FreeMarkerViewDispatcherTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.touchContextConfig().touchAspectranParameters();
         parameters.setDefaultTemplateEngineBean("freemarker");
 
         BeanRule freeMarkerConfigurationBeanRule = new BeanRule();

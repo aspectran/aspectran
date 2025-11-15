@@ -26,8 +26,8 @@ import java.util.List;
 
 /**
  * {@link Parameters} implementation designed to represent an ordered collection (array or list)
- * of parameter groups or values.
- * <p>This class extends {@link AbstractParameters} and provides functionality to manage
+ * of values, which can include primitive types, strings, or nested {@link Parameters} blocks.
+ * <p>This class extends {@link DefaultParameters} and provides functionality to manage
  * elements in an array-like structure. Internally, it uses the synthetic name
  * {@code <noname>} to store the individual elements of the array.</p>
  * <p>Unlike typical {@code Parameters} implementations that retrieve values by a specific name,
@@ -35,7 +35,8 @@ import java.util.List;
  * Consequently, most {@code get*} methods that attempt to retrieve a single named parameter
  * (e.g., {@code getString(String name)}) are not supported and will throw an
  * {@link UnsupportedOperationException}. Access to elements should primarily be done
- * through iteration or methods like {@link #getValueList()} or {@link #getParametersList()}.</p>
+ * through iteration or dedicated array-access methods like {@link #getValueList()},
+ * {@link #getStringList()}, or {@link #getParametersList()}.</p>
  * <p>This class is {@link Serializable}, allowing its instances to be persisted or
  * transferred across processes.</p>
  *
@@ -58,15 +59,18 @@ public class ArrayParameters extends DefaultParameters implements Iterable<Objec
     public static final String NONAME = "";
 
     /**
-     * Create an array container whose elements are {@link DefaultParameters} blocks.
+     * Creates a new {@code ArrayParameters} instance with a dynamic schema,
+     * capable of holding an ordered collection of any {@link ValueType}.
+     * Elements are stored internally under a synthetic name.
      */
     public ArrayParameters() {
         super(null);
-        newParameterValue(NONAME, ValueType.VARIABLE, true);
+        attachParameterValue(NONAME, ValueType.VARIABLE, true);
     }
 
     /**
-     * Parse APON text into a new array container whose elements are {@link DefaultParameters}.
+     * Parses APON text into a new {@code ArrayParameters} instance.
+     * The elements within the array can be of any {@link ValueType}.
      * @param apon APON text representing an array
      * @throws AponParseException if parsing fails
      */
@@ -76,53 +80,192 @@ public class ArrayParameters extends DefaultParameters implements Iterable<Objec
     }
 
     /**
-     * Create an array container with the given element class for each entry.
-     * @param elementClass the Parameters implementation for array elements
+     * Creates a new {@code ArrayParameters} instance with a fixed schema,
+     * where each element in the array is expected to be an instance of the specified
+     * {@link DefaultParameters}-derived class.
+     * @param elementClass the {@link DefaultParameters} implementation for array elements
      */
-    public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
-        super(createParameterKeys(elementClass));
+    public ArrayParameters(Class<? extends DefaultParameters> elementClass) {
+        // Create the single schema key used by this array container.
+        super(new ParameterKey[] { new ParameterKey(NONAME, elementClass, true) });
     }
 
     /**
-     * Parse APON text into a new array container with the given element class.
-     * @param elementClass the Parameters implementation for array elements
+     * Parses APON text into a new {@code ArrayParameters} instance with a fixed schema,
+     * where each element in the array is expected to be an instance of the specified
+     * {@link DefaultParameters}-derived class.
+     * @param elementClass the {@link DefaultParameters} implementation for array elements
      * @param apon APON text representing an array
      * @throws AponParseException if parsing fails
      */
-    public ArrayParameters(Class<? extends AbstractParameters> elementClass, String apon) throws AponParseException {
+    public ArrayParameters(Class<? extends DefaultParameters> elementClass, String apon) throws AponParseException {
         this(elementClass);
         readFrom(StringUtils.trimWhitespace(apon));
     }
 
     /**
-     * Create the single schema key used by this array container.
-     * @param elementClass the Parameters class used for elements
-     * @return a one-element key array for internal use
+     * Appends a new value to this array.
+     * The type of the value will be determined automatically.
+     * @param value the value to add
      */
-    @NonNull
-    private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
-        ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
-        return new ParameterKey[] { pk };
-    }
-
     public void addValue(Object value) {
         putValue(NONAME, value);
     }
 
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Object}s.
+     * Each element in the list corresponds to an entry in the array.
+     * @return a {@link List} containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
     public List<?> getValueList() {
         return getValueList(NONAME);
     }
 
     /**
-     * Return the contents as a list of parameter blocks.
-     * @return the list of elements or {@code null} if none
+     * Returns the contents of this array as a {@link String} array.
+     * Each element in the array is converted to its string representation.
+     * @return a {@link String} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public String[] getStringArray() {
+        return getStringArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link String}s.
+     * Each element in the list is converted to its string representation.
+     * @return a {@link List} containing all elements of this array as strings,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<String> getStringList() {
+        return getStringList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as an {@link Integer} array.
+     * Each element in the array is converted to an integer.
+     * @return an {@link Integer} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Integer[] getIntArray() {
+        return getIntArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Integer}s.
+     * Each element in the list is converted to an integer.
+     * @return a {@link List} containing all elements of this array as integers,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<Integer> getIntList() {
+        return getIntList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link Long} array.
+     * Each element in the array is converted to a long.
+     * @return a {@link Long} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Long[] getLongArray() {
+        return getLongArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Long}s.
+     * Each element in the list is converted to a long.
+     * @return a {@link List} containing all elements of this array as longs,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<Long> getLongList() {
+        return getLongList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link Float} array.
+     * Each element in the array is converted to a float.
+     * @return a {@link Float} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Float[] getFloatArray() {
+        return getFloatArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Float}s.
+     * Each element in the list is converted to a float.
+     * @return a {@link List} containing all elements of this array as floats,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<Float> getFloatList() {
+        return getFloatList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link Double} array.
+     * Each element in the array is converted to a double.
+     * @return a {@link Double} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Double[] getDoubleArray() {
+        return getDoubleArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Double}s.
+     * Each element in the list is converted to a double.
+     * @return a {@link List} containing all elements of this array as doubles,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<Double> getDoubleList() {
+        return getDoubleList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link Boolean} array.
+     * Each element in the array is converted to a boolean.
+     * @return a {@link Boolean} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Boolean[] getBooleanArray() {
+        return getBooleanArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Boolean}s.
+     * Each element in the list is converted to a boolean.
+     * @return a {@link List} containing all elements of this array as booleans,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public List<Boolean> getBooleanList() {
+        return getBooleanList(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link Parameters} array.
+     * Each element in the array is expected to be a {@link Parameters} instance.
+     * @return a {@link Parameters} array containing all elements of this array,
+     *      or {@code null} if the array is empty or not assigned
+     */
+    public Parameters[] getParametersArray() {
+        return getParametersArray(NONAME);
+    }
+
+    /**
+     * Returns the contents of this array as a {@link List} of {@link Parameters} blocks.
+     * Each element in the list is expected to be a {@link Parameters} instance.
+     * @param <T> the type of {@link Parameters}
+     * @return a {@link List} containing all elements of this array as {@link Parameters},
+     *      or {@code null} if the array is empty or not assigned
      */
     public <T extends Parameters> List<T> getParametersList() {
         return getParametersList(NONAME);
     }
 
     /**
-     * Returns an iterator over the parameter blocks contained in this array.
+     * Returns an iterator over the elements contained in this array.
+     * The elements can be of any {@link ValueType}.
      * @return an iterator, possibly empty
      */
     @Override

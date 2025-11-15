@@ -39,7 +39,7 @@ class PebbleTemplateEngineTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.touchContextConfig().touchAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
         parameters.addRule(new ResourceAppendRule("config/pebble-test-config.xml"));
 

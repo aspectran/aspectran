@@ -154,7 +154,7 @@ public class RulesToParameters {
 
         Map<String, String> typeAliases = ruleParsingContext.getTypeAliases();
         if (!typeAliases.isEmpty()) {
-            TypeAliasesParameters typeAliasesParameters = aspectranParameters.newParameters(AspectranParameters.typeAliases);
+            TypeAliasesParameters typeAliasesParameters = aspectranParameters.attachParameters(AspectranParameters.typeAliases);
             for (Map.Entry<String, String> entry : typeAliases.entrySet()) {
                 typeAliasesParameters.putTypeAlias(entry.getKey(), entry.getValue());
             }
@@ -333,7 +333,7 @@ public class RulesToParameters {
                 joinpointParameters.putValueIfNotNull(JoinpointParameters.target, aspectRule.getJoinpointTargetType());
                 aspectParameters.putValue(AspectParameters.joinpoint, joinpointParameters);
             } else {
-                joinpointParameters = aspectParameters.newParameters(AspectParameters.joinpoint);
+                joinpointParameters = aspectParameters.attachParameters(AspectParameters.joinpoint);
                 joinpointParameters.putValueIfNotNull(JoinpointParameters.target, aspectRule.getJoinpointTargetType());
             }
         }
@@ -341,7 +341,7 @@ public class RulesToParameters {
         if (aspectRule.getSettingsAdviceRule() != null) {
             Map<String, Object> settings = aspectRule.getSettingsAdviceRule().getSettings();
             if (settings != null) {
-                SettingsParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
+                SettingsParameters settingsParameters = aspectParameters.attachParameters(AspectParameters.settings);
                 for (Map.Entry<String, Object> entry : settings.entrySet()) {
                     settingsParameters.putSetting(entry.getKey(), entry.getValue());
                 }
@@ -349,26 +349,26 @@ public class RulesToParameters {
         }
 
         if (aspectRule.getAdviceRuleList() != null) {
-            AdviceParameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
+            AdviceParameters adviceParameters = aspectParameters.attachParameters(AspectParameters.advice);
             adviceParameters.putValueIfNotNull(AdviceParameters.bean, aspectRule.getAdviceBeanId());
             for (AdviceRule adviceRule : aspectRule.getAdviceRuleList()) {
                 if (adviceRule.getAdviceType() == AdviceType.BEFORE) {
-                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.beforeAdvice);
                     if (adviceRule.getAdviceAction() != null) {
                         toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
                 } else if (adviceRule.getAdviceType() == AdviceType.AFTER) {
-                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.afterAdvice);
                     if (adviceRule.getAdviceAction() != null) {
                         toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
                 } else if (adviceRule.getAdviceType() == AdviceType.AROUND) {
-                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.aroundAdvice);
                     if (adviceRule.getAdviceAction() != null) {
                         toActionParameters(adviceRule.getAdviceAction(), adviceActionParameters);
                     }
                 } else if (adviceRule.getAdviceType() == AdviceType.FINALLY) {
-                    AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
+                    AdviceActionParameters adviceActionParameters = adviceParameters.attachParameters(AdviceParameters.finallyAdvice);
                     if (adviceRule.getExceptionThrownRule() != null) {
                         adviceActionParameters.putValue(AdviceActionParameters.thrown,
                                 toExceptionThrownParameters(adviceRule.getExceptionThrownRule()));
@@ -471,12 +471,12 @@ public class RulesToParameters {
         }
         scheduleParameters.putValueIfNotNull(ScheduleParameters.id, scheduleRule.getId());
 
-        SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
+        SchedulerParameters schedulerParameters = scheduleParameters.attachParameters(ScheduleParameters.scheduler);
         schedulerParameters.putValueIfNotNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
 
         TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
         if (expressionParameters != null && scheduleRule.getTriggerType() != null) {
-            TriggerParameters triggerParameters = schedulerParameters.newParameters(SchedulerParameters.trigger);
+            TriggerParameters triggerParameters = schedulerParameters.attachParameters(SchedulerParameters.trigger);
             triggerParameters.putValue(TriggerParameters.type, scheduleRule.getTriggerType());
             triggerParameters.putValue(TriggerParameters.expression, expressionParameters);
         }
@@ -537,7 +537,7 @@ public class RulesToParameters {
         RequestRule requestRule = transletRule.getRequestRule();
         if (requestRule != null) {
             if (requestRule.isExplicit()) {
-                RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
+                RequestParameters requestParameters = transletParameters.attachParameters(TransletParameters.request);
                 requestParameters.putValueIfNotNull(RequestParameters.method, requestRule.getAllowedMethod());
                 requestParameters.putValueIfNotNull(RequestParameters.encoding, requestRule.getEncoding());
 
@@ -566,17 +566,17 @@ public class RulesToParameters {
         ContentList contentList = transletRule.getContentList();
         if (contentList != null) {
             if (contentList.isExplicit()) {
-                ContentsParameters contentsParameters = transletParameters.newParameters(TransletParameters.contents);
+                ContentsParameters contentsParameters = transletParameters.attachParameters(TransletParameters.contents);
                 contentsParameters.putValueIfNotNull(ContentsParameters.name, contentList.getName());
                 for (ActionList actionList : contentList) {
-                    ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
+                    ContentParameters contentParameters = contentsParameters.attachParameters(ContentsParameters.content);
                     contentParameters.putValueIfNotNull(ContentParameters.name, actionList.getName());
                     toActionParameters(actionList, contentParameters);
                 }
             } else {
                 for (ActionList actionList : contentList) {
                     if (actionList.isExplicit()) {
-                        ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
+                        ContentParameters contentParameters = transletParameters.attachParameters(TransletParameters.content);
                         contentParameters.putValueIfNotNull(ContentParameters.name, actionList.getName());
                         toActionParameters(actionList, contentParameters);
                     } else {
@@ -1077,9 +1077,9 @@ public class RulesToParameters {
             for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRules()) {
                 ChooseWhenParameters chooseWhenParameters;
                 if (chooseWhenRule.getExpression() != null) {
-                    chooseWhenParameters = actionParameters.newParameters(ActionParameters.when);
+                    chooseWhenParameters = actionParameters.attachParameters(ActionParameters.when);
                 } else {
-                    chooseWhenParameters = actionParameters.newParameters(ActionParameters.otherwise);
+                    chooseWhenParameters = actionParameters.attachParameters(ActionParameters.otherwise);
                 }
                 chooseWhenParameters.putValueIfNotNull(ChooseWhenParameters.test, chooseWhenRule.getExpression());
                 if (chooseWhenRule.getResponse() != null) {
@@ -1205,7 +1205,7 @@ public class RulesToParameters {
                 Map<String, BeanRule> beanRuleMap = itemRule.getBeanRuleMap();
                 if (beanRuleMap != null) {
                     for (Map.Entry<String, BeanRule> entry : beanRuleMap.entrySet()) {
-                        EntryParameters ps = itemParameters.newParameters(ItemParameters.entry);
+                        EntryParameters ps = itemParameters.attachParameters(ItemParameters.entry);
                         BeanParameters beanParameters = toBeanParameters(entry.getValue());
                         ps.putValue(EntryParameters.name, entry.getKey());
                         ps.putValue(EntryParameters.bean, beanParameters);
@@ -1215,7 +1215,7 @@ public class RulesToParameters {
                 Map<String, String> valueMap = itemRule.getValueMap();
                 if (valueMap != null) {
                     for (Map.Entry<String, String> entry : valueMap.entrySet()) {
-                        EntryParameters ps = itemParameters.newParameters(ItemParameters.entry);
+                        EntryParameters ps = itemParameters.attachParameters(ItemParameters.entry);
                         Object o = determineItemValue(entry.getValue(), itemRule.getValueType());
                         ps.putValue(EntryParameters.name, entry.getKey());
                         ps.putValue(EntryParameters.value, o);

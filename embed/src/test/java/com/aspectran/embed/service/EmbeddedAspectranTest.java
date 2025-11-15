@@ -47,9 +47,9 @@ class EmbeddedAspectranTest {
         String ruleFile = ResourceUtils.FILE_URL_PREFIX + file.getCanonicalPath();
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig
-            .newContextConfig()
+            .touchContextConfig()
             .setContextRules(new String[] {ruleFile});
-        aspectranConfig.newEmbedConfig().newSessionManagerConfig().setEnabled(true);
+        aspectranConfig.touchEmbedConfig().touchSessionManagerConfig().setEnabled(true);
         System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY_NAME, "true");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

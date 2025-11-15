@@ -161,14 +161,6 @@ public class WebConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new configuration for acceptable request patterns.
-     * @return the new {@code AcceptableConfig} instance
-     */
-    public AcceptableConfig newAcceptableConfig() {
-        return newParameters(acceptable);
-    }
-
-    /**
      * Returns the existing configuration for acceptable request patterns
      * or creates a new one if it does not exist.
      * @return a non-null {@code AcceptableConfig} instance

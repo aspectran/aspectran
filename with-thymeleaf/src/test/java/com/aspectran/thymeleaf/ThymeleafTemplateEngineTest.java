@@ -41,7 +41,7 @@ class ThymeleafTemplateEngineTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.touchContextConfig().touchAspectranParameters();
         parameters.setDefaultTemplateEngineBean("thymeleaf");
         parameters.addRule(new ResourceAppendRule("config/thymeleaf-test-config.xml"));
 

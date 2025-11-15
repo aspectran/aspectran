@@ -40,7 +40,7 @@ public class TypeAliasesParameters extends DefaultParameters {
     }
 
     public void putTypeAlias(String alias, Object type) {
-        TypeAliasParameters typeAliasParameters = newParameters(typeAlias);
+        TypeAliasParameters typeAliasParameters = attachParameters(typeAlias);
         typeAliasParameters.putValue(TypeAliasParameters.alias, alias);
         typeAliasParameters.putValue(TypeAliasParameters.type, type);
     }

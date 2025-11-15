@@ -46,7 +46,7 @@ class PebbleViewDispatcherTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.touchContextConfig().touchAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
 
         BeanRule pebbleEngineFactoryBeanRule = new BeanRule();

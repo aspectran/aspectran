@@ -33,9 +33,9 @@ class AspectranSchedulerTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig()
+        aspectranConfig.touchContextConfig()
                 .setContextRules(new String[] {"classpath:config/scheduler/scheduler-context.xml"});
-        aspectranConfig.newSchedulerConfig()
+        aspectranConfig.touchSchedulerConfig()
                 .setStartDelaySeconds(0)
                 .setWaitOnShutdown(true)
                 .setEnabled(true);

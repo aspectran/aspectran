@@ -266,7 +266,7 @@ public interface Parameters {
      * @param valueType the declared type
      * @return a new holder associated with this container
      */
-    ParameterValue newParameterValue(String name, ValueType valueType);
+    ParameterValue attachParameterValue(String name, ValueType valueType);
 
     /**
      * Create a new {@link ParameterValue} holder with the given type and array flag.
@@ -275,23 +275,27 @@ public interface Parameters {
      * @param array whether the parameter accepts multiple values
      * @return a new holder associated with this container
      */
-    ParameterValue newParameterValue(String name, ValueType valueType, boolean array);
+    ParameterValue attachParameterValue(String name, ValueType valueType, boolean array);
 
     /**
-     * Create and attach a new nested {@link Parameters} instance under the given name.
+     * Creates a new nested {@link Parameters} instance and attaches it as the value for the specified parameter name.
+     * This method ensures that the newly created {@link Parameters} instance becomes the value of the specified parameter,
+     * potentially replacing an existing value.
      * @param <T> the concrete subtype
      * @param name the parameter name
-     * @return the created nested container
+     * @return the created and attached nested container
      */
-    <T extends Parameters> T newParameters(String name);
+    <T extends Parameters> T attachParameters(String name);
 
     /**
-     * Create and attach a new nested {@link Parameters} instance under the given key.
+     * Creates a new nested {@link Parameters} instance and attaches it as the value for the specified parameter key.
+     * This method ensures that the newly created {@link Parameters} instance becomes the value of the specified parameter,
+     * potentially replacing an existing value.
      * @param <T> the concrete subtype
      * @param key the parameter definition
-     * @return the created nested container
+     * @return the created and attached nested container
      */
-    <T extends Parameters> T newParameters(ParameterKey key);
+    <T extends Parameters> T attachParameters(ParameterKey key);
 
     /**
      * Ensure a nested {@link Parameters} exists under the given name and return it.
@@ -311,6 +315,14 @@ public interface Parameters {
      */
     <T extends Parameters> T touchParameters(ParameterKey key);
 
+    /**
+     * Creates a new nested {@link Parameters} instance without attaching it as the value for the specified parameter name.
+     * This method is responsible only for the instantiation and basic setup (like setting the proprietor)
+     * of the nested {@link Parameters} instance. The created instance is not automatically assigned as this parameter's value.
+     * @param <T> the concrete subtype
+     * @param name the parameter name
+     * @return the newly created, unattached nested container
+     */
     <T extends Parameters> T createParameters(String name);
 
     /**

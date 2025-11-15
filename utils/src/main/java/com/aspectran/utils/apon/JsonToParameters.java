@@ -161,7 +161,7 @@ public class JsonToParameters {
                         valueList.add(parameters);
                         container = parameters;
                     } else {
-                        container = container.newParameters(name);
+                        container = container.attachParameters(name);
                     }
                 }
                 while (reader.hasNext()) {
@@ -267,7 +267,7 @@ public class JsonToParameters {
     private Parameter touchParameter(@NonNull Parameters container, String name, ValueType valueType) {
         Parameter parameter = container.getParameter(name);
         if (parameter == null) {
-            parameter = container.newParameterValue(name, valueType);
+            parameter = container.attachParameterValue(name, valueType);
         }
         return parameter;
     }
@@ -275,7 +275,7 @@ public class JsonToParameters {
     private void touchEmptyArrayParameter(@NonNull Parameters container, String name) {
         ParameterValue pv = container.getParameterValue(name);
         if (pv == null) {
-            pv = container.newParameterValue(name, ValueType.VARIABLE, true);
+            pv = container.attachParameterValue(name, ValueType.VARIABLE, true);
         }
         pv.touchValue();
     }

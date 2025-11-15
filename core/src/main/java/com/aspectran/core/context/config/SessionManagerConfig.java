@@ -397,14 +397,6 @@ public class SessionManagerConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new configuration for the file-based session store.
-     * @return the new {@code SessionFileStoreConfig} instance
-     */
-    public SessionFileStoreConfig newFileStoreConfig() {
-        return newParameters(fileStore);
-    }
-
-    /**
      * Returns the existing configuration for the file-based session store
      * or creates a new one if it does not exist.
      * @return a non-null {@code SessionFileStoreConfig} instance

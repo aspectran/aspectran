@@ -285,14 +285,6 @@ public class ContextConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new configuration for active profiles.
-     * @return the new {@code ContextProfilesConfig} instance
-     */
-    public ContextProfilesConfig newProfilesConfig() {
-        return newParameters(profiles);
-    }
-
-    /**
      * Returns the existing or a new configuration for active profiles.
      * @return a non-null {@code ContextProfilesConfig} instance
      */
@@ -317,14 +309,6 @@ public class ContextConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new configuration for asynchronous processing.
-     * @return the new {@code AsyncConfig} instance
-     */
-    public AsyncConfig newAsyncConfig() {
-        return newParameters(async);
-    }
-
-    /**
      * Returns the existing or a new configuration for asynchronous processing.
      * @return a non-null {@code AsyncConfig} instance
      */
@@ -346,14 +330,6 @@ public class ContextConfig extends DefaultParameters {
      */
     public void setAutoReloadConfig(ContextAutoReloadConfig autoReloadConfig) {
         putValue(autoReload, autoReloadConfig);
-    }
-
-    /**
-     * Creates a new configuration for automatic context reloading.
-     * @return the new {@code ContextAutoReloadConfig} instance
-     */
-    public ContextAutoReloadConfig newAutoReloadConfig() {
-        return newParameters(autoReload);
     }
 
     /**
@@ -396,14 +372,6 @@ public class ContextConfig extends DefaultParameters {
      */
     public AspectranParameters getAspectranParameters() {
         return getParameters(parameters);
-    }
-
-    /**
-     * Creates a new Aspectran parameters section for context rules.
-     * @return the new {@code AspectranParameters} instance
-     */
-    public AspectranParameters newAspectranParameters() {
-        return newParameters(parameters);
     }
 
     /**

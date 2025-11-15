@@ -46,7 +46,8 @@ import java.util.Map;
  *
  * @see DefaultParameters
  * @see VariableParameters
- */public abstract class AbstractParameters implements Parameters {
+ */
+public abstract class AbstractParameters implements Parameters {
 
     private final Map<String, ParameterValue> parameterValueMap;
 
@@ -67,7 +68,7 @@ import java.util.Map;
         if (parameterKeys != null) {
             Map<String, ParameterValue> altValueMap = new HashMap<>();
             for (ParameterKey pk : parameterKeys) {
-                ParameterValue pv = pk.newParameterValue();
+                ParameterValue pv = pk.createParameterValue();
                 pv.setContainer(this);
                 valueMap.put(pk.getName(), pv);
                 if (pk.getAltNames() != null) {
@@ -248,13 +249,32 @@ import java.util.Map;
         return hasParameter(key.getName());
     }
 
+    /**
+     * Creates and adds a new {@link ParameterValue} to this container.
+     * This method is only supported for {@code Parameters} with a dynamic (non-fixed) structure.
+     * The new parameter is automatically added to this container's internal map.
+     * @param name the name of the new parameter
+     * @param valueType the {@link ValueType} of the new parameter
+     * @return the newly created {@link ParameterValue} instance
+     * @throws IllegalStateException if this {@code Parameters} instance has a fixed structure
+     */
     @Override
-    public ParameterValue newParameterValue(String name, ValueType valueType) {
-        return newParameterValue(name, valueType, false);
+    public ParameterValue attachParameterValue(String name, ValueType valueType) {
+        return attachParameterValue(name, valueType, false);
     }
 
+    /**
+     * Creates and adds a new array-type {@link ParameterValue} to this container.
+     * This method is only supported for {@code Parameters} with a dynamic (non-fixed) structure.
+     * The new parameter is automatically added to this container's internal map.
+     * @param name the name of the new parameter
+     * @param valueType the {@link ValueType} of the new parameter
+     * @param array whether the new parameter is an array type
+     * @return the newly created {@link ParameterValue} instance
+     * @throws IllegalStateException if this {@code Parameters} instance has a fixed structure
+     */
     @Override
-    public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
+    public ParameterValue attachParameterValue(String name, ValueType valueType, boolean array) {
         Assert.state(!structureFixed, "Unknown parameter: " + name);
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
@@ -262,8 +282,18 @@ import java.util.Map;
         return pv;
     }
 
+    /**
+     * Creates a new nested {@link Parameters} instance and attaches it as the value for the specified parameter name.
+     * <p>If a parameter with the given name does not exist in a dynamic-schema container, it will be created.
+     * This method delegates to {@link Parameter#attachParameters(Parameter)}, which handles the creation and attachment.
+     * The resulting nested {@code Parameters} instance is set as the value of the specified parameter.
+     * @param name the name of the parameter for which to create and attach a new {@code Parameters} instance
+     * @param <T> the type of the nested {@code Parameters}
+     * @return the newly created and attached {@code Parameters} instance
+     * @throws UnknownParameterException if the parameter name is not defined in a fixed-schema container
+     */
     @Override
-    public <T extends Parameters> T newParameters(String name) {
+    public <T extends Parameters> T attachParameters(String name) {
         Parameter p = getParameter(name);
         if (structureFixed) {
             if (p == null) {
@@ -271,26 +301,36 @@ import java.util.Map;
             }
         } else {
             if (p == null) {
-                p = newParameterValue(name, ValueType.PARAMETERS);
+                p = attachParameterValue(name, ValueType.PARAMETERS);
             }
         }
-        T ps = p.newParameters(p);
+        T ps = p.attachParameters(p);
         ps.setActualName(name);
         return ps;
     }
 
     @Override
-    public <T extends Parameters> T newParameters(ParameterKey key) {
+    public <T extends Parameters> T attachParameters(ParameterKey key) {
         checkKey(key);
-        return newParameters(key.getName());
+        return attachParameters(key.getName());
     }
 
+    /**
+     * Retrieves the nested {@link Parameters} instance for the specified name, creating and attaching it if it does not exist.
+     * <p>This method provides "get-or-create" semantics. If a {@code Parameters} value is already
+     * associated with the given name, it is returned. Otherwise, a new {@code Parameters} instance is
+     * created using {@link #attachParameters(String)} and returned.
+     * @param name the name of the nested {@code Parameters} to retrieve or create
+     * @param <T> the type of the nested {@code Parameters}
+     * @return the existing or newly created {@code Parameters} instance
+     * @throws UnknownParameterException if the parameter name is not defined in a fixed-schema container
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T touchParameters(String name) {
         Parameters parameters = getParameters(name);
         if (parameters == null) {
-            parameters = newParameters(name);
+            parameters = attachParameters(name);
         }
         return (T)parameters;
     }
@@ -301,6 +341,16 @@ import java.util.Map;
         return touchParameters(key.getName());
     }
 
+    /**
+     * Creates a new nested {@link Parameters} instance but does not attach it as the value for the specified parameter.
+     * <p>This method is a factory for creating new {@code Parameters} instances that are configured to be part of this
+     * container's hierarchy (by setting their proprietor), but they are not automatically added as a value.
+     * This is useful when you need to create an instance and manipulate it before deciding whether to attach it.
+     * @param name the name of the parameter for which to create a new {@code Parameters} instance
+     * @param <T> the type of the nested {@code Parameters}
+     * @return the newly created, unattached {@code Parameters} instance
+     * @throws UnknownParameterException if the parameter name is not defined in a fixed-schema container
+     */
     @Override
     public <T extends Parameters> T createParameters(String name) {
         Parameter p = getParameter(name);
@@ -310,7 +360,7 @@ import java.util.Map;
             }
         } else {
             if (p == null) {
-                p = newParameterValue(name, ValueType.PARAMETERS);
+                p = attachParameterValue(name, ValueType.PARAMETERS);
             }
         }
         T ps = p.createParameters(p);
@@ -445,7 +495,7 @@ import java.util.Map;
             Parameter p = getParameter(name);
             if (p == null) {
                 ValueType valueType = ValueType.resolveFrom(value);
-                p = newParameterValue(name, valueType);
+                p = attachParameterValue(name, valueType);
             }
             putValue(p, name, value);
         }
@@ -454,7 +504,7 @@ import java.util.Map;
     private void touchEmptyArrayParameter(String name) {
         ParameterValue pv = getParameterValue(name);
         if (pv == null) {
-            pv = newParameterValue(name, ValueType.VARIABLE, true);
+            pv = attachParameterValue(name, ValueType.VARIABLE, true);
         }
         pv.touchValue();
     }
@@ -463,7 +513,7 @@ import java.util.Map;
         Parameter p = getParameter(name);
         if (p == null) {
             ValueType valueType = ValueType.resolveFrom(value);
-            p = newParameterValue(name, valueType, true);
+            p = attachParameterValue(name, valueType, true);
         }
         checkArrayType(p);
         if (value != null && value.getClass().isArray()) {
@@ -569,7 +619,6 @@ import java.util.Map;
     public String toString() {
         try {
             return new AponWriter()
-                    .nullWritable(false)
                     .write(this)
                     .toString();
         } catch (IOException e) {

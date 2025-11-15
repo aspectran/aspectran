@@ -75,14 +75,6 @@ public class DaemonConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new configuration for the command executor.
-     * @return the new {@code DaemonExecutorConfig} instance
-     */
-    public DaemonExecutorConfig newExecutorConfig() {
-        return newParameters(executor);
-    }
-
-    /**
      * Returns the existing or a new configuration for the command executor.
      * @return a non-null {@code DaemonExecutorConfig} instance
      */
@@ -96,14 +88,6 @@ public class DaemonConfig extends DefaultParameters {
      */
     public DaemonPollingConfig getPollingConfig() {
         return getParameters(polling);
-    }
-
-    /**
-     * Creates a new configuration for command polling.
-     * @return the new {@code DaemonPollingConfig} instance
-     */
-    public DaemonPollingConfig newPollingConfig() {
-        return newParameters(polling);
     }
 
     /**
@@ -152,14 +136,6 @@ public class DaemonConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new session manager configuration.
-     * @return the new {@code SessionManagerConfig} instance
-     */
-    public SessionManagerConfig newSessionManagerConfig() {
-        return newParameters(session);
-    }
-
-    /**
      * Returns the existing session manager configuration or creates a new one if it does not exist.
      * @return a non-null {@code SessionManagerConfig} instance
      */
@@ -173,14 +149,6 @@ public class DaemonConfig extends DefaultParameters {
      */
     public AcceptableConfig getAcceptableConfig() {
         return getParameters(acceptable);
-    }
-
-    /**
-     * Creates a new configuration for acceptable request patterns.
-     * @return the new {@code AcceptableConfig} instance
-     */
-    public AcceptableConfig newAcceptableConfig() {
-        return newParameters(acceptable);
     }
 
     /**

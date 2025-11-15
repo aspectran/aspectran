@@ -37,8 +37,8 @@ class FreeMarkerTemplateEngineTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        ContextConfig contextConfig = aspectranConfig.newContextConfig();
-        AspectranParameters parameters = contextConfig.newAspectranParameters();
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
+        AspectranParameters parameters = contextConfig.touchAspectranParameters();
         parameters.setDefaultTemplateEngineBean("freemarker");
         parameters.addRule(new ResourceAppendRule("config/freemarker-test-config.xml"));
 

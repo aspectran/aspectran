@@ -74,7 +74,7 @@ public class ItemHolderParameters extends DefaultParameters {
     }
 
     public ItemParameters newItemParameters() {
-        return newParameters(item);
+        return attachParameters(item);
     }
 
 }

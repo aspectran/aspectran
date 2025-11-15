@@ -26,20 +26,27 @@
  *
  * <p>Key types include:</p>
  * <ul>
- *   <li>{@link com.aspectran.utils.apon.Parameters} – the central contract representing a
- *       set of named parameters with typed values; implemented by
- *       {@link com.aspectran.utils.apon.VariableParameters} (dynamic structure) and
- *       {@link com.aspectran.utils.apon.ArrayParameters} (root array of nameless entries).</li>
- *   <li>{@link com.aspectran.utils.apon.AbstractParameters} – base class providing common
- *       storage, type-safe accessors, and support for hierarchical/nested parameters.</li>
+ *   <li>{@link com.aspectran.utils.apon.Parameters} – The central interface for a collection of
+ *       named parameters with typed values.</li>
+ *   <li>{@link com.aspectran.utils.apon.AbstractParameters} – An abstract base class that provides
+ *       the core data structure for managing parameters and their hierarchical relationships.
+ *       It delegates the implementation of type-safe accessor methods to subclasses.</li>
+ *   <li>{@link com.aspectran.utils.apon.DefaultParameters} – The standard base class for creating
+ *       new {@code Parameters} implementations. It extends {@code AbstractParameters} and provides
+ *       concrete implementations for all type-safe accessor methods (e.g., {@code getString},
+ *       {@code getInt}).</li>
+ *   <li>{@link com.aspectran.utils.apon.VariableParameters} – A serializable, dynamic
+ *       implementation of {@code Parameters} where parameters can be added at runtime.</li>
+ *   <li>{@link com.aspectran.utils.apon.ArrayParameters} – A specialized {@code Parameters}
+ *       implementation for handling root arrays of nameless entries.</li>
  *   <li>{@link com.aspectran.utils.apon.AponReader} and {@link com.aspectran.utils.apon.AponWriter} –
- *       streaming reader/writer for APON text. Closeable variants are available as
+ *       Streaming reader/writer for APON text. Closeable variants are available as
  *       {@link com.aspectran.utils.apon.AponReaderCloseable} and
  *       {@link com.aspectran.utils.apon.AponWriterCloseable}.</li>
- *   <li>{@link com.aspectran.utils.apon.AponLines} – a small builder to programmatically
+ *   <li>{@link com.aspectran.utils.apon.AponLines} – A small builder to programmatically
  *       assemble APON text using a fluent API.</li>
  *   <li>{@link com.aspectran.utils.apon.JsonToParameters} and
- *       {@link com.aspectran.utils.apon.XmlToParameters} – helpers to convert JSON or XML
+ *       {@link com.aspectran.utils.apon.XmlToParameters} – Helpers to convert JSON or XML
  *       into {@code Parameters}.</li>
  * </ul>
  *

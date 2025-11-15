@@ -17,6 +17,10 @@ package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -129,6 +133,167 @@ class ArrayParametersTest {
         ArrayParameters programmatically = new ArrayParameters();
         assertNotNull(programmatically.iterator());
         assertEquals("[\n]", programmatically.toString().trim().replace("\r\n", "\n"));
+    }
+
+    @Test
+    void testGettingTypedArrays() {
+        // Test with Strings
+        ArrayParameters stringParams = new ArrayParameters();
+        stringParams.addValue("apple");
+        stringParams.addValue("banana");
+        stringParams.addValue("cherry");
+
+        String[] stringArray = {"apple", "banana", "cherry"};
+        List<String> stringList = List.of("apple", "banana", "cherry");
+        assertArrayEquals(stringArray, stringParams.getStringArray());
+        assertEquals(stringList, stringParams.getStringList());
+
+        // Test with Integers
+        ArrayParameters intParams = new ArrayParameters();
+        intParams.addValue(10);
+        intParams.addValue(20);
+        intParams.addValue(30);
+
+        Integer[] intArray = {10, 20, 30};
+        List<Integer> intList = List.of(10, 20, 30);
+        assertArrayEquals(intArray, intParams.getIntArray());
+        assertEquals(intList, intParams.getIntList());
+
+        // Test with Longs
+        ArrayParameters longParams = new ArrayParameters();
+        longParams.addValue(100L);
+        longParams.addValue(200L);
+        longParams.addValue(300L);
+
+        Long[] longArray = {100L, 200L, 300L};
+        List<Long> longList = List.of(100L, 200L, 300L);
+        assertArrayEquals(longArray, longParams.getLongArray());
+        assertEquals(longList, longParams.getLongList());
+
+        // Test with Doubles
+        ArrayParameters doubleParams = new ArrayParameters();
+        doubleParams.addValue(10.1);
+        doubleParams.addValue(20.2);
+        doubleParams.addValue(30.3);
+
+        Double[] doubleArray = {10.1, 20.2, 30.3};
+        List<Double> doubleList = List.of(10.1, 20.2, 30.3);
+        assertArrayEquals(doubleArray, doubleParams.getDoubleArray());
+        assertEquals(doubleList, doubleParams.getDoubleList());
+
+        // Test with Booleans
+        ArrayParameters boolParams = new ArrayParameters();
+        boolParams.addValue(true);
+        boolParams.addValue(false);
+        boolParams.addValue(true);
+
+        Boolean[] boolArray = {true, false, true};
+        List<Boolean> boolList = List.of(true, false, true);
+        assertArrayEquals(boolArray, boolParams.getBooleanArray());
+        assertEquals(boolList, boolParams.getBooleanList());
+    }
+
+    @Test
+    void testMixedTypeArray() {
+        ArrayParameters mixedParams = new ArrayParameters();
+        mixedParams.addValue("text");
+        mixedParams.addValue(123);
+        mixedParams.addValue(true);
+        Parameters p = new VariableParameters();
+        p.putValue("p1", "v1");
+        mixedParams.addValue(p);
+
+        List<?> valueList = mixedParams.getValueList();
+        assertEquals(4, valueList.size());
+        assertEquals("text", valueList.get(0));
+        assertEquals(123, valueList.get(1));
+        assertEquals(true, valueList.get(2));
+        assertEquals(p, valueList.get(3));
+
+        // Test conversion to string array
+        String[] stringArray = {"text", "123", "true", p.toString()};
+        assertArrayEquals(stringArray, mixedParams.getStringArray());
+    }
+
+    @Test
+    void testNestedArrayParametersInVariableParameters() throws IOException {
+        VariableParameters mainParams = new VariableParameters();
+
+        // 1. Add an ArrayParameters of Strings
+        ArrayParameters stringArrayParams = new ArrayParameters();
+        stringArrayParams.addValue("value1");
+        stringArrayParams.addValue("value2");
+        mainParams.putValue("stringList", stringArrayParams);
+
+        // 2. Add an ArrayParameters of Integers
+        ArrayParameters intArrayParams = new ArrayParameters();
+        intArrayParams.addValue(100);
+        intArrayParams.addValue(200);
+        mainParams.putValue("intList", intArrayParams);
+
+        // 3. Add an ArrayParameters of nested Parameters
+        ArrayParameters nestedParamsArray = new ArrayParameters();
+        VariableParameters nested1 = new VariableParameters();
+        nested1.putValue("id", 1);
+        nested1.putValue("name", "Item A");
+        nestedParamsArray.addValue(nested1);
+
+        VariableParameters nested2 = new VariableParameters();
+        nested2.putValue("id", 2);
+        nested2.putValue("name", "Item B");
+        nestedParamsArray.addValue(nested2);
+        mainParams.putValue("objectList", nestedParamsArray);
+
+        // Verify retrieval of stringList
+        ArrayParameters retrievedStringArray = mainParams.getParameters("stringList");
+        assertNotNull(retrievedStringArray);
+        assertEquals(2, retrievedStringArray.getStringList().size());
+        assertEquals("value1", retrievedStringArray.getStringList().get(0));
+        assertEquals("value2", retrievedStringArray.getStringList().get(1));
+
+        // Verify retrieval of intList
+        ArrayParameters retrievedIntArray = mainParams.getParameters("intList");
+        assertNotNull(retrievedIntArray);
+        assertEquals(2, retrievedIntArray.getIntList().size());
+        assertEquals(100, retrievedIntArray.getIntList().get(0));
+        assertEquals(200, retrievedIntArray.getIntList().get(1));
+
+        // Verify retrieval of objectList
+        ArrayParameters retrievedObjectArray = mainParams.getParameters("objectList");
+        assertNotNull(retrievedObjectArray);
+        assertEquals(2, retrievedObjectArray.getParametersList().size());
+        assertEquals(1, retrievedObjectArray.getParametersList().get(0).getInt("id"));
+        assertEquals("Item A", retrievedObjectArray.getParametersList().get(0).getString("name"));
+        assertEquals(2, retrievedObjectArray.getParametersList().get(1).getInt("id"));
+        assertEquals("Item B", retrievedObjectArray.getParametersList().get(1).getString("name"));
+
+        // 4. Verify APON string output
+        String apon = new AponWriter().write(mainParams).toString();
+        assertEquals(apon, mainParams.toString());
+
+        String expectedApon = """
+                stringList: [
+                  value1
+                  value2
+                ]
+                intList: [
+                  100
+                  200
+                ]
+                objectList: [
+                  {
+                    id: 1
+                    name: Item A
+                  }
+                  {
+                    id: 2
+                    name: Item B
+                  }
+                ]""";
+        // Normalize line endings for comparison
+        String actual = mainParams.toString().trim().replace("\r\n", "\n");
+        String normalizedExpected = expectedApon.trim().replace("\r\n", "\n");
+        assertEquals(normalizedExpected, actual);
     }
 
 }

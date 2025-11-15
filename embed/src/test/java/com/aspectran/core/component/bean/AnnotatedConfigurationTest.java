@@ -43,7 +43,7 @@ class AnnotatedConfigurationTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig()
+        aspectranConfig.touchContextConfig()
                 .setContextRules(new String[] {"classpath:config/anno/annotated-configuration-test-context.xml"})
                 .addBasePackage("com.aspectran.embed.sample.anno");
 

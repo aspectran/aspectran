@@ -70,13 +70,13 @@ public interface Parameter {
     void setValueTypeHinted(boolean valueTypeHinted);
 
     /**
-     * Returns the concrete {@link AbstractParameters} class type that this parameter
+     * Returns the concrete {@link DefaultParameters} class type that this parameter
      * represents when its {@link ValueType} is {@code PARAMETERS}.
      * This is typically used for fixed-structure parameters to define the expected
      * type of nested parameter blocks.
      * @return the class type of the nested parameters, or {@code null} if not applicable
      */
-    Class<? extends AbstractParameters> getParametersClass();
+    Class<? extends DefaultParameters> getParametersClass();
 
     /**
      * Whether the parameter accepts multiple values (array semantics).
@@ -123,11 +123,6 @@ public interface Parameter {
      * Return the values as an untyped list view.
      */
     List<?> getValueList();
-
-    /**
-     * Return the values as an object array (may contain boxed primitives or Parameters).
-     */
-    Object[] getValueArray();
 
     /**
      * Retrieve the value as a String, performing conversion as needed.
@@ -235,13 +230,25 @@ public interface Parameter {
     List<Parameters> getValueAsParametersList();
 
     /**
-     * Create and attach a new nested Parameters instance under this parameter (must be PARAMETERS type).
+     * Creates a new nested {@link Parameters} instance and attaches it as the value of this parameter.
+     * This method ensures that the newly created {@link Parameters} instance becomes the value of this parameter,
+     * potentially replacing an existing value.
+     * The parameter's {@link ValueType} must be {@code PARAMETERS}.
      * @param identifier the parameter metadata or instance used to infer characteristics
      * @param <T> the nested container type
-     * @return the created nested container
+     * @return the created and attached nested container
      */
-    <T extends Parameters> T newParameters(Parameter identifier);
+    <T extends Parameters> T attachParameters(Parameter identifier);
 
+    /**
+     * Creates a new nested {@link Parameters} instance without attaching it as the value of this parameter.
+     * This method is responsible only for the instantiation and basic setup (like setting the proprietor)
+     * of the nested {@link Parameters} instance. The created instance is not automatically assigned as this parameter's value.
+     * The parameter's {@link ValueType} must be {@code PARAMETERS}.
+     * @param identifier the parameter metadata or instance used to infer characteristics
+     * @param <T> the nested container type
+     * @return the newly created nested container
+     */
     <T extends Parameters> T createParameters(Parameter identifier);
 
 }

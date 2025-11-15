@@ -46,7 +46,7 @@ public class ParameterValue implements Parameter {
 
     private boolean valueTypeHinted;
 
-    private Class<? extends AbstractParameters> parametersClass;
+    private Class<? extends DefaultParameters> parametersClass;
 
     private boolean array;
 
@@ -111,7 +111,7 @@ public class ParameterValue implements Parameter {
      * @param valueTypeFixed whether the value type is fixed (non-adjustable)
      */
     protected ParameterValue(
-            String name, ValueType valueType, Class<? extends AbstractParameters> parametersClass,
+            String name, ValueType valueType, Class<? extends DefaultParameters> parametersClass,
             boolean array, boolean noBrackets, boolean valueTypeFixed) {
         Assert.notNull(name, "Parameter name must not be null");
         Assert.notNull(valueType, "Parameter value type must not be null");
@@ -210,7 +210,7 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public Class<? extends AbstractParameters> getParametersClass() {
+    public Class<? extends DefaultParameters> getParametersClass() {
         return parametersClass;
     }
 
@@ -358,16 +358,6 @@ public class ParameterValue implements Parameter {
             arraylize();
         }
         return valueList;
-    }
-
-    /**
-     * Return the values as an Object array if this parameter is in array form.
-     * @return an array of values or {@code null} if no values exist
-     */
-    @Override
-    public Object[] getValueArray() {
-        List<?> list = getValueList();
-        return (list != null ? list.toArray(new Object[0]) : null);
     }
 
     /**
@@ -719,7 +709,6 @@ public class ParameterValue implements Parameter {
         } else {
             throw new ValueTypeMismatchException(value.getClass(), Parameters.class);
         }
-
     }
 
     /**
@@ -760,21 +749,33 @@ public class ParameterValue implements Parameter {
     }
 
     /**
-     * Create and attach a new nested {@link Parameters} instance under this parameter.
-     * If the current type is VARIABLE, it is treated as PARAMETERS and a VariableParameters implementation is used by default.
+     * Creates a new nested {@link Parameters} instance and attaches it as the value of this parameter.
+     * If the current type is VARIABLE, it is treated as PARAMETERS and a {@link VariableParameters} implementation is used by default.
+     * This method ensures that the newly created {@link Parameters} instance becomes the value of this {@code ParameterValue}.
      * @param <T> the type of nested container to return
      * @param identifier the parameter metadata/owner used to set the proprietor of the nested container
-     * @return the created nested container instance
+     * @return the created and attached nested container instance
      * @throws IncompatibleValueTypeException if the declared type is not PARAMETERS (nor VARIABLE)
      * @throws InvalidParameterValueException if instantiation of the nested container fails
      */
     @Override
-    public <T extends Parameters> T newParameters(Parameter identifier) {
+    public <T extends Parameters> T attachParameters(Parameter identifier) {
         T ps = createParameters(identifier);
         putValue(ps);
         return ps;
     }
 
+    /**
+     * Creates a new nested {@link Parameters} instance without attaching it as the value of this parameter.
+     * If the current type is VARIABLE, it is treated as PARAMETERS and a {@link VariableParameters} implementation is used by default.
+     * This method is responsible only for the instantiation and basic setup (like setting the proprietor)
+     * of the nested {@link Parameters} instance.
+     * @param <T> the type of nested container to return
+     * @param identifier the parameter metadata/owner used to set the proprietor of the nested container
+     * @return the newly created nested container instance
+     * @throws IncompatibleValueTypeException if the declared type is not PARAMETERS (nor VARIABLE)
+     * @throws InvalidParameterValueException if instantiation of the nested container fails
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T createParameters(Parameter identifier) {
@@ -880,7 +881,8 @@ public class ParameterValue implements Parameter {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
         tsb.append("valueType", valueType);
-        tsb.append("array", array);
+        tsb.appendForce("assigned", assigned);
+        tsb.appendForce("array", array);
         if (array && valueList != null) {
             tsb.append("size", valueList.size());
         }

@@ -33,7 +33,7 @@ class AnnotatedMethodInvokerTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig()
+        aspectranConfig.touchContextConfig()
                 .addBasePackage("com.aspectran.core.component.bean.sample");
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);

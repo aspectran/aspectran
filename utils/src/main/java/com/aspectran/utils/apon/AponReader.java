@@ -142,7 +142,7 @@ public class AponReader {
                 throw syntaxError(line, tline,
                         "An item in an array must be a parameter set enclosed in curly brackets");
             }
-            Parameters ps = container.newParameters(ArrayParameters.NONAME);
+            Parameters ps = container.attachParameters(ArrayParameters.NONAME);
             read(ps, BLOCK_OPEN, null, null, null, false);
         }
     }
@@ -186,10 +186,10 @@ public class AponReader {
                 }
                 if (BLOCK_OPEN == cchar) {
                     if (parameterValue == null) {
-                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue = container.attachParameterValue(name, ValueType.PARAMETERS, true);
                         parameterValue.setValueTypeHinted(valueTypeHinted);
                     }
-                    Parameters ps = parameterValue.newParameters(parameterValue);
+                    Parameters ps = parameterValue.attachParameters(parameterValue);
                     read(ps, BLOCK_OPEN, null, null, null, false);
                     continue;
                 } else if (ARRAY_OPEN == cchar) {
@@ -201,17 +201,17 @@ public class AponReader {
                     List<?> nestedList = tempContainer.getValueList();
                     // Now, add this extracted list to the *real* parameterValue
                     if (parameterValue == null) {
-                        parameterValue = container.newParameterValue(name, ValueType.VARIABLE, true);
+                        parameterValue = container.attachParameterValue(name, ValueType.VARIABLE, true);
                         parameterValue.setValueTypeHinted(valueTypeHinted);
                     }
                     parameterValue.putValue(nestedList);
                     continue;
                 } else if (EMPTY_ARRAY.equals(tline) || EMPTY_BLOCK.equals(tline)) {
                     if (parameterValue == null) {
-                        parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, true);
+                        parameterValue = container.attachParameterValue(name, ValueType.PARAMETERS, true);
                         parameterValue.setValueTypeHinted(valueTypeHinted);
                     }
-                    parameterValue.newParameters(parameterValue);
+                    parameterValue.attachParameters(parameterValue);
                     continue;
                 }
             } else {
@@ -222,9 +222,9 @@ public class AponReader {
                     }
                     if (BLOCK_OPEN == cchar) {
                         if (!container.hasParameter(ArrayParameters.NONAME)) {
-                            container.newParameterValue(ArrayParameters.NONAME, ValueType.PARAMETERS, true);
+                            container.attachParameterValue(ArrayParameters.NONAME, ValueType.PARAMETERS, true);
                         }
-                        Parameters ps = container.newParameters(ArrayParameters.NONAME);
+                        Parameters ps = container.attachParameters(ArrayParameters.NONAME);
                         read(ps, BLOCK_OPEN, null, null, null, false);
                         continue;
                     }
@@ -246,7 +246,7 @@ public class AponReader {
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
 
                 if (EMPTY_BLOCK.equals(value)) {
-                    parameterValue = container.newParameterValue(name, ValueType.PARAMETERS, false);
+                    parameterValue = container.attachParameterValue(name, ValueType.PARAMETERS, false);
                     parameterValue.putValue(new VariableParameters());
                     continue;
                 }
@@ -274,8 +274,7 @@ public class AponReader {
                 }
                 if (valueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && ARRAY_OPEN == cchar) {
-                        throw syntaxError(line, tline,
-                                "The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
+                        throw syntaxError(line, tline, "The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
                     }
                     if (valueType != ValueType.PARAMETERS && BLOCK_OPEN == cchar) {
                         throw syntaxError(line, tline, parameterValue, valueType);
@@ -311,14 +310,14 @@ public class AponReader {
 
             if (valueType == ValueType.PARAMETERS) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
+                    parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
-                Parameters ps = container.newParameters(name);
+                Parameters ps = container.attachParameters(name);
                 read(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
             } else if (valueType == ValueType.TEXT) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
+                    parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (TEXT_OPEN == cchar) {
@@ -376,7 +375,7 @@ public class AponReader {
                 }
 
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
+                    parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
                     if (parameterValue.getValueType() == ValueType.VARIABLE) {

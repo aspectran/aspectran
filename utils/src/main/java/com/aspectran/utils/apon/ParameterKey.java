@@ -21,7 +21,7 @@ import com.aspectran.utils.ToStringBuilder;
 /**
  * Describes a parameter schema entry: name, aliases, value type and array/format flags.
  * <p>
- * Used by {@link AbstractParameters} implementations to predefine the structure of
+ * Used in subclasses of {@link DefaultParameters} to predefine the structure of
  * a {@link Parameters} set and to instantiate {@link ParameterValue} instances.
  * </p>
  */
@@ -47,7 +47,7 @@ public class ParameterKey {
      * If {@link #valueType} is {@link ValueType#PARAMETERS}, the concrete class
      * to instantiate for nested parameter blocks; otherwise {@code null}.
      */
-    private final Class<? extends AbstractParameters> parametersClass;
+    private final Class<? extends DefaultParameters> parametersClass;
 
     /**
      * Whether the parameter accepts multiple values (array semantics).
@@ -135,7 +135,7 @@ public class ParameterKey {
      * @param name the parameter name
      * @param parametersClass concrete {@code Parameters} implementation for nested blocks
      */
-    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass) {
+    public ParameterKey(String name, Class<? extends DefaultParameters> parametersClass) {
         this(name, null, parametersClass);
     }
 
@@ -145,7 +145,7 @@ public class ParameterKey {
      * @param altNames alternative names (may be {@code null})
      * @param parametersClass concrete {@code Parameters} implementation for nested blocks
      */
-    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass) {
+    public ParameterKey(String name, String[] altNames, Class<? extends DefaultParameters> parametersClass) {
         this(name, altNames, parametersClass, false);
     }
 
@@ -155,7 +155,7 @@ public class ParameterKey {
      * @param parametersClass concrete {@code Parameters} implementation for nested blocks
      * @param array whether multiple nested blocks are allowed
      */
-    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+    public ParameterKey(String name, Class<? extends DefaultParameters> parametersClass, boolean array) {
         this(name, null, parametersClass, array);
     }
 
@@ -167,7 +167,7 @@ public class ParameterKey {
      * @param array whether multiple nested blocks are allowed
      */
     public ParameterKey(
-            String name, String[] altNames, Class<? extends AbstractParameters> parametersClass, boolean array) {
+            String name, String[] altNames, Class<? extends DefaultParameters> parametersClass, boolean array) {
         this(name, altNames, parametersClass, array, false);
     }
 
@@ -179,7 +179,7 @@ public class ParameterKey {
      * @param noBrackets when {@code true}, omit brackets for array output
      */
     public ParameterKey(
-            String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBrackets) {
+            String name, Class<? extends DefaultParameters> parametersClass, boolean array, boolean noBrackets) {
         this(name, null, parametersClass, array, noBrackets);
     }
 
@@ -192,7 +192,7 @@ public class ParameterKey {
      * @param noBrackets when {@code true}, omit brackets for array output
      */
     public ParameterKey(
-            String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
+            String name, String[] altNames, Class<? extends DefaultParameters> parametersClass,
             boolean array, boolean noBrackets) {
         Assert.notNull(name, "Parameter name must not be null");
         Assert.notNull(parametersClass, "parametersClass must not be null");
@@ -249,7 +249,7 @@ public class ParameterKey {
      * configuration (type, array flag, bracket formatting, nested class).
      * @return a new parameter value holder
      */
-    public ParameterValue newParameterValue() {
+    public ParameterValue createParameterValue() {
         return new ParameterValue(name, valueType, parametersClass, array, noBrackets, true);
     }
 

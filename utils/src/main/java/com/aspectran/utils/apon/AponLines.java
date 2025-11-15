@@ -29,7 +29,6 @@ import static com.aspectran.utils.apon.AponFormat.BLOCK_OPEN;
 import static com.aspectran.utils.apon.AponFormat.DOUBLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.NAME_VALUE_SEPARATOR;
 import static com.aspectran.utils.apon.AponFormat.NEW_LINE;
-import static com.aspectran.utils.apon.AponFormat.SINGLE_QUOTE_CHAR;
 import static com.aspectran.utils.apon.AponFormat.SPACE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_CLOSE;
 import static com.aspectran.utils.apon.AponFormat.TEXT_LINE_START;
@@ -234,7 +233,7 @@ public class AponLines {
             throw new IllegalStateException("Cannot add a line to an empty structure.");
         }
         if (line != null) {
-            escape(line);
+            lines.append(line);
             lines.append(NEW_LINE);
         }
         return this;
@@ -269,18 +268,18 @@ public class AponLines {
         return this;
     }
 
-    private void escape(@NonNull Object object) {
-        if (object instanceof String str && (
-                str.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
-                        str.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
-                        str.startsWith(SPACE) ||
-                        str.endsWith(SPACE) ||
-                        str.contains(NEW_LINE))) {
-            lines.append(DOUBLE_QUOTE_CHAR);
-            lines.append(AponFormat.escape(str));
-            lines.append(DOUBLE_QUOTE_CHAR);
+    private void escape(@NonNull Object value) {
+        if (value instanceof CharSequence cs) {
+            String str = cs.toString();
+            if (AponFormat.needsQuoting(str)) {
+                lines.append(DOUBLE_QUOTE_CHAR);
+                lines.append(AponFormat.escape(str));
+                lines.append(DOUBLE_QUOTE_CHAR);
+            } else {
+                lines.append(str);
+            }
         } else {
-            lines.append(String.valueOf(object));
+            lines.append(value.toString());
         }
     }
 

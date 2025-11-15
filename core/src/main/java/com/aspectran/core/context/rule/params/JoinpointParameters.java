@@ -81,7 +81,7 @@ public class JoinpointParameters extends DefaultParameters {
     }
 
     public PointcutParameters newPointcutParameters() {
-        return newParameters(pointcut);
+        return attachParameters(pointcut);
     }
 
     public PointcutParameters touchPointcutParameters() {

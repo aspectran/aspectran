@@ -40,7 +40,7 @@ public class SettingsParameters extends DefaultParameters {
     }
 
     public void putSetting(String name, Object value) {
-        SettingParameters settingParameters = newParameters(setting);
+        SettingParameters settingParameters = attachParameters(setting);
         settingParameters.putValue(SettingParameters.name, name);
         settingParameters.putValue(SettingParameters.value, value);
     }

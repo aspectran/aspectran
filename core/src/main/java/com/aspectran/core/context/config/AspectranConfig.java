@@ -149,7 +149,7 @@ public class AspectranConfig extends DefaultParameters {
      * @return the new {@code SystemConfig} instance
      */
     public SystemConfig newSystemConfig() {
-        return newParameters(system);
+        return attachParameters(system);
     }
 
     /**
@@ -177,14 +177,6 @@ public class AspectranConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new core context configuration section.
-     * @return the new {@code ContextConfig} instance
-     */
-    public ContextConfig newContextConfig() {
-        return newParameters(context);
-    }
-
-    /**
      * Returns the existing core context configuration section or creates a new one if it does not exist.
      * @return a non-null {@code ContextConfig} instance
      */
@@ -206,14 +198,6 @@ public class AspectranConfig extends DefaultParameters {
      */
     public SchedulerConfig getSchedulerConfig() {
         return getParameters(scheduler);
-    }
-
-    /**
-     * Creates a new scheduler configuration section.
-     * @return the new {@code SchedulerConfig} instance
-     */
-    public SchedulerConfig newSchedulerConfig() {
-        return newParameters(scheduler);
     }
 
     /**
@@ -241,14 +225,6 @@ public class AspectranConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new embed configuration section.
-     * @return the new {@code EmbedConfig} instance
-     */
-    public EmbedConfig newEmbedConfig() {
-        return newParameters(embed);
-    }
-
-    /**
      * Returns the existing embed configuration section or creates a new one if it does not exist.
      * @return a non-null {@code EmbedConfig} instance
      */
@@ -270,14 +246,6 @@ public class AspectranConfig extends DefaultParameters {
      */
     public void setShellConfig(ShellConfig shellConfig) {
         putValue(AspectranConfig.shell, shellConfig);
-    }
-
-    /**
-     * Creates a new shell configuration section.
-     * @return the new {@code ShellConfig} instance
-     */
-    public ShellConfig newShellConfig() {
-        return newParameters(shell);
     }
 
     /**
@@ -305,14 +273,6 @@ public class AspectranConfig extends DefaultParameters {
     }
 
     /**
-     * Creates a new daemon configuration section.
-     * @return the new {@code DaemonConfig} instance
-     */
-    public DaemonConfig newDaemonConfig() {
-        return newParameters(daemon);
-    }
-
-    /**
      * Returns the existing daemon configuration section or creates a new one if it does not exist.
      * @return a non-null {@code DaemonConfig} instance
      */
@@ -334,14 +294,6 @@ public class AspectranConfig extends DefaultParameters {
      */
     public WebConfig getWebConfig() {
         return getParameters(web);
-    }
-
-    /**
-     * Creates a new web configuration section.
-     * @return the new {@code WebConfig} instance
-     */
-    public WebConfig newWebConfig() {
-        return newParameters(web);
     }
 
     /**

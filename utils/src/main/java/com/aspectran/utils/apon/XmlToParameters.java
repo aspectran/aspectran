@@ -528,13 +528,13 @@ public class XmlToParameters {
         public void startElement(String uri, String localName, String qName, Attributes attributes)
                 throws SAXException {
             if (name != null) {
-                parameters = parameters.newParameters(name);
+                parameters = parameters.attachParameters(name);
                 leaf = false;
             }
             Parameter p = parameters.getParameter(qName);
             if (attributes != null && attributes.getLength() > 0 ||
                     p != null && p.getValueType() == ValueType.PARAMETERS) {
-                parameters = parameters.newParameters(qName);
+                parameters = parameters.attachParameters(qName);
                 if (attributes != null) {
                     for (int i = 0; i < attributes.getLength(); i++) {
                         parameters.putValue(attributes.getQName(i), attributes.getValue(i));
