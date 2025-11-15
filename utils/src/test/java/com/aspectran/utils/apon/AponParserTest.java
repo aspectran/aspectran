@@ -17,11 +17,13 @@ package com.aspectran.utils.apon;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.aspectran.utils.apon.AponFormat.SYSTEM_NEW_LINE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,6 +51,7 @@ class AponParserTest {
             """;
         Parameters params = AponParser.parse(apon);
 
+        assertTrue(params.isCompactStyle());
         assertEquals("John Doe", params.getString("name"));
         assertEquals(30, params.getInt("age"));
         assertTrue(params.getBoolean("isActive"));
@@ -269,7 +272,7 @@ class AponParserTest {
      * Tests parsing with value type hints.
      */
     @Test
-    void testValueTypeHinting() throws AponParseException {
+    void testValueTypeHinting() throws IOException {
         String apon = """
             val1(string): 123
             val2(int): 456
@@ -283,6 +286,9 @@ class AponParserTest {
         assertTrue(params.getBoolean("val3"));
         assertEquals(1.23, params.getDouble("val4"));
         assertEquals(987L, params.getLong("val5"));
+
+        String hintedApon = new AponWriter().write(params).toString();
+        assertEquals(apon.replace("\r\n", "\n"), hintedApon.replace("\r\n", "\n"));
     }
 
     /**
@@ -357,6 +363,52 @@ class AponParserTest {
         assertTrue(message.contains("[lineNumber: 4, columnNumber: 1]"));
         assertTrue(message.contains("bad line format"));
         assertTrue(message.contains("Invalid line format"));
+    }
+
+    /**
+     * Tests parsing of a root object enclosed in braces.
+     */
+    @Test
+    void testParseBracedRoot() throws AponParseException {
+        String apon = """
+            {
+              name: John Doe
+              age: 30
+            }
+            """;
+        Parameters params = AponParser.parse(apon, VariableParameters.class);
+
+        assertFalse(params.isCompactStyle());
+        assertEquals("John Doe", params.getString("name"));
+        assertEquals(30, params.getInt("age"));
+    }
+
+    /**
+     * Tests error handling for an unclosed braced root object.
+     */
+    @Test
+    void testErrorHandlingUnclosedBracedRoot() {
+        String apon = """
+            {
+              name: John Doe
+            """; // Missing closing brace
+        AponParseException e = assertThrows(AponParseException.class, () -> AponParser.parse(apon));
+        assertTrue(e.getMessage().contains("Unclosed object block"));
+    }
+
+    /**
+     * Tests error handling for trailing content after a closed braced root.
+     */
+    @Test
+    void testErrorHandlingTrailingContentAfterBracedRoot() {
+        String apon = """
+            {
+              name: John Doe
+            }
+            extra: content
+            """;
+        AponParseException e = assertThrows(AponParseException.class, () -> AponParser.parse(apon));
+        assertTrue(e.getMessage().contains("Unexpected content after closing brace"));
     }
 
 }

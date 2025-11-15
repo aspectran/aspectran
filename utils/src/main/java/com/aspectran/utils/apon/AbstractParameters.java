@@ -59,6 +59,8 @@ public abstract class AbstractParameters implements Parameters {
 
     private String actualName;
 
+    private boolean compactStyle = true;
+
     /**
      * Instantiates a new abstract parameters.
      * @param parameterKeys the parameter keys
@@ -95,6 +97,16 @@ public abstract class AbstractParameters implements Parameters {
      */
     protected AbstractParameters(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
         this(mergeParameterKeys(topParameterKeys, bottomParameterKeys));
+    }
+
+    @Override
+    public boolean isCompactStyle() {
+        return compactStyle;
+    }
+
+    @Override
+    public void setCompactStyle(boolean compactStyle) {
+        this.compactStyle = compactStyle;
     }
 
     @Override

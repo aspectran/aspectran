@@ -67,7 +67,7 @@ class AponReadWriteTest {
         // 1. Create a Parameters object programmatically
         Parameters originalParams = new VariableParameters();
         originalParams.putValue("name", "test");
-        originalParams.putValue("version", 1.0);
+        originalParams.putValue("version(double)", 1.0);
         Parameters nestedParams = new VariableParameters();
         nestedParams.putValue("key", "value");
         originalParams.putValue("nested", nestedParams);

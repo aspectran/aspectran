@@ -122,7 +122,6 @@ public class MalformedAponException extends AponParseException {
         if (parameterValue != null) {
             sb.append(" for the specified parameter ").append(parameterValue);
         }
-
         return makeMessage(lineNumber, line, trimmedLine, sb.toString());
     }
 

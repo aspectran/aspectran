@@ -73,6 +73,8 @@ public class AponWriter implements Flushable {
 
     private int indentDepth;
 
+    private boolean currentCompactStyle;
+
     /**
      * Creates a new AponWriter that writes to an in-memory {@link StringWriter}.
      */
@@ -287,13 +289,18 @@ public class AponWriter implements Flushable {
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T write(Parameters parameters) throws IOException {
         Assert.notNull(parameters, "parameters must not be null");
+        this.currentCompactStyle = parameters.isCompactStyle();
         if (parameters instanceof ArrayParameters array) {
             writeArray(array);
         } else {
-            for (Parameter pv : parameters.getParameterValues()) {
-                if (nullWritable || pv.isAssigned()) {
-                    write(pv);
+            if (parameters.isCompactStyle()) {
+                for (Parameter pv : parameters.getParameterValues()) {
+                    if (nullWritable || pv.isAssigned()) {
+                        write(pv);
+                    }
                 }
+            } else {
+                writeBlock(parameters);
             }
         }
         return (T)this;
@@ -587,12 +594,12 @@ public class AponWriter implements Flushable {
     }
 
     private void emptyBlock() throws IOException {
-        if (prettyPrint) {
-            beginBlock();
-            endBlock();
-        } else {
+        if (currentCompactStyle) {
             writer.write(EMPTY_BLOCK);
             newLine();
+        } else {
+            beginBlock();
+            endBlock();
         }
     }
 
@@ -610,12 +617,12 @@ public class AponWriter implements Flushable {
     }
 
     private void emptyArray() throws IOException {
-        if (prettyPrint) {
-            beginArray();
-            endArray();
-        } else {
+        if (currentCompactStyle) {
             writer.write(EMPTY_ARRAY);
             newLine();
+        } else {
+            beginArray();
+            endArray();
         }
     }
 

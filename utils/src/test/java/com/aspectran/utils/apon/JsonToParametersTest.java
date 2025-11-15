@@ -349,8 +349,7 @@ class JsonToParametersTest {
                 approved: true
               }
             ]
-            emptyMap: {
-            }
+            emptyMap: {}
             """.replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         Parameters parameters = JsonToParameters.from(json);

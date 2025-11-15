@@ -98,34 +98,30 @@ public class AponParser {
     public <T extends Parameters> T parse(T parameters) throws AponParseException {
         Assert.notNull(parameters, "parameters must not be null");
         try {
-            while (nextLine() != null) {
-                if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_CLOSE) {
-                    throw syntaxError("Unexpected closing brace '}' at top level");
+            if (nextLine() == null) {
+                // Empty input
+                return parameters;
+            }
+
+            if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_OPEN) {
+                // Braced style (improved way)
+                parameters.setCompactStyle(false); // false means braced
+                parseNestedObject(parameters);
+
+                if (nextLine() != null) {
+                    throw syntaxError("Unexpected content after closing brace '}' of root object");
                 }
+            } else {
+                // Non-braced style (existing way)
+                parameters.setCompactStyle(true); // true means non-braced
+                parseLine(currentLine, parameters);
 
-                int separatorIndex = currentLine.indexOf(NAME_VALUE_SEPARATOR);
-                if (separatorIndex == -1) {
-                    throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
-                }
-
-                String name = currentLine.substring(0, separatorIndex).trim();
-                String valueStr = currentLine.substring(separatorIndex + 1).trim();
-
-                ValueType valueType = ValueType.resolveByHint(name);
-                if (valueType != null) {
-                    name = ValueType.stripHint(name);
-                    if (valueType == ValueType.VARIABLE || valueType == ValueType.PARAMETERS) {
-                        valueType = null;
+                while (nextLine() != null) {
+                    if (currentLine.length() == 1 && currentLine.charAt(0) == BLOCK_CLOSE) {
+                        throw syntaxError("Unexpected closing brace '}' at top level");
                     }
+                    parseLine(currentLine, parameters);
                 }
-
-                Object value;
-                if (valueType != null) {
-                    value = parseHintedValue(valueStr, valueType);
-                } else {
-                    value = parseValue(valueStr);
-                }
-                parameters.putValue(name, value);
             }
         } catch (AponParseException e) {
             throw e;
@@ -133,6 +129,41 @@ public class AponParser {
             throw new AponParseException("Failed to parse APON document into " + parameters.getClass().getName(), e);
         }
         return parameters;
+    }
+
+    private void parseLine(@NonNull String line, Parameters parameters) throws IOException {
+        int separatorIndex = line.indexOf(NAME_VALUE_SEPARATOR);
+        if (separatorIndex == -1) {
+            throw syntaxError("Invalid line format; a parameter must be in 'name: value' format");
+        }
+
+        String name = line.substring(0, separatorIndex).trim();
+        String valueStr = line.substring(separatorIndex + 1).trim();
+
+        ValueType valueType = ValueType.resolveByHint(name);
+        boolean valueTypeHinted = false;
+        if (valueType != null) {
+            valueTypeHinted = true;
+            name = ValueType.stripHint(name);
+            if (valueType == ValueType.VARIABLE || valueType == ValueType.PARAMETERS) {
+                valueType = null;
+            }
+        }
+
+        Object value;
+        if (valueType != null) {
+            value = parseHintedValue(valueStr, valueType);
+        } else {
+            value = parseValue(valueStr);
+        }
+        parameters.putValue(name, value);
+
+        if (valueTypeHinted) {
+            Parameter parameter = parameters.getParameter(name);
+            if (parameter != null) {
+                parameter.setValueTypeHinted(true);
+            }
+        }
     }
 
     /**

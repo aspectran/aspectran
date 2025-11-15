@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -224,6 +225,56 @@ class AponReaderTest {
         List<String> row2 = matrix.get(1);
         assertNotNull(row2);
         assertEquals(Arrays.asList("c", "d", "e"), row2);
+    }
+
+    @Test
+    void testParseBracedRoot() throws AponParseException {
+        String apon = """
+            {
+              name: John Doe
+              age: 30
+            }
+            """;
+        Parameters params = AponReader.read(apon);
+
+        assertFalse(params.isCompactStyle());
+        assertEquals("John Doe", params.getString("name"));
+        assertEquals(30, params.getInt("age"));
+    }
+
+    @Test
+    void testParseNonBracedRootAndCompactStyle() throws AponParseException {
+        String apon = """
+            name: John Doe
+            age: 30
+            """;
+        Parameters params = AponReader.read(apon);
+
+        assertTrue(params.isCompactStyle());
+        assertEquals("John Doe", params.getString("name"));
+        assertEquals(30, params.getInt("age"));
+    }
+
+    @Test
+    void testErrorHandlingUnclosedBracedRoot() {
+        String apon = """
+            {
+              name: John Doe
+            """; // Missing closing brace
+        AponParseException e = assertThrows(AponParseException.class, () -> AponReader.read(apon));
+        assertTrue(e.getMessage().contains("no closing curly bracket"));
+    }
+
+    @Test
+    void testErrorHandlingTrailingContentAfterBracedRoot() {
+        String apon = """
+            {
+              name: John Doe
+            }
+            extra: content
+            """;
+        AponParseException e = assertThrows(AponParseException.class, () -> AponReader.read(apon));
+        assertTrue(e.getMessage().contains("Unexpected content after closing brace"));
     }
 
 }

@@ -37,6 +37,10 @@ import java.util.List;
  */
 public interface Parameters {
 
+    boolean isCompactStyle();
+
+    void setCompactStyle(boolean compactStyle);
+
     /**
      * Returns whether the parameter structure is fixed. A fixed structure means
      * that new parameters cannot be added at runtime.

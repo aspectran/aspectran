@@ -167,10 +167,8 @@ class AponWriterTest {
         params.putValue("emptyArray", new java.util.ArrayList<String>());
 
         String expected = """
-                emptyBlock: {
-                }
-                emptyArray: [
-                ]
+                emptyBlock: {}
+                emptyArray: []
                 """;
         assertEquals(expected.replace("\r\n", "\n"), params.toString().replace("\r\n", "\n"));
 
@@ -181,12 +179,13 @@ class AponWriterTest {
         assertEquals(expectedCompact.replace("\n", AponFormat.SYSTEM_NEW_LINE), compactApon);
 
         // Test with prettyPrint = true (default)
-        AponWriter prettyWriter = new AponWriter();
-        String prettyApon = prettyWriter.write(params).toString();
-        assertFalse(prettyApon.contains("emptyBlock:{}"));
-        assertFalse(prettyApon.contains("emptyArray:[]"));
-        assertTrue(prettyApon.contains("emptyBlock: {\n}".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
-        assertTrue(prettyApon.contains("emptyArray: [\n]".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+        params.setCompactStyle(false);
+        AponWriter noCompactWriter = new AponWriter();
+        String noCompactApon = noCompactWriter.write(params).toString();
+        assertFalse(noCompactApon.contains("emptyBlock:{}"));
+        assertFalse(noCompactApon.contains("emptyArray:[]"));
+        assertTrue(noCompactApon.contains("emptyBlock: {\n  }".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
+        assertTrue(noCompactApon.contains("emptyArray: [\n  ]".replace("\n", AponFormat.SYSTEM_NEW_LINE)));
     }
 
 }

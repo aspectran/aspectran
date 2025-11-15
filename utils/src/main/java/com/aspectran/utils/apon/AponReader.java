@@ -19,6 +19,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,6 +65,10 @@ public class AponReader {
 
     private int lineNumber;
 
+    private String originalLine;
+
+    private String currentLine;
+
     /**
      * Creates a new AponReader for the given APON-formatted string.
      * @param apon the APON formatted string
@@ -105,10 +110,35 @@ public class AponReader {
     public <T extends Parameters> T read(T parameters) throws AponParseException {
         Assert.notNull(parameters, "parameters must not be null");
         try {
-            if (parameters instanceof ArrayParameters container) {
-                readArray(container);
+            // Mark the beginning of the stream to allow reset
+            reader.mark(1024);
+            lineNumber = 0; // Reset line number for this parsing operation
+
+            String firstLine = readAndTrimLine();
+            if (firstLine == null) { // Empty input
+                return parameters;
+            }
+
+            char firstChar = (firstLine.length() == 1 ? firstLine.charAt(0) : NO_CONTROL_CHAR);
+
+            if (firstChar == ARRAY_OPEN) {
+                readArray(parameters);
+                String trailingLine = readAndTrimLine();
+                if (trailingLine != null) {
+                    throw syntaxError("Unexpected content after closing bracket ']' of root array");
+                }
+            } else if (firstChar == BLOCK_OPEN) {
+                readBlock(parameters);
+                String trailingLine = readAndTrimLine();
+                if (trailingLine != null) {
+                    throw syntaxError("Unexpected content after closing brace '}' of root object");
+                }
             } else {
-                read(parameters, NO_CONTROL_CHAR, null, null, null, false);
+                // Non-braced root (compact style)
+                parameters.setCompactStyle(true);
+                reader.reset(); // Rewind the reader to the beginning
+                lineNumber = 0; // Reset line number after rewinding
+                readLoop(parameters, NO_CONTROL_CHAR, null, null, null, false);
             }
         } catch (AponParseException e) {
             throw e;
@@ -118,33 +148,13 @@ public class AponReader {
         return parameters;
     }
 
-    private void readArray(ArrayParameters container) throws IOException {
-        String line;
-        String value;
-        String tline;
-        int tlen;
-        int vlen;
-        char cchar;
+    private void readArray(Parameters container) throws IOException {
+        readLoop(container, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+    }
 
-        while ((line = reader.readLine()) != null) {
-            lineNumber++;
-            tline = line.trim();
-            tlen = tline.length();
-
-            if (tlen == 0 || (tline.charAt(0) == COMMENT_LINE_START)) {
-                continue;
-            }
-
-            value = tline;
-            vlen = value.length();
-            cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
-            if (cchar != BLOCK_OPEN) {
-                throw syntaxError(line, tline,
-                        "An item in an array must be a parameter set enclosed in curly brackets");
-            }
-            Parameters ps = container.attachParameters(ArrayParameters.NONAME);
-            read(ps, BLOCK_OPEN, null, null, null, false);
-        }
+    private void readBlock(@NonNull Parameters container) throws IOException {
+        container.setCompactStyle(false);
+        readLoop(container, BLOCK_OPEN, null, null, null, false);
     }
 
     /**
@@ -158,27 +168,16 @@ public class AponReader {
      * @throws IOException if an I/O error occurs
      * @throws AponParseException if a syntax error is found
      */
-    private void read(
+    private void readLoop(
             Parameters container, char openedBracket, String name, ParameterValue parameterValue,
             ValueType valueType, boolean valueTypeHinted) throws IOException {
-        String line;
         String value;
-        String tline;
-        int tlen;
         int vlen;
         char cchar;
 
-        while ((line = reader.readLine()) != null) {
-            lineNumber++;
-            tline = line.trim();
-            tlen = tline.length();
-
-            if (tlen == 0 || tline.charAt(0) == COMMENT_LINE_START) {
-                continue;
-            }
-
+        while (readAndTrimLine() != null) {
             if (openedBracket == ARRAY_OPEN) {
-                value = tline;
+                value = currentLine;
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
                 if (ARRAY_CLOSE == cchar) {
@@ -190,13 +189,13 @@ public class AponReader {
                         parameterValue.setValueTypeHinted(valueTypeHinted);
                     }
                     Parameters ps = parameterValue.attachParameters(parameterValue);
-                    read(ps, BLOCK_OPEN, null, null, null, false);
+                    readLoop(ps, BLOCK_OPEN, null, null, null, false);
                     continue;
                 } else if (ARRAY_OPEN == cchar) {
                     // Create a temporary container to hold the nested array's content
                     ArrayParameters tempContainer = new ArrayParameters();
                     // The nested array will be parsed as a parameter named "" (ArrayParameters.NONAME)
-                    read(tempContainer, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+                    readLoop(tempContainer, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
                     // Extract the parsed list from the temporary container
                     List<?> nestedList = tempContainer.getValueList();
                     // Now, add this extracted list to the *real* parameterValue
@@ -206,7 +205,7 @@ public class AponReader {
                     }
                     parameterValue.putValue(nestedList);
                     continue;
-                } else if (EMPTY_ARRAY.equals(tline) || EMPTY_BLOCK.equals(tline)) {
+                } else if (EMPTY_ARRAY.equals(currentLine) || EMPTY_BLOCK.equals(currentLine)) {
                     if (parameterValue == null) {
                         parameterValue = container.attachParameterValue(name, ValueType.PARAMETERS, true);
                         parameterValue.setValueTypeHinted(valueTypeHinted);
@@ -215,8 +214,8 @@ public class AponReader {
                     continue;
                 }
             } else {
-                if (tlen == 1) {
-                    cchar = tline.charAt(0);
+                if (currentLine.length() == 1) {
+                    cchar = currentLine.charAt(0);
                     if (openedBracket == BLOCK_OPEN && BLOCK_CLOSE == cchar) {
                         return;
                     }
@@ -225,23 +224,21 @@ public class AponReader {
                             container.attachParameterValue(ArrayParameters.NONAME, ValueType.PARAMETERS, true);
                         }
                         Parameters ps = container.attachParameters(ArrayParameters.NONAME);
-                        read(ps, BLOCK_OPEN, null, null, null, false);
+                        readLoop(ps, BLOCK_OPEN, null, null, null, false);
                         continue;
                     }
                 }
 
-                int index = tline.indexOf(NAME_VALUE_SEPARATOR);
+                int index = currentLine.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw syntaxError(line, tline,
-                            "Invalid line format; a parameter must be in the 'name: value' format");
+                    throw syntaxError("Invalid line format; a parameter must be in the 'name: value' format");
                 }
                 if (index == 0) {
-                    throw syntaxError(line, tline,
-                            "Missing parameter name; a parameter must be in the 'name: value' format");
+                    throw syntaxError("Missing parameter name; a parameter must be in the 'name: value' format");
                 }
 
-                name = tline.substring(0, index).trim();
-                value = tline.substring(index + 1).trim();
+                name = currentLine.substring(0, index).trim();
+                value = currentLine.substring(index + 1).trim();
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
 
@@ -274,29 +271,29 @@ public class AponReader {
                 }
                 if (valueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && ARRAY_OPEN == cchar) {
-                        throw syntaxError(line, tline, "The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
+                        throw syntaxError("The parameter '" + parameterValue.getQualifiedName() + "' is not an array type");
                     }
                     if (valueType != ValueType.PARAMETERS && BLOCK_OPEN == cchar) {
-                        throw syntaxError(line, tline, parameterValue, valueType);
+                        throw syntaxError(parameterValue, valueType);
                     }
                     if (valueType != ValueType.TEXT && TEXT_OPEN == cchar) {
-                        throw syntaxError(line, tline, parameterValue, valueType);
+                        throw syntaxError(parameterValue, valueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
                 if (valueType == ValueType.PARAMETERS && BLOCK_OPEN != cchar) {
-                    throw syntaxError(line, tline, parameterValue, valueType);
+                    throw syntaxError(parameterValue, valueType);
                 }
                 if (valueType == ValueType.TEXT && !NULL.equals(value) && TEXT_OPEN != cchar) {
-                    throw syntaxError(line, tline, parameterValue, valueType);
+                    throw syntaxError(parameterValue, valueType);
                 }
             }
 
             if (parameterValue == null || parameterValue.isArray() || valueType == null) {
                 if (ARRAY_OPEN == cchar) {
-                    read(container, ARRAY_OPEN, name, parameterValue, valueType, valueTypeHinted);
+                    readLoop(container, ARRAY_OPEN, name, parameterValue, valueType, valueTypeHinted);
                     continue;
                 }
             }
@@ -314,7 +311,7 @@ public class AponReader {
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 Parameters ps = container.attachParameters(name);
-                read(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
+                readLoop(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
             } else if (valueType == ValueType.TEXT) {
                 if (parameterValue == null) {
                     parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
@@ -341,12 +338,12 @@ public class AponReader {
                         valueType = ValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
-                            throw syntaxError(line, tline, "Unclosed quotation mark");
+                            throw syntaxError("Unclosed quotation mark");
                         }
                         valueType = ValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
-                            throw syntaxError(line, tline, "Unclosed quotation mark");
+                            throw syntaxError("Unclosed quotation mark");
                         }
                         valueType = ValueType.STRING;
                     } else {
@@ -381,7 +378,7 @@ public class AponReader {
                     if (parameterValue.getValueType() == ValueType.VARIABLE) {
                         parameterValue.setValueType(valueType);
                     } else if (parameterValue.getValueType() != valueType) {
-                        throw syntaxError(line, tline, parameterValue, parameterValue.getValueType());
+                        throw syntaxError(parameterValue, parameterValue.getValueType());
                     }
                 }
 
@@ -392,12 +389,12 @@ public class AponReader {
 
                     // Validation: Non-string, non-structural types cannot be quoted.
                     if (wasQuoted && valueType != ValueType.STRING) {
-                        throw syntaxError(line, tline, "Value for a parameter of type '" + valueType + "' cannot be quoted: '" + value + "'");
+                        throw syntaxError("Value for a parameter of type '" + valueType + "' cannot be quoted: '" + value + "'");
                     }
 
                     if (valueType == ValueType.STRING) {
                         if (wasQuoted) {
-                            value = unescape(value.substring(1, value.length() - 1), line, tline);
+                            value = unescape(value.substring(1, value.length() - 1));
                         }
                         parameterValue.putValue(value);
                     } else if (valueType == ValueType.BOOLEAN) {
@@ -429,40 +426,42 @@ public class AponReader {
     }
 
     private String readTextBlock() throws IOException {
-        String line;
-        String tline = null;
         String str;
-        int tlen;
         char tchar;
         StringBuilder sb = null;
 
-        while ((line = reader.readLine()) != null) {
-            lineNumber++;
-
-            tline = line.trim();
-            tlen = tline.length();
-            tchar = (tlen > 0 ? tline.charAt(0) : NO_CONTROL_CHAR);
-
-            if (tlen == 1 && TEXT_CLOSE == tchar) {
+        while (readAndTrimLine() != null) {
+            tchar = (!currentLine.isEmpty() ? currentLine.charAt(0) : NO_CONTROL_CHAR);
+            if (currentLine.length() == 1 && TEXT_CLOSE == tchar) {
                 return (sb != null ? sb.toString() : StringUtils.EMPTY);
             }
-
             if (TEXT_LINE_START == tchar) {
                 if (sb == null) {
                     sb = new StringBuilder();
                 } else {
                     sb.append(SYSTEM_NEW_LINE);
                 }
-                str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
+                str = originalLine.substring(originalLine.indexOf(TEXT_LINE_START) + 1);
                 if (!str.isEmpty()) {
                     sb.append(str);
                 }
-            } else if (tlen > 0) {
-                throw syntaxError(line, tline, "Text block lines must start with a '|' character");
+            } else if (!currentLine.isEmpty()) {
+                throw syntaxError("Text block lines must start with a '|' character");
             }
         }
+        throw syntaxError("Missing closing round bracket ')' for the text block");
+    }
 
-        throw syntaxError("", tline, "Missing closing round bracket ')' for the text block");
+    @Nullable
+    private String readAndTrimLine() throws IOException {
+        while ((originalLine = reader.readLine()) != null) {
+            lineNumber++;
+            currentLine = originalLine.trim();
+            if (!currentLine.isEmpty() && currentLine.charAt(0) != COMMENT_LINE_START) {
+                return currentLine;
+            }
+        }
+        return null;
     }
 
     /**
@@ -476,23 +475,22 @@ public class AponReader {
         }
     }
 
-    private String unescape(String str, String line, String ltrim) throws AponParseException {
+    private String unescape(String str) throws AponParseException {
         try {
             return AponFormat.unescape(str);
         } catch (IllegalArgumentException e) {
-            throw syntaxError(line, ltrim, e.getMessage());
+            throw syntaxError(e.getMessage());
         }
     }
 
     @NonNull
-    private AponParseException syntaxError(String line, String trimmedLine, String message) {
-        return new MalformedAponException(lineNumber, line, trimmedLine, message);
+    private AponParseException syntaxError(String message) {
+        return new MalformedAponException(lineNumber, originalLine, currentLine, message);
     }
 
     @NonNull
-    private AponParseException syntaxError(
-            String line, String trimmedLine, ParameterValue parameterValue, ValueType expectedValueType) {
-        return new MalformedAponException(lineNumber, line, trimmedLine, parameterValue, expectedValueType);
+    private AponParseException syntaxError(ParameterValue parameterValue, ValueType expectedValueType) {
+        return new MalformedAponException(lineNumber, originalLine, currentLine, parameterValue, expectedValueType);
     }
 
     /**

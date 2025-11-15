@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * Test cases for behavior of ParameterValue.
@@ -90,7 +90,7 @@ class ParameterValueBehaviorTest {
         // Assert that the list now contains both the string and the nested list
         assertEquals(2, resultList.size());
         assertEquals("value1", resultList.get(0));
-        assertTrue(resultList.get(1) instanceof List, "The second element should be a List");
+        assertInstanceOf(List.class, resultList.get(1), "The second element should be a List");
         assertEquals(nestedList, resultList.get(1));
 
         // This confirms that the array's dimension was effectively promoted,
