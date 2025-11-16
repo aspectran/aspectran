@@ -43,10 +43,12 @@
  *       Streaming reader/writer for APON text. Closeable variants are available as
  *       {@link com.aspectran.utils.apon.AponReaderCloseable} and
  *       {@link com.aspectran.utils.apon.AponWriterCloseable}.</li>
+ *   <li>{@link com.aspectran.utils.apon.AponParser} – A modern, structure-based parser for APON.</li>
  *   <li>{@link com.aspectran.utils.apon.AponLines} – A small builder to programmatically
  *       assemble APON text using a fluent API.</li>
- *   <li>{@link com.aspectran.utils.apon.JsonToParameters} and
- *       {@link com.aspectran.utils.apon.XmlToParameters} – Helpers to convert JSON or XML
+ *   <li>{@link com.aspectran.utils.apon.JsonToParameters},
+ *       {@link com.aspectran.utils.apon.XmlToParameters}, and
+ *       {@link com.aspectran.utils.apon.ObjectToParameters} – Helpers to convert JSON, XML, or POJOs
  *       into {@code Parameters}.</li>
  * </ul>
  *
