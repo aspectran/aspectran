@@ -23,6 +23,14 @@ import java.io.Reader;
  * <p>This allows {@code JsonReaderCloseable} instances to be used in a
  * try-with-resources statement, ensuring that the underlying {@link Reader} is
  * automatically closed when the block is exited.</p>
+ * <p>Example usage:
+ * <pre>{@code
+ *   try (JsonReaderCloseable reader = new JsonReaderCloseable(new StringReader(json))) {
+ *       reader.beginObject();
+ *       // ... read tokens
+ *       reader.endObject();
+ *   }
+ * }</pre></p>
  */
 public class JsonReaderCloseable extends JsonReader implements Closeable {
 

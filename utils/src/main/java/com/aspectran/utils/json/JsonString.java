@@ -18,9 +18,18 @@ package com.aspectran.utils.json;
 /**
  * A wrapper class to prevent a JSON string from being re-escaped when it is
  * part of a larger JSON serialization process.
- * <p>When an instance of {@code JsonString} is passed to a JSON writer,
- * its {@link #toString()} method is called directly, and the content is
- * written as-is, without further escaping.</p>
+ * <p>When an instance of {@code JsonString} is passed to a {@link JsonWriter},
+ * its {@link #toString()} method is called, and the content is written as-is,
+ * without further escaping. This is useful for embedding a pre-formatted JSON
+ * object or array into a containing JSON structure.</p>
+ * <p>Example:
+ * <pre>
+ * String rawJson = "{\"key\":\"value\"}";
+ * writer.beginObject()
+ *     .name("data").value(new JsonString(rawJson)) // written as: "data":{"key":"value"}
+ *     .name("desc").value(rawJson)                 // written as: "desc":"{\"key\":\"value\"}"
+ * .endObject();
+ * </pre>
  *
  * @since 7.3.0
  */
