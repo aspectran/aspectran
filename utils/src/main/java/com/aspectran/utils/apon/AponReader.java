@@ -148,8 +148,9 @@ public class AponReader {
         return parameters;
     }
 
-    private void readArray(Parameters container) throws IOException {
-        readLoop(container, ARRAY_OPEN, ArrayParameters.NONAME, null, null, false);
+    private void readArray(@NonNull Parameters container) throws IOException {
+        ParameterValue parameterValue = container.getParameterValue(ArrayParameters.NONAME);
+        readLoop(container, ARRAY_OPEN, ArrayParameters.NONAME, parameterValue, null, false);
     }
 
     private void readBlock(@NonNull Parameters container) throws IOException {

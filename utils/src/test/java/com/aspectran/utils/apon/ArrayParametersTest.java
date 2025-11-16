@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.apon.test.XSSPatternItem;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -296,6 +297,81 @@ class ArrayParametersTest {
         String actual = mainParams.toString().trim().replace("\r\n", "\n");
         String normalizedExpected = expectedApon.trim().replace("\r\n", "\n");
         assertEquals(normalizedExpected, actual);
+    }
+
+    @Test
+    void testXSSPatternItem() throws AponParseException {
+        String patterns = """
+            [
+                {
+                    pattern: <script>(.*?)</script>
+                    caseInsensitive: true
+                    multiline: false
+                    dotall: false
+                }
+                {
+                    pattern: src[\\r\\n]*=[\\r\\n]*\\'(.*?)\\'
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+                {
+                    pattern: src[\\r\\n]*=[\\r\\n]*\\"(.*?)\\"
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+                {
+                    pattern: </script>
+                    caseInsensitive: true
+                    multiline: false
+                    dotall: false
+                }
+                {
+                    pattern: <script(.*?)>
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+                {
+                    pattern: eval\\((.*?)\\)
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+                {
+                    pattern: expression\\((.*?)\\)
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+                {
+                    pattern: javascript:
+                    caseInsensitive: true
+                    multiline: false
+                    dotall: false
+                }
+                {
+                    pattern: vbscript:
+                    caseInsensitive: true
+                    multiline: false
+                    dotall: false
+                }
+                {
+                    pattern: onload(.*?)=
+                    caseInsensitive: true
+                    multiline: true
+                    dotall: true
+                }
+            ]
+            """;
+
+        ArrayParameters xssPatternParameters = new ArrayParameters(XSSPatternItem.class, patterns);
+        @SuppressWarnings("unchecked")
+        List<XSSPatternItem> xssPatternItemList = (List<XSSPatternItem>)xssPatternParameters.getValueList();
+        assertNotNull(xssPatternItemList);
+        assertEquals(10, xssPatternItemList.size());
+        assertEquals("<script>(.*?)</script>", xssPatternItemList.get(0).getPattern());
     }
 
 }
