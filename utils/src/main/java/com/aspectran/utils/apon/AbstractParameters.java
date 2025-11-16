@@ -287,7 +287,7 @@ public abstract class AbstractParameters implements Parameters {
      */
     @Override
     public ParameterValue attachParameterValue(String name, ValueType valueType, boolean array) {
-        Assert.state(!structureFixed, "Unknown parameter: " + name);
+        Assert.state(!structureFixed, () -> "Unknown parameter: " + (StringUtils.isEmpty(name) ? "<array element>" : name));
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);
