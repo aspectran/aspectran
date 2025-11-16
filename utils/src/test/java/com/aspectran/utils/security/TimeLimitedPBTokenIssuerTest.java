@@ -56,7 +56,7 @@ class TimeLimitedPBTokenIssuerTest {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = TimeLimitedPBTokenIssuer.createToken(params, 100L); // 100ms validity
-        Thread.sleep(200); // Wait for token to expire
+        Thread.sleep(200L); // Wait for token to expire
         assertThrows(ExpiredPBTokenException.class, () -> {
             TimeLimitedPBTokenIssuer.parseToken(token);
         });
@@ -76,7 +76,7 @@ class TimeLimitedPBTokenIssuerTest {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = TimeLimitedPBTokenIssuer.createToken(params, 100L, CUSTOM_PASSWORD); // 100ms validity
-        Thread.sleep(200); // Wait for token to expire
+        Thread.sleep(200L); // Wait for token to expire
         assertThrows(ExpiredPBTokenException.class, () -> {
             TimeLimitedPBTokenIssuer.parseToken(token, CUSTOM_PASSWORD);
         });
@@ -113,7 +113,7 @@ class TimeLimitedPBTokenIssuerTest {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         String token = TimeLimitedPBTokenIssuer.createToken(params, 100L, CUSTOM_PASSWORD);
-        Thread.sleep(200);
+        Thread.sleep(200L);
         assertThrows(ExpiredPBTokenException.class, () -> {
             TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD);
         });
