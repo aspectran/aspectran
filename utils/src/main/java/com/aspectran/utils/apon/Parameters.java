@@ -37,8 +37,16 @@ import java.util.List;
  */
 public interface Parameters {
 
+    /**
+     * Returns whether to use compact style when rendering APON.
+     * @return true if compact style is enabled, false otherwise
+     */
     boolean isCompactStyle();
 
+    /**
+     * Sets whether to use compact style when rendering APON.
+     * @param compactStyle true to enable compact style, false to disable
+     */
     void setCompactStyle(boolean compactStyle);
 
     /**
