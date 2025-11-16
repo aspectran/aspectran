@@ -36,6 +36,7 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class JsonWriter {
 
     public <T> void registerSerializer(Class<T> type, JsonSerializer<T> serializer) {
         if (serializers == null) {
-            serializers = new java.util.HashMap<>();
+            serializers = new HashMap<>();
         }
         serializers.put(type, serializer);
     }
