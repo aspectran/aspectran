@@ -18,8 +18,8 @@ package com.aspectran.utils.security;
 import java.io.Serial;
 
 /**
- * A subclass of {@link InvalidPBTokenException} that is thrown when a
- * time-limited token has expired.
+ * Thrown to indicate that a time-limited password-based token has expired.
+ * This is a subclass of {@link InvalidPBTokenException}.
  */
 public class ExpiredPBTokenException extends InvalidPBTokenException {
 

@@ -18,9 +18,11 @@ package com.aspectran.utils.security;
 import java.io.Serial;
 
 /**
- * Thrown when a password-based token is found to be invalid.
- * <p>This could happen if the token is malformed, has been tampered with,
- * or could not be decrypted with the current password.</p>
+ * Thrown to indicate that a password-based token is invalid.
+ * <p>This may occur if the token is malformed, has been tampered with,
+ * or could not be decrypted with the provided password. It is the base
+ * exception for token-related errors, with subclasses like
+ * {@link ExpiredPBTokenException} for more specific conditions.</p>
  */
 public class InvalidPBTokenException extends Exception {
 
