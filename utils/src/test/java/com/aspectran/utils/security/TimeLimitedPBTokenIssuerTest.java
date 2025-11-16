@@ -23,28 +23,100 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * Test cases for {@link TimeLimitedPBTokenIssuer}.
+ *
  * <p>Created: 2019/11/25</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TimeLimitedPBTokenIssuerTest {
 
+    private static final String DEFAULT_PASSWORD = "encryption-password-for-test";
+    private static final String CUSTOM_PASSWORD = "custom-encryption-password";
+
     @BeforeAll
-    void passwordSetting() {
-        // System default
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+    static void passwordSetting() {
+        // System default password for static methods without explicit password
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, DEFAULT_PASSWORD);
     }
 
     @Test
-    void testTimeLimitedPBTokenIssue() throws InvalidPBTokenException {
+    void testStaticTimeLimitedPBTokenWithDefaultPassword() throws InvalidPBTokenException {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
-        params.putValue("p2", "v2");
-        params.putValue("p3", "v3");
-        String token = TimeLimitedPBTokenIssuer.createToken(params);
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L); // 1 second validity
         Parameters params2 = TimeLimitedPBTokenIssuer.parseToken(token);
         assertEquals(params.toString(), params2.toString());
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenExpirationWithDefaultPassword() throws InterruptedException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 100L); // 100ms validity
+        Thread.sleep(200); // Wait for token to expire
+        assertThrows(ExpiredPBTokenException.class, () -> {
+            TimeLimitedPBTokenIssuer.parseToken(token);
+        });
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenWithCustomPassword() throws InvalidPBTokenException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD); // 1 second validity
+        Parameters params2 = TimeLimitedPBTokenIssuer.parseToken(token, CUSTOM_PASSWORD);
+        assertEquals(params.toString(), params2.toString());
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenExpirationWithCustomPassword() throws InterruptedException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 100L, CUSTOM_PASSWORD); // 100ms validity
+        Thread.sleep(200); // Wait for token to expire
+        assertThrows(ExpiredPBTokenException.class, () -> {
+            TimeLimitedPBTokenIssuer.parseToken(token, CUSTOM_PASSWORD);
+        });
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenInvalidPassword() {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, "password-one");
+        assertThrows(InvalidPBTokenException.class, () -> {
+            TimeLimitedPBTokenIssuer.parseToken(token, "password-two");
+        });
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenValidateWithDefaultPassword() throws InvalidPBTokenException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L);
+        TimeLimitedPBTokenIssuer.validate(token); // Should not throw exception
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenValidateWithCustomPassword() throws InvalidPBTokenException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 1000L, CUSTOM_PASSWORD);
+        TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD); // Should not throw exception
+    }
+
+    @Test
+    void testStaticTimeLimitedPBTokenValidateExpired() throws InterruptedException {
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        String token = TimeLimitedPBTokenIssuer.createToken(params, 100L, CUSTOM_PASSWORD);
+        Thread.sleep(200);
+        assertThrows(ExpiredPBTokenException.class, () -> {
+            TimeLimitedPBTokenIssuer.validate(token, CUSTOM_PASSWORD);
+        });
     }
 
 }

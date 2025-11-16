@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils.security;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.PBEncryptionUtils;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
@@ -61,12 +61,35 @@ public final class TimeLimitedPBTokenIssuer {
     }
 
     /**
+     * Creates a new time-limited token with an empty payload and the default expiration time (30 seconds)
+     * using a specific encryption password.
+     * @param encryptionPassword the password to use for encryption
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the encryptionPassword is null or empty
+     */
+    public static String createToken(String encryptionPassword) {
+        return createToken(EMPTY_PAYLOAD, DEFAULT_EXPIRATION_TIME, encryptionPassword);
+    }
+
+    /**
      * Creates a new time-limited token with an empty payload.
      * @param expirationTime the expiration time in milliseconds
      * @return the encrypted token string
      */
     public static String createToken(long expirationTime) {
         return createToken(EMPTY_PAYLOAD, expirationTime);
+    }
+
+    /**
+     * Creates a new time-limited token with an empty payload and a specific expiration time
+     * using a specific encryption password.
+     * @param expirationTime the expiration time in milliseconds
+     * @param encryptionPassword the password to use for encryption
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the encryptionPassword is null or empty
+     */
+    public static String createToken(long expirationTime, String encryptionPassword) {
+        return createToken(EMPTY_PAYLOAD, expirationTime, encryptionPassword);
     }
 
     /**
@@ -81,6 +104,19 @@ public final class TimeLimitedPBTokenIssuer {
     }
 
     /**
+     * Creates a new time-limited token with the given payload and the default expiration time (30 seconds)
+     * using a specific encryption password.
+     * The payload is converted to an APON string and embedded in the token.
+     * @param payload the parameters to be included in the token (must not be null)
+     * @param encryptionPassword the password to use for encryption
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the payload or encryptionPassword is null or empty
+     */
+    public static String createToken(Parameters payload, String encryptionPassword) {
+        return createToken(payload, DEFAULT_EXPIRATION_TIME, encryptionPassword);
+    }
+
+    /**
      * Creates a new time-limited token with the given payload.
      * The payload is converted to an APON string and embedded in the token.
      * @param payload the parameters to be included in the token (must not be null)
@@ -89,12 +125,28 @@ public final class TimeLimitedPBTokenIssuer {
      * @throws IllegalArgumentException if the payload is null
      */
     public static String createToken(Parameters payload, long expirationTime) {
-        if (payload == null) {
-            throw new IllegalArgumentException("payload must not be null");
-        }
+        Assert.notNull(payload, "payload must not be null");
         long time = System.currentTimeMillis() + expirationTime;
         String combined = Long.toString(time, DIGIT_RADIX) + TOKEN_SEPARATOR + payload;
         return PBEncryptionUtils.encrypt(combined);
+    }
+
+    /**
+     * Creates a new time-limited token with the given payload and a specific expiration time
+     * using a specific encryption password.
+     * The payload is converted to an APON string and embedded in the token.
+     * @param payload the parameters to be included in the token (must not be null)
+     * @param expirationTime the expiration time in milliseconds
+     * @param encryptionPassword the password to use for encryption
+     * @return the encrypted token string
+     * @throws IllegalArgumentException if the payload, expirationTime, or encryptionPassword is null or empty
+     */
+    public static String createToken(Parameters payload, long expirationTime, String encryptionPassword) {
+        Assert.notNull(payload, "payload must not be null");
+        Assert.hasLength(encryptionPassword, "encryptionPassword must not be null or empty");
+        long time = System.currentTimeMillis() + expirationTime;
+        String combined = Long.toString(time, DIGIT_RADIX) + TOKEN_SEPARATOR + payload;
+        return PBEncryptionUtils.encrypt(combined, encryptionPassword);
     }
 
     /**
@@ -106,7 +158,7 @@ public final class TimeLimitedPBTokenIssuer {
      * @throws IllegalArgumentException if the token is null or empty
      */
     public static <T extends Parameters> T parseToken(String token) throws InvalidPBTokenException {
-        return parseToken(token, null);
+        return parseToken(token, (Class<T>)null);
     }
 
     /**
@@ -121,13 +173,71 @@ public final class TimeLimitedPBTokenIssuer {
     @SuppressWarnings("unchecked")
     public static <T extends Parameters> T parseToken(String token, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
-        if (StringUtils.isEmpty(token)) {
-            throw new IllegalArgumentException("token must not be null or empty");
-        }
+        Assert.hasLength(token, "token must not be null or empty");
         long expirationTimeMillis;
         String payloadString;
         try {
             String combined = PBEncryptionUtils.decrypt(token);
+            int index = combined.indexOf(TOKEN_SEPARATOR);
+            if (index == -1) {
+                throw new InvalidPBTokenException(token);
+            }
+            expirationTimeMillis = Long.parseLong(combined.substring(0, index), DIGIT_RADIX);
+            payloadString = combined.substring(index + 1);
+        } catch (Exception e) {
+            throw new InvalidPBTokenException(token, e);
+        }
+        if (expirationTimeMillis < System.currentTimeMillis()) {
+            throw new ExpiredPBTokenException(token);
+        }
+        try {
+            if (payloadType != null) {
+                return AponReader.read(payloadString, payloadType);
+            } else {
+                return (T)AponReader.read(payloadString);
+            }
+        } catch (Exception e) {
+            throw new InvalidPBTokenException(token, e);
+        }
+    }
+
+    /**
+     * Parses the specified token and extracts the payload as {@link VariableParameters}
+     * using a specific encryption password.
+     * This method validates the token's integrity and expiration time.
+     * @param token the token string to parse
+     * @param encryptionPassword the password to use for decryption
+     * @param <T> the type of the payload
+     * @return the payload as a {@link VariableParameters} instance
+     * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
+     * @throws IllegalArgumentException if the token or encryptionPassword is null or empty
+     */
+    public static <T extends Parameters> T parseToken(String token, String encryptionPassword)
+            throws InvalidPBTokenException {
+        return parseToken(token, encryptionPassword, null);
+    }
+
+    /**
+     * Parses the specified token and extracts the payload into a new instance of the given type
+     * using a specific encryption password.
+     * This method validates the token's integrity and expiration time.
+     * @param token the token string to parse
+     * @param encryptionPassword the password to use for decryption
+     * @param payloadType the class of the payload, a subclass of {@link Parameters}
+     * @param <T> the type of the payload
+     * @return a new instance of the specified payload type
+     * @throws InvalidPBTokenException if the token is invalid, malformed, or expired
+     * @throws IllegalArgumentException if the token or encryptionPassword is null or empty
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Parameters> T parseToken(String token, String encryptionPassword, @Nullable Class<T> payloadType)
+            throws InvalidPBTokenException {
+        Assert.hasLength(token, "token must not be null or empty");
+        Assert.hasLength(encryptionPassword, "encryptionPassword must not be null or empty");
+        long expirationTimeMillis;
+        String payloadString;
+        try {
+            String combined = PBEncryptionUtils.decrypt(token, encryptionPassword);
             int index = combined.indexOf(TOKEN_SEPARATOR);
             if (index == -1) {
                 throw new InvalidPBTokenException(token);
@@ -158,7 +268,19 @@ public final class TimeLimitedPBTokenIssuer {
      * @throws InvalidPBTokenException if the token is invalid or has expired
      */
     public static void validate(String token) throws InvalidPBTokenException {
-        parseToken(token, null);
+        parseToken(token);
+    }
+
+    /**
+     * Validates the given token by attempting to parse it with a specific encryption password.
+     * If the token is invalid, expired, or malformed, an exception is thrown.
+     * @param token the token to validate
+     * @param encryptionPassword the password to use for decryption
+     * @throws InvalidPBTokenException if the token is invalid or has expired
+     * @throws IllegalArgumentException if the token or encryptionPassword is null or empty
+     */
+    public static void validate(String token, String encryptionPassword) throws InvalidPBTokenException {
+        parseToken(token, encryptionPassword, null);
     }
 
 }
