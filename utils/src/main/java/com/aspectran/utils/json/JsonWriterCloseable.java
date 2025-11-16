@@ -25,7 +25,7 @@ import java.io.Writer;
  * automatically closed when the block is exited.</p>
  * <p>Example usage:
  * <pre>{@code
- *   try(JsonWriterCloseable jsonWriter = new JsonWriterCloseable(new StringWriter())) {
+ *   try (JsonWriterCloseable jsonWriter = new JsonWriterCloseable(new StringWriter())) {
  *     jsonWriter.beginObject().name("key").value("value").endObject();
  *     String json = jsonWriter.toString();
  *   }
