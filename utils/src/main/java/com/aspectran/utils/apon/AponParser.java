@@ -55,7 +55,7 @@ import static com.aspectran.utils.apon.AponFormat.TRUE;
  * corresponding object graph. Nested arrays are parsed directly into nested
  * {@code List} objects.</p>
  *
- * @since 9.x.x
+ * @since 9.4.0
  */
 public class AponParser {
 

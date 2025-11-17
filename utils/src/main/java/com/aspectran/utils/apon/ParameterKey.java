@@ -264,6 +264,7 @@ public class ParameterKey {
         tsb.append("valueType", valueType);
         tsb.append("class", parametersClass);
         tsb.append("array", array);
+        tsb.append("noBrackets", noBrackets);
         return tsb.toString();
     }
 

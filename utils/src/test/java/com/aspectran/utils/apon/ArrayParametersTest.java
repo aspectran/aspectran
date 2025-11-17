@@ -292,7 +292,8 @@ class ArrayParametersTest {
                     id: 2
                     name: Item B
                   }
-                ]""";
+                ]
+                """;
         // Normalize line endings for comparison
         String actual = mainParams.toString().trim().replace("\r\n", "\n");
         String normalizedExpected = expectedApon.trim().replace("\r\n", "\n");
@@ -300,7 +301,7 @@ class ArrayParametersTest {
     }
 
     @Test
-    void testXSSPatternItem() throws AponParseException {
+    void testXSSPatternItem() throws IOException {
         String patterns = """
             [
                 {
@@ -310,13 +311,13 @@ class ArrayParametersTest {
                     dotall: false
                 }
                 {
-                    pattern: src[\\r\\n]*=[\\r\\n]*\\'(.*?)\\'
+                    pattern: "src[\\\\r\\n]*=[\\\\r\\\\n]*\\\\'(.*?)\\\\'"
                     caseInsensitive: true
                     multiline: true
                     dotall: true
                 }
                 {
-                    pattern: src[\\r\\n]*=[\\r\\n]*\\"(.*?)\\"
+                    pattern: "src[\\\\r\\\\n]*=[\\\\r\\\\n]*\\"(.*?)\\""
                     caseInsensitive: true
                     multiline: true
                     dotall: true
@@ -372,6 +373,8 @@ class ArrayParametersTest {
         assertNotNull(xssPatternItemList);
         assertEquals(10, xssPatternItemList.size());
         assertEquals("<script>(.*?)</script>", xssPatternItemList.get(0).getPattern());
+        String expectedApon = new AponWriter().indentString("    ").write(xssPatternParameters).toString();
+        assertEquals(patterns.replace("\r\n", "\n"), expectedApon.replace("\r\n", "\n"));
     }
 
 }

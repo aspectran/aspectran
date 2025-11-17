@@ -18,6 +18,7 @@ package com.aspectran.utils.apon;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -65,7 +66,7 @@ class XmlToParametersTest {
         assertNotNull(item1);
 
         // Test array of containers within item1
-        java.util.List<Parameters> containers = item1.getParametersList("container");
+        var containers = item1.getParametersList("container");
         assertEquals(2, containers.size());
 
         // First container in the array
@@ -80,7 +81,7 @@ class XmlToParametersTest {
 
         // Second container in the array
         Parameters container2 = containers.get(1);
-        java.util.List<String> items2 = container2.getStringList("item");
+        List<String> items2 = container2.getStringList("item");
         assertEquals(3, items2.size());
         assertEquals("aaa", items2.get(0));
     }
@@ -104,7 +105,7 @@ class XmlToParametersTest {
     void testXmlWithSiblingElements() throws IOException {
         String xml = "<root><item>a</item><item>b</item><item>c</item></root>";
         Parameters params = XmlToParameters.from(xml);
-        java.util.List<String> items = params.getParameters("root").getStringList("item");
+        List<String> items = params.getParameters("root").getStringList("item");
         assertEquals(3, items.size());
         assertEquals(java.util.Arrays.asList("a", "b", "c"), items);
     }
