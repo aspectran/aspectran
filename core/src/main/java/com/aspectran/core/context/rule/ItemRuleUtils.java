@@ -220,9 +220,9 @@ public abstract class ItemRuleUtils {
         Assert.notNull(paramItem, "paramItem must not be null");
         String name = StringUtils.emptyToNull(paramItem.name());
         String value = StringUtils.emptyToNull(paramItem.value());
-        boolean tokenize = paramItem.tokenize();
-        boolean mandatory = paramItem.mandatory();
-        boolean secret = paramItem.secret();
+        Boolean tokenize = (paramItem.tokenize() ? null : Boolean.FALSE);
+        Boolean mandatory = (paramItem.mandatory() ? Boolean.TRUE : null);
+        Boolean secret = (paramItem.secret() ? Boolean.TRUE : null);
 
         ItemRule itemRule = ItemRule.newInstance(null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
@@ -240,9 +240,9 @@ public abstract class ItemRuleUtils {
         Assert.notNull(attrItem, "attrItem must not be null");
         String name = StringUtils.emptyToNull(attrItem.name());
         String value = StringUtils.emptyToNull(attrItem.value());
-        boolean tokenize = attrItem.tokenize();
-        boolean mandatory = attrItem.mandatory();
-        boolean secret = attrItem.secret();
+        Boolean tokenize = (attrItem.tokenize() ? null : Boolean.FALSE);
+        Boolean mandatory = (attrItem.mandatory() ? Boolean.TRUE : null);
+        Boolean secret = (attrItem.secret() ? Boolean.TRUE : null);
 
         ItemRule itemRule = ItemRule.newInstance(null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
