@@ -49,6 +49,6 @@ public @interface Transform {
     String encoding() default "";
 
     /** Whether to pretty-print the output when applicable. */
-    boolean pretty() default true;
+    boolean pretty() default false;
 
 }

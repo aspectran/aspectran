@@ -373,7 +373,7 @@ public class AnnotatedConfigParser {
             aspectId = Namespace.applyNamespace(nameArray, aspectId);
         }
         int order = aspectAnno.order();
-        boolean isolated = aspectAnno.isolated();
+        Boolean isolated = (aspectAnno.isolated() ? Boolean.TRUE : null);
 
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(aspectId);
@@ -600,7 +600,7 @@ public class AnnotatedConfigParser {
             ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
             jobRule.setTransletName(transletName);
             if (job.disabled()) {
-                jobRule.setDisabled(true);
+                jobRule.setDisabled(Boolean.TRUE);
             }
             scheduleRule.addScheduledJobRule(jobRule);
         }
@@ -770,7 +770,7 @@ public class AnnotatedConfigParser {
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
         String templateId = StringUtils.emptyToNull(transformAnno.template());
         String encoding = StringUtils.emptyToNull(transformAnno.encoding());
-        boolean pretty = transformAnno.pretty();
+        Boolean pretty = (transformAnno.pretty() ? Boolean.TRUE : null);
         TransformRule transformRule = TransformRule.newInstance(formatType, contentType, encoding, pretty);
         transformRule.setTemplateId(templateId);
         return transformRule;
