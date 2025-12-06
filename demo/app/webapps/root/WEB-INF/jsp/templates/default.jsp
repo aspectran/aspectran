@@ -88,7 +88,6 @@
                             <li><a class="dropdown-item" href="<aspectran:url value="/chat/"/>">WebSocket Chat Demo</a></li>
                             <li><a class="dropdown-item" href="<aspectran:url value="/interpreter/"/>">Remote Command Shell</a></li>
                             <li><a class="dropdown-item" href="<aspectran:url value="/skylark/"/>">Skylark Terminal</a></li>
-                            <li><a class="dropdown-item" href="<aspectran:url value="/anatomy/viewer"/>">Anatomy</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">

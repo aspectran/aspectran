@@ -49,7 +49,7 @@ public class AnatomyActivity {
     public Map<String, String> viewer() {
         return Map.of(
                 "include", "anatomy/viewer",
-                "style", "plate compact",
+                "style", "plate solid compact",
                 "headline", "Framework Anatomy"
         );
     }

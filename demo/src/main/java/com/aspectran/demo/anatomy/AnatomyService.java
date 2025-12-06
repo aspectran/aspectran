@@ -31,10 +31,13 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponLines;
+import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -134,70 +137,81 @@ public class AnatomyService implements ActivityContextAware {
 
     @NonNull
     private Map<String, Object> convertTransletRuleToApon(String ruleName, @NonNull TransletRule rule) {
+        Parameters params = RulesToParameters.toTransletParameters(rule);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", ruleName);
-        map.put("apon", RulesToParameters.toTransletParameters(rule).toString());
+        map.put("apon", paramsToString(params));
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertBeanRuleToApon(@NonNull BeanRule rule) {
+        Parameters params = RulesToParameters.toBeanParameters(rule);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", rule.getId());
         map.put("className", rule.getClassName());
-        map.put("apon", RulesToParameters.toBeanParameters(rule).toString());
+        map.put("apon", paramsToString(params));
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertAspectRuleToApon(@NonNull AspectRule rule) {
+        Parameters params = RulesToParameters.toAspectParameters(rule);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", rule.getId());
-        map.put("apon", RulesToParameters.toAspectParameters(rule).toString());
+        map.put("apon", paramsToString(params));
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertScheduleRuleToApon(@NonNull ScheduleRule rule) {
+        Parameters params = RulesToParameters.toScheduleParameters(rule);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", rule.getId());
-        Parameters params = RulesToParameters.toScheduleParameters(rule);
-        map.put("apon", params.toString());
+        map.put("apon", paramsToString(params));
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertTemplateRuleToApon(@NonNull TemplateRule rule) {
+        Parameters params = RulesToParameters.toTemplateParameters(rule);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", rule.getId());
-        Parameters params = RulesToParameters.toTemplateParameters(rule);
-        map.put("apon", params.toString());
+        map.put("apon", paramsToString(params));
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertTypeConverterToApon(@NonNull Class<?> type, @NonNull TypeConverter<?> converter) {
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("name", type.getName());
         AponLines apon = new AponLines();
         apon.line("type", type.getName());
         apon.line("converter", converter.getClass().getName());
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", type.getName());
         map.put("apon", apon.toString());
         return map;
     }
 
     @NonNull
     private Map<String, Object> convertEventListenerToApon(@NonNull Class<?> eventType, @NonNull List<ListenerMethod> listenerMethods) {
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("name", eventType.getName());
         AponLines apon = new AponLines();
         apon.array(eventType.getName());
         for (ListenerMethod listenerMethod : listenerMethods) {
             apon.line(listenerMethod.toString());
         }
         apon.end();
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", eventType.getName());
         map.put("apon", apon.toString());
         return map;
+    }
+
+    private String paramsToString(Parameters params) {
+        try {
+            return new AponWriter().nullWritable(false).write(params).toString();
+        } catch (IOException e) {
+            return StringUtils.EMPTY;
+        }
     }
 
 }
