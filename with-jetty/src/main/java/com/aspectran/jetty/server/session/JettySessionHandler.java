@@ -29,6 +29,9 @@ public class JettySessionHandler extends SessionHandler {
 
     public JettySessionHandler() {
         super();
+
+        // Disable URL-based session tracking (no more 'jsessionid' in the URL)
+        setUsingUriParameters(false);
     }
 
     public void setSessionDataStore(SessionDataStoreFactory sessionDataStoreFactory) throws Exception {
