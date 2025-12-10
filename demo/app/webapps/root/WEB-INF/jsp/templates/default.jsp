@@ -229,7 +229,7 @@
         <div class="container">
             <nav class="row mb-1">
                 <section id="subfooter-left" class="col-md-6 credits">
-                    <p>Copyright © 2018-present The Aspectran Project</p>
+                    <p>Copyright © 2008-present The Aspectran Project</p>
                 </section>
                 <section id="subfooter-right" class="col-md-6 social-icons text-end">
                     <%= com.aspectran.core.AboutMe.POWERED_BY_LINK %>
