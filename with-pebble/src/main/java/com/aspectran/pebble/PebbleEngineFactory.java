@@ -285,9 +285,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
                 logger.debug("Template loader path [{}] resolved to file path [{}]",
                         templateLoaderPath, prefix);
             }
-            FileLoader loader = new FileLoader();
-            loader.setPrefix(prefix);
-            return loader;
+            return new FileLoader(prefix);
         } else {
             File file = new File(context.getApplicationAdapter().getBasePathString(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
@@ -295,9 +293,7 @@ public class PebbleEngineFactory implements ActivityContextAware {
                 logger.debug("Template loader path [{}] resolved to file path [{}]",
                         templateLoaderPath, prefix);
             }
-            FileLoader loader = new FileLoader();
-            loader.setPrefix(prefix);
-            return loader;
+            return new FileLoader(prefix);
         }
     }
 
