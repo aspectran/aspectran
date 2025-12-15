@@ -33,7 +33,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <automatic.module.name>com.aspectran.rss.lettuce</automatic.module.name>
-        <lettuce.version>7.2.0.RELEASE</lettuce.version>
+        <lettuce.version>7.2.1.RELEASE</lettuce.version>
     </properties>
 
     <dependencies>
