@@ -28,7 +28,7 @@
             <div class="card-header">
                 <h5 class="mb-0">Rule Details (APON)</h5>
             </div>
-            <div class="card-body scrollable-pane">
+            <div class="card-body scrollable-pane p-2">
                 <pre id="details-content">Select a rule from the left panel to see details.</pre>
             </div>
         </div>
