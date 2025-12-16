@@ -16,7 +16,7 @@
 package com.aspectran.utils.wildcard;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Holder for include and exclude wildcard pattern sets and a convenience

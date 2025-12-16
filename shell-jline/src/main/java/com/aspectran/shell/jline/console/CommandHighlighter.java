@@ -22,12 +22,12 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.jline.reader.Highlighter;
 import org.jline.reader.LineReader;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.jspecify.annotations.NonNull;
 
 import java.util.regex.Pattern;
 

@@ -25,9 +25,9 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.response.DefaultRestResponse;
 import com.aspectran.web.activity.response.RestResponse;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 

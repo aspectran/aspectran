@@ -17,8 +17,8 @@ package com.aspectran.core.service;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

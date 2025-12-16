@@ -16,11 +16,11 @@
 package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.InvalidMediaTypeException;
 import com.aspectran.web.support.http.MediaType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;

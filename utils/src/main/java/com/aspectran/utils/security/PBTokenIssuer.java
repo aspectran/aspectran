@@ -17,9 +17,9 @@ package com.aspectran.utils.security;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.PBEncryptionUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A utility for issuing and validating password-based tokens without an expiration time.

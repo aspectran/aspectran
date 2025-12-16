@@ -17,7 +17,6 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -27,6 +26,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 import org.jline.widget.AutosuggestionWidgets;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;

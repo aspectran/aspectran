@@ -27,9 +27,9 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.apon.AponReader;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

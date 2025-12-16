@@ -16,7 +16,7 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Locale;
 import java.util.TimeZone;

@@ -24,8 +24,8 @@ import com.aspectran.core.context.asel.ognl.OgnlSupport;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.OgnlContext;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 

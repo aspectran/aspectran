@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a single job to be executed as part of a schedule.

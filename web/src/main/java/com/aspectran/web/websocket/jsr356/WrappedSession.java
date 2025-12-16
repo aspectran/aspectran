@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.websocket.jsr356;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.websocket.Session;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A wrapper class for a {@link Session}, useful for extending or for use in collections.

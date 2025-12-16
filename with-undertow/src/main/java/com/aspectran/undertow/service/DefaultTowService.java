@@ -27,12 +27,12 @@ import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.thread.ThreadContextHelper;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

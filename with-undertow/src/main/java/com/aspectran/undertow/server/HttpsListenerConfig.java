@@ -16,8 +16,8 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.Undertow;
+import org.jspecify.annotations.NonNull;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;

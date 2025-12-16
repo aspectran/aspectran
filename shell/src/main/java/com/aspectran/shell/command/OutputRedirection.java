@@ -18,8 +18,8 @@ package com.aspectran.shell.command;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;

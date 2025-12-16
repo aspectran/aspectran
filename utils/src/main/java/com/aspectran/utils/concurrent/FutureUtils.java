@@ -16,7 +16,7 @@
 package com.aspectran.utils.concurrent;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;

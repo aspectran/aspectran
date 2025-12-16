@@ -19,16 +19,17 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.ManagedSession;
+import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -342,7 +343,7 @@ public class TowSessionManager implements ActivityContextAware, DisposableBean, 
      * @param session the Aspectran session
      * @return the Undertow session
      */
-    TowSession wrapSession(@NonNull com.aspectran.core.component.session.Session session) {
+    TowSession wrapSession(@NonNull Session session) {
         return new TowSession(this, session);
     }
 

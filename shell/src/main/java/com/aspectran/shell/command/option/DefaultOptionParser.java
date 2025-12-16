@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.option;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

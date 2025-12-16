@@ -17,8 +17,8 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A utility class for parsing an APON-formatted string from a request body

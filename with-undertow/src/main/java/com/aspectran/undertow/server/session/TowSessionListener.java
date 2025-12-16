@@ -17,10 +17,10 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.handlers.ServletRequestContext;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An Aspectran {@link SessionListener} implementation that wraps and delegates

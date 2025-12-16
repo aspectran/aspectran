@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supported autowire-target types.
- * 
+ *
  * <p>Created: 2016. 2. 24.</p>
- * 
+ *
  * @since 2.0.0
  */
 public enum AutowireTargetType {

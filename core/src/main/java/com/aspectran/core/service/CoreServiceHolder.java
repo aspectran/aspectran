@@ -18,8 +18,8 @@ package com.aspectran.core.service;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.resource.SiblingClassLoader;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;

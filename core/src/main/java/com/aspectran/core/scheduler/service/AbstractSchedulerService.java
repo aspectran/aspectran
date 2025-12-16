@@ -28,7 +28,7 @@ import com.aspectran.core.service.AbstractServiceLifeCycle;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;

@@ -20,10 +20,10 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.ObjectToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Specializes {@link ObjectToParameters} to convert a {@link ProcessResult} object

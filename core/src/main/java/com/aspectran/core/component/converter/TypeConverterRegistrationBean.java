@@ -18,7 +18,7 @@ package com.aspectran.core.component.converter;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A helper bean that implements {@link TypeConverterRegistration} to allow other beans

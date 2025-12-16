@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemEntry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing a nested {@code <bean>} element, which defines

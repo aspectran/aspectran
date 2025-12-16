@@ -19,14 +19,14 @@ import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.LoggingGroupHelper;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

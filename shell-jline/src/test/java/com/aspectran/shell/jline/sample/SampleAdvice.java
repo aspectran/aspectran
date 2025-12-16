@@ -16,7 +16,7 @@
 package com.aspectran.shell.jline.sample;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

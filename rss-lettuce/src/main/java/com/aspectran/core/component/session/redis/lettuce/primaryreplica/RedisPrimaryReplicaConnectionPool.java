@@ -18,13 +18,13 @@ package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 

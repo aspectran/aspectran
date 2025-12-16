@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

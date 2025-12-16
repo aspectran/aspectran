@@ -27,12 +27,12 @@ import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.websocket.jsr356.AbstractEndpoint;
 import com.aspectran.web.websocket.jsr356.AspectranConfigurator;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

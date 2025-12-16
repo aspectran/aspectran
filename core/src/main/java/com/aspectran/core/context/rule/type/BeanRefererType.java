@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An enum that categorizes the different ways a bean can be referenced by a rule

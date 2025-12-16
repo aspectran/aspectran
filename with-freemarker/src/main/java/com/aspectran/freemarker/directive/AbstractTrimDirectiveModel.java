@@ -15,7 +15,6 @@
  */
 package com.aspectran.freemarker.directive;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import freemarker.core.Environment;
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -24,6 +23,7 @@ import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.StringWriter;

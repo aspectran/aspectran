@@ -15,9 +15,9 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.sun.jna.Native;
 import com.sun.jna.win32.StdCallLibrary;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

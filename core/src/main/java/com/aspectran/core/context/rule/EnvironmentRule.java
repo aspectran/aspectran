@@ -19,7 +19,7 @@ import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.ability.Describable;
 import com.aspectran.core.context.rule.ability.HasProperties;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Defines a set of properties that are only active when a specific profile is enabled.

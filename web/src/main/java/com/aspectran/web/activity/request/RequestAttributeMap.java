@@ -15,9 +15,9 @@
  */
 package com.aspectran.web.activity.request;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletRequest;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;

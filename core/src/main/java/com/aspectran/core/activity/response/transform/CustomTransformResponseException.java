@@ -17,7 +17,7 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 

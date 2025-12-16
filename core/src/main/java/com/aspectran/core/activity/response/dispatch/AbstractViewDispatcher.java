@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Abstract base class for {@link ViewDispatcher} implementations.

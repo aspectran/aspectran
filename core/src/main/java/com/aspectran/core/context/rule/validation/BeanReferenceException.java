@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.parser.ActivityContextRuleParserException;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererInfo;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector.RefererKey;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.Map;

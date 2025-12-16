@@ -19,10 +19,10 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.thymeleaf.context.common.AbstractActivityRequest;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Collections;

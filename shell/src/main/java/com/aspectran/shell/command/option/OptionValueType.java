@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.option;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supported Option value types.

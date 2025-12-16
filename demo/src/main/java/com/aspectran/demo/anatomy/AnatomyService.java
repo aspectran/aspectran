@@ -32,10 +32,10 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponLines;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.Collection;

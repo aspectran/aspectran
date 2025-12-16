@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.jsp.JspTagException;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Allows implementing tag to utilize nested {@code aspectran:argument} tags.

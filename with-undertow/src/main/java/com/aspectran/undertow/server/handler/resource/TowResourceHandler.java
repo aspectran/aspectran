@@ -16,7 +16,6 @@
 package com.aspectran.undertow.server.handler.resource;
 
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
@@ -25,6 +24,7 @@ import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.handlers.resource.ResourceSupplier;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

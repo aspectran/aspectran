@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Rule for an action that echoes attributes from the current activity context into the result.

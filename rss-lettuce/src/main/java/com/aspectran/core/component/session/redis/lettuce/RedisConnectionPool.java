@@ -16,10 +16,10 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Redis connection pool based on Lettuce and Apache Commons Pool.

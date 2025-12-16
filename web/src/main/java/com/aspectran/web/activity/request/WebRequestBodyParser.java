@@ -24,8 +24,6 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.JsonToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.XmlToParameters;
@@ -33,6 +31,8 @@ import com.aspectran.utils.io.CountingInputStream;
 import com.aspectran.utils.io.StreamReadLimitExceededException;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 

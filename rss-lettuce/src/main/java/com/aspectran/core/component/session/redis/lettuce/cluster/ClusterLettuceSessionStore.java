@@ -19,9 +19,9 @@ import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractLettuceSessionStore;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Redis-backed SessionStore for Redis Cluster using Lettuce.

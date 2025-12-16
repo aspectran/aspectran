@@ -19,7 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.AbstractMap;

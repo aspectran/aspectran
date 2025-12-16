@@ -16,8 +16,8 @@
 package com.aspectran.web.websocket.jsr356;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.websocket.Session;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

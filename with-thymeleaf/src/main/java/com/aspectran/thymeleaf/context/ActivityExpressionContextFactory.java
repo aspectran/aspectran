@@ -21,8 +21,8 @@ import com.aspectran.thymeleaf.context.web.WebActivityExchange;
 import com.aspectran.thymeleaf.context.web.WebActivityExpressionContext;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.WebActivity;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.web.IWebExchange;
 

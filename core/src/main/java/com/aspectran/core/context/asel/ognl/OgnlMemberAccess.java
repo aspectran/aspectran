@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.asel.ognl;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import ognl.MemberAccess;
 import ognl.OgnlContext;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;

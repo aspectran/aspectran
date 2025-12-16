@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.text.MessageFormat;
 import java.util.Locale;

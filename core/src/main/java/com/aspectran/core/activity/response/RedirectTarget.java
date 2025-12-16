@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents the target of a redirect operation, encapsulating both the internal

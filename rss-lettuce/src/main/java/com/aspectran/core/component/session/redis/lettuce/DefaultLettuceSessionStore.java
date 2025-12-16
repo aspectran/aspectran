@@ -16,9 +16,9 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Redis-backed SessionStore using a single-node (standalone) Lettuce connection.

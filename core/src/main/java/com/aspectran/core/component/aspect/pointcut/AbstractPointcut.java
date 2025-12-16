@@ -17,7 +17,7 @@ package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Objects;

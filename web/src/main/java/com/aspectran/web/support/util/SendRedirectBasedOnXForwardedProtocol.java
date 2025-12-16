@@ -17,9 +17,9 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.http.HttpHeaders;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 

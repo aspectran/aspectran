@@ -15,8 +15,8 @@
  */
 package com.aspectran.thymeleaf.expression;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.cache.ExpressionCacheKey;
 import org.thymeleaf.cache.ICache;

@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Convenience base class that exposes the current {@link ActivityContext}

@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 

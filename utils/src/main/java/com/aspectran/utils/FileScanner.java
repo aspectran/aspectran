@@ -15,9 +15,9 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardMatcher;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.util.LinkedHashMap;

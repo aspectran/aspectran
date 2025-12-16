@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.concurrent;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

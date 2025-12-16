@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.StringTokenizer;
 
 /**
  * Supported method types.
- * 
+ *
  * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
 public enum MethodType {

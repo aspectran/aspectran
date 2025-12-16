@@ -18,9 +18,9 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.concurrent.AutoLock;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

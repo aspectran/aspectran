@@ -34,9 +34,9 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponFormat;
 import com.aspectran.utils.apon.AponWriter;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.StringWriter;

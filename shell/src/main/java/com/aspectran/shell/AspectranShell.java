@@ -21,7 +21,7 @@ import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.InsufficientEnvironmentException;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 

@@ -16,7 +16,7 @@
 package com.aspectran.web.support.http;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A utility class for setting HTTP status codes on a {@link Translet}.

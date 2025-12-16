@@ -32,9 +32,9 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.utils.BeanTypeUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.nodelet.NodeTracker;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

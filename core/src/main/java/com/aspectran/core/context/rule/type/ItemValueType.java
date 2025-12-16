@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule.type;
 
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Types of supported item values.

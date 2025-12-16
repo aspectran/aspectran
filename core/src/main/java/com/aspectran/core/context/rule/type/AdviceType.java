@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Advice types include "around", "before" and "after" advice.

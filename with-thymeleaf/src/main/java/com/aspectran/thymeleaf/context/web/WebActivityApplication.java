@@ -16,8 +16,8 @@
 package com.aspectran.thymeleaf.context.web;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.ServletContext;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.web.servlet.IServletWebApplication;
 
 import java.io.InputStream;

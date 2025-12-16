@@ -16,8 +16,8 @@
 package com.aspectran.shell.console;
 
 import com.aspectran.shell.command.ConsoleCommander;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.charset.Charset;

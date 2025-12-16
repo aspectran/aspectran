@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.asel.value.ValueExpression;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Array;
 

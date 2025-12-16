@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supported format types.
  * Defines the format types as a result of converting objects
  * to string representations.
- * 
+ *
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */
 public enum FormatType {

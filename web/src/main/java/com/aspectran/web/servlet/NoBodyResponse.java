@@ -15,11 +15,11 @@
  */
 package com.aspectran.web.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

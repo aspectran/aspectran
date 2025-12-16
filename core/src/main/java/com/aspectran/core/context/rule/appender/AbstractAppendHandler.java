@@ -19,7 +19,7 @@ import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

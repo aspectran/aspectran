@@ -15,12 +15,12 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.MediaType;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemHeadersSupport;
 import org.apache.commons.fileupload.ParameterParser;
+import org.jspecify.annotations.NonNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

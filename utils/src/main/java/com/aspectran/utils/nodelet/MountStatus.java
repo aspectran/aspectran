@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.nodelet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents the state of a mounted {@link NodeletGroup} during parsing.

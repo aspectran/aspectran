@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A utility class that wraps an object implementing the {@link NonPersistent} interface.

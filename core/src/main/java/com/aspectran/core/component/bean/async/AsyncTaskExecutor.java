@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.bean.async;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.concurrent.FutureUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;

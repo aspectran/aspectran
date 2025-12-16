@@ -17,7 +17,7 @@ package com.aspectran.core.context.asel.token;
 
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

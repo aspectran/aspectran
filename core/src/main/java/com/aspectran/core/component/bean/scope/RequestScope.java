@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.locks.ReadWriteLock;
 

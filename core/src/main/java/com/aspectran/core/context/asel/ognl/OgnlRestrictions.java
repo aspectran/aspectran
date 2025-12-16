@@ -16,7 +16,7 @@
 package com.aspectran.core.context.asel.ognl;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

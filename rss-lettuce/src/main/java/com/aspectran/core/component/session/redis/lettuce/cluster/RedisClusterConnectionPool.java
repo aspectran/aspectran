@@ -18,10 +18,10 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 

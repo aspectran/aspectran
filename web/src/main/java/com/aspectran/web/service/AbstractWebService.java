@@ -22,10 +22,10 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.i18n.locale.AcceptHeaderLocaleResolver;
 import jakarta.servlet.ServletContext;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

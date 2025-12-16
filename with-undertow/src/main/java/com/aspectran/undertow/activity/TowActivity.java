@@ -30,7 +30,6 @@ import com.aspectran.undertow.adapter.TowSessionAdapter;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.adapter.WebRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -39,6 +38,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
+import org.jspecify.annotations.NonNull;
 
 import java.io.UnsupportedEncodingException;
 

@@ -19,13 +19,13 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.LocaleUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.CookieGenerator;
 import com.aspectran.web.support.util.WebUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

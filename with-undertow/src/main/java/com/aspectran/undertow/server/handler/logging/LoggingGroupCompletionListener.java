@@ -15,9 +15,9 @@
  */
 package com.aspectran.undertow.server.handler.logging;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpServerExchange;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An {@link ExchangeCompletionListener} that clears the logging group from the current thread.

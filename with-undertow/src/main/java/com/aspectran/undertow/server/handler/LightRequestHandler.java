@@ -16,7 +16,6 @@
 package com.aspectran.undertow.server.handler;
 
 import com.aspectran.undertow.service.TowService;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -25,6 +24,7 @@ import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionCookieConfig;
 import io.undertow.server.session.SessionManager;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The primary {@link HttpHandler} for processing requests in a lightweight, non-servlet environment.

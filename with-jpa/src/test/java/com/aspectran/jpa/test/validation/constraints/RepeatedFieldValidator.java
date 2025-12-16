@@ -16,9 +16,9 @@
 package com.aspectran.jpa.test.validation.constraints;
 
 import com.aspectran.utils.BeanUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;

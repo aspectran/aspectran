@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 

@@ -19,7 +19,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ReflectionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

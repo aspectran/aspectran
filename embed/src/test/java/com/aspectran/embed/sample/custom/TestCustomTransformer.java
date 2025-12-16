@@ -18,7 +18,7 @@ package com.aspectran.embed.sample.custom;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * <p>Created: 2019-06-16</p>

@@ -18,9 +18,9 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -16,7 +16,7 @@
 package com.aspectran.utils.wildcard;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Internal engine for wildcard pattern matching.

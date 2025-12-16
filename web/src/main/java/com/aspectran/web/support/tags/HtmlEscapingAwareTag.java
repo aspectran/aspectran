@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 

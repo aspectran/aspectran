@@ -15,8 +15,8 @@
  */
 package com.aspectran.demo.skylark.tts;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.sun.speech.freetts.audio.AudioPlayer;
+import org.jspecify.annotations.NonNull;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;

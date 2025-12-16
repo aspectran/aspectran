@@ -18,7 +18,7 @@ package com.aspectran.shell.jline.command;
 import com.aspectran.shell.command.DefaultConsoleCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 import com.aspectran.shell.jline.console.TerminalPrintStream;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@link DefaultConsoleCommander} implementation that is specifically

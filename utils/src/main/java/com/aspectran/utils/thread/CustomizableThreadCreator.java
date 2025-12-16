@@ -16,7 +16,7 @@
 package com.aspectran.utils.thread;
 
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

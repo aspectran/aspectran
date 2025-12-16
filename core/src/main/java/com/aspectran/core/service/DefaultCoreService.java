@@ -29,7 +29,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

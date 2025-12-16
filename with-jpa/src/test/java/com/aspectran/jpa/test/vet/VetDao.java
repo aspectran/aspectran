@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.jpa.querydsl.EntityQuery;
 import com.aspectran.jpa.test.hibernate.DefaultEntityQuery;
 import com.aspectran.jpa.test.pagination.PageInfo;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.querydsl.core.Fetchable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 

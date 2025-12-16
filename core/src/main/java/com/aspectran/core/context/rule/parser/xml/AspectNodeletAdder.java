@@ -20,9 +20,9 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing the {@code <aspect>} element and its sub-elements,

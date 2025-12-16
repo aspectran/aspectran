@@ -26,8 +26,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.CoreServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

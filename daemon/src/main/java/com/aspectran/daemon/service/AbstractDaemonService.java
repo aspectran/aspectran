@@ -27,7 +27,7 @@ import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.RequestAcceptor;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Abstract base class for {@link DaemonService} implementations.

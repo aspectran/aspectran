@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.params.SettingParameters;
 import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

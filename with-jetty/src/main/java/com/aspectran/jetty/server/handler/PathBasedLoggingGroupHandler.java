@@ -16,7 +16,6 @@
 package com.aspectran.jetty.server.handler;
 
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.LoggingGroupHelper;
 import com.aspectran.utils.wildcard.IncludeExcludeParameters;
@@ -25,6 +24,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.util.Callback;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;

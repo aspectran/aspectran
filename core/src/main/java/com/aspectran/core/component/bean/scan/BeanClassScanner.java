@@ -16,9 +16,9 @@
 package com.aspectran.core.component.bean.scan;
 
 import com.aspectran.utils.ClassScanner;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

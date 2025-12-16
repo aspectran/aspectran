@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A strategy interface for retrieving and saving FlashMap instances.

@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.nodelet;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

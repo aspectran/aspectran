@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents the supported file formats for appendable configuration rules.
- * 
+ *
  * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
 public enum AppendableFileFormatType {

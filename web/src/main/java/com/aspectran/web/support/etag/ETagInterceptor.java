@@ -20,10 +20,10 @@ import com.aspectran.core.activity.response.ResponseTemplate;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.utils.DigestUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.regex.Matcher;

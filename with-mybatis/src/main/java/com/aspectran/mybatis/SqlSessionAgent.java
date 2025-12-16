@@ -17,13 +17,13 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.annotation.Advisable;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
+import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.List;

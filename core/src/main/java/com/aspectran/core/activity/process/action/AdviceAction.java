@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A specialized {@link InvokeAction} for executing a method on an advice bean as part of an

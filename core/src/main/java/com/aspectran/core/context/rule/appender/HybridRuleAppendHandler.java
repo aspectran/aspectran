@@ -30,9 +30,9 @@ import com.aspectran.core.context.rule.parsing.RuleParsingScope;
 import com.aspectran.core.context.rule.parsing.ShallowRuleParsingContext;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.XmlToParameters;
+import org.jspecify.annotations.NonNull;
 import org.xml.sax.EntityResolver;
 
 import java.io.File;

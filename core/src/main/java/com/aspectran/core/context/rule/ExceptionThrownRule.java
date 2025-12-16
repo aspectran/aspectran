@@ -29,7 +29,7 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Defines a rule for handling a specific type of exception.

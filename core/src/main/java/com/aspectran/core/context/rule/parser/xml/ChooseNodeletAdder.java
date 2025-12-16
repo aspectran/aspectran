@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ability.HasActionRules;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing the {@code <choose>}, {@code <when>}, and

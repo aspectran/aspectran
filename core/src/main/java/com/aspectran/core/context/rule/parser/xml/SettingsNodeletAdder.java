@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing the {@code <settings>} element, which is used

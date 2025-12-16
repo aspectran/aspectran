@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils.nodelet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tracks the name and source code location (line and column number) of a node

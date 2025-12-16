@@ -22,13 +22,13 @@ import com.aspectran.core.service.CoreServiceHolder;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.web.servlet.WebActivityServlet;
 import com.aspectran.web.websocket.jsr356.ServerEndpointExporter;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

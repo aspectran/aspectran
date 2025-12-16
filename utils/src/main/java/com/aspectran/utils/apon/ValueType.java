@@ -15,8 +15,8 @@
  */
 package com.aspectran.utils.apon;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Enumeration of APON value types and helpers to resolve them from hints and runtime values.

@@ -20,7 +20,7 @@ import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * {@link CurrentActivityDataFactoryBean} that returns the {@link ActivityData} for

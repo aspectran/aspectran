@@ -18,8 +18,8 @@ package com.aspectran.undertow.server.handler.resource;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.handlers.resource.PathResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 

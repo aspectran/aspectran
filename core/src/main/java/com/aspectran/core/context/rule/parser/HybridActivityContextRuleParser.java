@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParsingContext;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A hybrid parser that can handle both XML and APON formats for Aspectran's

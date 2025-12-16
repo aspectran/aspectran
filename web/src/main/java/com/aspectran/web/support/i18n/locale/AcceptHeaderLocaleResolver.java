@@ -19,10 +19,10 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Enumeration;
 import java.util.List;

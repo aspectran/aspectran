@@ -19,10 +19,10 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.Reader;

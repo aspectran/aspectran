@@ -22,9 +22,9 @@ import com.aspectran.core.activity.response.transform.apon.ContentsToParameters;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.Writer;

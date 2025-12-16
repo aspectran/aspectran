@@ -15,11 +15,11 @@
  */
 package com.aspectran.thymeleaf.expression;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.PropertyAccessor;
 import ognl.enhance.UnsupportedCompilationException;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.context.IContext;
 
 /**

@@ -17,7 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.Collection;

@@ -20,7 +20,7 @@ import com.aspectran.thymeleaf.context.common.AbstractActivityExchange;
 import com.aspectran.thymeleaf.context.common.AspectranWebSession;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.web.IWebApplication;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.IWebRequest;

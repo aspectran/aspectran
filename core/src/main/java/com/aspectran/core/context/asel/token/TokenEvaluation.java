@@ -23,9 +23,9 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.PropertiesLoaderUtils;
 import com.aspectran.utils.SystemUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.jasypt.exceptions.EncryptionInitializationException;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

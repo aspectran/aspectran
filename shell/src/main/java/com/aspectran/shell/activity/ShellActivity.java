@@ -34,8 +34,8 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.io.OutputStringWriter;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Writer;
 

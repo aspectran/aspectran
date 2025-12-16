@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An enumeration of HTTP status codes.

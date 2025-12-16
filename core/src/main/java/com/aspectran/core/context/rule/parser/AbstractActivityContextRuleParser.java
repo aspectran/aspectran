@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

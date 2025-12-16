@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * <p>This class provides utility methods for handling {@link Boolean} objects and boolean primitives.

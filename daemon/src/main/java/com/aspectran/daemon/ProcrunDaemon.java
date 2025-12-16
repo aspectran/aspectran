@@ -17,7 +17,7 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.util.Arrays;

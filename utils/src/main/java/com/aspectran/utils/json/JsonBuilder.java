@@ -16,7 +16,7 @@
 package com.aspectran.utils.json;
 
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.StringWriter;

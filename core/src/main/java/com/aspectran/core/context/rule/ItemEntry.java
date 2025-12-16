@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a single key-value entry within a map-type {@link ItemRule}.

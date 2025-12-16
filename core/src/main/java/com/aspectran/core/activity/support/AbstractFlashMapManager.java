@@ -19,8 +19,8 @@ import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.activity.FlashMapManager;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

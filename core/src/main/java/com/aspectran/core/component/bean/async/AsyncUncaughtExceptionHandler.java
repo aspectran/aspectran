@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean.async;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 

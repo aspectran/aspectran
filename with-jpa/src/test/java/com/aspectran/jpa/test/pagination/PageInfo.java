@@ -18,7 +18,7 @@ package com.aspectran.jpa.test.pagination;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.LongSupplier;
 

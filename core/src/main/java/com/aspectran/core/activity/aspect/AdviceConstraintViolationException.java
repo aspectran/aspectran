@@ -18,7 +18,7 @@ package com.aspectran.core.activity.aspect;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;

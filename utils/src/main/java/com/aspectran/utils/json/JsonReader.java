@@ -16,7 +16,7 @@
 package com.aspectran.utils.json;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.EOFException;
 import java.io.IOException;

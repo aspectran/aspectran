@@ -20,7 +20,7 @@ import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

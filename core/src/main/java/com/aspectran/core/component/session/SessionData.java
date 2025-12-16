@@ -16,8 +16,8 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.io.CustomObjectInputStream;
+import org.jspecify.annotations.NonNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

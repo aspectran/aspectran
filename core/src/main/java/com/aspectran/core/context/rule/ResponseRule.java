@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.ability.HasResponseRules;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.charset.Charset;
 

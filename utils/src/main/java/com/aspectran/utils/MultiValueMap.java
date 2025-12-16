@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;

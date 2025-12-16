@@ -15,9 +15,9 @@
  */
 package com.aspectran.undertow.server.handler.logging;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An auxiliary {@link HttpHandler} that assists in propagating the logging group.

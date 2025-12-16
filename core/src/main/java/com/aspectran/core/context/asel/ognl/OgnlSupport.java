@@ -16,12 +16,12 @@
 package com.aspectran.core.context.asel.ognl;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import ognl.DefaultTypeConverter;
 import ognl.Node;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.TypeConverter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 

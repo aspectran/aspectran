@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Bean used to pass name-value pair parameters from a {@link ParamTag} to a

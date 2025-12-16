@@ -16,10 +16,10 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.AponWriterCloseable;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

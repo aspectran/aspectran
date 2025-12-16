@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supported item types.
- * 
+ *
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
 public enum ItemType {

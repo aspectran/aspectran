@@ -24,13 +24,13 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringifyContext;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.ObjectToParameters;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.json.JsonWriter;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
+import org.jspecify.annotations.NonNull;
 
 import javax.xml.transform.TransformerException;
 import java.io.IOException;

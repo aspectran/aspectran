@@ -25,9 +25,9 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents the root parameters for Aspectran configuration.

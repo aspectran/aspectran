@@ -16,7 +16,7 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Enumeration;
 

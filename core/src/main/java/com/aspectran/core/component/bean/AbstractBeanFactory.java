@@ -39,7 +39,7 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ReflectionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

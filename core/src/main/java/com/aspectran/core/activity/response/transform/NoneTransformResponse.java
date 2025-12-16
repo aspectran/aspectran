@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.transform;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@link TransformResponse} that performs no actual data transformation.

@@ -18,7 +18,7 @@ package com.aspectran.shell.command.option;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -23,7 +23,6 @@ import com.aspectran.undertow.server.servlet.TowServletContext;
 import com.aspectran.undertow.server.servlet.TowWebSocketServerContainerInitializer;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
@@ -39,6 +38,7 @@ import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import io.undertow.servlet.core.ServletContainerImpl;
 import jakarta.servlet.ServletContext;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A factory for creating a root {@link HttpHandler} that manages a full servlet environment.

@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeTracker;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

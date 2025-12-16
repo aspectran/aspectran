@@ -20,9 +20,9 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringifyContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.Parameters;
+import org.jspecify.annotations.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;

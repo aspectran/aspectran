@@ -18,7 +18,7 @@ package com.aspectran.core.context.resource;
 import com.aspectran.utils.PathUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;

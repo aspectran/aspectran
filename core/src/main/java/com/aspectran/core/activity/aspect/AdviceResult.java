@@ -17,7 +17,7 @@ package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.type.AdviceType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;

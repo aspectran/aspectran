@@ -17,8 +17,8 @@ package com.aspectran.core.activity.process;
 
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.ArrayList;

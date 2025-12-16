@@ -21,10 +21,10 @@ import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ResourceUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.AponWriter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

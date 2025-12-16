@@ -18,7 +18,7 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.activity.request.AbstractRequest;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.security.Principal;
 

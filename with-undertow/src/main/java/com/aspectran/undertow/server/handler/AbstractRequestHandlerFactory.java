@@ -19,9 +19,9 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.undertow.server.handler.logging.LoggingGroupHandlerWrapper;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.List;

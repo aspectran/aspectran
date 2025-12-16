@@ -18,8 +18,8 @@ package com.aspectran.core.activity.support;
 import com.aspectran.core.activity.FlashMap;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 

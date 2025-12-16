@@ -32,10 +32,10 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.util.Namespace;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,10 +19,10 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Base support class that locates and manages access to a MyBatis {@link SqlSession}

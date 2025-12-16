@@ -16,11 +16,11 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.concurrent.AutoLock;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import com.aspectran.utils.scheduling.Scheduler;
 import com.aspectran.utils.thread.ThreadContextHelper;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

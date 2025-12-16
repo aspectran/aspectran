@@ -17,8 +17,8 @@ package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardPattern;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Map;

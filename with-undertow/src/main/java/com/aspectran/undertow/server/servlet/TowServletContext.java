@@ -20,7 +20,6 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.WebServiceClassLoader;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -29,6 +28,7 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;

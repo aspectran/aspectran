@@ -15,10 +15,10 @@
  */
 package com.aspectran.web.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

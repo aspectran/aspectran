@@ -17,7 +17,7 @@ package com.aspectran.thymeleaf;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 

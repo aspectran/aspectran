@@ -17,8 +17,8 @@ package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.LocaleUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,11 +15,11 @@
  */
 package com.aspectran.undertow.server.handler.logging;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.IncludeExcludeWildcardPatterns;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 

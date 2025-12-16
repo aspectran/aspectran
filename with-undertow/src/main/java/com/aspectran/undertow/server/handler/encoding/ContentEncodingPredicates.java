@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.server.handler.encoding;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.attribute.RequestHeaderAttribute;
@@ -23,6 +22,7 @@ import io.undertow.predicate.Predicate;
 import io.undertow.predicate.Predicates;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

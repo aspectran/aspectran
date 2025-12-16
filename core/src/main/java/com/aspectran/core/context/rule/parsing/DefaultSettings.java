@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.parsing;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.utils.BooleanUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 

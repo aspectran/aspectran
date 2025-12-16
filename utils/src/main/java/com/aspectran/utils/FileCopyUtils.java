@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.FileFilter;

@@ -17,10 +17,10 @@ package com.aspectran.utils.apon;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonReader;
 import com.aspectran.utils.json.JsonReaderCloseable;
 import com.aspectran.utils.json.MalformedJsonException;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.Reader;

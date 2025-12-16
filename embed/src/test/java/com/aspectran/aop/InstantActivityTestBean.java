@@ -17,7 +17,7 @@ package com.aspectran.aop;
 
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * <p>Created: 2016. 11. 5.</p>

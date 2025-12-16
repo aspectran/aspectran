@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supported auto-reload types.
- * 
+ *
  * <p>Created: 2019. 03. 19.</p>
  */
 public enum AutoReloadType {

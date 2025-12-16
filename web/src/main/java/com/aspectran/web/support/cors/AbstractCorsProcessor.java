@@ -17,9 +17,9 @@ package com.aspectran.web.support.cors;
 
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
 import java.util.HashSet;

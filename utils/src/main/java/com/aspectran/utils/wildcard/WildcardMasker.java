@@ -15,7 +15,7 @@
  */
 package com.aspectran.utils.wildcard;
 
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility to apply a wildcard pattern as a mask over an input sequence.

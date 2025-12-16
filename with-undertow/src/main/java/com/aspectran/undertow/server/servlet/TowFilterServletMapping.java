@@ -15,9 +15,9 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.servlet.api.FilterMappingInfo;
 import jakarta.servlet.DispatcherType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

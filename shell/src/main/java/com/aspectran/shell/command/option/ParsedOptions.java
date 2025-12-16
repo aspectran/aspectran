@@ -16,7 +16,7 @@
 package com.aspectran.shell.command.option;
 
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.io.Serial;

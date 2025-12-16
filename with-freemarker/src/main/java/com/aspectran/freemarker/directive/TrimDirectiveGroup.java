@@ -15,7 +15,7 @@
  */
 package com.aspectran.freemarker.directive;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.HashMap;

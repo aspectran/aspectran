@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ability.HasParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Rule for an action that includes the result of another translet.

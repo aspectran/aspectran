@@ -17,7 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

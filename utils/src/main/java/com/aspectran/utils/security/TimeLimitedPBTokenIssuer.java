@@ -17,10 +17,10 @@ package com.aspectran.utils.security;
 
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.PBEncryptionUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A utility for issuing and validating time-limited, password-based tokens.

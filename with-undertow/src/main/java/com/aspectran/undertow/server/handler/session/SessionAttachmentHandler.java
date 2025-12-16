@@ -15,12 +15,12 @@
  */
 package com.aspectran.undertow.server.handler.session;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An {@link HttpHandler} that attaches the {@link SessionManager} and {@link SessionConfig}

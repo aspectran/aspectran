@@ -17,7 +17,7 @@ package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

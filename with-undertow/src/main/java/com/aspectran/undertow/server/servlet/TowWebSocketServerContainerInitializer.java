@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.Session;
@@ -26,6 +25,7 @@ import io.undertow.websockets.core.CloseMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

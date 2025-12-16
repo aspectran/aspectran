@@ -19,7 +19,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A factory for creating {@link TransformResponse} objects based on a {@link TransformRule}.

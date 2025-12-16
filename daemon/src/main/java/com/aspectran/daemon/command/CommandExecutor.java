@@ -18,7 +18,7 @@ package com.aspectran.daemon.command;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.utils.ExceptionUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

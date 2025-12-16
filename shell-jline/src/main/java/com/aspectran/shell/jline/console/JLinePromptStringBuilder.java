@@ -18,7 +18,7 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.shell.console.DefaultPromptStringBuilder;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@link PromptStringBuilder} implementation that supports JLine styling.

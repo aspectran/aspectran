@@ -15,9 +15,9 @@
  */
 package com.aspectran.jetty.server.servlet;
 
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.ee10.servlet.FilterMapping;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

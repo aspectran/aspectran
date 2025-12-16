@@ -19,9 +19,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletAdder;
 import com.aspectran.utils.nodelet.NodeletGroup;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@code NodeletAdder} for parsing the {@code <bean>} element, which defines a

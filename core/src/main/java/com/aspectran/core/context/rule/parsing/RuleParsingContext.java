@@ -50,8 +50,8 @@ import com.aspectran.core.context.rule.util.TextStyler;
 import com.aspectran.core.context.rule.validation.BeanReferenceInspector;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;

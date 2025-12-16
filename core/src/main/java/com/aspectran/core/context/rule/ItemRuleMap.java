@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.LinkedHashMap;

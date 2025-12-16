@@ -30,7 +30,7 @@ import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

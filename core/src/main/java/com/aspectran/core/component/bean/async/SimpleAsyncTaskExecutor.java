@@ -16,10 +16,10 @@
 package com.aspectran.core.component.bean.async;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.concurrent.ConcurrencyThrottleSupport;
 import com.aspectran.utils.thread.CustomizableThreadCreator;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.Set;

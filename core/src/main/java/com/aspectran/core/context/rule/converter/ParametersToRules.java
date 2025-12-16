@@ -87,7 +87,7 @@ import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.parsing.RuleParsingContext;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.StringUtils;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 

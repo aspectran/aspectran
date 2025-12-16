@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.result;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serial;
 import java.util.ArrayList;

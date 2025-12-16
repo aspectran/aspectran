@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.meta.TypeQualifierNickname;
+import org.jspecify.annotations.NonNull;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,12 +24,11 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates that a method return value or parameter is required (non-null).
- * This is a nickname for {@link javax.annotation.Nonnull}, useful in bean definitions and
+ * This is a nickname for {@link org.jspecify.annotations.NonNull}, useful in bean definitions and
  * method signatures to express mandatory values.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-@Nonnull
-@TypeQualifierNickname
+@NonNull
 public @interface Required {
 }

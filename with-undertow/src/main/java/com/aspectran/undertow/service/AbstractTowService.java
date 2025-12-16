@@ -21,8 +21,8 @@ import com.aspectran.core.context.config.WebConfig;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.DefaultCoreService;
 import com.aspectran.core.service.RequestAcceptor;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.handlers.resource.ResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

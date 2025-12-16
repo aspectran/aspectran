@@ -29,9 +29,9 @@ import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.ToStringBuilder;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A base class for components that need access to a transactional {@link EntityManager}.

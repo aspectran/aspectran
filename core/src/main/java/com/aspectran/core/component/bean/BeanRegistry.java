@@ -16,8 +16,8 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
