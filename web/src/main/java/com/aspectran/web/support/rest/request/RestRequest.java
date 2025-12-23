@@ -56,6 +56,8 @@ public class RestRequest {
 
     private final CloseableHttpClient httpClient;
 
+    private RequestConfig requestConfig;
+
     private String method;
 
     private String url;
@@ -68,14 +70,23 @@ public class RestRequest {
 
     private String content;
 
-    private RequestConfig requestConfig;
-
     /**
      * Instantiates a new RestRequest with the given HttpClient.
      * @param httpClient the {@link CloseableHttpClient} to use for executing requests
      */
     public RestRequest(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    /**
+     * Sets the request configuration for this specific request.
+     * This will override the default configuration set on the HttpClient.
+     * @param requestConfig the request configuration
+     * @return this {@code RestRequest} for fluent chaining
+     */
+    public RestRequest requestConfig(RequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
+        return this;
     }
 
     /**
@@ -145,17 +156,6 @@ public class RestRequest {
     }
 
     /**
-     * Sets the request configuration for this specific request.
-     * This will override the default configuration set on the HttpClient.
-     * @param requestConfig the request configuration
-     * @return this {@code RestRequest} for fluent chaining
-     */
-    public RestRequest requestConfig(RequestConfig requestConfig) {
-        this.requestConfig = requestConfig;
-        return this;
-    }
-
-    /**
      * A convenience method to add a Bearer Token to the 'Authorization' header.
      * @param token the bearer token
      * @return this {@code RestRequest} for fluent chaining
@@ -186,7 +186,7 @@ public class RestRequest {
      * @return this {@code RestRequest} for fluent chaining
      */
     public RestRequest xBearerToken(String token) {
-        addAuthorizationHeader("X-Authorization", "Bearer " + token);
+        addAuthorizationHeader(com.aspectran.web.support.http.HttpHeaders.X_AUTHORIZATION, "Bearer " + token);
         return this;
     }
 
@@ -201,7 +201,7 @@ public class RestRequest {
     public RestRequest xBasicAuth(String username, String password) {
         String credentials = username + ":" + password;
         String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-        addAuthorizationHeader("X-Authorization", "Basic " + encodedCredentials);
+        addAuthorizationHeader(com.aspectran.web.support.http.HttpHeaders.X_AUTHORIZATION, "Basic " + encodedCredentials);
         return this;
     }
 
@@ -347,9 +347,9 @@ public class RestRequest {
             }
         };
 
-        if (this.requestConfig != null) {
+        if (requestConfig != null) {
             HttpClientContext context = HttpClientContext.create();
-            context.setRequestConfig(this.requestConfig);
+            context.setRequestConfig(requestConfig);
             return httpClient.execute(request, context, responseHandler);
         } else {
             return httpClient.execute(request, responseHandler);

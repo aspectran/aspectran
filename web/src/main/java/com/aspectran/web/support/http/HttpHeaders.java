@@ -381,6 +381,11 @@ public interface HttpHeaders {
     String WWW_AUTHENTICATE = "WWW-Authenticate";
 
     /**
+     * The X-Authorization header is used to carry authorization information for HTTP requests.
+     */
+    String X_AUTHORIZATION = "X-Authorization";
+
+    /**
      * Some HTTP proxies do not support arbitrary HTTP methods or
      * newer HTTP methods (such as PATCH).
      * In that case it’s possible to “proxy” HTTP methods through
