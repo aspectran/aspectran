@@ -23,7 +23,9 @@ import com.aspectran.web.activity.response.RestResponse;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.rest.response.FailureResponse;
 import com.aspectran.web.support.rest.response.SuccessResponse;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
@@ -31,6 +33,7 @@ import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.Method;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
@@ -64,6 +67,8 @@ public class RestRequest {
     private MediaType contentType;
 
     private String content;
+
+    private RequestConfig requestConfig;
 
     /**
      * Instantiates a new RestRequest with the given HttpClient.
@@ -136,6 +141,17 @@ public class RestRequest {
      */
     public RestRequest content(String content) {
         this.content = content;
+        return this;
+    }
+
+    /**
+     * Sets the request configuration for this specific request.
+     * This will override the default configuration set on the HttpClient.
+     * @param requestConfig the request configuration
+     * @return this {@code RestRequest} for fluent chaining
+     */
+    public RestRequest requestConfig(RequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
         return this;
     }
 
@@ -288,7 +304,7 @@ public class RestRequest {
 
         ClassicHttpRequest request = requestBuilder.build();
 
-        return httpClient.execute(request, response -> {
+        HttpClientResponseHandler<RestResponse> responseHandler = response -> {
             HttpEntity entity = response.getEntity();
             final int statusCode = response.getCode();
             ContentType contentType = ContentType.parse(entity.getContentType());
@@ -329,7 +345,15 @@ public class RestRequest {
                 }
                 return failureResponse;
             }
-        });
+        };
+
+        if (this.requestConfig != null) {
+            HttpClientContext context = HttpClientContext.create();
+            context.setRequestConfig(this.requestConfig);
+            return httpClient.execute(request, context, responseHandler);
+        } else {
+            return httpClient.execute(request, responseHandler);
+        }
     }
 
     /**
