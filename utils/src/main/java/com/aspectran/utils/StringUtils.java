@@ -29,13 +29,19 @@ import java.util.StringTokenizer;
  * <p>This class provides convenience methods for common string manipulations
  * such as checking for emptiness, trimming, splitting, and joining.</p>
  */
-public abstract class StringUtils {
+public class StringUtils {
 
     /** Constant for an empty {@link String}. */
     public static final String EMPTY = "";
 
     /** Constant for an empty {@link String} array. */
     private static final String[] EMPTY_STRING_ARRAY = {};
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private StringUtils() {
+    }
 
     /**
      * Returns {@code true} if the given string is null or is the empty string.
@@ -360,26 +366,22 @@ public abstract class StringUtils {
         }
         StringBuilder sb = new StringBuilder(str);
         int loop = Math.min(searchList.length, replacementList.length);
-        int start = 0;
-        int end;
-        int searchLen;
-        int replaceLen;
         for (int i = 0; i < loop; i++) {
-            if (searchList[i] == null || replacementList[i] == null) {
+            String search = searchList[i];
+            String replacement = replacementList[i];
+            if (search == null || replacement == null) {
                 continue;
             }
-            searchLen = searchList[i].length();
-            replaceLen = replacementList[i].length();
-            while (true) {
-                if (sb.isEmpty()) {
+            int searchLen = search.length();
+            int replaceLen = replacement.length();
+            int start = 0;
+            while (start < sb.length()) {
+                int index = sb.indexOf(search, start);
+                if (index == -1) {
                     break;
                 }
-                start = sb.indexOf(searchList[i], start + replaceLen);
-                if (start == -1) {
-                    break;
-                }
-                end = start + searchLen;
-                sb.replace(start, end, replacementList[i]);
+                sb.replace(index, index + searchLen, replacement);
+                start = index + replaceLen;
             }
         }
         return sb.toString();
@@ -430,7 +432,6 @@ public abstract class StringUtils {
      * @return a two-element array with the part before the delimiter at index 0 and the part
      *      after at index 1. If the delimiter is not found, the original string is at index 0.
      */
-    @NonNull
     public static String[] divide(String str, String delim) {
         if (str == null) {
             return new String[] {null, null};
@@ -775,54 +776,6 @@ public abstract class StringUtils {
             }
         }
         return count;
-    }
-
-    /**
-     * Converts a byte size into a human-friendly format (e.g., 1024 -> "1.0 KB").
-     * @param bytes the number of bytes
-     * @return a human-friendly byte size string (includes units like B, KB, MB, GB)
-     */
-    @NonNull
-    public static String toHumanFriendlyByteSize(long bytes) {
-        if (bytes < 1024 && bytes > -1024) {
-            return bytes + " B";
-        }
-        String minus = null;
-        if (bytes < 0) {
-            minus = "-";
-            bytes = -bytes;
-        }
-        int z = (63 - Long.numberOfLeadingZeros(bytes)) / 10;
-        double d = (double)bytes / (1L << (z * 10));
-        String format = (d % 1.0 == 0 ? "%s%.0f %sB" : "%s%.1f %sB");
-        return String.format(format, nullToEmpty(minus), d, " KMGTPE".charAt(z));
-    }
-
-    /**
-     * Converts a human-friendly byte size string (e.g., "1KB", "10MB") into the number of bytes.
-     * @param bytes the human-friendly byte size string to parse
-     * @return the number of bytes
-     * @throws NumberFormatException if the string format is invalid
-     */
-    @SuppressWarnings("fallthrough")
-    public static long toMachineFriendlyByteSize(@NonNull String bytes) {
-        double d;
-        try {
-            d = Double.parseDouble(bytes.replaceAll("[GMK]?B?$", EMPTY));
-        } catch (NumberFormatException e)  {
-            String msg = "Size must be specified as bytes (B), " +
-                    "kilobytes (KB), megabytes (MB), gigabytes (GB). " +
-                    "E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB";
-            throw new NumberFormatException(msg + " " + e.getMessage());
-        }
-        long l = Math.round(d * 1024 * 1024 * 1024L);
-        int idx = Math.max(0, bytes.length() - (bytes.endsWith("B") ? 2 : 1));
-        switch (bytes.charAt(idx)) {
-            default:  l /= 1024;
-            case 'K': l /= 1024;
-            case 'M': l /= 1024;
-            case 'G': return l;
-        }
     }
 
 }
