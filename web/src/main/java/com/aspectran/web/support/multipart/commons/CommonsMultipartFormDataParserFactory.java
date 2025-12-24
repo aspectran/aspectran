@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.multipart.commons;
 
-import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
@@ -86,7 +86,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @param maxRequestSize the maximum request size in a human-readable format
      */
     public void setMaxRequestSize(String maxRequestSize) {
-        this.maxRequestSize = StringUtils.toMachineFriendlyByteSize(maxRequestSize);
+        this.maxRequestSize = DataSizeUtils.toMachineFriendlyByteSize(maxRequestSize);
     }
 
     /**
@@ -103,7 +103,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @param maxFileSize the maximum file size in a human-readable format
      */
     public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSize = StringUtils.toMachineFriendlyByteSize(maxFileSize);
+        this.maxFileSize = DataSizeUtils.toMachineFriendlyByteSize(maxFileSize);
     }
 
     /**
@@ -121,7 +121,7 @@ public class CommonsMultipartFormDataParserFactory {
      * @param maxInMemorySize the maximum memory size in a human-readable format
      */
     public void setMaxInMemorySize(String maxInMemorySize) {
-        this.maxInMemorySize = (int)StringUtils.toMachineFriendlyByteSize(maxInMemorySize);
+        this.maxInMemorySize = (int)DataSizeUtils.toMachineFriendlyByteSize(maxInMemorySize);
     }
 
     /**

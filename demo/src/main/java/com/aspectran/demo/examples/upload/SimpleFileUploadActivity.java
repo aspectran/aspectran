@@ -24,6 +24,7 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.context.rule.type.FormatType;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpStatus;
@@ -100,7 +101,7 @@ public class SimpleFileUploadActivity {
             uploadedFile.setKey(key);
             uploadedFile.setFileName(fileParameter.getFileName());
             uploadedFile.setFileSize(fileParameter.getFileSize());
-            uploadedFile.setHumanFileSize(StringUtils.toHumanFriendlyByteSize(fileParameter.getFileSize()));
+            uploadedFile.setHumanFileSize(DataSizeUtils.toHumanFriendlyByteSize(fileParameter.getFileSize()));
             uploadedFile.setFileType((fileParameter.getContentType()));
             uploadedFile.setUrl("/examples/file-upload/files/" + key);
             uploadedFile.setBytes(fileParameter.getBytes());

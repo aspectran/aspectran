@@ -21,6 +21,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -152,9 +153,9 @@ public class SysInfoCommand extends AbstractCommand {
         console.writeLine("------------------------------------");
         console.writeLine("Memory Information");
         console.writeLine("------------------------------------");
-        console.writeLine("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max));
-        console.writeLine("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total));
-        console.writeLine("%-23s %12s", "Used memory", StringUtils.toHumanFriendlyByteSize(total - free));
+        console.writeLine("%-23s %12s", "Available memory", DataSizeUtils.toHumanFriendlyByteSize(max));
+        console.writeLine("%-23s %12s", "Total memory", DataSizeUtils.toHumanFriendlyByteSize(total));
+        console.writeLine("%-23s %12s", "Used memory", DataSizeUtils.toHumanFriendlyByteSize(total - free));
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -169,11 +170,11 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free));
-            console.writeLine("%-23s %12s", "Free memory after GC", StringUtils.toHumanFriendlyByteSize(after));
-            console.writeLine("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(free - after));
+            console.writeLine("%-23s %12s", "Free memory before GC", DataSizeUtils.toHumanFriendlyByteSize(free));
+            console.writeLine("%-23s %12s", "Free memory after GC", DataSizeUtils.toHumanFriendlyByteSize(after));
+            console.writeLine("%-23s %12s", "Memory gained with GC", DataSizeUtils.toHumanFriendlyByteSize(free - after));
         } else {
-            console.writeLine("%-23s %12s", "Free memory", StringUtils.toHumanFriendlyByteSize(free));
+            console.writeLine("%-23s %12s", "Free memory", DataSizeUtils.toHumanFriendlyByteSize(free));
         }
         console.writeLine("------------------------------------");
     }

@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
-import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
@@ -63,7 +63,7 @@ public class InMemoryMultipartFormDataParserFactory {
      * @param maxRequestSize the maximum request size in a human-readable format
      */
     public void setMaxRequestSize(String maxRequestSize) {
-        this.maxRequestSize = StringUtils.toMachineFriendlyByteSize(maxRequestSize);
+        this.maxRequestSize = DataSizeUtils.toMachineFriendlyByteSize(maxRequestSize);
     }
 
     /**
@@ -80,7 +80,7 @@ public class InMemoryMultipartFormDataParserFactory {
      * @param maxFileSize the maximum file size in a human-readable format
      */
     public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSize = StringUtils.toMachineFriendlyByteSize(maxFileSize);
+        this.maxFileSize = DataSizeUtils.toMachineFriendlyByteSize(maxFileSize);
     }
 
     /**

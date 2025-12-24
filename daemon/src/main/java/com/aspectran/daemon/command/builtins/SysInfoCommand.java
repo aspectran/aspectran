@@ -20,6 +20,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
+import com.aspectran.utils.DataSizeUtils;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 
@@ -126,9 +127,9 @@ public class SysInfoCommand extends AbstractCommand {
         printWriter.println("------------------------------------");
         printWriter.println("Memory Information");
         printWriter.println("------------------------------------");
-        printWriter.format("%-23s %12s", "Available memory", StringUtils.toHumanFriendlyByteSize(max)).println();
-        printWriter.format("%-23s %12s", "Total memory", StringUtils.toHumanFriendlyByteSize(total)).println();
-        printWriter.format("%-23s %12s", "Used memory", StringUtils.toHumanFriendlyByteSize(total - free)).println();
+        printWriter.format("%-23s %12s", "Available memory", DataSizeUtils.toHumanFriendlyByteSize(max)).println();
+        printWriter.format("%-23s %12s", "Total memory", DataSizeUtils.toHumanFriendlyByteSize(total)).println();
+        printWriter.format("%-23s %12s", "Used memory", DataSizeUtils.toHumanFriendlyByteSize(total - free)).println();
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -143,11 +144,11 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            printWriter.format("%-23s %12s", "Free memory before GC", StringUtils.toHumanFriendlyByteSize(free)).println();
-            printWriter.format("%-23s %12s", "Free memory after GC", StringUtils.toHumanFriendlyByteSize(after)).println();
-            printWriter.format("%-23s %12s", "Memory gained with GC", StringUtils.toHumanFriendlyByteSize(free - after)).println();
+            printWriter.format("%-23s %12s", "Free memory before GC", DataSizeUtils.toHumanFriendlyByteSize(free)).println();
+            printWriter.format("%-23s %12s", "Free memory after GC", DataSizeUtils.toHumanFriendlyByteSize(after)).println();
+            printWriter.format("%-23s %12s", "Memory gained with GC", DataSizeUtils.toHumanFriendlyByteSize(free - after)).println();
         } else {
-            printWriter.format("%-23s %12s", "Free memory", StringUtils.toHumanFriendlyByteSize(free)).println();
+            printWriter.format("%-23s %12s", "Free memory", DataSizeUtils.toHumanFriendlyByteSize(free)).println();
         }
         printWriter.println("------------------------------------");
     }
