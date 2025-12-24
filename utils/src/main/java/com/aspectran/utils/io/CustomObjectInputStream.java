@@ -81,7 +81,8 @@ public class CustomObjectInputStream extends ObjectInputStream {
      * @throws ClassNotFoundException if any of the interface classes cannot be found
      */
     @Override
-    protected Class<?> resolveProxyClass(@NonNull String[] interfaces) throws IOException, ClassNotFoundException {
+    protected Class<?> resolveProxyClass(@NonNull String @NonNull [] interfaces)
+            throws IOException, ClassNotFoundException {
         Class<?>[] resolvedInterfaces = new Class<?>[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
             resolvedInterfaces[i] = Class.forName(interfaces[i], false, classLoader);

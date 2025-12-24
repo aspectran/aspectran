@@ -167,7 +167,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
         }
 
         @Override
-        public void write(@NonNull byte[] buf, int offset, int len) throws IOException {
+        public void write(byte @NonNull [] buf, int offset, int len) throws IOException {
             if (offset < 0 || len < 0 || offset + len > buf.length) {
                 throw new IndexOutOfBoundsException("Invalid offset [" + offset + "] and / or length [" +
                     len + "] specified for array of size [" + buf.length + "]");

@@ -316,8 +316,7 @@ public abstract class UriUtils {
      * @param uriVariables the URI variable values to be encoded
      * @return the encoded String
      */
-    @NonNull
-    public static Object[] encodeUriVariables(Object... uriVariables) {
+    public static Object @NonNull [] encodeUriVariables(Object @NonNull ... uriVariables) {
         return Arrays.stream(uriVariables)
                 .map(value -> {
                     String stringValue = (value != null ? value.toString() : "");

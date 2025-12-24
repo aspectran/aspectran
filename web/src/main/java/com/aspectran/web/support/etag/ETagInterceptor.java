@@ -24,6 +24,9 @@ import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,6 +43,7 @@ import java.util.regex.Pattern;
  *
  * @since 6.9.4
  */
+@NullMarked
 public class ETagInterceptor {
 
     private static final String DIRECTIVE_NO_STORE = "no-store";
@@ -58,7 +62,7 @@ public class ETagInterceptor {
      * Instantiates a new ETag interceptor.
      * @param tokenFactory the factory to generate the token for the ETag
      */
-    public ETagInterceptor(@NonNull ETagTokenFactory tokenFactory) {
+    public ETagInterceptor(ETagTokenFactory tokenFactory) {
         this.tokenFactory = tokenFactory;
     }
 
@@ -83,7 +87,11 @@ public class ETagInterceptor {
      * Intercepts the request to perform ETag validation and generation.
      * @param translet the current translet
      */
-    public void intercept(@NonNull Translet translet) {
+    @NullUnmarked
+    public void intercept(Translet translet) {
+        if (translet == null) {
+            throw new IllegalArgumentException("Translet cannot be null");
+        }
         HttpServletResponse response = translet.getResponseAdaptee();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
@@ -110,6 +118,7 @@ public class ETagInterceptor {
      * @param isWeak whether to generate a weak ETag
      * @return the generated ETag string (e.g., "0a1b2c3d..." or W/"0a1b2c3d...")
      */
+    @Nullable
     protected String generateETagToken(Translet translet, boolean isWeak) {
         byte[] token = tokenFactory.getToken(translet);
         if (token == null || token.length == 0) {
@@ -126,7 +135,7 @@ public class ETagInterceptor {
         return builder.toString();
     }
 
-    private boolean validateIfNoneMatch(@NonNull RequestAdapter requestAdapter, String token) {
+    private boolean validateIfNoneMatch(RequestAdapter requestAdapter, String token) {
         List<String> ifNoneMatch = requestAdapter.getHeaderValues(HttpHeaders.IF_NONE_MATCH);
         if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
             return false;
@@ -150,7 +159,7 @@ public class ETagInterceptor {
     }
 
     @NonNull
-    private String ensureQuoted(@NonNull String token) {
+    private String ensureQuoted(String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;
         } else {

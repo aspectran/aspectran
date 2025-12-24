@@ -36,16 +36,13 @@ public class ActivityEngineContext extends EngineContext implements CurrentActiv
     private final Activity activity;
 
     /**
-     * <p>
-     *   Creates a new instance of this {@link IEngineContext} implementation.
-     * </p>
+     * Creates a new instance of this {@link IEngineContext} implementation.
      * <p>
      *   Note that implementations of {@link IEngineContext} are not meant to be used in order to call
      *   the template engine (use implementations of {@link IContext} instead).
      *   This is therefore mostly an <b>internal</b> implementation, and users should have no reason
      *   to ever call this constructor except in very specific integration/extension scenarios.
      * </p>
-     *
      * @param activity the Aspectran activity
      * @param configuration the configuration instance being used
      * @param templateData the template data for the template to be processed

@@ -53,7 +53,7 @@ public class OutputStringWriter extends Writer {
     }
 
     @Override
-    public void write(@NonNull char[] buf, int off, int len) {
+    public void write(char @NonNull [] buf, int off, int len) {
         if (off < 0 || len < 0 || off + len > buf.length) {
             throw new IndexOutOfBoundsException("Invalid offset [" + off + "] and / or length [" +
                     len + "] specified for array of size [" + buf.length + "]");

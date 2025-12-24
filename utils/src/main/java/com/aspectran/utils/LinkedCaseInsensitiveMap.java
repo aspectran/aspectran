@@ -72,7 +72,6 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     /**
      * Create a new LinkedCaseInsensitiveMap that stores case-insensitive keys
      * according to the default Locale (by default in lower case).
-     *
      * @see #convertKey(String)
      */
     public LinkedCaseInsensitiveMap() {
@@ -315,7 +314,6 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     public String toString() {
         return this.targetMap.toString();
     }
-
 
     // Specific to LinkedCaseInsensitiveMap
 

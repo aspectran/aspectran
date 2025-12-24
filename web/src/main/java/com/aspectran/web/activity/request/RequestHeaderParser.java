@@ -73,7 +73,7 @@ public final class RequestHeaderParser {
             }
         } catch (InvalidMediaTypeException e) {
             throw new HttpMediaTypeNotAcceptableException(
-                "Could not parse 'Accept' header " + headerValues + ": " + e.getMessage());
+                    "Could not parse 'Accept' header " + headerValues + ": " + e.getMessage());
         }
     }
 

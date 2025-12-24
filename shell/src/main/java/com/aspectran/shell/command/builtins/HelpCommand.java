@@ -138,7 +138,7 @@ public class HelpCommand extends AbstractCommand {
         return max;
     }
 
-    private boolean contains(String commandName, @NonNull String[] filteredCommands) {
+    private boolean contains(String commandName, String @NonNull [] filteredCommands) {
         for (String target : filteredCommands) {
             if (commandName.equals(target)) {
                 return true;

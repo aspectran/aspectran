@@ -42,7 +42,7 @@ public abstract class ReflectionUtils {
      * @param destArgs the arguments to be passed to the method
      * @return the accumulated weight for all arguments; {@link Float#MAX_VALUE} if not assignable
      */
-    public static float getTypeDifferenceWeight(@NonNull Class<?>[] paramTypes, @NonNull Object[] destArgs) {
+    public static float getTypeDifferenceWeight(Class<?> @NonNull [] paramTypes, Object @NonNull [] destArgs) {
         if (paramTypes.length != destArgs.length) {
             return Float.MAX_VALUE;
         }
@@ -78,7 +78,7 @@ public abstract class ReflectionUtils {
      * @param destArgs the destination class types
      * @return the accumulated weight for all type conversions
      */
-    public static float getTypeDifferenceWeight(@NonNull Class<?>[] srcArgs, @NonNull Class<?>[] destArgs) {
+    public static float getTypeDifferenceWeight(Class<?> @NonNull [] srcArgs, Class<?> @NonNull [] destArgs) {
         float weight = 0.0f;
         for (int i = 0; i < srcArgs.length; i++) {
             Class<?> srcClass = srcArgs[i];

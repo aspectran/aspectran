@@ -648,8 +648,8 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
-    @NonNull
-    private static ParameterKey[] mergeParameterKeys(ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
+    private static ParameterKey @NonNull [] mergeParameterKeys(
+            ParameterKey[] topParameterKeys, ParameterKey[] bottomParameterKeys) {
         Assert.notEmpty(topParameterKeys, "Top parameter keys must not be empty");
         Assert.notEmpty(bottomParameterKeys, "Bottom parameter keys must not be empty");
         List<ParameterKey> keys = new ArrayList<>(topParameterKeys.length + bottomParameterKeys.length);

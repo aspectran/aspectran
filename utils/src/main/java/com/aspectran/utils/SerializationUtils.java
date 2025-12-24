@@ -36,8 +36,7 @@ public abstract class SerializationUtils {
      * @return a byte array representing the serialized object, or {@code null} if the input object is {@code null}
      * @throws IllegalArgumentException if serialization fails
      */
-    @Nullable
-    public static byte[] serialize(@Nullable Object object) {
+    public static byte @Nullable [] serialize(@Nullable Object object) {
         if (object == null) {
             return null;
         }

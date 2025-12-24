@@ -287,7 +287,7 @@ public class HttpsListenerConfig {
      * @param keyManagers the original key managers
      * @return the wrapped key managers
      */
-    private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, @NonNull KeyManager[] keyManagers) {
+    private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, KeyManager @NonNull [] keyManagers) {
         for (int i = 0; i < keyManagers.length; i++) {
             if (keyManagers[i] instanceof X509ExtendedKeyManager) {
                 keyManagers[i] = new AliasedX509ExtendedKeyManager((X509ExtendedKeyManager)keyManagers[i], keyAlias);

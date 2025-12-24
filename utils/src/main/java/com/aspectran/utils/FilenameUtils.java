@@ -59,7 +59,7 @@ public abstract class FilenameUtils {
      * @param filename the filename to query, must not be null
      * @return the name of the file without the path, or an empty string if none exists
      */
-    public static String getName(String filename) {
+    public static @NonNull String getName(String filename) {
         Assert.notNull(filename, "'filename' must not be null");
         int index = indexOfLastSeparator(filename);
         return filename.substring(index + 1);

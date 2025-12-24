@@ -39,8 +39,7 @@ public class Namespace {
      * @param namespace the namespace string
      * @return an array of namespace components, or {@code null} if the input is empty
      */
-    @Nullable
-    public static String[] splitNamespace(String namespace) {
+    public static String @Nullable [] splitNamespace(String namespace) {
         if (!StringUtils.hasText(namespace)) {
             return null;
         }

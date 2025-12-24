@@ -58,7 +58,6 @@ public class PathVariableMap extends HashMap<Token, String> {
         }
     }
 
-
     /**
      * Parses a set of name tokens against the provided request name and produces
      * a {@code PathVariableMap} containing matched variables.

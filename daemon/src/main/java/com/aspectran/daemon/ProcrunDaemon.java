@@ -112,7 +112,7 @@ public class ProcrunDaemon {
      * </p>
      * @param args the arguments where the first token is "start" or "stop"
      */
-    public static void main(@NonNull String[] args) {
+    public static void main(String @NonNull [] args) {
         if (args.length > 0) {
             if ("start".equals(args[0])) {
                 String[] params = Arrays.copyOfRange(args, 1, args.length);

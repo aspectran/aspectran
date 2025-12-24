@@ -195,7 +195,7 @@ public final class SiblingClassLoader extends ClassLoader {
      * @param resourceLocations the resource paths to create siblings for
      * @throws InvalidResourceException if a resource location is invalid
      */
-    private void createSibling(@NonNull String[] resourceLocations) throws InvalidResourceException {
+    private void createSibling(String @NonNull [] resourceLocations) throws InvalidResourceException {
         SiblingClassLoader scl = this;
         for (String resourceLocation : resourceLocations) {
             if (resourceLocation != null && !resourceLocation.isEmpty()) {
@@ -492,8 +492,7 @@ public final class SiblingClassLoader extends ClassLoader {
      * @return a byte array containing the class data, or {@code null} if not found or excluded
      * @throws InvalidResourceException if the class file is found but cannot be read
      */
-    @Nullable
-    private byte[] loadClassData(String className) throws InvalidResourceException {
+    private byte @Nullable [] loadClassData(String className) throws InvalidResourceException {
         if (isExcluded(className)) {
             return null;
         }

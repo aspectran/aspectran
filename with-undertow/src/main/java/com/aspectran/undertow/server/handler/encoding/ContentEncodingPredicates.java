@@ -107,7 +107,7 @@ public class ContentEncodingPredicates {
 
         private final List<MediaType> mediaTypes;
 
-        private CompressibleMimeTypePredicate(@NonNull String[] mediaTypes) {
+        private CompressibleMimeTypePredicate(String @NonNull [] mediaTypes) {
             if (mediaTypes.length == 1) {
                 this.mediaTypes = Collections.singletonList(MediaType.parseMediaType(mediaTypes[0]));
             } else {

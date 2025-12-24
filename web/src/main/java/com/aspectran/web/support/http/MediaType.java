@@ -38,18 +38,11 @@ import java.util.Map;
 import java.util.TreeSet;
 
 /**
- * <p>This class is a clone of org.springframework.http.MediaType</p>
- *
  * Represents an Internet Media Type, as defined in the HTTP specification.
- * <p>This class contain support for the q-parameters used in HTTP content negotiation.</p>
+ * <p>This class contains support for the q-parameters used in HTTP content negotiation.</p>
  *
- * @author Arjen Poutsma
- * @author Juergen Hoeller
- * @author Rossen Stoyanchev
- * @author Sebastien Deleuze
- * @author Kazuki Shimizu
  * @see <a href="https://tools.ietf.org/html/rfc7231#section-3.1.1.1">
- * HTTP 1.1: Semantics and Content, section 3.1.1.1</a>
+ *      HTTP 1.1: Semantics and Content, section 3.1.1.1</a>
  */
 public class MediaType implements Comparable<MediaType>, Serializable {
 
@@ -400,10 +393,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     private final Map<String, String> parameters;
 
-    @Nullable
     private transient Charset resolvedCharset;
 
-    @Nullable
     private volatile String toStringValue;
 
     /**
@@ -480,7 +471,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param parameters the parameters, may be {@code null}
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
-    public MediaType(String type, String subtype, @Nullable Map<String, String> parameters) {
+    public MediaType(String type, String subtype, Map<String, String> parameters) {
         Assert.hasLength(type, "'type' must not be empty");
         Assert.hasLength(subtype, "'subtype' must not be empty");
         checkToken(type);
@@ -626,7 +617,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return {@code true} if this media type includes the given media type;
      * {@code false} otherwise
      */
-    public boolean includes(@Nullable MediaType other) {
+    public boolean includes(MediaType other) {
         if (other == null) {
             return false;
         }
@@ -670,7 +661,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return {@code true} if this media type is compatible with the given media type;
      * {@code false} otherwise
      */
-    public boolean isCompatibleWith(@Nullable MediaType other) {
+    public boolean isCompatibleWith(MediaType other) {
         if (other == null) {
             return false;
         }
@@ -709,7 +700,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param other the other mime type to compare to
      * @return whether the two mime types have the same type and subtype
      */
-    public boolean equalsTypeAndSubtype(@Nullable MediaType other) {
+    public boolean equalsTypeAndSubtype(MediaType other) {
         if (other == null) {
             return false;
         }
@@ -734,7 +725,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     }
 
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
@@ -956,7 +947,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return the list of media types
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
      */
-    public static List<MediaType> parseMediaTypes(@Nullable List<String> mediaTypes) {
+    public static List<MediaType> parseMediaTypes(List<String> mediaTypes) {
         if (mediaTypes == null || mediaTypes.isEmpty()) {
             return Collections.emptyList();
         } else if (mediaTypes.size() == 1) {
@@ -1106,7 +1097,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
     };
 
-
     /**
      * Comparator used by {@link #sortBySpecificity(List)}.
      */
@@ -1122,7 +1112,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
             return super.compareParameters(mediaType1, mediaType2);
         }
     };
-
 
     /**
      * Comparator to sort {@link MediaType MediaTypes} in order of specificity.

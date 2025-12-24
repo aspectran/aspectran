@@ -48,7 +48,7 @@ public class TerminalPrintWriter extends PrintWriter {
     }
 
     @Override
-    public void write(@NonNull char[] buf, int off, int len) {
+    public void write(char @NonNull [] buf, int off, int len) {
         try {
             String str = new String(buf, off, len);
             jlineTerminal.write(str);

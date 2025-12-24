@@ -39,7 +39,7 @@ public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirectiv
      * Constructs a new TrimDirectiveGroup and populates it with the given directives.
      * @param trimDirectives an array of {@link TrimDirective} instances to group
      */
-    public TrimDirectiveGroup(@NonNull TrimDirective[] trimDirectives) {
+    public TrimDirectiveGroup(TrimDirective @NonNull [] trimDirectives) {
         for (TrimDirective directive : trimDirectives) {
             putTrimDirective(directive);
         }

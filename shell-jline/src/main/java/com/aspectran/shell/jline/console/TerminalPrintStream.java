@@ -68,7 +68,7 @@ public class TerminalPrintStream extends PrintStream {
     }
 
     @Override
-    public void write(@NonNull byte[] buf, int off, int len) {
+    public void write(byte @NonNull [] buf, int off, int len) {
         try {
             String str = new String(buf, off, len, jlineTerminal.getEncoding());
             if (above) {

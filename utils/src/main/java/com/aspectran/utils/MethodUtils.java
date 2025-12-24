@@ -136,7 +136,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named method whose parameter type matches the object type.</p>
+     * Invoke a named method whose parameter type matches the object type.
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @return the value returned by the invoked method
@@ -150,7 +150,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named method whose parameter type matches the object type.</p>
+     * Invoke a named method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
      * than {@code invokeExactMethod()}.
      * It loops through all methods with names that match
@@ -176,7 +176,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named method whose parameter type matches the object type.</p>
+     * Invoke a named method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
@@ -218,10 +218,9 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named method whose parameter type matches the object type.</p>
+     * Invoke a named method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
-     * than {@link
-     * #invokeExactMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
+     * than {@link #invokeExactMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
      * <p>This method supports calls to methods taking primitive parameters
@@ -254,7 +253,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a method whose parameter type matches exactly the object type.</p>
+     * Invoke a method whose parameter type matches exactly the object type.
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @return the value returned by the invoked method
@@ -268,7 +267,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a method whose parameter type matches exactly the object type.</p>
+     * Invoke a method whose parameter type matches exactly the object type.
      * <p> This is a convenient wrapper for
      * {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * </p>
@@ -287,7 +286,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a method whose parameter types match exactly the object types.</p>
+     * Invoke a method whose parameter types match exactly the object types.
      * <p> This uses reflection to invoke the method obtained from a call to
      * {@code getAccessibleMethod()}.</p>
      * @param object invoke method on this object
@@ -321,7 +320,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a method whose parameter types match exactly the parameter types given.</p>
+     * Invoke a method whose parameter types match exactly the parameter types given.
      * <p>This uses reflection to invoke the method obtained from a call to
      * {@code getAccessibleMethod()}.</p>
      * @param object invoke method on this object
@@ -350,7 +349,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a static method whose parameter types match exactly the parameter types given.</p>
+     * Invoke a static method whose parameter types match exactly the parameter types given.
      * <p>This uses reflection to invoke the method obtained from a call to
      * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
      * @param objectClass invoke static method on this class
@@ -394,7 +393,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named static method whose parameter type matches the object type.</p>
+     * Invoke a named static method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object, String, Object[], Class[])}.
      * It loops through all methods with names that match
@@ -420,7 +419,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named static method whose parameter type matches the object type.</p>
+     * Invoke a named static method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
@@ -453,7 +452,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a named static method whose parameter type matches the object type.</p>
+     * Invoke a named static method whose parameter type matches the object type.
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
@@ -503,7 +502,6 @@ public abstract class MethodUtils {
 
     /**
      * Invoke a static method whose parameter type matches exactly the object type.
-     *
      * <p>This is a convenient wrapper for
      * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args)}.</p>
      * @param objectClass invoke static method on this class
@@ -521,7 +519,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Invoke a static method whose parameter types match exactly the object types.</p>
+     * Invoke a static method whose parameter types match exactly the object types.
      * <p> This uses reflection to invoke the method obtained from a call to
      * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
      * @param objectClass invoke static method on this class
@@ -545,8 +543,8 @@ public abstract class MethodUtils {
         return invokeExactStaticMethod(objectClass, methodName, args, paramTypes);
     }
 
-    public static Object invokeMethod(@Nullable Object object, @NonNull Method method,
-                                      Object[] args, Class<?>[] paramTypes)
+    public static Object invokeMethod(
+            @Nullable Object object, @NonNull Method method, Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Class<?>[] methodsParams = method.getParameterTypes();
         return invokeMethod(object, method, methodsParams, args, paramTypes);
@@ -575,11 +573,11 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) with given name and a single parameter.  If no such method
      * can be found, return {@code null}.
      * Basically, a convenience wrapper that constructs a {@code Class}
-     * array for you.</p>
+     * array for you.
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @return the accessible method
@@ -589,11 +587,11 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) with given name and a single parameter.  If no such method
      * can be found, return {@code null}.
      * Basically, a convenience wrapper that constructs a {@code Class}
-     * array for you.</p>
+     * array for you.
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @param paramType taking this type of parameter
@@ -605,11 +603,11 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) with given name and parameters.  If no such method
      * can be found, return {@code null}.
      * This is just a convenient wrapper for
-     * {@link #getAccessibleMethod(Method method)}.</p>
+     * {@link #getAccessibleMethod(Method method)}.
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @param paramTypes with these parameters types
@@ -632,9 +630,9 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
-     * can be found, return {@code null}.</p>
+     * can be found, return {@code null}.
      * @param method the method that we wish to call
      * @return the accessible method
      */
@@ -647,9 +645,9 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
-     * can be found, return {@code null}.</p>
+     * can be found, return {@code null}.
      * @param clazz The class of the object
      * @param method The method that we wish to call
      * @return the accessible method
@@ -692,9 +690,9 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) by scanning through the superclasses. If no such method
-     * can be found, return {@code null}.</p>
+     * can be found, return {@code null}.
      * @param clazz Class to be checked
      * @param methodName Method name of the method we wish to call
      * @param paramTypes The parameter type signatures
@@ -717,10 +715,10 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Return an accessible method (that is, one that can be invoked via
+     * Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified method, by scanning through
      * all implemented interfaces and subinterfaces.  If no such method
-     * can be found, return {@code null}.</p>
+     * can be found, return {@code null}.
      * <p> There isn't any good reason why this method must be private.
      * It is because there doesn't seem any reason why other classes should
      * call this rather than the higher level methods.</p>
@@ -769,7 +767,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Find an accessible method that matches the given name and has compatible parameters.
+     * Find an accessible method that matches the given name and has compatible parameters.
      * Compatible parameters mean that every method parameter is assignable from
      * the given parameters.
      * In other words, it finds a method with the given name
@@ -859,7 +857,7 @@ public abstract class MethodUtils {
     }
 
     /**
-     * <p>Find an accessible method that matches the given name and has compatible parameters.
+     * Find an accessible method that matches the given name and has compatible parameters.
      * Compatible parameters mean that every method parameter is assignable from
      * the given parameters.
      * In other words, it finds a method with the given name
@@ -906,7 +904,6 @@ public abstract class MethodUtils {
 
         /**
          * The sole constructor.
-         *
          * @param cls the class to reflect, must not be null
          * @param methodName the method name to obtain
          * @param paramTypes the array of classes representing the parameter types

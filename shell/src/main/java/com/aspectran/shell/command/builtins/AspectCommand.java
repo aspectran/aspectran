@@ -194,7 +194,7 @@ public class AspectCommand extends AbstractCommand {
 
     private void changeAspectActiveState(
             @NonNull ShellService shellService, @NonNull ShellConsole console,
-            @NonNull String[] aspectIds, boolean disabled) {
+            String @NonNull [] aspectIds, boolean disabled) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         List<AspectRule> aspectRules = new ArrayList<>();
         for (String aspectId : aspectIds) {

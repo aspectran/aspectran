@@ -31,11 +31,6 @@ import java.util.Map;
 
 /**
  * Miscellaneous {@link MediaType} utility methods.
- *
- * @author Arjen Poutsma
- * @author Rossen Stoyanchev
- * @author Dimitrios Liapis
- * @author Brian Clozel
  */
 public abstract class MediaTypeUtils {
 

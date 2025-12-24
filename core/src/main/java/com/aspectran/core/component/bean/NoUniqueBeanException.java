@@ -39,7 +39,7 @@ public class NoUniqueBeanException extends BeanException {
      * @param type the required type of the missing bean
      * @param beanRules the bean rules
      */
-    public NoUniqueBeanException(Class<?> type, @NonNull BeanRule[] beanRules) {
+    public NoUniqueBeanException(Class<?> type, BeanRule @NonNull [] beanRules) {
         super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
         this.type = type;
@@ -67,7 +67,7 @@ public class NoUniqueBeanException extends BeanException {
      * @param beanRules the bean rules
      * @return the bean descriptions
      */
-    public static String getBeanDescriptions(@NonNull BeanRule[] beanRules) {
+    public static String getBeanDescriptions(BeanRule @NonNull [] beanRules) {
         String[] describes = new String[beanRules.length];
         for (int i = 0; i < describes.length; i++) {
             describes[i] = beanRules[i].toString();

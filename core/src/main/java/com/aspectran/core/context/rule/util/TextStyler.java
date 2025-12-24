@@ -110,7 +110,8 @@ public class TextStyler {
     }
 
     /**
-     * Compacts the given text by removing leading/trailing whitespace from each line and replacing multiple newlines with a single one.
+     * Compacts the given text by removing leading/trailing whitespace from
+     * each line and replacing multiple newlines with a single one.
      * @param text the text to compact
      * @return the compacted text
      */

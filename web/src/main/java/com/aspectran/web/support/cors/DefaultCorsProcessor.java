@@ -20,7 +20,7 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +36,7 @@ import java.io.IOException;
  *
  * @since 2.3.0
  */
+@NullMarked
 public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCorsProcessor.class);
@@ -51,7 +52,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
 
     @Override
-    public void processActualRequest(@NonNull Translet translet) throws CorsException {
+    public void processActualRequest(Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -86,7 +87,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     }
 
     @Override
-    public void processPreflightRequest(@NonNull Translet translet) throws CorsException {
+    public void processPreflightRequest(Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -139,7 +140,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     }
 
     @Override
-    public void sendError(@NonNull Translet translet) throws IOException {
+    public void sendError(Translet translet) throws IOException {
         Throwable t = translet.getRootCauseOfRaisedException();
         if (t instanceof CorsException corsException) {
             HttpServletResponse res = translet.getResponseAdaptee();
@@ -154,7 +155,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
      * @param ce the CORS Exception
      * @throws CorsException if the request is denied
      */
-    protected void rejectRequest(@NonNull Translet translet, @NonNull CorsException ce) throws CorsException {
+    protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
         HttpServletResponse res = translet.getResponseAdaptee();
         res.setStatus(ce.getHttpStatusCode());
 
@@ -164,7 +165,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         throw ce;
     }
 
-    protected boolean checkProcessable(@NonNull HttpServletResponse res) {
+    protected boolean checkProcessable(HttpServletResponse res) {
         if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");

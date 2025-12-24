@@ -118,7 +118,7 @@ public class FileLocker {
                         fileChannel.write(buffer);
                         fileChannel.force(true);
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Successfully wrote PID " + pid + " to " + lockFile.getAbsolutePath());
+                            logger.debug("Successfully wrote PID {} to {}", pid, lockFile.getAbsolutePath());
                         }
                     }
                 } catch (Exception e) {

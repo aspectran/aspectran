@@ -51,8 +51,8 @@ public class OgnlMemberAccess implements MemberAccess {
             if (!OgnlRestrictions.isMemberAllowed(target, member.getName())) {
                 throw new OgnlRestrictionException(
                     String.format(
-                        "Accessing member '%s' is forbidden for type '%s' in this expression context.",
-                        member.getName(), target.getClass()));
+                            "Accessing member '%s' is forbidden for type '%s' in this expression context.",
+                            member.getName(), target.getClass()));
             }
         }
         return true;

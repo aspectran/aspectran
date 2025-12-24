@@ -432,7 +432,7 @@ public class StringUtils {
      * @return a two-element array with the part before the delimiter at index 0 and the part
      *      after at index 1. If the delimiter is not found, the original string is at index 0.
      */
-    public static String[] divide(String str, String delim) {
+    public static String @NonNull [] divide(String str, String delim) {
         if (str == null) {
             return new String[] {null, null};
         }
@@ -494,7 +494,7 @@ public class StringUtils {
      * @return an array of the splitted strings, with a fixed size
      */
     @NonNull
-    public static String[] split(String str, String delim, int size) {
+    public static String @NonNull [] split(String str, String delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
         for (int i = 0; i < arr1.length; i++) {
@@ -548,8 +548,7 @@ public class StringUtils {
      * @param size the desired size of the array
      * @return an array of the splitted strings, with a fixed size
      */
-    @NonNull
-    public static String[] split(String str, char delim, int size) {
+    public static String @NonNull [] split(String str, char delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
         for (int i = 0; i < arr1.length; i++) {

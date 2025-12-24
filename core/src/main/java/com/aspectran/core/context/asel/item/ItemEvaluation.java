@@ -221,8 +221,7 @@ public class ItemEvaluation implements ItemEvaluator {
     }
 
     @SuppressWarnings("all")
-    @Nullable
-    private Object[] evaluateAsArray(List<Token[]> tokensList, ItemValueType valueType)
+    private Object @Nullable [] evaluateAsArray(List<Token[]> tokensList, ItemValueType valueType)
             throws Exception {
         List<Object> list = evaluateAsList(tokensList, valueType);
         if (list == null) {
@@ -329,8 +328,7 @@ public class ItemEvaluation implements ItemEvaluator {
      * @param beanRuleList the list of bean rules to evaluate
      * @return an array of bean instances, or {@code null} if the input is null or empty
      */
-    @Nullable
-    private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
+    private Object @Nullable [] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
         List<Object> valueList = evaluateBeanAsList(beanRuleList);
         if (valueList == null) {
             return null;

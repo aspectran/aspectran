@@ -233,7 +233,7 @@ public class OutputRedirection {
         }
 
         @Override
-        public void write(@NonNull char[] buf, int off, int len) throws IOException {
+        public void write(char @NonNull [] buf, int off, int len) throws IOException {
             for (Writer writer : writers) {
                 writer.write(buf, off, len);
             }
