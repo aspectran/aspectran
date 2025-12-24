@@ -20,6 +20,7 @@ import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.json.JsonString;
 import com.aspectran.web.activity.response.RestResponse;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.rest.response.FailureResponse;
 import com.aspectran.web.support.rest.response.SuccessResponse;
@@ -30,7 +31,6 @@ import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.Method;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
@@ -186,7 +186,7 @@ public class RestRequest {
      * @return this {@code RestRequest} for fluent chaining
      */
     public RestRequest xBearerToken(String token) {
-        addAuthorizationHeader(com.aspectran.web.support.http.HttpHeaders.X_AUTHORIZATION, "Bearer " + token);
+        addAuthorizationHeader(HttpHeaders.X_AUTHORIZATION, "Bearer " + token);
         return this;
     }
 
@@ -201,7 +201,7 @@ public class RestRequest {
     public RestRequest xBasicAuth(String username, String password) {
         String credentials = username + ":" + password;
         String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-        addAuthorizationHeader(com.aspectran.web.support.http.HttpHeaders.X_AUTHORIZATION, "Basic " + encodedCredentials);
+        addAuthorizationHeader(HttpHeaders.X_AUTHORIZATION, "Basic " + encodedCredentials);
         return this;
     }
 
