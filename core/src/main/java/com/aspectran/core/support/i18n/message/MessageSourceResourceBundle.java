@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  * <p>This class allows an Aspectran {@code MessageSource} to be used in contexts
  * where a standard {@code ResourceBundle} is required, for example, for integration
  * with third-party libraries or legacy code that relies on the {@code ResourceBundle}
- * API.
+ * API.</p>
  *
  * @see com.aspectran.core.support.i18n.message.MessageSource
  * @see java.util.ResourceBundle

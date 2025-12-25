@@ -21,7 +21,7 @@ package com.aspectran.core.support.i18n.message;
  * <p>Implementing this interface allows a message source to be part of a hierarchy.
  * If a message cannot be resolved by the current source, the resolution attempt is
  * delegated to its parent message source. This enables the sharing of common messages
- * from a parent context or the overriding of specific messages in a child context.
+ * from a parent context or the overriding of specific messages in a child context.</p>
  *
  * <p>Created: 2016. 3. 8.</p>
  */

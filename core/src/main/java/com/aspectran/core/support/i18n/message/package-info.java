@@ -16,13 +16,13 @@
 /**
  * Provides classes and interfaces for internationalization (i18n) support, allowing
  * applications to resolve text messages for different locales.
- * 
+ *
  * <p>The central interface in this package is {@link com.aspectran.core.support.i18n.message.MessageSource},
  * which provides a standard way to resolve messages. The {@link com.aspectran.core.support.i18n.message.HierarchicalMessageSource}
  * sub-interface adds support for nested message resolution, allowing message sources
- * to be arranged in a parent-child hierarchy.
- * 
+ * to be arranged in a parent-child hierarchy.</p>
+ *
  * <p>The primary implementation is {@link com.aspectran.core.support.i18n.message.ResourceBundleMessageSource},
- * which resolves messages from standard Java {@link java.util.ResourceBundle} files.
+ * which resolves messages from standard Java {@link java.util.ResourceBundle} files.</p>
  */
 package com.aspectran.core.support.i18n.message;

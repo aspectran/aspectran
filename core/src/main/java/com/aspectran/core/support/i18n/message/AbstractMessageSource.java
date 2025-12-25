@@ -31,17 +31,17 @@ import java.util.Properties;
  * and message formatting. Subclasses must implement the abstract {@link #resolveCode}
  * method to resolve a message for a given code and locale. For optimized performance,
  * it is also recommended to override the {@link #resolveCodeWithoutArguments} method
- * to resolve messages without involving a {@link MessageFormat}.
+ * to resolve messages without involving a {@link MessageFormat}.</p>
  *
  * <p>By default, messages are only parsed through {@code MessageFormat} if they contain
  * arguments. If no arguments are provided, the message text is returned as-is.
  * To enforce {@code MessageFormat} parsing for all messages (e.g., to handle
  * escaped characters like single quotes), set the {@link #setAlwaysUseMessageFormat}
- * flag to {@code true}.
+ * flag to {@code true}.</p>
  *
  * <p>This class supports the use of the message code as the default message, which is
  * useful during development. This can be enabled via the
- * {@link #setUseCodeAsDefaultMessage(boolean)} method.
+ * {@link #setUseCodeAsDefaultMessage(boolean)} method.</p>
  *
  * <p>Created: 2016. 2. 8.</p>
  *

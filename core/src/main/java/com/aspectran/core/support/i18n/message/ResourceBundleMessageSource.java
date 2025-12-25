@@ -47,15 +47,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * the generated {@code MessageFormat} for each message. It also supports resolving
  * messages without arguments, as defined in the {@link AbstractMessageSource} base class.
  * The caching provided by this class is significantly more performant than the built-in
- * caching of {@code java.util.ResourceBundle}.
+ * caching of {@code java.util.ResourceBundle}.</p>
  *
  * <p>This class implements {@link ActivityContextAware} to obtain a class loader from the
  * current {@link ActivityContext}. This ensures that resource bundles are loaded from
- * the appropriate classpath.
+ * the appropriate classpath.</p>
  *
  * <p>A known limitation of {@code java.util.ResourceBundle} is that it caches loaded
  * bundles indefinitely. Therefore, reloading a bundle during application execution is
- * not possible. This message source inherits that limitation.
+ * not possible. This message source inherits that limitation.</p>
  *
  * <p>Created: 2016. 2. 8.</p>
  *
@@ -70,7 +70,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
     private boolean fallbackToSystemLocale = true;
 
-    private long cacheMillis = -1;
+    private long cacheMillis = -1L;
 
     private ClassLoader classLoader;
 
@@ -107,7 +107,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
     /**
      * Returns the {@link ClassLoader} to load resource bundles with.
-     * <p>The default is the context's class loader.
+     * <p>The default is the context's class loader.</p>
      * @return the {@code ClassLoader}
      */
     public ClassLoader getClassLoader() {
@@ -120,7 +120,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
     /**
      * Set the default encoding to use for parsing property-based resource bundle files.
-     * <p>The default is the system's default encoding.
+     * <p>The default is the system's default encoding.</p>
      * @param defaultEncoding the default encoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
@@ -135,7 +135,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * <p>Falling back to the system Locale is the default behavior of
      * {@code java.util.ResourceBundle}. However, this is often not desirable
      * in an application server environment, where the system Locale is not relevant
-     * to the application at all: Set this flag to "false" in such a scenario.
+     * to the application at all: Set this flag to "false" in such a scenario.</p>
      * @param fallbackToSystemLocale whether fallback to system locale
      */
     public void setFallbackToSystemLocale(boolean fallbackToSystemLocale) {
@@ -159,7 +159,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param cacheSeconds the cache seconds
      */
     public void setCacheSeconds(int cacheSeconds) {
-        this.cacheMillis = (cacheSeconds * 1000L);
+        this.cacheMillis = cacheSeconds * 1000L;
     }
 
     /**
@@ -169,11 +169,11 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * from the classpath root.
      * <p>Messages will normally be held in the "/lib" or "/classes" directory of
      * a web application's WAR structure. They can also be held in jar files on
-     * the class path.
+     * the class path.</p>
      * <p>Note that ResourceBundle names are effectively classpath locations: As a
      * consequence, the JDK's standard ResourceBundle treats dots as package separators.
      * This means that "test.theme" is effectively equivalent to "test/theme",
-     * just like it is for programmatic {@code java.util.ResourceBundle} usage.
+     * just like it is for programmatic {@code java.util.ResourceBundle} usage.</p>
      * @param basename the basename
      * @see #setBasenames #setBasenames
      * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
@@ -190,11 +190,11 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * <p>The associated resource bundles will be checked sequentially
      * when resolving a message code. Note that message definitions in a
      * <i>previous</i> resource bundle will override ones in a later bundle,
-     * due to the sequential lookup.
+     * due to the sequential lookup.</p>
      * <p>Note that ResourceBundle names are effectively classpath locations: As a
      * consequence, the JDK's standard ResourceBundle treats dots as package separators.
      * This means that "test.theme" is effectively equivalent to "test/theme",
-     * just like it is for programmatic {@code java.util.ResourceBundle} usage.
+     * just like it is for programmatic {@code java.util.ResourceBundle} usage.</p>
      * @param basenames the basenames
      * @see #setBasename #setBasename
      * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
@@ -297,12 +297,20 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @see java.util.ResourceBundle#getBundle(String, Locale, ClassLoader) java.util.ResourceBundle#getBundle(String, Locale, ClassLoader)
      */
     protected ResourceBundle doGetBundle(String basename, Locale locale) throws MissingResourceException {
-        return ResourceBundle.getBundle(basename, locale, getClassLoader(), new MessageSourceControl());
+        // For Java 9+, the default encoding is UTF-8.
+        // Therefore, if the defaultEncoding is not specified or is UTF-8,
+        // use the default loader for better performance and simplicity.
+        // For other encodings, use the custom Control for backward compatibility.
+        if (defaultEncoding == null || defaultEncoding.equalsIgnoreCase("UTF-8")) {
+            return ResourceBundle.getBundle(basename, locale, getClassLoader());
+        } else {
+            return ResourceBundle.getBundle(basename, locale, getClassLoader(), new MessageSourceControl());
+        }
     }
 
     /**
      * Load a property-based resource bundle from the given reader.
-     * <p>The default implementation returns a {@link PropertyResourceBundle}.
+     * <p>The default implementation returns a {@link PropertyResourceBundle}.</p>
      * @param reader the reader for the target resource
      * @return the fully loaded bundle
      * @throws IOException in case of I/O failure
@@ -321,8 +329,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * through the "java.util.PropertyResourceBundle.encoding" system property).
      * Note that this method can only be called with a {@code ResourceBundle.Control}:
      * When running on the JDK 9+ module path where such control handles are not
-     * supported, any overrides in custom subclasses will effectively get ignored.
-     * <p>The default implementation returns a {@link PropertyResourceBundle}.
+     * supported, any overrides in custom subclasses will effectively get ignored.</p>
+     * <p>The default implementation returns a {@link PropertyResourceBundle}.</p>
      * @param inputStream the input stream for the target resource
      * @return the fully loaded bundle
      * @throws IOException in case of I/O failure
@@ -417,8 +425,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
         @Override
         @Nullable
-        public ResourceBundle newBundle(String baseName, Locale locale, @NonNull String format,
-                                        ClassLoader loader, boolean reload)
+        public ResourceBundle newBundle(
+                String baseName, Locale locale, @NonNull String format, ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
             // Special handling of default encoding
             if (format.equals("java.properties")) {

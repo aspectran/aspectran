@@ -24,7 +24,7 @@ import java.util.Locale;
  * <p>This class does not resolve any messages on its own. If no parent is configured,
  * it will either throw a {@link NoSuchMessageException} or return a default message,
  * depending on the invoked method. It is useful as a placeholder in a message
- * source hierarchy that will be populated later.
+ * source hierarchy that will be populated later.</p>
  *
  * <p>Created: 2016. 3. 13.</p>
  *

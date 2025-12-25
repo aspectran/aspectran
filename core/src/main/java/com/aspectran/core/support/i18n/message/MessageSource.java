@@ -25,11 +25,11 @@ import java.util.Locale;
  *
  * <p>Implementations of this interface are responsible for resolving a message
  * for a given code and locale. If a message is not found, they can optionally
- * delegate to a parent message source.
+ * delegate to a parent message source.</p>
  *
  * <p>It is recommended to base message code names on the relevant fully qualified
  * class name of the component that uses them, avoiding conflicts and ensuring
- * maximum clarity.
+ * maximum clarity.</p>
  *
  * <p>Created: 2016. 2. 8.</p>
  *

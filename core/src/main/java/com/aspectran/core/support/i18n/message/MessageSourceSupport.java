@@ -30,9 +30,9 @@ import java.util.Map;
  * <p>This class provides a foundation for message formatting, handling {@link java.text.MessageFormat}
  * instances and caching them for efficiency. It does not implement the concrete
  * message resolution methods defined in the {@link MessageSource} interface, such
- * as {@code getMessage}.
+ * as {@code getMessage}.</p>
  *
- * <p>Key features include:
+ * <p>Key features include:</p>
  * <ul>
  *     <li>Support for caching {@code MessageFormat} objects to avoid repeated parsing.</li>
  *     <li>An {@code alwaysUseMessageFormat} flag to enforce strict formatting rules
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * <p>{@link AbstractMessageSource} derives from this class, providing concrete
  * {@code getMessage} implementations that delegate to a central template
- * method for message code resolution.
+ * method for message code resolution.</p>
  *
  * <p>Created: 2016. 3. 12.</p>
  */
