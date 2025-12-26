@@ -100,7 +100,7 @@ public enum ValueType {
 
     /**
      * Extract and resolve a type hint embedded in a parameter name, e.g.,
-     * {@code name(int)} -> {@link #INT}.
+     * {@code name(int)} -&gt; {@link #INT}.
      * @param name the parameter name possibly containing a type hint
      * @return the hinted {@link ValueType}, or {@code null} if no valid hint
      */

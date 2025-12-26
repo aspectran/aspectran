@@ -39,7 +39,7 @@ public class DataSizeUtils {
     }
 
     /**
-     * Converts a byte size into a human-friendly format (e.g., 1024 -> "1.0 KB").
+     * Converts a byte size into a human-friendly format (e.g., 1024 -&gt; "1.0 KB").
      * <p>This method uses binary prefixes (powers of 1024) but uses common SI symbols (KB, MB, GB).
      * For example, 1024 bytes is formatted as "1.0 KB".</p>
      * <pre>
