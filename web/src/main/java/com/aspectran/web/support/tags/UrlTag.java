@@ -287,12 +287,10 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
     /**
      * Build the query string from available parameters that have not already
      * been applied as template params.
-     * <p>The names and values of parameters are URL encoded.
+     * <p>The names and values of parameters are URL encoded.</p>
      * @param params the parameters to build the query string from
-     * @param usedParams set of parameter names that have been applied as
-     * template params
-     * @param includeQueryStringDelimiter true if the query string should start
-     * with a '?' instead of '&amp;'
+     * @param usedParams set of parameter names that have been applied as template params
+     * @param includeQueryStringDelimiter true if the query string should start with a '?' instead of '&amp;'
      * @return the query string
      */
     @NonNull
@@ -325,7 +323,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
     /**
      * Replace template markers in the URL matching available parameters. The
      * name of matched parameters are added to the used parameters set.
-     * <p>Parameter values are URL encoded.
+     * <p>Parameter values are URL encoded.</p>
      * @param uri the URL with template parameters to replace
      * @param params parameters used to replace template markers
      * @param usedParams set of template parameter names that have been replaced

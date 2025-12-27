@@ -48,8 +48,8 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
      * @param contentType         the unsupported content type
      * @param supportedMediaTypes the list of supported media types
      */
-    public HttpMediaTypeNotSupportedException(@Nullable MediaType contentType,
-                                              List<MediaType> supportedMediaTypes) {
+    public HttpMediaTypeNotSupportedException(
+            @Nullable MediaType contentType, List<MediaType> supportedMediaTypes) {
         this(contentType, supportedMediaTypes, "Content type '" +
             (contentType != null ? contentType : "") + "' not supported");
     }
@@ -60,8 +60,8 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
      * @param supportedMediaTypes the list of supported media types
      * @param msg                 the detail message
      */
-    public HttpMediaTypeNotSupportedException(@Nullable MediaType contentType,
-                                              List<MediaType> supportedMediaTypes, String msg) {
+    public HttpMediaTypeNotSupportedException(
+            @Nullable MediaType contentType, List<MediaType> supportedMediaTypes, String msg) {
         super(msg, supportedMediaTypes);
         this.contentType = contentType;
     }

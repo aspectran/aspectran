@@ -32,10 +32,16 @@ import java.util.Map;
 /**
  * Miscellaneous {@link MediaType} utility methods.
  */
-public abstract class MediaTypeUtils {
+public class MediaTypeUtils {
 
     private static final Cache<String, MediaType> cachedMimeTypes =
             new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private MediaTypeUtils() {
+    }
 
     /**
      * Parse the given String into a single {@code MediaType}.

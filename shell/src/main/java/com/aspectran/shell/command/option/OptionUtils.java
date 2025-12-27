@@ -25,6 +25,12 @@ import java.util.Arrays;
 public final class OptionUtils {
 
     /**
+     * This class cannot be instantiated.
+     */
+    private OptionUtils() {
+    }
+
+    /**
      * Validates whether {@code opt} is a permissible Option
      * shortOpt.  The rules that specify if the {@code opt}
      * is valid are:

@@ -24,8 +24,7 @@ import java.net.URLClassLoader;
  * A custom {@link java.net.URLClassLoader} for the web service.
  * <p>This class loader is typically used to provide a specific class loading
  * hierarchy for web-related components, ensuring proper isolation and resource
- * loading within the web application context.
- * </p>
+ * loading within the web application context.</p>
  */
 public class WebServiceClassLoader extends URLClassLoader {
 

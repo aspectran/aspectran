@@ -90,7 +90,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Use the given domain for cookies.
      * The cookie is only visible to servers in this domain.
-     *
      * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(String cookieDomain) {
@@ -101,7 +100,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Use the given path for cookies.
      * The cookie is only visible to URLs in this path and below.
-     *
      * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
@@ -114,7 +112,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Useful special value: -1 ... not persistent, deleted when client shuts down.
      * <p>Default is no specific maximum age at all, using the Servlet container's
      * default.</p>
-     *
      * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(Integer cookieMaxAge) {
@@ -127,7 +124,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * such as HTTPS (SSL). This is an indication to the receiving browser,
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
-     *
      * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
@@ -138,7 +134,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     /**
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
-     *
      * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
@@ -153,7 +148,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * for rendering Java's legacy locale specification format. For parsing,
      * this resolver leniently accepts the legacy {@link Locale#toString}
      * format as well as BCP 47 language tags in any case.</p>
-     *
      * @see #parseLocaleValue(String)
      * @see #toLocaleValue(Locale)
      * @see Locale#forLanguageTag(String)
@@ -175,7 +169,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Specify whether to reject cookies with invalid content (e.g. invalid format).
      * <p>The default is {@code true}. Turn this off for lenient handling of parse
      * failures, falling back to the default locale and time zone in such a case.</p>
-     *
      * @see #setDefaultLocale
      * @see #setDefaultTimeZone
      * @see #determineDefaultLocale

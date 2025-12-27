@@ -95,7 +95,7 @@ public class DefaultServletHttpRequestHandler {
     /**
      * Attempts to automatically look up the name of the default servlet for the current container.
      * <p>This method checks for common default servlet names used by various application servers.
-     * If a name is explicitly set to "none", lookup is skipped.
+     * If a name is explicitly set to "none", lookup is skipped.</p>
      */
     public void lookupDefaultServletName() {
         // To avoid default servlet lookup

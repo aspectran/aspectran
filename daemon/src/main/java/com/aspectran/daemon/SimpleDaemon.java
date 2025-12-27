@@ -69,9 +69,7 @@ public class SimpleDaemon extends AbstractDaemon {
 
     /**
      * Starts the daemon in non-blocking mode.
-     * <p>
-     * Delegates to {@link AbstractDaemon#start()}.
-     * </p>
+     * <p>Delegates to {@link AbstractDaemon#start()}.</p>
      * @throws Exception if the daemon cannot be started
      */
     @Override
@@ -81,9 +79,7 @@ public class SimpleDaemon extends AbstractDaemon {
 
     /**
      * Starts the daemon and optionally waits for completion.
-     * <p>
-     * Delegates to {@link AbstractDaemon#start(boolean)}.
-     * </p>
+     * <p>Delegates to {@link AbstractDaemon#start(boolean)}.</p>
      * @param wait whether to block the current thread until the daemon stops
      * @throws Exception if the daemon cannot be started
      */
@@ -94,9 +90,7 @@ public class SimpleDaemon extends AbstractDaemon {
 
     /**
      * Starts the daemon and waits up to the given timeout before returning.
-     * <p>
-     * Delegates to {@link AbstractDaemon#start(long)}.
-     * </p>
+     * <p>Delegates to {@link AbstractDaemon#start(long)}.</p>
      * @param wait the maximum time to wait in milliseconds (0 for non-blocking)
      * @throws Exception if the daemon cannot be started
      */

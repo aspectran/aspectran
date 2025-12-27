@@ -46,7 +46,7 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
      * This class builds customizable prompt strings for a JLine shell console
      * with support for styling and formatting.
      * @param console the {@code JLineShellConsole} instance for which the prompt
-     *               string builder is created; must not be {@code null}.
+     *                string builder is created; must not be {@code null}.
      */
     public JLinePromptStringBuilder(@NonNull JLineShellConsole console) {
         super();

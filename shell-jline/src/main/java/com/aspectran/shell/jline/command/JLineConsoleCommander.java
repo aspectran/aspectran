@@ -29,7 +29,7 @@ import org.jspecify.annotations.NonNull;
  * streams to the JLine terminal. This ensures that all console output,
  * including stack traces and other system-level messages, is properly
  * displayed above the command prompt without interfering with the user's
- * current input line.
+ * current input line.</p>
  *
  * <p>Created: 2017. 6. 3.</p>
  */
@@ -49,7 +49,8 @@ public class JLineConsoleCommander extends DefaultConsoleCommander {
 
         JLineShellConsole console = getConsole();
         System.setOut(new TerminalPrintStream(console.getJlineTerminal(), true));
-        System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true, console.getStyler().getDangerStyle()));
+        System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true,
+                console.getStyler().getDangerStyle()));
     }
 
 }

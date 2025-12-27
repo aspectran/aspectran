@@ -29,8 +29,7 @@ import java.util.Enumeration;
  * <p>This class lazily retrieves the underlying {@link jakarta.servlet.http.HttpSession}
  * from the request as needed, providing a bridge between the Servlet API and the Aspectran
  * core. While this adapter holds an {@code HttpServletRequest}, the {@link #getAdaptee()}
- * method returns the underlying {@code HttpSession} for direct access.
- * </p>
+ * method returns the underlying {@code HttpSession} for direct access.</p>
  *
  * @since 2011. 3. 13.
  */
@@ -46,7 +45,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Returns the underlying {@link HttpSession}, creating it if necessary.
+     * <p>Returns the underlying {@link HttpSession}, creating it if necessary.</p>
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -56,7 +55,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Returns a new {@link HttpSessionScope} instance.
+     * <p>Returns a new {@link HttpSessionScope} instance.</p>
      */
     @Override
     public SessionScope createSessionScope() {
@@ -89,7 +88,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Does not create a session if one does not exist.
+     * <p>Does not create a session if one does not exist.</p>
      */
     @Override
     public Enumeration<String> getAttributeNames() {
@@ -99,7 +98,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Does not create a session if one does not exist.
+     * <p>Does not create a session if one does not exist.</p>
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -110,7 +109,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Creates a session if one does not exist and the value is not null.
+     * <p>Creates a session if one does not exist and the value is not null.</p>
      */
     @Override
     public void setAttribute(String name, Object value) {
@@ -134,7 +133,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Does not create a session if one does not exist.
+     * <p>Does not create a session if one does not exist.</p>
      */
     @Override
     public void invalidate() {
@@ -146,7 +145,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>A session is considered valid if it exists.
+     * <p>A session is considered valid if it exists.</p>
      */
     @Override
     public boolean isValid() {

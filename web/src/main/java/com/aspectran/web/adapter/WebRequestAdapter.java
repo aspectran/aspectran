@@ -22,8 +22,7 @@ import com.aspectran.web.support.http.MediaType;
  * A specialization of {@link com.aspectran.core.adapter.RequestAdapter} for web-based environments.
  * <p>This interface extends the base request adapter with methods for handling
  * web-specific concepts, such as the request body's {@link MediaType} and
- * a pre-parsing mechanism for initializing the adapter from a native request.
- * </p>
+ * a pre-parsing mechanism for initializing the adapter from a native request.</p>
  *
  * @since 6.3.0
  */
@@ -37,13 +36,13 @@ public interface WebRequestAdapter extends RequestAdapter {
 
     /**
      * Pre-parses the native request to initialize this adapter.
-     * This typically involves extracting parameters, attributes, and headers.
+     * <p>This typically involves extracting parameters, attributes, and headers.</p>
      */
     void preparse();
 
     /**
      * Pre-parses this adapter using data from another {@code WebRequestAdapter}.
-     * This is useful for replicating request data.
+     * <p>This is useful for replicating request data.</p>
      * @param requestAdapter the source request adapter
      */
     void preparse(WebRequestAdapter requestAdapter);

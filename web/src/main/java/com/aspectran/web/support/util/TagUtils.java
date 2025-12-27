@@ -75,15 +75,12 @@ public class TagUtils {
     }
 
     /**
-     * Determine whether the supplied {@link Tag} has any ancestor tag
-     * of the supplied type.
+     * Determine whether the supplied {@link Tag} has any ancestor tag of the supplied type.
      * @param tag the tag whose ancestors are to be checked
      * @param ancestorTagClass the ancestor {@link Class} being searched for
-     * @return {@code true} if the supplied {@link Tag} has any ancestor tag
-     * of the supplied type
+     * @return {@code true} if the supplied {@link Tag} has any ancestor tag of the supplied type
      * @throws IllegalArgumentException if either of the supplied arguments is {@code null};
-     * or if the supplied {@code ancestorTagClass} is not type-assignable to
-     * the {@link Tag} class
+     *      or if the supplied {@code ancestorTagClass} is not type-assignable to the {@link Tag} class
      */
     public static boolean hasAncestorOfType(Tag tag, Class<?> ancestorTagClass) {
         Assert.notNull(tag, "Tag cannot be null");

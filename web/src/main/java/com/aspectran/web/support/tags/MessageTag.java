@@ -189,7 +189,6 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
     /**
      * Set PageContext attribute name under which to expose
      * a variable that contains the resolved message.
-     *
      * @see #setScope
      * @see jakarta.servlet.jsp.PageContext#setAttribute
      */
@@ -200,7 +199,6 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
     /**
      * Set the scope to export the variable to.
      * Default is SCOPE_PAGE ("page").
-     *
      * @see #setVar
      * @see com.aspectran.web.support.util.TagUtils#SCOPE_PAGE
      * @see jakarta.servlet.jsp.PageContext#setAttribute
@@ -226,7 +224,6 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
     /**
      * Resolves the message, escapes it if demanded,
      * and writes it to the page (or exposes it as variable).
-     *
      * @see #resolveMessage()
      * @see org.apache.commons.text.StringEscapeUtils#escapeEcmaScript(String)
      * @see #writeMessage(String)

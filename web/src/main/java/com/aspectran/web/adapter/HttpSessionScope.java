@@ -30,8 +30,7 @@ import java.io.Serializable;
  * <p>This class implements {@link jakarta.servlet.http.HttpSessionBindingListener}
  * to receive notifications when it is bound to or unbound from an
  * {@link jakarta.servlet.http.HttpSession}. When unbound from the session, it
- * automatically calls the {@link #destroy()} method to clean up all session-scoped beans.
- * </p>
+ * automatically calls the {@link #destroy()} method to clean up all session-scoped beans.</p>
  *
  * @since 2.0.0
  */
@@ -51,7 +50,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
     /**
      * {@inheritDoc}
-     * <p>This method is called by the servlet container when this object is bound to a session.
+     * <p>This method is called by the servlet container when this object is bound to a session.</p>
      */
     @Override
     public void valueBound(HttpSessionBindingEvent event) {
@@ -63,7 +62,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
     /**
      * {@inheritDoc}
      * <p>This method is called by the servlet container when this object is unbound
-     * from a session. It triggers the destruction of all beans in this scope.
+     * from a session. It triggers the destruction of all beans in this scope.</p>
      */
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {

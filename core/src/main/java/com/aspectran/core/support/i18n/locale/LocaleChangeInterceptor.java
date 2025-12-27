@@ -102,7 +102,10 @@ public class LocaleChangeInterceptor {
         this.requestMethods = requestMethods;
         if (this.requestMethods != null) {
             for (int i = 0; i < this.requestMethods.length; i++) {
-                this.requestMethods[i] = this.requestMethods[i].toUpperCase();
+                String method = this.requestMethods[i];
+                if (method != null) {
+                    this.requestMethods[i] = method.toUpperCase();
+                }
             }
         }
     }

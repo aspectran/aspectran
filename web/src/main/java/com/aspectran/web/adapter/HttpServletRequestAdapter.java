@@ -35,8 +35,7 @@ import java.util.Map;
  * An adapter that wraps a {@link jakarta.servlet.http.HttpServletRequest},
  * exposing it as a {@link WebRequestAdapter} for the Aspectran framework.
  * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
- * allowing the framework to handle web requests in a consistent, abstracted manner.
- * </p>
+ * allowing the framework to handle web requests in a consistent, abstracted manner.</p>
  *
  * @since 2011. 3. 13.
  */
@@ -58,7 +57,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation lazily populates the header map from the underlying
-     * {@link HttpServletRequest} on first access.
+     * {@link HttpServletRequest} on first access.</p>
      */
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
@@ -82,7 +81,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletRequest#getCharacterEncoding()}.
+     * <p>Delegates to {@link HttpServletRequest#getCharacterEncoding()}.</p>
      */
     @Override
     public String getEncoding() {
@@ -91,7 +90,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletRequest#setCharacterEncoding(String)}.
+     * <p>Delegates to {@link HttpServletRequest#setCharacterEncoding(String)}.</p>
      */
     @Override
     public void setEncoding(String encoding) throws UnsupportedEncodingException {
@@ -100,7 +99,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletRequest#getInputStream()}.
+     * <p>Delegates to {@link HttpServletRequest#getInputStream()}.</p>
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -109,7 +108,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletRequest#getUserPrincipal()}.
+     * <p>Delegates to {@link HttpServletRequest#getUserPrincipal()}.</p>
      */
     @Override
     public Principal getPrincipal() {
@@ -127,7 +126,7 @@ public class HttpServletRequestAdapter extends AbstractWebRequestAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation initializes the adapter by extracting attributes, parameters,
-     * content type, and locale from the native {@link HttpServletRequest}.
+     * content type, and locale from the native {@link HttpServletRequest}.</p>
      */
     @Override
     public void preparse() {

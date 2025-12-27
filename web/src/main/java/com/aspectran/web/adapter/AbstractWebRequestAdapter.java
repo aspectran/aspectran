@@ -66,7 +66,7 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
     /**
      * {@inheritDoc}
      * <p>This implementation parses the request body using {@link WebRequestBodyParser}
-     * on the first call and caches the result.
+     * on the first call and caches the result.</p>
      */
     @Override
     public String getBody() {
@@ -88,7 +88,7 @@ public abstract class AbstractWebRequestAdapter extends AbstractRequestAdapter i
     /**
      * {@inheritDoc}
      * <p>This implementation parses the request body as parameters using
-     * {@link WebRequestBodyParser}.
+     * {@link WebRequestBodyParser}.</p>
      */
     @Override
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {

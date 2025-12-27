@@ -23,7 +23,6 @@ import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -158,7 +157,6 @@ public class ETagInterceptor {
         return false;
     }
 
-    @NonNull
     private String ensureQuoted(String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;

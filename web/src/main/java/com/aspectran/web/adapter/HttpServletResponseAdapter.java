@@ -36,8 +36,7 @@ import java.util.Collection;
  * An adapter that wraps a {@link jakarta.servlet.http.HttpServletResponse},
  * exposing it as a {@link com.aspectran.core.adapter.ResponseAdapter} for the Aspectran framework.
  * <p>This class acts as a bridge between the Jakarta Servlet API and the Aspectran core,
- * allowing the framework to write to the servlet response in a consistent, abstracted manner.
- * </p>
+ * allowing the framework to write to the servlet response in a consistent, abstracted manner.</p>
  *
  * @since 2011. 3. 13.
  */
@@ -134,7 +133,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation performs a pre-commit check before returning the stream.
+     * <p>This implementation performs a pre-commit check before returning the stream.</p>
      */
     @Override
     public OutputStream getOutputStream() throws IOException {
@@ -144,7 +143,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation performs a pre-commit check before returning the writer.
+     * <p>This implementation performs a pre-commit check before returning the writer.</p>
      */
     @Override
     public Writer getWriter() throws IOException {
@@ -154,7 +153,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>If a redirect location has been reserved, this method sends the redirect.
+     * <p>If a redirect location has been reserved, this method sends the redirect.</p>
      */
     @Override
     public void commit() throws IOException {
@@ -166,7 +165,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletResponse#reset()}.
+     * <p>Delegates to {@link HttpServletResponse#reset()}.</p>
      */
     @Override
     public void reset() {
@@ -177,7 +176,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     /**
      * {@inheritDoc}
      * <p>This implementation reserves the redirect location. The actual redirect is
-     * sent when {@link #commit()} is called.
+     * sent when {@link #commit()} is called.</p>
      */
     @Override
     public void redirect(String location) throws IOException {
@@ -190,7 +189,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>This implementation builds a redirect URL and reserves it.
+     * <p>This implementation builds a redirect URL and reserves it.</p>
      */
     @Override
     public RedirectTarget redirect(RedirectRule redirectRule) throws IOException {
@@ -213,7 +212,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link HttpServletResponse#encodeURL(String)}.
+     * <p>Delegates to {@link HttpServletResponse#encodeURL(String)}.</p>
      */
     @Override
     public String transformPath(String path) {

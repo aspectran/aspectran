@@ -36,8 +36,7 @@ import java.util.List;
  * and provides common infrastructure for running Aspectran within a Servlet container.
  * It handles the integration with the {@link jakarta.servlet.ServletContext},
  * manages web-specific configurations from {@link com.aspectran.core.context.config.WebConfig},
- * and provides a mechanism for handling static resource requests via a default servlet.
- * </p>
+ * and provides a mechanism for handling static resource requests via a default servlet.</p>
  */
 public abstract class AbstractWebService extends DefaultCoreService implements WebService {
 
