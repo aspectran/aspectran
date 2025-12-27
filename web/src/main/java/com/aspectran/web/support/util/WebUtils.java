@@ -42,7 +42,7 @@ import java.util.Map;
  * <p>Provides functionality for cookie handling, header parsing, path manipulation,
  * and building redirect URLs.</p>
  */
-public abstract class WebUtils {
+public class WebUtils {
 
     /**
      * Standard Servlet 2.3+ spec request attribute for error page exception.
@@ -57,6 +57,12 @@ public abstract class WebUtils {
     private static final char AMPERSAND_CHAR = '&';
 
     private static final char EQUAL_CHAR = '=';
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private WebUtils() {
+    }
 
     /**
      * Retrieve the first cookie with the given name. Note that multiple

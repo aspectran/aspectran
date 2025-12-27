@@ -51,7 +51,13 @@ import java.util.Map;
  *
  * @see <a href="https://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
  */
-public abstract class UriUtils {
+public class UriUtils {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private UriUtils() {
+    }
 
     /**
      * Encode the given URI scheme with the given encoding.

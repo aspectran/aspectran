@@ -28,9 +28,15 @@ import org.jspecify.annotations.Nullable;
  * This ensures that the correct logging context can be restored when a task is resumed
  * on a different thread and is properly cleared at the end of the exchange.</p>
  */
-public abstract class ExchangeLoggingGroupHelper {
+public class ExchangeLoggingGroupHelper {
 
     private static final AttachmentKey<String> KEY = AttachmentKey.create(String.class);
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private ExchangeLoggingGroupHelper() {
+    }
 
     /**
      * Sets the logging group on the current thread and attaches the group name to the exchange.

@@ -23,7 +23,7 @@ import java.util.Deque;
  * <p>Provides methods for normalizing paths and applying relative paths, primarily for
  * internal use within the framework. It standardizes on forward slashes ('/') as separators.</p>
  */
-public abstract class PathUtils {
+public class PathUtils {
 
     /**
      * The standard path separator: a forward slash "/".
@@ -43,6 +43,12 @@ public abstract class PathUtils {
     private static final String TOP_PATH = "..";
 
     private static final String CURRENT_PATH = ".";
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private PathUtils() {
+    }
 
     /**
      * Applies a relative path to a given base path.

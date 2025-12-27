@@ -38,7 +38,7 @@ import java.util.Base64;
  *
  * @since 5.3.3
  */
-public abstract class PBEncryptionUtils {
+public class PBEncryptionUtils {
 
     /**
      * The default encryption algorithm is "PBEWITHHMACSHA256ANDAES_128".
@@ -86,6 +86,12 @@ public abstract class PBEncryptionUtils {
         algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_KEY, DEFAULT_ALGORITHM));
         password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_KEY));
         encryptor = (StringUtils.hasText(password) ? getStringEncryptor(password) : null);
+    }
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private PBEncryptionUtils() {
     }
 
     /**

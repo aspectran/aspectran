@@ -31,10 +31,16 @@ import java.util.StringTokenizer;
  *
  * <p>Created: 2008. 04. 22 PM 3:47:15</p>
  */
-public abstract class BeanUtils {
+public class BeanUtils {
 
     /** An empty immutable {@code Object} array. */
     static final Object[] NO_ARGUMENTS = new Object[0];
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private BeanUtils() {
+    }
 
     /**
      * Returns the value of a property from a bean, supporting nested and indexed properties.

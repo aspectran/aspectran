@@ -32,7 +32,13 @@ import static com.aspectran.utils.MethodUtils.EMPTY_OBJECT_ARRAY;
  *
  * @since 2.0.0
  */
-public abstract class ReflectionUtils {
+public class ReflectionUtils {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private ReflectionUtils() {
+    }
 
     /**
      * Calculates a weight that represents the cost of converting a given set of argument

@@ -30,9 +30,15 @@ import java.util.Optional;
  *
  * Miscellaneous object utility methods.
  */
-public abstract class ObjectUtils {
+public class ObjectUtils {
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private ObjectUtils() {
+    }
 
     /**
      * Determine whether the given object is an array:

@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Utility reflection methods.
  */
-public abstract class MethodUtils {
+public class MethodUtils {
 
     /** An empty class array */
     public static final Class<?>[] EMPTY_CLASS_PARAMETERS = {};
@@ -40,6 +40,12 @@ public abstract class MethodUtils {
 
     /** Stores a cache of MethodDescriptor -> Method. */
     private static final Map<MethodDescriptor, Method[]> cache = new ConcurrentReferenceHashMap<>(256);
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private MethodUtils() {
+    }
 
     /**
      * Sets the value of a bean property to an Object.

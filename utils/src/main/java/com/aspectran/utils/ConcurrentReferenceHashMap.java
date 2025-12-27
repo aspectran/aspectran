@@ -644,12 +644,11 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         }
 
         @SuppressWarnings({"unchecked"})
-        @NonNull
-        private Reference<K, V>[] createReferenceArray(int size) {
+        private Reference<K, V> @NonNull [] createReferenceArray(int size) {
             return new Reference[size];
         }
 
-        private int getIndex(int hash, @NonNull Reference<K, V>[] references) {
+        private int getIndex(int hash, @NonNull Reference<K, V> @NonNull [] references) {
             return (hash & (references.length - 1));
         }
 
@@ -780,7 +779,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         private final EnumSet<TaskOption> options;
 
-        public Task(@NonNull TaskOption... options) {
+        public Task(TaskOption @NonNull ... options) {
             this.options = (options.length == 0 ? EnumSet.noneOf(TaskOption.class) : EnumSet.of(options[0], options));
         }
 
@@ -881,7 +880,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     }
 
-
     /**
      * Internal entry iterator implementation.
      */
@@ -967,7 +965,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     }
 
-
     /**
      * The types of restructuring that can be performed.
      */
@@ -984,7 +981,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         NEVER
 
     }
-
 
     /**
      * A manager for {@link Reference}s.
@@ -1055,7 +1051,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         }
 
     }
-
 
     /**
      * An internal {@link Reference} implementation for {@link WeakReference}s.

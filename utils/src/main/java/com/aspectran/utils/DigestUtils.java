@@ -30,7 +30,7 @@ import java.security.NoSuchAlgorithmException;
  * for a more comprehensive suite of digest utilities.
  */
 @NullMarked
-public abstract class DigestUtils {
+public class DigestUtils {
 
     private static final String MD5_ALGORITHM_NAME = "MD5";
 
@@ -38,6 +38,12 @@ public abstract class DigestUtils {
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     private static final int BUFFER_SIZE = 4096;
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private DigestUtils() {
+    }
 
     /**
      * Calculate the MD5 digest of the given bytes.

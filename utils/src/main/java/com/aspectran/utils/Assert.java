@@ -32,7 +32,13 @@ import java.util.function.Supplier;
  * {@link IllegalArgumentException} is thrown. This class is mainly for
  * internal use within the framework.</p>
  */
-public abstract class Assert {
+public class Assert {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private Assert() {
+    }
 
     /**
      * Assert a boolean expression, throwing an {@code IllegalStateException}

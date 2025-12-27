@@ -25,7 +25,6 @@ import jakarta.servlet.jsp.tagext.Tag;
  * Utility class for tag library related code, exposing functionality
  * such as translating {@link String Strings} to web scopes.
  *
- * <p>
  * <ul>
  * <li>{@code page} will be transformed to
  * {@link jakarta.servlet.jsp.PageContext#PAGE_SCOPE PageContext.PAGE_SCOPE}
@@ -37,7 +36,7 @@ import jakarta.servlet.jsp.tagext.Tag;
  * {@link jakarta.servlet.jsp.PageContext#APPLICATION_SCOPE PageContext.APPLICATION_SCOPE}
  * </ul>
  */
-public abstract class TagUtils {
+public class TagUtils {
 
     /** Constant identifying the page scope. */
     public static final String SCOPE_PAGE = "page";
@@ -50,6 +49,12 @@ public abstract class TagUtils {
 
     /** Constant identifying the application scope. */
     public static final String SCOPE_APPLICATION = "application";
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private TagUtils() {
+    }
 
     /**
      * Determines the scope for a given input {@code String}.
@@ -99,8 +104,7 @@ public abstract class TagUtils {
 
     /**
      * Determine whether the supplied {@link Tag} has any ancestor tag
-     * of the supplied type, throwing an {@link IllegalStateException}
-     * if not.
+     * of the supplied type, throwing an {@link IllegalStateException} if not.
      * @param tag the tag whose ancestors are to be checked
      * @param ancestorTagClass the ancestor {@link Class} being searched for
      * @param tagName the name of the {@code tag}; for example '{@code option}'

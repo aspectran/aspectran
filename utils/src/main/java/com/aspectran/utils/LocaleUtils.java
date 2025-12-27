@@ -27,6 +27,12 @@ import java.util.TimeZone;
 public class LocaleUtils {
 
     /**
+     * This class cannot be instantiated.
+     */
+    private LocaleUtils() {
+    }
+
+    /**
      * Parse the given {@code String} value into a {@link Locale}, accepting
      * the {@link Locale#toString} format as well as BCP 47 language tags.
      * @param localeValue the locale value: following either {@code Locale's}

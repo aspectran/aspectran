@@ -80,7 +80,7 @@ public class BeanDescriptor {
     }
 
     @NonNull
-    private Set<String> addGetterMethods(@NonNull Method[] methods) {
+    private Set<String> addGetterMethods(Method @NonNull [] methods) {
         Set<String> nonSerializableReadPropertyNames = new HashSet<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
@@ -103,7 +103,7 @@ public class BeanDescriptor {
         getterTypes.put(name, method.getReturnType());
     }
 
-    private void addSetterMethods(@NonNull Method[] methods) {
+    private void addSetterMethods(Method @NonNull [] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
@@ -117,8 +117,8 @@ public class BeanDescriptor {
         resolveSetterConflicts(conflictingSetters);
     }
 
-    private void addConflictingSetter(@NonNull Map<String, List<Method>> conflictingSetters,
-                                      String name, Method method) {
+    private void addConflictingSetter(
+            @NonNull Map<String, List<Method>> conflictingSetters, String name, Method method) {
         List<Method> list = conflictingSetters.computeIfAbsent(name, k -> new ArrayList<>());
         list.add(method);
     }
@@ -168,8 +168,7 @@ public class BeanDescriptor {
      * @param beanClass the class
      * @return an array containing all the public methods in this class
      */
-    @NonNull
-    private Method[] getAllMethods(Class<?> beanClass) {
+    private Method @NonNull [] getAllMethods(Class<?> beanClass) {
         Map<String, Method> uniqueMethods = new HashMap<>();
         Class<?> currentClass = beanClass;
         while (currentClass != null && currentClass != Object.class) {
@@ -187,7 +186,7 @@ public class BeanDescriptor {
         return methods.toArray(new Method[0]);
     }
 
-    private void addUniqueMethods(@NonNull Map<String, Method> uniqueMethods, @NonNull Method[] methods) {
+    private void addUniqueMethods(@NonNull Map<String, Method> uniqueMethods, Method @NonNull [] methods) {
         for (Method currentMethod : methods) {
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);

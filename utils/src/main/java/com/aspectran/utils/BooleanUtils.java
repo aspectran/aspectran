@@ -27,13 +27,18 @@ import org.jspecify.annotations.NonNull;
  *
  * @author Juho Jeong
  */
-public abstract class BooleanUtils {
+public class BooleanUtils {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private BooleanUtils() {
+    }
 
     /**
      * Converts a String to a {@code Boolean}.
      * <p>If the string is {@code "true"} (case-insensitive), {@code true} is returned.
      * Otherwise, {@code false} is returned.</p>
-     *
      * @param booleanString the String to convert
      * @return the Boolean value of the string, not {@code null}
      */
@@ -46,7 +51,6 @@ public abstract class BooleanUtils {
      * Converts a String to a {@code Boolean}, returning {@code null} if the string is {@code null}.
      * <p>If the string is {@code "true"} (case-insensitive), {@code true} is returned.
      * Otherwise, {@code false} is returned.</p>
-     *
      * @param booleanString the String to convert
      * @return the Boolean value of the string, or {@code null} if the string is {@code null}
      */
@@ -56,7 +60,6 @@ public abstract class BooleanUtils {
 
     /**
      * Converts a {@code Boolean} to a {@code boolean}, handling {@code null} by returning {@code false}.
-     *
      * @param bool the boolean to convert
      * @return {@code true} or {@code false}
      */
@@ -66,7 +69,6 @@ public abstract class BooleanUtils {
 
     /**
      * Converts a {@code Boolean} to a {@code boolean}, handling {@code null} by returning a default value.
-     *
      * @param bool the boolean to convert
      * @param defaultValue the default value to return if the input is {@code null}
      * @return {@code true} or {@code false}
@@ -77,7 +79,6 @@ public abstract class BooleanUtils {
 
     /**
      * Converts a String to a {@code boolean}, handling {@code null} by returning a default value.
-     *
      * @param booleanString the string to convert
      * @param defaultValue the default value to return if the string is {@code null}
      * @return {@code true} or {@code false}

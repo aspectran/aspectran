@@ -38,7 +38,6 @@ public abstract class SystemUtils {
      * Gets a system property, returning {@code null} if the property cannot be read.
      * If a {@link SecurityException} is caught, the return value is {@code null}
      * and a debug message is logged.
-     *
      * @param key the name of the system property
      * @return the system property value, or {@code null} if a security error occurs
      */
@@ -57,7 +56,6 @@ public abstract class SystemUtils {
 
     /**
      * Gets a system property, returning a default value if the property is not found or cannot be read.
-     *
      * @param name the name of the system property
      * @param defVal the default value to return
      * @return the system property value, or the default value if not found or a security error occurs
@@ -70,7 +68,6 @@ public abstract class SystemUtils {
     /**
      * Clears a system property, returning the previous value.
      * If a {@link SecurityException} is caught, {@code null} is returned.
-     *
      * @param key the name of the system property to clear
      * @return the previous string value of the system property, or {@code null}
      */
@@ -89,7 +86,6 @@ public abstract class SystemUtils {
 
     /**
      * Returns the value of the {@code java.io.tmpdir} system property.
-     *
      * @return the temporary directory path
      */
     public static String getJavaIoTmpDir() {
@@ -98,7 +94,6 @@ public abstract class SystemUtils {
 
     /**
      * Returns the value of the {@code user.home} system property.
-     *
      * @return the user's home directory path
      */
     public static String getUserHome() {
@@ -107,7 +102,6 @@ public abstract class SystemUtils {
 
     /**
      * Returns the value of the {@code user.dir} system property.
-     *
      * @return the user's current working directory path
      */
     public static String getUserDir() {

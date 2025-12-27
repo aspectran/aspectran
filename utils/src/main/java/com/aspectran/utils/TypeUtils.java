@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * A utility class for type inspection, particularly with regard to primitives and wrappers.
  */
-public abstract class TypeUtils {
+public class TypeUtils {
 
     /**
      * A map with primitive wrapper types as keys and corresponding primitive types as values.
@@ -61,6 +61,12 @@ public abstract class TypeUtils {
         for (Map.Entry<Class<?>, Class<?>> e : primitiveWrapperTypeMap.entrySet()) {
             primitiveTypeToWrapperMap.put(e.getValue(), e.getKey());
         }
+    }
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private TypeUtils() {
     }
 
     /**

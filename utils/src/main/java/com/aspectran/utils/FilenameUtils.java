@@ -38,13 +38,19 @@ import static com.aspectran.utils.PathUtils.WINDOWS_FILE_SEPARATOR;
  *   <li>Extension: {@code txt}</li>
  * </ul>
  */
-public abstract class FilenameUtils {
+public class FilenameUtils {
 
     private static final String NAME_SEPARATOR = "_";
 
     private static final String EXTENSION_SEPARATOR = ".";
 
     private static final String EXTENSIONS_SEPARATORS = " ,;\t\n\r\f";
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private FilenameUtils() {
+    }
 
     /**
      * Gets the name of the file from a full path, excluding the path.

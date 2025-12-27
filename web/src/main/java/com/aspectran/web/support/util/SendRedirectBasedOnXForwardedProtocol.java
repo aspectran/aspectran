@@ -34,6 +34,12 @@ public class SendRedirectBasedOnXForwardedProtocol {
 
     private static final String SCHEME_DELIMITER = "://";
 
+    /**
+     * This class cannot be instantiated.
+     */
+    private SendRedirectBasedOnXForwardedProtocol() {
+    }
+
     public static void redirect(@NonNull Translet translet, String location) throws IOException {
         translet.redirect(getLocation(translet, location));
     }

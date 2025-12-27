@@ -34,7 +34,13 @@ import static com.aspectran.utils.BeanUtils.NO_ARGUMENTS;
  *
  * <p>Created: 2025-02-19</p>
  */
-public abstract class BeanTypeUtils {
+public class BeanTypeUtils {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private BeanTypeUtils() {
+    }
 
     /**
      * Invokes the static method of the specified class to get the bean property value.

@@ -34,7 +34,7 @@ import java.net.URLConnection;
 /**
  * A class to simplify access to ResourceUtils through the classloader.
  */
-public abstract class ResourceUtils {
+public class ResourceUtils {
 
     /** Pseudo URL prefix for loading from the class path: "classpath:". */
     public static final String CLASSPATH_URL_PREFIX = "classpath:";
@@ -80,6 +80,12 @@ public abstract class ResourceUtils {
 
     /** Special separator between WAR URL and jar part on Tomcat. */
     public static final String WAR_URL_SEPARATOR = "*/";
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private ResourceUtils() {
+    }
 
     /**
      * Return whether the given resource location is a URL:

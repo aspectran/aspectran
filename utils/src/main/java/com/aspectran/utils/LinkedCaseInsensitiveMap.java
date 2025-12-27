@@ -43,10 +43,8 @@ import java.util.function.Function;
  * <p>Preserves the original order as well as the original casing of keys,
  * while allowing for contains, get and remove calls with any case of key.
  *
- * <p>Does <i>not</i> support {@code null} keys.
+ * <p>Does <i>not</i> support {@code null} keys.</p>
  *
- * @author Juergen Hoeller
- * @author Phillip Webb
  * @param <V> the value type
  */
 public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable, Cloneable {
@@ -139,7 +137,6 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         this.caseInsensitiveKeys = (HashMap<String, String>)other.caseInsensitiveKeys.clone();
         this.locale = other.locale;
     }
-
 
     // Implementation of java.util.Map
 

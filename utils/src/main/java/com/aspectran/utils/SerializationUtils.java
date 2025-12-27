@@ -28,7 +28,13 @@ import java.io.ObjectOutputStream;
  * <p>This class provides methods to serialize an object to a byte array
  * and deserialize a byte array back to an object.</p>
  */
-public abstract class SerializationUtils {
+public class SerializationUtils {
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private SerializationUtils() {
+    }
 
     /**
      * Serialize the given object to a byte array.
@@ -65,11 +71,9 @@ public abstract class SerializationUtils {
         }
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return ois.readObject();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to deserialize object", ex);
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             throw new IllegalStateException("Failed to deserialize object type", ex);
         }
     }

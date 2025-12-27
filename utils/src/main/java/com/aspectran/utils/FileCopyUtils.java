@@ -34,15 +34,21 @@ import java.util.List;
  * <p>This class is a clone of org.apache.commons.io.FileUtils</p>
  *
  * Simple utility methods for file and directory copying.
- * All copy methods use a block size of 4096 bytes,
+ * All copy methods use a block size of 8192 bytes
  * and close all affected streams when done.
  */
-public abstract class FileCopyUtils {
+public class FileCopyUtils {
 
     /**
      * The default buffer size ({@value}) to use in copy methods.
      */
     private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private FileCopyUtils() {
+    }
 
     /**
      * Copies a file to a directory preserving the file date.
@@ -399,7 +405,7 @@ public abstract class FileCopyUtils {
      * @param destDir          the validated destination directory, must not be {@code null}
      * @param filter           the filter to apply, null means copy all directories and files
      * @param preserveFileDate whether to preserve the file date
-     * @param exclusionList    list of files and directories to exclude from the copy, may be null
+     * @param exclusionList    the list of files and directories to exclude from the copy, may be null
      * @throws IOException     if an error occurs
      */
     private static void doCopyDirectory(

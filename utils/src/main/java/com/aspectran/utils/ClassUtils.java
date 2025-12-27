@@ -25,7 +25,7 @@ import java.lang.reflect.Modifier;
  * Miscellaneous class utility methods.
  * <p>Mainly for internal use within the framework.</p>
  */
-public abstract class ClassUtils {
+public class ClassUtils {
 
     /** The package separator character: {@code '.'}. */
     public static final char PACKAGE_SEPARATOR_CHAR = '.';
@@ -38,6 +38,12 @@ public abstract class ClassUtils {
 
     /** CGLIB or Javassist-generated class separator: {@code "$$"}. */
     public static final String PROXY_CLASS_SEPARATOR = "$$";
+
+    /**
+     * This class cannot be instantiated.
+     */
+    private ClassUtils() {
+    }
 
     /**
      * Creates an instance of the specified class using its default (no-argument) constructor.
@@ -74,7 +80,7 @@ public abstract class ClassUtils {
      *      or if instantiation fails for any other reason
      */
     @NonNull
-    public static <T> T createInstance(Class<T> clazz, @NonNull Object... args) {
+    public static <T> T createInstance(Class<T> clazz, Object @NonNull ... args) {
         Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();

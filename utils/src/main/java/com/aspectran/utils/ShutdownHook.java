@@ -42,6 +42,12 @@ public class ShutdownHook {
     private static Win32ConsoleCtrlCloseHook win32ConsoleCtrlCloseHook;
 
     /**
+     * This class cannot be instantiated.
+     */
+    private ShutdownHook() {
+    }
+
+    /**
      * Adds a task to be executed when the JVM shuts down.
      * <p>If this is the first task being added, a new shutdown hook thread is registered
      * with the JVM runtime.</p>
