@@ -49,7 +49,7 @@ import static com.aspectran.web.activity.request.WebRequestBodyParser.MAX_REQUES
  * pipeline to a Servlet-based web environment. It wraps the native {@link HttpServletRequest}
  * and {@link HttpServletResponse} objects, providing web-specific request and response
  * adapters, and handling concerns like URI decoding, static resource handling, and
- * asynchronous request processing.
+ * asynchronous request processing.</p>
  *
  * @since 2008-04-28
  */
@@ -277,7 +277,7 @@ public class WebActivity extends CoreActivity {
         if (getPendingActivity() == null) {
             getRequestAdapter().preparse();
         } else {
-            getRequestAdapter().preparse((WebRequestAdapter) getPendingActivity().getRequestAdapter());
+            getRequestAdapter().preparse((WebRequestAdapter)getPendingActivity().getRequestAdapter());
         }
 
         MediaType mediaType = getRequestAdapter().getMediaType();
