@@ -29,6 +29,7 @@ import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.HttpStatusSetter;
+import com.aspectran.web.support.util.WebUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,10 +122,7 @@ public class SimpleFileUploadActivity {
         String key = translet.getParameter("key");
         UploadedFile uploadedFile = uploadedFiles.get(key);
         if (uploadedFile != null) {
-            translet.getResponseAdapter().setContentType(uploadedFile.getFileType());
-            translet.getResponseAdapter().setHeader("Content-disposition",
-                    "attachment; filename=\"" + uploadedFile.getFileName() + "\"");
-            translet.getResponseAdapter().getOutputStream().write(uploadedFile.getBytes());
+            WebUtils.serveFile(translet, uploadedFile.getFileName(), uploadedFile.getFileType(), uploadedFile.getBytes());
         } else {
             HttpStatusSetter.setStatus(HttpStatus.NOT_FOUND, translet);
         }

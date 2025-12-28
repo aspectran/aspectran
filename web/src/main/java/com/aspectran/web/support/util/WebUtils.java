@@ -33,6 +33,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -248,6 +250,37 @@ public class WebUtils {
         }
         String requestName = (questionPos != -1 ? path.substring(0, questionPos) : path);
         return RedirectTarget.of(requestName, sb.toString());
+    }
+
+    /**
+     * Serves a file to the client through the provided Translet's response adapter.
+     * <p>This method handles content type defaulting, filename encoding for Content-Disposition,
+     * and writing bytes to the response. The Content-Disposition header's filename encoding
+     * follows RFC 5987 for internationalization support.</p>
+     * @param translet the current Translet instance
+     * @param fileName the name of the file to be served
+     * @param contentType the MIME type of the file
+     * @param fileBytes the byte array content of the file
+     * @throws IOException if an I/O error occurs while writing to the response stream
+     */
+    public static void serveFile(Translet translet, String fileName, @Nullable String contentType, byte[] fileBytes)
+            throws IOException {
+        Assert.notNull(translet, "Translet must not be null");
+        Assert.hasLength(fileName, "File name must not be null or empty");
+        Assert.notNull(fileBytes, "File bytes must not be null");
+
+        String effectiveContentType = contentType;
+        if (!StringUtils.hasLength(effectiveContentType)) {
+            effectiveContentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
+        String disposition = "attachment; filename*=UTF-8''" + encodedFileName;
+
+        translet.getResponseAdapter().setContentType(effectiveContentType);
+        translet.getResponseAdapter().setHeader(HttpHeaders.CONTENT_DISPOSITION, disposition);
+        translet.getResponseAdapter().setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileBytes.length));
+        translet.getResponseAdapter().getOutputStream().write(fileBytes);
     }
 
 }
