@@ -116,6 +116,10 @@ class AutowireBeanTest {
         assertEquals("property5", bean.getProperty5());
         assertEquals(30, bean.getProperty6());
         assertEquals("Property-1/Property-2/Property-3", bean.getProperty7());
+        assertEquals("Value: Property-1 (Code: 123)", bean.getProperty8());
+        assertEquals("TrueValue", bean.getProperty9());
+        assertEquals("Property-1", bean.getProperty10());
+        assertEquals("B", bean.getProperty11());
     }
 
     @Test

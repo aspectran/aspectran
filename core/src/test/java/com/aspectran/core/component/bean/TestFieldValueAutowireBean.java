@@ -40,6 +40,18 @@ public class TestFieldValueAutowireBean {
     @Value("#{properties^property1} + \"/\" + #{properties^property2} + \"/\" + #{properties^property3}")
     public String property7;
 
+    @Value("'Value: ' + #{properties^property1} + ' (Code: 123)'")
+    public String property8;
+
+    @Value("#{properties^property1} == 'Property-1' ? 'TrueValue' : 'FalseValue'")
+    public String property9;
+
+    @Value("#{properties}['property1']")
+    public String property10;
+
+    @Value("{'A', 'B', 'C'}[1].toString()")
+    public String property11;
+
     public String getProperty1() {
         return property1;
     }
@@ -66,6 +78,22 @@ public class TestFieldValueAutowireBean {
 
     public String getProperty7() {
         return property7;
+    }
+
+    public String getProperty8() {
+        return property8;
+    }
+
+    public String getProperty9() {
+        return property9;
+    }
+
+    public String getProperty10() {
+        return property10;
+    }
+
+    public String getProperty11() {
+        return property11;
     }
 
 }
