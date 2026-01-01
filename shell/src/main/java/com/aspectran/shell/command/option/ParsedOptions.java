@@ -104,42 +104,18 @@ public class ParsedOptions implements Serializable {
             return null;
         }
         OptionValueType valueType = option.getValueType();
-        if (valueType == OptionValueType.STRING) {
-            return (T)value;
-        } else if (valueType == OptionValueType.INT) {
-            try {
-                return (T)Integer.valueOf(value);
-            } catch (NumberFormatException e) {
-                throw new OptionParserException(e.getMessage());
-            }
-        } else if (valueType == OptionValueType.LONG) {
-            try {
-                return (T)Long.valueOf(value);
-            } catch (NumberFormatException e) {
-                throw new OptionParserException(e.getMessage());
-            }
-        } else if (valueType == OptionValueType.FLOAT) {
-            try {
-                return (T)Float.valueOf(value);
-            } catch (NumberFormatException e) {
-                throw new OptionParserException(e.getMessage());
-            }
-        } else if (valueType == OptionValueType.DOUBLE) {
-            try {
-                return (T)Double.valueOf(value);
-            } catch (NumberFormatException e) {
-                throw new OptionParserException(e.getMessage());
-            }
-        } else if (valueType == OptionValueType.BOOLEAN) {
-            try {
-                return (T)Boolean.valueOf(value);
-            } catch (NumberFormatException e) {
-                throw new OptionParserException(e.getMessage());
-            }
-        } else if (valueType == OptionValueType.FILE) {
-            return (T)new File(value);
-        } else {
-            return null;
+        try {
+            return switch (valueType) {
+                case STRING -> (T)value;
+                case INT -> (T)Integer.valueOf(value);
+                case LONG -> (T)Long.valueOf(value);
+                case FLOAT -> (T)Float.valueOf(value);
+                case DOUBLE -> (T)Double.valueOf(value);
+                case BOOLEAN -> (T)Boolean.valueOf(value);
+                case FILE -> (T)new File(value);
+            };
+        } catch (NumberFormatException e) {
+            throw new OptionParserException(e.getMessage());
         }
     }
 

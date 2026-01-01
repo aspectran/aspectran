@@ -19,6 +19,9 @@ import java.io.Serial;
 import java.util.LinkedHashMap;
 
 /**
+ * Represents a collection of arguments for a command.
+ * Stores argument names and their descriptions.
+ *
  * <p>Created: 2019-01-18</p>
  */
 public class Arguments extends LinkedHashMap<String, String> {
@@ -34,18 +37,34 @@ public class Arguments extends LinkedHashMap<String, String> {
         super();
     }
 
+    /**
+     * Returns the title of this argument group.
+     * @return the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets the title of this argument group.
+     * @param title the title to set
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns whether these arguments are required.
+     * @return true if required, false otherwise
+     */
     public boolean isRequired() {
         return required;
     }
 
+    /**
+     * Sets whether these arguments are required.
+     * @param required true if required, false otherwise
+     */
     public void setRequired(boolean required) {
         this.required = required;
     }

@@ -17,8 +17,6 @@ package com.aspectran.shell.command.option;
 
 import org.jspecify.annotations.NonNull;
 
-import java.util.Arrays;
-
 /**
  * Contains useful helper methods for classes within this package.
  */
@@ -128,9 +126,7 @@ public final class OptionUtils {
      */
     @NonNull
     public static String createPadding(int len) {
-        char[] padding = new char[len];
-        Arrays.fill(padding, ' ');
-        return new String(padding);
+        return " ".repeat(Math.max(0, len));
     }
 
     /**

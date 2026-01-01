@@ -18,7 +18,8 @@ package com.aspectran.shell.command.option;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Supported Option value types.
+ * Enumeration of supported value types for command-line options.
+ * Used to convert option values to specific Java types.
  */
 public enum OptionValueType {
 
@@ -39,6 +40,10 @@ public enum OptionValueType {
         this.classType = classType;
     }
 
+    /**
+     * Returns the Java class associated with this value type.
+     * @return the class type
+     */
     public Class<?> getClassType() {
         return classType;
     }

@@ -229,4 +229,99 @@ class DefaultOptionParserTest {
         }
     }
 
+    @Test
+    void testRequiredOption() {
+        OptionParser parser = new DefaultOptionParser();
+        Options options = new Options();
+        options.addOption(Option.builder("r").required().desc("required option").build());
+
+        String[] args = new String[] {};
+
+        try {
+            parser.parse(options, args);
+        } catch (MissingOptionException e) {
+            assertEquals("Missing required option: r", e.getMessage());
+        } catch (OptionParserException e) {
+            System.out.println("Unexpected exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testTypedValues() throws OptionParserException {
+        OptionParser parser = new DefaultOptionParser();
+        Options options = new Options();
+        options.addOption(Option.builder("i").hasValue().valueType(OptionValueType.INT).build());
+        options.addOption(Option.builder("b").hasValue().valueType(OptionValueType.BOOLEAN).build());
+        options.addOption(Option.builder("l").hasValue().valueType(OptionValueType.LONG).build());
+        options.addOption(Option.builder("f").hasValue().valueType(OptionValueType.FLOAT).build());
+        options.addOption(Option.builder("d").hasValue().valueType(OptionValueType.DOUBLE).build());
+
+        String[] args = new String[] {
+                "-i", "100",
+                "-b", "true",
+                "-l", "1234567890123",
+                "-f", "10.5",
+                "-d", "20.123456789"
+        };
+
+        ParsedOptions parsedOptions = parser.parse(options, args);
+
+        assertEquals(Integer.valueOf(100), parsedOptions.getTypedValue("i"));
+        assertEquals(Boolean.TRUE, parsedOptions.getTypedValue("b"));
+        assertEquals(Long.valueOf(1234567890123L), parsedOptions.getTypedValue("l"));
+        assertEquals(Float.valueOf(10.5f), parsedOptions.getTypedValue("f"));
+        assertEquals(Double.valueOf(20.123456789), parsedOptions.getTypedValue("d"));
+    }
+
+    @Test
+    void testOptionGroupExclusivity() {
+        OptionParser parser = new DefaultOptionParser();
+        Options options = new Options();
+        OptionGroup group = new OptionGroup();
+        group.addOption(Option.builder("a").desc("option a").build());
+        group.addOption(Option.builder("b").desc("option b").build());
+        options.addOptionGroup(group);
+
+        String[] args = new String[] { "-a", "-b" };
+
+        try {
+            parser.parse(options, args);
+        } catch (AlreadySelectedException e) {
+            assertTrue(e.getMessage().contains("The option 'b' was specified but an option from this group has already been selected: 'a'"));
+        } catch (OptionParserException e) {
+            System.out.println("Unexpected exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testUnrecognizedOption() {
+        OptionParser parser = new DefaultOptionParser();
+        Options options = new Options();
+        options.addOption(Option.builder("a").desc("option a").build());
+
+        String[] args = new String[] { "-z" };
+
+        try {
+            parser.parse(options, args);
+        } catch (UnrecognizedOptionException e) {
+            assertEquals("Unrecognized option: -z", e.getMessage());
+        } catch (OptionParserException e) {
+            System.out.println("Unexpected exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testPartialMatching() throws OptionParserException {
+        OptionParser parser = new DefaultOptionParser(true); // Enable partial matching
+        Options options = new Options();
+        options.addOption(Option.builder().longName("debug").desc("debug option").build());
+        options.addOption(Option.builder().longName("verbose").desc("verbose option").build());
+
+        String[] args = new String[] { "--deb" };
+
+        ParsedOptions parsedOptions = parser.parse(options, args);
+
+        assertTrue(parsedOptions.hasOption("debug"));
+    }
+
 }

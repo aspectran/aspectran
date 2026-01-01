@@ -20,9 +20,6 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
 import org.jspecify.annotations.NonNull;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -502,21 +499,15 @@ public class HelpFormatter {
      * @param text the text to be rendered
      */
     private void renderWrappedTextBlock(StringBuilder sb, int nextLineTabStop, String text) {
-        try {
-            BufferedReader in = new BufferedReader(new StringReader(text));
-            String line;
-            boolean firstLine = true;
-            while ((line = in.readLine()) != null) {
-                if (!firstLine) {
-                    sb.append(NEW_LINE);
-                } else {
-                    firstLine = false;
-                }
-                renderWrappedText(sb, getWidth(), nextLineTabStop, line);
-            }
-        } catch (IOException e) {
-            // ignore
+        if (text == null) {
+            return;
         }
+        text.lines().forEach(line -> {
+            if (!sb.isEmpty()) {
+                sb.append(NEW_LINE);
+            }
+            renderWrappedText(sb, getWidth(), nextLineTabStop, line);
+        });
     }
 
     /**

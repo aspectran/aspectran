@@ -167,7 +167,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Retrieve the name of this Option.
-     *
      * It is this String which can be used with
      * {@link ParsedOptions#hasOption(String name)} and
      * {@link ParsedOptions#getValue(String name)} to check
@@ -261,13 +260,10 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns the number of argument values this Option can take.
-     *
-     * <p>
-     * A value equal to the constant {@link #UNINITIALIZED} (= -1) indicates
+     * <p>A value equal to the constant {@link #UNINITIALIZED} (= -1) indicates
      * the number of arguments has not been specified.
      * A value equal to the constant {@link #UNLIMITED_VALUES} (= -2) indicates
-     * that this options takes an unlimited amount of values.
-     * </p>
+     * that this options takes an unlimited amount of values.</p>
      * @return num the number of argument values
      * @see #UNINITIALIZED
      * @see #UNLIMITED_VALUES
@@ -318,7 +314,7 @@ public class Option implements Cloneable, Serializable {
      */
     public void addValue(String value) {
         if (numberOfValues == UNINITIALIZED) {
-            throw new RuntimeException("NO_ARGS_ALLOWED");
+            throw new IllegalStateException("The option does not take an argument");
         }
         add(value);
     }
@@ -326,12 +322,12 @@ public class Option implements Cloneable, Serializable {
     /**
      * Add the value to this Option.  If the number of arguments
      * is greater than zero and there is enough space in the list then
-     * add the value.  Otherwise, throw a runtime exception.
+     * add the value.  Otherwise, throw an exception.
      * @param value the value to be added to this Option
      */
     private void add(String value) {
         if (!acceptsValue()) {
-            throw new RuntimeException("Cannot add value, list full");
+            throw new IllegalStateException("Cannot add value; the maximum number of arguments has been reached");
         }
 
         // store value
@@ -553,8 +549,10 @@ public class Option implements Cloneable, Serializable {
      * Example usage:
      * <pre>
      * Option option = Option.builder("a")
-     *     .required(true)
      *     .longName("arg-name")
+     *     .desc("This is an argument option")
+     *     .hasValue()
+     *     .required()
      *     .build();
      * </pre>
      */

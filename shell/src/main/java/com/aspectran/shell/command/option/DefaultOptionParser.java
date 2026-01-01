@@ -18,12 +18,16 @@ package com.aspectran.shell.command.option;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
 /**
  * The default command option parser.
+ * <p>
+ * This class implements the {@link OptionParser} interface to parse command-line arguments
+ * according to the specified {@link Options}. It supports both short and long options,
+ * with or without values, and can handle properties for default values.
+ * </p>
  */
 public class DefaultOptionParser implements OptionParser {
 
@@ -53,36 +57,23 @@ public class DefaultOptionParser implements OptionParser {
     private final boolean allowPartialMatching;
 
     /**
-     * Creates a new DefaultParser instance with partial matching enabled.
-     * <p>By "partial matching" we mean that given the following code:
-     * <pre>
-     *     {@code
-     *     Options options = new Options();
-     *     options.addOption(new Option("d", "debug", false, "Turn on debug."));
-     *     options.addOption(new Option("e", "extract", false, "Turn on extract."));
-     *     options.addOption(new Option("o", "option", true, "Turn on option with argument."));
-     *     }
-     * </pre></p>
-     * with "partial matching" turned on, {@code -de} only matches the
-     * {@code "debug"} option. However, with "partial matching" disabled,
-     * {@code -de} would enable both {@code debug} as well as
-     * {@code extract} options.
+     * Creates a new DefaultOptionParser instance with partial matching disabled.
      */
     public DefaultOptionParser() {
         this(false);
     }
 
     /**
-     * Create a new DefaultParser instance with the specified partial matching policy.
+     * Create a new DefaultOptionParser instance with the specified partial matching policy.
      * <p>
      * By "partial matching" we mean that given the following code:
      * <pre>
      *     {@code
-     *          Options options = new Options();
+     *      Options options = new Options();
      *      options.addOption(new Option("d", "debug", false, "Turn on debug."));
      *      options.addOption(new Option("e", "extract", false, "Turn on extract."));
      *      options.addOption(new Option("o", "option", true, "Turn on option with argument."));
-     *      }
+     *     }
      * </pre>
      * with "partial matching" turned on, {@code -de} only matches the
      * {@code "debug"} option. However, with "partial matching" disabled,
@@ -130,8 +121,8 @@ public class DefaultOptionParser implements OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    public ParsedOptions parse(@NonNull Options options, String[] args, Properties properties,
-                               boolean skipParsingAtNonOption)
+    public ParsedOptions parse(
+            @NonNull Options options, String[] args, Properties properties, boolean skipParsingAtNonOption)
             throws OptionParserException {
         this.options = options;
         this.skipParsingAtNonOption = skipParsingAtNonOption;
@@ -172,8 +163,7 @@ public class DefaultOptionParser implements OptionParser {
             return;
         }
 
-        for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
-            String name = e.nextElement().toString();
+        for (String name : properties.stringPropertyNames()) {
             Option opt = options.getOption(name);
             if (opt == null) {
                 throw new UnrecognizedOptionException("Default option wasn't defined", name);

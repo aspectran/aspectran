@@ -155,8 +155,7 @@ public class CommandLineParser {
      * @param commandLine the command line to split
      * @return an array of strings representing the command and its arguments
      */
-    @NonNull
-    private String[] splitCommandLine(String commandLine) {
+    private String @NonNull [] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
         Matcher m = ARGS_PATTERN.matcher(commandLine);
         while (m.find()) {
