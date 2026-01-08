@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.AnnotatedAdviceAction;
 import com.aspectran.core.activity.process.action.Executable;
@@ -324,8 +325,15 @@ public class AnnotatedConfigParser {
                             beanRule.addAutowireRule(autowireRule);
                             relater.relate(autowireRule);
                         }
-                    } else if (method.isAnnotationPresent(Required.class)) {
-                        BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
+                    } else if (method.isAnnotationPresent(Required.class) ||
+                            method.isAnnotationPresent(NonNull.class) ||
+                            method.getAnnotatedReturnType().isAnnotationPresent(NonNull.class)) {
+                        // Only setters are checked for required properties; this prevents
+                        // misinterpreting non-null getters or business methods as mandatory
+                        // bean properties.
+                        if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
+                            BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
+                        }
                     } else if (method.isAnnotationPresent(Initialize.class)) {
                         if (method.isAnnotationPresent(Destroy.class)) {
                             throw new IllegalRuleException("Found a method with both @Initialize and @Destroy in bean " + beanRule);
@@ -1033,8 +1041,7 @@ public class AnnotatedConfigParser {
         return new AnnotatedAdviceAction(adviceRule, annotatedActionRule);
     }
 
-    @Nullable
-    static ParameterBindingRule[] createParameterBindingRules(@NonNull Method method) {
+    static ParameterBindingRule @Nullable [] createParameterBindingRules(@NonNull Method method) {
         java.lang.reflect.Parameter[] params = method.getParameters();
         if (params.length == 0) {
             return null;
@@ -1055,7 +1062,12 @@ public class AnnotatedConfigParser {
             if (formatAnno != null) {
                 format = StringUtils.emptyToNull(formatAnno.value());
             }
-            boolean required = param.isAnnotationPresent(Required.class);
+            // Translet parameters are injected by the framework, so they are not
+            // treated as required request parameters even if annotated with @NonNull.
+            boolean required = (param.isAnnotationPresent(Required.class) ||
+                    ((param.isAnnotationPresent(NonNull.class) ||
+                            param.getAnnotatedType().isAnnotationPresent(NonNull.class))
+                            && param.getType() != Translet.class));
 
             ParameterBindingRule bindingRule = new ParameterBindingRule();
             bindingRule.setType(param.getType());

@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean.sample;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Request;
+import org.jspecify.annotations.NonNull;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,7 +38,7 @@ public class InvokerTestActivity {
     }
 
     @Request("/model-binding-failure")
-    public void modelBindingFailure(TestModel model) {
+    public void modelBindingFailure(@NonNull TestModel model) {
         // The invoker will attempt to bind request parameters to the TestModel.
         // The 'number' parameter is 'invalid-number', which will cause a binding failure
         // for the 'number' property of TestModel.
@@ -46,7 +47,7 @@ public class InvokerTestActivity {
     }
 
     @Request("/required-setter-missing")
-    public void requiredSetterMissing(RequiredSetterModel model) {
+    public void requiredSetterMissing(@NonNull RequiredSetterModel model) {
         // The 'name' property of RequiredSetterModel has a @Required setter.
         // Before the fix, not providing the 'name' parameter would throw an
         // IllegalArgumentException from within bindModel.
@@ -55,7 +56,7 @@ public class InvokerTestActivity {
     }
 
     @Request("/bind-model-features")
-    public void bindModelFeatures(ComplexModel model) {
+    public void bindModelFeatures(@NonNull ComplexModel model) {
         // This action method is used to verify the comprehensive features of bindModel.
         assertEquals("tester", model.getName());
         assertEquals(30, model.getAge());

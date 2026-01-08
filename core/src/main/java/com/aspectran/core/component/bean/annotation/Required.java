@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
-import org.jspecify.annotations.NonNull;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,11 +22,16 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates that a method return value or parameter is required (non-null).
- * This is a nickname for {@link org.jspecify.annotations.NonNull}, useful in bean definitions and
- * method signatures to express mandatory values.
+ *
+ * <p>This annotation is now considered a legacy feature, and modern Aspectran
+ * development leverages JSpecify nullability annotations for mandatory dependencies.
+ * Please use {@link org.jspecify.annotations.NonNull} instead.</p>
+ *
+ * @see org.jspecify.annotations.NonNull
+ * @deprecated Use {@link org.jspecify.annotations.NonNull} instead.
  */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-@NonNull
 public @interface Required {
 }

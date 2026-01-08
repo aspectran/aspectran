@@ -25,7 +25,6 @@ import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.embed.sample.custom.TestCustomTransformer;
 import com.aspectran.utils.apon.Parameters;
 import org.jspecify.annotations.NonNull;
@@ -82,7 +81,7 @@ public class AnnotatedActivity {
             name = "message",
             value = "param5"
     )
-    public void action2(Integer param1, int param2, int param3, Integer param4, @Required SecondBean param5) {
+    public void action2(Integer param1, int param2, int param3, Integer param4, @NonNull SecondBean param5) {
         assertEquals(1234, param1);
         assertEquals(5678, param2);
         assertEquals(0, param3);
@@ -299,7 +298,7 @@ public class AnnotatedActivity {
     }
 
     @Request("/requiredParam")
-    public void requiredParam(@Required String param1) {
+    public void requiredParam(@NonNull String param1) {
     }
 
 }
