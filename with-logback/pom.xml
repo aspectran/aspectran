@@ -24,7 +24,6 @@
     </parent>
 
     <artifactId>aspectran-with-logback</artifactId>
-    <version>9.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran with Logback</name>
