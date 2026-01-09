@@ -309,6 +309,7 @@ public class AnnotatedConfigParser {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void parseMethodAutowire(@NonNull BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isMethodAutowireParsed()) {
             return;
@@ -325,7 +326,8 @@ public class AnnotatedConfigParser {
                             beanRule.addAutowireRule(autowireRule);
                             relater.relate(autowireRule);
                         }
-                    } else if (method.isAnnotationPresent(Required.class) ||
+                    } else // noinspection deprecation
+                        if (method.isAnnotationPresent(Required.class) ||
                             method.isAnnotationPresent(NonNull.class) ||
                             method.getAnnotatedReturnType().isAnnotationPresent(NonNull.class)) {
                         // Only setters are checked for required properties; this prevents
@@ -1064,6 +1066,7 @@ public class AnnotatedConfigParser {
             }
             // Translet parameters are injected by the framework, so they are not
             // treated as required request parameters even if annotated with @NonNull.
+            @SuppressWarnings("deprecation")
             boolean required = (param.isAnnotationPresent(Required.class) ||
                     ((param.isAnnotationPresent(NonNull.class) ||
                             param.getAnnotatedType().isAnnotationPresent(NonNull.class))
