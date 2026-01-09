@@ -330,12 +330,7 @@ public class AnnotatedConfigParser {
                         if (method.isAnnotationPresent(Required.class) ||
                             method.isAnnotationPresent(NonNull.class) ||
                             method.getAnnotatedReturnType().isAnnotationPresent(NonNull.class)) {
-                        // Only setters are checked for required properties; this prevents
-                        // misinterpreting non-null getters or business methods as mandatory
-                        // bean properties.
-                        if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
-                            BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
-                        }
+                        BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
                     } else if (method.isAnnotationPresent(Initialize.class)) {
                         if (method.isAnnotationPresent(Destroy.class)) {
                             throw new IllegalRuleException("Found a method with both @Initialize and @Destroy in bean " + beanRule);

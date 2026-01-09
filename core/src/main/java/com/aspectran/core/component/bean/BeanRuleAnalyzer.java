@@ -186,14 +186,19 @@ public class BeanRuleAnalyzer {
     }
 
     static void checkRequiredProperty(@NonNull BeanRule beanRule, @NonNull Method method) throws BeanRuleException {
-        String propertyName = dropCase(method.getName());
-        ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-        if (propertyItemRuleMap != null) {
-            if (propertyItemRuleMap.containsKey(propertyName)) {
-                return;
+        // Only setters are checked for required properties; this prevents
+        // misinterpreting non-null getters or business methods as mandatory
+        // bean properties.
+        if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
+            String propertyName = dropCase(method.getName());
+            ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+            if (propertyItemRuleMap != null) {
+                if (propertyItemRuleMap.containsKey(propertyName)) {
+                    return;
+                }
             }
+            throw new BeanRuleException("Property '" + propertyName + "' is required", beanRule);
         }
-        throw new BeanRuleException("Property '" + propertyName + "' is required", beanRule);
     }
 
     @NonNull
