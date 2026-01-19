@@ -595,4 +595,35 @@ class JsonToParametersTest {
         assertEquals("Mega", location2.getString("type"));
     }
 
+    @Test
+    void testSingleElementArrayConversion() throws IOException {
+        String json = """
+                {
+                    "stringList": ["item1"],
+                    "objList": [{"id": 1}]
+                }
+                """;
+
+        Parameters params = JsonToParameters.from(json);
+
+        // Check string list
+        assertTrue(params.hasParameter("stringList"));
+        // This is the critical check: verify it's a List, not a single String
+        Object stringVal = params.getValue("stringList");
+        assertInstanceOf(List.class, stringVal);
+        List<?> stringList = (List<?>)stringVal;
+        assertEquals(1, stringList.size());
+        assertEquals("item1", stringList.get(0));
+
+        // Check object list
+        assertTrue(params.hasParameter("objList"));
+        // This is the critical check: verify it's a List, not a single Parameters object
+        Object objVal = params.getValue("objList");
+        assertInstanceOf(List.class, objVal);
+        List<?> objList = (List<?>)objVal;
+        assertEquals(1, objList.size());
+        assertInstanceOf(Parameters.class, objList.get(0));
+        assertEquals(1, ((Parameters)objList.get(0)).getInt("id"));
+    }
+
 }
