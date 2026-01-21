@@ -15,13 +15,19 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.apon.JsonToParameters;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for {@link JsonString}.
@@ -73,6 +79,41 @@ class JsonStringTest {
 
         String expected = "{\"data\":null}";
         assertEquals(expected, out.toString());
+    }
+
+    @Test
+    void testSingleElementArrayConversion() throws IOException {
+        String json = """
+                {
+                    "stringList": ["item1"],
+                    "objList": [{"id": 1}]
+                }
+                """;
+
+        Parameters params = new VariableParameters();
+        params.putValue("param1", "value1");
+        params.putValue("param2", JsonToParameters.from(json));
+
+        Parameters param2 = params.getParameters("param2");
+
+        // Check string list
+        assertTrue(param2.hasParameter("stringList"));
+        // This is the critical check: verify it's a List, not a single String
+        Object stringVal = param2.getValue("stringList");
+        assertInstanceOf(List.class, stringVal);
+        List<?> stringList = (List<?>)stringVal;
+        assertEquals(1, stringList.size());
+        assertEquals("item1", stringList.get(0));
+
+        // Check object list
+        assertTrue(param2.hasParameter("objList"));
+        // This is the critical check: verify it's a List, not a single Parameters object
+        Object objVal = param2.getValue("objList");
+        assertInstanceOf(List.class, objVal);
+        List<?> objList = (List<?>)objVal;
+        assertEquals(1, objList.size());
+        assertInstanceOf(Parameters.class, objList.get(0));
+        assertEquals(1, ((Parameters)objList.get(0)).getInt("id"));
     }
 
 }
