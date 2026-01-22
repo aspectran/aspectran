@@ -17,7 +17,6 @@ package com.aspectran.utils.json;
 
 import com.aspectran.utils.apon.JsonToParameters;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.VariableParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -90,10 +89,14 @@ class JsonStringTest {
                 }
                 """;
 
-        Parameters params = new VariableParameters();
-        params.putValue("param1", "value1");
-        params.putValue("param2", JsonToParameters.from(json));
+        JsonWriter jw = new JsonWriter(new StringWriter());
+        jw.beginObject()
+                .name("param1").value("value1")
+                .name("param2").value(new JsonString(json))
+        .endObject();
+        String writtenJson = jw.toString();
 
+        Parameters params = JsonToParameters.from(writtenJson);
         Parameters param2 = params.getParameters("param2");
 
         // Check string list
