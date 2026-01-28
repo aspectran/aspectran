@@ -311,6 +311,62 @@ public class TowOptions {
         options.set(UndertowOptions.ENDPOINT_IDENTIFICATION_ALGORITHM, endpointIdentificationAlgorithm);
     }
 
+    /**
+     * @see UndertowOptions#DECODE_SLASH
+     */
+    public void setDecodeSlash(boolean decodeSlash) {
+        options.set(UndertowOptions.DECODE_SLASH, decodeSlash);
+    }
+
+    /**
+     * @see UndertowOptions#SSL_SNI_HOSTNAME
+     */
+    public void setSslSniHostname(String sslSniHostname) {
+        options.set(UndertowOptions.SSL_SNI_HOSTNAME, sslSniHostname);
+    }
+
+    /**
+     * @see UndertowOptions#QUEUED_FRAMES_HIGH_WATER_MARK
+     */
+    public void setQueuedFramesHighWaterMark(int queuedFramesHighWaterMark) {
+        options.set(UndertowOptions.QUEUED_FRAMES_HIGH_WATER_MARK, queuedFramesHighWaterMark);
+    }
+
+    /**
+     * @see UndertowOptions#QUEUED_FRAMES_LOW_WATER_MARK
+     */
+    public void setQueuedFramesLowWaterMark(int queuedFramesLowWaterMark) {
+        options.set(UndertowOptions.QUEUED_FRAMES_LOW_WATER_MARK, queuedFramesLowWaterMark);
+    }
+
+    /**
+     * @see UndertowOptions#AJP_ALLOWED_REQUEST_ATTRIBUTES_PATTERN
+     */
+    public void setAjpAllowedRequestAttributesPattern(String ajpAllowedRequestAttributesPattern) {
+        options.set(UndertowOptions.AJP_ALLOWED_REQUEST_ATTRIBUTES_PATTERN, ajpAllowedRequestAttributesPattern);
+    }
+
+    /**
+     * @see UndertowOptions#TRACK_ACTIVE_REQUESTS
+     */
+    public void setTrackActiveRequests(boolean trackActiveRequests) {
+        options.set(UndertowOptions.TRACK_ACTIVE_REQUESTS, trackActiveRequests);
+    }
+
+    /**
+     * @see UndertowOptions#RST_FRAMES_TIME_WINDOW
+     */
+    public void setRstFramesTimeWindow(int rstFramesTimeWindow) {
+        options.set(UndertowOptions.RST_FRAMES_TIME_WINDOW, rstFramesTimeWindow);
+    }
+
+    /**
+     * @see UndertowOptions#MAX_RST_FRAMES_PER_WINDOW
+     */
+    public void setMaxRstFramesPerWindow(int maxRstFramesPerWindow) {
+        options.set(UndertowOptions.MAX_RST_FRAMES_PER_WINDOW, maxRstFramesPerWindow);
+    }
+
     //---------------------------------------------------------//
     // XNIO Socket Options
     //---------------------------------------------------------//
@@ -637,6 +693,13 @@ public class TowOptions {
         options.set(Options.FILE_CREATE, fileCreate);
     }
 
+    /**
+     * @see Options#SSL_APPLICATION_BUFFER_SIZE
+     */
+    public void setSslApplicationBufferSize(int sslApplicationBufferSize) {
+        options.set(Options.SSL_APPLICATION_BUFFER_SIZE, sslApplicationBufferSize);
+    }
+
     //---------------------------------------------------------//
     // XNIO Worker Options
     //---------------------------------------------------------//
@@ -765,6 +828,27 @@ public class TowOptions {
      */
     public void setWatcherPollInterval(int watcherPollInterval) {
         options.set(Options.WATCHER_POLL_INTERVAL, watcherPollInterval);
+    }
+
+    /**
+     * @see Options#WORKER_READ_THREADS
+     */
+    public void setWorkerReadThreads(int workerReadThreads) {
+        options.set(Options.WORKER_READ_THREADS, workerReadThreads);
+    }
+
+    /**
+     * @see Options#WORKER_WRITE_THREADS
+     */
+    public void setWorkerWriteThreads(int workerWriteThreads) {
+        options.set(Options.WORKER_WRITE_THREADS, workerWriteThreads);
+    }
+
+    /**
+     * @see Options#SPLIT_READ_WRITE_THREADS
+     */
+    public void setSplitReadWriteThreads(boolean splitReadWriteThreads) {
+        options.set(Options.SPLIT_READ_WRITE_THREADS, splitReadWriteThreads);
     }
 
 }
