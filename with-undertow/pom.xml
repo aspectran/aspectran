@@ -34,7 +34,7 @@
         <automatic.module.name>com.aspectran.undertow</automatic.module.name>
         <undertow.version>2.3.22.Final</undertow.version>
         <!-- Override the older version of JBoss Threads transitively imported by XNIO. Remove this once XNIO is upgraded. -->
-        <jboss-threads.version>3.9.1</jboss-threads.version>
+        <jboss-threads.version>3.9.2</jboss-threads.version>
     </properties>
 
     <dependencies>
