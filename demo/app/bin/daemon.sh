@@ -118,9 +118,9 @@ CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
-# Timeout in seconds for start/stop operations
-# This can be overridden in run.options
-: "${WAIT_TIMEOUT:=60}"
+# Timeout in seconds for stop operations
+# These can be overridden in run.options
+[ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60
 
 start_daemon() {
   rm -f "$DAEMON_OUT"
@@ -214,10 +214,10 @@ stop_aspectran() {
   if stop_daemon; then
     counter=0
     while kill -0 "$PID" > /dev/null 2>&1; do
-      if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
-        echo "Error: Aspectran daemon (pid: $PID) failed to stop within $WAIT_TIMEOUT seconds."
+      if [ "$counter" -ge "$SERVICE_STOP_WAIT_TIME" ]; then
+        echo "Error: Aspectran daemon (pid: $PID) failed to stop within $SERVICE_STOP_WAIT_TIME seconds."
         echo "Forcibly killing process."
-        kill -9 "$PID"
+        kill -9 "$PID" > /dev/null 2>&1 || true
         break
       fi
       sleep 1

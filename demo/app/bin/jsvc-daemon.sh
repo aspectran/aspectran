@@ -72,6 +72,11 @@ while [ ".$1" != . ]; do
     shift; shift;
     continue
     ;; 
+  --service-stop-wait-time)
+    SERVICE_STOP_WAIT_TIME="$2"
+    shift; shift;
+    continue
+    ;; 
   *)
     break
     ;; 
@@ -143,6 +148,7 @@ fi
 [ -z "$PROC_NAME" ] && PROC_NAME="jsvc-daemon"
 [ -z "$PID_FILE" ] && PID_FILE="$BASE_DIR/.daemon.pid"
 [ -z "$SERVICE_START_WAIT_TIME" ] && SERVICE_START_WAIT_TIME=90
+[ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60
 DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
@@ -150,8 +156,6 @@ CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
-# Timeout in seconds for stop operation
-WAIT_TIMEOUT=60
 
 start_daemon() {
   : >"$DAEMON_OUT"
@@ -184,6 +188,7 @@ stop_daemon() {
   "$JSVC" \
     -stop \
     -pidfile "$PID_FILE" \
+    -wait "$SERVICE_STOP_WAIT_TIME" \
     -classpath "$CLASSPATH" \
     $DAEMON_MAIN
   return $?
@@ -272,20 +277,45 @@ stop_aspectran() {
   fi
   echo "Stopping Aspectran daemon (pid $PID)..."
   if stop_daemon; then
-    # Wait for the pid file to be removed, with a timeout
-    counter=0
-    while [ -f "$PID_FILE" ]; do
-      if [ "$counter" -ge "$WAIT_TIMEOUT" ]; then
-        echo "Error: Aspectran daemon (pid $PID) failed to stop within $WAIT_TIMEOUT seconds."
-        exit 1
-      fi
-      sleep 1
-      counter=$((counter + 1))
-    done
+    if [ -f "$PID_FILE" ]; then
+      # Wait for the pid file to be removed
+      counter=0
+      while [ -f "$PID_FILE" ]; do
+        if [ "$counter" -ge 5 ]; then
+          break
+        fi
+        sleep 1
+        counter=$((counter + 1))
+      done
+    fi
     echo "Aspectran daemon stopped."
   else
-    echo "Error: Can't stop Aspectran daemon. jsvc command failed."
-    exit 1
+    # Fallback to kill if jsvc stop fails
+    if kill -0 "$PID" > /dev/null 2>&1; then
+      echo "Warning: jsvc failed to stop the daemon. Trying 'kill'..."
+      kill "$PID" > /dev/null 2>&1 || true
+      
+      # Wait for the process to die
+      counter=0
+      while kill -0 "$PID" > /dev/null 2>&1; do
+        if [ "$counter" -ge "$SERVICE_STOP_WAIT_TIME" ]; then
+          echo "Warning: Daemon (pid $PID) still alive after $SERVICE_STOP_WAIT_TIME seconds. Force killing..."
+          kill -9 "$PID" > /dev/null 2>&1 || true
+          sleep 1
+          break
+        fi
+        sleep 1
+        counter=$((counter + 1))
+      done
+    fi
+    
+    # Cleanup
+    rm -f "$PID_FILE"
+    # Also remove the application's own lock file if it exists
+    if [ -f "$BASE_DIR/.lock" ]; then
+      rm -f "$BASE_DIR/.lock"
+    fi
+    echo "Aspectran daemon stopped."
   fi
 }
 
@@ -346,6 +376,7 @@ version)
   printf "  %-30s %s\n" "--pid-file <path>" "Set the path to the PID file"
   printf "  %-30s %s\n" "--user <user>" "Set the user to run as"
   printf "  %-30s %s\n" "--service-start-wait-time <sec>" "Set the wait time for service startup"
+  printf "  %-30s %s\n" "--service-stop-wait-time <sec>" "Set the wait time for service stop"
   echo ""
   echo "Commands:"
   printf "  %-30s %s\n" "start" "Start Aspectran daemon"
