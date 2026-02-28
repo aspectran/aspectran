@@ -238,12 +238,12 @@ start_aspectran() {
     else
       echo "Warning: Found stale PID file for PID $PID. Removing it."
       rm -f "$PID_FILE"
-      # Also remove the application's own lock file, as it is also stale.
-      if [ -f "$BASE_DIR/.lock" ]; then
-        echo "Warning: Found stale application lock file. Removing it."
-        rm -f "$BASE_DIR/.lock"
-      fi
     fi
+  fi
+  # Also remove the application's own lock file if it is stale.
+  if [ -f "$BASE_DIR/.lock" ]; then
+    echo "Warning: Found stale application lock file. Removing it."
+    rm -f "$BASE_DIR/.lock"
   fi
   echo "Starting Aspectran daemon..."
   if start_daemon; then
@@ -273,6 +273,10 @@ stop_aspectran() {
   PID=$(pidof_daemon) || true
   if [ -z "$PID" ]; then
     echo "Aspectran daemon NOT running."
+    if [ -f "$BASE_DIR/.lock" ]; then
+      echo "Warning: Found stale application lock file. Removing it."
+      rm -f "$BASE_DIR/.lock"
+    fi
     exit 7
   fi
   echo "Stopping Aspectran daemon (pid $PID)..."
@@ -288,7 +292,6 @@ stop_aspectran() {
         counter=$((counter + 1))
       done
     fi
-    echo "Aspectran daemon stopped."
   else
     # Fallback to kill if jsvc stop fails
     if kill -0 "$PID" > /dev/null 2>&1; then
@@ -308,15 +311,15 @@ stop_aspectran() {
         counter=$((counter + 1))
       done
     fi
-    
-    # Cleanup
-    rm -f "$PID_FILE"
-    # Also remove the application's own lock file if it exists
-    if [ -f "$BASE_DIR/.lock" ]; then
-      rm -f "$BASE_DIR/.lock"
-    fi
-    echo "Aspectran daemon stopped."
   fi
+  
+  # Cleanup
+  rm -f "$PID_FILE"
+  # Also remove the application's own lock file if it exists
+  if [ -f "$BASE_DIR/.lock" ]; then
+    rm -f "$BASE_DIR/.lock"
+  fi
+  echo "Aspectran daemon stopped."
 }
 
 restart_aspectran() {
