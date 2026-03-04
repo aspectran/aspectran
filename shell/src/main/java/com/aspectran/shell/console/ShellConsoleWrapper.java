@@ -265,4 +265,13 @@ public class ShellConsoleWrapper implements ShellConsole {
         console.flush();
     }
 
+    @Override
+    public void close() {
+        try {
+            console.close();
+        } catch (Exception e) {
+            // ignore
+        }
+    }
+
 }

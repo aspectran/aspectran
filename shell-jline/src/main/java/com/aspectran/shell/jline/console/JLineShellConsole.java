@@ -282,4 +282,9 @@ public class JLineShellConsole extends AbstractShellConsole {
         jlineTerminal.flush();
     }
 
+    @Override
+    public void close() {
+        jlineTerminal.close();
+    }
+
 }

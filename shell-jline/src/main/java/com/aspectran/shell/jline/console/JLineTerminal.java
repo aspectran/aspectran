@@ -75,6 +75,8 @@ public class JLineTerminal {
 
     private Style style;
 
+    private volatile boolean closed;
+
     /**
      * Instantiates a new JLine terminal.
      * @param console the shell console
@@ -93,6 +95,7 @@ public class JLineTerminal {
     public JLineTerminal(ShellConsole console, String encoding) throws IOException {
         this.terminal = TerminalBuilder.builder()
                 .name(TERMINAL_NAME)
+                .system(true)
                 .encoding(encoding)
                 .build();
 
@@ -177,6 +180,9 @@ public class JLineTerminal {
      * @return true if currently reading input
      */
     public boolean isReading() {
+        if (closed) {
+            return false;
+        }
         return (commandReader.isReading() || lineReader.isReading());
     }
 
@@ -202,6 +208,9 @@ public class JLineTerminal {
      */
     @Nullable
     public LineReader getReadingReader() {
+        if (closed) {
+            return null;
+        }
         if (commandReader.isReading()) {
             return commandReader;
         } else if (lineReader.isReading()) {
@@ -263,6 +272,9 @@ public class JLineTerminal {
      * it sends a clear-screen command directly to the terminal.
      */
     public void clearScreen() {
+        if (closed) {
+            return;
+        }
         if (isNormal()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
@@ -287,6 +299,9 @@ public class JLineTerminal {
      * read-line loop).
      */
     public void clearLine() {
+        if (closed) {
+            return;
+        }
         if (isNormal()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
@@ -323,6 +338,9 @@ public class JLineTerminal {
      * Redraws the current line being edited.
      */
     public void redrawLine() {
+        if (closed) {
+            return;
+        }
         if (!isColorlessDumb()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
@@ -337,7 +355,11 @@ public class JLineTerminal {
      * @return the output stream
      */
     public OutputStream getOutput() {
-        return terminal.output();
+        try {
+            return terminal.output();
+        } catch (IllegalStateException e) {
+            return OutputStream.nullOutputStream();
+        }
     }
 
     /**
@@ -345,7 +367,11 @@ public class JLineTerminal {
      * @return the print writer
      */
     public PrintWriter getWriter() {
-        return terminal.writer();
+        try {
+            return terminal.writer();
+        } catch (IllegalStateException e) {
+            return new PrintWriter(OutputStream.nullOutputStream());
+        }
     }
 
     /**
@@ -353,15 +379,19 @@ public class JLineTerminal {
      * @param str the string to write
      */
     public void write(String str) {
-        getWriter().write(toAnsi(str));
+        if (!closed) {
+            getWriter().write(toAnsi(str));
+        }
     }
 
     /**
      * Writes a new line to the terminal.
      */
     public void writeLine() {
-        getWriter().println();
-        getWriter().flush();
+        if (!closed) {
+            getWriter().println();
+            getWriter().flush();
+        }
     }
 
     /**
@@ -371,6 +401,9 @@ public class JLineTerminal {
      * @param str the string to write
      */
     public void writeAbove(String str) {
+        if (closed) {
+            return;
+        }
         if (isNormal()) {
             LineReader reader = getReadingReader();
             if (reader != null) {
@@ -388,7 +421,23 @@ public class JLineTerminal {
      * Flushes the terminal's output writer.
      */
     public void flush() {
-        getWriter().flush();
+        if (!closed) {
+            getWriter().flush();
+        }
+    }
+
+    /**
+     * Closes the terminal and releases any underlying resources.
+     */
+    public void close() {
+        if (!closed) {
+            closed = true;
+            try {
+                terminal.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 
     /**

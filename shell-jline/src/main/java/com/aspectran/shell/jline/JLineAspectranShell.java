@@ -65,14 +65,16 @@ public class JLineAspectranShell {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }
 
-        JLineConsoleCommander commander = null;
         int exitStatus = 0;
 
-        try {
-            JLineShellConsole console = new JLineShellConsole();
-            commander = new JLineConsoleCommander(console);
-            commander.configure(basePath, aspectranConfigFile);
-            commander.run();
+        try (JLineShellConsole console = new JLineShellConsole()) {
+            JLineConsoleCommander commander = new JLineConsoleCommander(console);
+            try {
+                commander.configure(basePath, aspectranConfigFile);
+                commander.run();
+            } finally {
+                commander.release();
+            }
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause instanceof InsufficientEnvironmentException that) {
@@ -82,10 +84,6 @@ public class JLineAspectranShell {
                 e.printStackTrace(System.err);
             }
             exitStatus = 1;
-        } finally {
-            if (commander != null) {
-                commander.release();
-            }
         }
 
         System.exit(exitStatus);

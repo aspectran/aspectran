@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @since 4.0.0
  */
-public interface ShellConsole {
+public interface ShellConsole extends AutoCloseable {
 
     /** The default command prompt string. */
     String DEFAULT_PROMPT = "Aspectran> ";
@@ -263,5 +263,15 @@ public interface ShellConsole {
      * @return {@code true} if the user confirms, {@code false} otherwise
      */
     boolean confirmQuit();
+
+    /**
+     * Closes the console and releases any underlying resources.
+     * <p>Subclasses should override this method to perform their own
+     * specific cleanup logic, such as closing terminal objects or
+     * resetting terminal settings.</p>
+     */
+    @Override
+    default void close() {
+    }
 
 }
