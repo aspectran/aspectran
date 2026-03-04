@@ -26,10 +26,13 @@ import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.ValueType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -364,6 +367,18 @@ public class CommandParameters extends DefaultParameters {
     public CommandParameters setResult(String resultText) {
         putValue(result, resultText);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new AponWriter()
+                    .nullWritable(false)
+                    .write(this)
+                    .toString();
+        } catch (IOException e) {
+            return StringUtils.EMPTY;
+        }
     }
 
 }
