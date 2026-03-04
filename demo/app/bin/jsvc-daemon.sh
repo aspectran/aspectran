@@ -46,40 +46,40 @@ while [ ".$1" != . ]; do
     BASE_DIR="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --java-home)
     JAVA_HOME="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --proc-name)
     PROC_NAME="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --pid-file)
     PID_FILE="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --user)
     DAEMON_USER="-user $2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --service-start-wait-time)
     SERVICE_START_WAIT_TIME="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   --service-stop-wait-time)
     SERVICE_STOP_WAIT_TIME="$2"
     shift; shift;
     continue
-    ;; 
+    ;;
   *)
     break
-    ;; 
+    ;;
   esac
 done
 
@@ -297,7 +297,7 @@ stop_aspectran() {
     if kill -0 "$PID" > /dev/null 2>&1; then
       echo "Warning: jsvc failed to stop the daemon. Trying 'kill'..."
       kill "$PID" > /dev/null 2>&1 || true
-      
+
       # Wait for the process to die
       counter=0
       while kill -0 "$PID" > /dev/null 2>&1; do
@@ -312,7 +312,7 @@ stop_aspectran() {
       done
     fi
   fi
-  
+
   # Cleanup
   rm -f "$PID_FILE"
   # Also remove the application's own lock file if it exists
@@ -337,13 +337,13 @@ restart_aspectran() {
 case "$1" in
 start)
   start_aspectran
-  ;; 
+  ;;
 stop)
   stop_aspectran
-  ;; 
+  ;;
 restart | reload | force-reload)
   restart_aspectran
-  ;; 
+  ;;
 try-restart)
   PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
@@ -352,7 +352,7 @@ try-restart)
     echo "Aspectran daemon is not running. Try $0 start"
     exit 3
   fi
-  ;; 
+  ;;
 status)
   PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
@@ -365,10 +365,10 @@ status)
       exit 3 # Program is not running
     fi
   fi
-  ;; 
+  ;;
 version)
   version
-  ;; 
+  ;;
 *)
   echo "Usage: $PRG [options] <command>"
   echo ""
@@ -389,5 +389,5 @@ version)
   printf "  %-30s %s\n" "try-restart" "Restart Aspectran daemon if it is running"
   printf "  %-30s %s\n" "version" "Display version information"
   exit 1
-  ;; 
+  ;;
 esac

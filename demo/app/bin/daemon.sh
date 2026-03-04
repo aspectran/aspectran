@@ -54,6 +54,11 @@ while [ ".$1" != . ]; do
     shift
     continue
     ;;
+  --debug)
+    DEBUG_MODE=true
+    shift
+    continue
+    ;;
   *)
     break
     ;;
@@ -117,7 +122,23 @@ PID_FILE="$BASE_DIR/.daemon.pid"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
-LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
+
+if [ "$DEBUG_MODE" = true ]; then
+  LOGGING_CONFIG="$BASE_DIR/config/logging/logback-debug.xml"
+  echo "Using JAVA_HOME: $JAVA_HOME"
+  if [ ! -z "$JVM_MS_OPT" ]; then
+    echo "Using JVM_MS: $JVM_MS_OPT"
+  fi
+  if [ ! -z "$JVM_MX_OPT" ]; then
+    echo "Using JVM_MX: $JVM_MX_OPT"
+  fi
+  if [ ! -z "$JVM_SS_OPT" ]; then
+    echo "Using JVM_SS: $JVM_SS_OPT"
+  fi
+else
+  LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
+fi
+
 # Timeout in seconds for stop operations
 # These can be overridden in run.options
 [ -z "$SERVICE_STOP_WAIT_TIME" ] && SERVICE_STOP_WAIT_TIME=60

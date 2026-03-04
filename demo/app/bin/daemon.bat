@@ -46,14 +46,13 @@ set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon
 
 if "%1" == "debug" (
     set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback-debug.xml
+    echo Using JAVA_HOME: %JAVA_HOME%
+    if not "%JVM_MS_OPT%" == "" echo Using JVM_MS: %JVM_MS_OPT%
+    if not "%JVM_MX_OPT%" == "" echo Using JVM_MX: %JVM_MX_OPT%
+    if not "%JVM_SS_OPT%" == "" echo Using JVM_SS: %JVM_SS_OPT%
 ) else (
     set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback.xml
 )
-
-echo Using JAVA_HOME: %JAVA_HOME%
-if not "%JVM_MS_OPT%" == "" echo Using JVM_MS: %JVM_MS_OPT%
-if not "%JVM_MX_OPT%" == "" echo Using JVM_MX: %JVM_MX_OPT%
-if not "%JVM_SS_OPT%" == "" echo Using JVM_SS: %JVM_SS_OPT%
 echo Aspectran daemon running... To terminate the process press `CTRL+C`.
 
 "%JAVA_EXE%"^
