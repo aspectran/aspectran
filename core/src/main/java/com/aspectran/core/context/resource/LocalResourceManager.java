@@ -233,8 +233,7 @@ public class LocalResourceManager extends ResourceManager {
             Path workDir = Path.of(workPath);
             if (Files.isDirectory(workDir) && Files.exists(workDir)) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Sweeping {}{}{}* for old resource files",
-                            WORK_RESOURCE_DIRNAME_PREFIX, workDir.toAbsolutePath(), File.separatorChar);
+                    logger.debug("Sweeping {}{}* for old resource files", workDir.toAbsolutePath(), File.separatorChar);
                 }
                 try (Stream<Path> stream = Files.walk(workDir, 1, FileVisitOption.FOLLOW_LINKS)) {
                     stream
