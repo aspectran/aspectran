@@ -98,6 +98,7 @@ fi
   $JVM_MS_OPT \
   $JVM_MX_OPT \
   $JVM_SS_OPT \
+  --enable-native-access=ALL-UNNAMED \
   -server \
   -classpath "$CLASSPATH" \
   -Djava.io.tmpdir="$TMP_DIR" \

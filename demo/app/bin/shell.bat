@@ -57,6 +57,7 @@ if not "%JAVA_OPTS%" == "" echo Using JAVA_OPTS: %JAVA_OPTS%
  %JVM_MS_OPT%^
  %JVM_MX_OPT%^
  %JVM_SS_OPT%^
+ --enable-native-access=ALL-UNNAMED^
  -server^
  -classpath "%BASE_DIR%\lib\*"^
  -Djava.io.tmpdir="%TMP_DIR%"^

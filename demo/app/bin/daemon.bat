@@ -60,6 +60,7 @@ echo Aspectran daemon running... To terminate the process press `CTRL+C`.
  %JVM_MS_OPT%^
  %JVM_MX_OPT%^
  %JVM_SS_OPT%^
+ --enable-native-access=ALL-UNNAMED^
  -server^
  -classpath "%BASE_DIR%\lib\*"^
  -Djava.io.tmpdir="%TMP_DIR%"^
