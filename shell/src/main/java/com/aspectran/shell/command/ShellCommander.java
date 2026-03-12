@@ -27,7 +27,7 @@ import com.aspectran.shell.service.ShellService;
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public interface ConsoleCommander {
+public interface ShellCommander {
 
     /**
      * Returns the console instance managed by this commander.

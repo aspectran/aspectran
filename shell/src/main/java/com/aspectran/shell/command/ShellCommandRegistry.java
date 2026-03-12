@@ -32,19 +32,19 @@ public class ShellCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final ConsoleCommander consoleCommander;
+    private final ShellCommander shellCommander;
 
     /**
      * Instantiates a new shell command registry.
-     * @param consoleCommander the console commander that owns this registry
+     * @param shellCommander the shell commander that owns this registry
      */
-    public ShellCommandRegistry(ConsoleCommander consoleCommander) {
-        this.consoleCommander = consoleCommander;
+    public ShellCommandRegistry(ShellCommander shellCommander) {
+        this.shellCommander = shellCommander;
     }
 
     @Override
-    public ConsoleCommander getConsoleCommander() {
-        return consoleCommander;
+    public ShellCommander getShellCommander() {
+        return shellCommander;
     }
 
     @Override

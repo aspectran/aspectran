@@ -18,7 +18,7 @@
  * <p>This package defines the command SPI ({@link com.aspectran.shell.command.Command})
  * used by the interactive shell, a registry for command lookup
  * ({@link com.aspectran.shell.command.CommandRegistry}), and a commander
- * ({@link com.aspectran.shell.command.ConsoleCommander}) that parses and dispatches
+ * ({@link com.aspectran.shell.command.ShellCommander}) that parses and dispatches
  * commands. It also includes utilities for command-line parsing, options, arguments,
  * and output redirection.</p>
  */

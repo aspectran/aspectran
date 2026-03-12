@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.command.ConsoleCommander;
+import com.aspectran.shell.command.ShellCommander;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -121,7 +121,7 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getCommander() {
+    public ShellCommander getCommander() {
         return console.getCommander();
     }
 
@@ -130,7 +130,7 @@ public class ShellConsoleWrapper implements ShellConsole {
      * @throws UnsupportedOperationException always
      */
     @Override
-    public void setCommander(ConsoleCommander runner) {
+    public void setCommander(ShellCommander runner) {
         throw new UnsupportedOperationException();
     }
 

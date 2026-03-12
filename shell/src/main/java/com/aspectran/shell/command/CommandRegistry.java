@@ -27,10 +27,10 @@ import java.util.Collection;
 public interface CommandRegistry {
 
     /**
-     * Returns the console commander that owns this registry.
-     * @return the console commander
+     * Returns the shell commander that owns this registry.
+     * @return the shell commander
      */
-    ConsoleCommander getConsoleCommander();
+    ShellCommander getShellCommander();
 
     /**
      * Retrieves a command by its name.

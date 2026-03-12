@@ -15,13 +15,15 @@
  */
 package com.aspectran.shell.jline.command;
 
-import com.aspectran.shell.command.DefaultConsoleCommander;
+import com.aspectran.shell.command.DefaultShellCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 import com.aspectran.shell.jline.console.TerminalPrintStream;
 import org.jspecify.annotations.NonNull;
 
+import java.io.PrintStream;
+
 /**
- * A {@link DefaultConsoleCommander} implementation that is specifically
+ * A {@link DefaultShellCommander} implementation that is specifically
  * tailored for the JLine environment.
  *
  * <p>This commander extends the default functionality by redirecting the
@@ -33,13 +35,17 @@ import org.jspecify.annotations.NonNull;
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class JLineConsoleCommander extends DefaultConsoleCommander {
+public class JLineShellCommander extends DefaultShellCommander {
+
+    private PrintStream originalOut;
+
+    private PrintStream originalErr;
 
     /**
-     * Instantiates a new JLineConsoleCommander.
+     * Instantiates a new JLineShellCommander.
      * @param console the JLine-based shell console
      */
-    public JLineConsoleCommander(@NonNull JLineShellConsole console) {
+    public JLineShellCommander(@NonNull JLineShellConsole console) {
         super(console);
     }
 
@@ -47,10 +53,26 @@ public class JLineConsoleCommander extends DefaultConsoleCommander {
     protected void consoleReady() {
         super.consoleReady();
 
+        originalOut = System.out;
+        originalErr = System.err;
+
         JLineShellConsole console = getConsole();
         System.setOut(new TerminalPrintStream(console.getJlineTerminal(), true));
         System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true,
                 console.getStyler().getDangerStyle()));
+    }
+
+    @Override
+    public void release() {
+        if (originalOut != null) {
+            System.setOut(originalOut);
+            originalOut = null;
+        }
+        if (originalErr != null) {
+            System.setErr(originalErr);
+            originalErr = null;
+        }
+        super.release();
     }
 
 }

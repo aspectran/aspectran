@@ -61,11 +61,11 @@ public abstract class AbstractCommand implements Command {
     }
 
     /**
-     * Returns the console commander.
-     * @return the console commander
+     * Returns the shell commander.
+     * @return the shell commander
      */
-    public ConsoleCommander getCommandRunner() {
-        return registry.getConsoleCommander();
+    public ShellCommander getShellCommander() {
+        return registry.getShellCommander();
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class AbstractCommand implements Command {
      * @throws IllegalStateException if the shell service is not available
      */
     public ShellService getShellService() {
-        ShellService shellService = (getCommandRunner() != null ? getCommandRunner().getShellService() : null);
+        ShellService shellService = (getShellCommander() != null ? getShellCommander().getShellService() : null);
         if (shellService == null) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
@@ -99,8 +99,8 @@ public abstract class AbstractCommand implements Command {
      * @return true if the shell service is active, false otherwise
      */
     public boolean isServiceAvailable() {
-        return (getCommandRunner() != null && getCommandRunner().getShellService() != null &&
-                getCommandRunner().getShellService().getServiceLifeCycle().isActive());
+        return (getShellCommander() != null && getShellCommander().getShellService() != null &&
+                getShellCommander().getShellService().getServiceLifeCycle().isActive());
     }
 
     /**

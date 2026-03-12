@@ -21,6 +21,9 @@ import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.nodelet.NodeletException;
 import com.aspectran.utils.nodelet.NodeletParser;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 import java.io.InputStream;
@@ -34,6 +37,8 @@ import java.io.InputStream;
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class AspectranNodeParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(AspectranNodeParser.class);
 
     private final RuleParsingContext ruleParsingContext;
 
@@ -94,7 +99,8 @@ public class AspectranNodeParser {
         }
     }
 
-    public void parsingFailed(Throwable cause) throws Exception {
+    public void parsingFailed(@NonNull Throwable cause) throws Exception {
+        logger.error("Error parsing aspectran configuration; {}", cause.getMessage());
         throw new Exception("Error parsing aspectran configuration", cause);
     }
 

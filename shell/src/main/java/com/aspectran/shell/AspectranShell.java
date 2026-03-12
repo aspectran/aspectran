@@ -16,7 +16,7 @@
 package com.aspectran.shell;
 
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.shell.command.DefaultConsoleCommander;
+import com.aspectran.shell.command.DefaultShellCommander;
 import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.ExceptionUtils;
@@ -50,12 +50,12 @@ public class AspectranShell {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }
 
-        DefaultConsoleCommander commander = null;
+        DefaultShellCommander commander = null;
         int exitStatus = 0;
 
         try {
             ShellConsole console = new DefaultShellConsole();
-            commander = new DefaultConsoleCommander(console);
+            commander = new DefaultShellCommander(console);
             commander.configure(basePath, aspectranConfigFile);
             commander.run();
         } catch (Exception e) {

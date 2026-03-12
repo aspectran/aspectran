@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.command.ConsoleCommander;
+import com.aspectran.shell.command.ShellCommander;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -41,7 +41,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private File workingDir;
 
-    private ConsoleCommander consoleCommander;
+    private ShellCommander shellCommander;
 
     private volatile Boolean interactive;
 
@@ -112,13 +112,13 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getCommander() {
-        return consoleCommander;
+    public ShellCommander getCommander() {
+        return shellCommander;
     }
 
     @Override
-    public void setCommander(ConsoleCommander consoleCommander) {
-        this.consoleCommander = consoleCommander;
+    public void setCommander(ShellCommander shellCommander) {
+        this.shellCommander = shellCommander;
     }
 
     @Override

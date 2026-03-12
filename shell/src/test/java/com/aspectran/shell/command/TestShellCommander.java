@@ -19,7 +19,7 @@ import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
-public class TestShellCommander implements ConsoleCommander {
+public class TestShellCommander implements ShellCommander {
 
     private final ShellConsole console = new DefaultShellConsole();
 

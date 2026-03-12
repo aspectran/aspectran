@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.shell.command.ConsoleCommander;
+import com.aspectran.shell.command.ShellCommander;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -100,13 +100,13 @@ public interface ShellConsole extends AutoCloseable {
      * Returns the console commander that manages this console.
      * @return the console commander
      */
-    ConsoleCommander getCommander();
+    ShellCommander getCommander();
 
     /**
      * Sets the console commander.
      * @param runner the console commander
      */
-    void setCommander(ConsoleCommander runner);
+    void setCommander(ShellCommander runner);
 
     /**
      * Sets the file used for persisting command history.

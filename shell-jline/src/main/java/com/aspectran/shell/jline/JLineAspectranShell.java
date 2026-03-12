@@ -16,7 +16,7 @@
 package com.aspectran.shell.jline;
 
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.shell.jline.command.JLineConsoleCommander;
+import com.aspectran.shell.jline.command.JLineShellCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.InsufficientEnvironmentException;
@@ -68,7 +68,7 @@ public class JLineAspectranShell {
         int exitStatus = 0;
 
         try (JLineShellConsole console = new JLineShellConsole()) {
-            JLineConsoleCommander commander = new JLineConsoleCommander(console);
+            JLineShellCommander commander = new JLineShellCommander(console);
             try {
                 commander.configure(basePath, aspectranConfigFile);
                 commander.run();

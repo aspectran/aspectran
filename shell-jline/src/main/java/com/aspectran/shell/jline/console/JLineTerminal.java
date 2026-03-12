@@ -422,7 +422,11 @@ public class JLineTerminal {
      */
     public void flush() {
         if (!closed) {
-            getWriter().flush();
+            try {
+                getWriter().flush();
+            } catch (Exception e) {
+                // ignore
+            }
         }
     }
 
@@ -430,12 +434,18 @@ public class JLineTerminal {
      * Closes the terminal and releases any underlying resources.
      */
     public void close() {
-        if (!closed) {
-            closed = true;
-            try {
-                terminal.close();
-            } catch (IOException e) {
-                // ignore
+        if (closed) {
+            return;
+        }
+        synchronized (this) {
+            if (!closed) {
+                flush();
+                closed = true;
+                try {
+                    terminal.close();
+                } catch (IOException e) {
+                    // ignore
+                }
             }
         }
     }

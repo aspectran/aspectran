@@ -46,7 +46,7 @@ import java.io.PrintWriter;
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
- * Default implementation of the {@link ConsoleCommander} interface.
+ * Default implementation of the {@link ShellCommander} interface.
  * <p>This class is responsible for initializing the {@link ShellService} from a
  * configuration file, running the main command loop (REPL), parsing user input,
  * and dispatching execution to either a built-in {@link Command} or an Aspectran
@@ -54,9 +54,9 @@ import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPER
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class DefaultConsoleCommander implements ConsoleCommander {
+public class DefaultShellCommander implements ShellCommander {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultConsoleCommander.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultShellCommander.class);
 
     private final ShellConsole console;
 
@@ -65,10 +65,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     private DefaultShellService shellService;
 
     /**
-     * Instantiates a new default console commander.
+     * Instantiates a new DefaultShellCommander.
      * @param console the shell console
      */
-    public DefaultConsoleCommander(@NonNull ShellConsole console) {
+    public DefaultShellCommander(@NonNull ShellConsole console) {
         this.console = console;
     }
 
