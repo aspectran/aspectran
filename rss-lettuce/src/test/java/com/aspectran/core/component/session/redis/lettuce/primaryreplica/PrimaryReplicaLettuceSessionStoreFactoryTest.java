@@ -17,12 +17,12 @@ package com.aspectran.core.component.session.redis.lettuce.primaryreplica;
 
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
-import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
@@ -38,9 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Testcontainers(disabledWithoutDocker = true)
 class PrimaryReplicaLettuceSessionStoreFactoryTest {
 
-    private static RedisContainer primary;
+    private static GenericContainer<?> primary;
 
-    private static RedisContainer replica;
+    private static GenericContainer<?> replica;
 
     private static RedisPrimaryReplicaConnectionPoolConfig poolConfig;
 
@@ -48,13 +48,16 @@ class PrimaryReplicaLettuceSessionStoreFactoryTest {
 
     @BeforeAll
     static void startContainer() {
-        primary = new RedisContainer(DockerImageName.parse("redis:7-alpine"));
+        primary = new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
         primary.start();
-        replica = new RedisContainer(DockerImageName.parse("redis:7-alpine"));
+        replica = new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
         replica.start();
 
         poolConfig = new RedisPrimaryReplicaConnectionPoolConfig();
-        poolConfig.setNodes(new String[] { primary.getRedisURI(), replica.getRedisURI() });
+        poolConfig.setNodes(
+            "redis://" + primary.getHost() + ":" + primary.getMappedPort(6379),
+            "redis://" + replica.getHost() + ":" + replica.getMappedPort(6379)
+        );
     }
 
     @AfterAll

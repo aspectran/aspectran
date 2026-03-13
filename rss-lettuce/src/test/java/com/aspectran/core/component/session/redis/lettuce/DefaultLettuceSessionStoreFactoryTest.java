@@ -18,13 +18,13 @@ package com.aspectran.core.component.session.redis.lettuce;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionAgent;
-import com.redis.testcontainers.RedisContainer;
 import io.lettuce.core.RedisURI;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers(disabledWithoutDocker = true)
 class DefaultLettuceSessionStoreFactoryTest {
 
-    private static RedisContainer redis;
+    private static GenericContainer<?> redis;
 
     private static RedisConnectionPoolConfig poolConfig;
 
@@ -52,10 +52,10 @@ class DefaultLettuceSessionStoreFactoryTest {
 
     @BeforeAll
     static void startContainer() {
-        redis = new RedisContainer(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
+        redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
         redis.start();
         poolConfig = new RedisConnectionPoolConfig();
-        poolConfig.setRedisURI(RedisURI.create(redis.getHost(), redis.getFirstMappedPort()));
+        poolConfig.setRedisURI(RedisURI.create("redis://" + redis.getHost() + ":" + redis.getMappedPort(6379)));
     }
 
     @AfterAll

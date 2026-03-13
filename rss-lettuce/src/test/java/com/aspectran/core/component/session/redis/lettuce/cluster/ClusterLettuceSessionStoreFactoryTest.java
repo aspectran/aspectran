@@ -18,19 +18,27 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionAgent;
-import com.redis.testcontainers.RedisClusterContainer;
+import io.lettuce.core.RedisURI;
+import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
+import io.lettuce.core.resource.ClientResources;
+import io.lettuce.core.resource.SocketAddressResolver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.time.Duration;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
-import static com.redis.testcontainers.RedisClusterContainer.DEFAULT_IMAGE_NAME;
-import static com.redis.testcontainers.RedisClusterContainer.DEFAULT_TAG;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers(disabledWithoutDocker = true)
 class ClusterLettuceSessionStoreFactoryTest {
 
-    private static RedisClusterContainer redisCluster;
+    private static GenericContainer<?> redisCluster;
 
     private static RedisClusterConnectionPoolConfig poolConfig;
 
@@ -52,11 +60,37 @@ class ClusterLettuceSessionStoreFactoryTest {
 
     @BeforeAll
     static void startContainer() {
-        redisCluster = new RedisClusterContainer(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
+        redisCluster = new GenericContainer<>(DockerImageName.parse("grokzen/redis-cluster:6.2.1"))
+                .withExposedPorts(7000, 7001, 7002, 7003, 7004, 7005)
+                .waitingFor(Wait.forLogMessage(".*Cluster state changed: ok.*\\n", 1))
+                .withStartupTimeout(Duration.ofMinutes(2));
         redisCluster.start();
 
+        ClientResources resources = ClientResources.builder()
+                .socketAddressResolver(new SocketAddressResolver() {
+                    @Override
+                    public SocketAddress resolve(RedisURI redisURI) {
+                        int port = redisURI.getPort();
+                        if (port >= 7000 && port <= 7005) {
+                            return new InetSocketAddress(redisCluster.getHost(), redisCluster.getMappedPort(port));
+                        }
+                        return new InetSocketAddress(redisURI.getHost(), port);
+                    }
+                })
+                .build();
+
+        ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
+                .enablePeriodicRefresh(Duration.ofSeconds(30))
+                .build();
+
+        ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
+                .topologyRefreshOptions(topologyRefreshOptions)
+                .build();
+
         poolConfig = new RedisClusterConnectionPoolConfig();
-        poolConfig.setNodes(redisCluster.getRedisURIs());
+        poolConfig.setClientResources(resources);
+        poolConfig.setClusterClientOptions(clusterClientOptions);
+        poolConfig.setNodes("redis://" + redisCluster.getHost() + ":" + redisCluster.getMappedPort(7000));
     }
 
     @AfterAll
