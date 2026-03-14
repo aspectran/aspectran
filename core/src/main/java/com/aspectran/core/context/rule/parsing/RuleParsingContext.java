@@ -652,6 +652,14 @@ public class RuleParsingContext {
     }
 
     /**
+     * Unreserves a bean reference.
+     * @param referenceable the object to be unreserved
+     */
+    public void unreserveBeanReference(BeanReferenceable referenceable) {
+        beanReferenceInspector.unreserve(referenceable);
+    }
+
+    /**
      * Returns the bean reference inspector.
      * @return the bean reference inspector
      */

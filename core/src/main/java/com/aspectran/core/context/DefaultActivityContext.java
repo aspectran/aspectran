@@ -57,7 +57,7 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultActivityContext.class);
 
-    private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
+    private static final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
     private final CounterStatistic activityCounter = new CounterStatistic();
 

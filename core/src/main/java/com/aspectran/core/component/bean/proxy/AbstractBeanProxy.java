@@ -87,7 +87,7 @@ public abstract class AbstractBeanProxy {
     protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
             throws Exception {
         if (isAdvisableMethod(method)) {
-            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
+            Activity activity = context.getCurrentActivity();
             return invoke(method, args, superInvoker, activity);
         } else {
             return superInvoker.invoke();

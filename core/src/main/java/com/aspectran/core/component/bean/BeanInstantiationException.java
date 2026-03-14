@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.context.rule.BeanRule;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 
@@ -30,34 +32,29 @@ public class BeanInstantiationException extends BeanException {
 
     private final Class<?> beanClass;
 
+    private final BeanRule beanRule;
+
     /**
      * Instantiates a new BeanInstantiationException.
-     * @param beanClass the bean class
+     * @param beanRule the bean rule
+     * @param msg the detail message
      * @param cause the root cause
      */
-    public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
-        this(beanClass, cause.getMessage(), cause);
+    public BeanInstantiationException(@NonNull BeanRule beanRule, String msg, Throwable cause) {
+        super("Could not instantiate bean " + beanRule + ": " + msg, cause);
+        this.beanClass = beanRule.getBeanClass();
+        this.beanRule = beanRule;
     }
 
     /**
      * Instantiates a new BeanInstantiationException.
-     * @param beanClass the bean class
-     * @param msg the detail message
-     * @param cause the root cause
-     */
-    public BeanInstantiationException(@NonNull Class<?> beanClass, String msg, Throwable cause) {
-        super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
-        this.beanClass = beanClass;
-    }
-
-    /**
-     * Instantiates a new BeanInstantiationException.
-     * @param beanClass the bean class
+     * @param beanRule the bean rule
      * @param msg the detail message
      */
-    public BeanInstantiationException(@NonNull Class<?> beanClass, String msg) {
-        super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
-        this.beanClass = beanClass;
+    public BeanInstantiationException(@NonNull BeanRule beanRule, String msg) {
+        super("Could not instantiate bean " + beanRule + ": " + msg);
+        this.beanClass = beanRule.getBeanClass();
+        this.beanRule = beanRule;
     }
 
     /**
@@ -66,6 +63,15 @@ public class BeanInstantiationException extends BeanException {
      */
     public Class<?> getBeanClass() {
         return beanClass;
+    }
+
+    /**
+     * Returns the bean rule.
+     * @return the bean rule
+     */
+    @Nullable
+    public BeanRule getBeanRule() {
+        return beanRule;
     }
 
 }

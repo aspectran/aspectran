@@ -78,9 +78,9 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
     public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (argTypes != null && args != null) {
-            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass(), args, argTypes);
+            bean = BeanFactoryUtils.newInstance(beanRule, args, argTypes);
         } else {
-            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass());
+            bean = BeanFactoryUtils.newInstance(beanRule);
         }
         JdkBeanProxy proxy = new JdkBeanProxy(context, beanRule, bean);
         return Proxy.newProxyInstance(context.getAvailableActivity().getClassLoader(),

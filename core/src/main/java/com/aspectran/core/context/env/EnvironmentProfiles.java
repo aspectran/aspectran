@@ -324,8 +324,7 @@ public class EnvironmentProfiles {
         }
     }
 
-    @Nullable
-    private String[] getProfilesFromSystemProperty(String propName) {
+    private String @Nullable [] getProfilesFromSystemProperty(String propName) {
         String profilesProp = SystemUtils.getProperty(propName);
         if (profilesProp != null) {
             String[] profiles = StringUtils.splitWithComma(profilesProp);

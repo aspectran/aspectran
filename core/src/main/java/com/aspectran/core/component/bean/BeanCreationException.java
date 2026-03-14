@@ -43,10 +43,10 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Instantiates a new BeanCreationException.
-     * @param msg the detail message
      * @param beanRule the bean rule that failed to create an instance
+     * @param msg the detail message
      */
-    public BeanCreationException(String msg, BeanRule beanRule) {
+    public BeanCreationException(BeanRule beanRule, String msg) {
         super(msg + " for bean rule " + beanRule);
         this.beanRule = beanRule;
     }
@@ -63,11 +63,11 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Instantiates a new BeanCreationException.
-     * @param msg the detail message
      * @param beanRule the bean rule that failed to create an instance
+     * @param msg the detail message
      * @param cause the root cause
      */
-    public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
+    public BeanCreationException(BeanRule beanRule, String msg, Throwable cause) {
         super(msg + " for bean rule " + beanRule, ExceptionUtils.unwrapThrowable(cause));
         this.beanRule = beanRule;
     }

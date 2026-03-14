@@ -75,7 +75,24 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
             MethodHandler methodHandler = new JavassistBeanProxy(context, beanRule);
             return proxyFactory.create(argTypes, args, methodHandler);
         } catch (Exception e) {
+            if (e instanceof NoSuchMethodException) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("No constructor found in class '").append(beanRule.getBeanClass().getName()).append("'");
+                if (argTypes != null && argTypes.length > 0) {
+                    sb.append(" matching argument types: ");
+                    for (int i = 0; i < argTypes.length; i++) {
+                        if (i > 0) {
+                            sb.append(", ");
+                        }
+                        sb.append(argTypes[i].getName());
+                    }
+                } else {
+                    sb.append(" with no arguments");
+                }
+                throw new BeanProxyException(beanRule, sb.toString(), e);
+            }
             throw new BeanProxyException(beanRule, e);
         }
     }
+
 }

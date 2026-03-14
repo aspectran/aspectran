@@ -366,7 +366,6 @@ public class AnnotatedConfigParser {
 
     private void parseAspectRule(@NonNull Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
         Aspect aspectAnno = beanClass.getAnnotation(Aspect.class);
-        assert aspectAnno != null;
         String aspectId = StringUtils.emptyToNull(aspectAnno.value());
         if (aspectId == null) {
             aspectId = StringUtils.emptyToNull(aspectAnno.id());

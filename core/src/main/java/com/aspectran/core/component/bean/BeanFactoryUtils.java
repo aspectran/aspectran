@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ObjectUtils;
@@ -37,16 +38,17 @@ public abstract class BeanFactoryUtils {
 
     /**
      * Instantiate a class using its constructor that matches the given arguments.
-     * @param beanClass the class to instantiate
+     * @param beanRule the bean rule for which to create the instance
      * @param args the arguments to pass to the constructor
      * @param argTypes the argument types to use for constructor resolution
      * @return the new instance
      * @throws BeanInstantiationException if the bean cannot be instantiated
      */
     @NonNull
-    public static Object newInstance(@NonNull Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
+    public static Object newInstance(@NonNull BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+        Class<?> beanClass = beanRule.getBeanClass();
         if (beanClass.isInterface()) {
-            throw new BeanInstantiationException(beanClass, "Specified class is an interface");
+            throw new BeanInstantiationException(beanRule, "Specified class is an interface");
         }
         Constructor<?> constructorToUse;
         try {
@@ -55,42 +57,38 @@ public abstract class BeanFactoryUtils {
                 constructorToUse = ClassUtils.findConstructor(beanClass, argTypes);
             }
         } catch (NoSuchMethodException e) {
-            throw new BeanInstantiationException(beanClass, "No matching constructor found", e);
+            throw new BeanInstantiationException(beanRule, "No matching constructor found", e);
         }
-        return newInstance(constructorToUse, args);
+        return newInstance(beanRule, constructorToUse, args);
     }
 
     /**
      * Convenience method to instantiate a class using its no-arg constructor.
-     * @param beanClass the class to instantiate
+     * @param beanRule the bean rule for which to create the instance
      * @return the new instance
      * @throws BeanInstantiationException if the bean cannot be instantiated
      */
     @NonNull
-    public static Object newInstance(Class<?> beanClass) {
-        return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
+    public static Object newInstance(@NonNull BeanRule beanRule) {
+        return newInstance(beanRule, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
     }
 
     @NonNull
-    private static Object newInstance(@NonNull Constructor<?> ctor, Object[] args) {
+    private static Object newInstance(@NonNull BeanRule beanRule, @NonNull Constructor<?> ctor, Object[] args) {
         try {
             Object[] adaptedArgs = adaptArgumentsForInstantiation(ctor, args);
             return ctor.newInstance(adaptedArgs);
         } catch (InstantiationException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Is it an abstract class?", e);
+            throw new BeanInstantiationException(beanRule, "Is it an abstract class?", e);
         } catch (IllegalAccessException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+            throw new BeanInstantiationException(beanRule,
                     "Has the class definition changed? Is the constructor accessible?", e);
         } catch (IllegalArgumentException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Illegal arguments for constructor " + ctor, e);
+            throw new BeanInstantiationException(beanRule, "Illegal arguments for constructor " + ctor, e);
         } catch (InvocationTargetException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Constructor threw exception", e.getTargetException());
+            throw new BeanInstantiationException(beanRule, "Constructor threw exception", e.getTargetException());
         } catch (Exception e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Constructor threw exception", e);
+            throw new BeanInstantiationException(beanRule, "Constructor threw exception", e);
         }
     }
 

@@ -622,6 +622,17 @@ public class BeanRuleRegistry {
                 }
                 typeBasedBeanRuleMap.values().removeIf(Set::isEmpty);
             }
+
+            for (BeanRule beanRule : rulesToRemove) {
+                if (beanRule.getConstructorAutowireRule() != null) {
+                    ruleParsingContext.unreserveBeanReference(beanRule.getConstructorAutowireRule());
+                }
+                if (beanRule.getAutowireRuleList() != null) {
+                    for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
+                        ruleParsingContext.unreserveBeanReference(autowireRule);
+                    }
+                }
+            }
         }
     }
 

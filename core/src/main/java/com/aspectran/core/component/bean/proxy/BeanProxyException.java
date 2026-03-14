@@ -43,6 +43,17 @@ public class BeanProxyException extends BeanException {
     }
 
     /**
+     * Creates a new BeanProxyException with the specified bean rule, custom message and cause.
+     * @param beanRule the bean rule associated with the proxy creation failure
+     * @param msg the custom message
+     * @param cause the cause of the exception
+     */
+    public BeanProxyException(BeanRule beanRule, String msg, Throwable cause) {
+        super(msg, cause);
+        this.beanRule = beanRule;
+    }
+
+    /**
      * Returns the bean rule associated with this exception.
      * @return the bean rule
      */

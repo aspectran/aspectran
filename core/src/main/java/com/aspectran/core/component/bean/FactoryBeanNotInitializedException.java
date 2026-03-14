@@ -36,16 +36,16 @@ public class FactoryBeanNotInitializedException extends BeanCreationException {
      * @param beanRule the bean rule
      */
     public FactoryBeanNotInitializedException(BeanRule beanRule) {
-        super("FactoryBean is not fully initialized yet", beanRule);
+        super(beanRule, "FactoryBean is not fully initialized yet");
     }
 
     /**
      * Create a new FactoryBeanNotInitializedException.
-     * @param msg the detail message
      * @param beanRule the bean rule
+     * @param msg the detail message
      */
-    public FactoryBeanNotInitializedException(String msg, BeanRule beanRule) {
-        super(msg, beanRule);
+    public FactoryBeanNotInitializedException(BeanRule beanRule, String msg) {
+        super(beanRule, msg);
     }
 
 }

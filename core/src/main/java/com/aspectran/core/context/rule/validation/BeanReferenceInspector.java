@@ -76,6 +76,17 @@ public class BeanReferenceInspector {
     }
 
     /**
+     * Unreserves a bean reference.
+     * @param referenceable the object to be unreserved
+     */
+    public void unreserve(BeanReferenceable referenceable) {
+        for (Set<RefererInfo> infoSet : refererInfoMap.values()) {
+            infoSet.removeIf(info -> info.getReferenceable() == referenceable);
+        }
+        refererInfoMap.values().removeIf(Set::isEmpty);
+    }
+
+    /**
      * Inspect bean reference.
      * @param beanRuleRegistry the bean rule registry
      * @throws BeanReferenceException the bean reference exception

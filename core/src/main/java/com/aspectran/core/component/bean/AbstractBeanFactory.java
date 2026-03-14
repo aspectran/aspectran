@@ -163,8 +163,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 }
                             }
                             if (ctorAutowireRule.isRequired() && args[i] == null) {
-                                throw new BeanCreationException("Could not autowire constructor " +
-                                        ctorAutowireRule, beanRule);
+                                throw new BeanCreationException(beanRule, "Could not autowire constructor " +
+                                        ctorAutowireRule);
                             }
                         } else {
                             try {
@@ -184,8 +184,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     if (ctorAutowireRule.isRequired()) {
                                         logger.error("No bean found for autowiring target {} of {}",
                                                 targetRule, ctorAutowireRule, e);
-                                        throw new BeanCreationException("Could not autowire constructor: " +
-                                                ctorAutowireRule, beanRule, e);
+                                        throw new BeanCreationException(beanRule, "Could not autowire constructor: " +
+                                                ctorAutowireRule, e);
                                     } else {
                                         args[i] = null;
                                         if (logger.isTraceEnabled()) {
@@ -227,11 +227,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
             if (factoryBeanClass == null) {
-                throw new BeanCreationException("Unresolved factory bean class", beanRule);
+                throw new BeanCreationException(beanRule, "Unresolved factory bean class");
             }
             Method factoryMethod = beanRule.getFactoryMethod();
             if (factoryMethod == null) {
-                throw new BeanCreationException("Unresolved factory method", beanRule);
+                throw new BeanCreationException(beanRule, "Unresolved factory method");
             }
 
             Object factoryBean = null;
@@ -258,7 +258,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         } catch (BeanCreationException e) {
             throw e;
         } catch (Exception e) {
-            throw new BeanCreationException("Failed to create bean from factory method", beanRule, e);
+            throw new BeanCreationException(beanRule, "Failed to create bean from factory method", e);
         }
     }
 
@@ -267,9 +267,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         if (beanRule.isProxied()) {
             bean = proxyBeanFactory.createProxy(beanRule, args, argTypes);
         } else if (args != null) {
-            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass(), args, argTypes);
+            bean = BeanFactoryUtils.newInstance(beanRule, args, argTypes);
         } else {
-            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass());
+            bean = BeanFactoryUtils.newInstance(beanRule);
         }
         return bean;
     }
@@ -304,8 +304,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                         logger.error("No bean found for autowiring target {} of {}",
                                                 targetRule, autowireRule, e);
-                                        throw new BeanCreationException("Could not autowire field: " +
-                                                autowireRule, beanRule, e);
+                                        throw new BeanCreationException(beanRule, "Could not autowire field: " +
+                                                autowireRule, e);
                                     }
                                 } else {
                                     try {
@@ -350,8 +350,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 if (valueEvaluator != null) {
                                     args[i] = valueEvaluator.evaluate(activity, null);
                                     if (autowireRule.isRequired() && args[i] == null) {
-                                        throw new BeanCreationException("Autowiring failed for method " +
-                                                autowireRule, beanRule);
+                                        throw new BeanCreationException(beanRule, "Autowiring failed for method " +
+                                                autowireRule);
                                     }
                                 } else {
                                     Class<?> type = targetRule.getType();
@@ -362,8 +362,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                         } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                             logger.error("No bean found for autowiring target {} of {}",
                                                     targetRule, autowireRule, e);
-                                            throw new BeanCreationException("Could not autowire method: " +
-                                                    autowireRule, beanRule, e);
+                                            throw new BeanCreationException(beanRule, "Could not autowire method: " +
+                                                    autowireRule, e);
                                         }
                                     } else {
                                         try {
@@ -423,7 +423,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             bean.initialize();
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while initialization of bean", beanRule, e);
+            throw new BeanCreationException(beanRule, "An exception occurred while initialization of bean", e);
         }
     }
 
@@ -433,8 +433,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
             AnnotatedMethodInvoker.invoke(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing an initialization " +
-                    "method of bean", beanRule, e);
+            throw new BeanCreationException(beanRule, "An exception occurred while executing an initialization " +
+                    "method of bean", e);
         }
     }
 
@@ -444,8 +444,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ParameterBindingRule[] parameterBindingRules = beanRule.getFactoryMethodParameterBindingRules();
             return AnnotatedMethodInvoker.invoke(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing a factory method of bean",
-                    beanRule, e);
+            throw new BeanCreationException(beanRule, "An exception occurred while executing a factory method " +
+                    "of bean", e);
         }
     }
 
@@ -455,11 +455,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             resultBean = factoryBean.getObject();
         } catch (Exception e) {
-            throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
+            throw new BeanCreationException(beanRule, "FactoryBean threw exception on object creation", e);
         }
         if (resultBean == null) {
-            throw new FactoryBeanNotInitializedException("FactoryBean returned null object: " +
-                    "probably not fully initialized (maybe due to circular bean reference)", beanRule);
+            throw new FactoryBeanNotInitializedException(beanRule, "FactoryBean returned null object: " +
+                    "probably not fully initialized (maybe due to circular bean reference)");
         }
         return resultBean;
     }
