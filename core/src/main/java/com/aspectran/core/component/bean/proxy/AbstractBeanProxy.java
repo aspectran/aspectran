@@ -30,6 +30,7 @@ import com.aspectran.core.component.bean.annotation.Async;
 import com.aspectran.core.component.bean.async.AsyncExecutionException;
 import com.aspectran.core.component.bean.async.AsyncTaskExecutor;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.NoActivityStateException;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -87,7 +88,16 @@ public abstract class AbstractBeanProxy {
     protected Object invoke(Method method, Object[] args, SuperInvoker superInvoker)
             throws Exception {
         if (isAdvisableMethod(method)) {
-            Activity activity = context.getCurrentActivity();
+            Activity activity = (context.hasCurrentActivity() ? context.getCurrentActivity() : null);
+            if (activity == null && !method.isAnnotationPresent(Async.class)) {
+                String beanId = getBeanRule().getId();
+                String className = getBeanRule().getClassName();
+                String methodName = method.getName();
+                AdviceRuleRegistry adviceRuleRegistry = retrieveAdviceRuleRegistry(null, beanId, className, methodName);
+                if (adviceRuleRegistry != null) {
+                    throw new NoActivityStateException();
+                }
+            }
             return invoke(method, args, superInvoker, activity);
         } else {
             return superInvoker.invoke();
@@ -107,7 +117,7 @@ public abstract class AbstractBeanProxy {
     @Nullable
     private Object invoke(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
-            Activity activity) throws Exception {
+            @Nullable Activity activity) throws Exception {
         Async async = method.getAnnotation(Async.class);
         if (async != null) {
             return invokeAsync(method, args, superInvoker, async, activity);
@@ -131,7 +141,7 @@ public abstract class AbstractBeanProxy {
     @Nullable
     private Object invokeAsync(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
-            Async async, Activity activity) throws Exception {
+            Async async, @Nullable Activity activity) throws Exception {
         AsyncTaskExecutor executor = findAsyncExecutor(async);
         if (method.getReturnType() != Void.TYPE && !Future.class.isAssignableFrom(method.getReturnType())) {
             throw new AsyncExecutionException("Cannot use @Async on a method that does not return void or Future: " + method);
@@ -170,7 +180,7 @@ public abstract class AbstractBeanProxy {
      */
     private Object invokeAsync(
             @NonNull Method method, Object[] args, SuperInvoker superInvoker,
-            Activity activity, AsyncTaskExecutor executor) throws Exception {
+            @Nullable Activity activity, AsyncTaskExecutor executor) throws Exception {
         return ThreadContextHelper.call(context.getClassLoader(), () -> {
             try {
                 final Activity proxyActivity;
@@ -213,7 +223,11 @@ public abstract class AbstractBeanProxy {
      * @throws Exception if the invocation or advice execution fails
      */
     @Nullable
-    private Object invokeSync(@NonNull Method method, SuperInvoker superInvoker, Activity activity) throws Exception {
+    private Object invokeSync(@NonNull Method method, SuperInvoker superInvoker, @Nullable Activity activity) throws Exception {
+        if (activity == null) {
+            return superInvoker.invoke();
+        }
+
         String beanId = getBeanRule().getId();
         String className = getBeanRule().getClassName();
         String methodName = method.getName();
@@ -256,11 +270,11 @@ public abstract class AbstractBeanProxy {
      * @throws AdviceException if there is an error in advice processing
      */
     private AdviceRuleRegistry retrieveAdviceRuleRegistry(
-            @NonNull Activity activity, String beanId, String className, String methodName)
+            @Nullable Activity activity, String beanId, String className, String methodName)
             throws AdviceConstraintViolationException, AdviceException {
         String requestName;
         boolean literalPattern;
-        if (activity.hasTranslet()) {
+        if (activity != null && activity.hasTranslet()) {
             requestName = activity.getTranslet().getRequestName();
             literalPattern = !activity.getTranslet().hasPathVariables();
         } else {
@@ -277,15 +291,17 @@ public abstract class AbstractBeanProxy {
         }
 
         AdviceRuleRegistry adviceRuleRegistry = holder.getAdviceRuleRegistry();
-        if (adviceRuleRegistry != null && adviceRuleRegistry.getSettingsAdviceRuleList() != null) {
-            for (SettingsAdviceRule sar : adviceRuleRegistry.getSettingsAdviceRuleList()) {
-                activity.registerSettingsAdviceRule(sar);
+        if (activity != null) {
+            if (adviceRuleRegistry != null && adviceRuleRegistry.getSettingsAdviceRuleList() != null) {
+                for (SettingsAdviceRule sar : adviceRuleRegistry.getSettingsAdviceRuleList()) {
+                    activity.registerSettingsAdviceRule(sar);
+                }
             }
-        }
-        if (holder.getDynamicAspectRuleList() != null) {
-            for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
-                // register dynamically
-                activity.registerAdviceRule(aspectRule);
+            if (holder.getDynamicAspectRuleList() != null) {
+                for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
+                    // register dynamically
+                    activity.registerAdviceRule(aspectRule);
+                }
             }
         }
         return adviceRuleRegistry;
