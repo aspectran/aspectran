@@ -40,7 +40,8 @@ public class NoUniqueBeanException extends BeanException {
      * @param beanRules the bean rules
      */
     public NoUniqueBeanException(Class<?> type, BeanRule @NonNull [] beanRules) {
-        super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
+        super("No qualifying bean of type '" + type +
+                "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
         this.type = type;
         this.beanRules = beanRules;

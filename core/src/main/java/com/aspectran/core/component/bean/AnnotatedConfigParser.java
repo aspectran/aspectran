@@ -336,7 +336,6 @@ public class AnnotatedConfigParser {
                             throw new IllegalRuleException("Found a method with both @Initialize and @Destroy in bean " + beanRule);
                         }
                         Initialize initializeAnno = method.getAnnotation(Initialize.class);
-                        assert initializeAnno != null;
                         String profile = StringUtils.emptyToNull(initializeAnno.profile());
                         if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                             if (beanRule.getInitMethod() == null) {
@@ -348,7 +347,6 @@ public class AnnotatedConfigParser {
                         }
                     } else if (method.isAnnotationPresent(Destroy.class)) {
                         Destroy destroyAnno = method.getAnnotation(Destroy.class);
-                        assert destroyAnno != null;
                         String profile = StringUtils.emptyToNull(destroyAnno.profile());
                         if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                             if (beanRule.getDestroyMethod() == null) {
@@ -474,7 +472,6 @@ public class AnnotatedConfigParser {
     private void parseBeanRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
-        assert beanAnno != null;
         String beanId = StringUtils.emptyToNull(beanAnno.value());
         if (beanId == null) {
             beanId = StringUtils.emptyToNull(beanAnno.id());
@@ -519,7 +516,6 @@ public class AnnotatedConfigParser {
             @Nullable String factoryBeanId, @NonNull Class<?> factoryBeanClass,
             @NonNull Method method, String[] nameArray) throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
-        assert beanAnno != null;
         String beanId = StringUtils.emptyToNull(beanAnno.value());
         if (beanId == null) {
             beanId = StringUtils.emptyToNull(beanAnno.id());
@@ -573,7 +569,6 @@ public class AnnotatedConfigParser {
     private void parseScheduleRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
-        assert scheduleAnno != null;
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
         if (scheduleId != null && nameArray != null) {
             scheduleId = Namespace.applyNamespace(nameArray, scheduleId);
