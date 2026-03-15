@@ -78,11 +78,6 @@
             <name>Central Portal Snapshots</name>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-            <id>central-portal-staging</id>
-            <name>Central Portal Staging Repository</name>
-            <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
     <modules>
@@ -304,6 +299,11 @@
                                     <regex>true</regex>
                                     <regexMessage>Must be set to 'true' because Aspectran uses method parameter names at runtime.</regexMessage>
                                 </requireProperty>
+                                <requireProperty>
+                                    <property>project.build.sourceEncoding</property>
+                                    <regex>UTF-8</regex>
+                                    <message>[ERROR] The project encoding must be UTF-8.</message>
+                                </requireProperty>
                             </rules>
                         </configuration>
                     </execution>
@@ -313,7 +313,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <compilerArgs>
-                        <arg>-Xlint:-try,-path,-options</arg>
+                        <arg>-Xlint:-try,-path</arg>
                     </compilerArgs>
                     <proc>full</proc>
                     <showDeprecation>true</showDeprecation>
