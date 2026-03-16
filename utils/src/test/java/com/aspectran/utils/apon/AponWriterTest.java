@@ -140,6 +140,24 @@ class AponWriterTest {
     }
 
     /**
+     * Tests the 'nullWritable' option for toString().
+     */
+    @Test
+    void testToStringWithNullWritableOption() {
+        Parameters params = new VariableParameters();
+        params.putValue("key", "value");
+        params.putValue("nullKey", null);
+
+        // When nullWritable is false, null values are omitted
+        String apon1 = params.toString(false);
+        assertFalse(apon1.contains("nullKey"));
+
+        // When nullWritable is true, null values are included
+        String apon2 = params.toString(true);
+        assertTrue(apon2.contains("nullKey"));
+    }
+
+    /**
      * Tests the indentation option for pretty formatting.
      */
     @Test

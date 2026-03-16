@@ -859,4 +859,11 @@ public interface Parameters {
      */
     String describe(boolean details);
 
+    /**
+     * Returns an APON-formatted string representing this container.
+     * @param nullWritable whether to include parameters with null values
+     * @return the APON-formatted string
+     */
+    String toString(boolean nullWritable);
+
 }
