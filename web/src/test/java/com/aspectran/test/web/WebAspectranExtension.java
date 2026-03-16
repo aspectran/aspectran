@@ -48,9 +48,10 @@ public class WebAspectranExtension extends AspectranExtension {
     }
 
     @Override
-    protected void bootstrap(@NonNull ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig) throws Exception {
+    protected void bootstrap(@NonNull ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+            throws Exception {
         MockServletContext servletContext = new MockServletContext();
-        servletContext.setInitParameter("aspectran:config", aspectranConfig.toString());
+        servletContext.setInitParameter("aspectran:config", aspectranConfig.toString(false));
 
         DefaultWebService webService = DefaultWebServiceBuilder.build(servletContext);
         webService.start();
@@ -91,18 +92,57 @@ public class WebAspectranExtension extends AspectranExtension {
         return super.resolveParameter(parameterContext, extensionContext);
     }
 
-    private AspectranTest adapt(final WebAspectranTest web) {
+    private AspectranTest adapt(@NonNull final WebAspectranTest web) {
         return new AspectranTest() {
-            @Override public Class<? extends java.lang.annotation.Annotation> annotationType() { return AspectranTest.class; }
-            @Override public String[] value() { return web.value(); }
-            @Override public String[] rules() { return web.rules(); }
-            @Override public String configFile() { return web.configFile(); }
-            @Override public Class<? extends com.aspectran.test.AspectranConfigProvider> configProvider() { return web.configProvider(); }
-            @Override public String basePath() { return web.basePath(); }
-            @Override public String[] profiles() { return web.profiles(); }
-            @Override public String[] basePackages() { return web.basePackages(); }
-            @Override public boolean async() { return web.async(); }
-            @Override public boolean debugMode() { return web.debugMode(); }
+            @Override
+            public Class<? extends java.lang.annotation.Annotation> annotationType() {
+                return AspectranTest.class;
+            }
+
+            @Override
+            public String[] value() {
+                return web.value();
+            }
+
+            @Override
+            public String[] rules() {
+                return web.rules();
+            }
+
+            @Override
+            public String configFile() {
+                return web.configFile();
+            }
+
+            @Override
+            public Class<? extends com.aspectran.test.AspectranConfigProvider> configProvider() {
+                return web.configProvider();
+            }
+
+            @Override
+            public String basePath() {
+                return web.basePath();
+            }
+
+            @Override
+            public String[] profiles() {
+                return web.profiles();
+            }
+
+            @Override
+            public String[] basePackages() {
+                return web.basePackages();
+            }
+
+            @Override
+            public boolean async() {
+                return web.async();
+            }
+
+            @Override
+            public boolean debugMode() {
+                return web.debugMode();
+            }
         };
     }
 

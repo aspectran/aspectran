@@ -268,8 +268,9 @@ public class DefaultWebService extends AbstractWebService {
     }
 
     @NonNull
-    private String getRequestInfo(@NonNull HttpServletRequest request, String reverseContextPath,
-                                  String requestName, MethodType requestMethod) {
+    private String getRequestInfo(
+            @NonNull HttpServletRequest request, String reverseContextPath,
+            String requestName, MethodType requestMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append(requestMethod).append(" ");
         if (StringUtils.hasLength(reverseContextPath)) {

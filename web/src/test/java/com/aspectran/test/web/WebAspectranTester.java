@@ -17,10 +17,12 @@ package com.aspectran.test.web;
 
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.mock.MockHttpServletRequest;
 import com.aspectran.test.web.mock.MockHttpServletResponse;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.service.WebService;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class for testing Aspectran in a virtual web environment.
@@ -42,10 +44,13 @@ public class WebAspectranTester {
      * @param requestURI the request URI
      * @return the resulting Translet
      */
-    public Translet perform(String requestURI) {
+    public Translet perform(MethodType methodType, String requestURI) {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setMethod("GET");
+        if (methodType != null) {
+            request.setMethod(methodType.name());
+        }
         request.setRequestURI(requestURI);
+
         MockHttpServletResponse response = new MockHttpServletResponse();
         this.lastResponse = response;
 
@@ -63,6 +68,7 @@ public class WebAspectranTester {
      * Returns the response content from the last virtual request.
      * @return the response content
      */
+    @Nullable
     public String getWrittenResponse() {
         return (lastResponse != null ? lastResponse.getContentAsString() : null);
     }
@@ -71,6 +77,7 @@ public class WebAspectranTester {
      * Returns the last mock response object.
      * @return the mock response
      */
+    @Nullable
     public MockHttpServletResponse getLastResponse() {
         return lastResponse;
     }

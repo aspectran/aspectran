@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.activity;
 
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.WebAspectranTest;
 import com.aspectran.test.web.WebAspectranTester;
 import org.jspecify.annotations.NonNull;
@@ -32,7 +33,7 @@ class WebActivityTest {
 
     @Test
     void testHello(@NonNull WebAspectranTester tester) {
-        tester.perform("/hello");
+        tester.perform(MethodType.GET, "/hello");
         assertEquals("Hello, Web World!", tester.getWrittenResponse());
     }
 

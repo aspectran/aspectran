@@ -16,16 +16,10 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.utils.ResourceUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.aspectran.test.AspectranTest;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,34 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * <p>Created: 2016. 3. 26.</p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    profiles = {"dev", "debug"},
+    rules = "/config/bean/nested-bean-test-config.xml",
+    debugMode = true
+)
 class NestedBeanTest {
 
-    private HybridActivityContextBuilder builder;
-
-    private BeanRegistry beanRegistry;
-
-    @BeforeAll
-    void ready() throws IOException, ActivityContextBuilderException {
-        File baseDir = ResourceUtils.getResourceAsFile(".");
-
-        builder = new HybridActivityContextBuilder();
-        builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setDebugMode(false);
-        builder.setActiveProfiles("dev", "debug");
-        ActivityContext context = builder.build("/config/bean/nested-bean-test-config.xml");
-        beanRegistry = context.getBeanRegistry();
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
-    }
-
     @Test
-    void stringBean() {
+    void stringBean(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         assertEquals("String Bean", beanRegistry.getBean("stringBean"));
 
         Map<?, ?> map = beanRegistry.getBean("mapBean");
@@ -74,30 +50,35 @@ class NestedBeanTest {
     }
 
     @Test
-    void nestedStringBean() {
+    void nestedStringBean(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         assertEquals("Nested String Bean", beanRegistry.getBean("nestedStringBean"));
     }
 
     @Test
-    void nestedStringBean_1() {
+    void nestedStringBean_1(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         String result = beanRegistry.getBean("nestedStringBean-1");
         assertEquals("Nested String Bean", result);
     }
 
     @Test
-    void nestedStringBeanDepth3() {
+    void nestedStringBeanDepth3(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         String result = beanRegistry.getBean("nestedStringBeanDepth3");
         assertEquals("Nested String Bean", result);
     }
 
     @Test
-    void testNewNodeletParser() {
+    void testNewNodeletParser(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         String result = beanRegistry.getBean("nestedStringBeanDepth3");
         assertEquals("Nested String Bean", result);
     }
 
     @Test
-    void testDeepNestedStringBean() {
+    void testDeepNestedStringBean(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         String result = beanRegistry.getBean("deepNestedStringBean");
         assertEquals("Nested String Bean", result);
     }

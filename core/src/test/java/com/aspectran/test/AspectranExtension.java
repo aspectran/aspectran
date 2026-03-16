@@ -40,90 +40,86 @@ import java.io.File;
  */
 public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
-    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(AspectranExtension.class);
+    protected static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(AspectranExtension.class);
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(@NonNull ExtensionContext context) throws Exception {
         Class<?> testClass = context.getRequiredTestClass();
         AspectranTest annotation = testClass.getAnnotation(AspectranTest.class);
         if (annotation != null) {
-            HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
-
-            // Determine Base Path
-            if (StringUtils.hasText(annotation.basePath())) {
-                builder.setBasePath(annotation.basePath());
-            } else {
-                File baseDir = ResourceUtils.getResourceAsFile(".");
-                builder.setBasePath(baseDir.getCanonicalPath());
-            }
-
-            AspectranConfig aspectranConfig = null;
-            String configFile = annotation.configFile();
-            Class<? extends AspectranConfigProvider> configProviderClass = annotation.configProvider();
-            boolean isProviderImplemented = AspectranConfigProvider.class.isAssignableFrom(testClass);
-
-            // Check for mutual exclusivity
-            if (StringUtils.hasText(configFile) && (configProviderClass != AspectranConfigProvider.class || isProviderImplemented)) {
-                throw new IllegalArgumentException("Only one of 'configFile' or 'configProvider' can be specified in @AspectranTest");
-            }
-
-            if (configProviderClass != AspectranConfigProvider.class) {
-                // Load from specified ConfigProvider class
-                AspectranConfigProvider provider = configProviderClass.getDeclaredConstructor().newInstance();
-                aspectranConfig = provider.getConfig();
-            } else if (isProviderImplemented) {
-                // Load from test class instance if it implements AspectranConfigProvider
-                AspectranConfigProvider provider = (AspectranConfigProvider)context.getTestInstance().orElse(null);
-                if (provider != null) {
-                    aspectranConfig = provider.getConfig();
-                } else {
-                    // If instance not available in beforeAll, try to create a temporary one if it has a default constructor
-                    aspectranConfig = ((AspectranConfigProvider)testClass.getDeclaredConstructor().newInstance()).getConfig();
-                }
-            } else if (StringUtils.hasText(configFile)) {
-                // Load from APON file
-                File file = ResourceUtils.getResourceAsFile(configFile);
-                aspectranConfig = new AspectranConfig(file);
-            }
-
-            if (aspectranConfig == null) {
-                aspectranConfig = new AspectranConfig();
-            }
-
-            // Apply annotation settings to ContextConfig
-            ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-            if (annotation.profiles().length > 0) {
-                contextConfig.touchProfilesConfig().setActiveProfiles(annotation.profiles());
-            }
-            if (annotation.basePackages().length > 0) {
-                contextConfig.setBasePackage(annotation.basePackages());
-            }
-            if (annotation.async()) {
-                contextConfig.touchAsyncConfig().setEnabled(true);
-            }
-
-            builder.configure(aspectranConfig.getContextConfig());
-            if (annotation.debugMode()) {
-                builder.setDebugMode(true);
-            }
-
-            // Build ActivityContext with rules
-            ActivityContext activityContext;
-            String[] configs = (annotation.rules().length > 0 ? annotation.rules() : annotation.value());
-            if (configs.length > 0) {
-                activityContext = builder.build(configs);
-            } else {
-                activityContext = builder.build();
-            }
-
-            context.getStore(NAMESPACE).put(ActivityContextBuilder.class, builder);
-            context.getStore(NAMESPACE).put(ActivityContext.class, activityContext);
-            context.getStore(NAMESPACE).put(AspectranConfig.class, aspectranConfig);
+            AspectranConfig aspectranConfig = loadConfig(context, annotation);
+            applyAnnotationSettings(annotation, aspectranConfig);
+            bootstrap(context, annotation, aspectranConfig);
         }
     }
 
+    protected AspectranConfig loadConfig(@NonNull ExtensionContext context, @NonNull AspectranTest annotation)
+            throws Exception {
+        AspectranConfig aspectranConfig = null;
+        String configFile = annotation.configFile();
+        Class<? extends AspectranConfigProvider> configProviderClass = annotation.configProvider();
+        boolean isProviderImplemented = AspectranConfigProvider.class.isAssignableFrom(context.getRequiredTestClass());
+
+        if (StringUtils.hasText(configFile) && (configProviderClass != AspectranConfigProvider.class || isProviderImplemented)) {
+            throw new IllegalArgumentException("Only one of 'configFile' or 'configProvider' can be specified in @AspectranTest");
+        }
+
+        if (configProviderClass != AspectranConfigProvider.class) {
+            aspectranConfig = configProviderClass.getDeclaredConstructor().newInstance().getConfig();
+        } else if (isProviderImplemented) {
+            AspectranConfigProvider provider = (AspectranConfigProvider)context.getTestInstance().orElse(null);
+            if (provider != null) {
+                aspectranConfig = provider.getConfig();
+            } else {
+                aspectranConfig = ((AspectranConfigProvider)context.getRequiredTestClass().getDeclaredConstructor().newInstance()).getConfig();
+            }
+        } else if (StringUtils.hasText(configFile)) {
+            aspectranConfig = new AspectranConfig(ResourceUtils.getResourceAsFile(configFile));
+        }
+
+        return (aspectranConfig != null ? aspectranConfig : new AspectranConfig());
+    }
+
+    protected void applyAnnotationSettings(@NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+            throws Exception {
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
+        if (StringUtils.hasText(annotation.basePath())) {
+            contextConfig.setBasePath(annotation.basePath());
+        } else {
+            File baseDir = ResourceUtils.getResourceAsFile(".");
+            contextConfig.setBasePath(baseDir.getCanonicalPath());
+        }
+        if (annotation.profiles().length > 0) {
+            contextConfig.touchProfilesConfig().setActiveProfiles(annotation.profiles());
+        }
+        if (annotation.basePackages().length > 0) {
+            contextConfig.setBasePackage(annotation.basePackages());
+        }
+        if (annotation.async()) {
+            contextConfig.touchAsyncConfig().setEnabled(true);
+        }
+        String[] rules = (annotation.rules().length > 0 ? annotation.rules() : annotation.value());
+        if (rules.length > 0) {
+            contextConfig.setContextRules(rules);
+        }
+    }
+
+    protected void bootstrap(ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+            throws Exception {
+        HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
+        builder.configure(aspectranConfig.getContextConfig());
+        if (annotation.debugMode()) {
+            builder.setDebugMode(true);
+        }
+        ActivityContext activityContext = builder.build();
+
+        context.getStore(NAMESPACE).put(ActivityContextBuilder.class, builder);
+        context.getStore(NAMESPACE).put(ActivityContext.class, activityContext);
+        context.getStore(NAMESPACE).put(AspectranConfig.class, aspectranConfig);
+    }
+
     @Override
-    public void afterAll(ExtensionContext context) {
+    public void afterAll(@NonNull ExtensionContext context) throws Exception {
         ActivityContextBuilder builder = context.getStore(NAMESPACE).get(ActivityContextBuilder.class, ActivityContextBuilder.class);
         if (builder != null) {
             builder.destroy();
@@ -131,14 +127,14 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+    public boolean supportsParameter(@NonNull ParameterContext parameterContext, @NonNull ExtensionContext extensionContext)
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
         return (type == ActivityContext.class || type == InstantActivity.class || type == AspectranConfig.class);
     }
 
     @Override
-    public Object resolveParameter(@NonNull ParameterContext parameterContext, ExtensionContext extensionContext)
+    public Object resolveParameter(@NonNull ParameterContext parameterContext, @NonNull ExtensionContext extensionContext)
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
         ActivityContext activityContext = extensionContext.getStore(NAMESPACE).get(ActivityContext.class, ActivityContext.class);

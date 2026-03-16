@@ -16,13 +16,10 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.bean.ProductBean;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.aspectran.test.AspectranTest;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,30 +31,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    basePackages = "com.aspectran.core.sample.bean",
+    rules = {"classpath:config/bean/factory-method-bean-test-config.xml"},
+    debugMode = true
+)
 class FactoryMethodBeanTest {
 
-    private HybridActivityContextBuilder builder;
-
-    private ActivityContext context;
-
-    @BeforeAll
-    void ready() throws ActivityContextBuilderException {
-        builder = new HybridActivityContextBuilder();
-        builder.setDebugMode(true);
-        builder.setBasePackages("com.aspectran.core.sample.bean");
-        context = builder.build("classpath:config/bean/factory-method-bean-test-config.xml");
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
-    }
-
     @Test
-    void testNonStaticFactoryMethod() {
+    void testNonStaticFactoryMethod(@NonNull ActivityContext context) {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ProductBean product1 = beanRegistry.getBean("product1");
         assertNotNull(product1);
@@ -70,7 +52,7 @@ class FactoryMethodBeanTest {
     }
 
     @Test
-    void testStaticFactoryMethod() {
+    void testStaticFactoryMethod(@NonNull ActivityContext context) {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ProductBean product1 = beanRegistry.getBean("product2");
         assertNotNull(product1);
@@ -82,7 +64,7 @@ class FactoryMethodBeanTest {
     }
 
     @Test
-    void testAnnotatedFactoryMethod() {
+    void testAnnotatedFactoryMethod(@NonNull ActivityContext context) {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ProductBean annotatedProduct = beanRegistry.getBean("annotatedProduct");
         assertNotNull(annotatedProduct);
@@ -91,14 +73,14 @@ class FactoryMethodBeanTest {
     }
 
     @Test
-    void testInitMethod() {
+    void testInitMethod(@NonNull ActivityContext context) {
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ProductBean annotatedProduct = beanRegistry.getBean("product4");
         assertEquals("product1-init", annotatedProduct.getName());
     }
 
     @Test
-    void testSingletonCreationConcurrency() throws InterruptedException {
+    void testSingletonCreationConcurrency(@NonNull ActivityContext context) throws InterruptedException {
         int numThreads = 100;
         BeanRegistry beanRegistry = context.getBeanRegistry();
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
@@ -141,6 +123,7 @@ class FactoryMethodBeanTest {
 
         private static final AtomicInteger invocationCount = new AtomicInteger(0);
 
+        @NonNull
         public static ProductBean createSingletonProduct() {
             invocationCount.incrementAndGet();
             // Simulate some work to increase the chance of race conditions

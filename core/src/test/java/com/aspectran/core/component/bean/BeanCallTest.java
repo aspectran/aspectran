@@ -18,18 +18,12 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.AboutMe;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.call.OrderedBean;
 import com.aspectran.core.sample.call.TotalBean;
+import com.aspectran.test.AspectranTest;
 import com.aspectran.utils.apon.AponFormat;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,37 +32,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * <p>Created: 2017. 3. 20.</p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    rules = "/config/bean/call/bean-call-test-config.xml",
+    debugMode = true
+)
 class BeanCallTest {
 
-    private final File baseDir = new File("./target/test-classes");
-
-    private HybridActivityContextBuilder activityContextBuilder;
-
-    private BeanRegistry beanRegistry;
-
-    private TemplateRenderer templateRenderer;
-
-    @BeforeAll
-    void ready() throws IOException, ActivityContextBuilderException {
-        activityContextBuilder = new HybridActivityContextBuilder();
-        activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
-        activityContextBuilder.setDebugMode(true);
-
-        ActivityContext context = activityContextBuilder.build("/config/bean/call/bean-call-test-config.xml");
-        beanRegistry = context.getBeanRegistry();
-        templateRenderer = context.getTemplateRenderer();
-    }
-
-    @AfterAll
-    void finish() {
-        if (activityContextBuilder != null) {
-            activityContextBuilder.destroy();
-        }
-    }
-
     @Test
-    void testBeanCall() {
+    void testBeanCall(@NonNull ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TotalBean totalBean = beanRegistry.getBean("totalBean");
         int count1 = 1;
         for (OrderedBean o : totalBean.getOrderedBeans1()) {
@@ -81,7 +53,8 @@ class BeanCallTest {
     }
 
     @Test
-    void testTemplateCall() {
+    void testTemplateCall(@NonNull ActivityContext context) {
+        TemplateRenderer templateRenderer = context.getTemplateRenderer();
         String result1 = templateRenderer.render("template-2");
         assertEquals("TEMPLATE-1", result1);
 

@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class TestOptionalAutowireBean {
 
     @Autowired
     public TestOptionalAutowireBean(
-            Optional<TestConstructorAutowireBean> presentBean,
+            @NonNull Optional<TestConstructorAutowireBean> presentBean,
             Optional<TestNeverDefinedBean> absentBean) {
         this.presentBean = presentBean.orElse(null);
         this.absentBean = absentBean;

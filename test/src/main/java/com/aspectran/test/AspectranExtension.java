@@ -43,7 +43,7 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
     protected static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(AspectranExtension.class);
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(@NonNull ExtensionContext context) throws Exception {
         Class<?> testClass = context.getRequiredTestClass();
         AspectranTest annotation = testClass.getAnnotation(AspectranTest.class);
         if (annotation != null) {
@@ -53,7 +53,8 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
         }
     }
 
-    protected AspectranConfig loadConfig(@NonNull ExtensionContext context, @NonNull AspectranTest annotation) throws Exception {
+    protected AspectranConfig loadConfig(@NonNull ExtensionContext context, @NonNull AspectranTest annotation)
+            throws Exception {
         AspectranConfig aspectranConfig = null;
         String configFile = annotation.configFile();
         Class<? extends AspectranConfigProvider> configProviderClass = annotation.configProvider();
@@ -79,7 +80,8 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
         return (aspectranConfig != null ? aspectranConfig : new AspectranConfig());
     }
 
-    protected void applyAnnotationSettings(@NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig) throws Exception {
+    protected void applyAnnotationSettings(@NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+            throws Exception {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         if (StringUtils.hasText(annotation.basePath())) {
             contextConfig.setBasePath(annotation.basePath());
@@ -102,7 +104,8 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
         }
     }
 
-    protected void bootstrap(ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig) throws Exception {
+    protected void bootstrap(ExtensionContext context, @NonNull AspectranTest annotation, @NonNull AspectranConfig aspectranConfig)
+            throws Exception {
         HybridActivityContextBuilder builder = new HybridActivityContextBuilder();
         builder.configure(aspectranConfig.getContextConfig());
         if (annotation.debugMode()) {

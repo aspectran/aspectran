@@ -24,6 +24,10 @@ import com.aspectran.core.context.config.AspectranConfig;
  */
 public interface AspectranConfigProvider {
 
+    /**
+     * Returns the Aspectran configuration object.
+     * @return the {@code AspectranConfig} instance
+     */
     AspectranConfig getConfig();
 
 }
