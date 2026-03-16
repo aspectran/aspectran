@@ -284,7 +284,7 @@ public class AponReader {
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
-                if (valueType == ValueType.PARAMETERS && BLOCK_OPEN != cchar) {
+                if (valueType == ValueType.PARAMETERS && !NULL.equals(value) && BLOCK_OPEN != cchar) {
                     throw syntaxError(parameterValue, valueType);
                 }
                 if (valueType == ValueType.TEXT && !NULL.equals(value) && TEXT_OPEN != cchar) {
@@ -311,8 +311,14 @@ public class AponReader {
                     parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
-                Parameters ps = container.attachParameters(name);
-                readLoop(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
+                if (BLOCK_OPEN == cchar) {
+                    Parameters ps = container.attachParameters(name);
+                    readLoop(ps, BLOCK_OPEN, null, null, null, valueTypeHinted);
+                } else if (NULL.equals(value)) {
+                    parameterValue.putValue(null);
+                } else {
+                    throw syntaxError(parameterValue, valueType);
+                }
             } else if (valueType == ValueType.TEXT) {
                 if (parameterValue == null) {
                     parameterValue = container.attachParameterValue(name, valueType, (openedBracket == ARRAY_OPEN));
