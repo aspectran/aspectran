@@ -77,6 +77,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -238,6 +243,10 @@
                         <group>
                             <title>Shell</title>
                             <packages>com.aspectran.shell*</packages>
+                        </group>
+                        <group>
+                            <title>Test</title>
+                            <packages>com.aspectran.test*</packages>
                         </group>
                         <group>
                             <title>Utilities</title>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+    <description>Aspectran Configuration for Web Testing</description>
+
+    <translet name="/hello">
+        <echo id="msg">
+            <item name="message">Hello, Web World!</item>
+        </echo>
+        <response>
+            <transform format="text/plain">
+                <template>@{msg^message}</template>
+            </transform>
+        </response>
+    </translet>
+
+</aspectran>

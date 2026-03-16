@@ -74,6 +74,11 @@
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-test</artifactId>
+                <version>9.4.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-utils</artifactId>
                 <version>9.4.4-SNAPSHOT</version>
             </dependency>

@@ -17,16 +17,8 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.utils.ResourceUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.aspectran.test.AspectranTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,38 +30,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * <p>Created: 2016. 3. 26.</p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AspectranTest(
+    debugMode = true,
+    profiles = {"dev", "local"},
+    basePackages = "com.aspectran.core.component.bean",
+    rules = {"/config/bean/autowire-bean-test-config.xml", "/config/bean/test-properties.xml"}
+)
 class AutowireBeanTest {
 
-    private HybridActivityContextBuilder builder;
-
-    private BeanRegistry beanRegistry;
-
-    private TemplateRenderer templateRenderer;
-
-    @BeforeAll
-    void ready() throws IOException, ActivityContextBuilderException {
-        File baseDir = ResourceUtils.getResourceAsFile(".");
-
-        builder = new HybridActivityContextBuilder();
-        builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setDebugMode(true);
-        builder.setActiveProfiles("dev", "local");
-        builder.setBasePackages("com.aspectran.core.component.bean");
-        ActivityContext context = builder.build("/config/bean/autowire-bean-test-config.xml", "/config/bean/test-properties.xml");
-        beanRegistry = context.getBeanRegistry();
-        templateRenderer = context.getTemplateRenderer();
-    }
-
-    @AfterAll
-    void finish() {
-        if (builder != null) {
-            builder.destroy();
-        }
-    }
-
     @Test
-    void testProperties() {
+    void testProperties(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
+        TemplateRenderer templateRenderer = context.getTemplateRenderer();
+
         beanRegistry.getBean("properties");
         String property1 = templateRenderer.render("property-1");
         String property2 = templateRenderer.render("property-2");
@@ -82,27 +55,31 @@ class AutowireBeanTest {
     }
 
     @Test
-    void testConstructorAutowire() {
+    void testConstructorAutowire(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestConstructorAutowireBean bean = beanRegistry.getBean("bean.TestConstructorAutowireBean");
         assertEquals("Property-1", bean.bean1.getProperty1());
         assertEquals("Property-1", bean.bean2.getProperty1());
     }
 
     @Test
-    void testConstructorAutowire2() {
+    void testConstructorAutowire2(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestConstructorAutowireBean2 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean2");
         assertEquals("Property-1", bean.bean1.getProperty1());
         assertEquals("Property-1", bean.bean2.getProperty1());
     }
 
     @Test
-    void testConstructorAutowire3() {
+    void testConstructorAutowire3(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestConstructorAutowireBean3 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean3");
         assertEquals("Property-1", bean.bean1.getBean1().getProperty1());
     }
 
     @Test
-    void testFieldValueAutowire() {
+    void testFieldValueAutowire(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
         assertEquals("Property-1", bean.getProperty1());
         assertEquals("Property-2", bean.getProperty2());
@@ -111,7 +88,8 @@ class AutowireBeanTest {
     }
 
     @Test
-    void testFieldValueExpression() {
+    void testFieldValueExpression(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
         assertEquals("property5", bean.getProperty5());
         assertEquals(30, bean.getProperty6());
@@ -123,7 +101,8 @@ class AutowireBeanTest {
     }
 
     @Test
-    void testFieldAutowire() {
+    void testFieldAutowire(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestFieldAutowireBean bean = beanRegistry.getBean("bean.TestFieldAutowireBean");
         assertEquals("Property-1", bean.getBean1().getProperty1());
         assertEquals("Property-2", bean.getBean1().getProperty2());
@@ -136,7 +115,8 @@ class AutowireBeanTest {
     }
 
     @Test
-    void testMethodAutowire() {
+    void testMethodAutowire(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestMethodAutowireBean bean = beanRegistry.getBean("bean.TestMethodAutowireBean");
         assertEquals("Property-1", bean.getBean1().getProperty1());
         assertEquals("Property-2", bean.getBean1().getProperty2());
@@ -147,7 +127,8 @@ class AutowireBeanTest {
     }
 
     @Test
-    void testOptionalAutowire() {
+    void testOptionalAutowire(ActivityContext context) {
+        BeanRegistry beanRegistry = context.getBeanRegistry();
         TestOptionalAutowireBean bean = beanRegistry.getBean(TestOptionalAutowireBean.class);
         assertNotNull(bean.getPresentBean());
         assertEquals("Property-1", bean.getPresentBean().bean1.getProperty1());

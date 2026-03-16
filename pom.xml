@@ -90,6 +90,7 @@
         <module>rss-lettuce</module>
         <module>shell</module>
         <module>shell-jline</module>
+        <module>test</module>
         <module>utils</module>
         <module>web</module>
         <module>with-freemarker</module>

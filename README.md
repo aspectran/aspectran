@@ -39,6 +39,7 @@ providing powerful infrastructure features such as IoC, DI, AOP, REST support, a
 - **`aspectran-logging`**: Provides a flexible logging module for Aspectran, with Logback as the default implementation. It includes bridges for various logging APIs like JCL, JUL, and Log4j, routing them to SLF4J.
 - **`aspectran-shell`**: A module for building interactive command-line (shell) applications using the Aspectran framework.
 - **`aspectran-shell-jline`**: Enhances Aspectran-based interactive shell applications with the feature-rich JLine 3 library.
+- **`aspectran-test`**: Provides a specialized testing infrastructure for Aspectran, including a JUnit 5 extension and declarative context bootstrapping for both core and web environments.
 - **`aspectran-utils`**: A collection of miscellaneous utility classes used across the Aspectran framework.
 - **`aspectran-web`**: Provides support for building web applications, compatible with Jakarta EE.
 - **`aspectran-rss-lettuce`**: Provides a Redis-based session store implementation for Aspectran, using the high-performance Lettuce client.

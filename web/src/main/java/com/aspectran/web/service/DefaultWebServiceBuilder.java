@@ -192,7 +192,7 @@ public class DefaultWebServiceBuilder {
                     aspectranConfig = new AspectranConfig(aspectranConfigParam);
                 } catch (AponParseException e) {
                     throw new CoreServiceException("Error parsing Aspectran configuration from '" +
-                        ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
+                            ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
                 }
             }
         } else {
