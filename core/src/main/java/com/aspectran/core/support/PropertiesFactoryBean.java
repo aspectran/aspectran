@@ -94,7 +94,7 @@ public class PropertiesFactoryBean extends PropertiesLoaderSupport
                             }
                         }
                         String evaluated = (String)evaluator.evaluate(tokens);
-                        if (!value.equals(evaluated)) {
+                        if (evaluated != null && !value.equals(evaluated)) {
                             properties.setProperty(name, evaluated);
                         }
                     }
