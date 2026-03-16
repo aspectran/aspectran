@@ -44,10 +44,20 @@ public class WebAspectranTester {
      * @param requestURI the request URI
      * @return the resulting Translet
      */
-    public Translet perform(MethodType methodType, String requestURI) {
+    public Translet perform(String requestURI) {
+        return perform(requestURI, null);
+    }
+
+    /**
+     * Performs a virtual HTTP request.
+     * @param requestURI the request URI
+     * @param requestMethod the HTTP method
+     * @return the resulting Translet
+     */
+    public Translet perform(String requestURI, MethodType requestMethod) {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        if (methodType != null) {
-            request.setMethod(methodType.name());
+        if (requestMethod != null) {
+            request.setMethod(requestMethod.name());
         }
         request.setRequestURI(requestURI);
 
