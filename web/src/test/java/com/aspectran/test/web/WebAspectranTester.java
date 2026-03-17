@@ -24,6 +24,8 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.service.WebService;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * Helper class for testing Aspectran in a virtual web environment.
  *
@@ -32,6 +34,8 @@ import org.jspecify.annotations.Nullable;
 public class WebAspectranTester {
 
     private final WebService webService;
+
+    private MockHttpServletRequest lastRequest;
 
     private MockHttpServletResponse lastResponse;
 
@@ -55,18 +59,56 @@ public class WebAspectranTester {
      * @return the resulting Translet
      */
     public Translet perform(String requestURI, MethodType requestMethod) {
+        return perform(requestURI, requestMethod, null);
+    }
+
+    /**
+     * Performs a virtual HTTP request with parameters.
+     * @param requestURI the request URI
+     * @param requestMethod the HTTP method
+     * @param parameters the request parameters
+     * @return the resulting Translet
+     */
+    public Translet perform(String requestURI, MethodType requestMethod, Map<String, String> parameters) {
+        return perform(requestURI, requestMethod, parameters, null, null);
+    }
+
+    /**
+     * Performs a virtual HTTP request with body and content type.
+     * @param requestURI the request URI
+     * @param requestMethod the HTTP method
+     * @param parameters the request parameters
+     * @param body the request body
+     * @param contentType the content type
+     * @return the resulting Translet
+     */
+    public Translet perform(String requestURI, MethodType requestMethod, Map<String, String> parameters,
+                            byte[] body, String contentType) {
         MockHttpServletRequest request = new MockHttpServletRequest();
         if (requestMethod != null) {
             request.setMethod(requestMethod.name());
         }
         request.setRequestURI(requestURI);
+        request.setServletContext(webService.getServletContext());
+        if (parameters != null) {
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                request.setParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        if (body != null) {
+            request.setBody(body);
+        }
+        if (contentType != null) {
+            request.setContentType(contentType);
+        }
+        this.lastRequest = request;
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         this.lastResponse = response;
 
         WebActivity activity = new WebActivity(webService, null, null, request, response);
         try {
-            activity.prepare(requestURI);
+            activity.prepare(requestURI, requestMethod);
             activity.perform();
             return activity.getTranslet();
         } catch (ActivityException e) {
@@ -81,6 +123,15 @@ public class WebAspectranTester {
     @Nullable
     public String getWrittenResponse() {
         return (lastResponse != null ? lastResponse.getContentAsString() : null);
+    }
+
+    /**
+     * Returns the last mock request object.
+     * @return the mock request
+     */
+    @Nullable
+    public MockHttpServletRequest getLastRequest() {
+        return lastRequest;
     }
 
     /**

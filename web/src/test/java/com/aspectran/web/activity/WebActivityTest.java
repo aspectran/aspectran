@@ -15,12 +15,22 @@
  */
 package com.aspectran.web.activity;
 
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.WebAspectranTest;
 import com.aspectran.test.web.WebAspectranTester;
+import com.aspectran.utils.json.JsonWriter;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for WebAspectranTester.
@@ -34,6 +44,85 @@ class WebActivityTest {
     void testHello(@NonNull WebAspectranTester tester) {
         tester.perform("/hello");
         assertEquals("Hello, Web World!", tester.getWrittenResponse());
+    }
+
+    @Test
+    void testDispatch(@NonNull WebAspectranTester tester) {
+        tester.perform("/dispatch");
+        assertEquals("/WEB-INF/jsp/templates/default.jsp",
+                tester.getLastRequest().getAttribute("jakarta.servlet.forward.request_uri"));
+
+        Object page = tester.getLastRequest().getAttribute("page");
+        assertNotNull(page);
+        assertInstanceOf(Map.class, page);
+        assertEquals("Welcome to Aspectran Demo Site", ((Map<?, ?>)page).get("headline"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testParams(@NonNull WebAspectranTester tester) {
+        Map<String, String> params = Collections.singletonMap("name", "aspectran");
+        tester.perform("/test/params", MethodType.GET, params);
+
+        Object echo = tester.getLastRequest().getAttribute("echo");
+        assertNotNull(echo);
+        assertInstanceOf(Map.class, echo);
+        assertEquals("aspectran", ((Map<String, Object>)echo).get("name"));
+    }
+
+    @Test
+    void testRedirect(@NonNull WebAspectranTester tester) {
+        tester.perform("/test/redirect");
+        assertEquals(302, tester.getLastResponse().getStatus());
+        assertEquals("/hello", tester.getLastResponse().getRedirectLocation());
+    }
+
+    @Test
+    void testDefaultEncoding(@NonNull WebAspectranTester tester) {
+        tester.perform("/hello");
+        assertEquals("utf-8", tester.getLastResponse().getCharacterEncoding());
+        assertEquals("text/plain", tester.getLastResponse().getContentType());
+    }
+
+    @Test
+    void testExplicitEncoding(@NonNull WebAspectranTester tester) {
+        tester.perform("/test/encoding");
+        assertEquals("iso-8859-1", tester.getLastResponse().getCharacterEncoding());
+        assertEquals("application/xml", tester.getLastResponse().getContentType());
+        String response = tester.getWrittenResponse();
+        assertNotNull(response);
+        assertTrue(response.contains("<xml>"), "Actual response: [" + response + "]");
+        assertTrue(response.contains("<root>hello</root>"), "Actual response: [" + response + "]");
+    }
+
+    @Test
+    void testMultipart(@NonNull WebAspectranTester tester) throws IOException {
+        String boundary = "AspeCtranBoundary";
+        String contentType = "multipart/form-data; boundary=" + boundary;
+        String body = "--" + boundary + "\r\n" +
+                "Content-Disposition: form-data; name=\"param1\"\r\n" +
+                "\r\n" +
+                "value1\r\n" +
+                "--" + boundary + "--\r\n";
+
+        tester.perform("/test/multipart", MethodType.POST, null, body.getBytes(), contentType);
+
+        String response = tester.getWrittenResponse();
+        assertNotNull(response);
+
+        String expected = new JsonWriter(new StringWriter())
+                .prettyPrint(true)
+                .indentString("  ")
+                .nullWritable(false)
+                .beginObject()
+                .name("echo")
+                .beginObject()
+                .name("param1")
+                .value("value1")
+                .endObject()
+                .endObject()
+                .toString();
+        assertEquals(expected, response);
     }
 
 }

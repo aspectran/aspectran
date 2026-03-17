@@ -55,7 +55,7 @@ public class MockServletContext implements ServletContext {
     @Override public Set<String> getResourcePaths(String path) { return Collections.emptySet(); }
     @Override public URL getResource(String path) throws MalformedURLException { return null; }
     @Override public InputStream getResourceAsStream(String path) { return null; }
-    @Override public jakarta.servlet.RequestDispatcher getRequestDispatcher(String path) { return null; }
+    @Override public jakarta.servlet.RequestDispatcher getRequestDispatcher(String path) { return new MockRequestDispatcher(path); }
     @Override public jakarta.servlet.RequestDispatcher getNamedDispatcher(String name) { return null; }
     @Override public void log(String msg) {}
     @Override public void log(String message, Throwable throwable) {}

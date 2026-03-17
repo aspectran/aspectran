@@ -36,9 +36,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
     private int status = 200;
     private String characterEncoding = "UTF-8";
     private String contentType;
+    private String redirectLocation;
     private final StringWriter writer = new StringWriter();
 
     public String getContentAsString() { return writer.toString(); }
+
+    public String getRedirectLocation() { return redirectLocation; }
 
     @Override public void addCookie(Cookie cookie) {}
     @Override public boolean containsHeader(String name) { return false; }
@@ -46,7 +49,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
     @Override public String encodeRedirectURL(String url) { return url; }
     @Override public void sendError(int sc, String msg) throws IOException { this.status = sc; }
     @Override public void sendError(int sc) throws IOException { this.status = sc; }
-    @Override public void sendRedirect(String location) throws IOException { this.status = 302; }
+    @Override public void sendRedirect(String location) throws IOException {
+        this.status = 302;
+        this.redirectLocation = location;
+    }
     @Override public void setDateHeader(String name, long date) {}
     @Override public void addDateHeader(String name, long date) {}
     @Override public void setHeader(String name, String value) {}

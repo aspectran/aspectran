@@ -17,6 +17,7 @@ package com.aspectran.test.web.mock;
 
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ReadListener;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
@@ -31,6 +32,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
@@ -50,6 +52,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     private final Map<String, Object> attributes = new HashMap<>();
     private final Map<String, String[]> parameters = new HashMap<>();
+    private final Map<String, String> headers = new HashMap<>();
     private String method = "GET";
     private String requestURI;
     private String contextPath = "";
@@ -58,6 +61,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
     private String queryString;
     private String characterEncoding = "UTF-8";
     private HttpSession session;
+    private String contentType;
+    private byte[] body;
+    private ServletContext servletContext;
 
     public void setMethod(String method) { this.method = method; }
     public void setRequestURI(String requestURI) { this.requestURI = requestURI; }
@@ -67,14 +73,27 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public void setQueryString(String queryString) { this.queryString = queryString; }
     public void setParameter(String name, String value) { this.parameters.put(name, new String[]{value}); }
     public void setSession(HttpSession session) { this.session = session; }
+    public void setServletContext(ServletContext servletContext) { this.servletContext = servletContext; }
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+        setHeader("Content-Type", contentType);
+    }
+    public void setBody(byte[] body) { this.body = body; }
+    public void setHeader(String name, String value) { this.headers.put(name, value); }
 
     @Override public String getAuthType() { return null; }
     @Override public Cookie[] getCookies() { return new Cookie[0]; }
     @Override public long getDateHeader(String name) { return 0; }
-    @Override public String getHeader(String name) { return null; }
-    @Override public Enumeration<String> getHeaders(String name) { return Collections.emptyEnumeration(); }
-    @Override public Enumeration<String> getHeaderNames() { return Collections.emptyEnumeration(); }
-    @Override public int getIntHeader(String name) { return 0; }
+    @Override public String getHeader(String name) { return headers.get(name); }
+    @Override public Enumeration<String> getHeaders(String name) {
+        String val = headers.get(name);
+        return (val != null ? Collections.enumeration(Collections.singletonList(val)) : Collections.emptyEnumeration());
+    }
+    @Override public Enumeration<String> getHeaderNames() { return Collections.enumeration(headers.keySet()); }
+    @Override public int getIntHeader(String name) {
+        String val = headers.get(name);
+        return (val != null ? Integer.parseInt(val) : -1);
+    }
     @Override public String getMethod() { return method; }
     @Override public String getPathInfo() { return pathInfo; }
     @Override public String getPathTranslated() { return null; }
@@ -103,10 +122,19 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override public Enumeration<String> getAttributeNames() { return Collections.enumeration(attributes.keySet()); }
     @Override public String getCharacterEncoding() { return characterEncoding; }
     @Override public void setCharacterEncoding(String env) throws UnsupportedEncodingException { this.characterEncoding = env; }
-    @Override public int getContentLength() { return 0; }
-    @Override public long getContentLengthLong() { return 0; }
-    @Override public String getContentType() { return null; }
-    @Override public ServletInputStream getInputStream() throws IOException { return null; }
+    @Override public int getContentLength() { return (body != null ? body.length : 0); }
+    @Override public long getContentLengthLong() { return (body != null ? body.length : 0); }
+    @Override public String getContentType() { return contentType; }
+    @Override public ServletInputStream getInputStream() throws IOException {
+        if (body == null) return null;
+        final ByteArrayInputStream bais = new ByteArrayInputStream(body);
+        return new ServletInputStream() {
+            @Override public boolean isFinished() { return bais.available() == 0; }
+            @Override public boolean isReady() { return true; }
+            @Override public void setReadListener(ReadListener readListener) {}
+            @Override public int read() throws IOException { return bais.read(); }
+        };
+    }
     @Override public String getParameter(String name) { String[] vals = parameters.get(name); return (vals != null && vals.length > 0 ? vals[0] : null); }
     @Override public Enumeration<String> getParameterNames() { return Collections.enumeration(parameters.keySet()); }
     @Override public String[] getParameterValues(String name) { return parameters.get(name); }
@@ -123,12 +151,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override public Locale getLocale() { return Locale.getDefault(); }
     @Override public Enumeration<Locale> getLocales() { return Collections.enumeration(Collections.singletonList(Locale.getDefault())); }
     @Override public boolean isSecure() { return false; }
-    @Override public RequestDispatcher getRequestDispatcher(String path) { return null; }
+    @Override public RequestDispatcher getRequestDispatcher(String path) { return (servletContext != null ? servletContext.getRequestDispatcher(path) : null); }
     @Override public int getRemotePort() { return 0; }
     @Override public String getLocalName() { return "localhost"; }
     @Override public String getLocalAddr() { return "127.0.0.1"; }
     @Override public int getLocalPort() { return 80; }
-    @Override public ServletContext getServletContext() { return null; }
+    @Override public ServletContext getServletContext() { return servletContext; }
     @Override public AsyncContext startAsync() throws IllegalStateException { return null; }
     @Override public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException { return null; }
     @Override public boolean isAsyncStarted() { return false; }

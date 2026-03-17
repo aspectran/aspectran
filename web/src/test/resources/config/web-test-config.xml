@@ -4,6 +4,32 @@
 <aspectran>
     <description>Aspectran Configuration for Web Testing</description>
 
+    <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+        <description>
+            Register a JSP View Dispatcher.
+        </description>
+        <property name="prefix">/WEB-INF/jsp/</property>
+        <property name="suffix">.jsp</property>
+    </bean>
+
+    <aspect id="webTransletSettings">
+        <description>
+            This aspect is for injecting default settings into translets running in the web environment.
+        </description>
+        <joinpoint>
+            pointcut: {
+                +: /**
+            }
+        </joinpoint>
+        <settings>
+            <setting name="characterEncoding" value="utf-8"/>
+            <setting name="format.prettyPrint" value="true"/>
+            <setting name="format.indentSize" value="2"/>
+            <setting name="viewDispatcher" value="jspViewDispatcher"/>
+            <setting name="proxyProtocolAware" value="true"/>
+        </settings>
+    </aspect>
+
     <translet name="/hello">
         <echo id="msg">
             <item name="message">Hello, Web World!</item>
@@ -13,6 +39,62 @@
                 <template>@{msg^message}</template>
             </transform>
         </response>
+    </translet>
+
+    <translet name="/dispatch">
+        <echo id="page">
+            <item name="headline">Welcome to Aspectran Demo Site</item>
+            <item name="subheadline">Recommended best practices developed with Aspectran</item>
+            <item name="teaser">This is a site to demonstrate examples developed using Aspectran.</item>
+            <item name="include">home/main</item>
+            <item name="style">plate solid</item>
+        </echo>
+        <dispatch name="templates/default"/>
+    </translet>
+
+    <translet name="/test/params">
+        <echo id="echo">
+            <item name="name">${name}</item>
+        </echo>
+        <dispatch name="templates/default"/>
+    </translet>
+
+    <translet name="/test/redirect">
+        <redirect path="/hello"/>
+    </translet>
+
+    <translet name="/test/encoding">
+        <echo id="xml">
+            <item name="root">hello</item>
+        </echo>
+        <transform format="xml" contentType="application/xml" encoding="iso-8859-1"/>
+    </translet>
+
+    <bean id="multipartFormDataParser"
+          class="com.aspectran.web.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+        <property name="maxRequestSize" value="1M"/>
+        <property name="maxFileSize" value="500KB"/>
+    </bean>
+
+    <aspect id="multipartSettingsAspect">
+        <joinpoint>
+            methods: [
+                POST
+            ]
+            pointcut: {
+                +: /test/multipart
+            }
+        </joinpoint>
+        <settings>
+            <setting name="multipartFormDataParser" value="multipartFormDataParser"/>
+        </settings>
+    </aspect>
+
+    <translet name="/test/multipart" method="POST">
+        <echo id="echo">
+            <item name="param1">${param1}</item>
+        </echo>
+        <transform format="json"/>
     </translet>
 
 </aspectran>
