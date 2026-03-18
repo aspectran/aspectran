@@ -20,6 +20,7 @@ import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsoleClosedException;
 import com.aspectran.shell.jline.console.JLineConsoleStyler.Style;
+import com.aspectran.utils.StringUtils;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
 
@@ -157,7 +158,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             return null;
         } catch (IllegalStateException e) {
             if (e.getMessage() == null) {
-                return null;
+                return StringUtils.EMPTY;
             } else {
                 throw new CommandReadFailedException(e);
             }
@@ -165,7 +166,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             if (confirmQuit()) {
                 throw new ShellConsoleClosedException();
             } else {
-                return null;
+                return StringUtils.EMPTY;
             }
         } catch (Exception e) {
             throw new CommandReadFailedException(e);
