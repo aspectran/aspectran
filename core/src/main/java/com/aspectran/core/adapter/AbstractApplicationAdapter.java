@@ -79,19 +79,19 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             return Path.of(URI.create(path));
         }
 
-        Path p = Path.of(path);
-        if (p.isAbsolute()) {
-            return p.normalize();
-        }
-
         if (basePath != null) {
+            Path p = Path.of(path);
+            if (p.isAbsolute() && p.startsWith(basePath)) {
+                return p.normalize();
+            }
+
             String subPath = path;
             if (subPath.startsWith("/") || subPath.startsWith("\\")) {
                 subPath = subPath.substring(1);
             }
             return basePath.resolve(subPath).normalize();
         } else {
-            return p.toAbsolutePath().normalize();
+            return Path.of(path).toAbsolutePath().normalize();
         }
     }
 
