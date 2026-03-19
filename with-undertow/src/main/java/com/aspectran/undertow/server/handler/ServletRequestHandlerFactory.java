@@ -18,11 +18,14 @@ package com.aspectran.undertow.server.handler;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.handler.logging.LoggingGroupAssistHandlerWrapper;
 import com.aspectran.undertow.server.handler.resource.TowResourceHandler;
+import com.aspectran.undertow.server.handler.resource.TowResourceManager;
 import com.aspectran.undertow.server.handler.session.SessionAttachmentHandler;
 import com.aspectran.undertow.server.servlet.TowServletContext;
 import com.aspectran.undertow.server.servlet.TowWebSocketServerContainerInitializer;
 import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.PathUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.DefaultWebServiceBuilder;
 import com.aspectran.web.service.WebService;
@@ -39,6 +42,8 @@ import io.undertow.servlet.api.ServletContainer;
 import io.undertow.servlet.core.ServletContainerImpl;
 import jakarta.servlet.ServletContext;
 import org.jspecify.annotations.NonNull;
+
+import java.util.Map;
 
 /**
  * A factory for creating a root {@link HttpHandler} that manages a full servlet environment.
@@ -87,12 +92,15 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
 
             DeploymentInfo info = manager.getDeployment().getDeploymentInfo();
             String contextPath = info.getContextPath();
+            if (contextPath == null) {
+                contextPath = "";
+            }
             ResourceManager resourceManager = info.getResourceManager();
 
             if (resourceManager != null) {
                 TowResourceHandler resourceHandler = new TowResourceHandler(resourceManager, handler);
                 String pathPrefix = contextPath;
-                if (pathPrefix != null && pathPrefix.endsWith("/")) {
+                if (pathPrefix.endsWith("/")) {
                     pathPrefix = pathPrefix.substring(0, pathPrefix.length() - 1);
                 }
                 resourceHandler.autoDetect(pathPrefix);
@@ -101,7 +109,37 @@ public class ServletRequestHandlerFactory extends AbstractRequestHandlerFactory 
                 }
             }
 
-            pathHandler.addPrefixPath(contextPath, handler);
+            pathHandler.addPrefixPath(contextPath.isEmpty() ? "/" : contextPath, handler);
+
+            if (resourceManager instanceof TowResourceManager trm) {
+                Map<String, String> mappings = trm.getResourceMappings();
+                if (mappings != null) {
+                    for (Map.Entry<String, String> entry : mappings.entrySet()) {
+                        String path = entry.getKey();
+                        String base = PathUtils.cleanPath(entry.getValue());
+
+                        TowResourceManager newTrm = new TowResourceManager();
+                        newTrm.setApplicationAdapter(trm.getApplicationAdapter());
+                        newTrm.setBase(base);
+
+                        TowResourceHandler resourceHandler = new TowResourceHandler(newTrm);
+                        String fullPath = contextPath;
+                        if (StringUtils.hasLength(path)) {
+                            if (!fullPath.endsWith("/") && !path.startsWith("/")) {
+                                fullPath += "/";
+                            } else if (fullPath.endsWith("/") && path.startsWith("/")) {
+                                path = path.substring(1);
+                            }
+                            fullPath += path;
+                        }
+                        if (fullPath.isEmpty()) {
+                            fullPath = "/";
+                        }
+                        resourceHandler.autoDetect(fullPath);
+                        pathHandler.addPrefixPath(fullPath, resourceHandler);
+                    }
+                }
+            }
         }
 
         return wrapHandler(pathHandler);

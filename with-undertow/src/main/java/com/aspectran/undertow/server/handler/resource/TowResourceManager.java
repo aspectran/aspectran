@@ -22,6 +22,7 @@ import io.undertow.server.handlers.resource.PathResourceManager;
 import org.jspecify.annotations.NonNull;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * An extension of Undertow's {@link PathResourceManager} that is aware of the
@@ -32,6 +33,13 @@ import java.io.File;
 public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
+
+    /**
+     * A map of resource mappings, where each key represents a URL path prefix
+     * and each value represents the corresponding physical directory path
+     * (relative to the application base path).
+     */
+    private Map<String, String> resourceMappings;
 
     /**
      * Instantiates a new TowResourceManager with default settings.
@@ -78,19 +86,49 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         this(base, transferMinSize, true, followLinks, safePaths);
     }
 
-    protected TowResourceManager(long transferMinSize, boolean caseSensitive,
-                                 boolean followLinks, String... safePaths) {
+    protected TowResourceManager(
+            long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
         super(transferMinSize, caseSensitive, followLinks, safePaths);
     }
 
-    public TowResourceManager(@NonNull File base, long transferMinSize, boolean caseSensitive,
-                              boolean followLinks, String... safePaths) {
+    public TowResourceManager(
+            @NonNull File base, long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
         super(base.toPath(), transferMinSize, caseSensitive, followLinks, safePaths);
     }
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
+    }
+
+    /**
+     * Returns the application adapter.
+     * @return the application adapter
+     */
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
+    }
+
+    /**
+     * Returns the resource mappings that associate specific URL paths with
+     * external physical directories.
+     * @return the resource mappings, or {@code null} if none are configured
+     */
+    public Map<String, String> getResourceMappings() {
+        return resourceMappings;
+    }
+
+    /**
+     * Sets the resource mappings that associate specific URL paths with
+     * external physical directories.
+     * <p>These mappings are used to serve static resources from directories
+     * outside the primary web root. The key is the URL path prefix (e.g., "/assets")
+     * and the value is the base directory path relative to the application's
+     * base directory (e.g., "/../assets").</p>
+     * @param resourceMappings the resource mappings to set
+     */
+    public void setResourceMappings(Map<String, String> resourceMappings) {
+        this.resourceMappings = resourceMappings;
     }
 
     /**
