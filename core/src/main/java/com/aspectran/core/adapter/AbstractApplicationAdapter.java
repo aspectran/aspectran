@@ -77,18 +77,21 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
         if (path.startsWith(FILE_URL_PREFIX)) {
             // A fully qualified URL
             return Path.of(URI.create(path));
-        } else {
-            Path normalized = Path.of(path).normalize();
-            Path absolutePath = normalized.toAbsolutePath();
-            if (basePath != null) {
-                if (absolutePath.startsWith(basePath)) {
-                    return absolutePath;
-                } else {
-                    return Path.of(basePath.toString(), normalized.toString()).toAbsolutePath();
-                }
-            } else {
-                return absolutePath;
+        }
+
+        Path p = Path.of(path);
+        if (p.isAbsolute()) {
+            return p.normalize();
+        }
+
+        if (basePath != null) {
+            String subPath = path;
+            if (subPath.startsWith("/") || subPath.startsWith("\\")) {
+                subPath = subPath.substring(1);
             }
+            return basePath.resolve(subPath).normalize();
+        } else {
+            return p.toAbsolutePath().normalize();
         }
     }
 
