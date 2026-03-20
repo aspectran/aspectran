@@ -300,8 +300,7 @@ public class OgnlShortcutExpression {
         return doParseExpr(expression, 0, 0, expression.length());
     }
 
-    @Nullable
-    private static String[] doParseExpr(String expression, int level, int offset, int len) {
+    private static String @Nullable [] doParseExpr(String expression, int level, int offset, int len) {
         int codepoint;
         int i = offset;
         boolean firstChar = true;

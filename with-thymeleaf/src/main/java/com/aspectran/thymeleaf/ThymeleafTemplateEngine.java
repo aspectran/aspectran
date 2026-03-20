@@ -132,7 +132,7 @@ public class ThymeleafTemplateEngine implements TemplateEngine {
             }
 
             FragmentExpression.ExecutedFragmentExpression fragment =
-                FragmentExpression.createExecutedFragmentExpression(context, fragmentExpression);
+                    FragmentExpression.createExecutedFragmentExpression(context, fragmentExpression);
 
             String templateNameToUse = FragmentExpression.resolveTemplateName(fragment);
             Set<String> markupSelectors = FragmentExpression.resolveFragments(fragment);
