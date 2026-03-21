@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This configuration file defines the global identity and description for the application.
+    The <description> element in the first loaded rule file is used as the representative
+    description of the entire ActivityContext, typically displayed in shell greetings
+    or used for system-wide identification.
+-->
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description style="apon">
+        |
+        |{{CYAN}}Try running these example commands:{{reset}}
+        |   {{bold}}hello{{bold:off}}   - Prints "Hello, World!" in your console
+        |   {{bold}}hello2{{bold:off}}  - Prints "Hello, World!" using ANSI color codes
+        |   {{bold}}echo1{{bold:off}}   - Accepts parameters and prints them back
+        |   --- To see more examples, type '{{GREEN}}translet -l{{reset}}' ---
+        |
+        |{{CYAN}}Control and Access Servers:{{reset}}
+        |   Use '{{GREEN}}undertow{{reset}}' to manage the built-in Undertow Server.
+        |   Open {{81}}http://localhost:8080/{{reset}} in your browser.
+        |
+        |   Use '{{GREEN}}jetty{{reset}}' to manage the built-in Jetty Server.
+        |   Open {{81}}http://localhost:8081/{{reset}} in your browser.
+        |
+    </description>
+
+    <description profile="!demo" style="apon">
+        |
+        |{{gray}}Current Environment:{{reset}} #{currentEnvironment^currentProfiles}
+        |
+    </description>
+
+    <description profile="demo" style="apon">
+        |
+        |The {{MAGENTA}}"Aspectran Demo"{{reset}} is a reference application built to
+        |demonstrate best practices for developing Aspectran applications.
+        |
+    </description>
+
+</aspectran>
