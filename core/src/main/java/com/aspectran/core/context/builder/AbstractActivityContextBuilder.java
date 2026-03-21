@@ -452,7 +452,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         } else if (contextConfig != null) {
             context.setName(contextConfig.getName());
         }
-        context.setDescriptionRule(ruleParsingContext.getRuleParsingScope().getDescriptionRule());
+        context.setDescriptionRule(ruleParsingContext.getDescriptionRule());
 
         ActivityEnvironment activityEnvironment = createActivityEnvironment(context, ruleParsingContext);
         context.setEnvironment(activityEnvironment);

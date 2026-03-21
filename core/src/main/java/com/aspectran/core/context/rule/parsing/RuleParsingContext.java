@@ -109,6 +109,9 @@ public class RuleParsingContext {
 
     private RuleAppendHandler ruleAppendHandler;
 
+    private DescriptionRule descriptionRule;
+
+    private boolean firstFileParsed;
 
     protected RuleParsingContext() {
         this.shallow = true;
@@ -117,9 +120,10 @@ public class RuleParsingContext {
         this.environmentProfiles = null;
     }
 
-    public RuleParsingContext(ClassLoader classLoader,
-                              ApplicationAdapter applicationAdapter,
-                              EnvironmentProfiles environmentProfiles) {
+    public RuleParsingContext(
+            ClassLoader classLoader,
+            ApplicationAdapter applicationAdapter,
+            EnvironmentProfiles environmentProfiles) {
         Assert.notNull(classLoader, "classLoader must not be null");
         Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
         Assert.notNull(environmentProfiles, "environmentProfiles must not be null");
@@ -161,6 +165,7 @@ public class RuleParsingContext {
         environmentRules = null;
         typeAliases = null;
         ruleParsingScope = null;
+        descriptionRule = null;
 
         if (!shallow) {
             scheduleRuleRegistry.setRuleParsingScope(null);
@@ -339,6 +344,58 @@ public class RuleParsingContext {
         scheduleRuleRegistry.setRuleParsingScope(newRuleParsingScope);
         transletRuleRegistry.setRuleParsingScope(newRuleParsingScope);
         templateRuleRegistry.setRuleParsingScope(newRuleParsingScope);
+    }
+
+    /**
+     * Returns the rule append handler.
+     * @return the rule append handler
+     */
+    public RuleAppendHandler getRuleAppendHandler() {
+        return ruleAppendHandler;
+    }
+
+    /**
+     * Sets the rule append handler.
+     * @param ruleAppendHandler the new rule append handler
+     */
+    public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {
+        this.ruleAppendHandler = ruleAppendHandler;
+    }
+
+    /**
+     * Removes the last rule appender after rule parsing is complete.
+     */
+    public void clearCurrentRuleAppender() {
+        if (ruleAppendHandler != null) {
+            ruleAppendHandler.setCurrentRuleAppender(null);
+        }
+    }
+
+    /**
+     * Gets the description rule.
+     * @return the description rule
+     */
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
+    }
+
+    /**
+     * Sets the description rule.
+     * @param descriptionRule the description rule
+     * @param nestingLevel the nesting level
+     */
+    public void setDescriptionRule(DescriptionRule descriptionRule, int nestingLevel) {
+        if (!firstFileParsed && nestingLevel == 1) {
+            this.descriptionRule = descriptionRule;
+        }
+    }
+
+    /**
+     * Sets whether the first file has been parsed.
+     * @param firstFileParsed true if the first file has been parsed
+     */
+    public void setFirstFileParsed(boolean firstFileParsed) {
+        this.firstFileParsed = firstFileParsed;
     }
 
     /**
@@ -817,32 +874,6 @@ public class RuleParsingContext {
     public Collection<TemplateRule> getTemplateRules() {
         return templateRuleRegistry.getTemplateRules();
     }
-
-    /**
-     * Returns the rule append handler.
-     * @return the rule append handler
-     */
-    public RuleAppendHandler getRuleAppendHandler() {
-        return ruleAppendHandler;
-    }
-
-    /**
-     * Sets the rule append handler.
-     * @param ruleAppendHandler the new rule append handler
-     */
-    public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {
-        this.ruleAppendHandler = ruleAppendHandler;
-    }
-
-    /**
-     * Removes the last rule appender after rule parsing is complete.
-     */
-    public void clearCurrentRuleAppender() {
-        if (ruleAppendHandler != null) {
-            ruleAppendHandler.setCurrentRuleAppender(null);
-        }
-    }
-
 
     /**
      * Returns a new description rule that is a combination of two description rules.

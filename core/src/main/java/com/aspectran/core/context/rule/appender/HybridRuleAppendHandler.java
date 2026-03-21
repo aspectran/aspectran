@@ -118,8 +118,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         super.handle();
 
         // The first default settings will remain after all configuration settings have been completed.
-        if (ruleParsingScope.getReplicatedCount() > 0) {
+        if (ruleParsingScope.getNestingLevel() > 0) {
             getRuleParsingContext().restoreRuleParsingScope(ruleParsingScope);
+        } else {
+            getRuleParsingContext().setFirstFileParsed(true);
         }
     }
 

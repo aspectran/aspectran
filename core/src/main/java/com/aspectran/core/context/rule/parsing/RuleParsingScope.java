@@ -36,7 +36,7 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
 
     private DefaultSettings defaultSettings;
 
-    private final int replicatedCount;
+    private final int nestingLevel;
 
     /**
      * Instantiates a new RuleParsingScope.
@@ -46,9 +46,9 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
         this(ruleParsingContext, 0);
     }
 
-    private RuleParsingScope(RuleParsingContext ruleParsingContext, int replicatedCount) {
+    private RuleParsingScope(RuleParsingContext ruleParsingContext, int nestingLevel) {
         this.ruleParsingContext = ruleParsingContext;
-        this.replicatedCount = replicatedCount;
+        this.nestingLevel = nestingLevel;
     }
 
     /**
@@ -67,6 +67,7 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
     @Override
     public void setDescriptionRule(DescriptionRule descriptionRule) {
         this.descriptionRule = descriptionRule;
+        ruleParsingContext.setDescriptionRule(descriptionRule, nestingLevel);
     }
 
     /**
@@ -97,28 +98,28 @@ public class RuleParsingScope implements Replicable<RuleParsingScope>, Describab
     }
 
     /**
-     * Returns the replicated count.
-     * @return the replicated count
+     * Returns the nesting level of the current scope.
+     * @return the nesting level
      */
-    public int getReplicatedCount() {
-        return replicatedCount;
+    public int getNestingLevel() {
+        return nestingLevel;
     }
 
     @Override
     public RuleParsingScope replicate() {
-        RuleParsingScope al = new RuleParsingScope(ruleParsingContext, replicatedCount + 1);
+        RuleParsingScope newScope = new RuleParsingScope(ruleParsingContext, nestingLevel + 1);
 
         DescriptionRule dr = getDescriptionRule();
         if (dr != null) {
-            al.setDescriptionRule(new DescriptionRule(dr));
+            newScope.setDescriptionRule(new DescriptionRule(dr));
         }
 
         DefaultSettings ds = getDefaultSettings();
         if (ds != null) {
-            al.setDefaultSettings(new DefaultSettings(ds));
+            newScope.setDefaultSettings(new DefaultSettings(ds));
         }
 
-        return al;
+        return newScope;
     }
 
 }
