@@ -114,13 +114,13 @@
                     <form name="google_quick_search" role="search">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
-                            <button class="btn btn-outline-primary text-white" type="button" id="top-bar-quick-search-btn"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-secondary text-white" type="button" id="top-bar-quick-search-btn"><i class="bi bi-search"></i></button>
                         </div>
                     </form>
                 </div>
                 <div class="settings d-flex align-items-center justify-content-end gap-2 m-2 mx-md-3 m-lg-0">
                     <div class="theme-toggler dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
                             <i class="bi theme-icon-active"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggler-btn">
