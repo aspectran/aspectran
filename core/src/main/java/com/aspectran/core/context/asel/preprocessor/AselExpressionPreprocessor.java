@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.asel.preprocessor;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -47,10 +49,11 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
      * @param expr the expression segment to process
      * @return the processed segment
      */
+    @NonNull
     private String processRecursive(String expr) {
         // Step 1: Handle T(class) first as it can be a part of other expressions
         expr = processTypeOperator(expr);
-        
+
         // Step 2: Handle other operators by scanning from left to right.
         // We use a loop to ensure nested operators within generated code are also handled.
         StringBuilder sb = new StringBuilder(expr);
@@ -132,7 +135,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
     /**
      * Checks if the buffer starts with the given pattern at the specified index.
      */
-    private boolean match(StringBuilder sb, int i, String pattern) {
+    private boolean match(@NonNull StringBuilder sb, int i, @NonNull String pattern) {
         if (i + pattern.length() > sb.length()) {
             return false;
         }
@@ -186,7 +189,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
     /**
      * Transforms SpEL-style .?[...] to OGNL-style .{? ...}.
      */
-    private void replaceCollection(StringBuilder sb, int index) {
+    private void replaceCollection(@NonNull StringBuilder sb, int index) {
         char type = sb.charAt(index);
         String replacementOp = switch (type) {
             case '?' -> "{? ";
@@ -219,6 +222,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
     /**
      * Transforms 'T(package.Class)' to '@package.Class@'.
      */
+    @NonNull
     private String processTypeOperator(String expr) {
         StringBuilder sb = new StringBuilder(expr);
         int index = 0;
@@ -231,7 +235,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
             if (closingParen != -1) {
                 String className = sb.substring(index + 2, closingParen).trim();
                 int replacementEnd = closingParen + 1;
-                
+
                 // Handle optional whitespace and dot for static member access
                 int dotIndex = replacementEnd;
                 while (dotIndex < sb.length() && Character.isWhitespace(sb.charAt(dotIndex))) {
@@ -240,7 +244,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
                 if (dotIndex < sb.length() && sb.charAt(dotIndex) == '.') {
                     replacementEnd = dotIndex + 1;
                 }
-                
+
                 String replacement = "@" + className + "@";
                 sb.replace(index, replacementEnd, replacement);
                 index += replacement.length();
@@ -251,7 +255,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
         return sb.toString();
     }
 
-    private int findMatchingClosingBracket(StringBuilder sb, int start) {
+    private int findMatchingClosingBracket(@NonNull StringBuilder sb, int start) {
         int depth = 1;
         for (int i = start; i < sb.length(); i++) {
             if (ExpressionPreprocessorUtils.isInsideQuotes(sb, i)) continue;
@@ -264,7 +268,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
         return -1;
     }
 
-    private int findMatchingClosingParen(StringBuilder sb, int start) {
+    private int findMatchingClosingParen(@NonNull StringBuilder sb, int start) {
         int depth = 1;
         for (int i = start; i < sb.length(); i++) {
             if (ExpressionPreprocessorUtils.isInsideQuotes(sb, i)) continue;
@@ -277,6 +281,7 @@ public class AselExpressionPreprocessor implements ExpressionPreprocessor {
         return -1;
     }
 
+    @NonNull
     private String getUniqueVarName(String prefix) {
         return prefix + "_" + (System.nanoTime() % 1000000) + "_" + varCounter.getAndIncrement();
     }

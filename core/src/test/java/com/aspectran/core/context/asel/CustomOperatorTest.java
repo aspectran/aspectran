@@ -51,11 +51,11 @@ class CustomOperatorTest {
         Map<String, Object> user = new HashMap<>();
         user.put("username", "tester");
         user.put("nickname", null);
-        
+
         Map<String, Object> address = new HashMap<>();
         address.put("city", "Seoul");
         user.put("address", address);
-        
+
         activity.getRequestAdapter().setAttribute("user", user);
 
         // Collection data
@@ -69,7 +69,7 @@ class CustomOperatorTest {
         activity.getRequestAdapter().setParameter("email", "test@example.com");
         activity.getRequestAdapter().setParameter("nullParam", (String)null);
         activity.getRequestAdapter().setParameter("emptyParam", "");
-        
+
         this.activity = activity;
     }
 
@@ -77,11 +77,11 @@ class CustomOperatorTest {
     void testElvisEdgeCases() {
         // Nested Elvis: a ?: b ?: c
         assertEquals("Fallback", ValueExpression.evaluate("@{user^nickname} ?: ${nullParam} ?: 'Fallback'", activity));
-        
+
         // Whitespace variations
         assertEquals("tester", ValueExpression.evaluate("@{user^nickname}?:@{user^username}", activity));
         assertEquals("tester", ValueExpression.evaluate("@{user^nickname}  ?:  @{user^username}", activity));
-        
+
         // Literal string containing Elvis pattern (should NOT be preprocessed)
         assertEquals("URL ?: test", ValueExpression.evaluate("'URL ?: test'", activity));
     }
@@ -90,7 +90,7 @@ class CustomOperatorTest {
     void testSafeNavigationEdgeCases() {
         // Deep navigation with null in the middle
         assertNull(ValueExpression.evaluate("@{user}?.profile?.settings?.theme", activity));
-        
+
         // Method call with Safe Navigation when receiver IS null
         activity.getRequestAdapter().setAttribute("nullUser", null);
         assertNull(ValueExpression.evaluate("@{nullUser}?.getName()", activity));
@@ -130,10 +130,10 @@ class CustomOperatorTest {
     void testTypeOperatorEdgeCases() {
         // Static field access
         assertEquals(Math.PI, (Double) ValueExpression.evaluate("T(java.lang.Math).PI", activity), 0.0001);
-        
+
         // Static method with multiple arguments
         assertEquals("AB", ValueExpression.evaluate("T(java.lang.String).format('%s%s', 'A', 'B')", activity));
-        
+
         // T(class) as method argument (using Boolean.valueOf)
         assertTrue((Boolean) ValueExpression.evaluate("T(java.lang.Boolean).valueOf('true')", activity));
     }
@@ -157,7 +157,7 @@ class CustomOperatorTest {
         // 1. Escaped quotes in strings containing operator patterns
         // Note: AsEL/OGNL uses backslash for escape
         assertEquals("It's a ?: test", ValueExpression.evaluate("'It\\'s a ?: test' ?: 'fallback'", activity));
-        
+
         // 2. Multiple nested operators in complex arithmetic
         // (1 + (null ?: 2)) * (null ?: 4) => (1 + 2) * 4 = 12
         assertEquals(12, ValueExpression.evaluate("(1 + (@{nullParam} ?: 2)) * (@{nullParam} ?: 4)", activity));
@@ -169,7 +169,7 @@ class CustomOperatorTest {
         // 4. Safe Navigation combined with property access and indexing
         // members[0]?.name ?: 'Unknown'
         assertEquals("Alice", ValueExpression.evaluate("@{members}[0]?.name ?: 'Unknown'", activity));
-        
+
         // 5. Deeply nested Safe Navigation and Elvis
         // a?.b?.c ?: d?.e?.f ?: 'End'
         assertEquals("End", ValueExpression.evaluate("@{nullUser}?.a?.b ?: @{nullUser}?.d?.e ?: 'End'", activity));
@@ -194,4 +194,5 @@ class CustomOperatorTest {
         // Note: '?. ' with space might be tricky
         assertEquals("Seoul", ValueExpression.evaluate("@{user} ?. address ?. city", activity));
     }
+
 }
