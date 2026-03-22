@@ -17,6 +17,7 @@ package com.aspectran.core.context.asel;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.asel.ognl.OgnlSupport;
+import com.aspectran.core.context.asel.preprocessor.ExpressionPreprocessors;
 import com.aspectran.core.context.asel.token.Token;
 import com.aspectran.core.context.asel.token.TokenEvaluator;
 import com.aspectran.core.context.asel.token.TokenParser;
@@ -55,6 +56,8 @@ public class TokenizedExpression implements ExpressionEvaluator {
     private static final String TOKEN_VAR_NAME_PREFIX = "__";
 
     private static final String TOKEN_VAR_NAME_SUFFIX = TOKEN_VAR_NAME_PREFIX;
+
+    private static final ExpressionPreprocessors preprocessors = new ExpressionPreprocessors();
 
     private final String expression;
 
@@ -141,6 +144,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
         this.tokenVarNames = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableSet(tokenVars.keySet()) : null);
         this.substitutedExpression = substitutedExpression;
         if (substitutedExpression != null) {
+            substitutedExpression = preprocessors.process(substitutedExpression);
             try {
                 this.parsedExpression = Ognl.parseExpression(substitutedExpression);
             } catch (OgnlException e) {
