@@ -57,8 +57,6 @@ public class TokenizedExpression implements ExpressionEvaluator {
 
     private static final String TOKEN_VAR_NAME_SUFFIX = TOKEN_VAR_NAME_PREFIX;
 
-    private static final ExpressionPreprocessors preprocessors = new ExpressionPreprocessors();
-
     private final String expression;
 
     private String substitutedExpression;
@@ -144,7 +142,7 @@ public class TokenizedExpression implements ExpressionEvaluator {
         this.tokenVarNames = (tokenVars != null && !tokenVars.isEmpty() ? Collections.unmodifiableSet(tokenVars.keySet()) : null);
         this.substitutedExpression = substitutedExpression;
         if (substitutedExpression != null) {
-            substitutedExpression = preprocessors.process(substitutedExpression);
+            substitutedExpression = ExpressionPreprocessors.getInstance().process(substitutedExpression);
             try {
                 this.parsedExpression = Ognl.parseExpression(substitutedExpression);
             } catch (OgnlException e) {

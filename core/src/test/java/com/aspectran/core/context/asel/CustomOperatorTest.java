@@ -153,15 +153,45 @@ class CustomOperatorTest {
     }
 
     @Test
-    void testComplexNestedExpressions() {
-        // Complex logic: If members exist, get the name of the first adult
-        // We know 'members' has adults, so this is safe.
-        String expression = "@{members}.?[age >= 18].![name][0] ?: 'No Adults'";
-        assertEquals("Alice", ValueExpression.evaluate(expression, activity));
+    void testExtremeEdgeCases() {
+        // 1. Escaped quotes in strings containing operator patterns
+        // Note: AsEL/OGNL uses backslash for escape
+        assertEquals("It's a ?: test", ValueExpression.evaluate("'It\\'s a ?: test' ?: 'fallback'", activity));
         
-        // Testing fallback with Elvis on a null attribute using Safe Navigation
-        // This ensures the LHS evaluates to null instead of throwing an exception
-        activity.getRequestAdapter().setAttribute("nullList", null);
-        assertEquals("None", ValueExpression.evaluate("@{nullList}?.![name] ?: 'None'", activity));
+        // 2. Multiple nested operators in complex arithmetic
+        // (1 + (null ?: 2)) * (null ?: 4) => (1 + 2) * 4 = 12
+        assertEquals(12, ValueExpression.evaluate("(1 + (@{nullParam} ?: 2)) * (@{nullParam} ?: 4)", activity));
+
+        // 3. Complex method arguments with nested operators
+        // String.format('%s-%s', null ?: 'A', null?.b ?: 'B') => 'A-B'
+        assertEquals("A-B", ValueExpression.evaluate("T(java.lang.String).format('%s-%s', @{nullParam} ?: 'A', @{nullUser}?.b ?: 'B')", activity));
+
+        // 4. Safe Navigation combined with property access and indexing
+        // members[0]?.name ?: 'Unknown'
+        assertEquals("Alice", ValueExpression.evaluate("@{members}[0]?.name ?: 'Unknown'", activity));
+        
+        // 5. Deeply nested Safe Navigation and Elvis
+        // a?.b?.c ?: d?.e?.f ?: 'End'
+        assertEquals("End", ValueExpression.evaluate("@{nullUser}?.a?.b ?: @{nullUser}?.d?.e ?: 'End'", activity));
+    }
+
+    @Test
+    void testVariableCollision() {
+        // Potential flaw: we use #_res as a temporary variable.
+        // What if the user also uses it?
+        // This test might fail if our preprocessor is not careful about unique naming.
+        activity.getRequestAdapter().setAttribute("_res", "UserValue");
+        // Expression: use #_res, then use ?: which also uses #_res internally
+        // If they collide, the result will be wrong.
+        String expression = "#_res = 'Collision', @{user^nickname} ?: #_res";
+        assertEquals("Collision", ValueExpression.evaluate(expression, activity));
+    }
+
+    @Test
+    void testAbnormalWhitespaces() {
+        // Preprocessor should be resilient to weird spacing
+        assertEquals("tester", ValueExpression.evaluate("@{user^nickname}  ?:  @{user^username}", activity));
+        // Note: '?. ' with space might be tricky
+        assertEquals("Seoul", ValueExpression.evaluate("@{user} ?. address ?. city", activity));
     }
 }

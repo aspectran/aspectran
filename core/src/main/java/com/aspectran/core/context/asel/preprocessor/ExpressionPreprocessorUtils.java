@@ -15,29 +15,59 @@
  */
 package com.aspectran.core.context.asel.preprocessor;
 
-/**
- * Shared utilities for expression pre-processing.
- */
-public abstract class ExpressionPreprocessorUtils {
+import org.jspecify.annotations.NonNull;
 
-    public static boolean isInsideQuotes(CharSequence s, int index) {
+/**
+ * Shared utility methods for expression pre-processing.
+ * <p>Provides methods for scanning operands and detecting string literals
+ * within an expression string.</p>
+ */
+abstract class ExpressionPreprocessorUtils {
+
+    /**
+     * Checks if the character at the specified index is inside a string literal.
+     * @param s the character sequence
+     * @param index the index to check
+     * @return true if inside quotes; false otherwise
+     */
+    static boolean isInsideQuotes(@NonNull CharSequence s, int index) {
         boolean doubleQuoted = false;
         boolean singleQuoted = false;
+        boolean escaped = false;
         for (int i = 0; i < index; i++) {
             char c = s.charAt(i);
-            if (c == '\"' && !singleQuoted) doubleQuoted = !doubleQuoted;
-            else if (c == '\'' && !doubleQuoted) singleQuoted = !singleQuoted;
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (c == '\\') {
+                escaped = true;
+            } else if (c == '\"' && !singleQuoted) {
+                doubleQuoted = !doubleQuoted;
+            } else if (c == '\'' && !doubleQuoted) {
+                singleQuoted = !singleQuoted;
+            }
         }
         return (doubleQuoted || singleQuoted);
     }
 
-    public static int findLeftOperandStart(CharSequence s, int end, boolean stopAtOperators) {
+    /**
+     * Finds the start index of the left operand for an operator.
+     * @param s the character sequence
+     * @param end the index where the operator starts
+     * @param stopAtOperators whether to stop at other operators
+     * @return the start index of the left operand
+     */
+    static int findLeftOperandStart(@NonNull CharSequence s, int end, boolean stopAtOperators) {
         int depth = 0;
         for (int i = end - 1; i >= 0; i--) {
             char c = s.charAt(i);
-            if (c == ')' || c == ']' || c == '}') depth++;
-            else if (c == '(' || c == '[' || c == '{') {
-                if (depth == 0) return i + 1;
+            if (c == ')' || c == ']' || c == '}') {
+                depth++;
+            } else if (c == '(' || c == '[' || c == '{') {
+                if (depth == 0) {
+                    return i + 1;
+                }
                 depth--;
             } else if (depth == 0) {
                 if (c == ',' || (stopAtOperators && isOperator(c))) {
@@ -48,16 +78,28 @@ public abstract class ExpressionPreprocessorUtils {
         return 0;
     }
 
-    public static int findRightOperandEnd(CharSequence s, int start, boolean stopAtOperators) {
+    /**
+     * Finds the end index of the right operand for an operator.
+     * @param s the character sequence
+     * @param start the index where the operator ends
+     * @param stopAtOperators whether to stop at other operators
+     * @return the end index of the right operand
+     */
+    static int findRightOperandEnd(@NonNull CharSequence s, int start, boolean stopAtOperators) {
         int depth = 0;
         for (int i = start; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '(' || c == '[' || c == '{') depth++;
-            else if (c == ')' || c == ']' || c == '}') {
-                if (depth == 0) return i;
+            if (c == '(' || c == '[' || c == '{') {
+                depth++;
+            } else if (c == ')' || c == ']' || c == '}') {
+                if (depth == 0) {
+                    return i;
+                }
                 depth--;
             } else if (depth == 0) {
-                if (c == ',') return i;
+                if (c == ',') {
+                    return i;
+                }
                 if (stopAtOperators) {
                     if (isOperator(c)) {
                         // Check if it's a collection operator start like ![ or ?[
@@ -73,7 +115,10 @@ public abstract class ExpressionPreprocessorUtils {
         return s.length();
     }
 
-    public static boolean isOperator(char c) {
+    /**
+     * Checks if the character is a standard operator.
+     */
+    static boolean isOperator(char c) {
         return (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' ||
                 c == '=' || c == '<' || c == '>' || c == '&' || c == '|' ||
                 c == '^' || c == '!' || c == '?' || c == ':');
