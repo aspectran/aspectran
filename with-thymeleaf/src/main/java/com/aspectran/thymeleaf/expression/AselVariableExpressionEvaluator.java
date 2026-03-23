@@ -56,9 +56,9 @@ import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.RES
  *
  * <p>Created: 2024. 11. 23.</p>
  */
-public class ASELVariableExpressionEvaluator implements IStandardVariableExpressionEvaluator {
+public class AselVariableExpressionEvaluator implements IStandardVariableExpressionEvaluator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ASELVariableExpressionEvaluator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AselVariableExpressionEvaluator.class);
 
     private static final String EXPRESSION_CACHE_TYPE_OGNL = "asel";
 
@@ -68,7 +68,7 @@ public class ASELVariableExpressionEvaluator implements IStandardVariableExpress
      * Instantiates a new ASELVariableExpressionEvaluator.
      * @param applyOgnlShortcuts whether to apply OGNL shortcuts for simple expressions
      */
-    public ASELVariableExpressionEvaluator(boolean applyOgnlShortcuts) {
+    public AselVariableExpressionEvaluator(boolean applyOgnlShortcuts) {
         this.applyOgnlShortcuts = applyOgnlShortcuts;
 
         /*

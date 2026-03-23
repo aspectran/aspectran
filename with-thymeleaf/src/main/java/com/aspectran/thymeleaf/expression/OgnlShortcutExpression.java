@@ -62,7 +62,7 @@ import static com.aspectran.thymeleaf.expression.OgnlContextPropertyAccessor.RES
  *
  * <p>If an expression contains complex elements like method calls with arguments,
  * array/list indexing, or uses custom property accessors, this shortcut mechanism
- * is not applicable. In such cases, the {@link ASELVariableExpressionEvaluator}
+ * is not applicable. In such cases, the {@link AselVariableExpressionEvaluator}
  * will catch an {@code OGNLShortcutExpressionNotApplicableException} and fall back
  * to using the standard, more powerful OGNL parser, ensuring correctness while
  * optimizing the common path.</p>

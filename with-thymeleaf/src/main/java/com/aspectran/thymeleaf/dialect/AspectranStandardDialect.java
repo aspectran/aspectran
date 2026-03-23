@@ -15,7 +15,7 @@
  */
 package com.aspectran.thymeleaf.dialect;
 
-import com.aspectran.thymeleaf.expression.ASELVariableExpressionEvaluator;
+import com.aspectran.thymeleaf.expression.AselVariableExpressionEvaluator;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.standard.expression.IStandardVariableExpressionEvaluator;
 
@@ -24,7 +24,7 @@ import org.thymeleaf.standard.expression.IStandardVariableExpressionEvaluator;
  * Aspectran's expression language (ASEL) with Thymeleaf's Standard Expression engine.
  *
  * <p>This dialect replaces the standard variable expression evaluator with
- * {@link ASELVariableExpressionEvaluator}, allowing templates to access
+ * {@link AselVariableExpressionEvaluator}, allowing templates to access
  * Aspectran-specific beans and properties using ASEL syntax.</p>
  *
  * <p>Created: 2024. 11. 25.</p>
@@ -38,7 +38,7 @@ public class AspectranStandardDialect extends StandardDialect {
     public static final int PROCESSOR_PRECEDENCE = 1000;
 
     /** The custom variable expression evaluator that integrates ASEL. */
-    public static final ASELVariableExpressionEvaluator EVALUATOR = new ASELVariableExpressionEvaluator(true);
+    public static final AselVariableExpressionEvaluator EVALUATOR = new AselVariableExpressionEvaluator(true);
 
     /**
      * Instantiates a new AspectranStandardDialect.
