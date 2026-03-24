@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN" "https://aspectran.com/dtd/aspectran-9.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroyMethod="close">
@@ -28,23 +29,18 @@
 
     <!-- Test SqlSessionAgent with dynamic routing enabled -->
     <bean id="testSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
-        <arguments>
-            <item>testTxAspect</item>
-            <item>testReadOnlyTxAspect</item>
-        </arguments>
+        <argument>testTxAspect</argument>
+        <argument>testReadOnlyTxAspect</argument>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
     </bean>
 
     <bean id="testSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
-        <arguments>
-            <item>#{testSqlSession}</item>
-        </arguments>
+        <argument>#{testSqlSession}</argument>
     </bean>
 
     <!-- Generic DAO bean -->
     <bean id="testDao" class="com.aspectran.mybatis.TestDao">
-        <arguments>
-            <item>#{testSqlMapperProvider}</item>
-        </arguments>
+        <argument>#{testSqlMapperProvider}</argument>
     </bean>
 
 </aspectran>

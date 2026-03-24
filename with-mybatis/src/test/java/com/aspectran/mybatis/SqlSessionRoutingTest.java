@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @AspectranTest(
-    rules = "com/aspectran/mybatis/test-context.xml",
-    debugMode = true
+    rules = "com/aspectran/mybatis/test-context.xml"
 )
 class SqlSessionRoutingTest {
 
