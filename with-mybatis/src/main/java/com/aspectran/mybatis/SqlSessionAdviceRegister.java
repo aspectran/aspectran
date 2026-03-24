@@ -29,6 +29,7 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.TransactionIsolationLevel;
 
 /**
  * A helper class that dynamically registers a {@link SqlSessionAdvice} aspect.
@@ -48,12 +49,16 @@ class SqlSessionAdviceRegister {
 
     private ExecutorType executorType;
 
+    private TransactionIsolationLevel isolationLevel;
+
     private boolean autoCommit;
+
+    private boolean readOnly;
 
     private Class<?> targetBeanClass;
 
     /**
-     * Instantiates a new SqlSessionAdviceRegistrar.
+     * Instantiates a new SqlSessionAdviceRegister.
      * @param activityContext the activity context
      */
     SqlSessionAdviceRegister(ActivityContext activityContext) {
@@ -86,11 +91,27 @@ class SqlSessionAdviceRegister {
     }
 
     /**
+     * Sets the transaction isolation level for the sessions.
+     * @param isolationLevel the transaction isolation level
+     */
+    void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
+        this.isolationLevel = isolationLevel;
+    }
+
+    /**
      * Sets whether to enable auto-commit for the sessions.
      * @param autoCommit true to enable auto-commit, false otherwise
      */
     void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
+    }
+
+    /**
+     * Sets whether to enable read-only mode for the sessions.
+     * @param readOnly true to enable read-only mode, false otherwise
+     */
+    void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     /**
@@ -145,7 +166,11 @@ class SqlSessionAdviceRegister {
             if (executorType != null) {
                 sqlSessionAdvice.setExecutorType(executorType);
             }
+            if (isolationLevel != null) {
+                sqlSessionAdvice.setIsolationLevel(isolationLevel);
+            }
             sqlSessionAdvice.setAutoCommit(autoCommit);
+            sqlSessionAdvice.setReadOnly(readOnly);
             sqlSessionAdvice.open();
             return sqlSessionAdvice;
         });
@@ -153,14 +178,27 @@ class SqlSessionAdviceRegister {
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
         afterAdviceRule.setAdviceAction(activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionAdvice.commit();
+            if (sqlSessionAdvice != null) {
+                sqlSessionAdvice.commit();
+            }
+            return null;
+        });
+
+        AdviceRule thrownAdviceRule = aspectRule.newThrownAdviceRule();
+        thrownAdviceRule.setAdviceAction(activity -> {
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            if (sqlSessionAdvice != null) {
+                sqlSessionAdvice.rollback();
+            }
             return null;
         });
 
         AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
         finallyAdviceRule.setAdviceAction(activity -> {
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            sqlSessionAdvice.close();
+            if (sqlSessionAdvice != null) {
+                sqlSessionAdvice.close();
+            }
             return null;
         });
 

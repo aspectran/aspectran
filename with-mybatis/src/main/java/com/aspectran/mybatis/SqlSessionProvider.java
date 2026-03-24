@@ -22,6 +22,7 @@ import com.aspectran.utils.ClassUtils;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -43,7 +44,11 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private ExecutorType executorType;
 
+    private TransactionIsolationLevel isolationLevel;
+
     private boolean autoCommit;
+
+    private boolean readOnly;
 
     /**
      * Instantiates a new SqlSessionProvider.
@@ -73,6 +78,14 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
+     * Sets the transaction isolation level for the advice.
+     * @param isolationLevel the transaction isolation level
+     */
+    public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
+        this.isolationLevel = isolationLevel;
+    }
+
+    /**
      * Sets whether to enable auto-commit for the advice.
      * @param autoCommit true to enable auto-commit, false otherwise
      */
@@ -80,6 +93,20 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         this.autoCommit = autoCommit;
     }
 
+    /**
+     * Sets whether to enable read-only mode for the advice.
+     * @param readOnly true to enable read-only mode, false otherwise
+     */
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    /**
+     * Initializes the provider. If the aspect specified by {@code relevantAspectId}
+     * is not already registered in the aspect rule registry, this method
+     * automatically creates and registers a new {@link SqlSessionAdvice} aspect
+     * using the current configuration.
+     */
     @Override
     public void initialize() {
         if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
@@ -87,7 +114,9 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setRelevantAspectId(relevantAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
             register.setExecutorType(executorType);
+            register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
+            register.setReadOnly(readOnly);
             register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             register.register();
         }
