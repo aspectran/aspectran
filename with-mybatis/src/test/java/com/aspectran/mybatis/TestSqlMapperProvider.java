@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.mybatis;
+
+import org.apache.ibatis.session.SqlSession;
+
+public class TestSqlMapperProvider implements SqlMapperProvider {
+
+    private final SqlSession sqlSession;
+
+    public TestSqlMapperProvider(SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public SqlSession getSimpleSqlSession() {
+        return sqlSession;
+    }
+
+    @Override
+    public SqlSession getBatchSqlSession() {
+        return sqlSession;
+    }
+
+    @Override
+    public SqlSession getReuseSqlSession() {
+        return sqlSession;
+    }
+
+    @Override
+    public <T> T simple(Class<T> mapperType) {
+        return sqlSession.getMapper(mapperType);
+    }
+
+    @Override
+    public <T> T batch(Class<T> mapperType) {
+        return sqlSession.getMapper(mapperType);
+    }
+
+    @Override
+    public <T> T reuse(Class<T> mapperType) {
+        return sqlSession.getMapper(mapperType);
+    }
+
+}

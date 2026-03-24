@@ -38,7 +38,11 @@ import org.jspecify.annotations.NonNull;
  */
 public abstract class SqlSessionProvider extends InstantActivitySupport implements InitializableBean {
 
-    private final String relevantAspectId;
+    private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = { "select*" };
+
+    private final String txAspectId;
+
+    private String readOnlyAspectId;
 
     private String sqlSessionFactoryBeanId;
 
@@ -52,13 +56,21 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     /**
      * Instantiates a new SqlSessionProvider.
-     * @param relevantAspectId the ID of the aspect that provides the SqlSessionAdvice
+     * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
      */
-    public SqlSessionProvider(String relevantAspectId) {
-        if (relevantAspectId == null) {
-            throw new IllegalArgumentException("relevantAspectId must not be null");
+    public SqlSessionProvider(String txAspectId) {
+        if (txAspectId == null) {
+            throw new IllegalArgumentException("txAspectId must not be null");
         }
-        this.relevantAspectId = relevantAspectId;
+        this.txAspectId = txAspectId;
+    }
+
+    /**
+     * Sets the ID for the read-only aspect rule.
+     * @param readOnlyAspectId the read-only aspect ID
+     */
+    public void setReadOnlyAspectId(String readOnlyAspectId) {
+        this.readOnlyAspectId = readOnlyAspectId;
     }
 
     /**
@@ -102,21 +114,36 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
-     * Initializes the provider. If the aspect specified by {@code relevantAspectId}
+     * Initializes the provider. If the aspect specified by {@code txAspectId}
      * is not already registered in the aspect rule registry, this method
      * automatically creates and registers a new {@link SqlSessionAdvice} aspect
      * using the current configuration.
      */
     @Override
     public void initialize() {
-        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
+        if (!getActivityContext().getAspectRuleRegistry().contains(txAspectId)) {
             SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
-            register.setRelevantAspectId(relevantAspectId);
+            register.setTxAspectId(txAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
             register.setExecutorType(executorType);
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(readOnly);
+            if (readOnlyAspectId != null) {
+                register.setExcludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
+            }
+            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.register();
+        }
+        if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
+            SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
+            register.setTxAspectId(readOnlyAspectId);
+            register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
+            register.setExecutorType(executorType);
+            register.setIsolationLevel(isolationLevel);
+            register.setAutoCommit(autoCommit);
+            register.setReadOnly(true);
+            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             register.register();
         }
@@ -145,16 +172,25 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     @NonNull
     protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
-        SqlSessionAdvice sqlSessionAdvice = getAvailableActivity().getAdviceBean(relevantAspectId);
-        if (sqlSessionAdvice == null) {
-            sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
+        SqlSessionAdvice sqlSessionAdvice = null;
+        if (readOnlyAspectId != null) {
+            sqlSessionAdvice = getAvailableActivity().getAdviceBean(readOnlyAspectId);
+            if (sqlSessionAdvice == null) {
+                sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(readOnlyAspectId);
+            }
         }
         if (sqlSessionAdvice == null) {
-            if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
-                throw new IllegalArgumentException("Aspect '" + relevantAspectId +
+            sqlSessionAdvice = getAvailableActivity().getAdviceBean(txAspectId);
+            if (sqlSessionAdvice == null) {
+                sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(txAspectId);
+            }
+        }
+        if (sqlSessionAdvice == null) {
+            if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
+                throw new IllegalArgumentException("Aspect '" + txAspectId +
                         "' handling SqlSessionAdvice is not registered");
             }
-            throw new IllegalStateException("SqlSessionAdvice not found handled by aspect '" + relevantAspectId + "'");
+            throw new IllegalStateException("SqlSessionAdvice not found handled by aspect '" + txAspectId + "'");
         }
         return sqlSessionAdvice;
     }

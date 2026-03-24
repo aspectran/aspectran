@@ -17,7 +17,7 @@ package com.aspectran.web.activity;
 
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.test.web.WebAspectranTest;
-import com.aspectran.test.web.WebAspectranTester;
+import com.aspectran.test.web.WebActivityTester;
 import com.aspectran.utils.json.JsonWriter;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test case for WebAspectranTester.
+ * Test case for WebActivityTester.
  *
  * <p>Created: 2026. 3. 16.</p>
  */
@@ -41,13 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class WebActivityTest {
 
     @Test
-    void testHello(@NonNull WebAspectranTester tester) {
+    void testHello(@NonNull WebActivityTester tester) {
         tester.perform("/hello");
         assertEquals("Hello, Web World!", tester.getWrittenResponse());
     }
 
     @Test
-    void testDispatch(@NonNull WebAspectranTester tester) {
+    void testDispatch(@NonNull WebActivityTester tester) {
         tester.perform("/dispatch");
         assertEquals("/WEB-INF/jsp/templates/default.jsp",
                 tester.getLastRequest().getAttribute("jakarta.servlet.forward.request_uri"));
@@ -60,7 +60,7 @@ class WebActivityTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void testParams(@NonNull WebAspectranTester tester) {
+    void testParams(@NonNull WebActivityTester tester) {
         Map<String, String> params = Collections.singletonMap("name", "aspectran");
         tester.perform("/test/params", MethodType.GET, params);
 
@@ -71,21 +71,21 @@ class WebActivityTest {
     }
 
     @Test
-    void testRedirect(@NonNull WebAspectranTester tester) {
+    void testRedirect(@NonNull WebActivityTester tester) {
         tester.perform("/test/redirect");
         assertEquals(302, tester.getLastResponse().getStatus());
         assertEquals("/hello", tester.getLastResponse().getRedirectLocation());
     }
 
     @Test
-    void testDefaultEncoding(@NonNull WebAspectranTester tester) {
+    void testDefaultEncoding(@NonNull WebActivityTester tester) {
         tester.perform("/hello");
         assertEquals("utf-8", tester.getLastResponse().getCharacterEncoding());
         assertEquals("text/plain", tester.getLastResponse().getContentType());
     }
 
     @Test
-    void testExplicitEncoding(@NonNull WebAspectranTester tester) {
+    void testExplicitEncoding(@NonNull WebActivityTester tester) {
         tester.perform("/test/encoding");
         assertEquals("iso-8859-1", tester.getLastResponse().getCharacterEncoding());
         assertEquals("application/xml", tester.getLastResponse().getContentType());
@@ -96,7 +96,7 @@ class WebActivityTest {
     }
 
     @Test
-    void testMultipart(@NonNull WebAspectranTester tester) throws IOException {
+    void testMultipart(@NonNull WebActivityTester tester) throws IOException {
         String boundary = "AspeCtranBoundary";
         String contentType = "multipart/form-data; boundary=" + boundary;
         String body = "--" + boundary + "\r\n" +

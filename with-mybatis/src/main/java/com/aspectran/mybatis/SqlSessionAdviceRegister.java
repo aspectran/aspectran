@@ -19,6 +19,7 @@ import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -30,6 +31,9 @@ import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A helper class that dynamically registers a {@link SqlSessionAdvice} aspect.
@@ -43,7 +47,7 @@ class SqlSessionAdviceRegister {
 
     private final ActivityContext activityContext;
 
-    private String relevantAspectId;
+    private String txAspectId;
 
     private String sqlSessionFactoryBeanId;
 
@@ -57,6 +61,10 @@ class SqlSessionAdviceRegister {
 
     private Class<?> targetBeanClass;
 
+    private String[] includeMethodNamePatterns;
+
+    private String[] excludeMethodNamePatterns;
+
     /**
      * Instantiates a new SqlSessionAdviceRegister.
      * @param activityContext the activity context
@@ -68,10 +76,10 @@ class SqlSessionAdviceRegister {
     /**
      * Sets the ID for the aspect rule to be registered. This ID is used by
      * {@link SqlSessionProvider} to look up the advice bean.
-     * @param relevantAspectId the aspect ID
+     * @param txAspectId the aspect ID
      */
-    void setRelevantAspectId(String relevantAspectId) {
-        this.relevantAspectId = relevantAspectId;
+    void setTxAspectId(String txAspectId) {
+        this.txAspectId = txAspectId;
     }
 
     /**
@@ -123,13 +131,29 @@ class SqlSessionAdviceRegister {
         this.targetBeanClass = targetBeanClass;
     }
 
+    /**
+     * Sets the method name patterns to include.
+     * @param includeMethodNamePatterns the include method name patterns
+     */
+    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
+        this.includeMethodNamePatterns = includeMethodNamePatterns;
+    }
+
+    /**
+     * Sets the method name patterns to exclude.
+     * @param excludeMethodNamePatterns the exclude method name patterns
+     */
+    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
+        this.excludeMethodNamePatterns = excludeMethodNamePatterns;
+    }
+
     void register() {
-        Assert.notNull(relevantAspectId, "relevantAspectId must not be null");
+        Assert.notNull(txAspectId, "txAspectId must not be null");
         Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
 
-        if (activityContext.getAspectRuleRegistry().contains(relevantAspectId)) {
+        if (activityContext.getAspectRuleRegistry().contains(txAspectId)) {
             throw new IllegalStateException("SqlSessionAdvice is already registered with aspect id '" +
-                    relevantAspectId + "'");
+                    txAspectId + "'");
         }
 
         SqlSessionFactory sqlSessionFactory;
@@ -145,14 +169,31 @@ class SqlSessionAdviceRegister {
         }
 
         AspectRule aspectRule = new AspectRule();
-        aspectRule.setId(relevantAspectId);
+        aspectRule.setId(txAspectId);
         aspectRule.setOrder(0);
 
-        String pattern = "**@class:" + targetBeanClass.getName();
-        PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
+        String beanPattern = BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName();
+        List<PointcutPatternRule> excludePatternRuleList = null;
+        if (excludeMethodNamePatterns != null && excludeMethodNamePatterns.length > 0) {
+            excludePatternRuleList = new ArrayList<>(excludeMethodNamePatterns.length);
+            for (String methodNamePattern : excludeMethodNamePatterns) {
+                excludePatternRuleList.add(PointcutPatternRule.newInstance(null, beanPattern, methodNamePattern));
+            }
+        }
 
         PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
-        pointcutRule.addPointcutPatternRule(pointcutPatternRule);
+        if (includeMethodNamePatterns != null && includeMethodNamePatterns.length > 0) {
+            for (String methodNamePattern : includeMethodNamePatterns) {
+                PointcutPatternRule ppr = PointcutPatternRule.newInstance(null, beanPattern, methodNamePattern);
+                ppr.setExcludePatternRuleList(excludePatternRuleList);
+                pointcutRule.addPointcutPatternRule(ppr);
+            }
+        } else {
+            PointcutPatternRule ppr = PointcutPatternRule.newInstance(null,
+                    BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName(), null);
+            ppr.setExcludePatternRuleList(excludePatternRuleList);
+            pointcutRule.addPointcutPatternRule(ppr);
+        }
 
         JoinpointRule joinpointRule = new JoinpointRule();
         joinpointRule.setJoinpointTargetType(JoinpointTargetType.ACTIVITY);
@@ -177,7 +218,7 @@ class SqlSessionAdviceRegister {
 
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
         afterAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.commit();
             }
@@ -186,7 +227,7 @@ class SqlSessionAdviceRegister {
 
         AdviceRule thrownAdviceRule = aspectRule.newThrownAdviceRule();
         thrownAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.rollback();
             }
@@ -195,7 +236,7 @@ class SqlSessionAdviceRegister {
 
         AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
         finallyAdviceRule.setAdviceAction(activity -> {
-            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(relevantAspectId);
+            SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.close();
             }
@@ -206,7 +247,7 @@ class SqlSessionAdviceRegister {
             activityContext.getAspectRuleRegistry().addAspectRule(aspectRule);
         } catch (IllegalRuleException e) {
             ToStringBuilder tsb = new ToStringBuilder("Failed to register SqlSessionAdvice with");
-            tsb.append("relevantAspectId", relevantAspectId);
+            tsb.append("txAspectId", txAspectId);
             tsb.append("sqlSessionFactoryBeanId", sqlSessionFactoryBeanId);
             throw new RuntimeException(tsb.toString(), e);
         }

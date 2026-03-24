@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * <p>Created: 2026. 3. 16.</p>
  */
-public class WebAspectranTester {
+public class WebActivityTester {
 
     private final WebService webService;
 
@@ -39,7 +39,7 @@ public class WebAspectranTester {
 
     private MockHttpServletResponse lastResponse;
 
-    public WebAspectranTester(WebService webService) {
+    public WebActivityTester(WebService webService) {
         this.webService = webService;
     }
 
@@ -82,8 +82,9 @@ public class WebAspectranTester {
      * @param contentType the content type
      * @return the resulting Translet
      */
-    public Translet perform(String requestURI, MethodType requestMethod, Map<String, String> parameters,
-                            byte[] body, String contentType) {
+    public Translet perform(
+            String requestURI, MethodType requestMethod, Map<String, String> parameters,
+            byte[] body, String contentType) {
         MockHttpServletRequest request = new MockHttpServletRequest();
         if (requestMethod != null) {
             request.setMethod(requestMethod.name());

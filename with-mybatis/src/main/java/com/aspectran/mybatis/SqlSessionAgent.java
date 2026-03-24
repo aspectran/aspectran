@@ -43,10 +43,20 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
 
     /**
      * Instantiates a new SqlSessionAgent.
-     * @param relevantAspectId the ID of the aspect that provides the SqlSessionAdvice
+     * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
      */
-    public SqlSessionAgent(String relevantAspectId) {
-        super(relevantAspectId);
+    public SqlSessionAgent(String txAspectId) {
+        super(txAspectId);
+    }
+
+    /**
+     * Instantiates a new SqlSessionAgent.
+     * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
+     * @param readOnlyAspectId the ID of the aspect that provides the read-only SqlSessionAdvice
+     */
+    public SqlSessionAgent(String txAspectId, String readOnlyAspectId) {
+        super(txAspectId);
+        setReadOnlyAspectId(readOnlyAspectId);
     }
 
     /**

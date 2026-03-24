@@ -74,7 +74,8 @@ public class WebAspectranExtension extends AspectranExtension {
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
         return super.supportsParameter(parameterContext, extensionContext) ||
-                type == WebService.class || type == DefaultWebService.class || type == WebAspectranTester.class;
+                type == WebService.class || type == DefaultWebService.class ||
+                type == WebActivityTester.class;
     }
 
     @Override
@@ -85,8 +86,8 @@ public class WebAspectranExtension extends AspectranExtension {
         if (webService != null) {
             if (type == WebService.class || type == DefaultWebService.class) {
                 return webService;
-            } else if (type == WebAspectranTester.class) {
-                return new WebAspectranTester(webService);
+            } else if (type == WebActivityTester.class) {
+                return new WebActivityTester(webService);
             }
         }
         return super.resolveParameter(parameterContext, extensionContext);
