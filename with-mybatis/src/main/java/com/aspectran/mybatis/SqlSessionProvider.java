@@ -46,6 +46,8 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private String sqlSessionFactoryBeanId;
 
+    private String targetBeanId;
+
     private ExecutorType executorType;
 
     private TransactionIsolationLevel isolationLevel;
@@ -79,6 +81,22 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
      */
     public void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
+    }
+
+    /**
+     * Returns the ID of the target bean to which the SqlSession advice will be applied.
+     * @return the target bean ID
+     */
+    protected String getTargetBeanId() {
+        return targetBeanId;
+    }
+
+    /**
+     * Sets the ID of the target bean to which the SqlSession advice will be applied.
+     * @param targetBeanId the target bean ID
+     */
+    public void setTargetBeanId(String targetBeanId) {
+        this.targetBeanId = targetBeanId;
     }
 
     /**
@@ -125,26 +143,28 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
             register.setTxAspectId(txAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
-            register.setExecutorType(executorType);
-            register.setIsolationLevel(isolationLevel);
-            register.setAutoCommit(autoCommit);
-            register.setReadOnly(readOnly);
+            register.setTargetBeanId(targetBeanId);
             register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             if (readOnlyAspectId != null) {
                 register.setExcludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             }
+            register.setExecutorType(executorType);
+            register.setIsolationLevel(isolationLevel);
+            register.setAutoCommit(autoCommit);
+            register.setReadOnly(readOnly);
             register.register();
         }
         if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
             SqlSessionAdviceRegister register = new SqlSessionAdviceRegister(getActivityContext());
             register.setTxAspectId(readOnlyAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
+            register.setTargetBeanId(targetBeanId);
+            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.setExecutorType(executorType);
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(true);
-            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
-            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.register();
         }
     }

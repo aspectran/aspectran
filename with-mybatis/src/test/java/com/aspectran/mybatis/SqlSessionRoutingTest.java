@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @AspectranTest(
@@ -43,15 +44,42 @@ class SqlSessionRoutingTest {
             assertEquals(1, result);
             assertNotNull(member.getId());
 
+            /*
+            SqlSessionAdvice txAdvice = activity.getBeforeAdviceResult("testTxAspect");
+            if (txAdvice != null) {
+                txAdvice.commit();
+            }
+            */
+
             // 2. Get the member (Triggers testReadOnlyTxAspect - ReadOnly)
-            // Note: In a real Master-Slave setup, this might return null if 
+            // Note: In a real Master-Slave setup, this might return null if
             // the data hasn't synced or if using separate sessions without commit.
             Member foundMember = testDao.getMember(member.getId());
-            
+
             // Depending on the DB configuration (H2 mem), if they are different sessions,
             // the record might not be visible here because the insert session isn't committed yet.
             // This test helps confirm the "Strict Separation" behavior.
             System.out.println("Found member in Read-Only session: " + (foundMember != null));
+            assertNull(foundMember);
+
+            return null;
+        });
+    }
+
+    @Test
+    void testSingleTransaction(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            TestDao singleDao = activity.getBean("singleDao");
+
+            Member member = new Member();
+            member.setName("Jane Doe");
+            member.setEmail("jane@example.com");
+            int result = singleDao.insertMember(member);
+            assertEquals(1, result);
+
+            Member foundMember = singleDao.getMember(member.getId());
+            assertNotNull(foundMember);
+            assertEquals("Jane Doe", foundMember.getName());
 
             return null;
         });
@@ -84,11 +112,11 @@ class SqlSessionRoutingTest {
     void testReadOnlySessionViolation(@NonNull ActivityTester tester) throws ActivityPerformException {
         tester.perform(activity -> {
             TestDao testDao = activity.getBean("testDao");
-            
+
             // We need a way to force a write through a read-only session to verify protection.
             // If the method is named "get*", it goes to the Read-Only aspect.
             // Let's assume we have a trick method or we verify via connection state.
-            
+
             return null;
         });
     }

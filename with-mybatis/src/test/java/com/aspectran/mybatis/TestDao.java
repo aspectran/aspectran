@@ -25,17 +25,19 @@ public class TestDao extends SqlMapperAccess<TestMapper> implements TestMapper {
 
     @Override
     public Member getMember(Long id) {
-        return simple().getMember(id);
+        return mapper().getMember(id);
     }
 
     @Override
     public List<Member> getMemberList() {
-        return simple().getMemberList();
+        return mapper().getMemberList();
     }
 
     @Override
     public int insertMember(Member member) {
-        return simple().insertMember(member);
+        int result = mapper().insertMember(member);
+        //session().commit();
+        return result;
     }
 
 }

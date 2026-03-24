@@ -268,7 +268,7 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public <T> T getMapper(Class<T> type) {
-        return getSqlSession().getMapper(type);
+        return getConfiguration().getMapper(type, this);
     }
 
     @Advisable

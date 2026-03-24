@@ -55,6 +55,14 @@ class SqlSessionAdviceRegister {
 
     private String sqlSessionFactoryBeanId;
 
+    private String targetBeanId;
+
+    private Class<?> targetBeanClass;
+
+    private String[] includeMethodNamePatterns;
+
+    private String[] excludeMethodNamePatterns;
+
     private ExecutorType executorType;
 
     private TransactionIsolationLevel isolationLevel;
@@ -62,12 +70,6 @@ class SqlSessionAdviceRegister {
     private boolean autoCommit;
 
     private boolean readOnly;
-
-    private Class<?> targetBeanClass;
-
-    private String[] includeMethodNamePatterns;
-
-    private String[] excludeMethodNamePatterns;
 
     /**
      * Instantiates a new SqlSessionAdviceRegister.
@@ -92,6 +94,39 @@ class SqlSessionAdviceRegister {
      */
     void setSqlSessionFactoryBeanId(String sqlSessionFactoryBeanId) {
         this.sqlSessionFactoryBeanId = sqlSessionFactoryBeanId;
+    }
+
+    /**
+     * Sets the ID of the target bean to which the SqlSession advice will be applied.
+     * @param targetBeanId the target bean ID
+     */
+    void setTargetBeanId(String targetBeanId) {
+        this.targetBeanId = targetBeanId;
+    }
+
+    /**
+     * Sets the target bean class to which the SqlSession advice will be applied.
+     * Typically, this is a subclass of {@link SqlSessionProvider}, like {@link SqlSessionAgent}.
+     * @param targetBeanClass the target bean class
+     */
+    void setTargetBeanClass(Class<?> targetBeanClass) {
+        this.targetBeanClass = targetBeanClass;
+    }
+
+    /**
+     * Sets the method name patterns to include.
+     * @param includeMethodNamePatterns the include method name patterns
+     */
+    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
+        this.includeMethodNamePatterns = includeMethodNamePatterns;
+    }
+
+    /**
+     * Sets the method name patterns to exclude.
+     * @param excludeMethodNamePatterns the exclude method name patterns
+     */
+    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
+        this.excludeMethodNamePatterns = excludeMethodNamePatterns;
     }
 
     /**
@@ -126,31 +161,6 @@ class SqlSessionAdviceRegister {
         this.readOnly = readOnly;
     }
 
-    /**
-     * Sets the target bean class to which the SqlSession advice will be applied.
-     * Typically, this is a subclass of {@link SqlSessionProvider}, like {@link SqlSessionAgent}.
-     * @param targetBeanClass the target bean class
-     */
-    void setTargetBeanClass(Class<?> targetBeanClass) {
-        this.targetBeanClass = targetBeanClass;
-    }
-
-    /**
-     * Sets the method name patterns to include.
-     * @param includeMethodNamePatterns the include method name patterns
-     */
-    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
-        this.includeMethodNamePatterns = includeMethodNamePatterns;
-    }
-
-    /**
-     * Sets the method name patterns to exclude.
-     * @param excludeMethodNamePatterns the exclude method name patterns
-     */
-    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
-        this.excludeMethodNamePatterns = excludeMethodNamePatterns;
-    }
-
     void register() {
         Assert.notNull(txAspectId, "txAspectId must not be null");
         Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
@@ -176,7 +186,12 @@ class SqlSessionAdviceRegister {
         aspectRule.setId(txAspectId);
         aspectRule.setOrder(0);
 
-        String beanPattern = BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName();
+        String beanPattern;
+        if (targetBeanId != null) {
+            beanPattern = targetBeanId;
+        } else {
+            beanPattern = BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName();
+        }
         List<PointcutPatternRule> excludePatternRuleList = null;
         if (excludeMethodNamePatterns != null && excludeMethodNamePatterns.length > 0) {
             excludePatternRuleList = new ArrayList<>(excludeMethodNamePatterns.length);
@@ -193,8 +208,7 @@ class SqlSessionAdviceRegister {
                 pointcutRule.addPointcutPatternRule(ppr);
             }
         } else {
-            PointcutPatternRule ppr = PointcutPatternRule.newInstance(null,
-                    BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName(), null);
+            PointcutPatternRule ppr = PointcutPatternRule.newInstance(null, beanPattern, null);
             ppr.setExcludePatternRuleList(excludePatternRuleList);
             pointcutRule.addPointcutPatternRule(ppr);
         }

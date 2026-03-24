@@ -43,12 +43,36 @@ public interface SqlMapperProvider {
     SqlSession getReuseSqlSession();
 
     /**
+     * Returns a {@link SqlSession} with SIMPLE executor behavior.
+     * @return a {@code SqlSession}
+     */
+    default SqlSession session() {
+        return getSimpleSqlSession();
+    }
+
+    /**
+     * Returns a {@link SqlSession} with BATCH executor behavior.
+     * @return a {@code SqlSession}
+     */
+    default SqlSession batchSession() {
+        return getBatchSqlSession();
+    }
+
+    /**
+     * Returns a {@link SqlSession} with REUSE executor behavior.
+     * @return a {@code SqlSession}
+     */
+    default SqlSession reuseSession() {
+        return getReuseSqlSession();
+    }
+
+    /**
      * Returns a mapper instance that is bound to the SIMPLE {@link SqlSession}.
      * @param mapperType the type of the mapper
      * @param <T> the type of the mapper
      * @return a mapper instance
      */
-    default <T> T simple(Class<T> mapperType) {
+    default <T> T mapper(Class<T> mapperType) {
         return getSimpleSqlSession().getMapper(mapperType);
     }
 
@@ -58,7 +82,7 @@ public interface SqlMapperProvider {
      * @param <T> the type of the mapper
      * @return a mapper instance
      */
-    default <T> T batch(Class<T> mapperType) {
+    default <T> T batchMapper(Class<T> mapperType) {
         return getBatchSqlSession().getMapper(mapperType);
     }
 
@@ -68,8 +92,44 @@ public interface SqlMapperProvider {
      * @param <T> the type of the mapper
      * @return a mapper instance
      */
-    default <T> T reuse(Class<T> mapperType) {
+    default <T> T reuseMapper(Class<T> mapperType) {
         return getReuseSqlSession().getMapper(mapperType);
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the SIMPLE {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     * @deprecated use {@link #mapper(Class)} instead
+     */
+    @Deprecated
+    default <T> T simple(Class<T> mapperType) {
+        return mapper(mapperType);
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the BATCH {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     * @deprecated use {@link #batchMapper(Class)} instead
+     */
+    @Deprecated
+    default <T> T batch(Class<T> mapperType) {
+        return batchMapper(mapperType);
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the REUSE {@link SqlSession}.
+     * @param mapperType the type of the mapper
+     * @param <T> the type of the mapper
+     * @return a mapper instance
+     * @deprecated use {@link #reuseMapper(Class)} instead
+     */
+    @Deprecated
+    default <T> T reuse(Class<T> mapperType) {
+        return reuseMapper(mapperType);
     }
 
 }

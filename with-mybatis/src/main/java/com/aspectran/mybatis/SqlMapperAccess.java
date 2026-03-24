@@ -15,15 +15,17 @@
  */
 package com.aspectran.mybatis;
 
+import org.apache.ibatis.session.SqlSession;
+
 import java.lang.reflect.ParameterizedType;
 
 /**
  * Convenience base class that provides easy access to MyBatis mapper proxies
  * with different {@link org.apache.ibatis.session.ExecutorType} strategies.
  * <p>
- * Subclasses can expose typed accessors that call {@link #simple()},
- * {@link #batch()}, or {@link #reuse()} to obtain the mapper with the
- * corresponding executor behavior from a {@link SqlMapperProvider}.
+ * Subclasses can expose typed accessors that call {@link #mapper()},
+ * {@link #batchMapper()}, or {@link #reuseMapper()} to obtain the mapper
+ * with the corresponding executor behavior from a {@link SqlMapperProvider}.
  * </p>
  *
  * @param <T> the type of the mapper interface
@@ -67,30 +69,81 @@ public abstract class SqlMapperAccess<T> {
     }
 
     /**
+     * Returns the {@link SqlSession} instance that uses the SIMPLE executor type.
+     * @return the SqlSession with SIMPLE executor behavior
+     */
+    public SqlSession session() {
+        return mapperProvider.session();
+    }
+
+    /**
+     * Returns the {@link SqlSession} instance that uses the BATCH executor type.
+     * @return the SqlSession with BATCH executor behavior
+     */
+    public SqlSession batchSession() {
+        return mapperProvider.batchSession();
+    }
+
+    /**
+     * Returns the {@link SqlSession} instance that uses the REUSE executor type.
+     * @return the SqlSession with REUSE executor behavior
+     */
+    public SqlSession reuseSession() {
+        return mapperProvider.reuseSession();
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the SIMPLE {@link SqlSession}.
+     * @return a mapper instance
+     */
+    public T mapper() {
+        return mapperProvider.mapper(mapperType);
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the BATCH {@link SqlSession}.
+     * @return a mapper instance
+     */
+    public T batchMapper() {
+        return mapperProvider.batchMapper(mapperType);
+    }
+
+    /**
+     * Returns a mapper instance that is bound to the REUSE {@link SqlSession}.
+     * @return a mapper instance
+     */
+    public T reuseMapper() {
+        return mapperProvider.reuseMapper(mapperType);
+    }
+
+    /**
      * Returns a mapper instance that uses the SIMPLE executor type.
      * @return a mapper instance with SIMPLE executor behavior
-     * @see SqlMapperProvider#simple(Class)
+     * @deprecated use {@link #mapper()} instead
      */
+    @Deprecated
     public T simple() {
-        return mapperProvider.simple(mapperType);
+        return mapper();
     }
 
     /**
      * Returns a mapper instance that uses the BATCH executor type.
      * @return a mapper instance with BATCH executor behavior
-     * @see SqlMapperProvider#batch(Class)
+     * @deprecated use {@link #batchMapper()} instead
      */
+    @Deprecated
     public T batch() {
-        return mapperProvider.batch(mapperType);
+        return batchMapper();
     }
 
     /**
      * Returns a mapper instance that uses the REUSE executor type.
      * @return a mapper instance with REUSE executor behavior
-     * @see SqlMapperProvider#reuse(Class)
+     * @deprecated use {@link #reuseMapper()} instead
      */
+    @Deprecated
     public T reuse() {
-        return mapperProvider.reuse(mapperType);
+        return reuseMapper();
     }
 
 }

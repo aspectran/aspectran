@@ -201,9 +201,7 @@ public class SqlSessionAdvice {
                 } else {
                     tsb.appendForce("autoCommit", autoCommit);
                 }
-                if (readOnly) {
-                    tsb.append("readOnly", true);
-                }
+                tsb.appendForce("readOnly", readOnly);
                 logger.debug(tsb.toString());
             }
 

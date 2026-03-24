@@ -31,16 +31,33 @@
     <bean id="testSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
         <argument>testTxAspect</argument>
         <argument>testReadOnlyTxAspect</argument>
+        <property name="targetBeanId">testSqlSession</property>
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+        <property name="isolationLevel">#{class:org.apache.ibatis.session.TransactionIsolationLevel^READ_COMMITTED}</property>
     </bean>
 
     <bean id="testSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
         <argument>#{testSqlSession}</argument>
     </bean>
 
-    <!-- Generic DAO bean -->
+    <!-- Test SqlSessionAgent with single transaction (no routing) -->
+    <bean id="singleSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
+        <argument>singleTxAspect</argument>
+        <property name="targetBeanId">singleSqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+    </bean>
+
+    <bean id="singleSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
+        <argument>#{singleSqlSession}</argument>
+    </bean>
+
+    <!-- Generic DAO beans -->
     <bean id="testDao" class="com.aspectran.mybatis.TestDao">
         <argument>#{testSqlMapperProvider}</argument>
+    </bean>
+
+    <bean id="singleDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{singleSqlMapperProvider}</argument>
     </bean>
 
 </aspectran>
