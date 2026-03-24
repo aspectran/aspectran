@@ -31,6 +31,8 @@ import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,8 @@ import java.util.List;
  * <p>Created: 2025/10/22</p>
  */
 class SqlSessionAdviceRegister {
+
+    private static final Logger logger = LoggerFactory.getLogger(SqlSessionAdviceRegister.class);
 
     private final ActivityContext activityContext;
 
@@ -245,6 +249,9 @@ class SqlSessionAdviceRegister {
 
         try {
             activityContext.getAspectRuleRegistry().addAspectRule(aspectRule);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Registered AspectRule {}", aspectRule);
+            }
         } catch (IllegalRuleException e) {
             ToStringBuilder tsb = new ToStringBuilder("Failed to register SqlSessionAdvice with");
             tsb.append("txAspectId", txAspectId);

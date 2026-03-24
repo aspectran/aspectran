@@ -129,10 +129,10 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(readOnly);
+            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             if (readOnlyAspectId != null) {
                 register.setExcludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             }
-            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             register.register();
         }
         if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
@@ -143,8 +143,8 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(true);
-            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.register();
         }
     }
@@ -172,17 +172,18 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     @NonNull
     protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
+        Activity currentActivity = getAvailableActivity();
         SqlSessionAdvice sqlSessionAdvice = null;
         if (readOnlyAspectId != null) {
-            sqlSessionAdvice = getAvailableActivity().getAdviceBean(readOnlyAspectId);
+            sqlSessionAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
             if (sqlSessionAdvice == null) {
-                sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(readOnlyAspectId);
+                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
             }
         }
         if (sqlSessionAdvice == null) {
-            sqlSessionAdvice = getAvailableActivity().getAdviceBean(txAspectId);
+            sqlSessionAdvice = currentActivity.getAdviceBean(txAspectId);
             if (sqlSessionAdvice == null) {
-                sqlSessionAdvice = getAvailableActivity().getBeforeAdviceResult(txAspectId);
+                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
             }
         }
         if (sqlSessionAdvice == null) {

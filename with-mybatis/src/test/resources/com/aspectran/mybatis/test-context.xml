@@ -7,7 +7,7 @@
         <argument>
             <bean class="com.zaxxer.hikari.HikariConfig">
                 <property name="driverClassName">org.h2.Driver</property>
-                <property name="jdbcUrl">jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test-schema.sql'</property>
+                <property name="jdbcUrl">jdbc:h2:mem:testdb;MODE=MariaDB;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test-schema.sql'</property>
                 <property name="username">sa</property>
                 <property name="password"></property>
             </bean>

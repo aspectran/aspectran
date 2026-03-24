@@ -47,12 +47,12 @@ public class TestSqlMapperProvider implements SqlMapperProvider {
 
     @Override
     public <T> T batch(Class<T> mapperType) {
-        return sqlSession.getMapper(mapperType);
+        throw new UnsupportedOperationException("Batch operation is not supported");
     }
 
     @Override
     public <T> T reuse(Class<T> mapperType) {
-        return sqlSession.getMapper(mapperType);
+        throw new UnsupportedOperationException("Batch operation is not supported");
     }
 
 }
