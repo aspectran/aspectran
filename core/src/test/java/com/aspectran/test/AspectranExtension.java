@@ -130,7 +130,8 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
     public boolean supportsParameter(@NonNull ParameterContext parameterContext, @NonNull ExtensionContext extensionContext)
             throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
-        return (type == ActivityContext.class || type == InstantActivity.class || type == AspectranConfig.class);
+        return (type == ActivityContext.class || type == InstantActivity.class ||
+                type == ActivityTester.class || type == AspectranConfig.class);
     }
 
     @Override
@@ -143,6 +144,8 @@ public class AspectranExtension implements BeforeAllCallback, AfterAllCallback, 
                 return activityContext;
             } else if (type == InstantActivity.class) {
                 return new InstantActivity(activityContext);
+            } else if (type == ActivityTester.class) {
+                return new ActivityTester(activityContext);
             } else if (type == AspectranConfig.class) {
                 return extensionContext.getStore(NAMESPACE).get(AspectranConfig.class, AspectranConfig.class);
             }
