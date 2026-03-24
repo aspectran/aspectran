@@ -15,6 +15,8 @@
  */
 package com.aspectran.mybatis;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
  * Convenience base class that provides easy access to MyBatis mapper proxies
  * with different {@link org.apache.ibatis.session.ExecutorType} strategies.
@@ -23,12 +25,28 @@ package com.aspectran.mybatis;
  * {@link #batch()}, or {@link #reuse()} to obtain the mapper with the
  * corresponding executor behavior from a {@link SqlMapperProvider}.
  * </p>
+ *
+ * @param <T> the type of the mapper interface
  */
 public abstract class SqlMapperAccess<T> {
 
     private final SqlMapperProvider mapperProvider;
 
     private final Class<T> mapperType;
+
+    /**
+     * Instantiates a new SqlMapperAccess.
+     * <p>This constructor automatically resolves the mapper interface type from the generic
+     * type parameter. If the generic type information is missing or the inheritance
+     * structure is too complex for automatic resolution, please use the constructor
+     * {@link #SqlMapperAccess(SqlMapperProvider, Class)} to specify the mapper type explicitly.</p>
+     * @param mapperProvider the provider for MyBatis mappers
+     */
+    @SuppressWarnings("unchecked")
+    public SqlMapperAccess(SqlMapperProvider mapperProvider) {
+        this.mapperType = (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.mapperProvider = mapperProvider;
+    }
 
     /**
      * Instantiates a new SqlMapperAccess.

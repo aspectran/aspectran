@@ -21,8 +21,11 @@ import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Manages the lifecycle of a MyBatis {@link SqlSession}, including creation,
@@ -53,7 +56,11 @@ public class SqlSessionAdvice {
 
     private ExecutorType executorType;
 
+    private TransactionIsolationLevel isolationLevel;
+
     private boolean autoCommit;
+
+    private boolean readOnly;
 
     private SqlSession sqlSession;
 
@@ -112,6 +119,48 @@ public class SqlSessionAdvice {
     }
 
     /**
+     * Returns the transaction isolation level for the session.
+     * @return the transaction isolation level
+     */
+    public TransactionIsolationLevel getIsolationLevel() {
+        return isolationLevel;
+    }
+
+    /**
+     * Sets the transaction isolation level for the session.
+     * @param isolationLevel the transaction isolation level
+     */
+    public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
+        Assert.state(sqlSession == null, "Sql Session is already open");
+        this.isolationLevel = isolationLevel;
+    }
+
+    /**
+     * Sets the transaction isolation level for the session.
+     * @param isolationLevel the transaction isolation level name (e.g., "READ_COMMITTED")
+     */
+    public void setIsolationLevel(String isolationLevel) {
+        setIsolationLevel(TransactionIsolationLevel.valueOf(isolationLevel));
+    }
+
+    /**
+     * Returns whether the session is in read-only mode.
+     * @return true if read-only mode is enabled, false otherwise
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Sets whether the session is in read-only mode.
+     * @param readOnly true to enable read-only mode, false otherwise
+     */
+    public void setReadOnly(boolean readOnly) {
+        Assert.state(sqlSession == null, "Sql Session is already open");
+        this.readOnly = readOnly;
+    }
+
+    /**
      * Returns the managed {@link SqlSession} instance.
      * This session is created by the {@code open()} method and its lifecycle
      * (commit, rollback, close) is controlled by this advice.
@@ -128,14 +177,33 @@ public class SqlSessionAdvice {
      */
     public void open() {
         if (sqlSession == null) {
-            sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
+            if (isolationLevel != null) {
+                sqlSession = sqlSessionFactory.openSession(executorType, isolationLevel);
+            } else {
+                sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
+            }
+
+            if (readOnly) {
+                try {
+                    sqlSession.getConnection().setReadOnly(true);
+                } catch (SQLException e) {
+                    logger.warn("Failed to set database connection to read-only", e);
+                }
+            }
 
             if (logger.isDebugEnabled()) {
                 ToStringBuilder tsb = new ToStringBuilder((arbitrarilyClosed ? "Reopen " : "Open ") +
                         ObjectUtils.simpleIdentityToString(sqlSession));
                 tsb.append("executorType",
                         (executorType != null ? executorType : sqlSession.getConfiguration().getDefaultExecutorType()));
-                tsb.appendForce("autoCommit", autoCommit);
+                if (isolationLevel != null) {
+                    tsb.append("isolationLevel", isolationLevel);
+                } else {
+                    tsb.appendForce("autoCommit", autoCommit);
+                }
+                if (readOnly) {
+                    tsb.append("readOnly", true);
+                }
                 logger.debug(tsb.toString());
             }
 
