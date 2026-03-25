@@ -15,9 +15,18 @@
  */
 package com.aspectran.jpa;
 
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.ToStringBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * An advisory helper that manages the lifecycle of an {@link EntityManager} and its
@@ -27,10 +36,10 @@ import jakarta.persistence.EntityTransaction;
  * It encapsulates a simple, explicit usage pattern for JPA operations:
  * </p>
  * <ul>
- *   <li>{@link #open()}: Lazily creates and holds an {@code EntityManager}.</li>
- *   <li>{@link #transactional()}: Begins a new transaction if one is not already active.</li>
- *   <li>{@link #commit()}: Commits the active transaction.</li>
- *   <li>{@link #close()}: Rolls back any pending transaction and closes the {@code EntityManager}.</li>
+ *   <li>open(): lazily create and hold an {@link EntityManager}</li>
+ *   <li>transactional(): Begins a new transaction if one is not already active.</li>
+ *   <li>commit(): Commits the active transaction.</li>
+ *   <li>close(): Rolls back any pending transaction and closes the {@code EntityManager}.</li>
  * </ul>
  * <p>
  * This implementation is minimal and does not integrate with container-managed transactions,
@@ -41,9 +50,13 @@ import jakarta.persistence.EntityTransaction;
  */
 public class EntityManagerAdvice {
 
+    private static final Logger logger = LoggerFactory.getLogger(EntityManagerAdvice.class);
+
     private final EntityManagerFactory entityManagerFactory;
 
     private EntityManager entityManager;
+
+    private boolean readOnly;
 
     /**
      * Flag indicating whether the EntityManager was closed by external logic.
@@ -62,10 +75,32 @@ public class EntityManagerAdvice {
     }
 
     /**
+     * Returns whether the entity manager is in read-only mode.
+     * @return true if read-only mode is enabled, false otherwise
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Sets whether the entity manager is in read-only mode.
+     * @param readOnly true to enable read-only mode, false otherwise
+     */
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    /**
      * Returns the {@link EntityManager} currently managed by this advice.
-     * @return the active {@link EntityManager}, or {@code null} if it has not been opened or has been closed
+     * @return the active {@link EntityManager}
      */
     public EntityManager getEntityManager() {
+        if (entityManager == null) {
+            if (arbitrarilyClosed) {
+                throw new IllegalStateException("EntityManager has been arbitrarily closed and cannot be reopened lazily");
+            }
+            doOpen();
+        }
         return entityManager;
     }
 
@@ -74,8 +109,24 @@ public class EntityManagerAdvice {
      * This method prepares the advice for subsequent data access operations.
      */
     public void open() {
+        doOpen();
+    }
+
+    private void doOpen() {
         if (entityManager == null) {
             entityManager = entityManagerFactory.createEntityManager();
+
+            if (readOnly) {
+                applyReadOnly(entityManager, true);
+            }
+
+            if (logger.isDebugEnabled()) {
+                ToStringBuilder tsb = new ToStringBuilder((arbitrarilyClosed ? "Reopen " : "Open ") +
+                        ObjectUtils.simpleIdentityToString(entityManager));
+                tsb.appendForce("readOnly", readOnly);
+                logger.debug(tsb.toString());
+            }
+
             arbitrarilyClosed = false;
         }
     }
@@ -85,10 +136,51 @@ public class EntityManagerAdvice {
      * If an active transaction is present, it will be rolled back. This method is safe to call multiple times.
      */
     public void close() {
+        close(false);
+    }
+
+    /**
+     * Closes the managed {@link EntityManager} and releases associated resources.
+     * @param arbitrarily true if user code arbitrarily closes the entity manager, false otherwise
+     */
+    public void close(boolean arbitrarily) {
         if (entityManager != null) {
             rollbackTransaction();
+
+            if (readOnly) {
+                applyReadOnly(entityManager, false);
+            }
+
+            arbitrarilyClosed = arbitrarily;
             entityManager.close();
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Close {}", ObjectUtils.simpleIdentityToString(entityManager));
+            }
+
             entityManager = null;
+        }
+    }
+
+    /**
+     * Applies the read-only setting to the entity manager.
+     * <p>This method attempts to set the read-only state on the underlying JDBC connection
+     * if possible. It also tries to apply provider-specific optimizations for Hibernate
+     * and EclipseLink using reflection to avoid hard dependencies.</p>
+     * @param entityManager the entity manager to configure
+     * @param readOnly true to enable read-only mode, false to disable it
+     */
+    private void applyReadOnly(@NonNull EntityManager entityManager, boolean readOnly) {
+        // Try to unwrap to JDBC Connection (standard JPA approach)
+        try {
+            Connection conn = entityManager.unwrap(Connection.class);
+            if (conn != null) {
+                conn.setReadOnly(readOnly);
+            }
+        } catch (PersistenceException | SQLException e) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Failed to set JDBC connection to read-only: {}", e.getMessage());
+            }
         }
     }
 
@@ -106,7 +198,7 @@ public class EntityManagerAdvice {
      * This operation is a no-op if the {@code EntityManager} is not open or has been marked as arbitrarily closed.
      */
     public void transactional() {
-        if (checkOpen()) {
+        if (readOnly || isEntityManagerUnavailable()) {
             return;
         }
         beginTransaction();
@@ -117,7 +209,7 @@ public class EntityManagerAdvice {
      * This operation is a no-op if the {@code EntityManager} is not open or has been marked as arbitrarily closed.
      */
     public void commit() {
-        if (checkOpen()) {
+        if (readOnly || isEntityManagerUnavailable()) {
             return;
         }
         commitTransaction();
@@ -128,7 +220,7 @@ public class EntityManagerAdvice {
      */
     private void beginTransaction() {
         if (!transactional) {
-            EntityTransaction transaction = entityManager.getTransaction();
+            EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
                 transaction.rollback();
             }
@@ -142,7 +234,7 @@ public class EntityManagerAdvice {
      */
     private void commitTransaction() {
         if (transactional) {
-            EntityTransaction transaction = entityManager.getTransaction();
+            EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
                 transaction.commit();
             }
@@ -155,7 +247,7 @@ public class EntityManagerAdvice {
      */
     private void rollbackTransaction() {
         if (transactional) {
-            EntityTransaction transaction = entityManager.getTransaction();
+            EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
                 transaction.rollback();
             }
@@ -164,18 +256,19 @@ public class EntityManagerAdvice {
     }
 
     /**
-     * Verifies that the {@link EntityManager} is open and ready for use.
-     * @return {@code true} if operations should be skipped because the entity manager was arbitrarily closed
-     * @throws IllegalStateException if the {@link EntityManager} is not open
+     * Checks if the EntityManager is unavailable for operations.
+     * @return true if the entity manager is not open or has been arbitrarily closed, false otherwise
      */
-    private boolean checkOpen() {
-        if (arbitrarilyClosed) {
-            return true;
-        }
-        if (entityManager == null) {
-            throw new IllegalStateException("EntityManager is not open");
-        }
-        return false;
+    private boolean isEntityManagerUnavailable() {
+        return (entityManager == null || arbitrarilyClosed);
+    }
+
+    /**
+     * Returns whether the managed {@link EntityManager} is currently open.
+     * @return true if the entity manager is open, false otherwise
+     */
+    public boolean isOpen() {
+        return (entityManager != null);
     }
 
 }

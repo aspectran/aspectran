@@ -1,0 +1,265 @@
+/*
+ * Copyright (c) 2008-present The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.aspectran.jpa;
+
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.AdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.JoinpointRule;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.ToStringBuilder;
+import jakarta.persistence.EntityManagerFactory;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
+/**
+ * A helper class that dynamically registers an {@link EntityManagerAdvice} aspect.
+ * <p>This class is used internally by {@link EntityManagerProvider} to encapsulate
+ * the logic for creating and registering the AOP aspect that manages the
+ * lifecycle of a JPA {@link jakarta.persistence.EntityManager}.</p>
+ */
+class EntityManagerAdviceRegister {
+
+    private static final Logger logger = LoggerFactory.getLogger(EntityManagerAdviceRegister.class);
+
+    static final String CURRENT_ASPECT_ID_SETTING_PREFIX = EntityManagerAdviceRegister.class.getName() + ".currentAspectId:";
+
+    private final ActivityContext activityContext;
+
+    private String txAspectId;
+
+    private String entityManagerFactoryBeanId;
+
+    private String targetBeanId;
+
+    private Class<?> targetBeanClass;
+
+    private String[] includeMethodNamePatterns;
+
+    private String[] excludeMethodNamePatterns;
+
+    private boolean readOnly;
+
+    /**
+     * Instantiates a new EntityManagerAdviceRegister.
+     * @param activityContext the activity context
+     */
+    EntityManagerAdviceRegister(ActivityContext activityContext) {
+        this.activityContext = activityContext;
+    }
+
+    /**
+     * Sets the ID for the aspect rule to be registered.
+     * @param txAspectId the aspect ID
+     */
+    void setTxAspectId(String txAspectId) {
+        this.txAspectId = txAspectId;
+    }
+
+    /**
+     * Sets the bean ID of the {@link EntityManagerFactory} to be used.
+     * @param entityManagerFactoryBeanId the bean ID of the EntityManagerFactory
+     */
+    void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
+        this.entityManagerFactoryBeanId = entityManagerFactoryBeanId;
+    }
+
+    /**
+     * Sets the ID of the target bean to which the advice will be applied.
+     * @param targetBeanId the target bean ID
+     */
+    void setTargetBeanId(String targetBeanId) {
+        this.targetBeanId = targetBeanId;
+    }
+
+    /**
+     * Sets the target bean class to which the advice will be applied.
+     * @param targetBeanClass the target bean class
+     */
+    void setTargetBeanClass(Class<?> targetBeanClass) {
+        this.targetBeanClass = targetBeanClass;
+    }
+
+    /**
+     * Sets the method name patterns to include.
+     * @param includeMethodNamePatterns the include method name patterns
+     */
+    void setIncludeMethodNamePatterns(String[] includeMethodNamePatterns) {
+        this.includeMethodNamePatterns = includeMethodNamePatterns;
+    }
+
+    /**
+     * Sets the method name patterns to exclude.
+     * @param excludeMethodNamePatterns the exclude method name patterns
+     */
+    void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
+        this.excludeMethodNamePatterns = excludeMethodNamePatterns;
+    }
+
+    /**
+     * Sets whether to enable read-only mode for the sessions.
+     * @param readOnly true to enable read-only mode, false otherwise
+     */
+    void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    void register() {
+        Assert.notNull(txAspectId, "txAspectId must not be null");
+        Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
+
+        if (activityContext.getAspectRuleRegistry().contains(txAspectId)) {
+            throw new IllegalStateException("EntityManagerAdvice is already registered with aspect id '" +
+                    txAspectId + "'");
+        }
+
+        EntityManagerFactory entityManagerFactory;
+        try {
+            entityManagerFactory = activityContext.getBeanRegistry().getBean(EntityManagerFactory.class, entityManagerFactoryBeanId);
+        } catch (NoSuchBeanException e) {
+            if (entityManagerFactoryBeanId != null) {
+                throw new IllegalStateException("Cannot resolve EntityManagerFactory with bean id '"
+                        + entityManagerFactoryBeanId + "'", e);
+            } else {
+                throw new IllegalStateException("No EntityManagerFactory bean found", e);
+            }
+        } catch (NoUniqueBeanException e) {
+            throw new IllegalStateException("No unique EntityManagerFactory bean found; " +
+                    "If multiple EntityManagerFactory beans are defined, please specify an entityManagerFactoryBeanId", e);
+        }
+
+        AspectRule aspectRule = new AspectRule();
+        aspectRule.setId(txAspectId);
+        aspectRule.setOrder(0);
+
+        String beanPattern;
+        if (targetBeanId != null) {
+            beanPattern = targetBeanId;
+        } else {
+            beanPattern = BeanRule.CLASS_DIRECTIVE_PREFIX + targetBeanClass.getName();
+        }
+        List<PointcutPatternRule> excludePatternRuleList = null;
+        if (excludeMethodNamePatterns != null && excludeMethodNamePatterns.length > 0) {
+            excludePatternRuleList = new ArrayList<>(excludeMethodNamePatterns.length);
+            for (String methodNamePattern : excludeMethodNamePatterns) {
+                excludePatternRuleList.add(PointcutPatternRule.newInstance(null, beanPattern, methodNamePattern));
+            }
+        }
+
+        PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
+        if (includeMethodNamePatterns != null && includeMethodNamePatterns.length > 0) {
+            for (String methodNamePattern : includeMethodNamePatterns) {
+                PointcutPatternRule ppr = PointcutPatternRule.newInstance(null, beanPattern, methodNamePattern);
+                ppr.setExcludePatternRuleList(excludePatternRuleList);
+                pointcutRule.addPointcutPatternRule(ppr);
+            }
+        } else {
+            PointcutPatternRule ppr = PointcutPatternRule.newInstance(null, beanPattern, null);
+            ppr.setExcludePatternRuleList(excludePatternRuleList);
+            pointcutRule.addPointcutPatternRule(ppr);
+        }
+
+        JoinpointRule joinpointRule = new JoinpointRule();
+        joinpointRule.setJoinpointTargetType(JoinpointTargetType.ACTIVITY);
+        joinpointRule.setPointcutRule(pointcutRule);
+
+        aspectRule.setJoinpointRule(joinpointRule);
+
+        AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
+        beforeAdviceRule.setAdviceAction(activity -> {
+            pushCurrentAspectId(activity, targetBeanClass, txAspectId);
+            EntityManagerAdvice entityManagerAdvice = new EntityManagerAdvice(entityManagerFactory);
+            entityManagerAdvice.setReadOnly(readOnly);
+            return entityManagerAdvice;
+        });
+
+        AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
+        afterAdviceRule.setAdviceAction(activity -> {
+            EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(txAspectId);
+            if (entityManagerAdvice != null) {
+                entityManagerAdvice.commit();
+            }
+            return null;
+        });
+
+        AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
+        finallyAdviceRule.setAdviceAction(activity -> {
+            removeCurrentAspectId(activity, targetBeanClass, txAspectId);
+            EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(txAspectId);
+            if (entityManagerAdvice != null) {
+                entityManagerAdvice.close();
+            }
+            return null;
+        });
+
+        try {
+            activityContext.getAspectRuleRegistry().addAspectRule(aspectRule);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Registered AspectRule {}", aspectRule);
+            }
+        } catch (IllegalRuleException e) {
+            ToStringBuilder tsb = new ToStringBuilder("Failed to register EntityManagerAdvice with");
+            tsb.append("txAspectId", txAspectId);
+            tsb.append("entityManagerFactoryBeanId", entityManagerFactoryBeanId);
+            throw new RuntimeException(tsb.toString(), e);
+        }
+    }
+
+    static void pushCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
+        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
+        Deque<String> stack = activity.getSetting(settingName);
+        if (stack == null) {
+            stack = new ArrayDeque<>();
+            activity.putSetting(settingName, stack);
+        }
+        stack.push(aspectId);
+    }
+
+    static void removeCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
+        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
+        Deque<String> stack = activity.getSetting(settingName);
+        if (stack != null) {
+            stack.remove(aspectId);
+            if (stack.isEmpty()) {
+                activity.putSetting(settingName, null);
+            }
+        }
+    }
+
+    @Nullable
+    static String peekCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass) {
+        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
+        Deque<String> stack = activity.getSetting(settingName);
+        return (stack != null ? stack.peek() : null);
+    }
+
+}

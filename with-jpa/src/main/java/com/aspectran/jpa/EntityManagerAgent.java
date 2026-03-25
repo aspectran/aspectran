@@ -61,10 +61,20 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     /**
      * Instantiates a new {@code EntityManagerAgent}.
-     * @param relevantAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
+     * @param txAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
      */
-    public EntityManagerAgent(String relevantAspectId) {
-        super(relevantAspectId);
+    public EntityManagerAgent(String txAspectId) {
+        super(txAspectId);
+    }
+
+    /**
+     * Instantiates a new {@code EntityManagerAgent}.
+     * @param txAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
+     * @param readOnlyAspectId the ID of the aspect that manages the read-only {@link EntityManagerAdvice}
+     */
+    public EntityManagerAgent(String txAspectId, String readOnlyAspectId) {
+        super(txAspectId);
+        setReadOnlyAspectId(readOnlyAspectId);
     }
 
     /**

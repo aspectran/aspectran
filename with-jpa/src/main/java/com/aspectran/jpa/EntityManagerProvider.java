@@ -20,16 +20,7 @@ import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.context.rule.AdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
-import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.ToStringBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.jspecify.annotations.NonNull;
@@ -41,7 +32,7 @@ import org.jspecify.annotations.NonNull;
  * <p>
  * Subclasses can obtain the current {@code EntityManager} by calling
  * {@link #getEntityManager()}. Transactional behavior is controlled by the AOP advice
- * linked via the {@code relevantAspectId}. If the required aspect is not pre-configured
+ * linked via the {@code txAspectId}. If the required aspect is not pre-configured
  * in the Aspectran context, this provider can dynamically register it during initialization.
  * This ensures that methods are executed within a proper transactional boundary.
  * </p>
@@ -50,19 +41,33 @@ import org.jspecify.annotations.NonNull;
  */
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
-    private final String relevantAspectId;
+    private final String txAspectId;
+
+    private String readOnlyAspectId;
 
     private String entityManagerFactoryBeanId;
 
+    private String targetBeanId;
+
+    private boolean reuseWritable = true;
+
     /**
      * Instantiates a new {@code EntityManagerProvider}.
-     * @param relevantAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
+     * @param txAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
      */
-    public EntityManagerProvider(String relevantAspectId) {
-        if (relevantAspectId == null) {
-            throw new IllegalArgumentException("relevantAspectId must not be null");
+    public EntityManagerProvider(String txAspectId) {
+        if (txAspectId == null) {
+            throw new IllegalArgumentException("txAspectId must not be null");
         }
-        this.relevantAspectId = relevantAspectId;
+        this.txAspectId = txAspectId;
+    }
+
+    /**
+     * Sets the ID for the read-only aspect rule.
+     * @param readOnlyAspectId the read-only aspect ID
+     */
+    public void setReadOnlyAspectId(String readOnlyAspectId) {
+        this.readOnlyAspectId = readOnlyAspectId;
     }
 
     /**
@@ -75,11 +80,92 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     }
 
     /**
+     * Returns the ID of the target bean to which the entity manager advice will be applied.
+     * @return the target bean ID
+     */
+    protected String getTargetBeanId() {
+        return targetBeanId;
+    }
+
+    /**
+     * Sets the ID of the target bean to which the entity manager advice will be applied.
+     * @param targetBeanId the target bean ID
+     */
+    public void setTargetBeanId(String targetBeanId) {
+        this.targetBeanId = targetBeanId;
+    }
+
+    /**
      * Returns the target bean class to which the entity manager advice will be applied.
      * @return the target bean class
      */
     protected Class<?> getTargetBeanClass() {
         return ClassUtils.getUserClass(getClass());
+    }
+
+    /**
+     * Sets whether to reuse a writable session even for read-only operations.
+     * @param reuseWritable true to reuse a writable session if one is already open,
+     *                      false to always use a read-only session for read-only operations.
+     *                      The default is {@code true}.
+     */
+    public void setReuseWritable(boolean reuseWritable) {
+        this.reuseWritable = reuseWritable;
+    }
+
+    /**
+     * Returns the {@link EntityManagerFactory} associated with this provider.
+     * @return the EntityManagerFactory
+     */
+    protected EntityManagerFactory getEntityManagerFactory() {
+        try {
+            return getActivityContext().getBeanRegistry().getBean(EntityManagerFactory.class, entityManagerFactoryBeanId);
+        } catch (NoSuchBeanException e) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("Failed to resolve EntityManagerFactory for aspect '").append(txAspectId).append("'");
+            if (targetBeanId != null) {
+                msg.append(" on bean '").append(targetBeanId).append("'");
+            }
+            if (entityManagerFactoryBeanId != null) {
+                msg.append(" with bean id '").append(entityManagerFactoryBeanId).append("'");
+            } else {
+                msg.append("; No EntityManagerFactory bean found");
+            }
+            throw new IllegalStateException(msg.toString(), e);
+        } catch (NoUniqueBeanException e) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("Failed to resolve EntityManagerFactory for aspect '").append(txAspectId).append("'");
+            if (targetBeanId != null) {
+                msg.append(" on bean '").append(targetBeanId).append("'");
+            }
+            msg.append("; No unique EntityManagerFactory bean found. If multiple EntityManagerFactory beans are defined, please specify an entityManagerFactoryBeanId");
+            throw new IllegalStateException(msg.toString(), e);
+        }
+    }
+
+    /**
+     * Initializes the provider by ensuring the necessary {@link EntityManagerAdvice} aspect is registered.
+     * If the aspect is not found, it proceeds to register it dynamically.
+     */
+    @Override
+    public void initialize() {
+        if (!getActivityContext().getAspectRuleRegistry().contains(txAspectId)) {
+            EntityManagerAdviceRegister register = new EntityManagerAdviceRegister(getActivityContext());
+            register.setTxAspectId(txAspectId);
+            register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
+            register.setTargetBeanId(targetBeanId);
+            register.setTargetBeanClass(getTargetBeanClass());
+            register.register();
+        }
+        if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
+            EntityManagerAdviceRegister register = new EntityManagerAdviceRegister(getActivityContext());
+            register.setTxAspectId(readOnlyAspectId);
+            register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
+            register.setTargetBeanId(targetBeanId);
+            register.setTargetBeanClass(getTargetBeanClass());
+            register.setReadOnly(true);
+            register.register();
+        }
     }
 
     /**
@@ -90,17 +176,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
      * @throws IllegalStateException if the {@code EntityManager} is not open and cannot be reopened
      */
     protected EntityManager getEntityManager() {
-        EntityManagerAdvice entityManagerAdvice = getEntityManagerAdvice();
-        EntityManager entityManager = entityManagerAdvice.getEntityManager();
-        if (entityManager == null) {
-            if (entityManagerAdvice.isArbitrarilyClosed()) {
-                entityManagerAdvice.open();
-                entityManager = entityManagerAdvice.getEntityManager();
-            } else {
-                throw new IllegalStateException("EntityManager is not opened");
-            }
-        }
-        return entityManager;
+        return getEntityManagerAdvice().getEntityManager();
     }
 
     /**
@@ -112,16 +188,49 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     @NonNull
     protected EntityManagerAdvice getEntityManagerAdvice() {
         checkTransactional();
-        EntityManagerAdvice entityManagerAdvice = getAvailableActivity().getAdviceBean(relevantAspectId);
-        if (entityManagerAdvice == null) {
-            entityManagerAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
+        Activity currentActivity = getAvailableActivity();
+
+        EntityManagerAdvice writableAdvice = currentActivity.getAdviceBean(txAspectId);
+        if (writableAdvice == null) {
+            writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
         }
+        EntityManagerAdvice readOnlyAdvice = null;
+        if (readOnlyAspectId != null) {
+            readOnlyAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
+            if (readOnlyAdvice == null) {
+                readOnlyAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
+            }
+        }
+
+        if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
+            return writableAdvice;
+        }
+
+        String currentAspectId = EntityManagerAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
+        if (currentAspectId != null) {
+            EntityManagerAdvice entityManagerAdvice = currentActivity.getAdviceBean(currentAspectId);
+            if (entityManagerAdvice == null) {
+                entityManagerAdvice = currentActivity.getBeforeAdviceResult(currentAspectId);
+            }
+            if (entityManagerAdvice != null) {
+                return entityManagerAdvice;
+            }
+        }
+
+        if (writableAdvice != null && writableAdvice.isOpen()) {
+            return writableAdvice;
+        }
+        if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
+            return readOnlyAdvice;
+        }
+
+        EntityManagerAdvice entityManagerAdvice = (readOnlyAdvice != null ? readOnlyAdvice : writableAdvice);
         if (entityManagerAdvice == null) {
-            if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
-                throw new IllegalArgumentException("Aspect '" + relevantAspectId +
+            if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
+                throw new IllegalArgumentException("Aspect '" + txAspectId +
                         "' handling EntityManagerAdvice is not registered");
             }
-            throw new IllegalStateException("EntityManagerAdvice not found handled by aspect '" + relevantAspectId + "'");
+            throw new IllegalStateException("EntityManagerAdvice not found handled by aspect '" + txAspectId + "'");
         }
         return entityManagerAdvice;
     }
@@ -134,90 +243,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
                     " needs to be wrapped in an instant activity.");
-        }
-    }
-
-    /**
-     * Initializes the provider by ensuring the necessary {@link EntityManagerAdvice} aspect is registered.
-     * If the aspect is not found, it proceeds to register it dynamically.
-     */
-    @Override
-    public void initialize() {
-        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
-            registerEntityManagerAdvice();
-        }
-    }
-
-    /**
-     * Dynamically registers an {@link AspectRule} to manage the {@link EntityManager} lifecycle.
-     * This method creates and configures an aspect with before, after, and finally advice
-     * to handle opening, committing, and closing the {@code EntityManager}.
-     * @throws IllegalStateException if the advice is already registered or the {@link EntityManagerFactory} cannot be resolved
-     */
-    protected void registerEntityManagerAdvice() {
-        if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
-            throw new IllegalStateException("EntityManagerAdvice is already registered");
-        }
-
-        EntityManagerFactory entityManagerFactory;
-        try {
-            entityManagerFactory = getBeanRegistry().getBean(EntityManagerFactory.class, entityManagerFactoryBeanId);
-        } catch (NoSuchBeanException e) {
-            if (entityManagerFactoryBeanId != null) {
-                throw new IllegalStateException("Cannot resolve EntityManagerFactory with bean id '"
-                        + entityManagerFactoryBeanId + "'", e);
-            } else {
-                throw new IllegalStateException("No EntityManagerFactory bean found", e);
-            }
-        } catch (NoUniqueBeanException e) {
-            throw new IllegalStateException("No unique EntityManagerFactory bean found; " +
-                    "If multiple EntityManagerFactory beans are defined, please specify an entityManagerFactoryBeanId", e);
-        }
-
-        AspectRule aspectRule = new AspectRule();
-        aspectRule.setId(relevantAspectId);
-        aspectRule.setOrder(0);
-
-        String pattern = "**@class:" + getTargetBeanClass().getName();
-        PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
-
-        PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
-        pointcutRule.addPointcutPatternRule(pointcutPatternRule);
-
-        JoinpointRule joinpointRule = new JoinpointRule();
-        joinpointRule.setJoinpointTargetType(JoinpointTargetType.ACTIVITY);
-        joinpointRule.setPointcutRule(pointcutRule);
-
-        aspectRule.setJoinpointRule(joinpointRule);
-
-        AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction(activity -> {
-            EntityManagerAdvice entityManagerAdvice = new EntityManagerAdvice(entityManagerFactory);
-            entityManagerAdvice.open();
-            return entityManagerAdvice;
-        });
-
-        AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
-        afterAdviceRule.setAdviceAction(activity -> {
-            EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            entityManagerAdvice.commit();
-            return null;
-        });
-
-        AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
-        finallyAdviceRule.setAdviceAction(activity -> {
-            EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            entityManagerAdvice.close();
-            return null;
-        });
-
-        try {
-            getActivityContext().getAspectRuleRegistry().addAspectRule(aspectRule);
-        } catch (IllegalRuleException e) {
-            ToStringBuilder tsb = new ToStringBuilder("Failed to register EntityManagerAdvice with");
-            tsb.append("relevantAspectId", relevantAspectId);
-            tsb.append("entityManagerFactoryBeanId", entityManagerFactoryBeanId);
-            throw new RuntimeException(tsb.toString(), e);
         }
     }
 

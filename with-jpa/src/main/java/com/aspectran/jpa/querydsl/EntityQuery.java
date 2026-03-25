@@ -37,8 +37,12 @@ public class EntityQuery extends EntityManagerAgent implements JPQLQueryFactory 
 
     private JPQLTemplates templates;
 
-    public EntityQuery(String relevantAspectId) {
-        super(relevantAspectId);
+    public EntityQuery(String txAspectId) {
+        super(txAspectId);
+    }
+
+    public EntityQuery(String txAspectId, String readOnlyAspectId) {
+        super(txAspectId, readOnlyAspectId);
     }
 
     public void setTemplates(JPQLTemplates templates) {

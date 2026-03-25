@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <append resource="com/aspectran/jpa/db/db-rules.xml"/>
+
+    <!-- Strict Routing: reuseWritable=false (Must use separate sessions) -->
+    <bean id="strictRoutingEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+        <argument>strictTxAspect</argument>
+        <argument>strictReadOnlyTxAspect</argument>
+        <property name="targetBeanId">strictRoutingEntityQuery</property>
+        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
+        <property name="reuseWritable" valueType="boolean">false</property>
+    </bean>
+
+    <bean id="strictDao" class="com.aspectran.jpa.test.JpaTestDao">
+        <argument>#{strictRoutingEntityQuery}</argument>
+    </bean>
+
+    <!-- Intelligent Routing: reuseWritable=true (Reuse writable session if open) -->
+    <bean id="intelligentRoutingEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+        <argument>intelligentTxAspect</argument>
+        <argument>intelligentReadOnlyTxAspect</argument>
+        <property name="targetBeanId">intelligentRoutingEntityQuery</property>
+        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
+        <property name="reuseWritable" valueType="boolean">true</property>
+    </bean>
+
+    <bean id="intelligentDao" class="com.aspectran.jpa.test.JpaTestDao">
+        <argument>#{intelligentRoutingEntityQuery}</argument>
+    </bean>
+
+    <!-- Test EntityQuery with single transaction (no routing) -->
+    <bean id="singleEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+        <argument>singleTxAspect</argument>
+        <property name="targetBeanId">singleEntityQuery</property>
+        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
+    </bean>
+
+    <bean id="singleDao" class="com.aspectran.jpa.test.JpaTestDao">
+        <argument>#{singleEntityQuery}</argument>
+    </bean>
+
+</aspectran>

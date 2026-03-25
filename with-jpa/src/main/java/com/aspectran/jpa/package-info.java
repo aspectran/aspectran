@@ -27,10 +27,13 @@
  *       the lifecycle of a Jakarta Persistence {@code EntityManager} and its
  *       transaction boundaries.</li>
  *   <li>{@link com.aspectran.jpa.EntityManagerProvider}: A base class for components
- *       that need access to a context-bound {@code EntityManager} managed via AOP.</li>
+ *       that need access to a context-bound {@code EntityManager} managed via AOP.
+ *       It supports stack-based aspect tracking and intelligent routing between
+ *       writable and read-only sessions.</li>
  *   <li>{@link com.aspectran.jpa.EntityManagerAgent}: A proxy for {@code EntityManager}
  *       that simplifies data access and automatically participates in transactions
- *       managed by {@code EntityManagerAdvice}.</li>
+ *       managed by {@code EntityManagerAdvice}. It supports dual aspect IDs for
+ *       switching between writable and read-only modes.</li>
  * </ul>
  */
 package com.aspectran.jpa;
