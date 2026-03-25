@@ -15,6 +15,8 @@
  */
 package com.aspectran.mybatis;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.List;
 
 public class TestDao extends SqlMapperAccess<TestMapper> implements TestMapper {
@@ -38,7 +40,7 @@ public class TestDao extends SqlMapperAccess<TestMapper> implements TestMapper {
         return mapper().insertMember(member);
     }
 
-    public void insertMembers(Member... members) {
+    public void insertMembers(Member @NonNull ... members) {
         for (Member member : members) {
             insertMember(member);
         }

@@ -40,6 +40,14 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = { "select*" };
 
+    private static final String[] MANAGEMENT_METHOD_PATTERNS = {
+            "getMapper",
+            "getConfiguration",
+            "getConnection",
+            "close",
+            "clearCache"
+    };
+
     private final String txAspectId;
 
     private String readOnlyAspectId;
@@ -57,6 +65,8 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     private boolean readOnly;
 
     private boolean readOnlyRollbackOnClose;
+
+    private boolean reuseWritable = true;
 
     /**
      * Instantiates a new SqlSessionProvider.
@@ -185,6 +195,24 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
+     * Sets whether to reuse a writable session even for read-only operations.
+     * @param reuseWritable true to reuse a writable session if one is already open,
+     *                      false to always use a read-only session for read-only operations.
+     *                      The default is {@code true}.
+     */
+    public void setReuseWritable(boolean reuseWritable) {
+        this.reuseWritable = reuseWritable;
+    }
+
+    /**
+     * Returns the {@link SqlSessionFactory} associated with this provider.
+     * @return the SqlSessionFactory
+     */
+    protected SqlSessionFactory getSqlSessionFactory() {
+        return getActivityContext().getBeanRegistry().getBean(SqlSessionFactory.class, sqlSessionFactoryBeanId);
+    }
+
+    /**
      * Initializes the provider. If the aspect specified by {@code txAspectId}
      * is not already registered in the aspect rule registry, this method
      * automatically creates and registers a new {@link SqlSessionAdvice} aspect
@@ -199,7 +227,12 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setTargetBeanId(targetBeanId);
             register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
             if (readOnlyAspectId != null) {
-                register.setExcludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
+                String[] excludeMethodNamePatterns = new String[DEFAULT_READONLY_METHOD_PATTERNS.length + MANAGEMENT_METHOD_PATTERNS.length];
+                System.arraycopy(DEFAULT_READONLY_METHOD_PATTERNS, 0, excludeMethodNamePatterns, 0, DEFAULT_READONLY_METHOD_PATTERNS.length);
+                System.arraycopy(MANAGEMENT_METHOD_PATTERNS, 0, excludeMethodNamePatterns, DEFAULT_READONLY_METHOD_PATTERNS.length, MANAGEMENT_METHOD_PATTERNS.length);
+                register.setExcludeMethodNamePatterns(excludeMethodNamePatterns);
+            } else {
+                register.setExcludeMethodNamePatterns(MANAGEMENT_METHOD_PATTERNS);
             }
             register.setExecutorType(executorType);
             register.setIsolationLevel(isolationLevel);
@@ -225,42 +258,38 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
-     * Returns the current SqlSession bound to this advisor/context, opening one
-     * if necessary when previously marked as arbitrarily closed.
+     * Returns the current SqlSession bound to this advisor/context.
      * @return the active SqlSession
-     * @throws IllegalStateException if a SqlSession has not been opened
      */
     protected SqlSession getSqlSession() {
-        SqlSessionAdvice sqlSessionAdvice = getSqlSessionAdvice();
-        SqlSession sqlSession = sqlSessionAdvice.getSqlSession();
-        if (sqlSession == null) {
-            if (sqlSessionAdvice.isArbitrarilyClosed()) {
-                sqlSessionAdvice.open();
-                sqlSession = sqlSessionAdvice.getSqlSession();
-            } else {
-                throw new IllegalStateException("SqlSession is not opened");
-            }
-        }
-        return sqlSession;
+        return getSqlSessionAdvice().getSqlSession();
     }
 
     @NonNull
     protected SqlSessionAdvice getSqlSessionAdvice() {
         checkTransactional();
         Activity currentActivity = getAvailableActivity();
-        SqlSessionAdvice sqlSessionAdvice = null;
-        if (readOnlyAspectId != null) {
-            sqlSessionAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
-            if (sqlSessionAdvice == null) {
-                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
-            }
+
+        SqlSessionAdvice writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
+        SqlSessionAdvice readOnlyAdvice = (readOnlyAspectId != null ? currentActivity.getBeforeAdviceResult(readOnlyAspectId) : null);
+
+        if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
+            return writableAdvice;
         }
-        if (sqlSessionAdvice == null) {
-            sqlSessionAdvice = currentActivity.getAdviceBean(txAspectId);
-            if (sqlSessionAdvice == null) {
-                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
-            }
+
+        String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, ClassUtils.getUserClass(getClass()));
+        if (currentAspectId != null) {
+            return currentActivity.getBeforeAdviceResult(currentAspectId);
         }
+
+        if (writableAdvice != null && writableAdvice.isOpen()) {
+            return writableAdvice;
+        }
+        if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
+            return readOnlyAdvice;
+        }
+
+        SqlSessionAdvice sqlSessionAdvice = (readOnlyAdvice != null ? readOnlyAdvice : writableAdvice);
         if (sqlSessionAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + txAspectId +

@@ -32,35 +32,49 @@ import static org.junit.jupiter.api.Assertions.fail;
 class SqlSessionRoutingTest {
 
     @Test
-    void testDynamicRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
+    void testStrictRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
         tester.perform(activity -> {
-            TestDao testDao = activity.getBean("testDao");
+            TestDao strictDao = activity.getBean("strictDao");
 
-            // 1. Insert a member (Triggers testTxAspect - Writable)
+            // 1. Insert a member (Triggers strictTxAspect - Writable)
             Member member = new Member();
-            member.setName("John Doe");
-            member.setEmail("john@example.com");
-            int result = testDao.insertMember(member);
+            member.setName("Strict User");
+            member.setEmail("strict@example.com");
+            int result = strictDao.insertMember(member);
             assertEquals(1, result);
             assertNotNull(member.getId());
 
-            /*
-            SqlSessionAdvice txAdvice = activity.getBeforeAdviceResult("testTxAspect");
-            if (txAdvice != null) {
-                txAdvice.commit();
-            }
-            */
+            // 2. Get the member (Triggers strictReadOnlyTxAspect - ReadOnly)
+            // With strict routing (reuseWritable=false), it opens a separate read-only session.
+            // Since the insert session isn't committed yet, the record is not visible here.
+            Member foundMember = strictDao.getMember(member.getId());
+            System.out.println("Found member in Strict Read-Only session: " + (foundMember != null));
+            assertNull(foundMember, "Record should not be visible in a separate uncommitted session");
 
-            // 2. Get the member (Triggers testReadOnlyTxAspect - ReadOnly)
-            // Note: In a real Master-Slave setup, this might return null if
-            // the data hasn't synced or if using separate sessions without commit.
-            Member foundMember = testDao.getMember(member.getId());
+            return null;
+        });
+    }
 
-            // Depending on the DB configuration (H2 mem), if they are different sessions,
-            // the record might not be visible here because the insert session isn't committed yet.
-            // This test helps confirm the "Strict Separation" behavior.
-            System.out.println("Found member in Read-Only session: " + (foundMember != null));
-            assertNull(foundMember);
+    @Test
+    void testIntelligentRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
+        tester.perform(activity -> {
+            TestDao intelligentDao = activity.getBean("intelligentDao");
+
+            // 1. Insert a member (Triggers intelligentTxAspect - Writable)
+            Member member = new Member();
+            member.setName("Intelligent User");
+            member.setEmail("intel@example.com");
+            int result = intelligentDao.insertMember(member);
+            assertEquals(1, result);
+            assertNotNull(member.getId());
+
+            // 2. Get the member (Triggers intelligentReadOnlyTxAspect - ReadOnly)
+            // With intelligent routing (reuseWritable=true), it reuses the open writable session.
+            // Therefore, the uncommitted record should be visible.
+            Member foundMember = intelligentDao.getMember(member.getId());
+            System.out.println("Found member in Intelligent session (reused): " + (foundMember != null));
+            assertNotNull(foundMember, "Record should be visible as it reuses the same transaction session");
+            assertEquals("Intelligent User", foundMember.getName());
 
             return null;
         });
@@ -85,16 +99,6 @@ class SqlSessionRoutingTest {
         });
     }
 
-    /**
-     * Tests the SERIALIZABLE isolation level.
-     * This level is the highest isolation level and is essential for applications
-     * where maximum data consistency is required, such as financial transaction
-     * systems. It prevents all common concurrency problems, including dirty reads,
-     * non-repeatable reads, and phantom reads, by ensuring that transactions
-     * behave as if they were executed sequentially.
-     * @param tester the activity tester
-     * @throws ActivityPerformException if the activity performance fails
-     */
     @Test
     void testSerializableTransaction(@NonNull ActivityTester tester) throws ActivityPerformException {
         tester.perform(activity -> {
@@ -118,14 +122,14 @@ class SqlSessionRoutingTest {
     void testRollbackOnException(@NonNull ActivityTester tester) throws ActivityPerformException {
         // 1. Initial count
         Integer initialCount = tester.perform(activity -> {
-            TestDao testDao = activity.getBean("testDao");
-            return testDao.getMemberList().size();
+            TestDao strictDao = activity.getBean("strictDao");
+            return strictDao.getMemberList().size();
         });
 
         // 2. Attempt to insert both in one transaction (should fail and rollback)
         try {
             tester.perform(activity -> {
-                TestDao testDao = activity.getBean("testDao");
+                TestDao strictDao = activity.getBean("strictDao");
 
                 Member goodMember = new Member();
                 goodMember.setName("Good Member");
@@ -134,7 +138,7 @@ class SqlSessionRoutingTest {
                 Member badMember = new Member(); // name is null -> triggers DB exception
 
                 // This should throw an exception that bubbles up to CoreActivity
-                testDao.insertMembers(goodMember, badMember);
+                strictDao.insertMembers(goodMember, badMember);
                 return null;
             });
             fail("Should have thrown an ActivityPerformException");
@@ -142,32 +146,25 @@ class SqlSessionRoutingTest {
             // Expected rollback
         }
 
-        // 3. Verify rollback: even the goodMember should not exist in the DB
+        // 3. Verify rollback
         tester.perform(activity -> {
-            TestDao testDao = activity.getBean("testDao");
-            assertEquals(initialCount, testDao.getMemberList().size());
+            TestDao strictDao = activity.getBean("strictDao");
+            assertEquals(initialCount, strictDao.getMemberList().size());
             return null;
         });
     }
 
-    /**
-     * Verifies that write operations (INSERT, UPDATE, DELETE) are blocked
-     * when using a session explicitly marked as Read-Only.
-     * This is crucial for protecting Replica/Slave databases from accidental writes.
-     * @param tester the activity tester
-     * @throws ActivityPerformException if the activity performance fails
-     */
     @Test
     void testReadOnlySessionViolation(@NonNull ActivityTester tester) throws ActivityPerformException {
         // 1. Initial count
         Integer initialCount = tester.perform(activity -> {
-            TestDao testDao = activity.getBean("testDao");
-            return testDao.getMemberList().size();
+            TestDao strictDao = activity.getBean("strictDao");
+            return strictDao.getMemberList().size();
         });
 
         // 2. Attempt a write operation in a Read-Only session
         tester.perform(activity -> {
-            SqlSessionAgent testSqlSession = activity.getBean("testSqlSession");
+            SqlSessionAgent strictRoutingSqlSession = activity.getBean("strictRoutingSqlSession");
 
             Member member = new Member();
             member.setName("Should Not Persist");
@@ -175,18 +172,17 @@ class SqlSessionRoutingTest {
 
             try {
                 // Calling a select* method on SqlSessionAgent triggers the Read-Only aspect.
-                testSqlSession.selectOne("com.aspectran.mybatis.TestMapper.insertMember", member);
+                strictRoutingSqlSession.selectOne("com.aspectran.mybatis.TestMapper.insertMember", member);
             } catch (Exception e) {
-                // Some drivers might throw an exception here, which is also fine.
                 System.out.println("Caught exception in Read-Only session: " + e.getMessage());
             }
             return null;
         });
 
-        // 3. Verify that the data was not persisted after the previous session closed
+        // 3. Verify
         tester.perform(activity -> {
-            TestDao testDao = activity.getBean("testDao");
-            assertEquals(initialCount, testDao.getMemberList().size(),
+            TestDao strictDao = activity.getBean("strictDao");
+            assertEquals(initialCount, strictDao.getMemberList().size(),
                     "Member count should not have increased after a Read-Only session");
             return null;
         });

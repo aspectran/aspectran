@@ -90,7 +90,7 @@ public class SqlSessionAdvice {
      *                   is called, false to commit manually
      */
     public void setAutoCommit(boolean autoCommit) {
-        Assert.state(sqlSession == null, "Sql Session is already open");
+        ensureNotOpen();
         this.autoCommit = autoCommit;
     }
 
@@ -107,7 +107,7 @@ public class SqlSessionAdvice {
      * @param executorType executor types include SIMPLE, REUSE, and BATCH
      */
     public void setExecutorType(ExecutorType executorType) {
-        Assert.state(sqlSession == null, "Sql Session is already open");
+        ensureNotOpen();
         this.executorType = executorType;
     }
 
@@ -133,7 +133,7 @@ public class SqlSessionAdvice {
      * @param isolationLevel the transaction isolation level
      */
     public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
-        Assert.state(sqlSession == null, "Sql Session is already open");
+        ensureNotOpen();
         this.isolationLevel = isolationLevel;
     }
 
@@ -158,7 +158,7 @@ public class SqlSessionAdvice {
      * @param readOnly true to enable read-only mode, false otherwise
      */
     public void setReadOnly(boolean readOnly) {
-        Assert.state(sqlSession == null, "Sql Session is already open");
+        ensureNotOpen();
         this.readOnly = readOnly;
     }
 
@@ -167,17 +167,31 @@ public class SqlSessionAdvice {
      * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
      */
     public void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
-        Assert.state(sqlSession == null, "Sql Session is already open");
+        ensureNotOpen();
         this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
+    }
+
+    /**
+     * Returns whether the managed {@link SqlSession} is currently open.
+     * @return true if the session is open, false otherwise
+     */
+    public boolean isOpen() {
+        return (sqlSession != null);
     }
 
     /**
      * Returns the managed {@link SqlSession} instance.
      * This session is created by the {@code open()} method and its lifecycle
      * (commit, rollback, close) is controlled by this advice.
-     * @return the active SqlSession, or {@code null} if the session has not been opened
+     * @return the active SqlSession
      */
     public SqlSession getSqlSession() {
+        if (sqlSession == null) {
+            if (arbitrarilyClosed) {
+                throw new IllegalStateException("SqlSession has been arbitrarily closed and cannot be reopened lazily");
+            }
+            open();
+        }
         return sqlSession;
     }
 
@@ -280,7 +294,7 @@ public class SqlSessionAdvice {
      * To force the commit, call {@link #commit(boolean)}.
      */
     public void commit() {
-        if (checkOpen() || readOnly) {
+        if (isSessionUnavailable() || readOnly) {
             return;
         }
 
@@ -296,7 +310,7 @@ public class SqlSessionAdvice {
      * @param force forces connection commit
      */
     public void commit(boolean force) {
-        if (checkOpen() || readOnly) {
+        if (isSessionUnavailable() || readOnly) {
             return;
         }
 
@@ -316,7 +330,7 @@ public class SqlSessionAdvice {
      * To force the rollback, call {@link #rollback(boolean)}.
      */
     public void rollback() {
-        if (checkOpen()) {
+        if (isSessionUnavailable()) {
             return;
         }
 
@@ -333,7 +347,7 @@ public class SqlSessionAdvice {
      * @param force forces connection rollback
      */
     public void rollback(boolean force) {
-        if (checkOpen()) {
+        if (isSessionUnavailable()) {
             return;
         }
 
@@ -359,12 +373,20 @@ public class SqlSessionAdvice {
      * @param arbitrarily true if user code arbitrarily closes the session, false otherwise
      */
     public void close(boolean arbitrarily) {
-        if (checkOpen()) {
+        if (isSessionUnavailable()) {
             return;
         }
 
-        if (readOnly && readOnlyRollbackOnClose) {
-            rollback(true);
+        if (readOnly) {
+            if (readOnlyRollbackOnClose) {
+                rollback(true);
+            }
+            try {
+                // Reset read-only state before returning connection to the pool
+                sqlSession.getConnection().setReadOnly(false);
+            } catch (SQLException e) {
+                // Ignore
+            }
         }
 
         arbitrarilyClosed = arbitrarily;
@@ -386,18 +408,19 @@ public class SqlSessionAdvice {
     }
 
     /**
-     * Checks if the SqlSession is open.
-     * If user code has already closed the session, it always returns true to ignore further processing.
-     * @return true if user code has already closed the session, otherwise false
+     * Checks if the SqlSession is unavailable for operations.
+     * @return true if the session is not open or has been arbitrarily closed, false otherwise
      */
-    private boolean checkOpen() {
-        if (arbitrarilyClosed) {
-            return true;
-        }
-        if (sqlSession == null) {
-            throw new IllegalStateException("SqlSession is not open");
-        }
-        return false;
+    private boolean isSessionUnavailable() {
+        return (sqlSession == null || arbitrarilyClosed);
+    }
+
+    /**
+     * Ensures that the SqlSession is not already open.
+     * @throws IllegalStateException if the session is already open
+     */
+    private void ensureNotOpen() {
+        Assert.state(sqlSession == null, "Sql Session is already open");
     }
 
 }

@@ -27,18 +27,42 @@
         </property>
     </bean>
 
-    <!-- Test SqlSessionAgent with dynamic routing enabled -->
-    <bean id="testSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
-        <argument>testTxAspect</argument>
-        <argument>testReadOnlyTxAspect</argument>
-        <property name="targetBeanId">testSqlSession</property>
+    <!-- Strict Routing: reuseWritable=false (Must use separate sessions) -->
+    <bean id="strictRoutingSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
+        <argument>strictTxAspect</argument>
+        <argument>strictReadOnlyTxAspect</argument>
+        <property name="targetBeanId">strictRoutingSqlSession</property>
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
         <property name="isolationLevelAsString">READ_COMMITTED</property>
         <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
+        <property name="reuseWritable" valueType="boolean">false</property>
     </bean>
 
-    <bean id="testSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
-        <argument>#{testSqlSession}</argument>
+    <bean id="strictSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
+        <argument>#{strictRoutingSqlSession}</argument>
+    </bean>
+
+    <bean id="strictDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{strictSqlMapperProvider}</argument>
+    </bean>
+
+    <!-- Intelligent Routing: reuseWritable=true (Reuse writable session if open) -->
+    <bean id="intelligentRoutingSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
+        <argument>intelligentTxAspect</argument>
+        <argument>intelligentReadOnlyTxAspect</argument>
+        <property name="targetBeanId">intelligentRoutingSqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+        <property name="isolationLevelAsString">READ_COMMITTED</property>
+        <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
+        <property name="reuseWritable" valueType="boolean">true</property>
+    </bean>
+
+    <bean id="intelligentSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
+        <argument>#{intelligentRoutingSqlSession}</argument>
+    </bean>
+
+    <bean id="intelligentDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{intelligentSqlMapperProvider}</argument>
     </bean>
 
     <!-- Test SqlSessionAgent with SERIALIZABLE isolation level -->
@@ -53,6 +77,10 @@
         <argument>#{serializableSqlSession}</argument>
     </bean>
 
+    <bean id="serializableDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{serializableSqlMapperProvider}</argument>
+    </bean>
+
     <!-- Test SqlSessionAgent with single transaction (no routing) -->
     <bean id="singleSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
         <argument>singleTxAspect</argument>
@@ -62,15 +90,6 @@
 
     <bean id="singleSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
         <argument>#{singleSqlSession}</argument>
-    </bean>
-
-    <!-- Generic DAO beans -->
-    <bean id="testDao" class="com.aspectran.mybatis.TestDao">
-        <argument>#{testSqlMapperProvider}</argument>
-    </bean>
-
-    <bean id="serializableDao" class="com.aspectran.mybatis.TestDao">
-        <argument>#{serializableSqlMapperProvider}</argument>
     </bean>
 
     <bean id="singleDao" class="com.aspectran.mybatis.TestDao">

@@ -262,7 +262,7 @@ public class SqlSessionAgent extends SqlSessionProvider implements SqlSession {
     @Advisable
     @Override
     public Configuration getConfiguration() {
-        return getSqlSession().getConfiguration();
+        return getSqlSessionFactory().getConfiguration();
     }
 
     @Advisable
