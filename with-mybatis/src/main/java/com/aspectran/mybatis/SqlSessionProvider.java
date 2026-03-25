@@ -108,11 +108,54 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
+     * Sets the default {@link ExecutorType} for the advice.
+     * <p>Supported executor types are:</p>
+     * <ul>
+     *   <li>{@code SIMPLE} - This executor type does nothing special. It creates a new
+     *       PreparedStatement for each execution.</li>
+     *   <li>{@code REUSE} - This executor type reuses PreparedStatements.</li>
+     *   <li>{@code BATCH} - This executor type batches all update statements and
+     *       reuses PreparedStatements. It is suitable for executing a large number
+     *       of update statements in a single batch.</li>
+     * </ul>
+     * @param executorType the executor type name
+     */
+    public void setExecutorTypeAsString(String executorType) {
+        if (executorType != null) {
+            setExecutorType(ExecutorType.valueOf(executorType.toUpperCase()));
+        }
+    }
+
+    /**
      * Sets the transaction isolation level for the advice.
      * @param isolationLevel the transaction isolation level
      */
     public void setIsolationLevel(TransactionIsolationLevel isolationLevel) {
         this.isolationLevel = isolationLevel;
+    }
+
+    /**
+     * Sets the transaction isolation level for the advice.
+     * <p>Supported isolation levels are:</p>
+     * <ul>
+     *   <li>{@code NONE} - Transactions are not supported.</li>
+     *   <li>{@code READ_UNCOMMITTED} - Dirty reads, non-repeatable reads and phantom reads can occur.
+     *       This level allows a transaction to read data that is being modified by another transaction
+     *       but has not yet been committed.</li>
+     *   <li>{@code READ_COMMITTED} - Dirty reads are prevented; non-repeatable reads and phantom reads can occur.
+     *       This level only allows reading data that has been committed.</li>
+     *   <li>{@code REPEATABLE_READ} - Dirty reads and non-repeatable reads are prevented; phantom reads can occur.
+     *       This level ensures that if a row is read twice within the same transaction, the results are the same.</li>
+     *   <li>{@code SERIALIZABLE} - Dirty reads, non-repeatable reads and phantom reads are prevented.
+     *       This is the highest isolation level, which ensures that transactions are executed in a way
+     *       that is equivalent to serial execution.</li>
+     * </ul>
+     * @param isolationLevel the isolation level name
+     */
+    public void setIsolationLevelAsString(String isolationLevel) {
+        if (isolationLevel != null) {
+            setIsolationLevel(TransactionIsolationLevel.valueOf(isolationLevel.toUpperCase()));
+        }
     }
 
     /**

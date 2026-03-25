@@ -33,7 +33,7 @@
         <argument>testReadOnlyTxAspect</argument>
         <property name="targetBeanId">testSqlSession</property>
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
-        <property name="isolationLevel">#{class:org.apache.ibatis.session.TransactionIsolationLevel^READ_COMMITTED}</property>
+        <property name="isolationLevelAsString">READ_COMMITTED</property>
     </bean>
 
     <bean id="testSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
