@@ -36,6 +36,14 @@ public class ActivityTester {
     }
 
     /**
+     * Retrieves the {@link ActivityContext} associated with this instance.
+     * @return the {@link ActivityContext} used for managing and executing activities
+     */
+    public ActivityContext getActivityContext() {
+        return context;
+    }
+
+    /**
      * Executes the given action within an InstantActivity.
      * @param action the action to execute
      * @param <V> the result type

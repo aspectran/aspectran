@@ -56,6 +56,8 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private boolean readOnly;
 
+    private boolean readOnlyRollbackOnClose;
+
     /**
      * Instantiates a new SqlSessionProvider.
      * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
@@ -175,6 +177,14 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
+     * Sets whether to force a rollback when closing a read-only session.
+     * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
+     */
+    public void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
+        this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
+    }
+
+    /**
      * Initializes the provider. If the aspect specified by {@code txAspectId}
      * is not already registered in the aspect rule registry, this method
      * automatically creates and registers a new {@link SqlSessionAdvice} aspect
@@ -195,6 +205,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(readOnly);
+            register.setReadOnlyRollbackOnClose(readOnlyRollbackOnClose);
             register.register();
         }
         if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
@@ -208,6 +219,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setIsolationLevel(isolationLevel);
             register.setAutoCommit(autoCommit);
             register.setReadOnly(true);
+            register.setReadOnlyRollbackOnClose(readOnlyRollbackOnClose);
             register.register();
         }
     }

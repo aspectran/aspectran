@@ -35,9 +35,13 @@ public class TestDao extends SqlMapperAccess<TestMapper> implements TestMapper {
 
     @Override
     public int insertMember(Member member) {
-        int result = mapper().insertMember(member);
-        //session().commit();
-        return result;
+        return mapper().insertMember(member);
+    }
+
+    public void insertMembers(Member... members) {
+        for (Member member : members) {
+            insertMember(member);
+        }
     }
 
 }

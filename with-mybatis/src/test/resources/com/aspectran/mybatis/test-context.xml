@@ -7,7 +7,7 @@
         <argument>
             <bean class="com.zaxxer.hikari.HikariConfig">
                 <property name="driverClassName">org.h2.Driver</property>
-                <property name="jdbcUrl">jdbc:h2:mem:testdb;MODE=MariaDB;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test-schema.sql'</property>
+                <property name="jdbcUrl">jdbc:h2:mem:testdb;MODE=MariaDB;AUTOCOMMIT=OFF;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:com/aspectran/mybatis/test-schema.sql'</property>
                 <property name="username">sa</property>
                 <property name="password"></property>
             </bean>
@@ -34,10 +34,23 @@
         <property name="targetBeanId">testSqlSession</property>
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
         <property name="isolationLevelAsString">READ_COMMITTED</property>
+        <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
     </bean>
 
     <bean id="testSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
         <argument>#{testSqlSession}</argument>
+    </bean>
+
+    <!-- Test SqlSessionAgent with SERIALIZABLE isolation level -->
+    <bean id="serializableSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
+        <argument>serializableTxAspect</argument>
+        <property name="targetBeanId">serializableSqlSession</property>
+        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
+        <property name="isolationLevelAsString">SERIALIZABLE</property>
+    </bean>
+
+    <bean id="serializableSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
+        <argument>#{serializableSqlSession}</argument>
     </bean>
 
     <!-- Test SqlSessionAgent with single transaction (no routing) -->
@@ -54,6 +67,10 @@
     <!-- Generic DAO beans -->
     <bean id="testDao" class="com.aspectran.mybatis.TestDao">
         <argument>#{testSqlMapperProvider}</argument>
+    </bean>
+
+    <bean id="serializableDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{serializableSqlMapperProvider}</argument>
     </bean>
 
     <bean id="singleDao" class="com.aspectran.mybatis.TestDao">

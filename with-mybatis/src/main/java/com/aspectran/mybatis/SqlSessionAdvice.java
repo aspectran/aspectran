@@ -62,6 +62,8 @@ public class SqlSessionAdvice {
 
     private boolean readOnly;
 
+    private boolean readOnlyRollbackOnClose;
+
     private SqlSession sqlSession;
 
     private boolean arbitrarilyClosed;
@@ -161,6 +163,15 @@ public class SqlSessionAdvice {
     }
 
     /**
+     * Sets whether to force a rollback when closing a read-only session.
+     * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
+     */
+    public void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
+        Assert.state(sqlSession == null, "Sql Session is already open");
+        this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
+    }
+
+    /**
      * Returns the managed {@link SqlSession} instance.
      * This session is created by the {@code open()} method and its lifecycle
      * (commit, rollback, close) is controlled by this advice.
@@ -177,14 +188,16 @@ public class SqlSessionAdvice {
      */
     public void open() {
         if (sqlSession == null) {
+            boolean autoCommitToUse = (!readOnly && autoCommit);
             if (isolationLevel != null) {
                 sqlSession = sqlSessionFactory.openSession(executorType, isolationLevel);
             } else {
-                sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
+                sqlSession = sqlSessionFactory.openSession(executorType, autoCommitToUse);
             }
 
             if (readOnly) {
                 try {
+                    sqlSession.getConnection().setAutoCommit(false);
                     sqlSession.getConnection().setReadOnly(true);
                 } catch (SQLException e) {
                     logger.warn("Failed to set database connection to read-only", e);
@@ -199,9 +212,12 @@ public class SqlSessionAdvice {
                 if (isolationLevel != null) {
                     tsb.append("isolationLevel", isolationLevel);
                 } else {
-                    tsb.appendForce("autoCommit", autoCommit);
+                    tsb.appendForce("autoCommit", autoCommitToUse);
                 }
                 tsb.appendForce("readOnly", readOnly);
+                if (readOnly) {
+                    tsb.appendForce("rollbackOnClose", readOnlyRollbackOnClose);
+                }
                 logger.debug(tsb.toString());
             }
 
@@ -264,7 +280,7 @@ public class SqlSessionAdvice {
      * To force the commit, call {@link #commit(boolean)}.
      */
     public void commit() {
-        if (checkOpen()) {
+        if (checkOpen() || readOnly) {
             return;
         }
 
@@ -280,7 +296,7 @@ public class SqlSessionAdvice {
      * @param force forces connection commit
      */
     public void commit(boolean force) {
-        if (checkOpen()) {
+        if (checkOpen() || readOnly) {
             return;
         }
 
@@ -345,6 +361,10 @@ public class SqlSessionAdvice {
     public void close(boolean arbitrarily) {
         if (checkOpen()) {
             return;
+        }
+
+        if (readOnly && readOnlyRollbackOnClose) {
+            rollback(true);
         }
 
         arbitrarilyClosed = arbitrarily;

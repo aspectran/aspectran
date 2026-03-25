@@ -71,6 +71,8 @@ class SqlSessionAdviceRegister {
 
     private boolean readOnly;
 
+    private boolean readOnlyRollbackOnClose;
+
     /**
      * Instantiates a new SqlSessionAdviceRegister.
      * @param activityContext the activity context
@@ -161,6 +163,14 @@ class SqlSessionAdviceRegister {
         this.readOnly = readOnly;
     }
 
+    /**
+     * Sets whether to force a rollback when closing a read-only session.
+     * @param readOnlyRollbackOnClose true to force rollback on close, false otherwise
+     */
+    void setReadOnlyRollbackOnClose(boolean readOnlyRollbackOnClose) {
+        this.readOnlyRollbackOnClose = readOnlyRollbackOnClose;
+    }
+
     void register() {
         Assert.notNull(txAspectId, "txAspectId must not be null");
         Assert.notNull(targetBeanClass, "targetBeanClass must not be null");
@@ -230,6 +240,7 @@ class SqlSessionAdviceRegister {
             }
             sqlSessionAdvice.setAutoCommit(autoCommit);
             sqlSessionAdvice.setReadOnly(readOnly);
+            sqlSessionAdvice.setReadOnlyRollbackOnClose(readOnlyRollbackOnClose);
             sqlSessionAdvice.open();
             return sqlSessionAdvice;
         });
