@@ -30,29 +30,4 @@ public class TestSqlMapperProvider implements SqlMapperProvider {
         return sqlSession;
     }
 
-    @Override
-    public SqlSession getBatchSqlSession() {
-        return sqlSession;
-    }
-
-    @Override
-    public SqlSession getReuseSqlSession() {
-        return sqlSession;
-    }
-
-    @Override
-    public <T> T simple(Class<T> mapperType) {
-        return sqlSession.getMapper(mapperType);
-    }
-
-    @Override
-    public <T> T batch(Class<T> mapperType) {
-        throw new UnsupportedOperationException("Batch operation is not supported");
-    }
-
-    @Override
-    public <T> T reuse(Class<T> mapperType) {
-        throw new UnsupportedOperationException("Batch operation is not supported");
-    }
-
 }

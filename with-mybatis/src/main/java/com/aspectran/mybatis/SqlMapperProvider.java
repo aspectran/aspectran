@@ -33,14 +33,20 @@ public interface SqlMapperProvider {
     /**
      * Returns a {@link SqlSession} with BATCH executor behavior.
      * @return a {@code SqlSession}
+     * @throws UnsupportedOperationException if batch operation is not supported
      */
-    SqlSession getBatchSqlSession();
+    default SqlSession getBatchSqlSession() {
+        throw new UnsupportedOperationException("Batch operation is not supported");
+    }
 
     /**
      * Returns a {@link SqlSession} with REUSE executor behavior.
      * @return a {@code SqlSession}
+     * @throws UnsupportedOperationException if reuse operation is not supported
      */
-    SqlSession getReuseSqlSession();
+    default SqlSession getReuseSqlSession() {
+        throw new UnsupportedOperationException("Reuse operation is not supported");
+    }
 
     /**
      * Returns a {@link SqlSession} with SIMPLE executor behavior.
