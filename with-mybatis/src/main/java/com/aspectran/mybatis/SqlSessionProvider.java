@@ -115,6 +115,14 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
+     * Returns the target bean class to which the SqlSession advice will be applied.
+     * @return the target bean class
+     */
+    protected Class<?> getTargetBeanClass() {
+        return ClassUtils.getUserClass(getClass());
+    }
+
+    /**
      * Sets the default {@link ExecutorType} for the advice.
      * @param executorType the executor type
      */
@@ -242,7 +250,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setTxAspectId(txAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
             register.setTargetBeanId(targetBeanId);
-            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.setTargetBeanClass(getTargetBeanClass());
             if (readOnlyAspectId != null) {
                 String[] excludeMethodNamePatterns = new String[DEFAULT_READONLY_METHOD_PATTERNS.length + MANAGEMENT_METHOD_PATTERNS.length];
                 System.arraycopy(DEFAULT_READONLY_METHOD_PATTERNS, 0, excludeMethodNamePatterns, 0, DEFAULT_READONLY_METHOD_PATTERNS.length);
@@ -263,7 +271,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             register.setTxAspectId(readOnlyAspectId);
             register.setSqlSessionFactoryBeanId(sqlSessionFactoryBeanId);
             register.setTargetBeanId(targetBeanId);
-            register.setTargetBeanClass(ClassUtils.getUserClass(getClass()));
+            register.setTargetBeanClass(getTargetBeanClass());
             register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.setExecutorType(executorType);
             register.setIsolationLevel(isolationLevel);
@@ -303,7 +311,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             return writableAdvice;
         }
 
-        String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, ClassUtils.getUserClass(getClass()));
+        String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
         if (currentAspectId != null) {
             SqlSessionAdvice sqlSessionAdvice = currentActivity.getAdviceBean(currentAspectId);
             if (sqlSessionAdvice == null) {
