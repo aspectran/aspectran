@@ -18,6 +18,7 @@ package com.aspectran.jpa;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -38,7 +39,7 @@ import org.jspecify.annotations.NonNull;
  * This provider simplifies JPA data access by managing the lifecycle of an {@code EntityManager}
  * through an associated {@link EntityManagerAdvice}, which is handled by Aspectran's AOP mechanism.
  * <p>
- * Subclasses can obtain the current, thread-safe {@code EntityManager} by calling
+ * Subclasses can obtain the current {@code EntityManager} by calling
  * {@link #getEntityManager()}. Transactional behavior is controlled by the AOP advice
  * linked via the {@code relevantAspectId}. If the required aspect is not pre-configured
  * in the Aspectran context, this provider can dynamically register it during initialization.
@@ -71,6 +72,14 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
      */
     public void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
         this.entityManagerFactoryBeanId = entityManagerFactoryBeanId;
+    }
+
+    /**
+     * Returns the target bean class to which the entity manager advice will be applied.
+     * @return the target bean class
+     */
+    protected Class<?> getTargetBeanClass() {
+        return ClassUtils.getUserClass(getClass());
     }
 
     /**
@@ -135,19 +144,17 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     @Override
     public void initialize() {
         if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
-            registerSqlSessionAdvice();
+            registerEntityManagerAdvice();
         }
     }
 
     /**
      * Dynamically registers an {@link AspectRule} to manage the {@link EntityManager} lifecycle.
-     * <p>Note: The method name {@code registerSqlSessionAdvice} is a misnomer due to a likely
-     * copy-paste error; it actually registers advice for an {@code EntityManager}.</p>
      * This method creates and configures an aspect with before, after, and finally advice
      * to handle opening, committing, and closing the {@code EntityManager}.
      * @throws IllegalStateException if the advice is already registered or the {@link EntityManagerFactory} cannot be resolved
      */
-    protected void registerSqlSessionAdvice() {
+    protected void registerEntityManagerAdvice() {
         if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
             throw new IllegalStateException("EntityManagerAdvice is already registered");
         }
@@ -157,17 +164,21 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             entityManagerFactory = getBeanRegistry().getBean(EntityManagerFactory.class, entityManagerFactoryBeanId);
         } catch (NoSuchBeanException e) {
             if (entityManagerFactoryBeanId != null) {
-                throw new IllegalStateException("Cannot resolve EntityManagerFactory with id=" + entityManagerFactoryBeanId, e);
+                throw new IllegalStateException("Cannot resolve EntityManagerFactory with bean id '"
+                        + entityManagerFactoryBeanId + "'", e);
             } else {
-                throw new IllegalStateException("EntityManagerFactory is not defined", e);
+                throw new IllegalStateException("No EntityManagerFactory bean found", e);
             }
+        } catch (NoUniqueBeanException e) {
+            throw new IllegalStateException("No unique EntityManagerFactory bean found; " +
+                    "If multiple EntityManagerFactory beans are defined, please specify an entityManagerFactoryBeanId", e);
         }
 
         AspectRule aspectRule = new AspectRule();
         aspectRule.setId(relevantAspectId);
         aspectRule.setOrder(0);
 
-        String pattern = "**@class:" + ClassUtils.getUserClass(getClass()).getName();
+        String pattern = "**@class:" + getTargetBeanClass().getName();
         PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
 
         PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
@@ -205,7 +216,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         } catch (IllegalRuleException e) {
             ToStringBuilder tsb = new ToStringBuilder("Failed to register EntityManagerAdvice with");
             tsb.append("relevantAspectId", relevantAspectId);
-            tsb.append("sqlSessionFactoryBeanId", entityManagerFactoryBeanId);
+            tsb.append("entityManagerFactoryBeanId", entityManagerFactoryBeanId);
             throw new RuntimeException(tsb.toString(), e);
         }
     }

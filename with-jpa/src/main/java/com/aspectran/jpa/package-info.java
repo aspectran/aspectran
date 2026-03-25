@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 /**
- * Add-on package to integrate Jakarta Persistence API (JPA 3.2) support.
+ * Provides integration with the Jakarta Persistence API (JPA).
+ * <p>This package includes key components to seamlessly use JPA within an
+ * Aspectran application, featuring AOP-based transaction management and
+ * simplified entity manager access.</p>
+ *
+ * <h3>Key Classes:</h3>
+ * <ul>
+ *   <li>{@link com.aspectran.jpa.EntityManagerFactoryBean}: A factory bean that
+ *       creates and configures the Jakarta Persistence {@code EntityManagerFactory}.</li>
+ *   <li>{@link com.aspectran.jpa.EntityManagerAdvice}: An advice bean that manages
+ *       the lifecycle of a Jakarta Persistence {@code EntityManager} and its
+ *       transaction boundaries.</li>
+ *   <li>{@link com.aspectran.jpa.EntityManagerProvider}: A base class for components
+ *       that need access to a context-bound {@code EntityManager} managed via AOP.</li>
+ *   <li>{@link com.aspectran.jpa.EntityManagerAgent}: A proxy for {@code EntityManager}
+ *       that simplifies data access and automatically participates in transactions
+ *       managed by {@code EntityManagerAdvice}.</li>
+ * </ul>
  */
 package com.aspectran.jpa;
