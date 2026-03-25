@@ -17,6 +17,7 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -195,9 +196,11 @@ class SqlSessionAdviceRegister {
                 throw new IllegalStateException("Cannot resolve SqlSessionFactory with bean id '"
                         + sqlSessionFactoryBeanId + "'", e);
             } else {
-                throw new IllegalStateException("No unique SqlSessionFactory bean found; " +
-                        "If multiple SqlSessionFactory beans are defined, please specify a sqlSessionFactoryBeanId", e);
+                throw new IllegalStateException("No SqlSessionFactory bean found", e);
             }
+        } catch (NoUniqueBeanException e) {
+            throw new IllegalStateException("No unique SqlSessionFactory bean found; " +
+                    "If multiple SqlSessionFactory beans are defined, please specify a sqlSessionFactoryBeanId", e);
         }
 
         AspectRule aspectRule = new AspectRule();

@@ -17,6 +17,8 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
+import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.utils.ClassUtils;
 import org.apache.ibatis.session.ExecutorType;
@@ -222,7 +224,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     protected SqlSessionFactory getSqlSessionFactory() {
         try {
             return getActivityContext().getBeanRegistry().getBean(SqlSessionFactory.class, sqlSessionFactoryBeanId);
-        } catch (com.aspectran.core.component.bean.NoSuchBeanException e) {
+        } catch (NoSuchBeanException e) {
             StringBuilder msg = new StringBuilder();
             msg.append("Failed to resolve SqlSessionFactory for aspect '").append(txAspectId).append("'");
             if (targetBeanId != null) {
@@ -231,8 +233,17 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             if (sqlSessionFactoryBeanId != null) {
                 msg.append(" with bean id '").append(sqlSessionFactoryBeanId).append("'");
             } else {
-                msg.append("; No unique SqlSessionFactory bean found. If multiple SqlSessionFactory beans are defined, please specify a sqlSessionFactoryBeanId");
+                msg.append("; No SqlSessionFactory bean found");
             }
+            throw new IllegalStateException(msg.toString(), e);
+        } catch (NoUniqueBeanException e) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("Failed to resolve SqlSessionFactory for aspect '").append(txAspectId).append("'");
+            if (targetBeanId != null) {
+                msg.append(" on bean '").append(targetBeanId).append("'");
+            }
+            msg.append("; No unique SqlSessionFactory bean found. If multiple SqlSessionFactory beans are defined, " +
+                    "please specify a sqlSessionFactoryBeanId");
             throw new IllegalStateException(msg.toString(), e);
         }
     }
