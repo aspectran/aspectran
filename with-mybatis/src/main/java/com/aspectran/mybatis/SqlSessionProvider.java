@@ -44,7 +44,10 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
             "getMapper",
             "getConfiguration",
             "getConnection",
+            "commit",
+            "rollback",
             "close",
+            "flushStatements",
             "clearCache"
     };
 
@@ -209,7 +212,21 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
      * @return the SqlSessionFactory
      */
     protected SqlSessionFactory getSqlSessionFactory() {
-        return getActivityContext().getBeanRegistry().getBean(SqlSessionFactory.class, sqlSessionFactoryBeanId);
+        try {
+            return getActivityContext().getBeanRegistry().getBean(SqlSessionFactory.class, sqlSessionFactoryBeanId);
+        } catch (com.aspectran.core.component.bean.NoSuchBeanException e) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("Failed to resolve SqlSessionFactory for aspect '").append(txAspectId).append("'");
+            if (targetBeanId != null) {
+                msg.append(" on bean '").append(targetBeanId).append("'");
+            }
+            if (sqlSessionFactoryBeanId != null) {
+                msg.append(" with bean id '").append(sqlSessionFactoryBeanId).append("'");
+            } else {
+                msg.append("; No unique SqlSessionFactory bean found. If multiple SqlSessionFactory beans are defined, please specify a sqlSessionFactoryBeanId");
+            }
+            throw new IllegalStateException(msg.toString(), e);
+        }
     }
 
     /**
@@ -270,8 +287,17 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         checkTransactional();
         Activity currentActivity = getAvailableActivity();
 
-        SqlSessionAdvice writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
-        SqlSessionAdvice readOnlyAdvice = (readOnlyAspectId != null ? currentActivity.getBeforeAdviceResult(readOnlyAspectId) : null);
+        SqlSessionAdvice writableAdvice = currentActivity.getAdviceBean(txAspectId);
+        if (writableAdvice == null) {
+            writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
+        }
+        SqlSessionAdvice readOnlyAdvice = null;
+        if (readOnlyAspectId != null) {
+            readOnlyAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
+            if (readOnlyAdvice == null) {
+                readOnlyAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
+            }
+        }
 
         if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
             return writableAdvice;
@@ -279,7 +305,13 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
         String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, ClassUtils.getUserClass(getClass()));
         if (currentAspectId != null) {
-            return currentActivity.getBeforeAdviceResult(currentAspectId);
+            SqlSessionAdvice sqlSessionAdvice = currentActivity.getAdviceBean(currentAspectId);
+            if (sqlSessionAdvice == null) {
+                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(currentAspectId);
+            }
+            if (sqlSessionAdvice != null) {
+                return sqlSessionAdvice;
+            }
         }
 
         if (writableAdvice != null && writableAdvice.isOpen()) {

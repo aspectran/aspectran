@@ -190,7 +190,7 @@ public class SqlSessionAdvice {
             if (arbitrarilyClosed) {
                 throw new IllegalStateException("SqlSession has been arbitrarily closed and cannot be reopened lazily");
             }
-            open();
+            doOpen();
         }
         return sqlSession;
     }
@@ -201,6 +201,13 @@ public class SqlSessionAdvice {
      * the object must be created.
      */
     public void open() {
+        doOpen();
+    }
+
+    /**
+     * Internal method to open a new SqlSession if not already open.
+     */
+    private void doOpen() {
         if (sqlSession == null) {
             boolean autoCommitToUse = (!readOnly && autoCommit);
             if (isolationLevel != null) {

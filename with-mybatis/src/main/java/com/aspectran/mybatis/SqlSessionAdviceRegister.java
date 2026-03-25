@@ -32,6 +32,8 @@ import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +195,8 @@ class SqlSessionAdviceRegister {
                 throw new IllegalStateException("Cannot resolve SqlSessionFactory with bean id '"
                         + sqlSessionFactoryBeanId + "'", e);
             } else {
-                throw new IllegalStateException("SqlSessionFactory is not defined", e);
+                throw new IllegalStateException("No unique SqlSessionFactory bean found; " +
+                        "If multiple SqlSessionFactory beans are defined, please specify a sqlSessionFactoryBeanId", e);
             }
         }
 
@@ -291,7 +294,7 @@ class SqlSessionAdviceRegister {
         }
     }
 
-    static void pushCurrentAspectId(Activity activity, Class<?> targetBeanClass, String aspectId) {
+    static void pushCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
         String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
         Deque<String> stack = activity.getSetting(settingName);
         if (stack == null) {
@@ -301,7 +304,7 @@ class SqlSessionAdviceRegister {
         stack.push(aspectId);
     }
 
-    static void removeCurrentAspectId(Activity activity, Class<?> targetBeanClass, String aspectId) {
+    static void removeCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
         String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
         Deque<String> stack = activity.getSetting(settingName);
         if (stack != null) {
@@ -312,7 +315,8 @@ class SqlSessionAdviceRegister {
         }
     }
 
-    static String peekCurrentAspectId(Activity activity, Class<?> targetBeanClass) {
+    @Nullable
+    static String peekCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass) {
         String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
         Deque<String> stack = activity.getSetting(settingName);
         return (stack != null ? stack.peek() : null);
