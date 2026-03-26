@@ -3,28 +3,26 @@
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
-    <append resource="com/aspectran/jpa/db/db-rules.xml"/>
+    <append resource="com/aspectran/jpa/common/db/db-rules.xml"/>
 
-    <!-- Strict Routing: reuseWritable=false (Must use separate sessions) -->
-    <bean id="strictRoutingEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
-        <argument>strictTxAspect</argument>
-        <argument>strictReadOnlyTxAspect</argument>
-        <property name="targetBeanId">strictRoutingEntityQuery</property>
+    <!-- Read-Only session: single transaction -->
+    <bean id="readOnlyEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
+        <argument>readOnlyTxAspect</argument>
+        <property name="targetBeanId">readOnlyEntityQuery</property>
         <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
-        <property name="reuseWritable" valueType="boolean">false</property>
+        <property name="readOnly" valueType="boolean">true</property>
     </bean>
 
-    <bean id="strictDao" class="com.aspectran.jpa.test.JpaTestDao">
-        <argument>#{strictRoutingEntityQuery}</argument>
+    <bean id="readOnlyDao" class="com.aspectran.jpa.test.JpaTestDao">
+        <argument>#{readOnlyEntityQuery}</argument>
     </bean>
 
-    <!-- Intelligent Routing: reuseWritable=true (Reuse writable session if open) -->
+    <!-- Intelligent Routing: Reuse writable session if open -->
     <bean id="intelligentRoutingEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
         <argument>intelligentTxAspect</argument>
         <argument>intelligentReadOnlyTxAspect</argument>
         <property name="targetBeanId">intelligentRoutingEntityQuery</property>
         <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
-        <property name="reuseWritable" valueType="boolean">true</property>
     </bean>
 
     <bean id="intelligentDao" class="com.aspectran.jpa.test.JpaTestDao">

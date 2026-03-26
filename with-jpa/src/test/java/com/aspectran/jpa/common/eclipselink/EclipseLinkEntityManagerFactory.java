@@ -33,7 +33,7 @@ import javax.sql.DataSource;
  */
 @Component
 @Profile("eclipselink")
-@Bean(lazyDestroy = true)
+@Bean(id = "eclipseEntityManagerFactory", lazyDestroy = true)
 public class EclipseLinkEntityManagerFactory extends EntityManagerFactoryBean {
 
     private final DataSource dataSource;

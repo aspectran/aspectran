@@ -55,7 +55,7 @@ class HibernateJpaTest {
     }
 
     @Test
-    void vetList() throws IOException {
+    void vetList() {
         Translet translet = aspectran.translate("/vetList");
         String result = translet.getWrittenResponse();
         System.out.println(result);

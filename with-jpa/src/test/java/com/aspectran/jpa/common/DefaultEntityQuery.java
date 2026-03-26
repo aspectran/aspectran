@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jpa.common.hibernate;
+package com.aspectran.jpa.common;
 
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -28,7 +28,7 @@ import com.querydsl.jpa.JPQLTemplates;
 public class DefaultEntityQuery extends EntityQuery {
 
     public DefaultEntityQuery() {
-        super("jpaAspect");
+        super("jpaTxAspect");
         setTemplates(JPQLTemplates.DEFAULT);
     }
 

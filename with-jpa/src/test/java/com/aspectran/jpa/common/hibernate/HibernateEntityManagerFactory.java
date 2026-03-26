@@ -37,12 +37,12 @@ import javax.sql.DataSource;
 @Component
 @Profile("hibernate")
 @Bean(id = "entityManagerFactory", lazyDestroy = true)
-public class DefaultEntityManagerFactory extends EntityManagerFactoryBean {
+public class HibernateEntityManagerFactory extends EntityManagerFactoryBean {
 
     private final DataSource dataSource;
 
     @Autowired
-    public DefaultEntityManagerFactory(DataSource dataSource) {
+    public HibernateEntityManagerFactory(DataSource dataSource) {
         super("petclinic-test");
         this.dataSource = dataSource;
     }

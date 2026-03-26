@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.jpa.common.entity.QVet;
 import com.aspectran.jpa.common.entity.Vet;
-import com.aspectran.jpa.common.hibernate.DefaultEntityQuery;
+import com.aspectran.jpa.common.DefaultEntityQuery;
 import com.aspectran.jpa.common.pagination.PageInfo;
 import com.aspectran.jpa.querydsl.EntityQuery;
 import com.querydsl.core.Fetchable;

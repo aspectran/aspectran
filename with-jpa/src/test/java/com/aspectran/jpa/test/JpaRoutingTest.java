@@ -24,39 +24,49 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @AspectranTest(
     rules = "com/aspectran/jpa/test/jpa-test-context.xml",
     profiles = {"h2", "hibernate"},
     basePackages = {
-            "com.aspectran.jpa.test",
-            "com.aspectran.jpa.eclipselink",
-            "com.aspectran.jpa.hibernate"
+            "com.aspectran.jpa.common",
+            "com.aspectran.jpa.test"
     }
 )
 class JpaRoutingTest {
 
     @Test
-    void testStrictRouting(@NonNull ActivityTester tester) throws ActivityPerformException {
+    void testReadOnlySession(@NonNull ActivityTester tester) throws ActivityPerformException {
+        // 1. Initial count
+        Integer initialCount = tester.perform(activity -> {
+            JpaTestDao intelligentDao = activity.getBean("intelligentDao");
+            return intelligentDao.getVetList().size();
+        });
+
+        // 2. Attempt a write operation in a Read-Only session
         tester.perform(activity -> {
-            JpaTestDao strictDao = activity.getBean("strictDao");
+            JpaTestDao readOnlyDao = activity.getBean("readOnlyDao");
 
-            // 1. Insert a vet (Triggers strictTxAspect - Writable)
             Vet vet = new Vet();
-            vet.setFirstName("Strict");
-            vet.setLastName("User");
-            strictDao.insertVet(vet);
-            assertNotNull(vet.getId());
+            vet.setFirstName("Should Not");
+            vet.setLastName("Persist");
 
-            // 2. Get the vet (Triggers strictReadOnlyTxAspect - ReadOnly)
-            // With strict routing (reuseWritable=false), it opens a separate read-only session.
-            // Since the insert session isn't committed yet, the record is not visible here.
-            Vet foundVet = strictDao.getVet(vet.getId());
-            System.out.println("Found vet in Strict Read-Only session: " + (foundVet != null));
-            assertNull(foundVet, "Record should not be visible in a separate uncommitted session");
+            try {
+                // Calling any method on readOnlyDao triggers the single Read-Only aspect.
+                readOnlyDao.insertVet(vet);
+                throw new RuntimeException("Should not be able to insert a vet in a Read-Only session");
+            } catch (Exception e) {
+                System.out.println("Caught exception in Read-Only session: " + e.getMessage());
+            }
+            return null;
+        });
 
+        // 3. Verify that the vet count has not increased
+        tester.perform(activity -> {
+            JpaTestDao intelligentDao = activity.getBean("intelligentDao");
+            assertEquals(initialCount, intelligentDao.getVetList().size(),
+                    "Vet count should not have increased after a Read-Only session");
             return null;
         });
     }
@@ -74,7 +84,7 @@ class JpaRoutingTest {
             assertNotNull(vet.getId());
 
             // 2. Get the vet (Triggers intelligentReadOnlyTxAspect - ReadOnly)
-            // With intelligent routing (reuseWritable=true), it reuses the open writable session.
+            // It reuses the open writable session (Intelligent Routing).
             // Therefore, the uncommitted record should be visible.
             Vet foundVet = intelligentDao.getVet(vet.getId());
             System.out.println("Found vet in Intelligent session (reused): " + (foundVet != null));
@@ -108,14 +118,14 @@ class JpaRoutingTest {
     void testRollbackOnException(@NonNull ActivityTester tester) throws ActivityPerformException {
         // 1. Initial count
         Integer initialCount = tester.perform(activity -> {
-            JpaTestDao strictDao = activity.getBean("strictDao");
-            return strictDao.getVetList().size();
+            JpaTestDao singleDao = activity.getBean("singleDao");
+            return singleDao.getVetList().size();
         });
 
         // 2. Attempt to insert both in one transaction (should fail and rollback)
         try {
             tester.perform(activity -> {
-                JpaTestDao strictDao = activity.getBean("strictDao");
+                JpaTestDao singleDao = activity.getBean("singleDao");
 
                 Vet goodVet = new Vet();
                 goodVet.setFirstName("Good");
@@ -124,7 +134,7 @@ class JpaRoutingTest {
                 Vet badVet = new Vet(); // lastName is null -> triggers validation/DB exception
 
                 // This should throw an exception that bubbles up to CoreActivity
-                strictDao.insertVets(goodVet, badVet);
+                singleDao.insertVets(goodVet, badVet);
                 return null;
             });
             fail("Should have thrown an ActivityPerformException");
@@ -134,8 +144,8 @@ class JpaRoutingTest {
 
         // 3. Verify rollback
         tester.perform(activity -> {
-            JpaTestDao strictDao = activity.getBean("strictDao");
-            assertEquals(initialCount, strictDao.getVetList().size());
+            JpaTestDao singleDao = activity.getBean("singleDao");
+            assertEquals(initialCount, singleDao.getVetList().size());
             return null;
         });
     }
