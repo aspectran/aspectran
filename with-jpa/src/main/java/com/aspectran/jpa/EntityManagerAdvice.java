@@ -216,6 +216,17 @@ public class EntityManagerAdvice {
     }
 
     /**
+     * Rolls back the active local transaction.
+     * This operation is a no-op if the {@code EntityManager} is not open or has been marked as arbitrarily closed.
+     */
+    public void rollback() {
+        if (readOnly || isEntityManagerUnavailable()) {
+            return;
+        }
+        rollbackTransaction();
+    }
+
+    /**
      * Starts a new transaction. If a transaction is already active, it is rolled back before the new one begins.
      */
     private void beginTransaction() {
