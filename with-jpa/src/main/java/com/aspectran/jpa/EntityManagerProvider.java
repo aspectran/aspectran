@@ -41,39 +41,36 @@ import org.jspecify.annotations.NonNull;
  */
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
+    /** Method name patterns that are treated as read-only by default. */
     private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = {
             "find*",
             "getReference*",
             "select*",
-            "from",
-            "query"
+            "from*",
+            "query*"
     };
 
+    /** Method name patterns for management that do not require transactional advice. */
     private static final String[] MANAGEMENT_METHOD_PATTERNS = {
-            "get*",
+            "getCriteria*",
+            "getEntityManager*",
+            "getCache*Mode",
+            "getEntityGraph*",
+            "getMetamodel",
+            "getTransaction",
+            "getDelegate",
+            "getProperties",
+            "getFlushMode",
+            "set*",
             "is*",
             "close",
-            "isOpen",
-            "unwrap",
-            "getDelegate",
-            "getTransaction",
-            "getEntityManagerFactory",
-            "getCriteriaBuilder",
-            "getMetamodel",
-            "createEntityGraph",
-            "getEntityGraph",
-            "getEntityGraphs",
-            "runWithConnection",
-            "callWithConnection",
             "flush",
-            "setFlushMode",
-            "getFlushMode",
             "clear",
             "detach",
             "contains",
-            "getLockMode",
-            "setProperty",
-            "getProperties"
+            "unwrap",
+            "createEntityGraph",
+            "*WithConnection"
     };
 
     private final String txAspectId;

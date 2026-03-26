@@ -40,8 +40,10 @@ import org.jspecify.annotations.NonNull;
  */
 public abstract class SqlSessionProvider extends InstantActivitySupport implements InitializableBean {
 
+    /** Method name patterns that are treated as read-only by default. */
     private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = { "select*" };
 
+    /** Method name patterns for management that do not require transactional advice. */
     private static final String[] MANAGEMENT_METHOD_PATTERNS = {
             "getMapper",
             "getConfiguration",

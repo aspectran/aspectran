@@ -50,7 +50,6 @@ public class EclipseLinkEntityManagerFactory extends EntityManagerFactoryBean {
         configuration.provider("org.eclipse.persistence.jpa.PersistenceProvider");
         configuration.transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
         configuration.property(PersistenceUnitProperties.NON_JTA_DATASOURCE, dataSource);
-        //configuration.property(PersistenceUnitProperties.TARGET_DATABASE, "org.eclipse.persistence.platform.database.H2Platform");
         configuration.property(PersistenceUnitProperties.LOGGING_LOGGER, Slf4jSessionLogger.class.getName());
         configuration.property(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
         configuration.property(PersistenceUnitProperties.LOGGING_PARAMETERS, "true");

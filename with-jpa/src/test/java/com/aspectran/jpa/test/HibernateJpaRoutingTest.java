@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.fail;
             "com.aspectran.jpa.test"
     }
 )
-class JpaRoutingTest {
+class HibernateJpaRoutingTest {
 
     @Test
     void testReadOnlySession(@NonNull ActivityTester tester) throws ActivityPerformException {
