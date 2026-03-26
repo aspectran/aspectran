@@ -15,7 +15,7 @@
  */
 package com.aspectran.jpa.test;
 
-import com.aspectran.jpa.common.entity.Vet;
+import com.aspectran.jpa.common.model.Vet;
 import com.aspectran.jpa.querydsl.EntityQuery;
 import jakarta.validation.constraints.NotNull;
 

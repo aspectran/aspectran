@@ -19,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.SequenceGenerator;
 
 import java.io.Serializable;
 
@@ -34,7 +35,8 @@ import java.io.Serializable;
 public class BaseEntity implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base_entity_id_seq")
+    @SequenceGenerator(name = "base_entity_id_seq", sequenceName = "base_entity_id_seq", allocationSize = 1)
 	private Integer id;
 
 	public Integer getId() {

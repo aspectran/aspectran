@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jpa.common.entity;
+package com.aspectran.jpa.common.model;
 
-import com.aspectran.jpa.common.model.NamedEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
