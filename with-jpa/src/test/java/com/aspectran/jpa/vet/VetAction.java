@@ -21,7 +21,8 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.jpa.vet.pagination.PageInfo;
+import com.aspectran.jpa.common.entity.Vet;
+import com.aspectran.jpa.common.pagination.PageInfo;
 
 import java.util.List;
 

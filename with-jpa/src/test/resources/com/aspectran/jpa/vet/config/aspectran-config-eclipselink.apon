@@ -1,8 +1,7 @@
 context: {
-    rules: classpath:com/aspectran/jpa/db/db-rules.xml
+    rules: classpath:com/aspectran/jpa/common/db/db-rules.xml
     scan: [
-        com.aspectran.jpa.eclipselink
-        com.aspectran.jpa.hibernate
+        com.aspectran.jpa.common
         com.aspectran.jpa.vet
     ]
     profiles: {

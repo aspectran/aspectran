@@ -16,6 +16,7 @@
 package com.aspectran.jpa.test;
 
 import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.jpa.common.entity.Vet;
 import com.aspectran.test.ActivityTester;
 import com.aspectran.test.AspectranTest;
 import org.jspecify.annotations.NonNull;
