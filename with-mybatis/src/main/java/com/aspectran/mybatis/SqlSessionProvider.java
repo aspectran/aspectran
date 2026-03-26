@@ -71,8 +71,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
     private boolean readOnlyRollbackOnClose;
 
-    private boolean reuseWritable = true;
-
     /**
      * Instantiates a new SqlSessionProvider.
      * @param txAspectId the ID of the aspect that provides the SqlSessionAdvice
@@ -208,16 +206,6 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
     }
 
     /**
-     * Sets whether to reuse a writable session even for read-only operations.
-     * @param reuseWritable true to reuse a writable session if one is already open,
-     *                      false to always use a read-only session for read-only operations.
-     *                      The default is {@code true}.
-     */
-    public void setReuseWritable(boolean reuseWritable) {
-        this.reuseWritable = reuseWritable;
-    }
-
-    /**
      * Returns the {@link SqlSessionFactory} associated with this provider.
      * @return the SqlSessionFactory
      */
@@ -307,37 +295,25 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         Activity currentActivity = getAvailableActivity();
 
         SqlSessionAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
-        SqlSessionAdvice readOnlyAdvice = null;
-        if (readOnlyAspectId != null) {
-            readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
-        }
-
-        if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
-            return writableAdvice;
-        }
-
-        String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
-        if (currentAspectId != null) {
-            SqlSessionAdvice sqlSessionAdvice = currentActivity.getAvailableAdvice(currentAspectId);
-            if (sqlSessionAdvice != null) {
-                return sqlSessionAdvice;
-            }
-        }
-
         if (writableAdvice != null && writableAdvice.isOpen()) {
             return writableAdvice;
         }
+
+        SqlSessionAdvice readOnlyAdvice = (readOnlyAspectId != null ?
+                currentActivity.getAvailableAdvice(readOnlyAspectId) : null);
         if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
             return readOnlyAdvice;
         }
 
-        SqlSessionAdvice sqlSessionAdvice = (readOnlyAdvice != null ? readOnlyAdvice : writableAdvice);
+        SqlSessionAdvice sqlSessionAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
         if (sqlSessionAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + txAspectId +
                         "' handling SqlSessionAdvice is not registered");
             }
-            throw new IllegalStateException("SqlSessionAdvice not found handled by aspect '" + txAspectId + "'");
+            throw new IllegalStateException("No transactional context found for the current activity; " +
+                    "ensure the activity is advised by aspect '" + txAspectId + "'" +
+                    (readOnlyAspectId != null ? " or '" + readOnlyAspectId + "'" : ""));
         }
         return sqlSessionAdvice;
     }

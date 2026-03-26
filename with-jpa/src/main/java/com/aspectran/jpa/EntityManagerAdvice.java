@@ -195,10 +195,10 @@ public class EntityManagerAdvice {
 
     /**
      * Begins a new local transaction if one is not already active.
-     * This operation is a no-op if the {@code EntityManager} is not open or has been marked as arbitrarily closed.
+     * This operation is a no-op if the {@code EntityManager} has been marked as arbitrarily closed.
      */
     public void transactional() {
-        if (readOnly || isEntityManagerUnavailable()) {
+        if (readOnly || arbitrarilyClosed) {
             return;
         }
         beginTransaction();
@@ -224,6 +224,9 @@ public class EntityManagerAdvice {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Begin transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+            }
             transaction.begin();
             transactional = true;
         }
@@ -236,6 +239,9 @@ public class EntityManagerAdvice {
         if (transactional) {
             EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Commit transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+                }
                 transaction.commit();
             }
             transactional = false;
@@ -249,6 +255,9 @@ public class EntityManagerAdvice {
         if (transactional) {
             EntityTransaction transaction = getEntityManager().getTransaction();
             if (transaction.isActive()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Rollback transaction for {}", ObjectUtils.simpleIdentityToString(entityManager));
+                }
                 transaction.rollback();
             }
             transactional = false;

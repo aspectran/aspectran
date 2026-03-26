@@ -15,9 +15,6 @@
  */
 package com.aspectran.mybatis;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.component.bean.NoSuchBeanException;
-import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -28,19 +25,17 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 /**
@@ -54,8 +49,6 @@ import java.util.List;
 class SqlSessionAdviceRegister {
 
     private static final Logger logger = LoggerFactory.getLogger(SqlSessionAdviceRegister.class);
-
-    static final String CURRENT_ASPECT_ID_SETTING_PREFIX = SqlSessionAdviceRegister.class.getName() + ".currentAspectId:";
 
     private final ActivityContext activityContext;
 
@@ -242,7 +235,6 @@ class SqlSessionAdviceRegister {
 
         AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
         beforeAdviceRule.setAdviceAction(activity -> {
-            pushCurrentAspectId(activity, targetBeanClass, txAspectId);
             SqlSessionAdvice sqlSessionAdvice = new SqlSessionAdvice(sqlSessionFactory);
             if (executorType != null) {
                 sqlSessionAdvice.setExecutorType(executorType);
@@ -276,7 +268,6 @@ class SqlSessionAdviceRegister {
 
         AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
         finallyAdviceRule.setAdviceAction(activity -> {
-            removeCurrentAspectId(activity, targetBeanClass, txAspectId);
             SqlSessionAdvice sqlSessionAdvice = activity.getBeforeAdviceResult(txAspectId);
             if (sqlSessionAdvice != null) {
                 sqlSessionAdvice.close();
@@ -295,34 +286,6 @@ class SqlSessionAdviceRegister {
             tsb.append("sqlSessionFactoryBeanId", sqlSessionFactoryBeanId);
             throw new RuntimeException(tsb.toString(), e);
         }
-    }
-
-    static void pushCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
-        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
-        Deque<String> stack = activity.getSetting(settingName);
-        if (stack == null) {
-            stack = new ArrayDeque<>();
-            activity.putSetting(settingName, stack);
-        }
-        stack.push(aspectId);
-    }
-
-    static void removeCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass, String aspectId) {
-        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
-        Deque<String> stack = activity.getSetting(settingName);
-        if (stack != null) {
-            stack.remove(aspectId);
-            if (stack.isEmpty()) {
-                activity.putSetting(settingName, null);
-            }
-        }
-    }
-
-    @Nullable
-    static String peekCurrentAspectId(@NonNull Activity activity, @NonNull Class<?> targetBeanClass) {
-        String settingName = CURRENT_ASPECT_ID_SETTING_PREFIX + targetBeanClass.getName();
-        Deque<String> stack = activity.getSetting(settingName);
-        return (stack != null ? stack.peek() : null);
     }
 
 }

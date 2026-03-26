@@ -395,6 +395,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public Query createQuery(String qlString) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(qlString);
     }
 
@@ -404,6 +405,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(criteriaQuery);
     }
 
@@ -413,6 +415,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(CriteriaSelect<T> selectQuery) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(selectQuery);
     }
 
@@ -444,6 +447,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(String qlString, Class<T> resultClass) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(qlString, resultClass);
     }
 
@@ -453,6 +457,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public Query createNamedQuery(String name) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNamedQuery(name);
     }
 
@@ -462,6 +467,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNamedQuery(name, resultClass);
     }
 
@@ -471,6 +477,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(TypedQueryReference<T> reference) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(reference);
     }
 
@@ -480,6 +487,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public Query createNativeQuery(String sqlString) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNativeQuery(sqlString);
     }
 
@@ -489,6 +497,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public Query createNativeQuery(String sqlString, Class resultClass) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNativeQuery(sqlString, resultClass);
     }
 
@@ -498,6 +507,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public Query createNativeQuery(String sqlString, String resultSetMapping) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNativeQuery(sqlString, resultSetMapping);
     }
 
@@ -507,6 +517,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createNamedStoredProcedureQuery(name);
     }
 
@@ -516,6 +527,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createStoredProcedureQuery(procedureName);
     }
 
@@ -525,6 +537,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createStoredProcedureQuery(procedureName, resultClasses);
     }
 
@@ -534,6 +547,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
     @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createStoredProcedureQuery(procedureName, resultSetMappings);
     }
 

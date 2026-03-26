@@ -41,6 +41,41 @@ import org.jspecify.annotations.NonNull;
  */
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
+    private static final String[] DEFAULT_READONLY_METHOD_PATTERNS = {
+            "find*",
+            "getReference*",
+            "select*",
+            "from",
+            "query"
+    };
+
+    private static final String[] MANAGEMENT_METHOD_PATTERNS = {
+            "get*",
+            "is*",
+            "close",
+            "isOpen",
+            "unwrap",
+            "getDelegate",
+            "getTransaction",
+            "getEntityManagerFactory",
+            "getCriteriaBuilder",
+            "getMetamodel",
+            "createEntityGraph",
+            "getEntityGraph",
+            "getEntityGraphs",
+            "runWithConnection",
+            "callWithConnection",
+            "flush",
+            "setFlushMode",
+            "getFlushMode",
+            "clear",
+            "detach",
+            "contains",
+            "getLockMode",
+            "setProperty",
+            "getProperties"
+    };
+
     private final String txAspectId;
 
     private String readOnlyAspectId;
@@ -48,8 +83,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     private String entityManagerFactoryBeanId;
 
     private String targetBeanId;
-
-    private boolean reuseWritable = true;
 
     /**
      * Instantiates a new {@code EntityManagerProvider}.
@@ -104,16 +137,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     }
 
     /**
-     * Sets whether to reuse a writable session even for read-only operations.
-     * @param reuseWritable true to reuse a writable session if one is already open,
-     *                      false to always use a read-only session for read-only operations.
-     *                      The default is {@code true}.
-     */
-    public void setReuseWritable(boolean reuseWritable) {
-        this.reuseWritable = reuseWritable;
-    }
-
-    /**
      * Returns the {@link EntityManagerFactory} associated with this provider.
      * @return the EntityManagerFactory
      */
@@ -156,6 +179,14 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
             register.setTargetBeanId(targetBeanId);
             register.setTargetBeanClass(getTargetBeanClass());
+            if (readOnlyAspectId != null) {
+                String[] excludeMethodNamePatterns = new String[DEFAULT_READONLY_METHOD_PATTERNS.length + MANAGEMENT_METHOD_PATTERNS.length];
+                System.arraycopy(DEFAULT_READONLY_METHOD_PATTERNS, 0, excludeMethodNamePatterns, 0, DEFAULT_READONLY_METHOD_PATTERNS.length);
+                System.arraycopy(MANAGEMENT_METHOD_PATTERNS, 0, excludeMethodNamePatterns, DEFAULT_READONLY_METHOD_PATTERNS.length, MANAGEMENT_METHOD_PATTERNS.length);
+                register.setExcludeMethodNamePatterns(excludeMethodNamePatterns);
+            } else {
+                register.setExcludeMethodNamePatterns(MANAGEMENT_METHOD_PATTERNS);
+            }
             register.register();
         }
         if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
@@ -164,6 +195,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             register.setEntityManagerFactoryBeanId(entityManagerFactoryBeanId);
             register.setTargetBeanId(targetBeanId);
             register.setTargetBeanClass(getTargetBeanClass());
+            register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
             register.setReadOnly(true);
             register.register();
         }
@@ -192,37 +224,25 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         Activity currentActivity = getAvailableActivity();
 
         EntityManagerAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
-        EntityManagerAdvice readOnlyAdvice = null;
-        if (readOnlyAspectId != null) {
-            readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
-        }
-
-        if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
-            return writableAdvice;
-        }
-
-        String currentAspectId = EntityManagerAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
-        if (currentAspectId != null) {
-            EntityManagerAdvice entityManagerAdvice = currentActivity.getAvailableAdvice(currentAspectId);
-            if (entityManagerAdvice != null) {
-                return entityManagerAdvice;
-            }
-        }
-
         if (writableAdvice != null && writableAdvice.isOpen()) {
             return writableAdvice;
         }
+
+        EntityManagerAdvice readOnlyAdvice = (readOnlyAspectId != null ?
+                currentActivity.getAvailableAdvice(readOnlyAspectId) : null);
         if (readOnlyAdvice != null && readOnlyAdvice.isOpen()) {
             return readOnlyAdvice;
         }
 
-        EntityManagerAdvice entityManagerAdvice = (readOnlyAdvice != null ? readOnlyAdvice : writableAdvice);
+        EntityManagerAdvice entityManagerAdvice = (writableAdvice != null ? writableAdvice : readOnlyAdvice);
         if (entityManagerAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(txAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + txAspectId +
                         "' handling EntityManagerAdvice is not registered");
             }
-            throw new IllegalStateException("EntityManagerAdvice not found handled by aspect '" + txAspectId + "'");
+            throw new IllegalStateException("No transactional context found for the current activity; " +
+                    "ensure the activity is advised by aspect '" + txAspectId + "'" +
+                    (readOnlyAspectId != null ? " or '" + readOnlyAspectId + "'" : ""));
         }
         return entityManagerAdvice;
     }
