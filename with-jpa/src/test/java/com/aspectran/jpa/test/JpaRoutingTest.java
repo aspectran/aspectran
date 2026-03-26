@@ -16,6 +16,7 @@
 package com.aspectran.jpa.test;
 
 import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.jpa.EntityManagerAdvice;
 import com.aspectran.jpa.common.entity.Vet;
 import com.aspectran.test.ActivityTester;
 import com.aspectran.test.AspectranTest;
@@ -81,6 +82,13 @@ class JpaRoutingTest {
             vet.setFirstName("Intelligent");
             vet.setLastName("User");
             intelligentDao.insertVet(vet);
+
+            // For eclipselink
+            EntityManagerAdvice txAdvice = activity.getAvailableAdvice("intelligentTxAspect");
+            if (txAdvice != null) {
+                txAdvice.getEntityManager().flush();
+            }
+
             assertNotNull(vet.getId());
 
             // 2. Get the vet (Triggers intelligentReadOnlyTxAspect - ReadOnly)
