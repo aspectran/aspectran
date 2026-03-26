@@ -27,26 +27,24 @@
         </property>
     </bean>
 
-    <!-- Strict Routing: reuseWritable=false (Must use separate sessions) -->
-    <bean id="strictRoutingSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
-        <argument>strictTxAspect</argument>
-        <argument>strictReadOnlyTxAspect</argument>
-        <property name="targetBeanId">strictRoutingSqlSession</property>
+    <!-- Read-Only session: single transaction -->
+    <bean id="readOnlySqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
+        <argument>readOnlyTxAspect</argument>
+        <property name="targetBeanId">readOnlySqlSession</property>
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
-        <property name="isolationLevelAsString">READ_COMMITTED</property>
+        <property name="readOnly" valueType="boolean">true</property>
         <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
-        <property name="reuseWritable" valueType="boolean">false</property>
     </bean>
 
-    <bean id="strictSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
-        <argument>#{strictRoutingSqlSession}</argument>
+    <bean id="readOnlySqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
+        <argument>#{readOnlySqlSession}</argument>
     </bean>
 
-    <bean id="strictDao" class="com.aspectran.mybatis.TestDao">
-        <argument>#{strictSqlMapperProvider}</argument>
+    <bean id="readOnlyDao" class="com.aspectran.mybatis.TestDao">
+        <argument>#{readOnlySqlMapperProvider}</argument>
     </bean>
 
-    <!-- Intelligent Routing: reuseWritable=true (Reuse writable session if open) -->
+    <!-- Intelligent Routing: Reuse writable session if open -->
     <bean id="intelligentRoutingSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
         <argument>intelligentTxAspect</argument>
         <argument>intelligentReadOnlyTxAspect</argument>
@@ -54,7 +52,6 @@
         <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
         <property name="isolationLevelAsString">READ_COMMITTED</property>
         <property name="readOnlyRollbackOnClose" valueType="boolean">true</property>
-        <property name="reuseWritable" valueType="boolean">true</property>
     </bean>
 
     <bean id="intelligentSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
@@ -68,9 +65,9 @@
     <!-- Test SqlSessionAgent with SERIALIZABLE isolation level -->
     <bean id="serializableSqlSession" class="com.aspectran.mybatis.SqlSessionAgent">
         <argument>serializableTxAspect</argument>
-        <property name="targetBeanId">serializableSqlSession</property>
-        <property name="sqlSessionFactoryBeanId">sqlSessionFactory</property>
-        <property name="isolationLevelAsString">SERIALIZABLE</property>
+        <property name="targetBeanId" value="serializableSqlSession"/>
+        <property name="sqlSessionFactoryBeanId" value="sqlSessionFactory"/>
+        <property name="isolationLevelAsString" value="SERIALIZABLE"/>
     </bean>
 
     <bean id="serializableSqlMapperProvider" class="com.aspectran.mybatis.TestSqlMapperProvider">
