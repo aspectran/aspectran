@@ -523,6 +523,15 @@ public abstract class AdviceActivity extends AbstractActivity {
         return (adviceResult != null ? (V) adviceResult.getAdviceBean(aspectId) : null);
     }
 
+    @Override
+    public <V> V getAvailableAdvice(String aspectId) {
+        V advice = getAdviceBean(aspectId);
+        if (advice == null) {
+            advice = getBeforeAdviceResult(aspectId);
+        }
+        return advice;
+    }
+
     /**
      * Stores an advice bean instance associated with a specific aspect ID.
      * @param aspectId the ID of the aspect

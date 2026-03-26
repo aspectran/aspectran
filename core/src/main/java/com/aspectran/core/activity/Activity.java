@@ -363,6 +363,16 @@ public interface Activity {
     <V> V getAdviceBean(String aspectId);
 
     /**
+     * Returns the advice bean instance or the result of the BEFORE advice
+     * associated with the given aspect ID.
+     * @param <V> the type of the advice object
+     * @param aspectId the ID of the aspect
+     * @return the advice object, or {@code null} if not found
+     * @since 9.4.3
+     */
+    <V> V getAvailableAdvice(String aspectId);
+
+    /**
      * Returns the value produced by the registered BEFORE advice for the given aspect ID.
      * @param <V> the result type
      * @param aspectId the aspect identifier

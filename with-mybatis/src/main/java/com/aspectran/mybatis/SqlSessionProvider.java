@@ -306,16 +306,10 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
         checkTransactional();
         Activity currentActivity = getAvailableActivity();
 
-        SqlSessionAdvice writableAdvice = currentActivity.getAdviceBean(txAspectId);
-        if (writableAdvice == null) {
-            writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
-        }
+        SqlSessionAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
         SqlSessionAdvice readOnlyAdvice = null;
         if (readOnlyAspectId != null) {
-            readOnlyAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
-            if (readOnlyAdvice == null) {
-                readOnlyAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
-            }
+            readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
         }
 
         if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
@@ -324,10 +318,7 @@ public abstract class SqlSessionProvider extends InstantActivitySupport implemen
 
         String currentAspectId = SqlSessionAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
         if (currentAspectId != null) {
-            SqlSessionAdvice sqlSessionAdvice = currentActivity.getAdviceBean(currentAspectId);
-            if (sqlSessionAdvice == null) {
-                sqlSessionAdvice = currentActivity.getBeforeAdviceResult(currentAspectId);
-            }
+            SqlSessionAdvice sqlSessionAdvice = currentActivity.getAvailableAdvice(currentAspectId);
             if (sqlSessionAdvice != null) {
                 return sqlSessionAdvice;
             }

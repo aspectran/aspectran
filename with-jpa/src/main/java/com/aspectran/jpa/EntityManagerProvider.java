@@ -138,7 +138,8 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             if (targetBeanId != null) {
                 msg.append(" on bean '").append(targetBeanId).append("'");
             }
-            msg.append("; No unique EntityManagerFactory bean found. If multiple EntityManagerFactory beans are defined, please specify an entityManagerFactoryBeanId");
+            msg.append("; No unique EntityManagerFactory bean found. If multiple EntityManagerFactory beans are defined, " +
+                    "please specify an entityManagerFactoryBeanId");
             throw new IllegalStateException(msg.toString(), e);
         }
     }
@@ -190,16 +191,10 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         checkTransactional();
         Activity currentActivity = getAvailableActivity();
 
-        EntityManagerAdvice writableAdvice = currentActivity.getAdviceBean(txAspectId);
-        if (writableAdvice == null) {
-            writableAdvice = currentActivity.getBeforeAdviceResult(txAspectId);
-        }
+        EntityManagerAdvice writableAdvice = currentActivity.getAvailableAdvice(txAspectId);
         EntityManagerAdvice readOnlyAdvice = null;
         if (readOnlyAspectId != null) {
-            readOnlyAdvice = currentActivity.getAdviceBean(readOnlyAspectId);
-            if (readOnlyAdvice == null) {
-                readOnlyAdvice = currentActivity.getBeforeAdviceResult(readOnlyAspectId);
-            }
+            readOnlyAdvice = currentActivity.getAvailableAdvice(readOnlyAspectId);
         }
 
         if (reuseWritable && writableAdvice != null && writableAdvice.isOpen()) {
@@ -208,10 +203,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
 
         String currentAspectId = EntityManagerAdviceRegister.peekCurrentAspectId(currentActivity, getTargetBeanClass());
         if (currentAspectId != null) {
-            EntityManagerAdvice entityManagerAdvice = currentActivity.getAdviceBean(currentAspectId);
-            if (entityManagerAdvice == null) {
-                entityManagerAdvice = currentActivity.getBeforeAdviceResult(currentAspectId);
-            }
+            EntityManagerAdvice entityManagerAdvice = currentActivity.getAvailableAdvice(currentAspectId);
             if (entityManagerAdvice != null) {
                 return entityManagerAdvice;
             }
