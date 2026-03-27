@@ -7,6 +7,15 @@
         Configuration for database transactions
     </description>
 
+    <environment>
+        <properties profile="hibernate">
+            <item name="petclinic.database.name">hibernate_test</item>
+        </properties>
+        <properties profile="eclipselink">
+            <item name="petclinic.database.name">eclipselink_test</item>
+        </properties>
+    </environment>
+
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroyMethod="close" lazyDestroy="true">
         <argument>
             <bean class="com.zaxxer.hikari.HikariConfig">
