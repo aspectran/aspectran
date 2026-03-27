@@ -476,7 +476,9 @@ public class AspectRule implements BeanReferenceable, Describable {
         tsb.append("settings", settingsAdviceRule);
         tsb.append("advices", adviceRuleList);
         tsb.append("exception", exceptionRule);
-        tsb.appendForce("beanRelevant", beanRelevant);
+        if (!beanRelevant) {
+            tsb.appendForce("beanRelevant", false);
+        }
         return tsb.toString();
     }
 

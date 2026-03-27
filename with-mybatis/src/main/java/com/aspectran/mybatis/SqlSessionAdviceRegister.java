@@ -15,6 +15,8 @@
  */
 package com.aspectran.mybatis;
 
+import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -25,8 +27,6 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
-import com.aspectran.core.component.bean.NoSuchBeanException;
-import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ToStringBuilder;
 import org.apache.ibatis.session.ExecutorType;

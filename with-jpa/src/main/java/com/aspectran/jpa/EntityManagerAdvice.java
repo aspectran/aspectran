@@ -15,6 +15,7 @@
  */
 package com.aspectran.jpa;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import jakarta.persistence.EntityManager;
@@ -87,6 +88,7 @@ public class EntityManagerAdvice {
      * @param readOnly true to enable read-only mode, false otherwise
      */
     public void setReadOnly(boolean readOnly) {
+        ensureNotOpen();
         this.readOnly = readOnly;
     }
 
@@ -102,6 +104,14 @@ public class EntityManagerAdvice {
             doOpen();
         }
         return entityManager;
+    }
+
+    /**
+     * Returns whether the managed {@link EntityManager} is currently open.
+     * @return true if the entity manager is open, false otherwise
+     */
+    public boolean isOpen() {
+        return (entityManager != null);
     }
 
     /**
@@ -284,11 +294,11 @@ public class EntityManagerAdvice {
     }
 
     /**
-     * Returns whether the managed {@link EntityManager} is currently open.
-     * @return true if the entity manager is open, false otherwise
+     * Ensures that the SqlSession is not already open.
+     * @throws IllegalStateException if the session is already open
      */
-    public boolean isOpen() {
-        return (entityManager != null);
+    private void ensureNotOpen() {
+        Assert.state(entityManager == null, "EntityManager is already open");
     }
 
 }

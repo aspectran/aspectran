@@ -172,14 +172,6 @@ public class SqlSessionAdvice {
     }
 
     /**
-     * Returns whether the managed {@link SqlSession} is currently open.
-     * @return true if the session is open, false otherwise
-     */
-    public boolean isOpen() {
-        return (sqlSession != null);
-    }
-
-    /**
      * Returns the managed {@link SqlSession} instance.
      * This session is created by the {@code open()} method and its lifecycle
      * (commit, rollback, close) is controlled by this advice.
@@ -193,6 +185,14 @@ public class SqlSessionAdvice {
             doOpen();
         }
         return sqlSession;
+    }
+
+    /**
+     * Returns whether the managed {@link SqlSession} is currently open.
+     * @return true if the session is open, false otherwise
+     */
+    public boolean isOpen() {
+        return (sqlSession != null);
     }
 
     /**
@@ -247,61 +247,12 @@ public class SqlSessionAdvice {
     }
 
     /**
-     * Opens a new SqlSession with the specified auto-commit setting.
-     * @param autoCommit true to enable auto-commit, false otherwise
-     */
-    public void open(boolean autoCommit) {
-        setAutoCommit(autoCommit);
-        open();
-    }
-
-    /**
-     * Opens a new SqlSession with the specified executor type.
-     * @param executorType the executor type
-     */
-    public void open(ExecutorType executorType) {
-        setExecutorType(executorType);
-        open();
-    }
-
-    /**
-     * Opens a new SqlSession with the specified executor type and auto-commit setting.
-     * @param executorType the executor type
-     * @param autoCommit true to enable auto-commit, false otherwise
-     */
-    public void open(ExecutorType executorType, boolean autoCommit) {
-        setExecutorType(executorType);
-        setAutoCommit(autoCommit);
-        open();
-    }
-
-    /**
-     * Opens a new SqlSession with the specified executor type.
-     * @param executorType the executor type name (e.g., "SIMPLE", "REUSE", "BATCH")
-     */
-    public void open(String executorType) {
-        setExecutorType(executorType);
-        open();
-    }
-
-    /**
-     * Opens a new SqlSession with the specified executor type and auto-commit setting.
-     * @param executorType the executor type name (e.g., "SIMPLE", "REUSE", "BATCH")
-     * @param autoCommit true to enable auto-commit, false otherwise
-     */
-    public void open(String executorType, boolean autoCommit) {
-        setExecutorType(executorType);
-        setAutoCommit(autoCommit);
-        open();
-    }
-
-    /**
      * Flushes batch statements and commits database connection.
      * Note that database connection will not be committed if no updates/deletes/inserts were called.
      * To force the commit, call {@link #commit(boolean)}.
      */
     public void commit() {
-        if (isSessionUnavailable() || readOnly) {
+        if (readOnly || isSessionUnavailable()) {
             return;
         }
 
@@ -317,7 +268,7 @@ public class SqlSessionAdvice {
      * @param force forces connection commit
      */
     public void commit(boolean force) {
-        if (isSessionUnavailable() || readOnly) {
+        if (readOnly || isSessionUnavailable()) {
             return;
         }
 
