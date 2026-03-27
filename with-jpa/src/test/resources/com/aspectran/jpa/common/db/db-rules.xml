@@ -28,7 +28,7 @@
                         </properties>
                     </bean>
                 </argument>
-                <property name="poolName">petclinic-test</property>
+                <property name="poolName">datasource-%{petclinic.database.name}</property>
                 <property name="registerMbeans" valueType="boolean">true</property>
             </bean>
         </argument>
@@ -46,7 +46,7 @@
                         </properties>
                     </bean>
                 </argument>
-                <property name="poolName">petclinic-test</property>
+                <property name="poolName">readonly-datasource-%{petclinic.database.name}</property>
                 <property name="registerMbeans" valueType="boolean">true</property>
                 <property name="readOnly" valueType="boolean">true</property>
             </bean>

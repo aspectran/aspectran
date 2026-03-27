@@ -1,3 +1,13 @@
+DELETE FROM visits;
+DELETE FROM pets;
+DELETE FROM vet_specialties;
+DELETE FROM vets;
+DELETE FROM specialties;
+DELETE FROM types;
+DELETE FROM owners;
+
+ALTER SEQUENCE base_entity_id_seq RESTART WITH 1;
+
 INSERT INTO vets VALUES (NEXT VALUE FOR BASE_ENTITY_ID_SEQ, 'James', 'Carter');
 INSERT INTO vets VALUES (NEXT VALUE FOR BASE_ENTITY_ID_SEQ, 'Helen', 'Leary');
 INSERT INTO vets VALUES (NEXT VALUE FOR BASE_ENTITY_ID_SEQ, 'Linda', 'Douglas');

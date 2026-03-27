@@ -1,12 +1,3 @@
--- DROP SEQUENCE base_entity_id_seq;
--- DROP TABLE vet_specialties IF EXISTS;
--- DROP TABLE vets IF EXISTS;
--- DROP TABLE specialties IF EXISTS;
--- DROP TABLE visits IF EXISTS;
--- DROP TABLE pets IF EXISTS;
--- DROP TABLE types IF EXISTS;
--- DROP TABLE owners IF EXISTS;
-
 CREATE SEQUENCE IF NOT EXISTS base_entity_id_seq
     START WITH 1
     INCREMENT BY 1
