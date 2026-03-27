@@ -26,5 +26,4 @@ import com.aspectran.test.AspectranTest;
         }
 )
 class EclipseLinkJpaRoutingTest extends HibernateJpaRoutingTest {
-
 }

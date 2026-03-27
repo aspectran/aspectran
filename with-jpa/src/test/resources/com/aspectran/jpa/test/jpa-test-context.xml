@@ -9,8 +9,7 @@
     <bean id="readOnlyEntityQuery" class="com.aspectran.jpa.querydsl.EntityQuery">
         <argument>readOnlyTxAspect</argument>
         <property name="targetBeanId">readOnlyEntityQuery</property>
-        <property name="entityManagerFactoryBeanId">entityManagerFactory</property>
-        <property name="readOnly" valueType="boolean">true</property>
+        <property name="entityManagerFactoryBeanId">readOnlyEntityManagerFactory</property>
     </bean>
 
     <bean id="readOnlyDao" class="com.aspectran.jpa.test.JpaTestDao">

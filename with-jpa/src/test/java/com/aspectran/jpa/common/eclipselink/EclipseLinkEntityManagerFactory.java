@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.component.bean.annotation.Profile;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.jpa.EntityManagerFactoryBean;
 import com.aspectran.jpa.eclipselink.logging.Slf4jSessionLogger;
 import jakarta.persistence.PersistenceConfiguration;
@@ -28,9 +29,6 @@ import org.eclipse.persistence.config.PersistenceUnitProperties;
 
 import javax.sql.DataSource;
 
-/**
- * <p>Created: 2025-10-07</p>
- */
 @Component
 @Profile("eclipselink")
 @Bean(id = "entityManagerFactory", lazyDestroy = true)
@@ -39,7 +37,7 @@ public class EclipseLinkEntityManagerFactory extends EntityManagerFactoryBean {
     private final DataSource dataSource;
 
     @Autowired
-    public EclipseLinkEntityManagerFactory(DataSource dataSource) {
+    public EclipseLinkEntityManagerFactory(@Qualifier("dataSource") DataSource dataSource) {
         super("petclinic-test");
         this.dataSource = dataSource;
     }

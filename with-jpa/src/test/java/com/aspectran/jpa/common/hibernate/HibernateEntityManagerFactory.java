@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.component.bean.annotation.Profile;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.jpa.EntityManagerFactoryBean;
 import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.PersistenceUnitTransactionType;
@@ -42,7 +43,7 @@ public class HibernateEntityManagerFactory extends EntityManagerFactoryBean {
     private final DataSource dataSource;
 
     @Autowired
-    public HibernateEntityManagerFactory(DataSource dataSource) {
+    public HibernateEntityManagerFactory(@Qualifier("dataSource") DataSource dataSource) {
         super("petclinic-test");
         this.dataSource = dataSource;
     }

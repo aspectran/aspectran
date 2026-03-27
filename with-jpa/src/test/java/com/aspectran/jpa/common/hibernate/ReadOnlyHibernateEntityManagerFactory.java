@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jpa.common;
+package com.aspectran.jpa.common.hibernate;
 
+import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jpa.querydsl.EntityQuery;
-import com.querydsl.jpa.JPQLTemplates;
+import com.aspectran.core.component.bean.annotation.Profile;
+import com.aspectran.core.component.bean.annotation.Qualifier;
+
+import javax.sql.DataSource;
 
 /**
  * <p>Created: 2025-05-02</p>
  */
 @Component
-@Bean(lazyDestroy = true)
-public class DefaultEntityQuery extends EntityQuery {
+@Profile("hibernate")
+@Bean(id = "readOnlyEntityManagerFactory", lazyDestroy = true)
+public class ReadOnlyHibernateEntityManagerFactory extends HibernateEntityManagerFactory {
 
-    public DefaultEntityQuery() {
-        super("jpaTxAspect");
-        setTemplates(JPQLTemplates.DEFAULT);
-        setEntityManagerFactoryBeanId("entityManagerFactory");
+    @Autowired
+    public ReadOnlyHibernateEntityManagerFactory(@Qualifier("readOnlyDataSource") DataSource dataSource) {
+        super(dataSource);
     }
 
 }

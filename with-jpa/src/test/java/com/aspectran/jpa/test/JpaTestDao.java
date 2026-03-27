@@ -29,6 +29,10 @@ public class JpaTestDao {
         this.entityQuery = entityQuery;
     }
 
+    public EntityQuery getEntityQuery() {
+        return entityQuery;
+    }
+
     public void insertVet(Vet vet) {
         entityQuery.persist(vet);
     }
@@ -38,7 +42,15 @@ public class JpaTestDao {
     }
 
     public List<Vet> getVetList() {
-        return entityQuery.createQuery("from Vet", Vet.class).getResultList();
+        return getVetList(null);
+    }
+
+    public List<Vet> getVetList(java.util.Map<String, Object> hints) {
+        jakarta.persistence.TypedQuery<Vet> query = entityQuery.createQuery("from Vet", Vet.class);
+        if (hints != null) {
+            hints.forEach(query::setHint);
+        }
+        return query.getResultList();
     }
 
     public void insertVets(Vet @NotNull ... vets) {

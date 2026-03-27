@@ -19,6 +19,7 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Destroy;
+import com.aspectran.core.component.bean.annotation.Qualifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,23 @@ public final class H2DatabaseShutdown {
 
     private final DataSource dataSource;
 
+    private final DataSource readOnlyDataSource;
+
     @Autowired(required = false)
-    public H2DatabaseShutdown(DataSource dataSource) {
+    public H2DatabaseShutdown(
+            @Qualifier("dataSource") DataSource dataSource,
+            @Qualifier("readOnlyDataSource") DataSource readOnlyDataSource) {
         this.dataSource = dataSource;
+        this.readOnlyDataSource = readOnlyDataSource;
     }
 
     @Destroy(profile = "h2")
     public void shutdown() {
+        shutdownH2(dataSource);
+        shutdownH2(readOnlyDataSource);
+    }
+
+    private void shutdownH2(DataSource dataSource) {
         if (dataSource != null) {
             try (Connection connection = dataSource.getConnection()) {
                 if (connection.getMetaData().getDatabaseProductName().equals("H2")) {
