@@ -81,8 +81,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
 
     private String targetBeanId;
 
-    private boolean readOnly;
-
     /**
      * Instantiates a new {@code EntityManagerProvider}.
      * @param txAspectId the ID of the aspect that manages the {@link EntityManagerAdvice}
@@ -136,14 +134,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     }
 
     /**
-     * Sets whether to enable read-only mode for the advice.
-     * @param readOnly true to enable read-only mode, false otherwise
-     */
-    public void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-    }
-
-    /**
      * Returns the {@link EntityManagerFactory} associated with this provider.
      * @return the EntityManagerFactory
      */
@@ -194,7 +184,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             } else {
                 register.setExcludeMethodNamePatterns(MANAGEMENT_METHOD_PATTERNS);
             }
-            register.setReadOnly(readOnly);
             register.register();
         }
         if (readOnlyAspectId != null && !getActivityContext().getAspectRuleRegistry().contains(readOnlyAspectId)) {
@@ -204,7 +193,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
             register.setTargetBeanId(targetBeanId);
             register.setTargetBeanClass(getTargetBeanClass());
             register.setIncludeMethodNamePatterns(DEFAULT_READONLY_METHOD_PATTERNS);
-            register.setReadOnly(true);
             register.register();
         }
     }

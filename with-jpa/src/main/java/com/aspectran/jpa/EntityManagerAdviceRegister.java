@@ -60,8 +60,6 @@ class EntityManagerAdviceRegister {
 
     private String[] excludeMethodNamePatterns;
 
-    private boolean readOnly;
-
     /**
      * Instantiates a new EntityManagerAdviceRegister.
      * @param activityContext the activity context
@@ -116,14 +114,6 @@ class EntityManagerAdviceRegister {
      */
     void setExcludeMethodNamePatterns(String[] excludeMethodNamePatterns) {
         this.excludeMethodNamePatterns = excludeMethodNamePatterns;
-    }
-
-    /**
-     * Sets whether to enable read-only mode for the sessions.
-     * @param readOnly true to enable read-only mode, false otherwise
-     */
-    void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
     }
 
     void register() {
@@ -188,11 +178,7 @@ class EntityManagerAdviceRegister {
         aspectRule.setJoinpointRule(joinpointRule);
 
         AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
-        beforeAdviceRule.setAdviceAction(activity -> {
-            EntityManagerAdvice entityManagerAdvice = new EntityManagerAdvice(entityManagerFactory);
-            entityManagerAdvice.setReadOnly(readOnly);
-            return entityManagerAdvice;
-        });
+        beforeAdviceRule.setAdviceAction(activity -> new EntityManagerAdvice(entityManagerFactory));
 
         AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
         afterAdviceRule.setAdviceAction(activity -> {
