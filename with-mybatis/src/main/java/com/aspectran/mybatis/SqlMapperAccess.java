@@ -116,34 +116,4 @@ public abstract class SqlMapperAccess<T> {
         return mapperProvider.reuseMapper(mapperType);
     }
 
-    /**
-     * Returns a mapper instance that uses the SIMPLE executor type.
-     * @return a mapper instance with SIMPLE executor behavior
-     * @deprecated use {@link #mapper()} instead
-     */
-    @Deprecated
-    public T simple() {
-        return mapper();
-    }
-
-    /**
-     * Returns a mapper instance that uses the BATCH executor type.
-     * @return a mapper instance with BATCH executor behavior
-     * @deprecated use {@link #batchMapper()} instead
-     */
-    @Deprecated
-    public T batch() {
-        return batchMapper();
-    }
-
-    /**
-     * Returns a mapper instance that uses the REUSE executor type.
-     * @return a mapper instance with REUSE executor behavior
-     * @deprecated use {@link #reuseMapper()} instead
-     */
-    @Deprecated
-    public T reuse() {
-        return reuseMapper();
-    }
-
 }
